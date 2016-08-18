@@ -1,50 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- edited with XMLSpy v2013 sp1 (x64) (http://www.altova.com) by Bryn Rhodes (private) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm-types:r1" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xml="http://www.w3.org/XML/1998/namespace" targetNamespace="urn:hl7-org:elm-types:r1" elementFormDefault="qualified">
 	<xs:complexType name="Any" abstract="true"/>
-	<xs:simpleType name="Boolean">
-		<xs:restriction base="xs:boolean"/>
-	</xs:simpleType>
+	<xs:complexType name="Boolean">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="xs:boolean" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Code">
 		<xs:complexContent>
 			<xs:extension base="Any">
-				<xs:attribute name="code" type="String" use="required"/>
-				<xs:attribute name="display" type="String" use="optional"/>
-				<xs:attribute name="system" type="String" use="optional"/>
-				<xs:attribute name="version" type="String" use="optional"/>
+				<xs:sequence>
+					<xs:element name="code" type="String" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="display" type="String" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="system" type="String" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="version" type="String" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Concept">
+		<xs:sequence>
+			<xs:element name="codes" type="Code" minOccurs="1" maxOccurs="unbounded"/>
+			<xs:element name="display" type="String" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DateTime">
 		<xs:complexContent>
 			<xs:extension base="Any">
-				<xs:sequence>
-					<xs:element name="codes" type="Code" minOccurs="1" maxOccurs="unbounded"/>
-				</xs:sequence>
-				<xs:attribute name="display" type="String" use="optional"/>
+				<xs:attribute name="value" type="xs:string" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:simpleType name="DateTime">
-		<xs:restriction base="xs:string"/>
-	</xs:simpleType>
-	<xs:simpleType name="Decimal">
-		<xs:restriction base="xs:decimal"/>
-	</xs:simpleType>
-	<xs:simpleType name="Integer">
-		<xs:restriction base="xs:int"/>
-	</xs:simpleType>
+	<xs:complexType name="Decimal">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="xs:decimal" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Integer">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="xs:int" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Quantity">
 		<xs:complexContent>
 			<xs:extension base="Any">
-				<xs:attribute name="value" type="Decimal"/>
-				<xs:attribute name="unit" type="String"/>
+				<xs:sequence>
+					<xs:element name="value" type="Decimal" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="unit" type="String" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:simpleType name="String">
-		<xs:restriction base="xs:string"/>
-	</xs:simpleType>
-	<xs:simpleType name="Time">
-		<xs:restriction base="xs:string"/>
-	</xs:simpleType>
+	<xs:complexType name="String">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Time">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Interval" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:sequence>
+					<xs:element name="lowClosed" type="Boolean" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="highClosed" type="Boolean" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntegerInterval">
+		<xs:complexContent>
+			<xs:extension base="Interval">
+				<xs:sequence>
+					<xs:element name="low" type="Integer" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="high" type="Integer"  minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecimalInterval">
+		<xs:complexContent>
+			<xs:extension base="Interval">
+				<xs:sequence>
+					<xs:element name="low" type="Decimal" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="high" type="Decimal" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="QuantityInterval">
+		<xs:complexContent>
+			<xs:extension base="Interval">
+				<xs:sequence>
+					<xs:element name="low" type="Quantity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="high" type="Quantity" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DateTimeInterval">
+		<xs:complexContent>
+			<xs:extension base="Interval">
+				<xs:sequence>
+					<xs:element name="low" type="DateTime" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="high" type="DateTime" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TimeInterval">
+		<xs:complexContent>
+			<xs:extension base="Interval">
+				<xs:sequence>
+					<xs:element name="low" type="Time" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="high" type="Time" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>

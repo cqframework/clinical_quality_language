@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns4:modelInfo name="QDM" url="urn:healthit-gov:qdm:v5_0_draft" targetQualifier="qdm" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               patientClassName="QDM.Patient" patientClassIdentifier="Patient" patientBirthDatePropertyName="birthDateTime">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Patient" baseType="System.Any" identifier="Patient">
+        <ns4:element name="birthDatetime" type="System.DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamNotRecommended" retrievable="true" identifier="Physical Exam, Not Recommended" baseType="QDM.PhysicalExamBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicSex" retrievable="true" identifier="Patient Characteristic: Sex" baseType="QDM.QDMBaseType"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CareGoal" retrievable="true" identifier="Care Goal" baseType="QDM.QDMBaseType">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="relatedTo" type="Code"/>
+        <ns4:element name="targetOutcome" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceNotRecommended" retrievable="true" identifier="Device, Not Recommended" baseType="QDM.DeviceBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="String" retrievable="false" baseType="Any">
+        <ns4:element name="value" type="System.String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationAdministered" retrievable="true" identifier="Medication, Administered" baseType="QDM.MedicationBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationNotAdministered" identifier="Medication, Not Administered" retrievable="true" baseType="QDM.MedicationBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceNotApplied" retrievable="true" identifier="Device, Not Applied" baseType="QDM.DeviceBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DateTime" retrievable="false" baseType="Any">
+        <ns4:element name="value" type="System.String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Decimal" retrievable="false" baseType="Any">
+        <ns4:element name="value" type="System.Decimal"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationNotDispensed" retrievable="true" identifier="Medication, Not Dispensed" baseType="QDM.MedicationBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Diagnosis" retrievable="true" identifier="Diagnosis" baseType="QDM.QDMBaseType">
+        <ns4:element name="prevalencePeriod" type="DateTimeInterval"/>
+        <ns4:element name="anatomicalLocationSite" type="Code"/>
+        <ns4:element name="severity" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureNotPerformed" retrievable="true" identifier="Procedure, Not Performed" baseType="QDM.ProcedureBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentPerformed" retrievable="true" identifier="Assessment, Performed" baseType="QDM.AssessmentBase">
+        <ns4:element name="result" type="System.Any"/>
+        <ns4:element name="component" type="QDM.Component"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionNotOrdered" retrievable="true" identifier="Intervention, Not Ordered" baseType="QDM.InterventionBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Boolean" retrievable="false" baseType="Any">
+        <ns4:element name="value" type="System.Boolean"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicClinicalTrialParticipant" retrievable="true" identifier="Patient Characteristic: Clinical Trial Participant" baseType="QDM.QDMBaseType">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionOrder" retrievable="true" identifier="Intervention, Order" baseType="QDM.InterventionBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceOrder" retrievable="true" identifier="Device, Order" baseType="QDM.DeviceBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Component" retrievable="false" baseType="System.Any">
+        <ns4:element name="code" type="Code"/>
+        <ns4:element name="result" type="System.Any"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Code" retrievable="false" baseType="Any">
+        <ns4:element name="code" type="String"/>
+        <ns4:element name="display" type="String"/>
+        <ns4:element name="system" type="String"/>
+        <ns4:element name="version" type="String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterNotOrdered" retrievable="true" identifier="Encounter, Not Ordered" baseType="QDM.EncounterBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationActive" retrievable="true" identifier="Medication, Active" baseType="QDM.MedicationBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="reason" type="Code"/>
+        <ns4:element name="method" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicExpired" retrievable="true" identifier="Patient Characteristic, Expired" baseType="QDM.QDMBaseType">
+        <ns4:element name="expiredDatetime" type="DateTime"/>
+        <ns4:element name="cause" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyNotPerformed" retrievable="true" identifier="Diagnostic Study, Not Performed" baseType="QDM.DiagnosticStudyBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentRecommended" retrievable="true" identifier="Assessment, Recommended" baseType="QDM.AssessmentBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterNotRecommended" retrievable="true" identifier="Encounter, Not Recommended" baseType="QDM.EncounterBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceAdministered" retrievable="true" identifier="Substance, Administered" baseType="QDM.SubstanceBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Interval" retrievable="false" baseType="Any">
+        <ns4:element name="lowClosed" type="Boolean"/>
+        <ns4:element name="highClosed" type="Boolean"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedurePerformed" retrievable="true" identifier="Procedure, Performed" baseType="QDM.ProcedureBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="result" type="System.Any"/>
+        <ns4:element name="status" type="Code"/>
+        <ns4:element name="radiationDuration" type="Code"/>
+        <ns4:element name="radiationDosage" type="Code"/>
+        <ns4:element name="incisionDatetime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureNotRecommended" retrievable="true" identifier="Procedure, Not Recommended" baseType="QDM.ProcedureBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicBirthdate" retrievable="true" identifier="Patient Characteristic: Birthdate" baseType="QDM.QDMBaseType">
+        <ns4:element name="birthDatetime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.QDMBaseType" retrievable="false" baseType="System.Any">
+        <ns4:element name="code" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="reason" type="Code"/>
+        <ns4:element name="facilityLocation" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionPerformed" retrievable="true" identifier="Intervention, Performed" baseType="QDM.InterventionBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="result" type="System.Any"/>
+        <ns4:element name="status" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestRecommended" retrievable="true" identifier="Laboratory Test, Recommended" baseType="QDM.LaboratoryTestBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionNotPerformed" retrievable="true" identifier="Intervention, Not Performed" baseType="QDM.InterventionBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationNotOrdered" retrievable="true" identifier="Immunization, Not Ordered" baseType="QDM.ImmunizationBase">
+        <ns4:element name="activeDatetime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterNotPerformed" retrievable="true" identifier="Encounter, Not Performed" baseType="QDM.EncounterBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationNotOrdered" retrievable="true" identifier="Medication, Not Ordered" baseType="QDM.MedicationBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyRecommended" retrievable="true" identifier="Diagnostic Study, Recommended" baseType="QDM.DiagnosticStudyBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationOrder" retrievable="true" identifier="Immunization, Order" baseType="QDM.ImmunizationBase">
+        <ns4:element name="activeDatetime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProviderCareExperience" retrievable="true" identifier="Provider Care Experience" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceNotOrdered" retrievable="true" identifier="Device, Not Ordered" baseType="QDM.DeviceBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentNotPerformed" retrievable="true" identifier="Assessment, Not Performed" baseType="QDM.AssessmentBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationOrder" retrievable="true" identifier="Medication, Order" baseType="QDM.MedicationBase">
+        <ns4:element name="activeDatetime" type="DateTime"/>
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="refills" type="System.Integer"/>
+        <ns4:element name="method" type="Code"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="dose" type="Quantity"/>
+        <ns4:element name="frequency" type="Code"/>
+        <ns4:element name="route" type="Code"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureNotOrdered" retrievable="true" identifier="Procedure, Not Ordered" baseType="QDM.ProcedureBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamOrder" retrievable="false" baseType="QDM.PhysicalExamBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionNotRecommended" retrievable="false" baseType="QDM.InterventionBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterActive" retrievable="false" baseType="QDM.EncounterBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="locationPeriod" type="DateTimeInterval"/>
+        <ns4:element name="lengthOfStay" type="Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristic" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToProviderNotPerformed" retrievable="false" baseType="QDM.CommunicationBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicEthnicity" retrievable="false" baseType="QDM.QDMBaseType"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicRace" retrievable="false" baseType="QDM.QDMBaseType"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="anatomicalApproachSite" type="Code"/>
+        <ns4:element name="anatomicalLocationSite" type="Code"/>
+        <ns4:element name="method" type="Code"/>
+        <ns4:element name="ordinality" type="Code"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestPerformed" retrievable="false" baseType="QDM.LaboratoryTestBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="status" type="Code"/>
+        <ns4:element name="result" type="System.Any"/>
+        <ns4:element name="referenceRangeHigh" type="Code"/>
+        <ns4:element name="referenceRangeLow" type="Code"/>
+        <ns4:element name="component" type="QDM.Component"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Symptom" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="prevalencePeriod" type="DateTimeInterval"/>
+        <ns4:element name="severity" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="method" type="Code"/>
+        <ns4:element name="reason" type="Code"/>
+        <ns4:element name="radiationDosage" type="Code"/>
+        <ns4:element name="radiationDuration" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureRecommended" retrievable="false" baseType="QDM.ProcedureBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterPerformed" retrievable="false" baseType="QDM.EncounterBase">
+        <ns4:element name="admissionSource" type="Code"/>
+        <ns4:element name="admissionDatetime" type="DateTime"/>
+        <ns4:element name="dischargeDatetime" type="DateTime"/>
+        <ns4:element name="dischargeStatus" type="Code"/>
+        <ns4:element name="locationPeriod" type="DateTimeInterval"/>
+        <ns4:element name="diagnosis" type="QDM.Diagnosis"/>
+        <ns4:element name="principalDiagnosis" type="QDM.Diagnosis"/>
+        <ns4:element name="lengthOfStay" type="Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyNotRecommended" retrievable="false" baseType="QDM.DiagnosticStudyBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToPatient" retrievable="false" baseType="QDM.CommunicationBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentNotRecommended" retrievable="false" baseType="QDM.AssessmentBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyPerformed" retrievable="false" baseType="QDM.DiagnosticStudyBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="result" type="System.Any"/>
+        <ns4:element name="status" type="Code"/>
+        <ns4:element name="facilityLocation" type="Code"/>
+        <ns4:element name="component" type="QDM.Component"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToPatientNotPerformed" retrievable="false" baseType="QDM.CommunicationBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FamilyHistory" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="recordedDatetime" type="DateTime"/>
+        <ns4:element name="relationship" type="System.String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="dosage" type="Quantity"/>
+        <ns4:element name="supply" type="Quantity"/>
+        <ns4:element name="frequency" type="Code"/>
+        <ns4:element name="route" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToProvider" retrievable="false" baseType="QDM.CommunicationBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestOrder" retrievable="false" baseType="QDM.LaboratoryTestBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyOrder" retrievable="false" baseType="QDM.DiagnosticStudyBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceOrder" retrievable="false" baseType="QDM.SubstanceBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="method" type="Code"/>
+        <ns4:element name="refills" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicPayer" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="cause" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceNotRecommended" retrievable="false" baseType="QDM.SubstanceBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="reason" type="Code"/>
+        <ns4:element name="route" type="Code"/>
+        <ns4:element name="dose" type="Quantity"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationAdministered" retrievable="false" baseType="QDM.ImmunizationBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterOrder" retrievable="false" baseType="QDM.EncounterBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterRecommended" retrievable="false" baseType="QDM.EncounterBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Allergy" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="prevalencePeriod" type="DateTimeInterval"/>
+        <ns4:element name="substance" type="Code"/>
+        <ns4:element name="reaction" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProviderCharacteristic" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamRecommended" retrievable="false" baseType="QDM.PhysicalExamBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AdverseEventIntolerance" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="prevalencePeriod" type="DateTimeInterval"/>
+        <ns4:element name="substance" type="Code"/>
+        <ns4:element name="reaction" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromPatientToProviderNotPerformed" retrievable="false" baseType="QDM.CommunicationBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamNotOrdered" retrievable="false" baseType="QDM.PhysicalExamBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Any" retrievable="false" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromPatientToProvider" retrievable="false" baseType="QDM.CommunicationBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceRecommended" retrievable="false" baseType="QDM.DeviceBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceApplied" retrievable="false" baseType="QDM.DeviceBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="anatomialLocationSite" type="Code"/>
+        <ns4:element name="anatomicalApproachSite" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDischarge" retrievable="false" baseType="QDM.MedicationBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="refills" type="System.Integer"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationNotDischarged" retrievable="false" baseType="QDM.MedicationBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="reason" type="Code"/>
+        <ns4:element name="method" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDispensed" retrievable="false" baseType="QDM.MedicationBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="refills" type="System.Integer"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyNotOrdered" retrievable="false" baseType="QDM.DiagnosticStudyBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestNotRecommended" retrievable="false" baseType="QDM.LaboratoryTestBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCareExperience" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="authorTime" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestNotPerformed" retrievable="false" baseType="QDM.LaboratoryTestBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DateTimeInterval" retrievable="false" baseType="Interval">
+        <ns4:element name="low" type="DateTime"/>
+        <ns4:element name="high" type="DateTime"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Quantity" retrievable="false" baseType="Any">
+        <ns4:element name="value" type="Decimal"/>
+        <ns4:element name="unit" type="String"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureOrder" retrievable="false" baseType="QDM.ProcedureBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="radiationDuration" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamBase" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="anatomicalLocationSite" type="Code"/>
+        <ns4:element name="method" type="Code"/>
+        <ns4:element name="reason" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationNotAdministered" retrievable="false" baseType="QDM.ImmunizationBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceNotAdministered" retrievable="false" baseType="QDM.SubstanceBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceRecommended" retrievable="false" baseType="QDM.SubstanceBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="method" type="Code"/>
+        <ns4:element name="refills" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceNotOrdered" retrievable="false" baseType="QDM.SubstanceBase">
+        <ns4:element name="authorTime" type="DateTime"/>
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionRecommended" retrievable="false" baseType="QDM.InterventionBase"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamPerformed" retrievable="false" baseType="QDM.PhysicalExamBase">
+        <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
+        <ns4:element name="result" type="System.Any"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamNotPerformed" retrievable="false" baseType="QDM.PhysicalExamBase">
+        <ns4:element name="negationRationale" type="Code"/>
+    </ns4:typeInfo>
+</ns4:modelInfo>
