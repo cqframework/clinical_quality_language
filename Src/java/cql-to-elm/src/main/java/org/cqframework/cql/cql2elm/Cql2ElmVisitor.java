@@ -2648,7 +2648,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         ClassType classType = (ClassType)dataType;
-        NamedType namedType = classType;
+        ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
+        NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
 
         Retrieve retrieve = of.createRetrieve()
                 .withDataType(dataTypeToQName((DataType)namedType))

@@ -179,7 +179,12 @@ public class ModelImporter {
 
         ClassType result = (ClassType)lookupType(t.getName());
         if (result == null) {
-            result = new ClassType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
+            if (t instanceof ProfileInfo) {
+                result = new ProfileType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
+            }
+            else {
+                result = new ClassType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
+            }
             resolvedTypes.put(result.getName(), result);
             result.addElements(resolveClassTypeElements(t.getElement()));
             result.setIdentifier(t.getIdentifier());

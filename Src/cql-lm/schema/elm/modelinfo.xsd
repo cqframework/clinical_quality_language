@@ -132,4 +132,10 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ProfileInfo">
+		<xs:complexContent>
+				<xs:extension base="ClassInfo">
+				</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>

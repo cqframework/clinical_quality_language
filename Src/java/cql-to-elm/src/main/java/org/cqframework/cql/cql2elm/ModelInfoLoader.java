@@ -14,7 +14,10 @@ public class ModelInfoLoader {
         registerModelInfoProvider(new VersionedIdentifier().withId("System").withVersion("1"), new SystemModelInfoProvider());
         registerModelInfoProvider(new VersionedIdentifier().withId("QUICK").withVersion("1"), new QuickModelInfoProvider());
         //registerModelInfoProvider(new VersionedIdentifier().withId("ADL").withVersion("1"), new AdlModelInfoProvider());
-        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.1.2"), new QdmModelInfoProvider());
+        // NOTE: The first versioned provider will also be registered as a versionless provider (latest version semantics)
+        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.0"), new QdmModelInfoProvider().withVersion("5.0"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.2"), new QdmModelInfoProvider().withVersion("4.2"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.1.2"), new QdmModelInfoProvider().withVersion("4.1.2"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.4"), new FhirModelInfoProvider());
     }
 
@@ -41,7 +44,9 @@ public class ModelInfoLoader {
 
         if (modelIdentifier.getVersion() != null) {
             VersionedIdentifier versionlessIdentifier = new VersionedIdentifier().withId(modelIdentifier.getId());
-            PROVIDERS.put(versionlessIdentifier, provider);
+            if (!PROVIDERS.containsKey(versionlessIdentifier)) {
+                PROVIDERS.put(versionlessIdentifier, provider);
+            }
         }
     }
 
