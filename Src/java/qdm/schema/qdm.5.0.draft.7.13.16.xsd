@@ -194,7 +194,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="AdverseEventIntolerance">
+	<xs:complexType name="AdverseEvent">
 		<xs:annotation>
 			<xs:documentation>
 				Data elements that meet this criterion typically address non-immune adverse 
@@ -214,7 +214,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="Allergy">
+	<xs:complexType name="AllergyIntolerance">
 		<xs:annotation>
 			<xs:documentation>
 				Data elements that meet this criterion address immune-mediated reactions to a 
