@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.InstantiationContext;
-import org.cqframework.cql.elm.tracking.TypeParameter;
+import org.cqframework.cql.elm.tracking.*;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class InstantiationContextImpl implements InstantiationContext {
@@ -69,5 +68,28 @@ public class InstantiationContextImpl implements InstantiationContext {
         }
 
         return result;
+    }
+
+    @Override
+    public Iterable<IntervalType> getIntervalConversionTargets(DataType callType) {
+        ArrayList<IntervalType> results = new ArrayList<IntervalType>();
+        for (Conversion c : conversionMap.getConversions(callType)) {
+            if (c.getToType() instanceof IntervalType) {
+                results.add((IntervalType)c.getToType());
+            }
+        }
+
+        return results;
+    }
+
+    @Override
+    public Iterable<ListType> getListConversionTargets(DataType callType) {
+        ArrayList<ListType> results = new ArrayList<ListType>();
+        for (Conversion c : conversionMap.getConversions(callType)) {
+            if (c.getToType() instanceof ListType) {
+                results.add((ListType)c.getToType());
+            }
+        }
+        return results;
     }
 }

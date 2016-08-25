@@ -1,6 +1,6 @@
-library CMS9 version '4'
+library CMS9 version '4.1.4'
 
-using FHIR // version '1.4'
+using FHIR version '1.4'
 
 codesystem "Example Data Elements": 'http://example.org/dataelements'
 codesystem "Breastfeeding Intention Code System": 'http://example.org/codesystem-breastfeeding-intention'

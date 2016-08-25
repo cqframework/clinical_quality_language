@@ -11,6 +11,7 @@
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="typeInfo" type="TypeInfo" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="conversionInfo" type="ConversionInfo" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required">
 			<xs:annotation>
@@ -56,7 +57,7 @@
 	<xs:complexType name="ClassInfoElement">
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="type" type="xs:string"/>
-        <xs:attribute name="prohibited" type="xs:boolean"/>
+		<xs:attribute name="prohibited" type="xs:boolean"/>
 	</xs:complexType>
 	<xs:complexType name="ClassInfo">
 		<xs:annotation>
@@ -87,7 +88,7 @@
 						<xs:documentation>The retrievable attribute specifies whether the class can be used within a retrieve statement. This flag is intended to allow the implementation to control whether or not the class can be used as a data access point for the data model.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-                <xs:attribute name="primaryCodePath" type="xs:string" use="optional">
+				<xs:attribute name="primaryCodePath" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The primaryCodePath attribute specifies the path relative to the class that should be used to perform code filtering when a retrieve does not specify a code path.</xs:documentation>
 					</xs:annotation>
@@ -134,8 +135,12 @@
 	</xs:complexType>
 	<xs:complexType name="ProfileInfo">
 		<xs:complexContent>
-				<xs:extension base="ClassInfo">
-				</xs:extension>
+			<xs:extension base="ClassInfo"/>
 		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConversionInfo">
+		<xs:attribute name="fromType" type="xs:string" use="required"/>
+		<xs:attribute name="toType" type="xs:string" use="required"/>
+		<xs:attribute name="functionName" type="xs:string" use="required"/>
 	</xs:complexType>
 </xs:schema>

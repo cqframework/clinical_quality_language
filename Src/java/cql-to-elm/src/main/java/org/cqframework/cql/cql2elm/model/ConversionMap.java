@@ -26,7 +26,7 @@ public class ConversionMap {
         conversions.add(conversion);
     }
 
-    private List<Conversion> getConversions(DataType fromType) {
+    public List<Conversion> getConversions(DataType fromType) {
         List<Conversion> conversions = map.get(fromType);
         if (conversions == null) {
             conversions = new ArrayList<Conversion>();

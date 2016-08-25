@@ -69,6 +69,22 @@ public class IntervalType extends DataType {
             return pointType.isInstantiable(intervalType.pointType, context);
         }
 
+        boolean isAlreadyInstantiable = false;
+        for (IntervalType targetIntervalType : context.getIntervalConversionTargets(callType)) {
+            boolean isInstantiable = pointType.isInstantiable(targetIntervalType.pointType, context);
+            if (isInstantiable) {
+                if (isAlreadyInstantiable) {
+                    throw new IllegalArgumentException(String.format("Ambiguous generic instantiation involving %s to %s.",
+                            callType.toString(), targetIntervalType.toString()));
+                }
+                isAlreadyInstantiable = true;
+            }
+        }
+
+        if (isAlreadyInstantiable) {
+            return true;
+        }
+
         return false;
     }
 

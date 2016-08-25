@@ -11,6 +11,7 @@ public class ModelImporter {
     private Map<String, TypeInfo> typeInfoIndex;
     private Map<String, DataType> resolvedTypes;
     private List<DataType> dataTypes;
+    private List<Conversion> conversions;
 
     public ModelImporter(ModelInfo modelInfo, Iterable<DataType> systemTypes) {
         if (modelInfo == null) {
@@ -21,6 +22,7 @@ public class ModelImporter {
         this.typeInfoIndex = new HashMap<>();
         this.resolvedTypes = new HashMap<>();
         this.dataTypes = new ArrayList<>();
+        this.conversions = new ArrayList<>();
 
         // Import system types
         if (systemTypes != null) {
@@ -32,6 +34,7 @@ public class ModelImporter {
             }
         }
 
+        // Import model types
         for (TypeInfo t : this.modelInfo.getTypeInfo()) {
             if (t instanceof SimpleTypeInfo) {
                 typeInfoIndex.put(((SimpleTypeInfo)t).getName(), t);
@@ -42,6 +45,23 @@ public class ModelImporter {
                     typeInfoIndex.put(classInfo.getName(), classInfo);
                 }
             }
+        }
+
+        // Import model conversions
+        for (ConversionInfo c : this.modelInfo.getConversionInfo()) {
+            DataType fromType = resolveTypeSpecifier(c.getFromType());
+            DataType toType = resolveTypeSpecifier(c.getToType());
+            int qualifierIndex = c.getFunctionName().indexOf('.');
+            String libraryName = qualifierIndex >= 0 ? c.getFunctionName().substring(0, qualifierIndex) : null;
+            String functionName = qualifierIndex >= 0 ? c.getFunctionName().substring(qualifierIndex + 1) : null;
+            Operator operator = new Operator(functionName, new Signature(fromType), toType);
+            if (libraryName != null) {
+                operator.setLibraryName(libraryName);
+            }
+
+            // All conversions loaded as part of a model are implicit
+            Conversion conversion = new Conversion(operator, true);
+            conversions.add(conversion);
         }
 
         for (TypeInfo t: this.modelInfo.getTypeInfo()) {
@@ -59,6 +79,7 @@ public class ModelImporter {
     }
 
     public Map<String, DataType> getTypes() { return resolvedTypes; }
+    public Iterable<Conversion> getConversions() { return conversions; }
 
     private DataType resolveTypeInfo(TypeInfo t) {
         if (t instanceof SimpleTypeInfo) {
@@ -89,11 +110,11 @@ public class ModelImporter {
         // simpleTypeSpecifier: (identifier '.')? identifier
         // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
         // listTypeSpecifier: 'list' '<' typeSpecifier '>'
-        if (typeSpecifier.startsWith("interval")) {
+        if (typeSpecifier.toLowerCase().startsWith("interval")) {
             DataType pointType = resolveTypeSpecifier(typeSpecifier.substring(typeSpecifier.indexOf('<') + 1, typeSpecifier.lastIndexOf('>')));
             return new IntervalType(pointType);
         }
-        else if (typeSpecifier.startsWith("list")) {
+        else if (typeSpecifier.toLowerCase().startsWith("list")) {
             DataType elementType = resolveTypeSpecifier(typeSpecifier.substring(typeSpecifier.indexOf('<') + 1, typeSpecifier.lastIndexOf('>')));
             return new ListType(elementType);
         }

@@ -17,7 +17,7 @@ public class SystemFunctionResolver {
     }
 
     public Expression resolveSystemFunction(FunctionRef fun) {
-        if (fun.getLibraryName() == null) {
+        if (fun.getLibraryName() == null || fun.getLibraryName() == "System") {
             switch (fun.getName()) {
                 // Aggregate Functions
                 case "AllTrue":

@@ -1,6 +1,6 @@
 library CMS9v4_CDS version '1'
 
-using FHIR // version '1.4'
+using FHIR version '1.4'
 
 valueset "Feeding Intention-Breast": '2.16.840.1.113762.1.4.1045.29'
 valueset "Feeding Intention-Not-To-Breast": 'TBD' // Code '636111000124114' from "SNOMED-CT" display: 'Mother refuses to breastfeed (situation)'

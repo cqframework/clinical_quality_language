@@ -8,9 +8,29 @@ import javax.xml.bind.JAXB;
  * Created by Bryn on 4/15/2016.
  */
 public class FhirModelInfoProvider implements ModelInfoProvider {
+    private String version;
+    public String getVersion() {
+        return version;
+    }
+    public void setVersion(String version) {
+        this.version = version;
+    }
+    public FhirModelInfoProvider withVersion(String version) {
+        setVersion(version);
+        return this;
+    }
+
     public ModelInfo load() {
-        return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml"),
-                ModelInfo.class);
+        switch (version) {
+            case "1.4":
+                return JAXB.unmarshal(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml"),
+                        ModelInfo.class);
+
+            case "1.6":
+            default:
+                return JAXB.unmarshal(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.6.xml"),
+                        ModelInfo.class);
+        }
     }
 }
 
