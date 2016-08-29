@@ -21,7 +21,8 @@ public class QdmModelInfoProvider implements ModelInfoProvider {
     }
 
     public ModelInfo load() {
-        switch (version) {
+        String localVersion = version == null ? "" : version;
+        switch (localVersion) {
             case "4.1.2":
                 return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo.xml"),
                         ModelInfo.class);
@@ -29,9 +30,11 @@ public class QdmModelInfoProvider implements ModelInfoProvider {
                 return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml"),
                         ModelInfo.class);
             case "5.0":
-            default:
+            case "":
                 return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.xml"),
                         ModelInfo.class);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
         }
     }
 }

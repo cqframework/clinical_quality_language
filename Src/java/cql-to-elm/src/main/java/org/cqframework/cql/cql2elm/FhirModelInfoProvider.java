@@ -21,15 +21,18 @@ public class FhirModelInfoProvider implements ModelInfoProvider {
     }
 
     public ModelInfo load() {
-        switch (version) {
+        String localVersion = version == null ? "" : version;
+        switch (localVersion) {
             case "1.4":
                 return JAXB.unmarshal(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml"),
                         ModelInfo.class);
 
             case "1.6":
-            default:
+            case "":
                 return JAXB.unmarshal(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.6.xml"),
                         ModelInfo.class);
+            default:
+                throw new IllegalArgumentException(String.format("Unknown version %s of the FHIR model.", localVersion));
         }
     }
 }
