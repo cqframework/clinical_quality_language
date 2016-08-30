@@ -1135,13 +1135,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitElementExtractorExpressionTerm(@NotNull cqlParser.ElementExtractorExpressionTermContext ctx) {
         SingletonFrom result = of.createSingletonFrom().withOperand(parseExpression(ctx.expressionTerm()));
-
-        if (!(result.getOperand().getResultType() instanceof ListType)) {
-            throw new IllegalArgumentException("List type expected.");
-        }
-
-        result.setResultType(((ListType)result.getOperand().getResultType()).getElementType());
-
         resolveUnaryCall("System", "SingletonFrom", result);
         return result;
     }
@@ -1182,12 +1175,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             result = of.createEnd().withOperand(parseExpression(ctx.expressionTerm()));
             operatorName = "End";
         }
-
-        if (!(result.getOperand().getResultType() instanceof IntervalType)) {
-            throw new IllegalArgumentException("Interval type expected.");
-        }
-
-        result.setResultType(((IntervalType)result.getOperand().getResultType()).getPointType());
 
         resolveUnaryCall("System", operatorName, result);
         return result;
@@ -2648,7 +2635,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         ClassType classType = (ClassType)dataType;
-        NamedType namedType = classType;
+        ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
+        NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
 
         Retrieve retrieve = of.createRetrieve()
                 .withDataType(dataTypeToQName((DataType)namedType))
@@ -3234,6 +3222,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
             else {
                 model = new Model(provider.load(), getModel("System"));
+                loadConversionMap(model);
             }
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s.",
@@ -3617,6 +3606,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         else if (conversion.isIntervalConversion()) {
             return convertIntervalExpression(expression, conversion);
+        }
+        else if (conversion.getOperator() != null) {
+            FunctionRef functionRef = (FunctionRef)of.createFunctionRef()
+                    .withLibraryName(conversion.getOperator().getLibraryName())
+                    .withName(conversion.getOperator().getName())
+                    .withOperand(expression);
+
+            Expression systemFunction = systemFunctionResolver.resolveSystemFunction(functionRef);
+            if (systemFunction != null) {
+                return systemFunction;
+            }
+
+            resolveCall(functionRef.getLibraryName(), functionRef.getName(), new FunctionRefInvocation(functionRef));
+
+            return functionRef;
         }
         else {
             if (conversion.getToType().equals(resolveTypeName("System", "Boolean"))) {
@@ -4037,12 +4041,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
+    private void loadConversionMap(Model model) {
+        for (Conversion conversion : model.getConversions()) {
+            conversionMap.add(conversion);
+        }
+    }
+
     private TranslatedLibrary getSystemLibrary() {
         return resolveLibrary("System");
     }
 
     private TranslatedLibrary resolveLibrary(String identifier) {
-        return libraries.get(identifier);
+        TranslatedLibrary result = libraries.get(identifier);
+        if (result == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve library name %s.", identifier));
+        }
+        return result;
     }
 
     private void addExpression(Expression expression) {

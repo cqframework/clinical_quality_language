@@ -194,7 +194,7 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="AdverseEventIntolerance">
+	<xs:complexType name="AdverseEvent">
 		<xs:annotation>
 			<xs:documentation>
 				Data elements that meet this criterion typically address non-immune adverse 
@@ -208,13 +208,13 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="prevalencePeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="substance" type="dt:Code" maxOccurs="1" minOccurs="0" />
+					<xs:element name="code" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="reaction" type="dt:Code" maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="Allergy">
+	<xs:complexType name="AllergyIntolerance">
 		<xs:annotation>
 			<xs:documentation>
 				Data elements that meet this criterion address immune-mediated reactions to a 
@@ -227,7 +227,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="prevalencePeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="substance" type="dt:Code" maxOccurs="1" minOccurs="0" />
+					<xs:element name="code" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="reaction" type="dt:Code" maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>

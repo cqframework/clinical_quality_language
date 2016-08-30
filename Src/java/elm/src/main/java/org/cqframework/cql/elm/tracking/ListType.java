@@ -68,6 +68,22 @@ public class ListType extends DataType {
             return elementType.isInstantiable(listType.elementType, context);
         }
 
+        boolean isAlreadyInstantiable = false;
+        for (ListType targetListType : context.getListConversionTargets(callType)) {
+            boolean isInstantiable = elementType.isInstantiable(targetListType.elementType, context);
+            if (isInstantiable) {
+                if (isAlreadyInstantiable) {
+                    throw new IllegalArgumentException(String.format("Ambiguous generic instantiation involving %s to %s.",
+                            callType.toString(), targetListType.toString()));
+                }
+                isAlreadyInstantiable = true;
+            }
+        }
+
+        if (isAlreadyInstantiable) {
+            return true;
+        }
+
         return false;
     }
 
