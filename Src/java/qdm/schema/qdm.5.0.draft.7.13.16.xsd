@@ -6,7 +6,11 @@
 	<xs:import namespace="urn:hl7-org:elm-types:r1" schemaLocation="..\..\..\cql-lm\schema\elm\types.xsd"/>
 	<xs:complexType name="QDMBaseType">
 		<xs:sequence>
+      <xs:element name="id" type="dt:String" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="code" type="dt:Code" minOccurs="1"  maxOccurs="1"/>
+      <xs:element name="patientId" type="dt:String" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="reporter" type="dt:String" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="recorder" type="dt:String" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Component">
@@ -197,19 +201,17 @@
 	<xs:complexType name="AdverseEvent">
 		<xs:annotation>
 			<xs:documentation>
-				Data elements that meet this criterion typically address non-immune adverse 
-				reactions that are not determined or perceived to be allergic or "allergy-like," 
-				and are to some degree idiosyncratic and/or individually specific 
-				[i.e. are not a reaction that is expected to occur with most or all patients given similar circumstances].
-				Timing: The Prevalence Period references the time from the onset date to the abatement date.
+				Data elements that meet this criterion typically define any untoward medical occurrence associated
+        with the delivery of clinical care, whether or not considered drug related.
+				Timing: The Relevant Period references the time from when the event began to when the event completed.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="prevalencePeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="code" type="dt:Code" maxOccurs="1" minOccurs="0" />
-					<xs:element name="reaction" type="dt:Code" maxOccurs="1" minOccurs="0" />
+					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
+					<xs:element name="severity" type="dt:Code" maxOccurs="1" minOccurs="0" />
+          <xs:element name="facilityLocation" type="dt:Code" maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -227,8 +229,8 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="prevalencePeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="code" type="dt:Code" maxOccurs="1" minOccurs="0" />
-					<xs:element name="reaction" type="dt:Code" maxOccurs="1" minOccurs="0" />
+					<xs:element name="type" type="dt:Code" maxOccurs="1" minOccurs="0" />
+          <xs:element name="severity" type="dt:Code" maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

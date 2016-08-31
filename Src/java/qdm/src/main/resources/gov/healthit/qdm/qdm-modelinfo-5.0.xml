@@ -241,8 +241,8 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AllergyIntolerance" retrievable="true" baseType="QDM.QDMBaseType" label="Allergy/Intolerance">
         <ns4:element name="prevalencePeriod" type="interval&lt;System.DateTime&gt;"/>
-        <ns4:element name="code" type="System.Code"/>
-        <ns4:element name="reaction" type="System.Code"/>
+        <ns4:element name="type" type="System.Code"/>
+        <ns4:element name="severity" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProviderCharacteristic" retrievable="true" baseType="QDM.QDMBaseType" label="Provider Characteristic">
         <ns4:element name="authorTime" type="System.DateTime"/>
@@ -258,12 +258,16 @@
         <ns4:element name="birthDatetime" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AdverseEvent" retrievable="true" baseType="QDM.QDMBaseType" label="Adverse Event">
-        <ns4:element name="prevalencePeriod" type="interval&lt;System.DateTime&gt;"/>
-        <ns4:element name="code" type="System.Code"/>
-        <ns4:element name="reaction" type="System.Code"/>
+        <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
+        <ns4:element name="severity" type="System.Code"/>
+        <ns4:element name="facilityLocation" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.QDMBaseType" retrievable="false" baseType="System.Any">
+        <ns4:element name="id" type="System.String"/>
         <ns4:element name="code" type="System.Code"/>
+        <ns4:element name="patientId" type="System.String"/>
+        <ns4:element name="reporter" type="System.String"/>
+        <ns4:element name="recorder" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Any" retrievable="false" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromPatientToProvider" retrievable="false" baseType="QDM.QDMBaseType">
