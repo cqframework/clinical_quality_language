@@ -13,6 +13,18 @@
       <xs:element name="recorder" type="dt:String" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="Component">
+		<xs:annotation>
+			<xs:documentation>
+				This attribute type is new to QDM 5.0. It represents a component of a panel
+				or other compound object.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="code" type="dt:Code" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="result" type="dt:Any" minOccurs="0"  maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="PatientCharacteristic">
 		<xs:annotation>
 			<xs:documentation>
@@ -236,8 +248,9 @@
 					<xs:element name="authorTime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="reason" type="dt:Code" maxOccurs="1" minOccurs="0" />
-					<xs:element name="method" type="dt:Code" maxOccurs="1" minOccurs="0" />
-					<xs:element name="result" type="dt:Any" maxOccurs="1" minOccurs="0" />
+                    <xs:element name="method" type="dt:Code" maxOccurs="1" minOccurs="0" />
+                    <xs:element name="result" type="dt:Any" maxOccurs="1" minOccurs="0" />
+                    <xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -491,6 +504,7 @@
 					<xs:element name="method" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="facilityLocation" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
+					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -809,6 +823,7 @@
 					<xs:element name="reason" type="dt:Code" minOccurs="0" />
 					<xs:element name="referenceRange" type="dt:QuantityInterval" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
+					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
