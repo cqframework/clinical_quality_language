@@ -656,7 +656,6 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorTime" type="dt:DateTime" maxOccurs="1" minOccurs="0" />
-					<xs:element name="recordedDatetime" type="dt:DateTime" maxOccurs="1" minOccurs="0" />
 					<xs:element name="relationship" type="dt:Code" maxOccurs="1" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>

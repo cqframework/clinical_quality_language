@@ -131,7 +131,6 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FamilyHistory" retrievable="true" baseType="QDM.QDMBaseType" label="Family History">
         <ns4:element name="authorTime" type="System.DateTime"/>
-        <ns4:element name="recordedDatetime" type="System.DateTime"/>
         <ns4:element name="relationship" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Component" retrievable="false" baseType="System.Any">
