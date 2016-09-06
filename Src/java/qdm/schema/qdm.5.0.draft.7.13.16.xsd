@@ -6,11 +6,11 @@
 	<xs:import namespace="urn:hl7-org:elm-types:r1" schemaLocation="..\..\..\cql-lm\schema\elm\types.xsd"/>
 	<xs:complexType name="QDMBaseType">
 		<xs:sequence>
-      <xs:element name="id" type="dt:String" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="id" type="dt:Code" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="code" type="dt:Code" minOccurs="1"  maxOccurs="1"/>
-      <xs:element name="patientId" type="dt:String" minOccurs="1" maxOccurs="1"/>
-      <xs:element name="reporter" type="dt:String" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="recorder" type="dt:String" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="patientId" type="dt:Code" minOccurs="1" maxOccurs="1"/>
+      <xs:element name="reporter" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="recorder" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="PatientCharacteristic">
@@ -60,7 +60,6 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -109,7 +108,6 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="cause" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -595,13 +593,12 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="admissionSource" type="dt:Code" minOccurs="1" />
-					<xs:element name="admissionDatetime" type="dt:DateTime" minOccurs="1" />
-					<xs:element name="dischargeDatetime" type="dt:DateTime" minOccurs="1" />
+					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="dischargeDisposition" type="dt:Code" minOccurs="0" />
 					<xs:element name="facilityLocation" type="dt:Code" minOccurs="0" />
 					<xs:element name="locationPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="reason" type="dt:Code" minOccurs="0" />
-					<xs:element name="diagnosis" type="Diagnosis" minOccurs="0" />
+					<xs:element name="diagnosis" type="dt:Code" minOccurs="0" />
 					<xs:element name="principalDiagnosis" type="dt:Code" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 					<xs:element name="lengthOfStay" type="dt:Quantity" minOccurs="0" maxOccurs="1"/>
@@ -666,9 +663,10 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorTime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
+					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="reason" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" maxOccurs="1" minOccurs="0" />
-					<xs:element name="dose" type="dt:Quantity" maxOccurs="1" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -689,9 +687,10 @@
 				<xs:sequence>
 					<xs:element name="activeDatetime" type="dt:DateTime" maxOccurs="1" minOccurs="0" />
 					<xs:element name="authorTime" type="dt:DateTime" maxOccurs="1" minOccurs="0" />
+					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="reason" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" maxOccurs="1" minOccurs="0" />
-					<xs:element name="dose" type="dt:Quantity" maxOccurs="1" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -857,8 +856,8 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="dose" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" minOccurs="0" />
 				</xs:sequence>
@@ -883,8 +882,8 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="dose" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" minOccurs="0" />
 					<xs:element name="reason" type="dt:Code" minOccurs="0" />
@@ -910,10 +909,10 @@
 				<xs:sequence>
 					<xs:element name="authorTime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="refills" type="xs:integer" minOccurs="0" />
-					<xs:element name="dose" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" minOccurs="0" />
-					<xs:element name="reason" type="dt:Code" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -947,11 +946,10 @@
 				<xs:sequence>
 					<xs:element name="authorTime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="refills" type="xs:integer" minOccurs="0" />
-					<xs:element name="dose" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" minOccurs="0" />
-					<xs:element name="reason" type="dt:Code" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -974,8 +972,8 @@
 					<xs:element name="activeDatetime" type="dt:DateTime" minOccurs="1" />
 					<xs:element name="authorTime" type="dt:DateTime" minOccurs="1" />
 					<xs:element name="refills" type="xs:integer" minOccurs="0" />
-					<xs:element name="dose" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" minOccurs="0" />
 					<xs:element name="method" type="dt:Code" minOccurs="0" />
@@ -1079,7 +1077,7 @@
 					<xs:element name="anatomicalApproachSite" type="dt:Code" minOccurs="0" />
 					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0" />
 					<xs:element name="ordinality" type="dt:Code" minOccurs="0" />
-					<xs:element name="radiationDuration" type="dt:Code" minOccurs="0" />
+					<xs:element name="radiationDuration" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -1164,10 +1162,10 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
-					<xs:element name="dose" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" minOccurs="0" />
-					<xs:element name="reason" type="dt:Code" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
 			</xs:extension>
@@ -1188,7 +1186,8 @@
 				<xs:sequence>
 					<xs:element name="authorTime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="reason" type="dt:Code" minOccurs="0" />
-					<xs:element name="dose" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="method" type="dt:Code" minOccurs="0" />
 					<xs:element name="refills" type="dt:Code" minOccurs="0" />
@@ -1213,7 +1212,8 @@
 				<xs:sequence>
 					<xs:element name="authorTime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="reason" type="dt:Code" minOccurs="0" />
-					<xs:element name="dose" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
+					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="method" type="dt:Code" minOccurs="0" />
 					<xs:element name="refills" type="dt:Code" minOccurs="0" />
