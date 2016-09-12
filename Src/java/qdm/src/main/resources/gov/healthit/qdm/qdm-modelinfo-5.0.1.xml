@@ -5,7 +5,7 @@
         <ns4:element name="birthDatetime" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
         <ns4:element name="anatomicalLocationSite" type="System.Code"/>
@@ -25,7 +25,7 @@
         <ns4:element name="targetOutcome" type="System.Any"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristic" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicEthnicity" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Ethnicity"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicRace" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Race"/>
@@ -57,7 +57,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
         <ns4:element name="anatomicalApproachSite" type="System.Code"/>
@@ -89,11 +89,11 @@
         <ns4:element name="severity" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToPatient" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentPerformed" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
@@ -107,7 +107,7 @@
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
     </ns4:typeInfo>
@@ -125,12 +125,12 @@
         <ns4:element name="component" type="list&lt;QDM.Component&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FamilyHistory" retrievable="true" baseType="QDM.QDMBaseType" label="Family History">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="relationship" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Component" retrievable="false" baseType="System.Any">
@@ -138,7 +138,7 @@
         <ns4:element name="result" type="System.Any"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToProvider" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Code" retrievable="false" basetype="System.Any">
@@ -155,13 +155,13 @@
         <ns4:element name="route" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="radiationDosage" type="System.Quantity"/>
         <ns4:element name="radiationDuration" type="System.Quantity"/>
@@ -169,7 +169,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
@@ -187,13 +187,13 @@
         <ns4:element name="cause" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationAdministered" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
@@ -209,7 +209,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="facilityLocation" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
@@ -219,7 +219,7 @@
         <ns4:element name="highClosed" type="Boolean"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="facilityLocation" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
@@ -244,10 +244,10 @@
         <ns4:element name="severity" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProviderCharacteristic" retrievable="true" baseType="QDM.QDMBaseType" label="Provider Characteristic">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
         <ns4:element name="anatomicalLocationSite" type="System.Code"/>
@@ -270,11 +270,11 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Any" retrievable="false" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromPatientToProvider" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
     </ns4:typeInfo>
@@ -286,7 +286,7 @@
         <ns4:element name="anatomicalApproachSite" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDischarge" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="refills" type="System.Integer"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
@@ -302,13 +302,13 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="method" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDispensed" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="refills" type="System.Integer"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
@@ -317,7 +317,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="radiationDosage" type="System.Quantity"/>
         <ns4:element name="radiationDuration" type="System.Quantity"/>
         <ns4:element name="method" type="System.Code"/>
@@ -325,7 +325,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="activeDatetime" type="System.DateTime"/>
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
         <ns4:element name="reason" type="System.Code"/>
@@ -333,10 +333,10 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCareExperience" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Care Experience">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProviderCareExperience" retrievable="true" baseType="QDM.QDMBaseType" label="Provider Care Experience">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DateTimeInterval" retrievable="false" basetype="interval">
         <ns4:element name="low" type="System.DateTime"/>
@@ -347,7 +347,7 @@
         <ns4:element name="unit" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
         <ns4:element name="anatomicalApproachSite" type="System.Code"/>
@@ -358,7 +358,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="activeDatetime" type="System.DateTime"/>
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="refills" type="System.Integer"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
@@ -369,7 +369,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
@@ -380,7 +380,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionRecommended" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="authorTime" type="System.DateTime"/>
+        <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
