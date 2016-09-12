@@ -8,32 +8,14 @@
    </usings>
    <parameters>
       <def name="Measurement Period" accessLevel="Public">
-         <default lowClosed="true" highClosed="false" xsi:type="Interval">
-            <low xsi:type="DateTime">
-               <year valueType="t:Integer" value="2014" xsi:type="Literal"/>
-               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
-               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
-               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
-               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
-               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
-               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
-            </low>
-            <high xsi:type="DateTime">
-               <year valueType="t:Integer" value="2015" xsi:type="Literal"/>
-               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
-               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
-               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
-               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
-               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
-               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
-            </high>
-         </default>
+         <parameterTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
       </def>
    </parameters>
    <valueSets>
       <def name="Inpatient" id="2.16.840.1.113883.3.666.5.307" accessLevel="Public"/>
       <def name="Emergency Department Visit" id="2.16.840.1.113883.3.117.1.7.1.293" accessLevel="Public"/>
-      <def name="Medical Reason" id="TBD" accessLevel="Public"/>
    </valueSets>
    <statements>
       <def name="Patient" context="Patient">
@@ -54,29 +36,18 @@
                   <operand value="120" unit="days" xsi:type="Quantity"/>
                </operand>
                <operand xsi:type="In">
-                  <operand path="dischargeDatetime" scope="E" xsi:type="Property"/>
+                  <operand xsi:type="End">
+                     <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                  </operand>
                   <operand name="Measurement Period" xsi:type="ParameterRef"/>
                </operand>
-            </where>
-         </expression>
-      </def>
-      <def name="Encounters Not Performed" context="Patient" accessLevel="Public">
-         <expression xsi:type="Query">
-            <source alias="E">
-               <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_draft" dataType="ns2:EncounterPerformed" templateId="NegativeEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
-                  <codes name="Inpatient" xsi:type="ValueSetRef"/>
-               </expression>
-            </source>
-            <where xsi:type="InValueSet">
-               <code path="negationRationale" scope="E" xsi:type="Property"/>
-               <valueset name="Medical Reason"/>
             </where>
          </expression>
       </def>
       <def name="Emergency Department Encounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="ED">
-               <expression xmlns:ns3="urn:healthit-gov:qdm:v5_0_draft" dataType="ns3:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_draft" dataType="ns2:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Emergency Department Visit" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -84,8 +55,12 @@
                <expression name="Inpatient Encounters" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="In">
                   <operand precision="Hour" xsi:type="DurationBetween">
-                     <operand path="dischargeDatetime" scope="ED" xsi:type="Property"/>
-                     <operand path="admissionDatetime" scope="E" xsi:type="Property"/>
+                     <operand xsi:type="End">
+                        <operand path="relevantPeriod" scope="ED" xsi:type="Property"/>
+                     </operand>
+                     <operand xsi:type="Start">
+                        <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                     </operand>
                   </operand>
                   <operand lowClosed="false" highClosed="true" xsi:type="Interval">
                      <low valueType="t:Integer" value="0" xsi:type="Literal"/>
@@ -100,16 +75,9 @@
             <source alias="E">
                <expression name="Emergency Department Encounters" xsi:type="ExpressionRef"/>
             </source>
-            <where xsi:type="And">
-               <operand xsi:type="Not">
-                  <operand xsi:type="IsNull">
-                     <operand path="admissionDatetime" scope="E" xsi:type="Property"/>
-                  </operand>
-               </operand>
-               <operand xsi:type="Not">
-                  <operand xsi:type="IsNull">
-                     <operand path="dischargeDatetime" scope="E" xsi:type="Property"/>
-                  </operand>
+            <where xsi:type="Not">
+               <operand xsi:type="IsNull">
+                  <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
                </operand>
             </where>
             <return>
