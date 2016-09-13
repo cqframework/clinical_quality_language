@@ -279,6 +279,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitLogic(@NotNull cqlParser.LogicContext ctx) {
         getOrInitializeLibrary();
         translatedLibrary = new TranslatedLibrary();
+        translatedLibrary.setLibrary(library);
 
         loadSystemLibrary();
 

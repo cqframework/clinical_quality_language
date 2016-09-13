@@ -7,6 +7,7 @@ import java.util.*;
 
 public class TranslatedLibrary {
     private VersionedIdentifier identifier;
+    private Library library;
     private final HashMap<String, Element> namespace = new HashMap<>();
     private final OperatorMap operators = new OperatorMap();
     private final java.util.List<Conversion> conversions = new ArrayList<>();
@@ -14,9 +15,15 @@ public class TranslatedLibrary {
     public VersionedIdentifier getIdentifier() {
         return identifier;
     }
-
     public void setIdentifier(VersionedIdentifier identifier) {
         this.identifier = identifier;
+    }
+
+    public Library getLibrary() {
+        return library;
+    }
+    public void setLibrary(Library library) {
+        this.library = library;
     }
 
     private void checkNamespace(String identifier) {
