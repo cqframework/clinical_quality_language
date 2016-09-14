@@ -185,7 +185,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionNotRecommended" retrievable="false" baseType="QDM.InterventionBase">
         <ns4:element name="negationRationale" type="Code"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterActive" retrievable="false" baseType="QDM.EncounterBase">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterActive" retrievable="true" baseType="QDM.EncounterBase">
         <ns4:element name="relevantPeriod" type="DateTimeInterval"/>
         <ns4:element name="locationPeriod" type="DateTimeInterval"/>
         <ns4:element name="lengthOfStay" type="Quantity"/>
