@@ -241,6 +241,7 @@
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="severity" type="System.Code"/>
         <ns4:element name="facilityLocation" type="System.Code"/>
+        <ns4:element name="type" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.QDMBaseType" retrievable="false" baseType="System.Any">
         <ns4:element name="id" type="System.Code"/>
