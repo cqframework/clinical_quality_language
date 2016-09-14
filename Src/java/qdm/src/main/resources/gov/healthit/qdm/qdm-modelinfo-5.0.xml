@@ -12,7 +12,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicSex" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Sex"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterActive" retrievable="false" baseType="QDM.QDMBaseType" label="Encounter, Active">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterActive" retrievable="true" baseType="QDM.QDMBaseType" label="Encounter, Active">
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="facilityLocation" type="System.Code"/>
@@ -93,6 +93,7 @@
         <ns4:element name="value" type="System.Boolean"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicClinicalTrialParticipant" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Clinical Trial Participant">
+        <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceOrder" retrievable="false" baseType="QDM.QDMBaseType">
