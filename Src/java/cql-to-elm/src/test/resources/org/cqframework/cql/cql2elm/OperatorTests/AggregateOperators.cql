@@ -1,3 +1,5 @@
+library AggregateOperators version '2'
+
 define AllTrueExpression: AllTrue({ true, true, true })
 define AnyTrueExpression: AnyTrue({ false, true, false })
 define IntegerAvg: Avg({ 1, 2, 3, 4, 5 })

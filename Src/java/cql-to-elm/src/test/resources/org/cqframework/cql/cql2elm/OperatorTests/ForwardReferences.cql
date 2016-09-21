@@ -1,3 +1,5 @@
+library ForwardReferences version '2'
+
 define A: B
 define B: '123'
 

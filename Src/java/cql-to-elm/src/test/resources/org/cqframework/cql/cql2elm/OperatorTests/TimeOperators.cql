@@ -1,3 +1,5 @@
+library TimeOperators version '2'
+
 define TimeAdd: Time(10, 15, 30) + 1 hour
 define TimeAfter: Time(10, 15, 30) after Time(10, 00, 00)
 define TimeBefore: Time(10, 15, 30) before Time(10, 30, 30)

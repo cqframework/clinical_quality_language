@@ -1,3 +1,5 @@
+library DateTimeOperators version '2'
+
 define DateTimeAdd: DateTime(2014, 1, 1) + 1 day
 define DateTimeAfter: DateTime(2014, 12, 31) after DateTime(2014, 1, 1)
 define DateTimeBefore: DateTime(2014, 1, 1) before DateTime(2014, 12, 31)

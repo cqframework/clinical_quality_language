@@ -1,3 +1,5 @@
+library Functions version '2'
+
 define function NilaryFunction(): true
 define function UnaryFunction(operand String): operand
 define function BinaryFunction(left Integer, right Integer): left + right

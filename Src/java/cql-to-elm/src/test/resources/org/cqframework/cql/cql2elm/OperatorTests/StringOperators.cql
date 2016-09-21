@@ -1,3 +1,5 @@
+library StringOperators version '2'
+
 define StringAdd: 'John' + ' ' + 'Doe'
 define StringCombine: Combine({ 'First', 'Second', 'Third', 'Fourth' }, ',')
 define StringCombineNoSeparator: Combine({ 'abc', 'def', 'ghi', 'jkl' })

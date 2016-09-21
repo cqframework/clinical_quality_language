@@ -1,3 +1,5 @@
+library ComparisonOperators version '2'
+
 define IntegerBetweenExpression: 1 between 4 and 5
 define RealBetweenExpression: 1.0 between 4.0 and 5.0
 define DateTimeBetweenExpression: DateTime(2014, 1, 1) between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
