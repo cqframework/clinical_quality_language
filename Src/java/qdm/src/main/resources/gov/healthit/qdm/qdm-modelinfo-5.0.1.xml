@@ -91,9 +91,6 @@
         <ns4:element name="result" type="System.Any"/>
         <ns4:element name="component" type="list&lt;QDM.Component&gt;"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Boolean" retrievable="false" basetype="System.Any">
-        <ns4:element name="value" type="System.Boolean"/>
-    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicClinicalTrialParticipant" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Clinical Trial Participant">
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
@@ -132,12 +129,6 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromProviderToProvider" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
-    </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Code" retrievable="false" basetype="System.Any">
-        <ns4:element name="code" type="System.String"/>
-        <ns4:element name="display" type="System.String"/>
-        <ns4:element name="system" type="System.String"/>
-        <ns4:element name="version" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationActive" retrievable="true" baseType="QDM.QDMBaseType" label="Medication, Active">
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
@@ -257,7 +248,6 @@
         <ns4:element name="reporter" type="System.Code"/>
         <ns4:element name="recorder" type="System.Code"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Any" retrievable="false" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationFromPatientToProvider" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
