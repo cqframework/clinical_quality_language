@@ -144,7 +144,7 @@ public class CqlTranslator {
 
         parser.removeErrorListeners(); // Clear the default console listener
         parser.addErrorListener(new CqlErrorListener(visitor));
-        ParseTree tree = parser.logic();
+        ParseTree tree = parser.library();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);

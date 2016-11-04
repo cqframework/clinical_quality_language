@@ -74,7 +74,7 @@ public class TestUtils {
     private static ParseTree parseTokenStream(TokenStream tokens) {
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
-        return parser.logic();
+        return parser.library();
     }
 
     private static TokenStream parseANTLRInputStream(ANTLRInputStream is) {
