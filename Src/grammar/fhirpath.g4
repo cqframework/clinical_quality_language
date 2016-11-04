@@ -1,4 +1,4 @@
-grammar fluentpath;
+grammar fhirpath;
 
 // Grammar rules
 
