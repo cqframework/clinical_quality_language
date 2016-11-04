@@ -26,7 +26,7 @@ public class Main {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
-        ParseTree tree = parser.logic();
+        ParseTree tree = parser.library();
 
         // show tree in text form
         System.out.println(tree.toStringTree(parser));
