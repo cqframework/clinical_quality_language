@@ -59,6 +59,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Stack<String> expressionContext = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final Stack<Narrative> narratives = new Stack<>();
+    private final Stack<Expression> targets = new Stack<>();
+    private FunctionDef currentFunctionDef = null;
     private String currentContext = "Patient"; // default context to patient
     private int currentToken = -1;
     private int nextLocalId = 1;
@@ -67,15 +69,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean implicitPatientCreated = false;
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
-        super();
+      super();
 
         if (libraryBuilder == null) {
             throw new IllegalArgumentException("libraryBuilder is null");
-        }
+    }
 
         this.libraryBuilder = libraryBuilder;
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
-    }
+      }
 
     public void enableAnnotations() {
         annotate = true;
@@ -277,6 +279,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitLibrary(@NotNull cqlParser.LibraryContext ctx) {
+        getOrInitializeLibrary();
+        translatedLibrary = new TranslatedLibrary();
+        translatedLibrary.setLibrary(library);
     public Object visitLibrary(@NotNull cqlParser.LibraryContext ctx) {
 
         Object lastResult = null;
@@ -1184,6 +1190,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         result.setResultType(((ListType)result.getOperand().getResultType()).getElementType());
 
         libraryBuilder.resolveUnaryCall("System", "SingletonFrom", result);
+
+        if (!(result.getOperand().getResultType() instanceof ListType)) {
+            throw new IllegalArgumentException("List type expected.");
+        }
+
+        result.setResultType(((ListType)result.getOperand().getResultType()).getElementType());
+
+        resolveUnaryCall("System", "SingletonFrom", result);
         return result;
     }
 
@@ -3039,11 +3053,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         libraryBuilder.pushExpressionTarget(left);
         try {
             return (Expression)visit(ctx.invocation());
-        }
+            }
         finally {
             libraryBuilder.popExpressionTarget();
         }
-    }
+        }
 
     @Override
     public Expression visitExternalConstant(@NotNull cqlParser.ExternalConstantContext ctx) {
@@ -3060,12 +3074,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String identifier = parseString(ctx.identifier());
         if (libraryBuilder.hasExpressionTarget()) {
             Expression target = libraryBuilder.popExpressionTarget();
-            try {
+        try {
                 return libraryBuilder.resolveAccessor(target, identifier);
-            }
-            finally {
+        }
+        finally {
                 libraryBuilder.pushExpressionTarget(target);
-            }
+        }
         }
         return resolveIdentifier(identifier);
     }
@@ -3077,7 +3091,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 current = resolveIdentifier(identifier);
             } else {
                 current = libraryBuilder.resolveAccessor(current, identifier);
-            }
+    }
         }
 
         return current;
@@ -3091,17 +3105,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (expressionInfo != null) {
                 String saveContext = currentContext;
                 currentContext = expressionInfo.getContext();
-                try {
+        try {
                     visitExpressionDefinition(expressionInfo.getDefinition());
                 } finally {
                     currentContext = saveContext;
-                }
+            }
             }
 
             ParameterDefinitionInfo parameterInfo = libraryInfo.resolveParameterReference(identifier);
             if (parameterInfo != null) {
                 visitParameterDefinition(parameterInfo.getDefinition());
-            }
+        }
             result = libraryBuilder.resolveIdentifier(identifier, true);
         }
 
@@ -3110,7 +3124,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Expression resolveFunction(String libraryName, @NotNull cqlParser.FunctionContext ctx) {
         return resolveFunction(libraryName, parseString(ctx.identifier()), ctx.paramList());
-    }
+            }
 
     private Expression resolveFunction(String libraryName, String functionName, cqlParser.ParamListContext paramList) {
         List<Expression> expressions = new ArrayList<Expression>();
@@ -3118,7 +3132,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (paramList != null && paramList.expression() != null) {
             for (cqlParser.ExpressionContext expressionContext : paramList.expression()) {
                 expressions.add((Expression)visit(expressionContext));
-            }
+        }
         }
 
         // If the function cannot be resolved in the builder and the call is to a function in the current library,
@@ -3129,12 +3143,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             for (FunctionDefinitionInfo functionInfo : functionInfos) {
                 visitFunctionDefinition(functionInfo.getDefinition());
-            }
+    }
             result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
         }
 
         return result;
-    }
+                }
 
     @Override
     public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
@@ -3144,16 +3158,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // If the target is a library reference, resolve as a standard qualified call
                 if (target instanceof LibraryRef) {
                     return resolveFunction(((LibraryRef)target).getLibraryName(), ctx);
-                }
+            }
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression) {
                     return systemMethodResolver.resolveMethod((Expression)target, ctx, true);
-                }
+        }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
-            }
+    }
             finally {
                 libraryBuilder.pushExpressionTarget(target);
             }
@@ -3165,7 +3179,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Expression result = systemMethodResolver.resolveMethod(thisRef, ctx, false);
             if (result != null) {
                 return result;
-            }
+    }
         }
 
         // If there is no target, resolve as a system function
@@ -3175,7 +3189,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitFunctionBody(@NotNull cqlParser.FunctionBodyContext ctx) {
         return visit(ctx.expression());
-    }
+        }
 
     private Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef()
@@ -3190,7 +3204,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 .withOperandTypeSpecifier(typeSpecifier)
                                 .withResultType(typeSpecifier.getResultType())
                 );
-            }
+    }
         }
 
         libraryBuilder.beginFunctionDef(fun);
@@ -3200,7 +3214,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 fun.setExpression(parseExpression(ctx.functionBody()));
             } finally {
                 libraryBuilder.popExpressionContext();
-            }
+        }
         }
         finally {
             libraryBuilder.endFunctionDef();
@@ -3486,25 +3500,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
         if (resolution != null || mustResolve) {
-            checkOperator(callContext, resolution);
+        checkOperator(callContext, resolution);
 
-            if (resolution.hasConversions()) {
-                List<Expression> convertedOperands = new ArrayList<>();
-                Iterator<Expression> operandIterator = operands.iterator();
-                Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
-                while (operandIterator.hasNext()) {
-                    Expression operand = operandIterator.next();
-                    Conversion conversion = conversionIterator.next();
-                    if (conversion != null) {
-                        convertedOperands.add(convertExpression(operand, conversion));
+        if (resolution.hasConversions()) {
+            List<Expression> convertedOperands = new ArrayList<>();
+            Iterator<Expression> operandIterator = operands.iterator();
+            Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
+            while (operandIterator.hasNext()) {
+                Expression operand = operandIterator.next();
+                Conversion conversion = conversionIterator.next();
+                if (conversion != null) {
+                    convertedOperands.add(convertExpression(operand, conversion));
                     } else {
-                        convertedOperands.add(operand);
-                    }
+                    convertedOperands.add(operand);
                 }
-
-                invocation.setOperands(convertedOperands);
             }
-            invocation.setResultType(resolution.getOperator().getResultType());
+
+            invocation.setOperands(convertedOperands);
+        }
+        invocation.setResultType(resolution.getOperator().getResultType());
         return invocation.getExpression();
     }
         return null;
