@@ -1,6 +1,6 @@
 grammar cql;
 
-import fluentpath;
+import fhirpath;
 
 /*
  * Parser Rules
