@@ -38,27 +38,25 @@ public class CqlTranslator {
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
     private List<CqlTranslatorException> errors = null;
-    private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
 
-    public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager, Options... options) {
-        return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, options);
+    public static CqlTranslator fromText(String cqlText, LibraryManager libraryManager, Options... options) {
+        return new CqlTranslator(new ANTLRInputStream(cqlText), libraryManager, options);
     }
 
-    public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(cqlStream), modelManager, libraryManager, options);
+    public static CqlTranslator fromStream(InputStream cqlStream, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(cqlStream), libraryManager, options);
     }
 
-    public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, options);
+    public static CqlTranslator fromFile(String cqlFileName, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), libraryManager, options);
     }
 
-    public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, options);
+    public static CqlTranslator fromFile(File cqlFile, LibraryManager libraryManager, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), libraryManager, options);
     }
 
-    private CqlTranslator(ANTLRInputStream is, ModelManager modelManager, LibraryManager libraryManager, Options... options) {
-        this.modelManager = modelManager;
+    private CqlTranslator(ANTLRInputStream is, LibraryManager libraryManager, Options... options) {
         this.libraryManager = libraryManager;
         translateToELM(is, options);
     }
@@ -101,17 +99,17 @@ public class CqlTranslator {
 
     private class CqlErrorListener extends BaseErrorListener {
         
-        LibraryBuilder builder;
+        Cql2ElmVisitor visitor;
       
-        public CqlErrorListener(LibraryBuilder builder) {
-            this.builder = builder;
+        public CqlErrorListener(Cql2ElmVisitor visitor) {
+            this.visitor = visitor;
         }
       
         @Override
         public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
             TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
 //            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
-            builder.recordParsingException(new CqlTranslatorException(msg, trackback, e));
+            visitor.recordParsingException(new CqlTranslatorException(msg, trackback, e));
         }
     }
 
@@ -120,18 +118,16 @@ public class CqlTranslator {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
-
         errors = new ArrayList<>();
-        LibraryBuilder builder = new LibraryBuilder(modelManager, libraryManager);
-        parser.addErrorListener(new CqlErrorListener(builder));
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryManager);
+        parser.addErrorListener(new CqlErrorListener(visitor));
         ParseTree tree = parser.library();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);
 
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
-        visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
+        visitor.setTokenStream(tokens);
 
         List<Options> optionList = Arrays.asList(options);
         if (optionList.contains(Options.EnableDateRangeOptimization)) {
@@ -141,10 +137,10 @@ public class CqlTranslator {
             visitor.enableAnnotations();
         }
         visitResult = visitor.visit(tree);
-        library = builder.getLibrary();
-        translatedLibrary = builder.getTranslatedLibrary();
+        library = visitor.getLibrary();
+        translatedLibrary = visitor.getTranslatedLibrary();
         retrieves = visitor.getRetrieves();
-        errors.addAll(builder.getErrors());
+        errors.addAll(visitor.getErrors());
     }
 
     public static String convertToXML(Library library) throws JAXBException {
@@ -187,10 +183,9 @@ public class CqlTranslator {
         System.err.println("================================================================================");
         System.err.printf("TRANSLATE %s%n", inPath);
 
-        ModelManager modelManager = new ModelManager();
-        LibraryManager libraryManager = new LibraryManager(modelManager);
+        LibraryManager libraryManager = new LibraryManager();
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
-        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options.toArray(new Options[options.size()]));
+        CqlTranslator translator = fromFile(inPath.toFile(), libraryManager, options.toArray(new Options[options.size()]));
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {
