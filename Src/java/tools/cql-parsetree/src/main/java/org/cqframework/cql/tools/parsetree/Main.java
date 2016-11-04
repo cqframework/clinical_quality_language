@@ -29,7 +29,7 @@ public class Main {
         tokens.fill();
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
-        ParserRuleContext tree = parser.logic();
+        ParserRuleContext tree = parser.library();
         tree.inspect(parser);
     }
 }
