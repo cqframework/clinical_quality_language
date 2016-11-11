@@ -1,7 +1,5 @@
 grammar cql;
 
-import fluentpath;
-
 /*
  * Clinical Quality Language Grammar Specification
  * Version 1.2 - Jan 2017 STU Ballot
