@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="CMS179_QDM" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
-      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_2"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_2" version="4.2"/>
    </usings>
    <parameters>
       <def name="MeasurementPeriod" accessLevel="Public">
@@ -33,7 +33,7 @@
    <valueSets>
       <def name="Atrial Fibrillation/Flutter" id="2.16.840.1.113883.3.117.1.7.1.202" accessLevel="Public"/>
       <def name="Warfarin" id="2.16.840.1.113883.3.117.1.7.1.232" accessLevel="Public"/>
-      <def name="Face-to-face Encounter" id="2.16.840.1.113883.3.464.1003.101.12.1048" accessLevel="Public"/>
+      <def name="Face-to-Face Interaction" id="2.16.840.1.113883.3.464.1003.101.12.1048" accessLevel="Public"/>
       <def name="Office Visit" id="2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public"/>
       <def name="Valvular Heart Disease" id="2.16.840.1.113883.3.464.1003.104.12.1017" accessLevel="Public"/>
       <def name="INR" id="2.16.840.1.113883.3.117.1.7.1.213" accessLevel="Public"/>
@@ -60,7 +60,7 @@
          <expression xsi:type="Query">
             <source alias="E">
                <expression xmlns:ns3="urn:healthit-gov:qdm:v4_2" dataType="ns3:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
-                  <codes name="Face-to-Face Interaction" xsi:type="IdentifierRef"/>
+                  <codes name="Face-to-Face Interaction" xsi:type="ValueSetRef"/>
                </expression>
             </source>
             <where xsi:type="Not">
@@ -286,6 +286,7 @@
             <where xsi:type="Greater">
                <operand asType="t:Decimal" xsi:type="As">
                   <operand path="result" scope="L" xsi:type="Property"/>
+                  <asTypeSpecifier name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
                </operand>
                <operand valueType="t:Decimal" value="0.8" xsi:type="Literal"/>
             </where>
@@ -301,12 +302,14 @@
                         <condition xsi:type="Greater">
                            <operand asType="t:Decimal" xsi:type="As">
                               <operand path="result" scope="L" xsi:type="Property"/>
+                              <asTypeSpecifier name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
                            </operand>
                            <operand valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
                         </condition>
                         <then valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
                         <else asType="t:Decimal" xsi:type="As">
                            <operand path="result" scope="L" xsi:type="Property"/>
+                           <asTypeSpecifier name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
                         </else>
                      </value>
                   </element>
@@ -316,6 +319,7 @@
                            <operand valueType="t:Decimal" value="2.5" xsi:type="Literal"/>
                            <operand asType="t:Decimal" xsi:type="As">
                               <operand path="result" scope="L" xsi:type="Property"/>
+                              <asTypeSpecifier name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
                            </operand>
                         </operand>
                      </value>
@@ -481,6 +485,7 @@
                            </condition>
                            <then asType="t:Decimal" xsi:type="As">
                               <operand xsi:type="Null"/>
+                              <asTypeSpecifier name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
                            </then>
                            <else xsi:type="Subtract">
                               <operand xsi:type="Min">
@@ -526,6 +531,7 @@
                            </condition>
                            <then asType="t:Decimal" xsi:type="As">
                               <operand xsi:type="Null"/>
+                              <asTypeSpecifier name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
                            </then>
                            <else xsi:type="Subtract">
                               <operand xsi:type="Min">
@@ -591,18 +597,18 @@
                   <element name="daysInRange">
                      <value xsi:type="If">
                         <condition path="resultsWithinBounds" scope="I" xsi:type="Property"/>
-                        <then name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+                        <then xsi:type="ToDecimal">
                            <operand path="resultDays" scope="I" xsi:type="Property"/>
                         </then>
                         <else xsi:type="Coalesce">
                            <operand xsi:type="Multiply">
-                              <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+                              <operand xsi:type="ToDecimal">
                                  <operand path="resultDays" scope="I" xsi:type="Property"/>
                               </operand>
                               <operand xsi:type="Abs">
                                  <operand xsi:type="Divide">
                                     <operand path="boundedDifference" scope="I" xsi:type="Property"/>
-                                    <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+                                    <operand xsi:type="ToDecimal">
                                        <operand xsi:type="If">
                                           <condition xsi:type="Equal">
                                              <operand path="resultDays" scope="I" xsi:type="Property"/>
@@ -610,6 +616,7 @@
                                           </condition>
                                           <then asType="t:Integer" xsi:type="As">
                                              <operand xsi:type="Null"/>
+                                             <asTypeSpecifier name="t:Integer" xsi:type="NamedTypeSpecifier"/>
                                           </then>
                                           <else path="resultDays" scope="I" xsi:type="Property"/>
                                        </operand>
@@ -617,7 +624,7 @@
                                  </operand>
                               </operand>
                            </operand>
-                           <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+                           <operand xsi:type="ToDecimal">
                               <operand valueType="t:Integer" value="0" xsi:type="Literal"/>
                            </operand>
                         </else>
@@ -630,7 +637,7 @@
       <def name="TherapeuticTimeInRange" context="Patient" accessLevel="Public">
          <expression xsi:type="Round">
             <operand xsi:type="Multiply">
-               <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+               <operand xsi:type="ToDecimal">
                   <operand valueType="t:Integer" value="100" xsi:type="Literal"/>
                </operand>
                <operand xsi:type="Divide">
@@ -644,7 +651,7 @@
                         </return>
                      </source>
                   </operand>
-                  <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+                  <operand xsi:type="ToDecimal">
                      <operand xsi:type="Sum">
                         <source xsi:type="Query">
                            <source alias="X">

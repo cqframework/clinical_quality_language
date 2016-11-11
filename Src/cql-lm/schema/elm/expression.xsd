@@ -135,6 +135,18 @@ The following changes were made since the initial informative ballot in Septembe
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ChoiceTypeSpecifier">
+	  <xs:annotation>
+	    <xs:documentation>ChoiceTypeSpecifier defines the possible types of a choice type.</xs:documentation>
+	  </xs:annotation>
+	  <xs:complexContent>
+		  <xs:extension base="TypeSpecifier">
+		    <xs:sequence>
+				<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+		    </xs:sequence>
+		  </xs:extension>
+	  </xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Expression" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The Expression type defines the abstract base type for all expressions used in the ELM expression language.</xs:documentation>
@@ -847,7 +859,7 @@ For DateTime values, the quantity unit must be one of years, months, days, hours
 
 For Time values, the quantity unit must be one of hours, minutes, seconds, or milliseconds.
 
-The operation is performed by attempting to derive the highest granularity precision first, working down successive granularities to the granularity of the time-valued quantity.
+The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -865,7 +877,7 @@ The Subtract operator is defined for the Integer, Decimal, and Quantity types. I
 
 For DateTime and Time values, the operator returns the value of the given date/time, decremented by the time-valued quantity, respective variable length periods for calendar years and months.
 
-The operation is performed by attempting to derive the highest granularity precision first, working down successive granularities to the granularity of the time-valued quantity.
+The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1269,7 +1281,7 @@ If stringToSub or startIndex is null, or startIndex is out of range, the result 
 		<xs:annotation>
 			<xs:documentation>The DurationBetween operator returns the number of whole calendar periods for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional periods are dropped.
 			
-For DateTime values, precision must be one of years, months, days, hours, minutes, seconds, or milliseconds.
+For DateTime values, precision must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
 
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
 			
@@ -1285,7 +1297,7 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The DifferenceBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional boundaries are dropped.
 			
-For DateTime values, precision must be one of years, months, days, hours, minutes, seconds, or milliseconds.
+For DateTime values, precision must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
 
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
 			
@@ -1411,7 +1423,11 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 	</xs:complexType>
 	<xs:complexType name="SameAs">
 		<xs:annotation>
-			<xs:documentation>The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. If either or both arguments are null, the result is null.
+			<xs:documentation>The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
+			
+As with all date/time calculations, comparisons are performed respecting the timezone offset.
+
+If either or both arguments are null, the result is null.
 			
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
 			</xs:documentation>
@@ -1426,6 +1442,8 @@ For Time values, precision must be one of hours, minutes, seconds, or millisecon
 		<xs:annotation>
 			<xs:documentation>The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. If either or both arguments are null, the result is null.
 
+As with all date/time calculations, comparisons are performed respecting the timezone offset.
+
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
 
 For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.</xs:documentation>
@@ -1439,6 +1457,8 @@ For comparisons involving date/time or time values with imprecision, note that t
 	<xs:complexType name="SameOrAfter">
 		<xs:annotation>
 			<xs:documentation>The SameOrAfter operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. If either or both arguments are null, the result is null.
+
+As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
 
@@ -1677,7 +1697,7 @@ For the Interval overload, the Before operator returns true if the first interva
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-For the DateTime overload, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision.
+For the DateTime overload, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1696,7 +1716,7 @@ For the Interval overload, the After operator returns true if the first interval
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-For the DateTime overload, the After operator returns true if the first datetime is after the second datetime at the specified level of precision.
+For the DateTime overload, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1847,7 +1867,7 @@ This operator has two overloads:
 	List
 	Interval
 
-For the list overload, this operator returns a list with all elements from both arguments.
+For the list overload, this operator returns a list with all unique elements from both arguments.
 
 For the interval overload, this operator returns the interval that starts at the earliest starting point in either argument, and ends at the latest starting point in either argument. If the arguments do not overlap or meet, this operator returns null. 
 

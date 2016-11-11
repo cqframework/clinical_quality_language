@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="CMS146" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
@@ -23,7 +23,7 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="InDemographic" context="Patient" accessLevel="Public">
@@ -54,23 +54,23 @@
       </def>
       <def name="Pharyngitis" context="Patient" accessLevel="Public">
          <expression xsi:type="Union">
-            <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+            <operand dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                <codes name="Acute Pharyngitis" xsi:type="ValueSetRef"/>
             </operand>
-            <operand dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+            <operand dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                <codes name="Acute Tonsillitis" xsi:type="ValueSetRef"/>
             </operand>
          </expression>
       </def>
       <def name="Antibiotics" context="Patient" accessLevel="Public">
-         <expression dataType="quick:MedicationPrescription" templateId="medicationprescription-qicore-qicore-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+         <expression dataType="fhir:MedicationPrescription" templateId="medicationprescription-qicore-qicore-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
             <codes name="Antibiotic Medications" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="MeasurementPeriodEncounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+               <expression dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
                   <codes name="Ambulatory/ED Visit" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -172,7 +172,7 @@
                <expression name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
             </source>
             <relationship alias="T" xsi:type="With">
-               <expression dataType="quick:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
+               <expression dataType="fhir:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
                   <codes name="Group A Streptococcus Test" xsi:type="ValueSetRef"/>
                </expression>
                <suchThat xsi:type="And">
