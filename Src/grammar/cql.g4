@@ -1,5 +1,10 @@
 grammar cql;
 
+/*
+ * Clinical Quality Language Grammar Specification
+ * Version 1.2 - Jan 2017 STU Ballot
+ */
+
 import fhirpath;
 
 /*
@@ -16,7 +21,7 @@ library
 	codeDefinition*
 	conceptDefinition*
 	parameterDefinition*
-	statement+
+	statement*
 	;
 
 /*
@@ -105,6 +110,7 @@ typeSpecifier
     | listTypeSpecifier
     | intervalTypeSpecifier
     | tupleTypeSpecifier
+    | choiceTypeSpecifier
     ;
 
 namedTypeSpecifier
@@ -129,6 +135,10 @@ tupleTypeSpecifier
 
 tupleElementDefinition
     : identifier typeSpecifier
+    ;
+
+choiceTypeSpecifier
+    : 'Choice' '<' typeSpecifier (',' typeSpecifier)* '>'
     ;
 
 /*
@@ -193,14 +203,14 @@ withoutClause
     ;
 
 retrieve
-    : '[' namedTypeSpecifier (':' (valuesetPathIdentifier 'in')? valueset)? ']'
+    : '[' namedTypeSpecifier (':' (codePath 'in')? terminology)? ']'
     ;
 
-valuesetPathIdentifier
+codePath
     : identifier
     ;
 
-valueset
+terminology
     : qualifiedIdentifier
     ;
 

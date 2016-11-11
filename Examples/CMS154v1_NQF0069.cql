@@ -69,6 +69,16 @@ Supplemental Data Elements
 
 using QUICK
 
+valueset "Competing Conditions for Respiratory Conditions": '2.16.840.1.113883.3.464.1003.102.12.1017'
+valueset "Upper Respiratory Infection": '2.16.840.1.113883.3.464.1003.102.12.1022'
+valueset "Emergency Department Visit": '2.16.840.1.113883.3.464.1003.101.12.1010'
+valueset "Face-to-Face Interaction": '2.16.840.1.113883.3.464.1003.101.12.1048'
+valueset "Hospital Observation Care - Initial": '2.16.840.1.113883.3.464.1003.101.12.1002'
+valueset "Office Visit": '2.16.840.1.113883.3.464.1003.101.12.1001'
+valueset "Preventive Care - Established Office Visit, 0 to 17": '2.16.840.1.113883.3.464.1003.101.12.1024'
+valueset "Preventive Care- Initial Office Visit, 0 to 17": '2.16.840.1.113883.3.464.1003.101.12.1022'
+valueset "Antibiotic Medications": '2.16.840.1.113883.3.464.1003.196.12.1001'
+
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
 
 context Patient
