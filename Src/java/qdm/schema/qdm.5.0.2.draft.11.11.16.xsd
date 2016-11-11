@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema elementFormDefault="qualified"
-	attributeFormDefault="unqualified" targetNamespace="urn:healthit-gov:qdm:v5_0_1_draft"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v5_0_1_draft"
+	attributeFormDefault="unqualified" targetNamespace="urn:healthit-gov:qdm:v5_0_2_draft"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v5_0_2_draft"
 	xmlns:dt="urn:hl7-org:elm-types:r1">
 	<xs:import namespace="urn:hl7-org:elm-types:r1" schemaLocation="..\..\..\cql-lm\schema\elm\types.xsd"/>
 	<xs:complexType name="QDMBaseType">
@@ -367,6 +367,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 					<xs:element name="reason" type="dt:Code" maxOccurs="1" minOccurs="0" />
@@ -493,6 +494,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="reason" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="result" type="dt:Any" maxOccurs="1" minOccurs="0" />
@@ -607,6 +609,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="admissionSource" type="dt:Code" minOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="dischargeDisposition" type="dt:Code" minOccurs="0" />
@@ -746,6 +749,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="reason" type="dt:Code" maxOccurs="1" minOccurs="0" />
 					<xs:element name="result" type="dt:Any" maxOccurs="1" minOccurs="0" />
@@ -814,6 +818,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="status" type="dt:Code" minOccurs="0" />
 					<xs:element name="method" type="dt:Code" minOccurs="0" />
@@ -896,6 +901,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
@@ -1041,6 +1047,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="reason" type="dt:Code" minOccurs="0" />
 					<xs:element name="method" type="dt:Code" minOccurs="0" />
@@ -1114,6 +1121,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="reason" type="dt:Code" minOccurs="0" />
 					<xs:element name="method" type="dt:Code" minOccurs="0" />
@@ -1176,6 +1184,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1" />
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1" />
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
