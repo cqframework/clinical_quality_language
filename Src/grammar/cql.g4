@@ -1,7 +1,5 @@
 grammar cql;
 
-import fluentpath;
-
 /*
  * Clinical Quality Language Grammar Specification
  * Version 1.2 - Jan 2017 STU Ballot
@@ -427,20 +425,14 @@ conceptSelector
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
     // Include here any keyword that should not be a reserved word
-    | 'all'
     | 'Code'
     | 'code'
     | 'Concept'
     | 'concept'
-    | 'contains'
     | 'date'
     | 'display'
-    | 'distinct'
-    | 'exists'
-    | 'not'
     | 'time'
     | 'timezone'
     | 'version'
-    | 'where'
     ;
 
