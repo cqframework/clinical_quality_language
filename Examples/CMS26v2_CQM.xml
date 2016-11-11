@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="CMS26" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
@@ -39,7 +39,7 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="In Demographic" context="Patient" accessLevel="Public">
@@ -71,7 +71,7 @@
       <def name="Asthma Encounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+               <expression dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
                   <codes name="Asthma" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -109,7 +109,7 @@
                <expression name="Asthma Encounters" xsi:type="ExpressionRef"/>
             </source>
             <relationship alias="C" xsi:type="With">
-               <expression dataType="quick:CommunicationRequest" templateId="communicationrequest-qicore-qicore-communicationrequest" xsi:type="Retrieve"/>
+               <expression dataType="fhir:CommunicationRequest" templateId="communicationrequest-qicore-qicore-communicationrequest" xsi:type="Retrieve"/>
                <suchThat xsi:type="And">
                   <operand xsi:type="And">
                      <operand xsi:type="And">
@@ -117,7 +117,7 @@
                            <operand path="id" xsi:type="Property">
                               <source strict="false" xsi:type="As">
                                  <operand path="encounter" scope="C" xsi:type="Property"/>
-                                 <asTypeSpecifier name="quick:Encounter" xsi:type="NamedTypeSpecifier"/>
+                                 <asTypeSpecifier name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
                               </source>
                            </operand>
                            <operand path="id" scope="E" xsi:type="Property"/>
@@ -140,7 +140,7 @@
                               <expression path="practitionerRole" xsi:type="Property">
                                  <source strict="false" xsi:type="As">
                                     <operand path="sender" scope="C" xsi:type="Property"/>
-                                    <asTypeSpecifier name="quick:Practitioner" xsi:type="NamedTypeSpecifier"/>
+                                    <asTypeSpecifier name="fhir:Practitioner" xsi:type="NamedTypeSpecifier"/>
                                  </source>
                               </expression>
                            </source>
@@ -157,13 +157,13 @@
                            <operand xsi:type="First">
                               <source path="recipient" scope="C" xsi:type="Property"/>
                            </operand>
-                           <asTypeSpecifier name="quick:Patient" xsi:type="NamedTypeSpecifier"/>
+                           <asTypeSpecifier name="fhir:Patient" xsi:type="NamedTypeSpecifier"/>
                         </source>
                      </operand>
                      <operand path="id" xsi:type="Property">
                         <source strict="false" xsi:type="As">
                            <operand path="subject" scope="C" xsi:type="Property"/>
-                           <asTypeSpecifier name="quick:Patient" xsi:type="NamedTypeSpecifier"/>
+                           <asTypeSpecifier name="fhir:Patient" xsi:type="NamedTypeSpecifier"/>
                         </source>
                      </operand>
                   </operand>

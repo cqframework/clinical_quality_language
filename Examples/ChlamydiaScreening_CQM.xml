@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="ChlamydiaScreening_CQM" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
@@ -49,7 +49,7 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="InDemographic" context="Patient" accessLevel="Public">
@@ -101,7 +101,7 @@
                                           <operand xsi:type="Exists">
                                              <operand xsi:type="Query">
                                                 <source alias="C">
-                                                   <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                                   <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                                       <codes name="Other Female Reproductive Conditions" xsi:type="ValueSetRef"/>
                                                    </expression>
                                                 </source>
@@ -117,7 +117,7 @@
                                           <operand xsi:type="Exists">
                                              <operand xsi:type="Query">
                                                 <source alias="C">
-                                                   <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                                   <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                                       <codes name="Genital Herpes" xsi:type="ValueSetRef"/>
                                                    </expression>
                                                 </source>
@@ -134,7 +134,7 @@
                                        <operand xsi:type="Exists">
                                           <operand xsi:type="Query">
                                              <source alias="C">
-                                                <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                                <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                                    <codes name="Genococcal Infections and Venereal Diseases" xsi:type="ValueSetRef"/>
                                                 </expression>
                                              </source>
@@ -151,7 +151,7 @@
                                     <operand xsi:type="Exists">
                                        <operand xsi:type="Query">
                                           <source alias="C">
-                                             <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                             <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                                 <codes name="Inflammatory Diseases of Female Reproductive Organs" xsi:type="ValueSetRef"/>
                                              </expression>
                                           </source>
@@ -168,7 +168,7 @@
                                  <operand xsi:type="Exists">
                                     <operand xsi:type="Query">
                                        <source alias="C">
-                                          <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                          <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                              <codes name="Chlamydia" xsi:type="ValueSetRef"/>
                                           </expression>
                                        </source>
@@ -185,7 +185,7 @@
                               <operand xsi:type="Exists">
                                  <operand xsi:type="Query">
                                     <source alias="C">
-                                       <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                       <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                           <codes name="HIV" xsi:type="ValueSetRef"/>
                                        </expression>
                                     </source>
@@ -202,7 +202,7 @@
                            <operand xsi:type="Exists">
                               <operand xsi:type="Query">
                                  <source alias="C">
-                                    <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                    <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                        <codes name="Syphilis" xsi:type="ValueSetRef"/>
                                     </expression>
                                  </source>
@@ -219,7 +219,7 @@
                         <operand xsi:type="Exists">
                            <operand xsi:type="Query">
                               <source alias="C">
-                                 <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                 <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                     <codes name="Complications of Pregnancy, Childbirth and the Puerperium" xsi:type="ValueSetRef"/>
                                  </expression>
                               </source>
@@ -236,7 +236,7 @@
                      <operand xsi:type="Exists">
                         <operand xsi:type="Query">
                            <source alias="O">
-                              <expression dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                              <expression dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                                  <codes name="Pregnancy Test" xsi:type="ValueSetRef"/>
                               </expression>
                            </source>
@@ -267,7 +267,7 @@
                   <operand xsi:type="Exists">
                      <operand xsi:type="Query">
                         <source alias="O">
-                           <expression dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                           <expression dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                               <codes name="Pap Test" xsi:type="ValueSetRef"/>
                            </expression>
                         </source>
@@ -298,7 +298,7 @@
                <operand xsi:type="Exists">
                   <operand xsi:type="Query">
                      <source alias="O">
-                        <expression dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                        <expression dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                            <codes name="Lab Tests During Pregnancy" xsi:type="ValueSetRef"/>
                         </expression>
                      </source>
@@ -324,7 +324,7 @@
             <operand xsi:type="Exists">
                <operand xsi:type="Query">
                   <source alias="O">
-                     <expression dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                     <expression dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                         <codes name="Lab Tests for Sexually Transmitted Infections" xsi:type="ValueSetRef"/>
                      </expression>
                   </source>
@@ -361,7 +361,7 @@
          <expression xsi:type="Exists">
             <operand xsi:type="Query">
                <source alias="R">
-                  <expression dataType="quick:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
+                  <expression dataType="fhir:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
                      <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
                   </expression>
                </source>
@@ -382,7 +382,7 @@
       <def name="MeasureScore" context="Population" accessLevel="Public">
          <expression xsi:type="Multiply">
             <operand xsi:type="Divide">
-               <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+               <operand xsi:type="ToDecimal">
                   <operand xsi:type="Count">
                      <source xsi:type="Query">
                         <source alias="P">
@@ -398,7 +398,7 @@
                      </source>
                   </operand>
                </operand>
-               <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+               <operand xsi:type="ToDecimal">
                   <operand xsi:type="Count">
                      <source xsi:type="Query">
                         <source alias="P">
@@ -412,7 +412,7 @@
                   </operand>
                </operand>
             </operand>
-            <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+            <operand xsi:type="ToDecimal">
                <operand valueType="t:Integer" value="100" xsi:type="Literal"/>
             </operand>
          </expression>

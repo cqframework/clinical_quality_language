@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="CMS135_QDM"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
-      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_2"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_2" version="4.2"/>
    </usings>
    <parameters>
       <def name="Measurement Period" accessLevel="Public">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="CMS55" version="1"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
@@ -37,13 +37,13 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="InpatientEncounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+               <expression dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
                   <codes name="Inpatient" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -64,7 +64,7 @@
       <def name="EDEncounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="ED">
-               <expression dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+               <expression dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
                   <codes name="Emergency Department Visit" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -127,7 +127,7 @@
                   <expression name="MeasureObservation" xsi:type="ExpressionRef"/>
                </source>
                <return distinct="false">
-                  <expression name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+                  <expression xsi:type="ToDecimal">
                      <operand name="X" xsi:type="AliasRef"/>
                   </expression>
                </return>

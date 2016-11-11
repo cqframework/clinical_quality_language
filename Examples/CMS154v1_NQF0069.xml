@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="CMS154" version="1"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
@@ -30,10 +30,21 @@
          </default>
       </def>
    </parameters>
+   <valueSets>
+      <def name="Competing Conditions for Respiratory Conditions" id="2.16.840.1.113883.3.464.1003.102.12.1017" accessLevel="Public"/>
+      <def name="Upper Respiratory Infection" id="2.16.840.1.113883.3.464.1003.102.12.1022" accessLevel="Public"/>
+      <def name="Emergency Department Visit" id="2.16.840.1.113883.3.464.1003.101.12.1010" accessLevel="Public"/>
+      <def name="Face-to-Face Interaction" id="2.16.840.1.113883.3.464.1003.101.12.1048" accessLevel="Public"/>
+      <def name="Hospital Observation Care - Initial" id="2.16.840.1.113883.3.464.1003.101.12.1002" accessLevel="Public"/>
+      <def name="Office Visit" id="2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public"/>
+      <def name="Preventive Care - Established Office Visit, 0 to 17" id="2.16.840.1.113883.3.464.1003.101.12.1024" accessLevel="Public"/>
+      <def name="Preventive Care- Initial Office Visit, 0 to 17" id="2.16.840.1.113883.3.464.1003.101.12.1022" accessLevel="Public"/>
+      <def name="Antibiotic Medications" id="2.16.840.1.113883.3.464.1003.196.12.1001" accessLevel="Public"/>
+   </valueSets>
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="InDemographic" context="Patient" accessLevel="Public">
@@ -68,27 +79,27 @@
                <operand xsi:type="Union">
                   <operand xsi:type="Union">
                      <operand xsi:type="Union">
-                        <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
-                           <codes name="Office Visit" xsi:type="IdentifierRef"/>
+                        <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                           <codes name="Office Visit" xsi:type="ValueSetRef"/>
                         </operand>
-                        <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
-                           <codes name="Emergency Department Visit" xsi:type="IdentifierRef"/>
+                        <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                           <codes name="Emergency Department Visit" xsi:type="ValueSetRef"/>
                         </operand>
                      </operand>
-                     <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
-                        <codes name="Preventive Care- Initial Office Visit, 0 to 17" xsi:type="IdentifierRef"/>
+                     <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                        <codes name="Preventive Care- Initial Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
                      </operand>
                   </operand>
-                  <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
-                     <codes name="Preventive Care - Established Office Visit, 0 to 17" xsi:type="IdentifierRef"/>
+                  <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                     <codes name="Preventive Care - Established Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
                   </operand>
                </operand>
-               <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
-                  <codes name="Hospital Observation Care - Initial" xsi:type="IdentifierRef"/>
+               <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+                  <codes name="Hospital Observation Care - Initial" xsi:type="ValueSetRef"/>
                </operand>
             </operand>
-            <operand dataType="quick:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
-               <codes name="Face-to-Face Interaction" xsi:type="IdentifierRef"/>
+            <operand dataType="fhir:Encounter" templateId="encounter-qicore-qicore-encounter" codeProperty="type" xsi:type="Retrieve">
+               <codes name="Face-to-Face Interaction" xsi:type="ValueSetRef"/>
             </operand>
          </expression>
       </def>
@@ -104,8 +115,8 @@
          </expression>
       </def>
       <def name="URIDiagnosis" context="Patient" accessLevel="Public">
-         <expression dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
-            <codes name="Upper Respiratory Infection" xsi:type="IdentifierRef"/>
+         <expression dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+            <codes name="Upper Respiratory Infection" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="ValidDiagnosis" context="Patient" accessLevel="Public">
@@ -162,8 +173,8 @@
                <operand xsi:type="Exists">
                   <operand xsi:type="Query">
                      <source alias="M">
-                        <expression dataType="quick:MedicationPrescription" templateId="medicationprescription-qicore-qicore-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
-                           <codes name="Antibiotic Medications" xsi:type="IdentifierRef"/>
+                        <expression dataType="fhir:MedicationPrescription" templateId="medicationprescription-qicore-qicore-medicationprescription" codeProperty="medication.code" xsi:type="Retrieve">
+                           <codes name="Antibiotic Medications" xsi:type="ValueSetRef"/>
                         </expression>
                      </source>
                      <where xsi:type="In">
@@ -186,18 +197,18 @@
       <def name="MeasureScore" context="Population" accessLevel="Public">
          <expression xsi:type="Multiply">
             <operand xsi:type="Divide">
-               <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+               <operand xsi:type="ToDecimal">
                   <operand xsi:type="Count">
                      <source name="Numerator" xsi:type="ExpressionRef"/>
                   </operand>
                </operand>
-               <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+               <operand xsi:type="ToDecimal">
                   <operand xsi:type="Count">
                      <source name="Denominator" xsi:type="ExpressionRef"/>
                   </operand>
                </operand>
             </operand>
-            <operand name="ToDecimal" libraryName="System" xsi:type="FunctionRef">
+            <operand xsi:type="ToDecimal">
                <operand valueType="t:Integer" value="100" xsi:type="Literal"/>
             </operand>
          </expression>
