@@ -97,6 +97,9 @@ public class ModelImporter {
         else if (t instanceof ListTypeInfo) {
             return resolveListType((ListTypeInfo)t);
         }
+        else if (t instanceof ChoiceTypeInfo) {
+            return resolveChoiceType((ChoiceTypeInfo)t);
+        }
 
         return null;
     }
@@ -106,10 +109,11 @@ public class ModelImporter {
             return null;
         }
 
-        // typeSpecifier: simpleTypeSpecifier | intervalTypeSpecifier | listTypeSpecifier;
+        // typeSpecifier: simpleTypeSpecifier | intervalTypeSpecifier | listTypeSpecifier | choiceTypeSpecifier;
         // simpleTypeSpecifier: (identifier '.')? identifier
         // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
         // listTypeSpecifier: 'list' '<' typeSpecifier '>'
+        // choiceTypeSpecifier: 'choice' '<' typeSpecifier (',' typeSpecifier)* '>'
         if (typeSpecifier.toLowerCase().startsWith("interval")) {
             DataType pointType = resolveTypeSpecifier(typeSpecifier.substring(typeSpecifier.indexOf('<') + 1, typeSpecifier.lastIndexOf('>')));
             return new IntervalType(pointType);
@@ -118,6 +122,7 @@ public class ModelImporter {
             DataType elementType = resolveTypeSpecifier(typeSpecifier.substring(typeSpecifier.indexOf('<') + 1, typeSpecifier.lastIndexOf('>')));
             return new ListType(elementType);
         }
+        // TODO: Need a type specifier parser at this point, the type specifier grammar is now beyond simple parsing
         else {
             return resolveTypeName(typeSpecifier);
         }
@@ -225,5 +230,13 @@ public class ModelImporter {
     private ListType resolveListType(ListTypeInfo t) {
         ListType result = new ListType(resolveTypeSpecifier(t.getElementType()));
         return result;
+    }
+
+    private ChoiceType resolveChoiceType(ChoiceTypeInfo t) {
+        ArrayList<DataType> types = new ArrayList<DataType>();
+        for (String typeInfo : t.getType()) {
+            types.add(resolveTypeSpecifier(typeInfo));
+        }
+        return new ChoiceType(types);
     }
 }

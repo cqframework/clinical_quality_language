@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:quick="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:a="urn:hl7-org:cql-annotations:r1">
    <identifier id="ChlamydiaScreening_CDS" version="2"/>
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
@@ -29,20 +29,19 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand dataType="quick:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
+            <operand dataType="fhir:Patient" templateId="patient-qicore-qicore-patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def localId="30" name="InDemographic" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="30">define InDemographic:&#xd;
+            <a:s r="30">define &quot;InDemographic&quot;:&#xd;
 	<a:s r="29">
                   <a:s r="24">
                      <a:s r="20">AgeInYears() >=<a:s r="18">AgeInYears()</a:s> >= <a:s r="19">16</a:s>
                      </a:s> and <a:s r="23">AgeInYears() &lt;<a:s r="21">AgeInYears()</a:s> &lt; <a:s r="22">24</a:s>
                      </a:s>
                   </a:s> and <a:s r="28">
-                     <a:s r="26">
-                        <a:s r="25">Patient</a:s>.gender</a:s> in <a:s r="27">&quot;Female Administrative Sex&quot;</a:s>
+                     <a:s r="25">&quot;Patient&quot;</a:s>.<a:s r="26">&quot;gender&quot;</a:s> in <a:s r="27">&quot;Female Administrative Sex&quot;</a:s>
                   </a:s>
                </a:s>
             </a:s>
@@ -76,7 +75,7 @@
       </def>
       <def localId="66" name="SexuallyActive" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="66">define SexuallyActive:&#xd;
+            <a:s r="66">define &quot;SexuallyActive&quot;:&#xd;
 	<a:s r="65">
                   <a:s r="62">
                      <a:s r="59">
@@ -88,28 +87,28 @@
                                        <a:s r="41">
                                           <a:s r="38">
                                              <a:s r="35">
-                                                <a:s r="32">exists (<a:s r="31">[Condition: &quot;Other Female Reproductive Conditions&quot;]</a:s>)</a:s>&#xd;
-	or <a:s r="34">exists (<a:s r="33">[Condition: &quot;Genital Herpes&quot;]</a:s>)</a:s>
+                                                <a:s r="32">exists (<a:s r="31">[&quot;Condition&quot;: &quot;Other Female Reproductive Conditions&quot;]</a:s>)</a:s>&#xd;
+	or <a:s r="34">exists (<a:s r="33">[&quot;Condition&quot;: &quot;Genital Herpes&quot;]</a:s>)</a:s>
                                              </a:s>&#xd;
-	or <a:s r="37">exists (<a:s r="36">[Condition: &quot;Genococcal Infections and Venereal Diseases&quot;]</a:s>)</a:s>
+	or <a:s r="37">exists (<a:s r="36">[&quot;Condition&quot;: &quot;Genococcal Infections and Venereal Diseases&quot;]</a:s>)</a:s>
                                           </a:s>&#xd;
-	or <a:s r="40">exists (<a:s r="39">[Condition: &quot;Inflammatory Diseases of Female Reproductive Organs&quot;]</a:s>)</a:s>
+	or <a:s r="40">exists (<a:s r="39">[&quot;Condition&quot;: &quot;Inflammatory Diseases of Female Reproductive Organs&quot;]</a:s>)</a:s>
                                        </a:s>&#xd;
-	or <a:s r="43">exists (<a:s r="42">[Condition: &quot;Chlamydia&quot;]</a:s>)</a:s>
+	or <a:s r="43">exists (<a:s r="42">[&quot;Condition&quot;: &quot;Chlamydia&quot;]</a:s>)</a:s>
                                     </a:s>&#xd;
-	or <a:s r="46">exists (<a:s r="45">[Condition: &quot;HIV&quot;]</a:s>)</a:s>
+	or <a:s r="46">exists (<a:s r="45">[&quot;Condition&quot;: &quot;HIV&quot;]</a:s>)</a:s>
                                  </a:s>&#xd;
-	or <a:s r="49">exists (<a:s r="48">[Condition: &quot;Syphilis&quot;]</a:s>)</a:s>
+	or <a:s r="49">exists (<a:s r="48">[&quot;Condition&quot;: &quot;Syphilis&quot;]</a:s>)</a:s>
                               </a:s>&#xd;
-	or <a:s r="52">exists (<a:s r="51">[Condition: &quot;Complications of Pregnancy, Childbirth and the Puerperium&quot;]</a:s>)</a:s>
+	or <a:s r="52">exists (<a:s r="51">[&quot;Condition&quot;: &quot;Complications of Pregnancy, Childbirth and the Puerperium&quot;]</a:s>)</a:s>
                            </a:s>&#xd;
-	or <a:s r="55">exists (<a:s r="54">[DiagnosticOrder: &quot;Pregnancy Test&quot;]</a:s>)</a:s>
+	or <a:s r="55">exists (<a:s r="54">[&quot;DiagnosticOrder&quot;: &quot;Pregnancy Test&quot;]</a:s>)</a:s>
                         </a:s>&#xd;
-	or <a:s r="58">exists (<a:s r="57">[DiagnosticOrder: &quot;Pap Test&quot;]</a:s>)</a:s>
+	or <a:s r="58">exists (<a:s r="57">[&quot;DiagnosticOrder&quot;: &quot;Pap Test&quot;]</a:s>)</a:s>
                      </a:s>&#xd;
-	or <a:s r="61">exists (<a:s r="60">[DiagnosticOrder: &quot;Lab Tests During Pregnancy&quot;]</a:s>)</a:s>
+	or <a:s r="61">exists (<a:s r="60">[&quot;DiagnosticOrder&quot;: &quot;Lab Tests During Pregnancy&quot;]</a:s>)</a:s>
                   </a:s>&#xd;
-	or <a:s r="64">exists (<a:s r="63">[DiagnosticOrder: &quot;Lab Tests for Sexually Transmitted Infections&quot;]</a:s>)</a:s>
+	or <a:s r="64">exists (<a:s r="63">[&quot;DiagnosticOrder&quot;: &quot;Lab Tests for Sexually Transmitted Infections&quot;]</a:s>)</a:s>
                </a:s>
             </a:s>
          </annotation>
@@ -125,72 +124,72 @@
                                     <operand localId="38" xsi:type="Or">
                                        <operand localId="35" xsi:type="Or">
                                           <operand localId="32" xsi:type="Exists">
-                                             <operand localId="31" dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                             <operand localId="31" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                                 <codes name="Other Female Reproductive Conditions" xsi:type="ValueSetRef"/>
                                              </operand>
                                           </operand>
                                           <operand localId="34" xsi:type="Exists">
-                                             <operand localId="33" dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                             <operand localId="33" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                                 <codes name="Genital Herpes" xsi:type="ValueSetRef"/>
                                              </operand>
                                           </operand>
                                        </operand>
                                        <operand localId="37" xsi:type="Exists">
-                                          <operand localId="36" dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                          <operand localId="36" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                              <codes name="Genococcal Infections and Venereal Diseases" xsi:type="ValueSetRef"/>
                                           </operand>
                                        </operand>
                                     </operand>
                                     <operand localId="40" xsi:type="Exists">
-                                       <operand localId="39" dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                       <operand localId="39" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                           <codes name="Inflammatory Diseases of Female Reproductive Organs" xsi:type="ValueSetRef"/>
                                        </operand>
                                     </operand>
                                  </operand>
                                  <operand localId="43" xsi:type="Exists">
-                                    <operand localId="42" dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                    <operand localId="42" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                        <codes name="Chlamydia" xsi:type="ValueSetRef"/>
                                     </operand>
                                  </operand>
                               </operand>
                               <operand localId="46" xsi:type="Exists">
-                                 <operand localId="45" dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                                 <operand localId="45" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                     <codes name="HIV" xsi:type="ValueSetRef"/>
                                  </operand>
                               </operand>
                            </operand>
                            <operand localId="49" xsi:type="Exists">
-                              <operand localId="48" dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                              <operand localId="48" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                                  <codes name="Syphilis" xsi:type="ValueSetRef"/>
                               </operand>
                            </operand>
                         </operand>
                         <operand localId="52" xsi:type="Exists">
-                           <operand localId="51" dataType="quick:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
+                           <operand localId="51" dataType="fhir:Condition" templateId="condition-qicore-qicore-condition" codeProperty="code" xsi:type="Retrieve">
                               <codes name="Complications of Pregnancy, Childbirth and the Puerperium" xsi:type="ValueSetRef"/>
                            </operand>
                         </operand>
                      </operand>
                      <operand localId="55" xsi:type="Exists">
-                        <operand localId="54" dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                        <operand localId="54" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                            <codes name="Pregnancy Test" xsi:type="ValueSetRef"/>
                         </operand>
                      </operand>
                   </operand>
                   <operand localId="58" xsi:type="Exists">
-                     <operand localId="57" dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                     <operand localId="57" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                         <codes name="Pap Test" xsi:type="ValueSetRef"/>
                      </operand>
                   </operand>
                </operand>
                <operand localId="61" xsi:type="Exists">
-                  <operand localId="60" dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+                  <operand localId="60" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                      <codes name="Lab Tests During Pregnancy" xsi:type="ValueSetRef"/>
                   </operand>
                </operand>
             </operand>
             <operand localId="64" xsi:type="Exists">
-               <operand localId="63" dataType="quick:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
+               <operand localId="63" dataType="fhir:DiagnosticOrder" templateId="diagnosticorder-qicore-qicore-diagnosticorder" codeProperty="item[].code" xsi:type="Retrieve">
                   <codes name="Lab Tests for Sexually Transmitted Infections" xsi:type="ValueSetRef"/>
                </operand>
             </operand>
@@ -198,30 +197,27 @@
       </def>
       <def localId="98" name="NoScreening" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="98">define NoScreening:&#xd;
+            <a:s r="98">define &quot;NoScreening&quot;:&#xd;
   <a:s r="97">
                   <a:s r="93">
                      <a:s r="83">not <a:s r="82">exists (<a:s r="81">
                               <a:s r="68">
-                                 <a:s r="67">[DiagnosticReport: &quot;Chlamydia Screening&quot;]</a:s> R</a:s> where <a:s r="80">
-                                 <a:s r="70">
-                                    <a:s r="69">R</a:s>.issued</a:s> during <a:s r="75">Interval[<a:s r="73">
+                                 <a:s r="67">[&quot;DiagnosticReport&quot;: &quot;Chlamydia Screening&quot;]</a:s> R</a:s> where <a:s r="80">
+                                 <a:s r="69">R</a:s>.<a:s r="70">&quot;issued&quot;</a:s> during <a:s r="75">Interval[<a:s r="73">
                                        <a:s r="71">Today()</a:s> - <a:s r="72">1 years</a:s>
                                     </a:s>, <a:s r="74">Today()</a:s>]</a:s>
                                  <a:s r="76">during</a:s> Interval[Today() - 1 years, Today()] and <a:s r="79">
-                                    <a:s r="78">
-                                       <a:s r="77">R</a:s>.result</a:s> is not null</a:s>
+                                    <a:s r="77">R</a:s>.<a:s r="78">&quot;result&quot;</a:s> is not null</a:s>
                               </a:s>
                            </a:s>)</a:s>
                      </a:s>&#xd;
   and <a:s r="92">not <a:s r="91">exists (<a:s r="90">
                               <a:s r="85">
-                                 <a:s r="84">[ProcedureRequest: &quot;Chlamydia Screening&quot;]</a:s> P</a:s> where <a:s r="87">
-                                 <a:s r="86">P</a:s>.orderedOn</a:s> same day or after <a:s r="88">Today()</a:s>
+                                 <a:s r="84">[&quot;ProcedureRequest&quot;: &quot;Chlamydia Screening&quot;]</a:s> P</a:s> where <a:s r="86">P</a:s>.<a:s r="87">&quot;orderedOn&quot;</a:s> same day or after <a:s r="88">Today()</a:s>
                               <a:s r="89">same day or after</a:s> Today()</a:s>)</a:s>
                      </a:s>
                   </a:s>&#xd;
-	and <a:s r="96">not <a:s r="95">exists (<a:s r="94">[Observation: &quot;Reason for not performing Chlamydia Screening&quot;]</a:s>)</a:s>
+	and <a:s r="96">not <a:s r="95">exists (<a:s r="94">[&quot;Observation&quot;: &quot;Reason for not performing Chlamydia Screening&quot;]</a:s>)</a:s>
                   </a:s>
                </a:s>
             </a:s>
@@ -232,7 +228,7 @@
                   <operand localId="82" xsi:type="Exists">
                      <operand localId="81" xsi:type="Query">
                         <source localId="68" alias="R">
-                           <expression localId="67" dataType="quick:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
+                           <expression localId="67" dataType="fhir:DiagnosticReport" templateId="diagnosticreport-qicore-qicore-diagnosticreport" codeProperty="name" xsi:type="Retrieve">
                               <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
                            </expression>
                         </source>
@@ -241,10 +237,10 @@
                               <operand localId="70" path="issued" scope="R" xsi:type="Property"/>
                               <operand localId="75" lowClosed="true" highClosed="true" xsi:type="Interval">
                                  <low localId="73" xsi:type="Subtract">
-                                    <operand localId="71" name="Today" xsi:type="FunctionRef"/>
+                                    <operand localId="71" xsi:type="Today"/>
                                     <operand localId="72" value="1" unit="years" xsi:type="Quantity"/>
                                  </low>
-                                 <high localId="74" name="Today" xsi:type="FunctionRef"/>
+                                 <high localId="74" xsi:type="Today"/>
                               </operand>
                            </operand>
                            <operand localId="79" xsi:type="Not">
@@ -260,13 +256,13 @@
                   <operand localId="91" xsi:type="Exists">
                      <operand localId="90" xsi:type="Query">
                         <source localId="85" alias="P">
-                           <expression localId="84" dataType="quick:ProcedureRequest" templateId="procedurerequest-qicore-qicore-procedurerequest" codeProperty="type" xsi:type="Retrieve">
+                           <expression localId="84" dataType="fhir:ProcedureRequest" templateId="procedurerequest-qicore-qicore-procedurerequest" codeProperty="type" xsi:type="Retrieve">
                               <codes name="Chlamydia Screening" xsi:type="ValueSetRef"/>
                            </expression>
                         </source>
                         <where localId="89" precision="Day" xsi:type="SameOrAfter">
                            <operand localId="87" path="orderedOn" scope="P" xsi:type="Property"/>
-                           <operand localId="88" name="Today" xsi:type="FunctionRef"/>
+                           <operand localId="88" xsi:type="Today"/>
                         </where>
                      </operand>
                   </operand>
@@ -274,7 +270,7 @@
             </operand>
             <operand localId="96" xsi:type="Not">
                <operand localId="95" xsi:type="Exists">
-                  <operand localId="94" dataType="quick:Observation" templateId="observation-qicore-qicore-observation" codeProperty="code" xsi:type="Retrieve">
+                  <operand localId="94" dataType="fhir:Observation" templateId="observation-qicore-qicore-observation" codeProperty="code" xsi:type="Retrieve">
                      <codes name="Reason for not performing Chlamydia Screening" xsi:type="ValueSetRef"/>
                   </operand>
                </operand>
@@ -283,10 +279,10 @@
       </def>
       <def localId="104" name="NeedScreening" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="104">define NeedScreening: <a:s r="103">
+            <a:s r="104">define &quot;NeedScreening&quot;: <a:s r="103">
                   <a:s r="101">
-                     <a:s r="99">InDemographic</a:s> and <a:s r="100">SexuallyActive</a:s>
-                  </a:s> and <a:s r="102">NoScreening</a:s>
+                     <a:s r="99">&quot;InDemographic&quot;</a:s> and <a:s r="100">&quot;SexuallyActive&quot;</a:s>
+                  </a:s> and <a:s r="102">&quot;NoScreening&quot;</a:s>
                </a:s>
             </a:s>
          </annotation>
@@ -300,19 +296,17 @@
       </def>
       <def localId="109" name="ChlamydiaScreeningRequest" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="109">define ChlamydiaScreeningRequest: <a:s r="108">ProcedureRequest {&#xd;
+            <a:s r="109">define &quot;ChlamydiaScreeningRequest&quot;: <a:s r="108">Tuple {&#xd;
   type: <a:s r="106">Code '442487003' from <a:s r="105">&quot;SNOMED&quot;</a:s> display 'Screening for Chlamydia trachomatis (procedure)'</a:s>,&#xd;
   status: <a:s r="107">'proposed'</a:s>&#xd;
-  &#xd;
+  // values for other elements of the request...&#xd;
 }</a:s>
             </a:s>
          </annotation>
-         <expression localId="108" classType="quick:ProcedureRequest" xsi:type="Instance">
+         <expression localId="108" xsi:type="Tuple">
             <element name="type">
-               <value name="ToConcept" libraryName="System" xsi:type="FunctionRef">
-                  <operand localId="106" code="442487003" display="Screening for Chlamydia trachomatis (procedure)" xsi:type="Code">
-                     <system localId="105" name="SNOMED"/>
-                  </operand>
+               <value localId="106" code="442487003" display="Screening for Chlamydia trachomatis (procedure)" xsi:type="Code">
+                  <system localId="105" name="SNOMED"/>
                </value>
             </element>
             <element name="status">

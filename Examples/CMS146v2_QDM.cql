@@ -5,7 +5,7 @@ library CMS146_QDM version '2'
  * repeated timing logic between the encounter and pharyngitis.
  */
 
-using QDM // version '4.2'
+using QDM version '4.2'
 
 valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Acute Tonsillitis": '2.16.840.1.113883.3.464.1003.102.12.1012'
