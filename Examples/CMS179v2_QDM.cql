@@ -2,11 +2,11 @@ library CMS179_QDM version '2'
 
 // Warfarin time in therapeutic range
 
-using QDM // version '4.2'
+using QDM version '4.2'
 
 valueset "Atrial Fibrillation/Flutter": '2.16.840.1.113883.3.117.1.7.1.202'
 valueset "Warfarin": '2.16.840.1.113883.3.117.1.7.1.232'
-valueset "Face-to-face Encounter": '2.16.840.1.113883.3.464.1003.101.12.1048'
+valueset "Face-to-Face Interaction": '2.16.840.1.113883.3.464.1003.101.12.1048'
 valueset "Office Visit": '2.16.840.1.113883.3.464.1003.101.12.1001'
 valueset "Valvular Heart Disease": '2.16.840.1.113883.3.464.1003.104.12.1017'
 valueset "INR": '2.16.840.1.113883.3.117.1.7.1.213'
@@ -58,7 +58,7 @@ define "INROutpatientLabResult":
 define "INRResultsByDay":
 	"INROutpatientLabResult" L
 		// QUICK: L."valueQuantity"."value" > 0.8
-		where L."result" > 0.8 
+		where L."result" > 0.8
 		return
 			Tuple
 			{

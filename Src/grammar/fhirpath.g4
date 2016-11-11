@@ -11,7 +11,7 @@ expression
         | expression '[' expression ']'                             #indexerExpression
         | ('+' | '-') expression                                    #polarityExpression
         | expression ('*' | '/' | 'div' | 'mod') expression         #multiplicativeExpression
-        | expression ('+' | '-' ) expression                        #additiveExpression
+        | expression ('+' | '-' | '&') expression                   #additiveExpression
         | expression '|' expression                                 #unionExpression
         | expression ('<=' | '<' | '>' | '>=') expression           #inequalityExpression
         | expression ('is' | 'as') typeSpecifier                    #typeExpression
