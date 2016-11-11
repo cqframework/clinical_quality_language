@@ -405,6 +405,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public ChoiceTypeSpecifier visitChoiceTypeSpecifier(@NotNull cqlParser.ChoiceTypeSpecifierContext ctx) {
+        ArrayList<TypeSpecifier> typeSpecifiers = new ArrayList<TypeSpecifier>();
+        ArrayList<DataType> types = new ArrayList<DataType>();
+        for (cqlParser.TypeSpecifierContext typeSpecifierContext : ctx.typeSpecifier()) {
+            TypeSpecifier typeSpecifier = parseTypeSpecifier(typeSpecifierContext);
+            typeSpecifiers.add(typeSpecifier);
+            types.add(typeSpecifier.getResultType());
+        }
+        ChoiceTypeSpecifier result = of.createChoiceTypeSpecifier().withType(typeSpecifiers);
+        ChoiceType choiceType = new ChoiceType(types);
+        result.setResultType(choiceType);
+        return result;
+    }
+
+    @Override
     public IntervalTypeSpecifier visitIntervalTypeSpecifier(@NotNull cqlParser.IntervalTypeSpecifierContext ctx) {
         IntervalTypeSpecifier result = of.createIntervalTypeSpecifier().withPointType(parseTypeSpecifier(ctx.typeSpecifier()));
         IntervalType intervalType = new IntervalType(result.getPointType().getResultType());
@@ -2647,14 +2662,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withDataType(dataTypeToQName((DataType)namedType))
                 .withTemplateId(classType.getIdentifier());
 
-        if (ctx.valueset() != null) {
-            if (ctx.valuesetPathIdentifier() != null) {
-                retrieve.setCodeProperty(parseString(ctx.valuesetPathIdentifier()));
+        if (ctx.terminology() != null) {
+            if (ctx.codePath() != null) {
+                retrieve.setCodeProperty(parseString(ctx.codePath()));
             } else if (classType.getPrimaryCodePath() != null) {
                 retrieve.setCodeProperty(classType.getPrimaryCodePath());
             }
 
-            List<String> identifiers = (List<String>) visit(ctx.valueset());
+            List<String> identifiers = (List<String>) visit(ctx.terminology());
             retrieve.setCodes(resolveQualifiedIdentifier(identifiers));
         }
 
