@@ -244,4 +244,13 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ChoiceTypeInfo">
+		<xs:complexContent>
+			<xs:extension base="TypeInfo">
+				<xs:sequence>
+					<xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>
