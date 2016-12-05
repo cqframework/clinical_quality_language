@@ -11,7 +11,7 @@ module.exports.ValueSetDef = class ValueSetDef extends Expression
     #todo: code systems and versions
 
   exec: (ctx) ->
-    valueset = ctx._codeService.findValueSet(@id, @version) ? new ValueSet(@id, @version)
+    valueset = ctx.codeService.findValueSet(@id, @version) ? new ValueSet(@id, @version)
     ctx.rootContext().set @name, valueset
     valueset
 
