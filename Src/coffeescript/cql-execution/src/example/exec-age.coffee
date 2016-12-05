@@ -43,7 +43,5 @@ psource = new cql.PatientSource [ {
     ]
   } ]
 
-ctx = new cql.Context(lib, psource)
-
 result = executor.exec(psource)
 console.log JSON.stringify(result, undefined, 2)
