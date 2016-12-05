@@ -2,6 +2,7 @@ cql = require '../cql'
 measure = require './age'
 
 lib = new cql.Library(measure)
+executor = new cql.Executor(lib)
 psource = new cql.PatientSource [ {
     "resourceType": "Bundle",
     "id": "example1",
@@ -44,5 +45,5 @@ psource = new cql.PatientSource [ {
 
 ctx = new cql.Context(lib, psource)
 
-result = lib.exec(ctx)
+result = executor.exec(psource)
 console.log JSON.stringify(result, undefined, 2)
