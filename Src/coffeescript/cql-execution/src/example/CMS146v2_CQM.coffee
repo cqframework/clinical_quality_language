@@ -21,85 +21,11 @@ module.exports = {
          "def" : [ {
             "name" : "MeasurementPeriod",
             "accessLevel" : "Public",
-            "default" : {
-               "lowClosed" : true,
-               "highClosed" : false,
-               "type" : "Interval",
-               "low" : {
-                  "type" : "DateTime",
-                  "year" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "2013",
-                     "type" : "Literal"
-                  },
-                  "month" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "day" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "hour" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "minute" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "second" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "millisecond" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }
-               },
-               "high" : {
-                  "type" : "DateTime",
-                  "year" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "2014",
-                     "type" : "Literal"
-                  },
-                  "month" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "day" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "hour" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "minute" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "second" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  },
-                  "millisecond" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "0",
-                     "type" : "Literal"
-                  }
+            "parameterTypeSpecifier" : {
+               "type" : "IntervalTypeSpecifier",
+               "pointType" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "NamedTypeSpecifier"
                }
             }
          } ]
@@ -618,3 +544,4 @@ module.exports = {
       }
    }
 }
+

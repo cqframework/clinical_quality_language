@@ -55,7 +55,10 @@ cservice = new codes.CodeService {
   }
 
 lib = new cql.Library(measure)
-executor = new cql.Executor(lib, cservice)
+parameters = {
+  MeasurementPeriod: new cql.Interval(cql.DateTime.parse('2013-01-01'), cql.DateTime.parse('2014-01-01'), true, false)
+}
+executor = new cql.Executor(lib, cservice, parameters)
 psource = new cql.PatientSource [ {
     "resourceType": "Bundle",
     "id": "example1",
@@ -95,8 +98,6 @@ psource = new cql.PatientSource [ {
         }
     ]
   } ]
-
-ctx = new cql.Context(lib, psource, cservice)
 
 result = executor.exec(psource)
 console.log JSON.stringify(result, undefined, 2)
