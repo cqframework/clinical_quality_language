@@ -2,20 +2,20 @@ module.exports.Library = class Library
   constructor: (json, libraryManager) ->
     @source = json
     @usings = []
-    for u in json.library.usings?.def ? []
+    for u in json?.library?.usings?.def ? []
       @usings.push {"name" : u.localIdentifier, "version" : u.version} if u.localIdentifier != "System"
     @parameters = {}
-    for param in json.library.parameters?.def ? []
+    for param in json?.library?.parameters?.def ? []
       @parameters[param.name] = new ParameterDef(param)
     @valuesets = {}
-    for valueset in json.library.valueSets?.def ? []
+    for valueset in json?.library?.valueSets?.def ? []
       @valuesets[valueset.name] = new ValueSetDef(valueset)
     @expressions = {}
-    for expr in json.library.statements?.def ? []
+    for expr in json?.library?.statements?.def ? []
       @expressions[expr.name] = if expr.type == "FunctionDef"  then new FunctionDef(expr) else new ExpressionDef(expr)
     @includes = {}
-    for expr in json.library.includes?.def ? []
-      if libraryManager then @includes[expr.localIdentifier] =  libraryManager.resolve(expr.path,expr.version) 
+    for expr in json?.library?.includes?.def ? []
+      if libraryManager then @includes[expr.localIdentifier] =  libraryManager.resolve(expr.path,expr.version)
 
   get: (identifier) ->
     @expressions[identifier] || @includes[identifier]
