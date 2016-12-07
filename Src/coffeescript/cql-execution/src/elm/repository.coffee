@@ -6,5 +6,5 @@ module.exports.Repository = class Repository
 
   resolve: (library,version) ->
     for lib in @libraries
-      if lib.library.identifier?.id == library && lib.library.identifier?.version == version
+      if lib.identifier?.id == library && lib.identifier?.version == version
         return new Library(lib,@)
