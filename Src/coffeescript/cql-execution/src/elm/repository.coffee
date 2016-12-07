@@ -6,5 +6,5 @@ module.exports.Repository = class Repository
 
   resolve: (library,version) ->
     for lib in @libraries
-      if lib.identifier?.id == library && lib.identifier?.version == version
+      if lib.library?.identifier?.id == library && lib.library?.identifier?.version == version
         return new cql.Library(lib,@)
