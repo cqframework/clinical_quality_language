@@ -1,4 +1,5 @@
 library     = require './elm/library'
+repository  = require './elm/repository'
 context     = require './runtime/context'
 exec        = require './runtime/executor'
 results     = require './runtime/results'
@@ -7,6 +8,7 @@ patient     = require './cql-patient'
 codeservice = require './cql-code-service'
 
 module.exports.Library            = library.Library
+module.exports.Repository         = repository.Repository
 module.exports.Context            = context.Context
 module.exports.PatientContext     = context.PatientContext
 module.exports.PopulationContext  = context.PopulationContext
