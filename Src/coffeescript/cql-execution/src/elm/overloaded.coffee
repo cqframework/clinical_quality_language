@@ -78,8 +78,8 @@ module.exports.Indexer = class Indexer extends Expression
   exec: (ctx) ->
     [operand, index] = @execArgs ctx
     if not operand? or not index? then return null
-    if index <= 0 or index > operand.length then throw new ArrayIndexOutOfBoundsException()
-    operand[index-1]
+    if index < 0 or index >= operand.length then throw new ArrayIndexOutOfBoundsException()
+    operand[index]
 
 module.exports.In = class In extends Expression
   constructor: (json) ->
