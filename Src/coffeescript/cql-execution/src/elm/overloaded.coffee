@@ -17,6 +17,15 @@ module.exports.Equal = class Equal extends Expression
   exec: (ctx) ->
     equals @execArgs(ctx)...
 
+module.exports.Equivalent = class Equivalent extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    # TODO: This is a quick and dirty implementation to get *something* in here.
+    # This needs to be done right (including equivalence for codes/concepts)
+    equals @execArgs(ctx)...
+
 module.exports.NotEqual = class NotEqual extends Expression
   constructor: (json) ->
     super
