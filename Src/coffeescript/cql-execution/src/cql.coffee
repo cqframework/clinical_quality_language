@@ -1,5 +1,5 @@
 library     = require './elm/library'
-repository  = require './elm/repository'
+repository  = require './runtime/repository'
 context     = require './runtime/context'
 exec        = require './runtime/executor'
 results     = require './runtime/results'
