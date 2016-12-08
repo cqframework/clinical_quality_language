@@ -133,6 +133,13 @@ module.exports.Ln = class Ln extends  Expression
   exec: (ctx) ->
     Math.log @execArgs(ctx)
 
+module.exports.Exp = class Exp extends  Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    Math.exp @execArgs(ctx)
+
 module.exports.Log = class Log extends  Expression
   constructor: (json) ->
     super
