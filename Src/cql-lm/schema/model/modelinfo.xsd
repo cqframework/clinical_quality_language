@@ -10,7 +10,6 @@
 			<xs:documentation>The ModelInfo type defines the metadata associated with a particular model to enable it to be used by the CQL translator. Note that none of the information specified here is required, it just enables some convenient shorthands within the language.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="requiredModelInfo" type="ModelSpecifier" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="typeInfo" type="TypeInfo" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="conversionInfo" type="ConversionInfo" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
@@ -54,20 +53,17 @@
 				<xs:documentation>The patientBirthDatePropertyName attribute specifies the name of the birthdate property on the Patient model.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="caseSensitive" type="xs:boolean" use="optional">
+		<xs:attribute name="isCaseSensitive" type="xs:boolean" use="optional">
 			<xs:annotation>
 				<xs:documentation>The isCaseSensitive attribute indicates whether the identifiers used by this model should be resolved case-sensitively. If the attribute is true, references to identifiers in this model must match by case.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ClassInfoElement">
-		<xs:sequence>
-			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="type" type="xs:string" use="optional"/>
-		<xs:attribute name="prohibited" type="xs:boolean" use="optional"/>
-		<xs:attribute name="oneBased" type="xs:boolean" use="optional">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="type" type="xs:string"/>
+		<xs:attribute name="prohibited" type="xs:boolean"/>
+		<xs:attribute name="isOneBased" type="xs:boolean" use="optional">
 			<xs:annotation>
 				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
 			</xs:annotation>
@@ -111,50 +107,34 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="TypeInfo" abstract="true">
-		<xs:sequence>
-			<xs:element name="baseTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
-		<xs:attribute name="baseType" type="xs:string" use="optional"/>
+		<xs:attribute name="baseType" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="SimpleTypeInfo">
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
-				<xs:attribute name="name" type="xs:string" use="required">
-					<xs:annotation>
-						<xs:documentation>Name is the unqualified name of the type within this model.</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
+				<xs:attribute name="name" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="IntervalTypeInfo">
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
-				<xs:sequence>
-					<xs:element name="pointTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-				</xs:sequence>
-				<xs:attribute name="pointType" type="xs:string" use="optional"/>
+				<xs:attribute name="pointType" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ListTypeInfo">
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
-				<xs:sequence>
-					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-				</xs:sequence>
-				<xs:attribute name="elementType" type="xs:string" use="optional"/>
+				<xs:attribute name="elementType" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="TupleTypeInfoElement">
-		<xs:sequence>
-			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="type" type="xs:string" use="optional"/>
-		<xs:attribute name="prohibited" type="xs:boolean" use="optional"/>
-		<xs:attribute name="oneBased" type="xs:boolean" use="optional">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="type" type="xs:string"/>
+		<xs:attribute name="prohibited" type="xs:boolean"/>
+		<xs:attribute name="isOneBased" type="xs:boolean" use="optional">
 			<xs:annotation>
 				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
 			</xs:annotation>
@@ -175,65 +155,9 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ConversionInfo">
-		<xs:sequence>
-			<xs:element name="fromTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="toTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
+		<xs:attribute name="fromType" type="xs:string" use="required"/>
+		<xs:attribute name="toType" type="xs:string" use="required"/>
 		<xs:attribute name="functionName" type="xs:string" use="required"/>
-		<xs:attribute name="fromType" type="xs:string" use="optional"/>
-		<xs:attribute name="toType" type="xs:string" use="optional"/>
-	</xs:complexType>
-	<xs:complexType name="ChoiceTypeInfo">
-		<xs:complexContent>
-			<xs:extension base="TypeInfo">
-				<xs:sequence>
-					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="ModelSpecifier">
-		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="version" type="xs:string" use="optional"/>
-	</xs:complexType>
-	<!-- NOTE: TypeSpecifier purposely does not support tuple types, tuple types must be named in order to be referenced -->
-	<xs:complexType name="TypeSpecifier" abstract="true"/>
-	<xs:complexType name="NamedTypeSpecifier">
-		<xs:complexContent>
-			<xs:extension base="TypeSpecifier">
-				<xs:attribute name="modelName" type="xs:string" use="optional"/>
-				<xs:attribute name="name" type="xs:string" use="required"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="ListTypeSpecifier">
-		<xs:complexContent>
-			<xs:extension base="TypeSpecifier">
-				<xs:sequence>
-					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-				</xs:sequence>
-				<xs:attribute name="elementType" type="xs:string" use="optional"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="IntervalTypeSpecifier">
-		<xs:complexContent>
-			<xs:extension base="TypeSpecifier">
-				<xs:sequence>
-					<xs:element name="pointTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
-				</xs:sequence>
-				<xs:attribute name="pointType" type="xs:string" use="optional"/>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
-	<xs:complexType name="ChoiceTypeSpecifier">
-		<xs:complexContent>
-			<xs:extension base="TypeSpecifier">
-				<xs:sequence>
-					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ChoiceTypeInfo">
 		<xs:complexContent>
