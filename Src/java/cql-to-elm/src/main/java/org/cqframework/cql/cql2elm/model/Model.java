@@ -1,7 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.hl7.cql.model.*;
+import org.cqframework.cql.elm.tracking.*;
+import org.hl7.elm_modelinfo.r1.ConversionInfo;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.util.*;
@@ -58,7 +59,7 @@ public class Model {
     }
 
     private String casify(String typeName) {
-        return (this.info.isCaseSensitive() != null ? this.info.isCaseSensitive() : false) ? typeName.toLowerCase() : typeName;
+        return (this.info.isIsCaseSensitive() != null ? this.info.isIsCaseSensitive() : false) ? typeName.toLowerCase() : typeName;
     }
 
     private DataType internalResolveTypeName(@NotNull String typeName, Model systemModel) {
