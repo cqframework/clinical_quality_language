@@ -72,6 +72,11 @@
 				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="isOneBased" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ClassInfo">
 		<xs:annotation>
@@ -155,6 +160,12 @@
 		<xs:attribute name="type" type="xs:string" use="optional"/>
 		<xs:attribute name="prohibited" type="xs:boolean" use="optional"/>
 		<xs:attribute name="oneBased" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="prohibited" type="xs:boolean"/>
+		<xs:attribute name="isOneBased" type="xs:boolean" use="optional">
 			<xs:annotation>
 				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
 			</xs:annotation>

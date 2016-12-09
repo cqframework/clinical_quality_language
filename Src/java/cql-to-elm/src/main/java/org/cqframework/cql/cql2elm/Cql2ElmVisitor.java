@@ -3053,11 +3053,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         libraryBuilder.pushExpressionTarget(left);
         try {
             return (Expression)visit(ctx.invocation());
-            }
+        }
         finally {
             libraryBuilder.popExpressionTarget();
         }
-        }
+    }
 
     @Override
     public Expression visitExternalConstant(@NotNull cqlParser.ExternalConstantContext ctx) {
@@ -3074,12 +3074,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String identifier = parseString(ctx.identifier());
         if (libraryBuilder.hasExpressionTarget()) {
             Expression target = libraryBuilder.popExpressionTarget();
-        try {
+            try {
                 return libraryBuilder.resolveAccessor(target, identifier);
-        }
-        finally {
+            }
+            finally {
                 libraryBuilder.pushExpressionTarget(target);
-        }
+            }
         }
         return resolveIdentifier(identifier);
     }
@@ -3095,7 +3095,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return current;
-    }
+            }
 
     private Expression resolveIdentifier(String identifier) {
         // If the identifier cannot be resolved in the library builder, check for forward declarations for expressions and parameters
@@ -3109,7 +3109,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     visitExpressionDefinition(expressionInfo.getDefinition());
                 } finally {
                     currentContext = saveContext;
-            }
+        }
             }
 
             ParameterDefinitionInfo parameterInfo = libraryInfo.resolveParameterReference(identifier);
@@ -3124,7 +3124,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Expression resolveFunction(String libraryName, @NotNull cqlParser.FunctionContext ctx) {
         return resolveFunction(libraryName, parseString(ctx.identifier()), ctx.paramList());
-            }
+    }
 
     private Expression resolveFunction(String libraryName, String functionName, cqlParser.ParamListContext paramList) {
         List<Expression> expressions = new ArrayList<Expression>();
@@ -3158,16 +3158,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // If the target is a library reference, resolve as a standard qualified call
                 if (target instanceof LibraryRef) {
                     return resolveFunction(((LibraryRef)target).getLibraryName(), ctx);
-            }
+                }
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression) {
                     return systemMethodResolver.resolveMethod((Expression)target, ctx, true);
-        }
+                }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
-    }
+            }
             finally {
                 libraryBuilder.pushExpressionTarget(target);
             }
@@ -3189,7 +3189,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitFunctionBody(@NotNull cqlParser.FunctionBodyContext ctx) {
         return visit(ctx.expression());
-        }
+    }
 
     private Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef()
@@ -3204,14 +3204,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 .withOperandTypeSpecifier(typeSpecifier)
                                 .withResultType(typeSpecifier.getResultType())
                 );
-    }
+            }
         }
 
         libraryBuilder.beginFunctionDef(fun);
         try {
             libraryBuilder.pushExpressionContext(currentContext);
             try {
-                fun.setExpression(parseExpression(ctx.functionBody()));
+            fun.setExpression(parseExpression(ctx.functionBody()));
             } finally {
                 libraryBuilder.popExpressionContext();
         }

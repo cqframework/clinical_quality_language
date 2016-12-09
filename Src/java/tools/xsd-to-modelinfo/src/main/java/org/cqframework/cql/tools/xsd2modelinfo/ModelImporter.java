@@ -213,7 +213,7 @@ public class ModelImporter {
             TypeSpecifier elementTypeSpecifier = toTypeSpecifier(element.getType());
             if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
                 infoElement.setType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
-            }
+        }
             else {
                 infoElement.setTypeSpecifier(elementTypeSpecifier);
             }
@@ -258,7 +258,7 @@ public class ModelImporter {
         TypeSpecifier pointTypeSpecifier = toTypeSpecifier(dataType.getPointType());
         if (pointTypeSpecifier instanceof NamedTypeSpecifier) {
             intervalTypeSpecifier.setPointType(toTypeName((NamedTypeSpecifier)pointTypeSpecifier));
-        }
+    }
         else {
             intervalTypeSpecifier.setPointTypeSpecifier(pointTypeSpecifier);
         }
@@ -270,7 +270,7 @@ public class ModelImporter {
         TypeSpecifier elementTypeSpecifier = toTypeSpecifier(dataType.getElementType());
         if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
             listTypeSpecifier.setElementType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
-        }
+    }
         else {
             listTypeSpecifier.setElementTypeSpecifier(elementTypeSpecifier);
         }
@@ -281,10 +281,14 @@ public class ModelImporter {
         List<TypeSpecifier> choiceTypes = new ArrayList<>();
         for (DataType choice : dataType.getTypes()) {
             choiceTypes.add(toTypeSpecifier(choice));
-        }
+    }
         ChoiceTypeSpecifier choiceTypeSpecifier = new ChoiceTypeSpecifier()
                 .withChoice(choiceTypes);
         return choiceTypeSpecifier;
+    }
+
+    private String toChoiceTypeSpecifier(ChoiceType dataType) {
+        return dataType.toString();
     }
 
     private String getTypeName(QName schemaTypeName, Map<String, String> namespaces) {
