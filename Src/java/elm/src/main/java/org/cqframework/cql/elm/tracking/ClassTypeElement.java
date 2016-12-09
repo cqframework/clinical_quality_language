@@ -4,8 +4,9 @@ public class ClassTypeElement {
     private String name;
     private DataType type;
     private boolean prohibited;
+    private boolean oneBased;
 
-    public ClassTypeElement(String name, DataType type, boolean prohibited) {
+    public ClassTypeElement(String name, DataType type, Boolean prohibited, Boolean oneBased) {
         if (name == null || name.equals("")) {
             throw new IllegalArgumentException("name");
         }
@@ -16,11 +17,12 @@ public class ClassTypeElement {
 
         this.name = name;
         this.type = type;
-        this.prohibited = prohibited;
+        this.prohibited = prohibited != null ? prohibited : false;
+        this.oneBased = oneBased != null ? oneBased : false;
     }
 
     public ClassTypeElement(String name, DataType type) {
-        this(name, type, false);
+        this(name, type, false, false);
     }
 
     public String getName() {
@@ -35,6 +37,10 @@ public class ClassTypeElement {
         return prohibited;
     }
 
+    public boolean isOneBased() {
+        return oneBased;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -46,6 +52,9 @@ public class ClassTypeElement {
 
         ClassTypeElement that = (ClassTypeElement) o;
 
+        if (oneBased != that.oneBased) {
+            return false;
+        }
         if (prohibited != that.prohibited) {
             return false;
         }
@@ -64,6 +73,7 @@ public class ClassTypeElement {
         int result = name.hashCode();
         result = 31 * result + type.hashCode();
         result = 31 * result + (prohibited ? 1 : 0);
+        result = 31 * result + (oneBased ? 1 : 0);
         return result;
     }
 

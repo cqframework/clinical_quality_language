@@ -26,6 +26,8 @@ public class Main {
         OptionSpec<File> configOpt = parser.accepts("config").withOptionalArg().ofType(File.class);
         OptionSpec<File> outputOpt = parser.accepts("output").withRequiredArg().ofType(File.class);
         OptionSpec<String> normalizePrefixOpt = parser.accepts("normalize-prefix").withRequiredArg().ofType(String.class);
+        OptionSpec<ModelImporterOptions.ChoiceTypePolicy> choiceTypeOpt =
+                parser.accepts("choicetype-policy").withRequiredArg().ofType(ModelImporterOptions.ChoiceTypePolicy.class);
         OptionSpec<ModelImporterOptions.SimpleTypeRestrictionPolicy> stRestrictionsOpt =
                 parser.accepts("simpletype-restriction-policy").withRequiredArg().ofType(ModelImporterOptions.SimpleTypeRestrictionPolicy.class);
         OptionSpec<ModelImporterOptions.ElementRedeclarationPolicy> redeclarationsOpt =
@@ -50,6 +52,9 @@ public class Main {
 
         if (options.has(modelOpt)) {
             importerOptions.setModel(modelOpt.value(options));
+        }
+        if (options.has(choiceTypeOpt)) {
+            importerOptions.setChoiceTypePolicy(choiceTypeOpt.value(options));
         }
         if (options.has(stRestrictionsOpt)) {
             importerOptions.setSimpleTypeRestrictionPolicy(stRestrictionsOpt.value(options));
