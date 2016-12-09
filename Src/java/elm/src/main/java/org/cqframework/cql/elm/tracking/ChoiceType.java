@@ -50,24 +50,23 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isSubTypeOf(DataType other) {
-
         // TODO: Determine isSubTypeOf semantics for choice types
+        // A choice type A is a subtype of a choice type B if each component type is a subtype of some copmonent type of B // Holding off on this more complex case for now
         return super.isSubTypeOf(other);
-        // A choice type A is a subtype of a choice type B if for each component type is a subtype of some copmonent type of B
-
     }
 
     @Override
     public boolean isSuperTypeOf(DataType other) {
         // TODO: Determine isSuperTypeOf semantics for choice types
         // A choice type A is a supertype of a choice type B if B is a subtype of A
-
         return super.isSuperTypeOf(other);
     }
 
     @Override
     public boolean isCompatibleWith(DataType other) {
-        // TODO: Determine isCompatiableWith semantics for choice types
+        // This type is compatible with the other type if
+            // The other type is a subtype of one of the choice types
+            // The other type is a choice type and all its component types are a subtype of some component of this choice type // Holding off on this more complex case for now...
         for (DataType type : types) {
             if (other.isSubTypeOf(type)) {
                 return true;
@@ -75,9 +74,6 @@ public class ChoiceType extends DataType {
         }
 
         return super.isCompatibleWith(other);
-        // This type is compatible with a target type if
-            // The target type is a subtype of one of the choice types
-            // The target type is a choice type and all it's component types are a subtype of some component of the source choice type
     }
 
     @Override
