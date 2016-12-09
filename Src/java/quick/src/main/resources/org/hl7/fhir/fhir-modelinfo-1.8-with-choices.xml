@@ -36,8 +36,7 @@
         <ns4:element name="name" type="FHIR.string"/>
         <ns4:element name="description" type="FHIR.string"/>
         <ns4:element name="acronym" type="FHIR.string"/>
-        <ns4:element name="sourceUri" type="FHIR.uri"/>
-        <ns4:element name="sourceReference" type="FHIR.Reference"/>
+        <ns4:element name="source" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
         <ns4:element name="exampleFor" type="FHIR.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.MedicationAdministration.Dosage" retrievable="false" baseType="FHIR.BackboneElement">
@@ -46,12 +45,10 @@
         <ns4:element name="route" type="FHIR.CodeableConcept"/>
         <ns4:element name="method" type="FHIR.CodeableConcept"/>
         <ns4:element name="dose" type="FHIR.Quantity"/>
-        <ns4:element name="rateRatio" type="FHIR.Ratio"/>
-        <ns4:element name="rateQuantity" type="FHIR.Quantity"/>
+        <ns4:element name="rate" type="choice&lt;FHIR.Ratio,FHIR.Quantity&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ClinicalImpression.Finding" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="itemCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="itemReference" type="FHIR.Reference"/>
+        <ns4:element name="item" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="basis" type="FHIR.string"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.PlanActionPrecheckBehavior" retrievable="false" baseType="FHIR.Element">
@@ -238,9 +235,7 @@
         <ns4:element name="notes" type="list&lt;FHIR.string&gt;"/>
         <ns4:element name="recordedOn" type="FHIR.dateTime"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
-        <ns4:element name="timingTiming" type="FHIR.Timing"/>
-        <ns4:element name="timingPeriod" type="FHIR.Period"/>
-        <ns4:element name="timingDateTime" type="FHIR.dateTime"/>
+        <ns4:element name="timing" type="choice&lt;FHIR.Timing,FHIR.Period,FHIR.dateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.RestfulCapabilityMode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -257,8 +252,7 @@
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="encounter" type="FHIR.Reference"/>
-        <ns4:element name="performedDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="performedPeriod" type="FHIR.Period"/>
+        <ns4:element name="performed" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="performer" type="list&lt;FHIR.Procedure.Performer&gt;"/>
         <ns4:element name="location" type="FHIR.Reference"/>
         <ns4:element name="reasonReference" type="list&lt;FHIR.Reference&gt;"/>
@@ -336,8 +330,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.DataRequirement.CodeFilter" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="path" type="FHIR.string"/>
-        <ns4:element name="valueSetString" type="FHIR.string"/>
-        <ns4:element name="valueSetReference" type="FHIR.Reference"/>
+        <ns4:element name="valueSet" type="choice&lt;FHIR.string,FHIR.Reference&gt;"/>
         <ns4:element name="valueCode" type="list&lt;FHIR.code&gt;"/>
         <ns4:element name="valueCoding" type="list&lt;FHIR.Coding&gt;"/>
         <ns4:element name="valueCodeableConcept" type="list&lt;FHIR.CodeableConcept&gt;"/>
@@ -447,12 +440,10 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExplanationOfBenefit.Procedure" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="sequence" type="FHIR.positiveInt"/>
         <ns4:element name="date" type="FHIR.dateTime"/>
-        <ns4:element name="procedureCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="procedureReference" type="FHIR.Reference"/>
+        <ns4:element name="procedure" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Contract.ValuedItem" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="entityCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="entityReference" type="FHIR.Reference"/>
+        <ns4:element name="entity" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="identifier" type="FHIR.Identifier"/>
         <ns4:element name="effectiveTime" type="FHIR.dateTime"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
@@ -464,8 +455,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ElementDefinition.Binding" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="strength" type="FHIR.BindingStrength"/>
         <ns4:element name="description" type="FHIR.string"/>
-        <ns4:element name="valueSetUri" type="FHIR.uri"/>
-        <ns4:element name="valueSetReference" type="FHIR.Reference"/>
+        <ns4:element name="valueSet" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExpansionProfile.Designation" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="include" type="FHIR.ExpansionProfile.Include"/>
@@ -511,140 +501,13 @@
         <ns4:element name="base" type="FHIR.ElementDefinition.Base"/>
         <ns4:element name="contentReference" type="FHIR.uri"/>
         <ns4:element name="type" type="list&lt;FHIR.ElementDefinition.Type&gt;"/>
-        <ns4:element name="defaultValueBase64Binary" type="FHIR.base64Binary"/>
-        <ns4:element name="defaultValueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="defaultValueCode" type="FHIR.code"/>
-        <ns4:element name="defaultValueDate" type="FHIR.date"/>
-        <ns4:element name="defaultValueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="defaultValueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="defaultValueId" type="FHIR.id"/>
-        <ns4:element name="defaultValueInstant" type="FHIR.instant"/>
-        <ns4:element name="defaultValueInteger" type="FHIR.integer"/>
-        <ns4:element name="defaultValueMarkdown" type="FHIR.markdown"/>
-        <ns4:element name="defaultValueOid" type="FHIR.oid"/>
-        <ns4:element name="defaultValuePositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="defaultValueString" type="FHIR.string"/>
-        <ns4:element name="defaultValueTime" type="FHIR.time"/>
-        <ns4:element name="defaultValueUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="defaultValueUri" type="FHIR.uri"/>
-        <ns4:element name="defaultValueAddress" type="FHIR.Address"/>
-        <ns4:element name="defaultValueAge" type="FHIR.Age"/>
-        <ns4:element name="defaultValueAnnotation" type="FHIR.Annotation"/>
-        <ns4:element name="defaultValueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="defaultValueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="defaultValueCoding" type="FHIR.Coding"/>
-        <ns4:element name="defaultValueContactPoint" type="FHIR.ContactPoint"/>
-        <ns4:element name="defaultValueCount" type="FHIR.Count"/>
-        <ns4:element name="defaultValueDistance" type="FHIR.Distance"/>
-        <ns4:element name="defaultValueDuration" type="FHIR.Duration"/>
-        <ns4:element name="defaultValueHumanName" type="FHIR.HumanName"/>
-        <ns4:element name="defaultValueIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="defaultValueMoney" type="FHIR.Money"/>
-        <ns4:element name="defaultValuePeriod" type="FHIR.Period"/>
-        <ns4:element name="defaultValueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="defaultValueRange" type="FHIR.Range"/>
-        <ns4:element name="defaultValueRatio" type="FHIR.Ratio"/>
-        <ns4:element name="defaultValueReference" type="FHIR.Reference"/>
-        <ns4:element name="defaultValueSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="defaultValueSignature" type="FHIR.Signature"/>
-        <ns4:element name="defaultValueTiming" type="FHIR.Timing"/>
-        <ns4:element name="defaultValueMeta" type="FHIR.Meta"/>
+        <ns4:element name="defaultValue" type="choice&lt;FHIR.base64Binary,FHIR.boolean,FHIR.code,FHIR.date,FHIR.dateTime,FHIR.decimal,FHIR.id,FHIR.instant,FHIR.integer,FHIR.markdown,FHIR.oid,FHIR.positiveInt,FHIR.string,FHIR.time,FHIR.unsignedInt,FHIR.uri,FHIR.Address,FHIR.Age,FHIR.Annotation,FHIR.Attachment,FHIR.CodeableConcept,FHIR.Coding,FHIR.ContactPoint,FHIR.Count,FHIR.Distance,FHIR.Duration,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Period,FHIR.Quantity,FHIR.Range,FHIR.Ratio,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.Meta&gt;"/>
         <ns4:element name="meaningWhenMissing" type="FHIR.markdown"/>
-        <ns4:element name="fixedBase64Binary" type="FHIR.base64Binary"/>
-        <ns4:element name="fixedBoolean" type="FHIR.boolean"/>
-        <ns4:element name="fixedCode" type="FHIR.code"/>
-        <ns4:element name="fixedDate" type="FHIR.date"/>
-        <ns4:element name="fixedDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="fixedDecimal" type="FHIR.decimal"/>
-        <ns4:element name="fixedId" type="FHIR.id"/>
-        <ns4:element name="fixedInstant" type="FHIR.instant"/>
-        <ns4:element name="fixedInteger" type="FHIR.integer"/>
-        <ns4:element name="fixedMarkdown" type="FHIR.markdown"/>
-        <ns4:element name="fixedOid" type="FHIR.oid"/>
-        <ns4:element name="fixedPositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="fixedString" type="FHIR.string"/>
-        <ns4:element name="fixedTime" type="FHIR.time"/>
-        <ns4:element name="fixedUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="fixedUri" type="FHIR.uri"/>
-        <ns4:element name="fixedAddress" type="FHIR.Address"/>
-        <ns4:element name="fixedAge" type="FHIR.Age"/>
-        <ns4:element name="fixedAnnotation" type="FHIR.Annotation"/>
-        <ns4:element name="fixedAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="fixedCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="fixedCoding" type="FHIR.Coding"/>
-        <ns4:element name="fixedContactPoint" type="FHIR.ContactPoint"/>
-        <ns4:element name="fixedCount" type="FHIR.Count"/>
-        <ns4:element name="fixedDistance" type="FHIR.Distance"/>
-        <ns4:element name="fixedDuration" type="FHIR.Duration"/>
-        <ns4:element name="fixedHumanName" type="FHIR.HumanName"/>
-        <ns4:element name="fixedIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="fixedMoney" type="FHIR.Money"/>
-        <ns4:element name="fixedPeriod" type="FHIR.Period"/>
-        <ns4:element name="fixedQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="fixedRange" type="FHIR.Range"/>
-        <ns4:element name="fixedRatio" type="FHIR.Ratio"/>
-        <ns4:element name="fixedReference" type="FHIR.Reference"/>
-        <ns4:element name="fixedSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="fixedSignature" type="FHIR.Signature"/>
-        <ns4:element name="fixedTiming" type="FHIR.Timing"/>
-        <ns4:element name="fixedMeta" type="FHIR.Meta"/>
-        <ns4:element name="patternBase64Binary" type="FHIR.base64Binary"/>
-        <ns4:element name="patternBoolean" type="FHIR.boolean"/>
-        <ns4:element name="patternCode" type="FHIR.code"/>
-        <ns4:element name="patternDate" type="FHIR.date"/>
-        <ns4:element name="patternDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="patternDecimal" type="FHIR.decimal"/>
-        <ns4:element name="patternId" type="FHIR.id"/>
-        <ns4:element name="patternInstant" type="FHIR.instant"/>
-        <ns4:element name="patternInteger" type="FHIR.integer"/>
-        <ns4:element name="patternMarkdown" type="FHIR.markdown"/>
-        <ns4:element name="patternOid" type="FHIR.oid"/>
-        <ns4:element name="patternPositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="patternString" type="FHIR.string"/>
-        <ns4:element name="patternTime" type="FHIR.time"/>
-        <ns4:element name="patternUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="patternUri" type="FHIR.uri"/>
-        <ns4:element name="patternAddress" type="FHIR.Address"/>
-        <ns4:element name="patternAge" type="FHIR.Age"/>
-        <ns4:element name="patternAnnotation" type="FHIR.Annotation"/>
-        <ns4:element name="patternAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="patternCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="patternCoding" type="FHIR.Coding"/>
-        <ns4:element name="patternContactPoint" type="FHIR.ContactPoint"/>
-        <ns4:element name="patternCount" type="FHIR.Count"/>
-        <ns4:element name="patternDistance" type="FHIR.Distance"/>
-        <ns4:element name="patternDuration" type="FHIR.Duration"/>
-        <ns4:element name="patternHumanName" type="FHIR.HumanName"/>
-        <ns4:element name="patternIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="patternMoney" type="FHIR.Money"/>
-        <ns4:element name="patternPeriod" type="FHIR.Period"/>
-        <ns4:element name="patternQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="patternRange" type="FHIR.Range"/>
-        <ns4:element name="patternRatio" type="FHIR.Ratio"/>
-        <ns4:element name="patternReference" type="FHIR.Reference"/>
-        <ns4:element name="patternSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="patternSignature" type="FHIR.Signature"/>
-        <ns4:element name="patternTiming" type="FHIR.Timing"/>
-        <ns4:element name="patternMeta" type="FHIR.Meta"/>
+        <ns4:element name="fixed" type="choice&lt;FHIR.base64Binary,FHIR.boolean,FHIR.code,FHIR.date,FHIR.dateTime,FHIR.decimal,FHIR.id,FHIR.instant,FHIR.integer,FHIR.markdown,FHIR.oid,FHIR.positiveInt,FHIR.string,FHIR.time,FHIR.unsignedInt,FHIR.uri,FHIR.Address,FHIR.Age,FHIR.Annotation,FHIR.Attachment,FHIR.CodeableConcept,FHIR.Coding,FHIR.ContactPoint,FHIR.Count,FHIR.Distance,FHIR.Duration,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Period,FHIR.Quantity,FHIR.Range,FHIR.Ratio,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.Meta&gt;"/>
+        <ns4:element name="pattern" type="choice&lt;FHIR.base64Binary,FHIR.boolean,FHIR.code,FHIR.date,FHIR.dateTime,FHIR.decimal,FHIR.id,FHIR.instant,FHIR.integer,FHIR.markdown,FHIR.oid,FHIR.positiveInt,FHIR.string,FHIR.time,FHIR.unsignedInt,FHIR.uri,FHIR.Address,FHIR.Age,FHIR.Annotation,FHIR.Attachment,FHIR.CodeableConcept,FHIR.Coding,FHIR.ContactPoint,FHIR.Count,FHIR.Distance,FHIR.Duration,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Period,FHIR.Quantity,FHIR.Range,FHIR.Ratio,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.Meta&gt;"/>
         <ns4:element name="example" type="list&lt;FHIR.ElementDefinition.Example&gt;"/>
-        <ns4:element name="minValueDate" type="FHIR.date"/>
-        <ns4:element name="minValueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="minValueInstant" type="FHIR.instant"/>
-        <ns4:element name="minValueTime" type="FHIR.time"/>
-        <ns4:element name="minValueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="minValueInteger" type="FHIR.integer"/>
-        <ns4:element name="minValuePositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="minValueUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="minValueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="maxValueDate" type="FHIR.date"/>
-        <ns4:element name="maxValueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="maxValueInstant" type="FHIR.instant"/>
-        <ns4:element name="maxValueTime" type="FHIR.time"/>
-        <ns4:element name="maxValueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="maxValueInteger" type="FHIR.integer"/>
-        <ns4:element name="maxValuePositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="maxValueUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="maxValueQuantity" type="FHIR.Quantity"/>
+        <ns4:element name="minValue" type="choice&lt;FHIR.date,FHIR.dateTime,FHIR.instant,FHIR.time,FHIR.decimal,FHIR.integer,FHIR.positiveInt,FHIR.unsignedInt,FHIR.Quantity&gt;"/>
+        <ns4:element name="maxValue" type="choice&lt;FHIR.date,FHIR.dateTime,FHIR.instant,FHIR.time,FHIR.decimal,FHIR.integer,FHIR.positiveInt,FHIR.unsignedInt,FHIR.Quantity&gt;"/>
         <ns4:element name="maxLength" type="FHIR.integer"/>
         <ns4:element name="condition" type="list&lt;FHIR.id&gt;"/>
         <ns4:element name="constraint" type="list&lt;FHIR.ElementDefinition.Constraint&gt;"/>
@@ -656,44 +519,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Task.Input" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueBase64Binary" type="FHIR.base64Binary"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueCode" type="FHIR.code"/>
-        <ns4:element name="valueDate" type="FHIR.date"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="valueId" type="FHIR.id"/>
-        <ns4:element name="valueInstant" type="FHIR.instant"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueMarkdown" type="FHIR.markdown"/>
-        <ns4:element name="valueOid" type="FHIR.oid"/>
-        <ns4:element name="valuePositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="valueUri" type="FHIR.uri"/>
-        <ns4:element name="valueAddress" type="FHIR.Address"/>
-        <ns4:element name="valueAge" type="FHIR.Age"/>
-        <ns4:element name="valueAnnotation" type="FHIR.Annotation"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueCoding" type="FHIR.Coding"/>
-        <ns4:element name="valueContactPoint" type="FHIR.ContactPoint"/>
-        <ns4:element name="valueCount" type="FHIR.Count"/>
-        <ns4:element name="valueDistance" type="FHIR.Distance"/>
-        <ns4:element name="valueDuration" type="FHIR.Duration"/>
-        <ns4:element name="valueHumanName" type="FHIR.HumanName"/>
-        <ns4:element name="valueIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="valueMoney" type="FHIR.Money"/>
-        <ns4:element name="valuePeriod" type="FHIR.Period"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
-        <ns4:element name="valueRatio" type="FHIR.Ratio"/>
-        <ns4:element name="valueReference" type="FHIR.Reference"/>
-        <ns4:element name="valueSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="valueSignature" type="FHIR.Signature"/>
-        <ns4:element name="valueTiming" type="FHIR.Timing"/>
-        <ns4:element name="valueMeta" type="FHIR.Meta"/>
+        <ns4:element name="value" type="choice&lt;FHIR.base64Binary,FHIR.boolean,FHIR.code,FHIR.date,FHIR.dateTime,FHIR.decimal,FHIR.id,FHIR.instant,FHIR.integer,FHIR.markdown,FHIR.oid,FHIR.positiveInt,FHIR.string,FHIR.time,FHIR.unsignedInt,FHIR.uri,FHIR.Address,FHIR.Age,FHIR.Annotation,FHIR.Attachment,FHIR.CodeableConcept,FHIR.Coding,FHIR.ContactPoint,FHIR.Count,FHIR.Distance,FHIR.Duration,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Period,FHIR.Quantity,FHIR.Range,FHIR.Ratio,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.Meta&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Composition.Attester" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="mode" type="list&lt;FHIR.CompositionAttestationMode&gt;"/>
@@ -728,18 +554,14 @@
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
         <ns4:element name="bodySite" type="list&lt;FHIR.CodeableConcept&gt;"/>
-        <ns4:element name="reasonCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="reasonReference" type="FHIR.Reference"/>
-        <ns4:element name="scheduledDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="scheduledPeriod" type="FHIR.Period"/>
-        <ns4:element name="scheduledTiming" type="FHIR.Timing"/>
+        <ns4:element name="reason" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
+        <ns4:element name="scheduled" type="choice&lt;FHIR.dateTime,FHIR.Period,FHIR.Timing&gt;"/>
         <ns4:element name="encounter" type="FHIR.Reference"/>
         <ns4:element name="performer" type="FHIR.Reference"/>
         <ns4:element name="status" type="FHIR.ProcedureRequestStatus"/>
         <ns4:element name="supportingInfo" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="notes" type="list&lt;FHIR.Annotation&gt;"/>
-        <ns4:element name="asNeededBoolean" type="FHIR.boolean"/>
-        <ns4:element name="asNeededCodeableConcept" type="FHIR.CodeableConcept"/>
+        <ns4:element name="asNeeded" type="choice&lt;FHIR.boolean,FHIR.CodeableConcept&gt;"/>
         <ns4:element name="orderedOn" type="FHIR.dateTime"/>
         <ns4:element name="orderer" type="FHIR.Reference"/>
         <ns4:element name="priority" type="FHIR.ProcedureRequestPriority"/>
@@ -778,8 +600,7 @@
         <ns4:element name="context" type="FHIR.Reference"/>
         <ns4:element name="occurrenceDateTime" type="FHIR.dateTime"/>
         <ns4:element name="performer" type="FHIR.Reference"/>
-        <ns4:element name="reasonCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="reasonReference" type="FHIR.Reference"/>
+        <ns4:element name="reason" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="note" type="list&lt;FHIR.Annotation&gt;"/>
         <ns4:element name="evaluationMessage" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="outputParameters" type="FHIR.Reference"/>
@@ -826,8 +647,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.NutritionRequest.Administration" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="schedule" type="FHIR.Timing"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
-        <ns4:element name="rateQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="rateRatio" type="FHIR.Ratio"/>
+        <ns4:element name="rate" type="choice&lt;FHIR.Quantity,FHIR.Ratio&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.EnrollmentRequest" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" type="list&lt;FHIR.Identifier&gt;"/>
@@ -869,8 +689,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Substance.Ingredient" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="quantity" type="FHIR.Ratio"/>
-        <ns4:element name="substanceCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="substanceReference" type="FHIR.Reference"/>
+        <ns4:element name="substance" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.TestScript.Action" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="operation" type="FHIR.TestScript.Operation"/>
@@ -885,15 +704,10 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Claim.Procedure" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="sequence" type="FHIR.positiveInt"/>
         <ns4:element name="date" type="FHIR.dateTime"/>
-        <ns4:element name="procedureCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="procedureReference" type="FHIR.Reference"/>
+        <ns4:element name="procedure" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.StructureMap.Parameter" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="valueId" type="FHIR.id"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueDecimal" type="FHIR.decimal"/>
+        <ns4:element name="value" type="choice&lt;FHIR.id,FHIR.string,FHIR.boolean,FHIR.integer,FHIR.decimal&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.AllergyIntoleranceType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -1085,9 +899,7 @@
         <ns4:element name="value" type="System.DateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Communication.Payload" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="contentString" type="FHIR.string"/>
-        <ns4:element name="contentAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="contentReference" type="FHIR.Reference"/>
+        <ns4:element name="content" type="choice&lt;FHIR.string,FHIR.Attachment,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.QuestionnaireResponse.Item" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="linkId" type="FHIR.string"/>
@@ -1123,12 +935,10 @@
         <ns4:element name="library" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="category" type="FHIR.ActivityDefinitionCategory"/>
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
-        <ns4:element name="timingCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="timingTiming" type="FHIR.Timing"/>
+        <ns4:element name="timing" type="choice&lt;FHIR.CodeableConcept,FHIR.Timing&gt;"/>
         <ns4:element name="location" type="FHIR.Reference"/>
         <ns4:element name="participantType" type="list&lt;FHIR.code&gt;"/>
-        <ns4:element name="productReference" type="FHIR.Reference"/>
-        <ns4:element name="productCodeableConcept" type="FHIR.CodeableConcept"/>
+        <ns4:element name="product" type="choice&lt;FHIR.Reference,FHIR.CodeableConcept&gt;"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
         <ns4:element name="dosageInstruction" type="list&lt;FHIR.DosageInstruction&gt;"/>
         <ns4:element name="bodySite" type="list&lt;FHIR.CodeableConcept&gt;"/>
@@ -1209,12 +1019,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ValueSet.Parameter" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="name" type="FHIR.string"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="valueUri" type="FHIR.uri"/>
-        <ns4:element name="valueCode" type="FHIR.code"/>
+        <ns4:element name="value" type="choice&lt;FHIR.string,FHIR.boolean,FHIR.integer,FHIR.decimal,FHIR.uri,FHIR.code&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.StructureMapContextType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -1227,8 +1032,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExplanationOfBenefit.Accident" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="date" type="FHIR.date"/>
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
-        <ns4:element name="locationAddress" type="FHIR.Address"/>
-        <ns4:element name="locationReference" type="FHIR.Reference"/>
+        <ns4:element name="location" type="choice&lt;FHIR.Address,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.FamilyHistoryStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -1306,10 +1110,8 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Signature" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type" type="list&lt;FHIR.Coding&gt;"/>
         <ns4:element name="when" type="FHIR.instant"/>
-        <ns4:element name="whoUri" type="FHIR.uri"/>
-        <ns4:element name="whoReference" type="FHIR.Reference"/>
-        <ns4:element name="onBehalfOfUri" type="FHIR.uri"/>
-        <ns4:element name="onBehalfOfReference" type="FHIR.Reference"/>
+        <ns4:element name="who" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
+        <ns4:element name="onBehalfOf" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
         <ns4:element name="contentType" type="FHIR.code"/>
         <ns4:element name="blob" type="FHIR.base64Binary"/>
     </ns4:typeInfo>
@@ -1431,8 +1233,7 @@
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Contract.Friendly" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="contentAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="contentReference" type="FHIR.Reference"/>
+        <ns4:element name="content" type="choice&lt;FHIR.Attachment,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.MeasureReport.Population" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" type="FHIR.code"/>
@@ -1464,8 +1265,7 @@
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
         <ns4:element name="capacity" type="FHIR.Quantity"/>
         <ns4:element name="specimenQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="additiveCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="additiveReference" type="FHIR.Reference"/>
+        <ns4:element name="additive" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.string" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -1488,44 +1288,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ElementDefinition.Example" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="label" type="FHIR.string"/>
-        <ns4:element name="valueBase64Binary" type="FHIR.base64Binary"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueCode" type="FHIR.code"/>
-        <ns4:element name="valueDate" type="FHIR.date"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="valueId" type="FHIR.id"/>
-        <ns4:element name="valueInstant" type="FHIR.instant"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueMarkdown" type="FHIR.markdown"/>
-        <ns4:element name="valueOid" type="FHIR.oid"/>
-        <ns4:element name="valuePositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="valueUri" type="FHIR.uri"/>
-        <ns4:element name="valueAddress" type="FHIR.Address"/>
-        <ns4:element name="valueAge" type="FHIR.Age"/>
-        <ns4:element name="valueAnnotation" type="FHIR.Annotation"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueCoding" type="FHIR.Coding"/>
-        <ns4:element name="valueContactPoint" type="FHIR.ContactPoint"/>
-        <ns4:element name="valueCount" type="FHIR.Count"/>
-        <ns4:element name="valueDistance" type="FHIR.Distance"/>
-        <ns4:element name="valueDuration" type="FHIR.Duration"/>
-        <ns4:element name="valueHumanName" type="FHIR.HumanName"/>
-        <ns4:element name="valueIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="valueMoney" type="FHIR.Money"/>
-        <ns4:element name="valuePeriod" type="FHIR.Period"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
-        <ns4:element name="valueRatio" type="FHIR.Ratio"/>
-        <ns4:element name="valueReference" type="FHIR.Reference"/>
-        <ns4:element name="valueSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="valueSignature" type="FHIR.Signature"/>
-        <ns4:element name="valueTiming" type="FHIR.Timing"/>
-        <ns4:element name="valueMeta" type="FHIR.Meta"/>
+        <ns4:element name="value" type="choice&lt;FHIR.base64Binary,FHIR.boolean,FHIR.code,FHIR.date,FHIR.dateTime,FHIR.decimal,FHIR.id,FHIR.instant,FHIR.integer,FHIR.markdown,FHIR.oid,FHIR.positiveInt,FHIR.string,FHIR.time,FHIR.unsignedInt,FHIR.uri,FHIR.Address,FHIR.Age,FHIR.Annotation,FHIR.Attachment,FHIR.CodeableConcept,FHIR.Coding,FHIR.ContactPoint,FHIR.Count,FHIR.Distance,FHIR.Duration,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Period,FHIR.Quantity,FHIR.Range,FHIR.Ratio,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.Meta&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.GuideDependencyType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -1590,9 +1353,7 @@
         <ns4:element name="description" type="FHIR.string"/>
         <ns4:element name="study" type="list&lt;FHIR.ImagingManifest.Study&gt;"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.dateTime" retrievable="false" baseType="FHIR.Element">
-        <ns4:element name="value" type="System.DateTime"/>
-    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.dateTime" retrievable="false" baseType="FHIR.Element"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.CapabilityStatement.Messaging" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="endpoint" type="list&lt;FHIR.CapabilityStatement.Endpoint&gt;"/>
         <ns4:element name="reliableCache" type="FHIR.unsignedInt"/>
@@ -1650,11 +1411,8 @@
         <ns4:element name="service" type="FHIR.CodeableConcept"/>
         <ns4:element name="modifier" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="programCode" type="list&lt;FHIR.CodeableConcept&gt;"/>
-        <ns4:element name="servicedDate" type="FHIR.date"/>
-        <ns4:element name="servicedPeriod" type="FHIR.Period"/>
-        <ns4:element name="locationCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="locationAddress" type="FHIR.Address"/>
-        <ns4:element name="locationReference" type="FHIR.Reference"/>
+        <ns4:element name="serviced" type="choice&lt;FHIR.date,FHIR.Period&gt;"/>
+        <ns4:element name="location" type="choice&lt;FHIR.CodeableConcept,FHIR.Address,FHIR.Reference&gt;"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
         <ns4:element name="unitPrice" type="FHIR.Money"/>
         <ns4:element name="factor" type="FHIR.decimal"/>
@@ -1682,11 +1440,8 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExplanationOfBenefit.Financial" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
-        <ns4:element name="benefitUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="benefitString" type="FHIR.string"/>
-        <ns4:element name="benefitMoney" type="FHIR.Money"/>
-        <ns4:element name="benefitUsedUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="benefitUsedMoney" type="FHIR.Money"/>
+        <ns4:element name="benefit" type="choice&lt;FHIR.unsignedInt,FHIR.string,FHIR.Money&gt;"/>
+        <ns4:element name="benefitUsed" type="choice&lt;FHIR.unsignedInt,FHIR.Money&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExplanationOfBenefit.Prosthesis" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="initial" type="FHIR.boolean"/>
@@ -1764,12 +1519,10 @@
         <ns4:element name="telecom" type="list&lt;FHIR.ContactPoint&gt;"/>
         <ns4:element name="gender" type="FHIR.AdministrativeGender"/>
         <ns4:element name="birthDate" type="FHIR.date"/>
-        <ns4:element name="deceasedBoolean" type="FHIR.boolean"/>
-        <ns4:element name="deceasedDateTime" type="FHIR.dateTime"/>
+        <ns4:element name="deceased" type="choice&lt;FHIR.boolean,FHIR.dateTime&gt;"/>
         <ns4:element name="address" type="list&lt;FHIR.Address&gt;"/>
         <ns4:element name="maritalStatus" type="FHIR.CodeableConcept"/>
-        <ns4:element name="multipleBirthBoolean" type="FHIR.boolean"/>
-        <ns4:element name="multipleBirthInteger" type="FHIR.integer"/>
+        <ns4:element name="multipleBirth" type="choice&lt;FHIR.boolean,FHIR.integer&gt;"/>
         <ns4:element name="photo" type="list&lt;FHIR.Attachment&gt;"/>
         <ns4:element name="contact" type="list&lt;FHIR.Patient.Contact&gt;"/>
         <ns4:element name="animal" type="FHIR.Patient.Animal"/>
@@ -1829,10 +1582,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.FamilyMemberHistory.Condition" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
         <ns4:element name="outcome" type="FHIR.CodeableConcept"/>
-        <ns4:element name="onsetAge" type="FHIR.Age"/>
-        <ns4:element name="onsetRange" type="FHIR.Range"/>
-        <ns4:element name="onsetPeriod" type="FHIR.Period"/>
-        <ns4:element name="onsetString" type="FHIR.string"/>
+        <ns4:element name="onset" type="choice&lt;FHIR.Age,FHIR.Range,FHIR.Period,FHIR.string&gt;"/>
         <ns4:element name="note" type="FHIR.Annotation"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ImagingManifest.Series" retrievable="false" baseType="FHIR.BackboneElement">
@@ -1846,8 +1596,7 @@
         <ns4:element name="context" type="FHIR.Reference"/>
         <ns4:element name="occurrenceDateTime" type="FHIR.dateTime"/>
         <ns4:element name="author" type="FHIR.Reference"/>
-        <ns4:element name="reasonCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="reasonReference" type="FHIR.Reference"/>
+        <ns4:element name="reason" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="note" type="list&lt;FHIR.Annotation&gt;"/>
         <ns4:element name="action" type="list&lt;FHIR.RequestGroup.Action&gt;"/>
     </ns4:typeInfo>
@@ -1899,8 +1648,7 @@
         <ns4:element name="description" type="FHIR.string"/>
         <ns4:element name="procedure" type="FHIR.CodeableConcept"/>
         <ns4:element name="additive" type="list&lt;FHIR.Reference&gt;"/>
-        <ns4:element name="timeDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="timePeriod" type="FHIR.Period"/>
+        <ns4:element name="time" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.NutritionRequest" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" type="list&lt;FHIR.Identifier&gt;"/>
@@ -2034,10 +1782,8 @@
         <ns4:element name="jurisdiction" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="purpose" type="FHIR.markdown"/>
         <ns4:element name="copyright" type="FHIR.markdown"/>
-        <ns4:element name="sourceUri" type="FHIR.uri"/>
-        <ns4:element name="sourceReference" type="FHIR.Reference"/>
-        <ns4:element name="targetUri" type="FHIR.uri"/>
-        <ns4:element name="targetReference" type="FHIR.Reference"/>
+        <ns4:element name="source" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
+        <ns4:element name="target" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
         <ns4:element name="group" type="list&lt;FHIR.ConceptMap.Group&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ConsentStatus" retrievable="false" baseType="FHIR.Element">
@@ -2077,8 +1823,7 @@
         <ns4:element name="encounter" type="FHIR.Reference"/>
         <ns4:element name="dateWritten" type="FHIR.dateTime"/>
         <ns4:element name="prescriber" type="FHIR.Reference"/>
-        <ns4:element name="reasonCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="reasonReference" type="FHIR.Reference"/>
+        <ns4:element name="reason" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="dispense" type="list&lt;FHIR.VisionPrescription.Dispense&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.SearchParameter.Component" retrievable="false" baseType="FHIR.BackboneElement">
@@ -2142,11 +1887,8 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.EligibilityResponse.Financial" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
-        <ns4:element name="benefitUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="benefitString" type="FHIR.string"/>
-        <ns4:element name="benefitMoney" type="FHIR.Money"/>
-        <ns4:element name="benefitUsedUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="benefitUsedMoney" type="FHIR.Money"/>
+        <ns4:element name="benefit" type="choice&lt;FHIR.unsignedInt,FHIR.string,FHIR.Money&gt;"/>
+        <ns4:element name="benefitUsed" type="choice&lt;FHIR.unsignedInt,FHIR.Money&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.FilterOperator" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -2217,8 +1959,7 @@
         <ns4:element name="url" type="FHIR.uri"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Contract.Rule" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="contentAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="contentReference" type="FHIR.Reference"/>
+        <ns4:element name="content" type="choice&lt;FHIR.Attachment,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.PaymentReconciliation.Note" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
@@ -2242,11 +1983,7 @@
         <ns4:element name="criticality" type="FHIR.AllergyIntoleranceCriticality"/>
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
         <ns4:element name="patient" type="FHIR.Reference"/>
-        <ns4:element name="onsetDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="onsetAge" type="FHIR.Age"/>
-        <ns4:element name="onsetPeriod" type="FHIR.Period"/>
-        <ns4:element name="onsetRange" type="FHIR.Range"/>
-        <ns4:element name="onsetString" type="FHIR.string"/>
+        <ns4:element name="onset" type="choice&lt;FHIR.dateTime,FHIR.Age,FHIR.Period,FHIR.Range,FHIR.string&gt;"/>
         <ns4:element name="assertedDate" type="FHIR.dateTime"/>
         <ns4:element name="recorder" type="FHIR.Reference"/>
         <ns4:element name="asserter" type="FHIR.Reference"/>
@@ -2292,8 +2029,7 @@
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Contract.ValuedItem1" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="entityCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="entityReference" type="FHIR.Reference"/>
+        <ns4:element name="entity" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="identifier" type="FHIR.Identifier"/>
         <ns4:element name="effectiveTime" type="FHIR.dateTime"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
@@ -2310,8 +2046,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Claim.Diagnosis" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="sequence" type="FHIR.positiveInt"/>
-        <ns4:element name="diagnosisCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="diagnosisReference" type="FHIR.Reference"/>
+        <ns4:element name="diagnosis" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="type" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="packageCode" type="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
@@ -2359,12 +2094,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.CodeSystem.Property1" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" type="FHIR.code"/>
-        <ns4:element name="valueCode" type="FHIR.code"/>
-        <ns4:element name="valueCoding" type="FHIR.Coding"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
+        <ns4:element name="value" type="choice&lt;FHIR.code,FHIR.Coding,FHIR.string,FHIR.integer,FHIR.boolean,FHIR.dateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ImagingStudy" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="uid" type="FHIR.oid"/>
@@ -2435,44 +2165,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Extension" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="url" type="System.String"/>
-        <ns4:element name="valueBase64Binary" type="FHIR.base64Binary"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueCode" type="FHIR.code"/>
-        <ns4:element name="valueDate" type="FHIR.date"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="valueId" type="FHIR.id"/>
-        <ns4:element name="valueInstant" type="FHIR.instant"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueMarkdown" type="FHIR.markdown"/>
-        <ns4:element name="valueOid" type="FHIR.oid"/>
-        <ns4:element name="valuePositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="valueUri" type="FHIR.uri"/>
-        <ns4:element name="valueAddress" type="FHIR.Address"/>
-        <ns4:element name="valueAge" type="FHIR.Age"/>
-        <ns4:element name="valueAnnotation" type="FHIR.Annotation"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueCoding" type="FHIR.Coding"/>
-        <ns4:element name="valueContactPoint" type="FHIR.ContactPoint"/>
-        <ns4:element name="valueCount" type="FHIR.Count"/>
-        <ns4:element name="valueDistance" type="FHIR.Distance"/>
-        <ns4:element name="valueDuration" type="FHIR.Duration"/>
-        <ns4:element name="valueHumanName" type="FHIR.HumanName"/>
-        <ns4:element name="valueIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="valueMoney" type="FHIR.Money"/>
-        <ns4:element name="valuePeriod" type="FHIR.Period"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
-        <ns4:element name="valueRatio" type="FHIR.Ratio"/>
-        <ns4:element name="valueReference" type="FHIR.Reference"/>
-        <ns4:element name="valueSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="valueSignature" type="FHIR.Signature"/>
-        <ns4:element name="valueTiming" type="FHIR.Timing"/>
-        <ns4:element name="valueMeta" type="FHIR.Meta"/>
+        <ns4:element name="value" type="choice&lt;FHIR.base64Binary,FHIR.boolean,FHIR.code,FHIR.date,FHIR.dateTime,FHIR.decimal,FHIR.id,FHIR.instant,FHIR.integer,FHIR.markdown,FHIR.oid,FHIR.positiveInt,FHIR.string,FHIR.time,FHIR.unsignedInt,FHIR.uri,FHIR.Address,FHIR.Age,FHIR.Annotation,FHIR.Attachment,FHIR.CodeableConcept,FHIR.Coding,FHIR.ContactPoint,FHIR.Count,FHIR.Distance,FHIR.Duration,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Period,FHIR.Quantity,FHIR.Range,FHIR.Ratio,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.Meta&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExplanationOfBenefit.BenefitBalance" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="category" type="FHIR.CodeableConcept"/>
@@ -2487,10 +2180,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Group.Characteristic" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
+        <ns4:element name="value" type="choice&lt;FHIR.CodeableConcept,FHIR.boolean,FHIR.Quantity,FHIR.Range&gt;"/>
         <ns4:element name="exclude" type="FHIR.boolean"/>
         <ns4:element name="period" type="FHIR.Period"/>
     </ns4:typeInfo>
@@ -2502,19 +2192,15 @@
         <ns4:element name="text" type="FHIR.string"/>
         <ns4:element name="additionalInstructions" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="timing" type="FHIR.Timing"/>
-        <ns4:element name="asNeededBoolean" type="FHIR.boolean"/>
-        <ns4:element name="asNeededCodeableConcept" type="FHIR.CodeableConcept"/>
+        <ns4:element name="asNeeded" type="choice&lt;FHIR.boolean,FHIR.CodeableConcept&gt;"/>
         <ns4:element name="site" type="FHIR.CodeableConcept"/>
         <ns4:element name="route" type="FHIR.CodeableConcept"/>
         <ns4:element name="method" type="FHIR.CodeableConcept"/>
-        <ns4:element name="doseRange" type="FHIR.Range"/>
-        <ns4:element name="doseQuantity" type="FHIR.Quantity"/>
+        <ns4:element name="dose" type="choice&lt;FHIR.Range,FHIR.Quantity&gt;"/>
         <ns4:element name="maxDosePerPeriod" type="FHIR.Ratio"/>
         <ns4:element name="maxDosePerAdministration" type="FHIR.Quantity"/>
         <ns4:element name="maxDosePerLifetime" type="FHIR.Quantity"/>
-        <ns4:element name="rateRatio" type="FHIR.Ratio"/>
-        <ns4:element name="rateRange" type="FHIR.Range"/>
-        <ns4:element name="rateQuantity" type="FHIR.Quantity"/>
+        <ns4:element name="rate" type="choice&lt;FHIR.Ratio,FHIR.Range,FHIR.Quantity&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.PractitionerRole" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" type="list&lt;FHIR.Identifier&gt;"/>
@@ -2582,8 +2268,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Specimen.Collection" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="collector" type="FHIR.Reference"/>
-        <ns4:element name="collectedDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="collectedPeriod" type="FHIR.Period"/>
+        <ns4:element name="collected" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
         <ns4:element name="method" type="FHIR.CodeableConcept"/>
         <ns4:element name="bodySite" type="FHIR.CodeableConcept"/>
@@ -2686,13 +2371,10 @@
         <ns4:element name="status" type="FHIR.CarePlanActivityStatus"/>
         <ns4:element name="statusReason" type="FHIR.CodeableConcept"/>
         <ns4:element name="prohibited" type="FHIR.boolean"/>
-        <ns4:element name="scheduledTiming" type="FHIR.Timing"/>
-        <ns4:element name="scheduledPeriod" type="FHIR.Period"/>
-        <ns4:element name="scheduledString" type="FHIR.string"/>
+        <ns4:element name="scheduled" type="choice&lt;FHIR.Timing,FHIR.Period,FHIR.string&gt;"/>
         <ns4:element name="location" type="FHIR.Reference"/>
         <ns4:element name="performer" type="list&lt;FHIR.Reference&gt;"/>
-        <ns4:element name="productCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="productReference" type="FHIR.Reference"/>
+        <ns4:element name="product" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="dailyAmount" type="FHIR.Quantity"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
         <ns4:element name="description" type="FHIR.string"/>
@@ -2753,8 +2435,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Task" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" type="list&lt;FHIR.Identifier&gt;"/>
-        <ns4:element name="definitionUri" type="FHIR.uri"/>
-        <ns4:element name="definitionReference" type="FHIR.Reference"/>
+        <ns4:element name="definition" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
         <ns4:element name="basedOn" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="groupIdentifier" type="FHIR.Identifier"/>
         <ns4:element name="partOf" type="list&lt;FHIR.Reference&gt;"/>
@@ -2825,8 +2506,7 @@
         <ns4:element name="patient" type="FHIR.Reference"/>
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
-        <ns4:element name="suppliedItemCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="suppliedItemReference" type="FHIR.Reference"/>
+        <ns4:element name="suppliedItem" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="supplier" type="FHIR.Reference"/>
         <ns4:element name="whenPrepared" type="FHIR.Period"/>
         <ns4:element name="time" type="FHIR.dateTime"/>
@@ -2928,8 +2608,7 @@
         <ns4:element name="status" type="FHIR.code"/>
         <ns4:element name="priority" type="FHIR.CodeableConcept"/>
         <ns4:element name="patient" type="FHIR.Reference"/>
-        <ns4:element name="servicedDate" type="FHIR.date"/>
-        <ns4:element name="servicedPeriod" type="FHIR.Period"/>
+        <ns4:element name="serviced" type="choice&lt;FHIR.date,FHIR.Period&gt;"/>
         <ns4:element name="created" type="FHIR.dateTime"/>
         <ns4:element name="enterer" type="FHIR.Reference"/>
         <ns4:element name="provider" type="FHIR.Reference"/>
@@ -2975,44 +2654,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Parameters.Parameter" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="name" type="FHIR.string"/>
-        <ns4:element name="valueBase64Binary" type="FHIR.base64Binary"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueCode" type="FHIR.code"/>
-        <ns4:element name="valueDate" type="FHIR.date"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="valueId" type="FHIR.id"/>
-        <ns4:element name="valueInstant" type="FHIR.instant"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueMarkdown" type="FHIR.markdown"/>
-        <ns4:element name="valueOid" type="FHIR.oid"/>
-        <ns4:element name="valuePositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="valueUri" type="FHIR.uri"/>
-        <ns4:element name="valueAddress" type="FHIR.Address"/>
-        <ns4:element name="valueAge" type="FHIR.Age"/>
-        <ns4:element name="valueAnnotation" type="FHIR.Annotation"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueCoding" type="FHIR.Coding"/>
-        <ns4:element name="valueContactPoint" type="FHIR.ContactPoint"/>
-        <ns4:element name="valueCount" type="FHIR.Count"/>
-        <ns4:element name="valueDistance" type="FHIR.Distance"/>
-        <ns4:element name="valueDuration" type="FHIR.Duration"/>
-        <ns4:element name="valueHumanName" type="FHIR.HumanName"/>
-        <ns4:element name="valueIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="valueMoney" type="FHIR.Money"/>
-        <ns4:element name="valuePeriod" type="FHIR.Period"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
-        <ns4:element name="valueRatio" type="FHIR.Ratio"/>
-        <ns4:element name="valueReference" type="FHIR.Reference"/>
-        <ns4:element name="valueSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="valueSignature" type="FHIR.Signature"/>
-        <ns4:element name="valueTiming" type="FHIR.Timing"/>
-        <ns4:element name="valueMeta" type="FHIR.Meta"/>
+        <ns4:element name="value" type="choice&lt;FHIR.base64Binary,FHIR.boolean,FHIR.code,FHIR.date,FHIR.dateTime,FHIR.decimal,FHIR.id,FHIR.instant,FHIR.integer,FHIR.markdown,FHIR.oid,FHIR.positiveInt,FHIR.string,FHIR.time,FHIR.unsignedInt,FHIR.uri,FHIR.Address,FHIR.Age,FHIR.Annotation,FHIR.Attachment,FHIR.CodeableConcept,FHIR.Coding,FHIR.ContactPoint,FHIR.Count,FHIR.Distance,FHIR.Duration,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Period,FHIR.Quantity,FHIR.Range,FHIR.Ratio,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.Meta&gt;"/>
         <ns4:element name="resource" type="FHIR.ResourceContainer"/>
         <ns4:element name="part" type="list&lt;FHIR.Parameters.Parameter&gt;"/>
     </ns4:typeInfo>
@@ -3023,9 +2665,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.DataRequirement.DateFilter" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="path" type="FHIR.string"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valuePeriod" type="FHIR.Period"/>
-        <ns4:element name="valueDuration" type="FHIR.Duration"/>
+        <ns4:element name="value" type="choice&lt;FHIR.dateTime,FHIR.Period,FHIR.Duration&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Sequence.Variant" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="start" type="FHIR.integer"/>
@@ -3038,8 +2678,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.MedicationDispense" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" type="FHIR.Identifier"/>
         <ns4:element name="status" type="FHIR.MedicationDispenseStatus"/>
-        <ns4:element name="medicationCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="medicationReference" type="FHIR.Reference"/>
+        <ns4:element name="medication" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="patient" type="FHIR.Reference"/>
         <ns4:element name="supportingInformation" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="dispenser" type="FHIR.Reference"/>
@@ -3069,8 +2708,7 @@
         <ns4:element name="ingredient" type="list&lt;FHIR.Substance.Ingredient&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Contract.Legal" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="contentAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="contentReference" type="FHIR.Reference"/>
+        <ns4:element name="content" type="choice&lt;FHIR.Attachment,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.TestScript.Rule" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="resource" type="FHIR.Reference"/>
@@ -3098,19 +2736,7 @@
         <ns4:element name="maxLength" type="FHIR.integer"/>
         <ns4:element name="options" type="FHIR.Reference"/>
         <ns4:element name="option" type="list&lt;FHIR.Questionnaire.Option&gt;"/>
-        <ns4:element name="initialBoolean" type="FHIR.boolean"/>
-        <ns4:element name="initialDecimal" type="FHIR.decimal"/>
-        <ns4:element name="initialInteger" type="FHIR.integer"/>
-        <ns4:element name="initialDate" type="FHIR.date"/>
-        <ns4:element name="initialDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="initialInstant" type="FHIR.instant"/>
-        <ns4:element name="initialTime" type="FHIR.time"/>
-        <ns4:element name="initialString" type="FHIR.string"/>
-        <ns4:element name="initialUri" type="FHIR.uri"/>
-        <ns4:element name="initialAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="initialCoding" type="FHIR.Coding"/>
-        <ns4:element name="initialQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="initialReference" type="FHIR.Reference"/>
+        <ns4:element name="initial" type="choice&lt;FHIR.boolean,FHIR.decimal,FHIR.integer,FHIR.date,FHIR.dateTime,FHIR.instant,FHIR.time,FHIR.string,FHIR.uri,FHIR.Attachment,FHIR.Coding,FHIR.Quantity,FHIR.Reference&gt;"/>
         <ns4:element name="item" type="list&lt;FHIR.Questionnaire.Item&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Task.Requester" retrievable="false" baseType="FHIR.BackboneElement">
@@ -3164,10 +2790,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.TriggerDefinition" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type" type="FHIR.TriggerType"/>
         <ns4:element name="eventName" type="FHIR.string"/>
-        <ns4:element name="eventTimingTiming" type="FHIR.Timing"/>
-        <ns4:element name="eventTimingReference" type="FHIR.Reference"/>
-        <ns4:element name="eventTimingDate" type="FHIR.date"/>
-        <ns4:element name="eventTimingDateTime" type="FHIR.dateTime"/>
+        <ns4:element name="eventTiming" type="choice&lt;FHIR.Timing,FHIR.Reference,FHIR.date,FHIR.dateTime&gt;"/>
         <ns4:element name="eventData" type="FHIR.DataRequirement"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.CapabilityStatement.Interaction1" retrievable="false" baseType="FHIR.BackboneElement">
@@ -3265,12 +2888,8 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExplanationOfBenefit.Information" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="category" type="FHIR.CodeableConcept"/>
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
-        <ns4:element name="timingDate" type="FHIR.date"/>
-        <ns4:element name="timingPeriod" type="FHIR.Period"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueReference" type="FHIR.Reference"/>
+        <ns4:element name="timing" type="choice&lt;FHIR.date,FHIR.Period&gt;"/>
+        <ns4:element name="value" type="choice&lt;FHIR.string,FHIR.Quantity,FHIR.Attachment,FHIR.Reference&gt;"/>
         <ns4:element name="reason" type="FHIR.Coding"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.LinkType" retrievable="false" baseType="FHIR.Element">
@@ -3293,9 +2912,7 @@
         <ns4:element name="patient" type="FHIR.Reference"/>
         <ns4:element name="consentor" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="organization" type="FHIR.Reference"/>
-        <ns4:element name="sourceAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="sourceIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="sourceReference" type="FHIR.Reference"/>
+        <ns4:element name="source" type="choice&lt;FHIR.Attachment,FHIR.Identifier,FHIR.Reference&gt;"/>
         <ns4:element name="policy" type="FHIR.uri"/>
         <ns4:element name="recipient" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="purpose" type="list&lt;FHIR.Coding&gt;"/>
@@ -3311,8 +2928,7 @@
         <ns4:element name="requisition" type="FHIR.Identifier"/>
         <ns4:element name="status" type="FHIR.MedicationRequestStatus"/>
         <ns4:element name="stage" type="FHIR.CodeableConcept"/>
-        <ns4:element name="medicationCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="medicationReference" type="FHIR.Reference"/>
+        <ns4:element name="medication" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="patient" type="FHIR.Reference"/>
         <ns4:element name="context" type="FHIR.Reference"/>
         <ns4:element name="supportingInformation" type="list&lt;FHIR.Reference&gt;"/>
@@ -3357,8 +2973,7 @@
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Goal.Outcome" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="resultCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="resultReference" type="FHIR.Reference"/>
+        <ns4:element name="result" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.TriggerType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -3366,12 +2981,8 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Claim.Information" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="category" type="FHIR.CodeableConcept"/>
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
-        <ns4:element name="timingDate" type="FHIR.date"/>
-        <ns4:element name="timingPeriod" type="FHIR.Period"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueReference" type="FHIR.Reference"/>
+        <ns4:element name="timing" type="choice&lt;FHIR.date,FHIR.Period&gt;"/>
+        <ns4:element name="value" type="choice&lt;FHIR.string,FHIR.Quantity,FHIR.Attachment,FHIR.Reference&gt;"/>
         <ns4:element name="reason" type="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ActivityDefinitionCategory" retrievable="false" baseType="FHIR.Element">
@@ -3402,20 +3013,10 @@
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="encounter" type="FHIR.Reference"/>
-        <ns4:element name="effectiveDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="effectivePeriod" type="FHIR.Period"/>
+        <ns4:element name="effective" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="issued" type="FHIR.instant"/>
         <ns4:element name="performer" type="list&lt;FHIR.Reference&gt;"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
-        <ns4:element name="valueRatio" type="FHIR.Ratio"/>
-        <ns4:element name="valueSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valuePeriod" type="FHIR.Period"/>
+        <ns4:element name="value" type="choice&lt;FHIR.Quantity,FHIR.CodeableConcept,FHIR.string,FHIR.Range,FHIR.Ratio,FHIR.SampledData,FHIR.Attachment,FHIR.time,FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="dataAbsentReason" type="FHIR.CodeableConcept"/>
         <ns4:element name="interpretation" type="FHIR.CodeableConcept"/>
         <ns4:element name="comment" type="FHIR.string"/>
@@ -3434,8 +3035,7 @@
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Annotation" retrievable="false" baseType="FHIR.Element">
-        <ns4:element name="authorReference" type="FHIR.Reference"/>
-        <ns4:element name="authorString" type="FHIR.string"/>
+        <ns4:element name="author" type="choice&lt;FHIR.Reference,FHIR.string&gt;"/>
         <ns4:element name="time" type="FHIR.dateTime"/>
         <ns4:element name="text" type="FHIR.string"/>
     </ns4:typeInfo>
@@ -3709,9 +3309,7 @@
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Timing.Repeat" retrievable="false" baseType="FHIR.Element">
-        <ns4:element name="boundsDuration" type="FHIR.Duration"/>
-        <ns4:element name="boundsRange" type="FHIR.Range"/>
-        <ns4:element name="boundsPeriod" type="FHIR.Period"/>
+        <ns4:element name="bounds" type="choice&lt;FHIR.Duration,FHIR.Range,FHIR.Period&gt;"/>
         <ns4:element name="count" type="FHIR.integer"/>
         <ns4:element name="countMax" type="FHIR.integer"/>
         <ns4:element name="duration" type="FHIR.decimal"/>
@@ -3728,8 +3326,7 @@
         <ns4:element name="offset" type="FHIR.unsignedInt"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Medication.Ingredient" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="itemCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="itemReference" type="FHIR.Reference"/>
+        <ns4:element name="item" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="amount" type="FHIR.Ratio"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Media" retrievable="true" baseType="FHIR.DomainResource">
@@ -3766,8 +3363,7 @@
         <ns4:element name="signer" type="list&lt;FHIR.Contract.Signer&gt;"/>
         <ns4:element name="valuedItem" type="list&lt;FHIR.Contract.ValuedItem&gt;"/>
         <ns4:element name="term" type="list&lt;FHIR.Contract.Term&gt;"/>
-        <ns4:element name="bindingAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="bindingReference" type="FHIR.Reference"/>
+        <ns4:element name="binding" type="choice&lt;FHIR.Attachment,FHIR.Reference&gt;"/>
         <ns4:element name="friendly" type="list&lt;FHIR.Contract.Friendly&gt;"/>
         <ns4:element name="legal" type="list&lt;FHIR.Contract.Legal&gt;"/>
         <ns4:element name="rule" type="list&lt;FHIR.Contract.Rule&gt;"/>
@@ -3798,8 +3394,7 @@
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="encounter" type="FHIR.Reference"/>
-        <ns4:element name="effectiveDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="effectivePeriod" type="FHIR.Period"/>
+        <ns4:element name="effective" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="issued" type="FHIR.instant"/>
         <ns4:element name="performer" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="request" type="list&lt;FHIR.Reference&gt;"/>
@@ -3897,44 +3492,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Task.Output" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueBase64Binary" type="FHIR.base64Binary"/>
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueCode" type="FHIR.code"/>
-        <ns4:element name="valueDate" type="FHIR.date"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="valueId" type="FHIR.id"/>
-        <ns4:element name="valueInstant" type="FHIR.instant"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueMarkdown" type="FHIR.markdown"/>
-        <ns4:element name="valueOid" type="FHIR.oid"/>
-        <ns4:element name="valuePositiveInt" type="FHIR.positiveInt"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueUnsignedInt" type="FHIR.unsignedInt"/>
-        <ns4:element name="valueUri" type="FHIR.uri"/>
-        <ns4:element name="valueAddress" type="FHIR.Address"/>
-        <ns4:element name="valueAge" type="FHIR.Age"/>
-        <ns4:element name="valueAnnotation" type="FHIR.Annotation"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueCoding" type="FHIR.Coding"/>
-        <ns4:element name="valueContactPoint" type="FHIR.ContactPoint"/>
-        <ns4:element name="valueCount" type="FHIR.Count"/>
-        <ns4:element name="valueDistance" type="FHIR.Distance"/>
-        <ns4:element name="valueDuration" type="FHIR.Duration"/>
-        <ns4:element name="valueHumanName" type="FHIR.HumanName"/>
-        <ns4:element name="valueIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="valueMoney" type="FHIR.Money"/>
-        <ns4:element name="valuePeriod" type="FHIR.Period"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
-        <ns4:element name="valueRatio" type="FHIR.Ratio"/>
-        <ns4:element name="valueReference" type="FHIR.Reference"/>
-        <ns4:element name="valueSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="valueSignature" type="FHIR.Signature"/>
-        <ns4:element name="valueTiming" type="FHIR.Timing"/>
-        <ns4:element name="valueMeta" type="FHIR.Meta"/>
+        <ns4:element name="value" type="choice&lt;FHIR.base64Binary,FHIR.boolean,FHIR.code,FHIR.date,FHIR.dateTime,FHIR.decimal,FHIR.id,FHIR.instant,FHIR.integer,FHIR.markdown,FHIR.oid,FHIR.positiveInt,FHIR.string,FHIR.time,FHIR.unsignedInt,FHIR.uri,FHIR.Address,FHIR.Age,FHIR.Annotation,FHIR.Attachment,FHIR.CodeableConcept,FHIR.Coding,FHIR.ContactPoint,FHIR.Count,FHIR.Distance,FHIR.Duration,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Period,FHIR.Quantity,FHIR.Range,FHIR.Ratio,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.Meta&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.RelatedArtifact" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type" type="FHIR.RelatedArtifactType"/>
@@ -3947,13 +3505,11 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.MedicationAdministration" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" type="list&lt;FHIR.Identifier&gt;"/>
         <ns4:element name="status" type="FHIR.MedicationAdministrationStatus"/>
-        <ns4:element name="medicationCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="medicationReference" type="FHIR.Reference"/>
+        <ns4:element name="medication" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="patient" type="FHIR.Reference"/>
         <ns4:element name="encounter" type="FHIR.Reference"/>
         <ns4:element name="supportingInformation" type="list&lt;FHIR.Reference&gt;"/>
-        <ns4:element name="effectiveDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="effectivePeriod" type="FHIR.Period"/>
+        <ns4:element name="effective" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="performer" type="FHIR.Reference"/>
         <ns4:element name="reasonReference" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="prescription" type="FHIR.Reference"/>
@@ -4109,8 +3665,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Claim.Accident" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="date" type="FHIR.date"/>
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
-        <ns4:element name="locationAddress" type="FHIR.Address"/>
-        <ns4:element name="locationReference" type="FHIR.Reference"/>
+        <ns4:element name="location" type="choice&lt;FHIR.Address,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.base64Binary" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="xs.base64Binary"/>
@@ -4127,19 +3682,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Questionnaire.EnableWhen" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="question" type="FHIR.string"/>
         <ns4:element name="hasAnswer" type="FHIR.boolean"/>
-        <ns4:element name="answerBoolean" type="FHIR.boolean"/>
-        <ns4:element name="answerDecimal" type="FHIR.decimal"/>
-        <ns4:element name="answerInteger" type="FHIR.integer"/>
-        <ns4:element name="answerDate" type="FHIR.date"/>
-        <ns4:element name="answerDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="answerInstant" type="FHIR.instant"/>
-        <ns4:element name="answerTime" type="FHIR.time"/>
-        <ns4:element name="answerString" type="FHIR.string"/>
-        <ns4:element name="answerUri" type="FHIR.uri"/>
-        <ns4:element name="answerAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="answerCoding" type="FHIR.Coding"/>
-        <ns4:element name="answerQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="answerReference" type="FHIR.Reference"/>
+        <ns4:element name="answer" type="choice&lt;FHIR.boolean,FHIR.decimal,FHIR.integer,FHIR.date,FHIR.dateTime,FHIR.instant,FHIR.time,FHIR.string,FHIR.uri,FHIR.Attachment,FHIR.Coding,FHIR.Quantity,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.TestScript.Operation" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" type="FHIR.Coding"/>
@@ -4184,8 +3727,7 @@
         <ns4:element name="status" type="FHIR.CommunicationRequestStatus"/>
         <ns4:element name="topic" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="context" type="FHIR.Reference"/>
-        <ns4:element name="scheduledDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="scheduledPeriod" type="FHIR.Period"/>
+        <ns4:element name="scheduled" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="reason" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="requestedOn" type="FHIR.dateTime"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
@@ -4194,17 +3736,13 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExplanationOfBenefit.Payee" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" type="FHIR.CodeableConcept"/>
         <ns4:element name="resourceType" type="FHIR.CodeableConcept"/>
-        <ns4:element name="partyIdentifier" type="FHIR.Identifier"/>
-        <ns4:element name="partyReference" type="FHIR.Reference"/>
+        <ns4:element name="party" type="choice&lt;FHIR.Identifier,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.RiskAssessment.Prediction" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="outcome" type="FHIR.CodeableConcept"/>
-        <ns4:element name="probabilityDecimal" type="FHIR.decimal"/>
-        <ns4:element name="probabilityRange" type="FHIR.Range"/>
-        <ns4:element name="probabilityCodeableConcept" type="FHIR.CodeableConcept"/>
+        <ns4:element name="probability" type="choice&lt;FHIR.decimal,FHIR.Range,FHIR.CodeableConcept&gt;"/>
         <ns4:element name="relativeRisk" type="FHIR.decimal"/>
-        <ns4:element name="whenPeriod" type="FHIR.Period"/>
-        <ns4:element name="whenRange" type="FHIR.Range"/>
+        <ns4:element name="when" type="choice&lt;FHIR.Period,FHIR.Range&gt;"/>
         <ns4:element name="rationale" type="FHIR.string"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.DetectedIssue" retrievable="true" baseType="FHIR.DomainResource">
@@ -4251,9 +3789,7 @@
         <ns4:element name="concept" type="list&lt;FHIR.CodeSystem.Concept&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.CommunicationRequest.Payload" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="contentString" type="FHIR.string"/>
-        <ns4:element name="contentAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="contentReference" type="FHIR.Reference"/>
+        <ns4:element name="content" type="choice&lt;FHIR.string,FHIR.Attachment,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.BackboneElement" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="modifierExtension" type="list&lt;FHIR.Extension&gt;"/>
@@ -4312,8 +3848,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.RequestGroup.RelatedAction" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="actionIdentifier" type="FHIR.Identifier"/>
         <ns4:element name="relationship" type="FHIR.code"/>
-        <ns4:element name="offsetDuration" type="FHIR.Duration"/>
-        <ns4:element name="offsetRange" type="FHIR.Range"/>
+        <ns4:element name="offset" type="choice&lt;FHIR.Duration,FHIR.Range&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.uri" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -4400,11 +3935,9 @@
         <ns4:element name="identifier" type="FHIR.Identifier"/>
         <ns4:element name="status" type="FHIR.SupplyRequestStatus"/>
         <ns4:element name="kind" type="FHIR.CodeableConcept"/>
-        <ns4:element name="orderedItemCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="orderedItemReference" type="FHIR.Reference"/>
+        <ns4:element name="orderedItem" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="supplier" type="list&lt;FHIR.Reference&gt;"/>
-        <ns4:element name="reasonCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="reasonReference" type="FHIR.Reference"/>
+        <ns4:element name="reason" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="when" type="FHIR.SupplyRequest.When"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.time" retrievable="false" baseType="FHIR.Element">
@@ -4445,11 +3978,7 @@
         <ns4:element name="documentation" type="list&lt;FHIR.RelatedArtifact&gt;"/>
         <ns4:element name="condition" type="list&lt;FHIR.RequestGroup.Condition&gt;"/>
         <ns4:element name="relatedAction" type="list&lt;FHIR.RequestGroup.RelatedAction&gt;"/>
-        <ns4:element name="timingDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="timingPeriod" type="FHIR.Period"/>
-        <ns4:element name="timingDuration" type="FHIR.Duration"/>
-        <ns4:element name="timingRange" type="FHIR.Range"/>
-        <ns4:element name="timingTiming" type="FHIR.Timing"/>
+        <ns4:element name="timing" type="choice&lt;FHIR.dateTime,FHIR.Period,FHIR.Duration,FHIR.Range,FHIR.Timing&gt;"/>
         <ns4:element name="participant" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="type" type="FHIR.Coding"/>
         <ns4:element name="groupingBehavior" type="FHIR.code"/>
@@ -4545,8 +4074,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.ExplanationOfBenefit.Diagnosis" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="sequence" type="FHIR.positiveInt"/>
-        <ns4:element name="diagnosisCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="diagnosisReference" type="FHIR.Reference"/>
+        <ns4:element name="diagnosis" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="type" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="packageCode" type="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
@@ -4599,8 +4127,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.PlanDefinition.RelatedAction" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="actionIdentifier" type="FHIR.Identifier"/>
         <ns4:element name="relationship" type="FHIR.PlanActionRelationshipType"/>
-        <ns4:element name="offsetDuration" type="FHIR.Duration"/>
-        <ns4:element name="offsetRange" type="FHIR.Range"/>
+        <ns4:element name="offset" type="choice&lt;FHIR.Duration,FHIR.Range&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.integer" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.Integer"/>
@@ -4634,11 +4161,7 @@
         <ns4:element name="input" type="list&lt;FHIR.DataRequirement&gt;"/>
         <ns4:element name="output" type="list&lt;FHIR.DataRequirement&gt;"/>
         <ns4:element name="relatedAction" type="list&lt;FHIR.PlanDefinition.RelatedAction&gt;"/>
-        <ns4:element name="timingDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="timingPeriod" type="FHIR.Period"/>
-        <ns4:element name="timingDuration" type="FHIR.Duration"/>
-        <ns4:element name="timingRange" type="FHIR.Range"/>
-        <ns4:element name="timingTiming" type="FHIR.Timing"/>
+        <ns4:element name="timing" type="choice&lt;FHIR.dateTime,FHIR.Period,FHIR.Duration,FHIR.Range,FHIR.Timing&gt;"/>
         <ns4:element name="participantType" type="list&lt;FHIR.PlanActionParticipantType&gt;"/>
         <ns4:element name="type" type="FHIR.Coding"/>
         <ns4:element name="groupingBehavior" type="FHIR.PlanActionGroupingBehavior"/>
@@ -4669,8 +4192,7 @@
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="assessor" type="FHIR.Reference"/>
         <ns4:element name="date" type="FHIR.dateTime"/>
-        <ns4:element name="effectiveDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="effectivePeriod" type="FHIR.Period"/>
+        <ns4:element name="effective" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="context" type="FHIR.Reference"/>
         <ns4:element name="previous" type="FHIR.Reference"/>
         <ns4:element name="problem" type="list&lt;FHIR.Reference&gt;"/>
@@ -4700,16 +4222,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Observation.Component" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
-        <ns4:element name="valueRatio" type="FHIR.Ratio"/>
-        <ns4:element name="valueSampledData" type="FHIR.SampledData"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valuePeriod" type="FHIR.Period"/>
+        <ns4:element name="value" type="choice&lt;FHIR.Quantity,FHIR.CodeableConcept,FHIR.string,FHIR.Range,FHIR.Ratio,FHIR.SampledData,FHIR.Attachment,FHIR.time,FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="dataAbsentReason" type="FHIR.CodeableConcept"/>
         <ns4:element name="interpretation" type="FHIR.CodeableConcept"/>
         <ns4:element name="referenceRange" type="list&lt;FHIR.Observation.ReferenceRange&gt;"/>
@@ -4749,12 +4262,10 @@
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="context" type="FHIR.Reference"/>
-        <ns4:element name="occurrenceDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="occurrencePeriod" type="FHIR.Period"/>
+        <ns4:element name="occurrence" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="condition" type="FHIR.Reference"/>
         <ns4:element name="performer" type="FHIR.Reference"/>
-        <ns4:element name="reasonCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="reasonReference" type="FHIR.Reference"/>
+        <ns4:element name="reason" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="method" type="FHIR.CodeableConcept"/>
         <ns4:element name="basis" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="prediction" type="list&lt;FHIR.RiskAssessment.Prediction&gt;"/>
@@ -4795,8 +4306,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.OperationDefinition.Binding" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="strength" type="FHIR.BindingStrength"/>
-        <ns4:element name="valueSetUri" type="FHIR.uri"/>
-        <ns4:element name="valueSetReference" type="FHIR.Reference"/>
+        <ns4:element name="valueSet" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.PlanActionRelationshipType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -4890,17 +4400,8 @@
         <ns4:element name="bodySite" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="context" type="FHIR.Reference"/>
-        <ns4:element name="onsetDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="onsetAge" type="FHIR.Age"/>
-        <ns4:element name="onsetPeriod" type="FHIR.Period"/>
-        <ns4:element name="onsetRange" type="FHIR.Range"/>
-        <ns4:element name="onsetString" type="FHIR.string"/>
-        <ns4:element name="abatementDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="abatementAge" type="FHIR.Age"/>
-        <ns4:element name="abatementBoolean" type="FHIR.boolean"/>
-        <ns4:element name="abatementPeriod" type="FHIR.Period"/>
-        <ns4:element name="abatementRange" type="FHIR.Range"/>
-        <ns4:element name="abatementString" type="FHIR.string"/>
+        <ns4:element name="onset" type="choice&lt;FHIR.dateTime,FHIR.Age,FHIR.Period,FHIR.Range,FHIR.string&gt;"/>
+        <ns4:element name="abatement" type="choice&lt;FHIR.dateTime,FHIR.Age,FHIR.boolean,FHIR.Period,FHIR.Range,FHIR.string&gt;"/>
         <ns4:element name="assertedDate" type="FHIR.date"/>
         <ns4:element name="asserter" type="FHIR.Reference"/>
         <ns4:element name="stage" type="FHIR.Condition.Stage"/>
@@ -4933,11 +4434,7 @@
         <ns4:element name="versioning" type="FHIR.ReferenceVersionRules"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Questionnaire.Option" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueDate" type="FHIR.date"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueCoding" type="FHIR.Coding"/>
+        <ns4:element name="value" type="choice&lt;FHIR.integer,FHIR.date,FHIR.time,FHIR.string,FHIR.Coding&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.markdown" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
@@ -4967,10 +4464,8 @@
         <ns4:element name="priority" type="FHIR.CodeableConcept"/>
         <ns4:element name="description" type="FHIR.CodeableConcept"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
-        <ns4:element name="startDate" type="FHIR.date"/>
-        <ns4:element name="startCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="targetDate" type="FHIR.date"/>
-        <ns4:element name="targetDuration" type="FHIR.Duration"/>
+        <ns4:element name="start" type="choice&lt;FHIR.date,FHIR.CodeableConcept&gt;"/>
+        <ns4:element name="target" type="choice&lt;FHIR.date,FHIR.Duration&gt;"/>
         <ns4:element name="statusDate" type="FHIR.date"/>
         <ns4:element name="statusReason" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="expressedBy" type="FHIR.Reference"/>
@@ -4979,19 +4474,7 @@
         <ns4:element name="outcome" type="list&lt;FHIR.Goal.Outcome&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.QuestionnaireResponse.Answer" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="valueBoolean" type="FHIR.boolean"/>
-        <ns4:element name="valueDecimal" type="FHIR.decimal"/>
-        <ns4:element name="valueInteger" type="FHIR.integer"/>
-        <ns4:element name="valueDate" type="FHIR.date"/>
-        <ns4:element name="valueDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="valueInstant" type="FHIR.instant"/>
-        <ns4:element name="valueTime" type="FHIR.time"/>
-        <ns4:element name="valueString" type="FHIR.string"/>
-        <ns4:element name="valueUri" type="FHIR.uri"/>
-        <ns4:element name="valueAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="valueCoding" type="FHIR.Coding"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueReference" type="FHIR.Reference"/>
+        <ns4:element name="value" type="choice&lt;FHIR.boolean,FHIR.decimal,FHIR.integer,FHIR.date,FHIR.dateTime,FHIR.instant,FHIR.time,FHIR.string,FHIR.uri,FHIR.Attachment,FHIR.Coding,FHIR.Quantity,FHIR.Reference&gt;"/>
         <ns4:element name="item" type="list&lt;FHIR.QuestionnaireResponse.Item&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Patient.Link" retrievable="false" baseType="FHIR.BackboneElement">
@@ -5006,13 +4489,10 @@
         <ns4:element name="requisition" type="FHIR.Identifier"/>
         <ns4:element name="status" type="FHIR.code"/>
         <ns4:element name="stage" type="FHIR.CodeableConcept"/>
-        <ns4:element name="deviceReference" type="FHIR.Reference"/>
-        <ns4:element name="deviceCodeableConcept" type="FHIR.CodeableConcept"/>
+        <ns4:element name="device" type="choice&lt;FHIR.Reference,FHIR.CodeableConcept&gt;"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="context" type="FHIR.Reference"/>
-        <ns4:element name="occurrenceDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="occurrencePeriod" type="FHIR.Period"/>
-        <ns4:element name="occurrenceTiming" type="FHIR.Timing"/>
+        <ns4:element name="occurrence" type="choice&lt;FHIR.dateTime,FHIR.Period,FHIR.Timing&gt;"/>
         <ns4:element name="authored" type="FHIR.dateTime"/>
         <ns4:element name="requester" type="FHIR.Reference"/>
         <ns4:element name="performerType" type="FHIR.CodeableConcept"/>
@@ -5075,11 +4555,9 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.MedicationStatement" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" type="list&lt;FHIR.Identifier&gt;"/>
         <ns4:element name="status" type="FHIR.MedicationStatementStatus"/>
-        <ns4:element name="medicationCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="medicationReference" type="FHIR.Reference"/>
+        <ns4:element name="medication" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
-        <ns4:element name="effectiveDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="effectivePeriod" type="FHIR.Period"/>
+        <ns4:element name="effective" type="choice&lt;FHIR.dateTime,FHIR.Period&gt;"/>
         <ns4:element name="informationSource" type="FHIR.Reference"/>
         <ns4:element name="derivedFrom" type="list&lt;FHIR.Reference&gt;"/>
         <ns4:element name="dateAsserted" type="FHIR.dateTime"/>
@@ -5110,11 +4588,8 @@
         <ns4:element name="service" type="FHIR.CodeableConcept"/>
         <ns4:element name="modifier" type="list&lt;FHIR.CodeableConcept&gt;"/>
         <ns4:element name="programCode" type="list&lt;FHIR.CodeableConcept&gt;"/>
-        <ns4:element name="servicedDate" type="FHIR.date"/>
-        <ns4:element name="servicedPeriod" type="FHIR.Period"/>
-        <ns4:element name="locationCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="locationAddress" type="FHIR.Address"/>
-        <ns4:element name="locationReference" type="FHIR.Reference"/>
+        <ns4:element name="serviced" type="choice&lt;FHIR.date,FHIR.Period&gt;"/>
+        <ns4:element name="location" type="choice&lt;FHIR.CodeableConcept,FHIR.Address,FHIR.Reference&gt;"/>
         <ns4:element name="quantity" type="FHIR.Quantity"/>
         <ns4:element name="unitPrice" type="FHIR.Money"/>
         <ns4:element name="factor" type="FHIR.decimal"/>
@@ -5155,8 +4630,7 @@
         <ns4:element name="end" type="FHIR.dateTime"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Medication.Content" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="itemCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="itemReference" type="FHIR.Reference"/>
+        <ns4:element name="item" type="choice&lt;FHIR.CodeableConcept,FHIR.Reference&gt;"/>
         <ns4:element name="amount" type="FHIR.Quantity"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Specimen" retrievable="true" baseType="FHIR.DomainResource">
@@ -5181,34 +4655,23 @@
         <ns4:element name="name" type="FHIR.string"/>
         <ns4:element name="relationship" type="FHIR.CodeableConcept"/>
         <ns4:element name="gender" type="FHIR.AdministrativeGender"/>
-        <ns4:element name="bornPeriod" type="FHIR.Period"/>
-        <ns4:element name="bornDate" type="FHIR.date"/>
-        <ns4:element name="bornString" type="FHIR.string"/>
-        <ns4:element name="ageAge" type="FHIR.Age"/>
-        <ns4:element name="ageRange" type="FHIR.Range"/>
-        <ns4:element name="ageString" type="FHIR.string"/>
+        <ns4:element name="born" type="choice&lt;FHIR.Period,FHIR.date,FHIR.string&gt;"/>
+        <ns4:element name="age" type="choice&lt;FHIR.Age,FHIR.Range,FHIR.string&gt;"/>
         <ns4:element name="estimatedAge" type="FHIR.boolean"/>
-        <ns4:element name="deceasedBoolean" type="FHIR.boolean"/>
-        <ns4:element name="deceasedAge" type="FHIR.Age"/>
-        <ns4:element name="deceasedRange" type="FHIR.Range"/>
-        <ns4:element name="deceasedDate" type="FHIR.date"/>
-        <ns4:element name="deceasedString" type="FHIR.string"/>
+        <ns4:element name="deceased" type="choice&lt;FHIR.boolean,FHIR.Age,FHIR.Range,FHIR.date,FHIR.string&gt;"/>
         <ns4:element name="note" type="FHIR.Annotation"/>
         <ns4:element name="condition" type="list&lt;FHIR.FamilyMemberHistory.Condition&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.DocumentManifest.Content" retrievable="false" baseType="FHIR.BackboneElement">
-        <ns4:element name="pAttachment" type="FHIR.Attachment"/>
-        <ns4:element name="pReference" type="FHIR.Reference"/>
+        <ns4:element name="p" type="choice&lt;FHIR.Attachment,FHIR.Reference&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.SampledDataDataType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.Provenance.Agent" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="role" type="FHIR.Coding"/>
-        <ns4:element name="whoUri" type="FHIR.uri"/>
-        <ns4:element name="whoReference" type="FHIR.Reference"/>
-        <ns4:element name="onBehalfOfUri" type="FHIR.uri"/>
-        <ns4:element name="onBehalfOfReference" type="FHIR.Reference"/>
+        <ns4:element name="who" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
+        <ns4:element name="onBehalfOf" type="choice&lt;FHIR.uri,FHIR.Reference&gt;"/>
         <ns4:element name="relatedAgentType" type="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.DocumentManifest.Related" retrievable="false" baseType="FHIR.BackboneElement">
@@ -5253,9 +4716,7 @@
         <ns4:element name="code" type="FHIR.CodeableConcept"/>
         <ns4:element name="subject" type="FHIR.Reference"/>
         <ns4:element name="context" type="FHIR.Reference"/>
-        <ns4:element name="occurrenceDateTime" type="FHIR.dateTime"/>
-        <ns4:element name="occurrencePeriod" type="FHIR.Period"/>
-        <ns4:element name="occurrenceTiming" type="FHIR.Timing"/>
+        <ns4:element name="occurrence" type="choice&lt;FHIR.dateTime,FHIR.Period,FHIR.Timing&gt;"/>
         <ns4:element name="authoredOn" type="FHIR.dateTime"/>
         <ns4:element name="requester" type="FHIR.Reference"/>
         <ns4:element name="performerType" type="FHIR.CodeableConcept"/>
@@ -5355,9 +4816,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.UsageContext" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="code" type="FHIR.Coding"/>
-        <ns4:element name="valueCodeableConcept" type="FHIR.CodeableConcept"/>
-        <ns4:element name="valueQuantity" type="FHIR.Quantity"/>
-        <ns4:element name="valueRange" type="FHIR.Range"/>
+        <ns4:element name="value" type="choice&lt;FHIR.CodeableConcept,FHIR.Quantity,FHIR.Range&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.TestScript.Ruleset" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="resource" type="FHIR.Reference"/>
@@ -5437,199 +4896,4 @@
         <ns4:element name="name" type="FHIR.string"/>
         <ns4:element name="value" type="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:conversionInfo fromType="FHIR.uuid" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PlanActionPrecheckBehavior" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ProvenanceEntityRole" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.UnitsOfTime" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AddressType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceCategory" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SpecimenStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.RestfulCapabilityMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DetectedIssueSeverity" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.IssueSeverity" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DataElementStringency" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PlanActionConditionKind" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.EncounterStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.StructureDefinitionKind" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PublicationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ConsentDataMeaning" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.QuestionnaireResponseStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SearchComparator" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DocumentRelationshipType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceClinicalStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CarePlanActivityStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ActionList" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ParticipationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PlanActionSelectionBehavior" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.instant" toType="System.DateTime" functionName="FHIRHelpers.ToDateTime"/>
-    <ns4:conversionInfo fromType="FHIR.DocumentMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AssertionOperatorType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DaysOfWeek" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.IssueType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ContentType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.StructureMapContextType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.FamilyHistoryStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MedicationStatementCategory" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.positiveInt" toType="System.Integer" functionName="FHIRHelpers.ToInteger"/>
-    <ns4:conversionInfo fromType="FHIR.CommunicationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ClinicalImpressionStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AssertionResponseTypes" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.NarrativeStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ReferralCategory" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MeasmntPrinciple" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ConsentExceptType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.string" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.EndpointStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.GuidePageKind" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.GuideDependencyType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ResourceVersionPolicy" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MedicationRequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MedicationAdministrationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.NamingSystemIdentifierType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AccountStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ProcedureRequestPriority" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MedicationDispenseStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.IdentifierUse" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DigitalMediaType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.TestReportParticipantType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.BindingStrength" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ConsentStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ParticipantRequired" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.XPathUsageType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.StructureMapInputMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.InstanceAvailability" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.id" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.LinkageType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ReferenceHandlingPolicy" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.FilterOperator" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.NamingSystemType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ResearchStudyStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ExtensionContext" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AuditEventOutcome" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ConstraintSeverity" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.EventCapabilityMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PlanActionParticipantType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ProcedureStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ResearchSubjectStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PlanActionGroupingBehavior" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CompositeMeasureScoring" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DeviceMetricCategory" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.QuestionnaireStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.StructureMapTransform" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ResponseType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.decimal" toType="System.Decimal" functionName="FHIRHelpers.ToDecimal"/>
-    <ns4:conversionInfo fromType="FHIR.AggregationMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CapabilityStatementKind" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.sequenceType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceVerificationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.EventTiming" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.GoalStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SearchParamType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SystemRestfulInteraction" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.StructureMapModelMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.TaskStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MeasurePopulationType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SubscriptionChannelType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ProcedureRequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ReferralStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AssertionDirectionType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SlicingRules" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ExplanationOfBenefitStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.LinkType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceCriticality" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ConceptMapEquivalence" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PropertyRepresentation" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AuditEventAction" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MeasureDataUsage" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.TriggerType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ActivityDefinitionCategory" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SearchModifierCode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CompositionStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AppointmentStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MessageSignificanceCategory" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.OperationParameterUse" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ListMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ObservationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.qualityType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AdministrativeGender" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MeasureType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.QuestionnaireItemType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.StructureMapListMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.boolean" toType="System.Boolean" functionName="FHIRHelpers.ToBoolean"/>
-    <ns4:conversionInfo fromType="FHIR.DeviceMetricCalibrationType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.code" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SupplyRequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.EncounterLocationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SupplyDeliveryStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DiagnosticReportStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.FlagStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceCertainty" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CarePlanStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ListStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.base64Binary" toType="xs.base64Binary" functionName="FHIRHelpers.Tobase64Binary"/>
-    <ns4:conversionInfo fromType="FHIR.MeasureScoring" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AuditEventAgentNetworkType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AddressUse" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ConditionalDeleteStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ContactPointUse" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DeviceMetricOperationalStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.NutritionOrderStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.uri" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ContributorType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ReferenceVersionRules" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.Use" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.IdentityAssuranceLevel" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MeasureReportStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DeviceMetricColor" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SearchEntryMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.time" toType="System.Time" functionName="FHIRHelpers.ToTime"/>
-    <ns4:conversionInfo fromType="FHIR.ConditionalReadStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ConditionVerificationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceSeverity" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.OperationKind" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ObservationRelationshipType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.unsignedInt" toType="System.Integer" functionName="FHIRHelpers.ToInteger"/>
-    <ns4:conversionInfo fromType="FHIR.NameUse" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SubscriptionStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CommunicationRequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DocumentReferenceStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.LocationMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.integer" toType="System.Integer" functionName="FHIRHelpers.ToInteger"/>
-    <ns4:conversionInfo fromType="FHIR.repositoryType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CarePlanRelationship" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.LocationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.UnknownContentCode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.NoteType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.TestReportStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.HTTPVerb" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CodeSystemContentMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PlanActionRelationshipType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.EpisodeOfCareStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.RemittanceOutcome" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.ContactPointSystem" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SlotStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PropertyType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.markdown" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.TypeDerivationRule" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MedicationStatementStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.GuidanceResponseStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.QuantityComparator" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.RelatedArtifactType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.oid" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DeviceStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.TestReportResultCodes" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MeasureReportType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SampledDataDataType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CompartmentType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CompositionAttestationMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PlanActionRequiredBehavior" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.DeviceMetricCalibrationState" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.GroupType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.TypeRestfulInteraction" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.PlanActionCardinalityBehavior" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.CodeSystemHierarchyMeaning" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.MedicationStatementNotTaken" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.BundleType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.SystemVersionProcessingMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
 </ns4:modelInfo>

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 public class ModelImporterOptions {
     public enum SimpleTypeRestrictionPolicy {USE_BASETYPE, EXTEND_BASETYPE, IGNORE}
+    public enum ChoiceTypePolicy {USE_CHOICE, EXPAND}
     public enum ElementRedeclarationPolicy {DISCARD_INVALID_REDECLARATIONS, RENAME_INVALID_REDECLARATIONS, FAIL_INVALID_REDECLARATIONS }
     private static final Pattern RETYPE_PATTERN = Pattern.compile("\\s*retype\\.(.+)\\s*");
     private static final Pattern EXTEND_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\s*");
@@ -23,6 +24,16 @@ public class ModelImporterOptions {
      * The name of the data model.  This will be used in the "using" statement of CQL.
      */
     private String model = null;
+
+    /**
+     * XSD allows choice types, indicating that an element may be one of a set of choices. In CQL 1.2, a new choice
+     * type was introduced to the type system, allowing for first-class representation of these types of elements:
+     * <ul>
+     *     <li><b>USE_CHOICE</b>: Generate a single element with a choice type.</li>
+     *     <li><b>EXPAND</b>: Generate multiple elements, one for each type in the choice.</li>
+     * </ul>
+     */
+    private ChoiceTypePolicy choiceTypePolicy = null;
 
     /**
      * XSD allows simple types to be restricted by certain constraints (e.g. string patterns, numerical ranges, etc).
@@ -89,6 +100,19 @@ public class ModelImporterOptions {
         return this;
     }
 
+    public ChoiceTypePolicy getChoiceTypePolicy() {
+        return choiceTypePolicy != null ? choiceTypePolicy : ChoiceTypePolicy.EXPAND;
+    }
+
+    public void setChoiceTypePolicy(ChoiceTypePolicy choiceTypePolicy) {
+        this.choiceTypePolicy = choiceTypePolicy;
+    }
+
+    public ModelImporterOptions withChoiceTypePolicy(ChoiceTypePolicy choiceTypePolicy) {
+        this.choiceTypePolicy = choiceTypePolicy;
+        return this;
+    }
+
     public SimpleTypeRestrictionPolicy getSimpleTypeRestrictionPolicy() {
         return simpleTypeRestrictionPolicy != null ? simpleTypeRestrictionPolicy : SimpleTypeRestrictionPolicy.USE_BASETYPE;
     }
@@ -143,6 +167,11 @@ public class ModelImporterOptions {
             setNormalizePrefix(normalizePrefix);
         }
 
+        String choiceTypePolicy = properties.getProperty("choicetype-policy");
+        if (choiceTypePolicy != null && !choiceTypePolicy.isEmpty()) {
+            setChoiceTypePolicy(ChoiceTypePolicy.valueOf(choiceTypePolicy));
+        }
+
         String simpleTypeRestrictionPolicy = properties.getProperty("simpletype-restriction-policy");
         if (simpleTypeRestrictionPolicy != null && !simpleTypeRestrictionPolicy.isEmpty()) {
             setSimpleTypeRestrictionPolicy(SimpleTypeRestrictionPolicy.valueOf(simpleTypeRestrictionPolicy));
@@ -187,6 +216,9 @@ public class ModelImporterOptions {
         }
         if (normalizePrefix != null) {
             properties.setProperty("normalize-prefix", normalizePrefix);
+        }
+        if (choiceTypePolicy != null) {
+            properties.setProperty("choicetype-policy", choiceTypePolicy.name());
         }
         if (simpleTypeRestrictionPolicy != null) {
             properties.setProperty("simpletype-restriction-policy", simpleTypeRestrictionPolicy.name());
