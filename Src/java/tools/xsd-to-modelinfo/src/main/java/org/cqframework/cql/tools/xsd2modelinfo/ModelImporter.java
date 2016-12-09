@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.cqframework.cql.tools.xsd2modelinfo.ModelImporterOptions.ChoiceTypePolicy.USE_CHOICE;
+
 public class ModelImporter {
     private static final Map<String, DataType> SYSTEM_CATALOG = getSystemCatalog();
     private static Map<String, DataType> getSystemCatalog() {
@@ -186,6 +188,8 @@ public class ModelImporter {
             return toIntervalTypeSpecifier((IntervalType) dataType);
         } else if (dataType instanceof ListType) {
             return toListTypeSpecifier((ListType) dataType);
+        } else if (dataType instanceof ChoiceType) {
+            return toChoiceTypeSpecifier((ChoiceType) dataType);
         } else if (dataType instanceof TupleType) {
             throw new IllegalArgumentException("Tuple types cannot be used in type specifiers.");
         } else {
@@ -207,6 +211,10 @@ public class ModelImporter {
 
     private String toListTypeSpecifier(ListType dataType) {
         return String.format("list<%s>", toTypeSpecifier(dataType.getElementType()));
+    }
+
+    private String toChoiceTypeSpecifier(ChoiceType dataType) {
+        return dataType.toString();
     }
 
     private String getTypeName(QName schemaTypeName, Map<String, String> namespaces) {
@@ -383,7 +391,7 @@ public class ModelImporter {
                     XmlSchemaSimpleContentRestriction restrictionContent = (XmlSchemaSimpleContentRestriction)content;
 
                     DataType valueType = resolveType(restrictionContent.getBaseTypeName());
-                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false);
+                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false, false);
                     elements.add(valueElement);
 
                     attributeContent = restrictionContent.getAttributes();
@@ -395,7 +403,7 @@ public class ModelImporter {
                     particleContent = null;
 
                     DataType valueType = resolveType(extensionContent.getBaseTypeName());
-                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false);
+                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false, false);
                     elements.add(valueElement);
                 }
                 else {
@@ -444,7 +452,7 @@ public class ModelImporter {
                                 name.append(tName.substring(1));
                             }
                             System.err.printf("%s. Renaming element to %s.%n", e.getMessage(), name.toString());
-                            classType.addElement(new ClassTypeElement(name.toString(), element.getType(), element.isProhibited()));
+                            classType.addElement(new ClassTypeElement(name.toString(), element.getType(), element.isProhibited(), element.isOneBased()));
                     }
                 }
             }
@@ -502,11 +510,37 @@ public class ModelImporter {
         }
         else if (particle instanceof XmlSchemaChoice) {
             XmlSchemaChoice choice = (XmlSchemaChoice)particle;
-            for (XmlSchemaChoiceMember member : choice.getItems()) {
-                if (member instanceof XmlSchemaElement) {
-                    ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement)member);
-                    if (element != null) {
-                        elements.add(element);
+            boolean choiceCreated = false;
+            if (options.getChoiceTypePolicy() == USE_CHOICE) {
+                List<DataType> choices = new ArrayList<DataType>();
+                String elementName = null;
+                for (XmlSchemaChoiceMember member : choice.getItems()) {
+                    ClassTypeElement choiceElement = resolveClassTypeElement((XmlSchemaElement) member);
+                    if (choiceElement != null) {
+                        if (elementName == null) {
+                            elementName = choiceElement.getName().substring(0, choiceElement.getName().toLowerCase().lastIndexOf(((NamedType)choiceElement.getType()).getSimpleName().toLowerCase()));
+                        }
+                        choices.add(choiceElement.getType());
+                    }
+                }
+
+                if (elementName != null && !elementName.isEmpty()) {
+                    ChoiceType choiceType = new ChoiceType(choices);
+                    ClassTypeElement element = new ClassTypeElement(elementName, choiceType, false, false);
+                    elements.add(element);
+                    choiceCreated = true;
+                }
+            }
+
+            // Some choices don't have a prefix (e.g. FHIR.ResourceContainer)
+            // In this case, create an expanded type
+            if (!choiceCreated) {
+                for (XmlSchemaChoiceMember member : choice.getItems()) {
+                    if (member instanceof XmlSchemaElement) {
+                        ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement) member);
+                        if (element != null) {
+                            elements.add(element);
+                        }
                     }
                 }
             }
@@ -547,7 +581,7 @@ public class ModelImporter {
 
         boolean isProhibited = element.getMinOccurs() == 0L && element.getMaxOccurs() == 0L;
 
-        return new ClassTypeElement(element.getName(), elementType, isProhibited);
+        return new ClassTypeElement(element.getName(), elementType, isProhibited, false);
     }
 
     private ClassTypeElement resolveClassTypeElement(XmlSchemaAttribute attribute) {
@@ -572,7 +606,7 @@ public class ModelImporter {
             //throw new IllegalStateException(String.format("Unable to resolve type %s of attribute %s.", attribute.getSchemaTypeName(), attribute.getName()));
         }
 
-        return new ClassTypeElement(attribute.getName(), elementType, attribute.getUse() == XmlSchemaUse.PROHIBITED);
+        return new ClassTypeElement(attribute.getName(), elementType, attribute.getUse() == XmlSchemaUse.PROHIBITED, false);
     }
 
     private void resolveClassTypeElements(XmlSchemaAttributeOrGroupRef attribute, List<ClassTypeElement> elements) {

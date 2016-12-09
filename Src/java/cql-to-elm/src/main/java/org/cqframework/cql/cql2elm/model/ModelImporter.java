@@ -81,6 +81,14 @@ public class ModelImporter {
     public Map<String, DataType> getTypes() { return resolvedTypes; }
     public Iterable<Conversion> getConversions() { return conversions; }
 
+    private String casify(String typeName) {
+        return casify(typeName, this.modelInfo.isIsCaseSensitive() != null ? this.modelInfo.isIsCaseSensitive() : false);
+    }
+
+    private String casify(String typeName, boolean caseSensitive) {
+        return caseSensitive ? typeName.toLowerCase() : typeName;
+    }
+
     private DataType resolveTypeInfo(TypeInfo t) {
         if (t instanceof SimpleTypeInfo) {
             return resolveSimpleType((SimpleTypeInfo)t);
@@ -151,7 +159,7 @@ public class ModelImporter {
             throw new IllegalArgumentException("typeName is null");
         }
 
-        return resolvedTypes.get(typeName);
+        return resolvedTypes.get(casify(typeName));
     }
 
     private TypeInfo lookupTypeInfo(String typeName) {
@@ -171,7 +179,7 @@ public class ModelImporter {
             else {
                 result = new SimpleType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
             }
-            resolvedTypes.put(result.getName(), result);
+            resolvedTypes.put(casify(result.getName()), result);
         }
 
         return result;
@@ -193,7 +201,7 @@ public class ModelImporter {
     private Collection<ClassTypeElement> resolveClassTypeElements(Collection<ClassInfoElement> infoElements) {
         List<ClassTypeElement> elements = new ArrayList();
         for (ClassInfoElement e : infoElements) {
-            elements.add(new ClassTypeElement(e.getName(), resolveTypeSpecifier(e.getType())));
+            elements.add(new ClassTypeElement(e.getName(), resolveTypeSpecifier(e.getType()), e.isProhibited(), e.isIsOneBased()));
         }
         return elements;
     }
@@ -211,7 +219,7 @@ public class ModelImporter {
             else {
                 result = new ClassType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
             }
-            resolvedTypes.put(result.getName(), result);
+            resolvedTypes.put(casify(result.getName()), result);
             result.addElements(resolveClassTypeElements(t.getElement()));
             result.setIdentifier(t.getIdentifier());
             result.setLabel(t.getLabel());

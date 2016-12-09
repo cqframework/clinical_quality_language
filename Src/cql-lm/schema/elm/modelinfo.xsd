@@ -53,11 +53,21 @@
 				<xs:documentation>The patientBirthDatePropertyName attribute specifies the name of the birthdate property on the Patient model.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="isCaseSensitive" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>The isCaseSensitive attribute indicates whether the identifiers used by this model should be resolved case-sensitively. If the attribute is true, references to identifiers in this model must match by case.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ClassInfoElement">
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="type" type="xs:string"/>
 		<xs:attribute name="prohibited" type="xs:boolean"/>
+		<xs:attribute name="isOneBased" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ClassInfo">
 		<xs:annotation>
@@ -123,6 +133,12 @@
 	<xs:complexType name="TupleTypeInfoElement">
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="type" type="xs:string"/>
+		<xs:attribute name="prohibited" type="xs:boolean"/>
+		<xs:attribute name="isOneBased" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="TupleTypeInfo">
 		<xs:complexContent>

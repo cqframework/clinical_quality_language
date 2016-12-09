@@ -3256,6 +3256,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withOperand(parseExpression(ctx.expressionTerm()))
                 .withOperand(parseExpression(ctx.expression()));
 
+        // TODO: Support zero-based indexers as defined by the isZeroBased attribute
         resolveBinaryCall("System", "Indexer", indexer);
         return indexer;
     }
@@ -3637,6 +3638,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return resolveProperty(sourceType, identifier, true);
     }
 
+    // TODO: Support case-insensitive models
     protected DataType resolveProperty(DataType sourceType, String identifier, boolean mustResolve) {
         DataType currentType = sourceType;
         while (currentType != null) {

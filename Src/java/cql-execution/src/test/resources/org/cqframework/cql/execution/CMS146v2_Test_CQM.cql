@@ -61,12 +61,12 @@ define Antibiotics:
 
 define TargetEncounters:
     [Encounter: "Ambulatory/ED Visit"] E
-        with Pharyngitis P such that Interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period
+        with Pharyngitis P such that Interval[P.onsetDateTime, P.abatementDate] overlaps after E.period
         with Antibiotics A such that A.dateWritten 3 days or less after start E.period
         where E.period during MeasurementPeriod
 
 define TargetDiagnoses:
-    Pharyngitis P with TargetEncounters E such that Interval[P.onsetDateTime, P.abatementDateTime] overlaps after E.period
+    Pharyngitis P with TargetEncounters E such that Interval[P.onsetDateTime, P.abatementDate] overlaps after E.period
 
 define HasPriorAntibiotics:
     exists (Antibiotics A with TargetDiagnoses D such that A.dateWritten occurs 30 days or less before D.onsetDateTime)
