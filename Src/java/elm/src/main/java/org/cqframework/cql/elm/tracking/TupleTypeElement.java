@@ -3,8 +3,9 @@ package org.cqframework.cql.elm.tracking;
 public class TupleTypeElement {
     private String name;
     private DataType type;
+    private boolean oneBased;
 
-    public TupleTypeElement(String name, DataType type) {
+    public TupleTypeElement(String name, DataType type, boolean oneBased) {
         if (name == null || name.equals("")) {
             throw new IllegalArgumentException("name");
         }
@@ -15,6 +16,11 @@ public class TupleTypeElement {
 
         this.name = name;
         this.type = type;
+        this.oneBased = oneBased;
+    }
+
+    public TupleTypeElement(String name, DataType type) {
+        this(name, type, false);
     }
 
     public String getName() {
@@ -27,14 +33,18 @@ public class TupleTypeElement {
 
     @Override
     public int hashCode() {
-        return (17 * this.name.hashCode()) + (33 * this.type.hashCode());
+        return (17 * this.name.hashCode())
+                + (33 * this.type.hashCode())
+                + (31 * (this.oneBased ? 1 : 0));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof TupleTypeElement) {
             TupleTypeElement that = (TupleTypeElement)o;
-            return this.name.equals(that.name) && this.type.equals(that.type);
+            return this.name.equals(that.name)
+                    && this.type.equals(that.type)
+                    && (this.oneBased == that.oneBased);
         }
 
         return false;
