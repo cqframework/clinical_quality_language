@@ -1,5 +1,5 @@
 { Expression } = require './expression'
-{ ValueSet, Code } = require '../datatypes/datatypes'
+dt = require '../datatypes/datatypes'
 { build } = require './builder'
 
 module.exports.ValueSetDef = class ValueSetDef extends Expression
@@ -11,7 +11,7 @@ module.exports.ValueSetDef = class ValueSetDef extends Expression
     #todo: code systems and versions
 
   exec: (ctx) ->
-    valueset = ctx.codeService.findValueSet(@id, @version) ? new ValueSet(@id, @version)
+    valueset = ctx.codeService.findValueSet(@id, @version) ? new dt.ValueSet(@id, @version)
     ctx.rootContext().set @name, valueset
     valueset
 
@@ -38,6 +38,29 @@ module.exports.InValueSet = class InValueSet extends Expression
     valueset = @valueset.exec(ctx)
     if code? and valueset? then valueset.hasCode code else false
 
+module.exports.CodeSystemDef = class CodeSystemDef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+    @id = json.id
+    @version = json.version
+
+  exec: (ctx) ->
+    new CodeSystem(@id, @version)
+
+module.exports.Concept = class Concept extends Expression
+  constructor: (json) ->
+    super
+    @codes = json.code
+    @display = json.display
+
+  toCode: (ctx, code) ->
+    system = ctx.getCodeSystem(code.system.name)?.id
+    return new dt.Code(code.code, system, code.version, code.display)
+
+  exec: (ctx) ->
+    codes = (@toCode(ctx, code) for code in @codes)
+    new dt.Concept(codes, @display)
 
 calculateAge = (date1, date2, precision) ->
   if date1.getTime() - date2.getTime() > 0 then return 0

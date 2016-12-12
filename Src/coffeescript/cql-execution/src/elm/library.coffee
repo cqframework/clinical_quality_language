@@ -7,6 +7,9 @@ module.exports.Library = class Library
     @parameters = {}
     for param in json.library.parameters?.def ? []
       @parameters[param.name] = new ParameterDef(param)
+    @codesystems = {}
+    for codesystem in json.library.codeSystems?.def ? []
+      @codesystems[codesystem.name] = new CodeSystemDef(codesystem)
     @valuesets = {}
     for valueset in json.library.valueSets?.def ? []
       @valuesets[valueset.name] = new ValueSetDef(valueset)
@@ -23,9 +26,12 @@ module.exports.Library = class Library
   getValueSet: (identifier) ->
     @valuesets[identifier]
 
+  getCodeSystem: (identifier) ->
+    @codesystems[identifier]
+
   getParameter: (name) ->
     @parameters[name]
 # These requires are at the end of the file because having them first in the
 # file creates errors due to the order that the libraries are loaded.
-{ ExpressionDef, FunctionDef, ParameterDef, ValueSetDef } = require './expressions'
+{ ExpressionDef, FunctionDef, ParameterDef, ValueSetDef, CodeSystemDef } = require './expressions'
 { Results } = require '../runtime/results'
