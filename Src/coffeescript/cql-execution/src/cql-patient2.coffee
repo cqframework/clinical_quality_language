@@ -116,7 +116,7 @@ FHIR.Base::codableConceptToCodes =(cc) ->
     @codingToCode c
 
 FHIR.Base::codingToCode = (coding) ->
-  new DT.Code(coding.code(), coding.system(), coding.version())
+  new DT.Code(coding.code().value, coding.system().value, coding.version().value)
 
 FHIR.Base::periodToInterval =(val) ->
   if val instanceof FHIR.Period

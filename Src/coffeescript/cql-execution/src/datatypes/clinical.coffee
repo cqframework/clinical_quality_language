@@ -10,6 +10,8 @@ module.exports.ValueSet = class ValueSet
   constructor: (@oid, @version, @codes = []) ->
 
   hasCode: (code, system, version) ->
+    if typeIsArray code.codes
+      code = code.codes
     if typeIsArray code
       matches = for c in code
         @hasCode c

@@ -263,6 +263,7 @@ class MedicationOrder extends DomainResource
   @returns {Reference}
   ###
   medication: -> if @json['medication'] then new Reference(@json['medication'])
+  medicationCodeableConcept: -> if @json['medicationCodeableConcept'] then new CodeableConcept(@json['medicationCodeableConcept'])
 
   ###*
   Indicates how the medication is to be used by the patient.
