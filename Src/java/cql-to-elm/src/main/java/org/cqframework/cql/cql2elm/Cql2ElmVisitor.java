@@ -1808,8 +1808,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     .withPath(memberIdentifier);
             accessor.setResultType(propertyType);
 
+            AliasedQuerySource source = of.createAliasedQuerySource().withExpression(left).withAlias("$this");
+            source.setResultType(left.getResultType());
             Query query = of.createQuery()
-                    .withSource(of.createAliasedQuerySource().withExpression(left).withAlias("$this"))
+                    .withSource(source)
                     .withWhere(not)
                     .withReturn(of.createReturnClause().withExpression(accessor));
             query.setResultType(new ListType(accessor.getResultType()));
@@ -1848,6 +1850,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         IdentifierRef resultElement = resolveQueryResultElement(identifier);
         if (resultElement != null) {
             return resultElement;
+        }
+
+        // In the case of a $this alias, names may be resolved as implicit property references
+        Expression thisElement = resolveQueryThisElement(identifier);
+        if (thisElement != null) {
+            return thisElement;
         }
 
         AliasedQuerySource alias = resolveAlias(identifier);
@@ -3380,14 +3388,28 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private Expression resolveFunction(String libraryName, @NotNull cqlParser.FunctionContext ctx) {
+        return resolveFunction(libraryName, parseString(ctx.identifier()), ctx.paramList());
+    }
+
+    private Expression resolveFunction(String libraryName, String functionName, cqlParser.ParamListContext paramList) {
+        List<Expression> expressions = new ArrayList<Expression>();
+
+        if (paramList != null && paramList.expression() != null) {
+            for (cqlParser.ExpressionContext expressionContext : paramList.expression()) {
+                expressions.add((Expression)visit(expressionContext));
+            }
+        }
+
+        return resolveFunction(libraryName, functionName, expressions);
+    }
+
+    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList) {
         FunctionRef fun = of.createFunctionRef()
                 .withLibraryName(libraryName)
-                .withName(parseString(ctx.identifier()));
+                .withName(functionName);
 
-        if (ctx.paramList() != null && ctx.paramList().expression() != null) {
-            for (cqlParser.ExpressionContext expressionContext : ctx.paramList().expression()) {
-                fun.getOperand().add((Expression) visit(expressionContext));
-            }
+        for (Expression param : paramList) {
+            fun.getOperand().add(param);
         }
 
         Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
@@ -3412,8 +3434,47 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression) {
+                    String functionName = parseString(ctx.identifier());
+                    if (functionName.equals("first")) {
+                        List<Expression> params = new ArrayList<Expression>();
+                        params.add(target);
+                        if (ctx.paramList() != null && ctx.paramList().expression() != null) {
+                            for (cqlParser.ExpressionContext param : ctx.paramList().expression()) {
+                                params.add((Expression)visit(param));
+                            }
+                        }
+                        return resolveFunction(null, "First", params);
+                    }
+                    else if (functionName.equals("where")) {
+                        QueryContext queryContext = new QueryContext();
+                        queries.push(queryContext);
+                        try {
+                            queryContext.setIsImplicit(true); // Set to an implicit context to allow for implicit resolution of property names
+                            List<AliasedQuerySource> sources = new ArrayList<>();
+                            AliasedQuerySource source = of.createAliasedQuerySource().withExpression(target).withAlias("$this");
+                            source.setResultType(target.getResultType());
+                            sources.add(source);
+                            queryContext.addQuerySources(sources);
+
+                            Expression where = (Expression)visit(ctx.paramList().expression(0));
+                            if (dateRangeOptimization) {
+                                where = optimizeDateRangeInQuery(where, source);
+                            }
+
+                            Query query = of.createQuery()
+                                    .withSource(sources)
+                                    .withWhere(where);
+
+                            query.setResultType(sources.get(0).getResultType());
+
+                            return query;
+                        }
+                        finally {
+                            queries.pop();
+                        }
+                    }
                     // Need a way to support rewriting method invocations....
-                    throw new IllegalArgumentException("Method rewrite not yet supported.");
+                    throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
                 }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
@@ -4193,6 +4254,31 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     IdentifierRef result = new IdentifierRef().withName(identifier);
                     result.setResultType(sortColumnType);
                     return result;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private Expression resolveQueryThisElement(String identifier) {
+        if (queries.size() > 0) {
+            QueryContext query = queries.peek();
+            if (query.isImplicit()) {
+                AliasedQuerySource source = resolveAlias("$this");
+                if (source != null) {
+                    AliasRef aliasRef = of.createAliasRef().withName("$this");
+                    if (source.getResultType() instanceof ListType) {
+                        aliasRef.setResultType(((ListType)source.getResultType()).getElementType());
+                    }
+                    else {
+                        aliasRef.setResultType(source.getResultType());
+                    }
+
+                    DataType resultType = resolveProperty(aliasRef.getResultType(), identifier, false);
+                    if (resultType != null) {
+                        return resolveAccessor(aliasRef, identifier);
+                    }
                 }
             }
         }
