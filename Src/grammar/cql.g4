@@ -434,5 +434,6 @@ identifier
     | 'time'
     | 'timezone'
     | 'version'
+    | 'where'
     ;
 
