@@ -1,12 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.First;
-import org.hl7.elm.r1.IndexOf;
-import org.hl7.elm.r1.Last;
-import org.hl7.elm.r1.Length;
-import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -69,5 +64,11 @@ public class ListOperatorsTest {
 
         Length length = (Length) def.getExpression();
         assertThat(length.getOperand(), listOfLiterals(1, 2, 3, 4, 5));
+    }
+
+    @Test
+    public void testChoiceType() {
+        ExpressionDef def = defs.get("ListUnionWithChoice");
+        assertThat(def, hasTypeAndResult(Union.class, "list<choice<System.Integer,System.String>>")); // TODO: This will probably break randomly.... :)
     }
 }

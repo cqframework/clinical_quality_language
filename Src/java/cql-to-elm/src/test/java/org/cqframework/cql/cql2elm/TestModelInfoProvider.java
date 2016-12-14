@@ -6,7 +6,7 @@ import javax.xml.bind.JAXB;
 
 public class TestModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load() {
-        return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("ModelTests/test-modelinfo.xml"),
+        return JAXB.unmarshal(TestModelInfoProvider.class.getResourceAsStream("ModelTests/test-modelinfo.xml"),
                 ModelInfo.class);
     }
 }
