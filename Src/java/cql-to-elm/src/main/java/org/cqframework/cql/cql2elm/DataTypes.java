@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.elm.tracking.DataType;
+import org.hl7.cql.model.DataType;
 
 public class DataTypes {
     public static void verifyType(DataType actualType, DataType expectedType) {

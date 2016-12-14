@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.tracking;
+package org.hl7.cql.model;
 
 public class TypeParameter extends DataType {
     public TypeParameter(String identifier) {

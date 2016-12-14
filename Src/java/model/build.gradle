@@ -1,7 +1,6 @@
 // Most build configuration comes from the cql-all parent build!
 
 dependencies {
-    compile project(':model')
     runtime group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.0'
     runtime group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 }
@@ -10,11 +9,7 @@ generateSources {
     inputs.dir "${projectDir}/../../cql-lm/schema"
 
     doLast {
-        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/library.xsd") {
-            arg(line: "${xjc.args} -npa -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable")
-        }
-
-        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/cqlannotations.xsd") {
+        ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/model/modelinfo.xsd") {
             arg(line: "${xjc.args} -npa")
         }
     }

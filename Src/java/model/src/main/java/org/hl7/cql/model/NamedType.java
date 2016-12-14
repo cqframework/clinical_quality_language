@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.tracking;
+package org.hl7.cql.model;
 
 public interface NamedType {
     String getName();

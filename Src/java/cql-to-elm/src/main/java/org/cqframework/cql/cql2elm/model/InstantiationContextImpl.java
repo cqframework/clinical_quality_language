@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.elm.tracking.*;
+import org.hl7.cql.model.*;
 
 import java.util.ArrayList;
 import java.util.Map;

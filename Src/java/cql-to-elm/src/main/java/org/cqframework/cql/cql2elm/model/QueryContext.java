@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.ListType;
+import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.AliasedQuerySource;
-import org.hl7.elm.r1.ByColumn;
 import org.hl7.elm.r1.LetClause;
 
 import java.util.Collection;
