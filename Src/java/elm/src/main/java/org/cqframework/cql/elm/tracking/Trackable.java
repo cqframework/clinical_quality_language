@@ -1,5 +1,7 @@
 package org.cqframework.cql.elm.tracking;
 
+import org.hl7.cql.model.DataType;
+
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.ArrayList;
 import java.util.List;

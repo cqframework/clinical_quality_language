@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.IntervalType;
-import org.cqframework.cql.elm.tracking.ListType;
+import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.IntervalType;
+import org.hl7.cql.model.ListType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

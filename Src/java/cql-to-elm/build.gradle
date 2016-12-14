@@ -5,6 +5,7 @@ run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql"]
 
 dependencies {
     compile project(':cql')
+    compile project(':model')
     compile project(':elm')
     compile group: 'org.antlr', name: 'antlr4', version: '4.5'
     compile group: 'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4.1'

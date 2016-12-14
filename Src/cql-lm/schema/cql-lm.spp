@@ -17,7 +17,7 @@
 		<File FilePath="elm\cqlannotations.xsd" HomeFolder="Yes"/>
 		<File FilePath="elm\expression.xsd" HomeFolder="Yes"/>
 		<File FilePath="elm\library.xsd" HomeFolder="Yes"/>
-		<File FilePath="elm\modelinfo.xsd" HomeFolder="Yes"/>
+		<File FilePath="model\modelinfo.xsd" HomeFolder="Yes"/>
 		<File FilePath="elm\types.xsd" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="Entities" ExtStr="ent"/>
