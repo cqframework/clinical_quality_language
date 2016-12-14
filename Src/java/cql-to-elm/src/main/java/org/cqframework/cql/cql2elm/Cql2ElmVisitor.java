@@ -3095,7 +3095,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return current;
-            }
+        }
 
     private Expression resolveIdentifier(String identifier) {
         // If the identifier cannot be resolved in the library builder, check for forward declarations for expressions and parameters
