@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.elm.tracking.*;
+import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.*;
 
 import java.util.*;
@@ -37,20 +37,20 @@ public class ModelImporter {
         // Import model types
         for (TypeInfo t : this.modelInfo.getTypeInfo()) {
             if (t instanceof SimpleTypeInfo) {
-                typeInfoIndex.put(((SimpleTypeInfo)t).getName(), t);
+                typeInfoIndex.put(ensureUnqualified(((SimpleTypeInfo)t).getName()), t);
             }
             else if (t instanceof ClassInfo) {
                 ClassInfo classInfo = (ClassInfo)t;
                 if (classInfo.getName() != null) {
-                    typeInfoIndex.put(classInfo.getName(), classInfo);
+                    typeInfoIndex.put(ensureUnqualified(classInfo.getName()), classInfo);
                 }
             }
         }
 
         // Import model conversions
         for (ConversionInfo c : this.modelInfo.getConversionInfo()) {
-            DataType fromType = resolveTypeSpecifier(c.getFromType());
-            DataType toType = resolveTypeSpecifier(c.getToType());
+            DataType fromType = resolveTypeNameOrSpecifier(c.getFromType(), c.getFromTypeSpecifier());
+            DataType toType = resolveTypeNameOrSpecifier(c.getToType(), c.getToTypeSpecifier());
             int qualifierIndex = c.getFunctionName().indexOf('.');
             String libraryName = qualifierIndex >= 0 ? c.getFunctionName().substring(0, qualifierIndex) : null;
             String functionName = qualifierIndex >= 0 ? c.getFunctionName().substring(qualifierIndex + 1) : null;
@@ -82,7 +82,7 @@ public class ModelImporter {
     public Iterable<Conversion> getConversions() { return conversions; }
 
     private String casify(String typeName) {
-        return casify(typeName, this.modelInfo.isIsCaseSensitive() != null ? this.modelInfo.isIsCaseSensitive() : false);
+        return casify(typeName, this.modelInfo.isCaseSensitive() != null ? this.modelInfo.isCaseSensitive() : false);
     }
 
     private String casify(String typeName, boolean caseSensitive) {
@@ -112,28 +112,45 @@ public class ModelImporter {
         return null;
     }
 
-    private DataType resolveTypeSpecifier(String typeSpecifier) {
-        if ((typeSpecifier == null) || typeSpecifier.equals("")) {
+    private DataType resolveTypeSpecifier(TypeSpecifier typeSpecifier) {
+        if (typeSpecifier == null) {
             return null;
         }
 
-        // typeSpecifier: simpleTypeSpecifier | intervalTypeSpecifier | listTypeSpecifier | choiceTypeSpecifier;
-        // simpleTypeSpecifier: (identifier '.')? identifier
-        // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
-        // listTypeSpecifier: 'list' '<' typeSpecifier '>'
-        // choiceTypeSpecifier: 'choice' '<' typeSpecifier (',' typeSpecifier)* '>'
-        if (typeSpecifier.toLowerCase().startsWith("interval")) {
-            DataType pointType = resolveTypeSpecifier(typeSpecifier.substring(typeSpecifier.indexOf('<') + 1, typeSpecifier.lastIndexOf('>')));
+        if (typeSpecifier instanceof NamedTypeSpecifier) {
+            NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier)typeSpecifier;
+            String qualifier = namedTypeSpecifier.getModelName();
+            if (qualifier == null || qualifier.isEmpty()) {
+                qualifier = this.modelInfo.getName();
+            }
+
+            String qualifiedTypeName = String.format("%s.%s", qualifier, namedTypeSpecifier.getName());
+            return resolveTypeName(qualifiedTypeName);
+        }
+
+        if (typeSpecifier instanceof IntervalTypeSpecifier) {
+            IntervalTypeSpecifier intervalTypeSpecifier = (IntervalTypeSpecifier)typeSpecifier;
+            DataType pointType = resolveTypeNameOrSpecifier(intervalTypeSpecifier.getPointType(), intervalTypeSpecifier.getPointTypeSpecifier());
             return new IntervalType(pointType);
         }
-        else if (typeSpecifier.toLowerCase().startsWith("list")) {
-            DataType elementType = resolveTypeSpecifier(typeSpecifier.substring(typeSpecifier.indexOf('<') + 1, typeSpecifier.lastIndexOf('>')));
+
+        if (typeSpecifier instanceof ListTypeSpecifier) {
+            ListTypeSpecifier listTypeSpecifier = (ListTypeSpecifier)typeSpecifier;
+            DataType elementType = resolveTypeNameOrSpecifier(listTypeSpecifier.getElementType(), listTypeSpecifier.getElementTypeSpecifier());
             return new ListType(elementType);
         }
-        // TODO: Need a type specifier parser at this point, the type specifier grammar is now beyond simple parsing
-        else {
-            return resolveTypeName(typeSpecifier);
+
+        if (typeSpecifier instanceof ChoiceTypeSpecifier) {
+            ChoiceTypeSpecifier choiceTypeSpecifier = (ChoiceTypeSpecifier)typeSpecifier;
+            List<DataType> choices = new ArrayList<>();
+            for (TypeSpecifier choice : choiceTypeSpecifier.getChoice()) {
+                DataType choiceType = resolveTypeSpecifier(choice);
+                choices.add(choiceType);
+            }
+            return new ChoiceType(choices);
         }
+
+        return null;
     }
 
     private DataType resolveTypeName(String typeName) {
@@ -141,9 +158,23 @@ public class ModelImporter {
             throw new IllegalArgumentException("typeName is null");
         }
 
+        // NOTE: Preserving the ability to parse string type specifiers for backwards loading compatibility
+        // typeSpecifier: simpleTypeSpecifier | intervalTypeSpecifier | listTypeSpecifier
+        // simpleTypeSpecifier: (identifier '.')? identifier
+        // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
+        // listTypeSpecifier: 'list' '<' typeSpecifier '>'
+        if (typeName.toLowerCase().startsWith("interval<")) {
+            DataType pointType = resolveTypeName(typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>')));
+            return new IntervalType(pointType);
+        }
+        else if (typeName.toLowerCase().startsWith("list<")) {
+            DataType elementType = resolveTypeName(typeName.substring(typeName.indexOf('<') + 1, typeName.lastIndexOf('>')));
+            return new ListType(elementType);
+        }
+
         DataType result = lookupType(typeName);
         if (result == null) {
-            TypeInfo typeInfo = lookupTypeInfo(typeName);
+            TypeInfo typeInfo = lookupTypeInfo(ensureUnqualified(typeName));
             if (typeInfo == null) {
                 throw new IllegalArgumentException(String.format("Could not resolve type info for type name %s.", typeName));
             }
@@ -152,6 +183,18 @@ public class ModelImporter {
         }
 
         return result;
+    }
+
+    private DataType resolveTypeNameOrSpecifier(String typeName, TypeSpecifier typeSpecifier) {
+        if ((typeName == null || typeName.isEmpty()) && typeSpecifier == null) {
+            return null;
+        }
+
+        if (typeSpecifier != null) {
+            return resolveTypeSpecifier(typeSpecifier);
+        }
+
+        return resolveTypeName(typeName);
     }
 
     private DataType lookupType(String typeName) {
@@ -170,14 +213,38 @@ public class ModelImporter {
         return typeInfoIndex.get(typeName);
     }
 
+    // This method is used to ensure backwards compatible loading, type names in model info may be qualified with the model name
+    private String ensureQualified(String name) {
+        String qualifier = String.format("%s.", this.modelInfo.getName());
+        if (!name.startsWith(qualifier)) {
+            return String.format("%s%s", qualifier, name);
+        }
+
+        return name;
+    }
+
+    // This method is used to ensure backwards compatible loading, type names in model info may be qualified with the model name
+    private String ensureUnqualified(String name) {
+        if (name.startsWith(String.format("%s.", this.modelInfo.getName()))) {
+            return name.substring(name.indexOf('.') + 1);
+        }
+
+        return name;
+    }
+
     private SimpleType resolveSimpleType(SimpleTypeInfo t) {
-        SimpleType result = (SimpleType)lookupType(t.getName());
+        String qualifiedTypeName = ensureQualified(t.getName());
+        DataType lookupType = lookupType(qualifiedTypeName);
+        if (lookupType instanceof ClassType) {
+            throw new IllegalArgumentException("Expected instance of SimpleType but found instance of ClassType instead.");
+        }
+        SimpleType result = (SimpleType)lookupType(qualifiedTypeName);
         if (result == null) {
-            if (t.getName().equals(DataType.ANY.getName())) {
+            if (qualifiedTypeName.equals(DataType.ANY.getName())) {
                 result = DataType.ANY;
             }
             else {
-                result = new SimpleType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
+                result = new SimpleType(qualifiedTypeName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
             }
             resolvedTypes.put(casify(result.getName()), result);
         }
@@ -188,7 +255,7 @@ public class ModelImporter {
     private Collection<TupleTypeElement> resolveTupleTypeElements(Collection<TupleTypeInfoElement> infoElements) {
         List<TupleTypeElement> elements = new ArrayList();
         for (TupleTypeInfoElement e : infoElements) {
-            elements.add(new TupleTypeElement(e.getName(), resolveTypeSpecifier(e.getType())));
+            elements.add(new TupleTypeElement(e.getName(), resolveTypeNameOrSpecifier(e.getType(), e.getTypeSpecifier())));
         }
         return elements;
     }
@@ -201,7 +268,7 @@ public class ModelImporter {
     private Collection<ClassTypeElement> resolveClassTypeElements(Collection<ClassInfoElement> infoElements) {
         List<ClassTypeElement> elements = new ArrayList();
         for (ClassInfoElement e : infoElements) {
-            elements.add(new ClassTypeElement(e.getName(), resolveTypeSpecifier(e.getType()), e.isProhibited(), e.isIsOneBased()));
+            elements.add(new ClassTypeElement(e.getName(), resolveTypeNameOrSpecifier(e.getType(), e.getTypeSpecifier()), e.isProhibited(), e.isOneBased()));
         }
         return elements;
     }
@@ -211,13 +278,14 @@ public class ModelImporter {
             throw new IllegalArgumentException("Class definition must have a name.");
         }
 
-        ClassType result = (ClassType)lookupType(t.getName());
+        String qualifiedName = ensureQualified(t.getName());
+        ClassType result = (ClassType)lookupType(qualifiedName);
         if (result == null) {
             if (t instanceof ProfileInfo) {
-                result = new ProfileType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
+                result = new ProfileType(qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
             }
             else {
-                result = new ClassType(t.getName(), resolveTypeSpecifier(t.getBaseType()));
+                result = new ClassType(qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
             }
             resolvedTypes.put(casify(result.getName()), result);
             result.addElements(resolveClassTypeElements(t.getElement()));
@@ -231,19 +299,19 @@ public class ModelImporter {
     }
 
     private IntervalType resolveIntervalType(IntervalTypeInfo t) {
-        IntervalType result = new IntervalType(resolveTypeSpecifier(t.getPointType()));
+        IntervalType result = new IntervalType(resolveTypeNameOrSpecifier(t.getPointType(), t.getPointTypeSpecifier()));
         return result;
     }
 
     private ListType resolveListType(ListTypeInfo t) {
-        ListType result = new ListType(resolveTypeSpecifier(t.getElementType()));
+        ListType result = new ListType(resolveTypeNameOrSpecifier(t.getElementType(), t.getElementTypeSpecifier()));
         return result;
     }
 
     private ChoiceType resolveChoiceType(ChoiceTypeInfo t) {
         ArrayList<DataType> types = new ArrayList<DataType>();
-        for (String typeInfo : t.getType()) {
-            types.add(resolveTypeSpecifier(typeInfo));
+        for (TypeSpecifier typeSpecifier : t.getType()) {
+            types.add(resolveTypeSpecifier(typeSpecifier));
         }
         return new ChoiceType(types);
     }

@@ -17,6 +17,7 @@ define ListProperIncludes: { 1, 2, 3, 4, 5 } properly includes { 2, 3, 4 }
 define ListProperIncludedIn: { 2, 3, 4 } properly included in { 1, 2, 3, 4, 5 }
 define ListSingletonFrom: singleton from { 1 }
 define ListUnion: { 1, 2, 3 } union { 4, 5, 6 }
+define ListUnionWithChoice: { 1, 2, 3 } union { 'a', 'b', 'c' }
 
 define StringListEqual: { 'x', 'y', 'z' } = { 'x', 'y', 'z' }
 define IntegerListEqual: { 1, 2, 3, 4, 5 } = { 1, 2, 3, 4, 5 }

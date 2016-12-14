@@ -1,7 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.elm.tracking.DataType;
-import org.cqframework.cql.elm.tracking.InstantiationContext;
+import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.InstantiationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,7 @@ public class Signature {
 
         return false;
     }
+
 
     public boolean isSubTypeOf(Signature other) {
         if (operandTypes.size() == other.operandTypes.size()) {

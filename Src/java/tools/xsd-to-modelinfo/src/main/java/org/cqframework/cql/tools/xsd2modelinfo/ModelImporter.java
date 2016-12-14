@@ -1,7 +1,7 @@
 package org.cqframework.cql.tools.xsd2modelinfo;
 
 import org.apache.ws.commons.schema.*;
-import org.cqframework.cql.elm.tracking.*;
+import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.*;
 
 import javax.xml.bind.JAXB;
@@ -24,13 +24,19 @@ public class ModelImporter {
         for (TypeInfo info : systemModelInfo.getTypeInfo()) {
             if (info instanceof SimpleTypeInfo) {
                 SimpleTypeInfo sInfo = (SimpleTypeInfo) info;
-                map.put(sInfo.getName(), new SimpleType(sInfo.getName()));
+                String qualifiedName = getQualifiedName(systemModelInfo.getName(), sInfo.getName());
+                map.put(qualifiedName, new SimpleType(qualifiedName));
             } else if (info instanceof ClassInfo) {
                 ClassInfo cInfo = (ClassInfo) info;
-                map.put(cInfo.getName(), new ClassType(cInfo.getName()));
+                String qualifiedName = getQualifiedName(systemModelInfo.getName(), cInfo.getName());
+                map.put(qualifiedName, new ClassType(qualifiedName));
             }
         }
         return map;
+    }
+
+    private static String getQualifiedName(String modelName, String name) {
+        return String.format("%s.%s", modelName, name);
     }
 
     private final XmlSchema schema;
@@ -108,11 +114,28 @@ public class ModelImporter {
         }
     }
 
+    private String toTypeName(NamedTypeSpecifier typeSpecifier) {
+        if (typeSpecifier.getModelName() != null) {
+            return String.format("%s.%s", typeSpecifier.getModelName(), typeSpecifier.getName());
+        }
+        return typeSpecifier.getName();
+    }
+
+    private void setBaseType(TypeInfo typeInfo, DataType baseType) {
+        TypeSpecifier baseTypeSpecifier = toTypeSpecifier(baseType);
+        if (baseTypeSpecifier instanceof NamedTypeSpecifier) {
+            typeInfo.setBaseType(toTypeName((NamedTypeSpecifier)baseTypeSpecifier));
+        }
+        else {
+            typeInfo.setBaseTypeSpecifier(baseTypeSpecifier);
+        }
+    }
+
     private SimpleTypeInfo toSimpleTypeInfo(SimpleType dataType) {
         SimpleTypeInfo result = new SimpleTypeInfo();
-        result.setName(dataType.getName());
+        result.setName(dataType.getSimpleName());
         if (dataType.getBaseType() != null) {
-            result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
+            setBaseType(result, dataType.getBaseType());
         }
 
         return result;
@@ -120,9 +143,9 @@ public class ModelImporter {
 
     private ClassInfo toClassInfo(ClassType dataType) {
         ClassInfo result = new ClassInfo();
-        result.setName(dataType.getName());
+        result.setName(dataType.getSimpleName());
         if (dataType.getBaseType() != null) {
-            result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
+            setBaseType(result, dataType.getBaseType());
         }
         if (dataType.getLabel() != null) {
             result.setLabel(dataType.getLabel());
@@ -136,9 +159,14 @@ public class ModelImporter {
         result.setPrimaryCodePath(dataType.getPrimaryCodePath());
 
         for (ClassTypeElement element : dataType.getElements()) {
-            ClassInfoElement cie = new ClassInfoElement()
-                    .withName(element.getName())
-                    .withType(toTypeSpecifier(element.getType()));
+            ClassInfoElement cie = new ClassInfoElement().withName(element.getName());
+            TypeSpecifier elementTypeSpecifier = toTypeSpecifier(element.getType());
+            if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
+                cie.setType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
+            }
+            else {
+                cie.setTypeSpecifier(elementTypeSpecifier);
+            }
             if (element.isProhibited()) {
                 cie.setProhibited(true);
             }
@@ -150,40 +178,61 @@ public class ModelImporter {
 
     private IntervalTypeInfo toIntervalTypeInfo(IntervalType dataType) {
         IntervalTypeInfo result = new IntervalTypeInfo();
-        result.setPointType(toTypeSpecifier(dataType.getPointType()));
+        TypeSpecifier pointTypeSpecifier = toTypeSpecifier(dataType.getPointType());
+        if (pointTypeSpecifier instanceof NamedTypeSpecifier) {
+            result.setPointType(toTypeName((NamedTypeSpecifier)pointTypeSpecifier));
+        }
+        else {
+            result.setPointTypeSpecifier(pointTypeSpecifier);
+        }
         return result;
     }
 
     private ListTypeInfo toListTypeInfo(ListType dataType) {
         ListTypeInfo result = new ListTypeInfo();
-        result.setElementType(toTypeSpecifier(dataType.getElementType()));
+        TypeSpecifier elementTypeSpecifier = toTypeSpecifier(dataType.getElementType());
+        if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
+            result.setElementType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
+        }
+        else {
+            result.setElementTypeSpecifier(elementTypeSpecifier);
+        }
         return result;
     }
 
     private TupleTypeInfo toTupleTypeInfo(TupleType dataType) {
         TupleTypeInfo result = new TupleTypeInfo();
         if (dataType.getBaseType() != null) {
-            result.setBaseType(toTypeSpecifier(dataType.getBaseType()));
+            setBaseType(result, dataType.getBaseType());
         }
 
         for (TupleTypeElement element : dataType.getElements()) {
-            result.getElement().add(new TupleTypeInfoElement()
-                    .withName(element.getName())
-                    .withType(toTypeSpecifier(element.getType())));
+            TupleTypeInfoElement infoElement = new TupleTypeInfoElement()
+                    .withName(element.getName());
+
+            TypeSpecifier elementTypeSpecifier = toTypeSpecifier(element.getType());
+            if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
+                infoElement.setType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
+            }
+            else {
+                infoElement.setTypeSpecifier(elementTypeSpecifier);
+            }
+
+            result.getElement().add(infoElement);
         }
 
         return result;
     }
 
-    private String toTypeSpecifier(DataType dataType) {
+    private TypeSpecifier toTypeSpecifier(DataType dataType) {
         if (dataType == null) {
             throw new IllegalArgumentException("dataType is null");
         }
 
         if (dataType instanceof SimpleType) {
-            return toSimpleTypeSpecifier((SimpleType) dataType);
+            return toNamedTypeSpecifier((SimpleType) dataType);
         } else if (dataType instanceof ClassType) {
-            return toClassTypeSpecifier((ClassType) dataType);
+            return toNamedTypeSpecifier((ClassType) dataType);
         } else if (dataType instanceof IntervalType) {
             return toIntervalTypeSpecifier((IntervalType) dataType);
         } else if (dataType instanceof ListType) {
@@ -197,24 +246,45 @@ public class ModelImporter {
         }
     }
 
-    private String toSimpleTypeSpecifier(SimpleType dataType) {
-        return dataType.getName();
+    private TypeSpecifier toNamedTypeSpecifier(NamedType dataType) {
+        NamedTypeSpecifier namedTypeSpecifier = new NamedTypeSpecifier()
+                .withModelName(dataType.getNamespace())
+                .withName(dataType.getSimpleName());
+        return namedTypeSpecifier;
     }
 
-    private String toClassTypeSpecifier(ClassType dataType) {
-        return dataType.getName();
+    private TypeSpecifier toIntervalTypeSpecifier(IntervalType dataType) {
+        IntervalTypeSpecifier intervalTypeSpecifier = new IntervalTypeSpecifier();
+        TypeSpecifier pointTypeSpecifier = toTypeSpecifier(dataType.getPointType());
+        if (pointTypeSpecifier instanceof NamedTypeSpecifier) {
+            intervalTypeSpecifier.setPointType(toTypeName((NamedTypeSpecifier)pointTypeSpecifier));
+        }
+        else {
+            intervalTypeSpecifier.setPointTypeSpecifier(pointTypeSpecifier);
+        }
+        return intervalTypeSpecifier;
     }
 
-    private String toIntervalTypeSpecifier(IntervalType dataType) {
-        return String.format("interval<%s>", toTypeSpecifier(dataType.getPointType()));
+    private TypeSpecifier toListTypeSpecifier(ListType dataType) {
+        ListTypeSpecifier listTypeSpecifier = new ListTypeSpecifier();
+        TypeSpecifier elementTypeSpecifier = toTypeSpecifier(dataType.getElementType());
+        if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
+            listTypeSpecifier.setElementType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
+        }
+        else {
+            listTypeSpecifier.setElementTypeSpecifier(elementTypeSpecifier);
+        }
+        return listTypeSpecifier;
     }
 
-    private String toListTypeSpecifier(ListType dataType) {
-        return String.format("list<%s>", toTypeSpecifier(dataType.getElementType()));
-    }
-
-    private String toChoiceTypeSpecifier(ChoiceType dataType) {
-        return dataType.toString();
+    private TypeSpecifier toChoiceTypeSpecifier(ChoiceType dataType) {
+        List<TypeSpecifier> choiceTypes = new ArrayList<>();
+        for (DataType choice : dataType.getTypes()) {
+            choiceTypes.add(toTypeSpecifier(choice));
+        }
+        ChoiceTypeSpecifier choiceTypeSpecifier = new ChoiceTypeSpecifier()
+                .withChoice(choiceTypes);
+        return choiceTypeSpecifier;
     }
 
     private String getTypeName(QName schemaTypeName, Map<String, String> namespaces) {
