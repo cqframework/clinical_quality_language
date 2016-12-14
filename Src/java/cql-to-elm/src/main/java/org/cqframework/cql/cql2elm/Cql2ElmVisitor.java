@@ -12,12 +12,14 @@ import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.model.*;
+import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
@@ -1492,26 +1494,70 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitInFixSetExpression(@NotNull cqlParser.InFixSetExpressionContext ctx) {
         String operator = ctx.getChild(1).getText();
 
+        Expression left = parseExpression(ctx.expression(0));
+        Expression right = parseExpression(ctx.expression(1));
+
+        // for union of lists
+            // collect list of types in either side
+            // cast both operands to a choice type with all types
+
+        // for intersect of lists
+            // collect list of types in both sides
+            // cast both operands to a choice type with all types
+            // TODO: cast the result to a choice type with only types in both sides
+
+        // for difference of lists
+            // collect list of types in both sides
+            // cast both operands to a choice type with all types
+            // TODO: cast the result to the initial type of the left
+
+        if (left.getResultType() instanceof ListType && right.getResultType() instanceof ListType) {
+            ListType leftListType = (ListType)left.getResultType();
+            ListType rightListType = (ListType)right.getResultType();
+
+            if (!(leftListType.isCompatibleWith(rightListType) || rightListType.isCompatibleWith(leftListType))) {
+                Set<DataType> elementTypes = new HashSet<DataType>();
+                if (leftListType.getElementType() instanceof ChoiceType) {
+                    for (DataType choice : ((ChoiceType)leftListType.getElementType()).getTypes()) {
+                        elementTypes.add(choice);
+                    }
+                }
+                else {
+                    elementTypes.add(leftListType.getElementType());
+                }
+
+                if (rightListType.getElementType() instanceof ChoiceType) {
+                    for (DataType choice : ((ChoiceType)rightListType.getElementType()).getTypes()) {
+                        elementTypes.add(choice);
+                    }
+                }
+                else {
+                    elementTypes.add(rightListType.getElementType());
+                }
+
+                if (elementTypes.size() > 1) {
+                    ListType targetType = new ListType(new ChoiceType(elementTypes));
+                    left = of.createAs().withOperand(left).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
+                    left.setResultType(targetType);
+
+                    right = of.createAs().withOperand(right).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
+                    right.setResultType(targetType);
+                }
+            }
+        }
+
         switch (operator) {
+            case "|":
             case "union":
-                Union union = of.createUnion().withOperand(
-                        parseExpression(ctx.expression(0)),
-                        parseExpression(ctx.expression(1))
-                );
+                Union union = of.createUnion().withOperand(left, right);
                 resolveBinaryCall("System", "Union", union);
                 return union;
             case "intersect":
-                Intersect intersect = of.createIntersect().withOperand(
-                        parseExpression(ctx.expression(0)),
-                        parseExpression(ctx.expression(1))
-                );
+                Intersect intersect = of.createIntersect().withOperand(left, right);
                 resolveBinaryCall("System", "Intersect", intersect);
                 return intersect;
             case "except":
-                Except except = of.createExcept().withOperand(
-                        parseExpression(ctx.expression(0)),
-                        parseExpression(ctx.expression(1))
-                );
+                Except except = of.createExcept().withOperand(left, right);
                 resolveBinaryCall("System", "Except", except);
                 return except;
         }
@@ -1684,6 +1730,41 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     .withPath(memberIdentifier);
             result.setResultType(resolveProperty(left.getResultType(), memberIdentifier));
             return result;
+        }
+        else if (left.getResultType() instanceof ListType) {
+            // NOTE: FHIRPath path traversal support
+            // Resolve property access of a list of items as a query:
+                // listValue.property ::= listValue X where X.property is not null return X.property
+            ListType listType = (ListType)left.getResultType();
+            DataType propertyType = resolveProperty(listType.getElementType(), memberIdentifier);
+            Property accessor = of.createProperty()
+                    .withSource(of.createAliasRef().withName("$this"))
+                    .withPath(memberIdentifier);
+            accessor.setResultType(propertyType);
+            IsNull isNull = of.createIsNull().withOperand(accessor);
+            isNull.setResultType(resolveTypeName("System", "Boolean"));
+            Not not = of.createNot().withOperand(isNull);
+            not.setResultType(resolveTypeName("System", "Boolean"));
+
+            // Recreate property, it needs to be accessed twice
+            accessor = of.createProperty()
+                    .withSource(of.createAliasRef().withName("$this"))
+                    .withPath(memberIdentifier);
+            accessor.setResultType(propertyType);
+
+            Query query = of.createQuery()
+                    .withSource(of.createAliasedQuerySource().withExpression(left).withAlias("$this"))
+                    .withWhere(not)
+                    .withReturn(of.createReturnClause().withExpression(accessor));
+            query.setResultType(new ListType(accessor.getResultType()));
+
+            if (accessor.getResultType() instanceof ListType) {
+                Flatten result = of.createFlatten().withOperand(query);
+                result.setResultType(accessor.getResultType());
+                return result;
+            }
+
+            return query;
         }
         else {
             Property result = of.createProperty()
@@ -3399,7 +3480,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     protected QName dataTypeToQName(DataType type) {
         if (type instanceof NamedType) {
             NamedType namedType = (NamedType)type;
-            org.hl7.elm_modelinfo.r1.ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
+            ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
             return new QName(modelInfo.getUrl(), namedType.getSimpleName());
         }
 
@@ -3419,6 +3500,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         else if (type instanceof TupleType) {
             return tupleTypeToTypeSpecifier((TupleType)type);
+        }
+        else if (type instanceof ChoiceType) {
+            return choiceTypeToTypeSpecifier((ChoiceType)type);
         }
         else {
             throw new IllegalArgumentException(String.format("Could not convert type %s to a type specifier.", type));
@@ -3453,6 +3537,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return definitions.toArray(new TupleElementDefinition[definitions.size()]);
+    }
+
+    private TypeSpecifier choiceTypeToTypeSpecifier(ChoiceType type) {
+        return (TypeSpecifier)of.createChoiceTypeSpecifier()
+                .withType(choiceTypeTypesToTypeSpecifiers(type))
+                .withResultType(type);
+    }
+
+    private TypeSpecifier[] choiceTypeTypesToTypeSpecifiers(ChoiceType choiceType) {
+        List<TypeSpecifier> specifiers = new ArrayList<>();
+
+        for (DataType type : choiceType.getTypes()) {
+            specifiers.add(dataTypeToTypeSpecifier(type));
+        }
+
+        return specifiers.toArray(new TypeSpecifier[specifiers.size()]);
     }
 
     private ClassType resolveLabel(String modelName, String label) {
@@ -3555,6 +3655,30 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         return resolveTypeName("System", "Boolean");
                     default:
                         throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
+                }
+            }
+            else if (currentType instanceof ChoiceType) {
+                ChoiceType choiceType = (ChoiceType)currentType;
+                // TODO: Issue a warning if the property does not resolve against every type in the choice
+
+                // Resolve the property against each type in the choice
+                Set<DataType> resultTypes = new HashSet<>();
+                for (DataType choice : choiceType.getTypes()) {
+                    DataType resultType = resolveProperty(sourceType, identifier, false);
+                    if (resultType != null) {
+                        resultTypes.add(resultType);
+                    }
+                }
+
+                // The result type is a choice of all the resolved types
+                if (resultTypes.size() > 1) {
+                    return new ChoiceType(resultTypes);
+                }
+
+                if (resultTypes.size() == 1) {
+                    for (DataType resultType : resultTypes) {
+                        return resultType;
+                    }
                 }
             }
 
