@@ -15,16 +15,8 @@ import static org.hamcrest.Matchers.is;
  * Created by Bryn on 12/11/2016.
  */
 public class PathTests {
-
-    private static LibraryManager libraryManager;
-    private static ModelManager modelManager;
-
     @BeforeClass
     public void setup() {
-        modelManager = new ModelManager();
-        libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().clearProviders();
-        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         ModelInfoLoader.registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"),
                 new TestFhirModelInfoProvider());
     }
@@ -35,10 +27,10 @@ public class PathTests {
     }
 
     @Test
-    public void testPaths() {
+    public void testModelInfo() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("PathTests/PathTests.cql"), modelManager, libraryManager);
+            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("PathTests/PathTests.cql"), new LibraryManager());
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
