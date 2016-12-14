@@ -146,9 +146,9 @@ public class ModelImporter {
             for (TypeSpecifier choice : choiceTypeSpecifier.getChoice()) {
                 DataType choiceType = resolveTypeSpecifier(choice);
                 choices.add(choiceType);
-        }
+            }
             return new ChoiceType(choices);
-    }
+        }
 
         return null;
     }
