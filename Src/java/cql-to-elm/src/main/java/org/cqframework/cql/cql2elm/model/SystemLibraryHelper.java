@@ -1,8 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.elm.tracking.IntervalType;
-import org.cqframework.cql.elm.tracking.ListType;
-import org.cqframework.cql.elm.tracking.TypeParameter;
+import org.hl7.cql.model.*;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 public class SystemLibraryHelper {

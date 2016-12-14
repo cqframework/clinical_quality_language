@@ -11,23 +11,26 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class ModelTests {
+/**
+ * Created by Bryn on 12/11/2016.
+ */
+public class PathTests {
     @BeforeClass
     public void setup() {
-        ModelInfoLoader.registerModelInfoProvider(new VersionedIdentifier().withId("Test").withVersion("1"),
-                new TestModelInfoProvider());
+        ModelInfoLoader.registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"),
+                new TestFhirModelInfoProvider());
     }
 
     @AfterClass
     public void tearDown() {
-        ModelInfoLoader.unregisterModelInfoProvider(new VersionedIdentifier().withId("Test").withVersion("1"));
+        ModelInfoLoader.unregisterModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"));
     }
 
     @Test
     public void testModelInfo() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), new LibraryManager());
+            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("PathTests/PathTests.cql"), new LibraryManager());
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {

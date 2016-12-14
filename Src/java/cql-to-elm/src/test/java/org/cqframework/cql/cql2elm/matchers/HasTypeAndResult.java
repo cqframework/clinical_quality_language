@@ -1,10 +1,10 @@
 package org.cqframework.cql.cql2elm.matchers;
 
-import org.cqframework.cql.elm.tracking.DataType;
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
+import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.ExpressionDef;
 
 public class HasTypeAndResult extends TypeSafeDiagnosingMatcher<ExpressionDef> {

@@ -1,4 +1,4 @@
-package org.cqframework.cql.elm.tracking;
+package org.hl7.cql.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,11 +10,27 @@ import java.util.List;
 public class ChoiceType extends DataType {
 
     public ChoiceType(Iterable<DataType> types) {
-        this.types.addAll((Collection<? extends DataType>) types);
+        // Expand choice types in the constructor, it never makes sense to have a choice of choices
+        for (DataType type : types) {
+            addType(type);
+        }
     }
+
     private ArrayList<DataType> types = new ArrayList<>();
     public Iterable<DataType> getTypes() {
         return types;
+    }
+
+    private void addType(DataType type) {
+        if (type instanceof ChoiceType) {
+            ChoiceType choiceType = (ChoiceType)type;
+            for (DataType choice : choiceType.getTypes()) {
+                addType(choice);
+            }
+        }
+        else {
+            types.add(type);
+        }
     }
 
     @Override
@@ -96,6 +112,7 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isGeneric() {
+        // TODO: It hardly makes sense for a choice type to have generics.... ignoring in instantiation semantics for now
         for (DataType type : types) {
             if (type.isGeneric()) {
                 return true;
@@ -107,13 +124,11 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        // TODO: Determine isInstantiable semantics
-        return false;
+        return isSuperTypeOf(callType);
     }
 
     @Override
     public DataType instantiate(InstantiationContext context) {
-        // TODO: Determine instantiate semantics
-        return null;
+        return this;
     }
 }
