@@ -78,6 +78,12 @@ public class QueryContext {
         return inSortClauseValue;
     }
 
+    private boolean isImplicitValue;
+    public boolean isImplicit() { return isImplicitValue; }
+    public void setIsImplicit(boolean isImplicitValue) {
+        this.isImplicitValue = isImplicitValue;
+    }
+
     private DataType resultElementType;
     public DataType getResultElementType() {
         return resultElementType;
