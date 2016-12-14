@@ -34,9 +34,7 @@
         <ns4:element name="comment" type="FHIR.string"/>
         <ns4:element name="period" type="FHIR.Period"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="date" retrievable="false" baseType="FHIR.Element">
-        <ns4:element name="value" type="System.DateTime"/>
-    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="date" retrievable="false" baseType="FHIR.Element"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DetectedIssue.Mitigation" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="action" type="FHIR.CodeableConcept"/>
         <ns4:element name="date" type="FHIR.dateTime"/>
@@ -2215,9 +2213,7 @@
             <ns4:typeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ImagingManifest.Study"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="dateTime" retrievable="false" baseType="FHIR.Element">
-        <ns4:element name="value" type="System.DateTime"/>
-    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="dateTime" retrievable="false" baseType="FHIR.Element"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="CapabilityStatement.Messaging" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="endpoint">
             <ns4:typeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.CapabilityStatement.Endpoint"/>
@@ -7733,8 +7729,6 @@
         <ns4:element name="name" type="FHIR.string"/>
         <ns4:element name="value" type="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:conversionInfo fromType="dateTime" toType="System.DateTime" functionName="FHIRHelpers.ToDateTime"/>
-    <ns4:conversionInfo fromType="date" toType="System.DateTime" functionName="FHIRHelpers.ToDateTime"/>
     <ns4:conversionInfo fromType="uuid" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="PlanActionPrecheckBehavior" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="ProvenanceEntityRole" toType="System.String" functionName="FHIRHelpers.ToString"/>

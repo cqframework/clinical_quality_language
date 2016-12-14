@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
@@ -26,22 +25,6 @@ public class Conversion {
         this.isCastFlag = true;
     }
 
-    public Conversion(ChoiceType fromType, DataType toType, Conversion choiceConversion) {
-        if (fromType == null) {
-            throw new IllegalArgumentException("fromType is null");
-        }
-
-        if (toType == null) {
-            throw new IllegalArgumentException("toType is null");
-        }
-
-        setIsImplicit(true);
-        this.fromType = fromType;
-        this.toType = toType;
-        this.conversionField = choiceConversion;
-        this.isCastFlag = true;
-    }
-
     public Conversion(ListType fromType, ListType toType, Conversion elementConversion) {
         if (fromType == null) {
             throw new IllegalArgumentException("fromType is null");
@@ -60,38 +43,6 @@ public class Conversion {
         this.toType = toType;
         this.conversionField = elementConversion;
         this.isListConversionFlag = true;
-    }
-
-    public Conversion(ListType fromType, DataType toType, Conversion elementConversion) {
-        if (fromType == null) {
-            throw new IllegalArgumentException("fromType is null");
-        }
-
-        if (toType == null) {
-            throw new IllegalArgumentException("toType is null");
-        }
-
-        setIsImplicit(true);
-        this.fromType = fromType;
-        this.toType = toType;
-        this.conversionField = elementConversion;
-        this.isListDemotionFlag = true;
-    }
-
-    public Conversion(DataType fromType, ListType toType, Conversion elementConversion) {
-        if (fromType == null) {
-            throw new IllegalArgumentException("fromType is null");
-        }
-
-        if (toType == null) {
-            throw new IllegalArgumentException("toType is null");
-        }
-
-        setIsImplicit(true);
-        this.fromType = fromType;
-        this.toType = toType;
-        this.conversionField = elementConversion;
-        this.isListPromotionFlag = true;
     }
 
     public Conversion(IntervalType fromType, IntervalType toType, Conversion pointConversion) {
@@ -131,10 +82,9 @@ public class Conversion {
             throw new IllegalArgumentException("operator is null");
         }
 
-        // NOTE: FHIRPath Support, need to allow generic conversion operators
-//        if (operator instanceof GenericOperator) {
-//            throw new IllegalArgumentException("Generic conversion operators are not supported.");
-//        }
+        if (operator instanceof GenericOperator) {
+            throw new IllegalArgumentException("Generic conversion operators are not supported.");
+        }
 
         fromType = null;
         for (DataType dataType : operator.getSignature().getOperandTypes()) {
@@ -159,10 +109,6 @@ public class Conversion {
         return conversionField;
     }
 
-    public boolean isGeneric() {
-        return this.operator instanceof GenericOperator;
-    }
-
     private boolean isCastFlag;
     public boolean isCast() {
         return isCastFlag;
@@ -171,16 +117,6 @@ public class Conversion {
     private boolean isListConversionFlag;
     public boolean isListConversion() {
         return isListConversionFlag;
-    }
-
-    private boolean isListPromotionFlag;
-    public boolean isListPromotion() {
-        return isListPromotionFlag;
-    }
-
-    private boolean isListDemotionFlag;
-    public boolean isListDemotion() {
-        return isListDemotionFlag;
     }
 
     private boolean isIntervalConversionFlag;
