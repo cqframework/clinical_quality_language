@@ -158,7 +158,7 @@
         <ns4:element name="supply" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
-        <ns4:element name="refills" type="System.Code"/>
+        <ns4:element name="refills" type="System.Integer"/>
         <ns4:element name="route" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
@@ -346,7 +346,7 @@
         <ns4:element name="supply" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
-        <ns4:element name="refills" type="System.Code"/>
+        <ns4:element name="refills" type="System.Integer"/>
         <ns4:element name="route" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>

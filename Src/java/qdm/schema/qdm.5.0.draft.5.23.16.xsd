@@ -1783,7 +1783,7 @@
 						minOccurs="0" />
 					<xs:element name="method" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="refills" type="CodeableConcept"
+					<xs:element name="refills" type="xs:integer"
 						minOccurs="0" />
 					<xs:element name="route" type="CodeableConcept"
 						minOccurs="0" />
@@ -1813,7 +1813,7 @@
 						minOccurs="0" />
 					<xs:element name="method" type="CodeableConcept"
 						minOccurs="0" />
-					<xs:element name="refills" type="CodeableConcept"
+					<xs:element name="refills" type="xs:integer"
 						minOccurs="0" />
 					<xs:element name="route" type="CodeableConcept"
 						minOccurs="0" />

@@ -1205,7 +1205,7 @@
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="method" type="dt:Code" minOccurs="0" />
-					<xs:element name="refills" type="dt:Code" minOccurs="0" />
+					<xs:element name="refills" type="xs:integer" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
@@ -1231,7 +1231,7 @@
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0" />
 					<xs:element name="frequency" type="dt:Code" minOccurs="0" />
 					<xs:element name="method" type="dt:Code" minOccurs="0" />
-					<xs:element name="refills" type="dt:Code" minOccurs="0" />
+					<xs:element name="refills" type="xs:integer" minOccurs="0" />
 					<xs:element name="route" type="dt:Code" minOccurs="0" />
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1" />
 				</xs:sequence>
