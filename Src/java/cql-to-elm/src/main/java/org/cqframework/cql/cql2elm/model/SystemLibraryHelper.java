@@ -357,9 +357,18 @@ public class SystemLibraryHelper {
         // ProperIncludedIn<T>(list<T>, list<T>) : Boolean
         system.add(new GenericOperator("ProperIncludedIn", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SingletonFrom<T>(list<T>) : T
-        system.add(new GenericOperator("SingletonFrom", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
+        GenericOperator singletonFrom = new GenericOperator("SingletonFrom", new Signature(new ListType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T"));
+        system.add(singletonFrom);
+        //// NOTE: FHIRPath Implicit List Demotion
+        // Generic conversions turned out to be computationally expensive, so we added explicit list promotion/demotion in the conversion map directly instead.
+        //system.add(new Conversion(singletonFrom, true));
         // Union<T>(list<T>, list<T>) : list<T>
         system.add(new GenericOperator("Union", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
+
+        // NOTE: FHIRPath Implicit List Promotion operator
+        //GenericOperator toList = new GenericOperator("List", new Signature(new TypeParameter("T")), new ListType(new TypeParameter("T")), new TypeParameter("T"));
+        //system.add(toList);
+        //system.add(new Conversion(toList, true));
 
         // Aggregate Operators
         system.add(new Operator("AllTrue", new Signature(new ListType(systemModel.getBoolean())), systemModel.getBoolean()));

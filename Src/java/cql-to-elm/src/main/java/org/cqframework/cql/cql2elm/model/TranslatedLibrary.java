@@ -196,6 +196,10 @@ public class TranslatedLibrary {
         return operators.resolveOperator(callContext, conversionMap);
     }
 
+    public OperatorMap getOperatorMap() {
+        return operators;
+    }
+
     public Iterable<Conversion> getConversions() {
         return conversions;
     }
