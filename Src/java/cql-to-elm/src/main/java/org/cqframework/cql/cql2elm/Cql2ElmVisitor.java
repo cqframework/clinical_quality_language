@@ -3134,7 +3134,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (paramList != null && paramList.expression() != null) {
             for (cqlParser.ExpressionContext expressionContext : paramList.expression()) {
                 expressions.add((Expression)visit(expressionContext));
-        }
+            }
         }
 
         // If the function cannot be resolved in the builder and the call is to a function in the current library,
@@ -3150,7 +3150,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return result;
-                }
+        }
 
     @Override
     public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
@@ -3166,14 +3166,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression) {
                     return systemMethodResolver.resolveMethod((Expression)target, ctx, true);
-                }
+                            }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
-            }
-            finally {
+                            }
+                        finally {
                 libraryBuilder.pushExpressionTarget(target);
-            }
-        }
+                        }
+                    }
 
         // If we are in an implicit $this context, the function may be resolved as a method invocation
         Expression thisRef = libraryBuilder.resolveIdentifier("$this", false);
@@ -3181,8 +3181,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Expression result = systemMethodResolver.resolveMethod(thisRef, ctx, false);
             if (result != null) {
                 return result;
-    }
-        }
+            }
+            }
 
         // If there is no target, resolve as a system function
         return resolveFunction(null, ctx);
