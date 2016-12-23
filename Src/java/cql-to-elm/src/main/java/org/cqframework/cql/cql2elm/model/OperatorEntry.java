@@ -96,17 +96,7 @@ public class OperatorEntry {
         private Map<Signature, SignatureNode> signatures = new HashMap<>();
 
         public boolean contains(Operator operator) {
-            boolean result = signatures.containsKey(operator.getSignature());
-            if (!result) {
-                for (SignatureNode n : signatures.values()) {
-                    result = n.subSignatures.contains(operator);
-                    if (result) {
-                        break;
-                    }
-                }
-            }
-
-            return result;
+            return signatures.containsKey(operator.getSignature());
         }
 
         public void add(SignatureNode node) {
@@ -156,15 +146,6 @@ public class OperatorEntry {
         }
     }
 
-    public boolean containsOperator(Operator operator) {
-        if (operator instanceof GenericOperator) {
-            return containsGenericOperator((GenericOperator)operator);
-        }
-        else {
-            return signatures.contains(operator);
-        }
-    }
-
     public void addOperator(Operator operator) {
         if (operator instanceof GenericOperator) {
             addGenericOperator((GenericOperator)operator);
@@ -174,8 +155,13 @@ public class OperatorEntry {
         }
     }
 
-    private boolean containsGenericOperator(GenericOperator operator) {
-        return genericOperators.containsKey(operator.getSignature());
+    public boolean containsOperator(Operator operator) {
+        if (operator instanceof GenericOperator) {
+            return genericOperators.containsKey(operator.getSignature());
+        }
+        else {
+            return signatures.contains(operator);
+        }
     }
 
     private void addGenericOperator(GenericOperator operator) {
@@ -228,7 +214,7 @@ public class OperatorEntry {
             InstantiationResult instantiationResult = genericOperator.instantiate(signature, operatorMap, conversionMap);
             if (instantiationResult.getOperator() != null) {
                 if (instantiationResult.getConversionScore() <= lowestConversionScore) {
-                    if (instantiation == null || instantiationResult.getConversionScore() < lowestConversionScore) {
+                    if (instantiation == null) {
                         instantiation = instantiationResult.getOperator();
                         lowestConversionScore = instantiationResult.getConversionScore();
                     }

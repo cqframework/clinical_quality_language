@@ -27,7 +27,7 @@ public class PathTests {
     }
 
     @Test
-    public void testModelInfo() {
+    public void testPaths() {
         CqlTranslator translator = null;
         try {
             translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("PathTests/PathTests.cql"), new LibraryManager());
