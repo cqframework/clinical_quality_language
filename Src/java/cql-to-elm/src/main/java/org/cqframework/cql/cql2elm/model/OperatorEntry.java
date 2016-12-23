@@ -102,7 +102,7 @@ public class OperatorEntry {
                     result = n.subSignatures.contains(operator);
                     if (result) {
                         break;
-                    }
+        }
                 }
             }
 
