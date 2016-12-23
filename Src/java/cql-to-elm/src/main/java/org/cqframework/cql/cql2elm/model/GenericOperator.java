@@ -23,11 +23,11 @@ public class GenericOperator extends Operator {
         return this.typeParameters;
     }
 
-    public Operator instantiate(Signature callSignature, ConversionMap conversionMap) {
-        return instantiate(callSignature, null, conversionMap);
+    public InstantiationResult instantiate(Signature callSignature, OperatorMap operatorMap, ConversionMap conversionMap) {
+        return instantiate(callSignature, null, operatorMap, conversionMap);
     }
 
-    public Operator instantiate(Signature callSignature, Map<TypeParameter, DataType> parameters, ConversionMap conversionMap) {
+    public InstantiationResult instantiate(Signature callSignature, Map<TypeParameter, DataType> parameters, OperatorMap operatorMap, ConversionMap conversionMap) {
         Map<TypeParameter, DataType> typeMap = new HashMap<>();
 
         for (TypeParameter p : typeParameters) {
@@ -40,16 +40,16 @@ public class GenericOperator extends Operator {
             }
         }
 
-        InstantiationContext context = new InstantiationContextImpl(typeMap, conversionMap);
+        InstantiationContextImpl context = new InstantiationContextImpl(typeMap, operatorMap, conversionMap);
 
         Boolean instantiable = getSignature().isInstantiable(callSignature, context);
         if (instantiable) {
             Operator result = new Operator(getName(), getSignature().instantiate(context), getResultType().instantiate(context));
             result.setAccessLevel(getAccessLevel());
             result.setLibraryName(getLibraryName());
-            return result;
+            return new InstantiationResult(this, result, context.getConversionScore());
         }
 
-        return null;
+        return new InstantiationResult(this, null, context.getConversionScore());
     }
 }
