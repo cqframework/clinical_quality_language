@@ -16,14 +16,11 @@ public class ModelInfoLoader {
         //registerModelInfoProvider(new VersionedIdentifier().withId("ADL").withVersion("1"), new AdlModelInfoProvider());
         // NOTE: The first versioned provider will also be registered as a versionless provider (latest version semantics)
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.0"), new QdmModelInfoProvider().withVersion("5.0"));
-        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.0.1"), new QdmModelInfoProvider().withVersion("5.0.1"));
-        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.0.2"), new QdmModelInfoProvider().withVersion("5.0.2"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.2"), new QdmModelInfoProvider().withVersion("4.2"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.1.2"), new QdmModelInfoProvider().withVersion("4.1.2"));
-        registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.0.2"), new FhirModelInfoProvider().withVersion("1.0.2"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"), new FhirModelInfoProvider().withVersion("1.8"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.6"), new FhirModelInfoProvider().withVersion("1.6"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.4"), new FhirModelInfoProvider().withVersion("1.4"));
-        registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"), new FhirModelInfoProvider().withVersion("1.8"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("3.0.0"), new FhirModelInfoProvider().withVersion("3.0.0"));
     }
 

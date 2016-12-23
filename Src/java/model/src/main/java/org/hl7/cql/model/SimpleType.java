@@ -72,7 +72,27 @@ public class SimpleType extends DataType implements NamedType {
 
     @Override
     public boolean isInstantiable(DataType callType, InstantiationContext context) {
-        return isSuperTypeOf(callType);
+        if (isSuperTypeOf(callType)) {
+            return true;
+        }
+
+        boolean isAlreadyInstantiable = false;
+        for (SimpleType targetSimpleType : context.getSimpleConversionTargets(callType)) {
+            boolean isInstantiable = true; // If it came back from this call, we can instantiate it...
+            if (isInstantiable) {
+                if (isAlreadyInstantiable) {
+                    throw new IllegalArgumentException(String.format("Ambiguous generic instantiation involving %s to %s.",
+                            callType.toString(), targetSimpleType.toString()));
+                }
+                isAlreadyInstantiable = true;
+            }
+        }
+
+        if (isAlreadyInstantiable) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
