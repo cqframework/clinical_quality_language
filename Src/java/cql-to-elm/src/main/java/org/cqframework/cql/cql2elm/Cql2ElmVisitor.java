@@ -2010,7 +2010,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitConversionExpressionTerm(@NotNull cqlParser.ConversionExpressionTermContext ctx) {
         TypeSpecifier targetType = parseTypeSpecifier(ctx.typeSpecifier());
         Expression operand = parseExpression(ctx.expression());
-        Conversion conversion = conversionMap.findConversion(operand.getResultType(), targetType.getResultType(), false);
+        Conversion conversion = conversionMap.findConversion(operand.getResultType(), targetType.getResultType(), false, translatedLibrary.getOperatorMap());
         if (conversion == null) {
             throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
                     operand.getResultType(), targetType.getResultType()));
@@ -3432,6 +3432,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     return resolveFunction(((LibraryRef)target).getLibraryName(), ctx);
                 }
 
+                // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression) {
                     String functionName = parseString(ctx.identifier());
@@ -3843,7 +3844,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // Resolve the property against each type in the choice
                 Set<DataType> resultTypes = new HashSet<>();
                 for (DataType choice : choiceType.getTypes()) {
-                    DataType resultType = resolveProperty(sourceType, identifier, false);
+                    DataType resultType = resolveProperty(choice, identifier, false);
                     if (resultType != null) {
                         resultTypes.add(resultType);
                     }
@@ -3945,7 +3946,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private Expression convertExpression(Expression expression, DataType targetType) {
-        Conversion conversion = conversionMap.findConversion(expression.getResultType(), targetType, true);
+        Conversion conversion = conversionMap.findConversion(expression.getResultType(), targetType, true, translatedLibrary.getOperatorMap());
         if (conversion != null) {
             return convertExpression(expression, conversion);
         }
@@ -3972,6 +3973,33 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withResultType(toType))
                 .withResultType(toType);
         return query;
+    }
+
+    private Expression demoteListExpression(Expression expression, Conversion conversion) {
+        ListType fromType = (ListType)conversion.getFromType();
+        DataType toType = conversion.getToType();
+
+        SingletonFrom singletonFrom = of.createSingletonFrom().withOperand(expression);
+        singletonFrom.setResultType(fromType.getElementType());
+        resolveUnaryCall("System", "SingletonFrom", singletonFrom);
+
+        if (conversion.getConversion() != null) {
+            return convertExpression(singletonFrom, conversion.getConversion());
+        }
+        else {
+            return singletonFrom;
+        }
+    }
+
+    private Expression promoteListExpression(Expression expression, Conversion conversion) {
+        if (conversion.getConversion() != null) {
+            expression = convertExpression(expression, conversion.getConversion());
+        }
+
+        org.hl7.elm.r1.List list = of.createList();
+        list.getElement().add(expression);
+        list.setResultType(new ListType(expression.getResultType()));
+        return list;
     }
 
     private Expression convertIntervalExpression(Expression expression, Conversion conversion) {
@@ -4015,6 +4043,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         else if (conversion.isListConversion()) {
             return convertListExpression(expression, conversion);
+        }
+        else if (conversion.isListDemotion()) {
+            return demoteListExpression(expression, conversion);
+        }
+        else if (conversion.isListPromotion()) {
+            return promoteListExpression(expression, conversion);
         }
         else if (conversion.isIntervalConversion()) {
             return convertIntervalExpression(expression, conversion);
@@ -4061,9 +4095,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withOperand(expression)
                         .withResultType(conversion.getToType());
 
-                convertedOperand.setToTypeSpecifier(dataTypeToTypeSpecifier(convertedOperand.getResultType()));
                 if (convertedOperand.getResultType() instanceof NamedType) {
                     convertedOperand.setToType(dataTypeToQName(convertedOperand.getResultType()));
+                }
+                else {
+                    convertedOperand.setToTypeSpecifier(dataTypeToTypeSpecifier(convertedOperand.getResultType()));
                 }
 
                 return convertedOperand;
@@ -4076,7 +4112,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return;
         }
 
-        Conversion conversion = conversionMap.findConversion(actualType, expectedType, true);
+        Conversion conversion = conversionMap.findConversion(actualType, expectedType, true, translatedLibrary.getOperatorMap());
         if (conversion != null) {
             return;
         }
@@ -4101,12 +4137,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return second;
         }
 
-        Conversion conversion = conversionMap.findConversion(second, first, true);
+        Conversion conversion = conversionMap.findConversion(second, first, true, translatedLibrary.getOperatorMap());
         if (conversion != null) {
             return first;
         }
 
-        conversion = conversionMap.findConversion(first, second, true);
+        conversion = conversionMap.findConversion(first, second, true, translatedLibrary.getOperatorMap());
         if (conversion != null) {
             return second;
         }
