@@ -17,6 +17,11 @@ public class OperatorMap {
         entry.addOperator(operator);
     }
 
+    public boolean containsOperator(Operator operator) {
+        OperatorEntry entry = getEntry(operator.getName());
+        return entry.containsOperator(operator);
+    }
+
     private OperatorEntry getEntry(String operatorName) {
         if (operatorName == null || operatorName.equals("")) {
             throw new IllegalArgumentException("operatorName is null or empty.");
