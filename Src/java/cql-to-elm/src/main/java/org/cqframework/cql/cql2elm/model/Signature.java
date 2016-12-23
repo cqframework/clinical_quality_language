@@ -82,11 +82,11 @@ public class Signature {
         return new Signature(result);
     }
 
-    public boolean isConvertibleTo(Signature other, ConversionMap conversionMap, Conversion[] conversions) {
+    public boolean isConvertibleTo(Signature other, ConversionMap conversionMap, OperatorMap operatorMap, Conversion[] conversions) {
         if (operandTypes.size() == other.operandTypes.size()) {
             for (int i = 0; i < operandTypes.size(); i++) {
                 if (!operandTypes.get(i).isSubTypeOf(other.operandTypes.get(i))) {
-                    Conversion conversion = conversionMap.findConversion(operandTypes.get(i), other.operandTypes.get(i), true);
+                    Conversion conversion = conversionMap.findConversion(operandTypes.get(i), other.operandTypes.get(i), true, operatorMap);
                     if (conversion != null) {
                         conversions[i] = conversion;
                     } else {

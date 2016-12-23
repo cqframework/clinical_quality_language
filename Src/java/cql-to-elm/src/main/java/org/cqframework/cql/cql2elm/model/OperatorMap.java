@@ -17,6 +17,11 @@ public class OperatorMap {
         entry.addOperator(operator);
     }
 
+    public boolean containsOperator(Operator operator) {
+        OperatorEntry entry = getEntry(operator.getName());
+        return entry.containsOperator(operator);
+    }
+
     private OperatorEntry getEntry(String operatorName) {
         if (operatorName == null || operatorName.equals("")) {
             throw new IllegalArgumentException("operatorName is null or empty.");
@@ -33,7 +38,7 @@ public class OperatorMap {
 
     public OperatorResolution resolveOperator(CallContext callContext, ConversionMap conversionMap) {
         OperatorEntry entry = getEntry(callContext.getOperatorName());
-        List<OperatorResolution> results = entry.resolve(callContext, conversionMap);
+        List<OperatorResolution> results = entry.resolve(callContext, this, conversionMap);
 
         // Score each resolution and return the lowest score
         // Duplicate scores indicate ambiguous match
