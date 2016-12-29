@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
+
+
 /**
  * Created by Bryn on 12/27/2016.
  */
@@ -273,11 +276,11 @@ public class SystemMethodResolver {
 
             default: {
                 if (mustResolve) {
-                    throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
-                }
+                throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
+            }
 
                 return null;
-            }
         }
+    }
     }
 }
