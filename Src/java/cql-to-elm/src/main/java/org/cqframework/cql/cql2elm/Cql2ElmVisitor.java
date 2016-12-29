@@ -46,6 +46,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private TranslatedLibrary translatedLibrary = null;
     private String currentContext = "Patient"; // default context to patient
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
+    private final SystemMethodResolver systemMethodResolver = new SystemMethodResolver(this);
 
     //Put them here for now, but eventually somewhere else?
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
@@ -111,6 +112,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public void disableDateRangeOptimization() {
         dateRangeOptimization = false;
+    }
+
+    public boolean getDateRangeOptimization() {
+        return dateRangeOptimization;
     }
 
     public void enableDetailedErrors() {
@@ -214,13 +219,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         currentToken = sourceInterval.b + 1;
 
         // If the narrative corresponds to an element returned by the parser
-        //   if the element doesn't have a localId
-        //     set the narrative's reference id
-        //     if there is a parent narrative
-        //       add this narrative to the content of the parent
+        // if the element doesn't have a localId
+        // set the narrative's reference id
+        // if there is a parent narrative
+        // add this narrative to the content of the parent
         // else
-        //   if there is a parent narrative
-        //     add the contents of this narrative to that narrative
+        // if there is a parent narrative
+        // add the contents of this narrative to that narrative
         if (o instanceof Element) {
             Element element = (Element) o;
             if (element.getLocalId() == null) {
@@ -2958,7 +2963,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             if (sortByItem instanceof ByDirection) {
                                 // validate that there is a comparison operator defined for the result element type of the query context
                                 verifyComparable(queryContext.getResultElementType());
-                            }
+                    }
                             else {
                                 verifyComparable(sortByItem.getResultType());
                             }
@@ -3005,7 +3010,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
      * @return the where clause with optimized "durings" removed, or <code>null</code> if there is no longer a Where
      * clause after optimization.
      */
-    private Expression optimizeDateRangeInQuery(Expression where, AliasedQuerySource aqs) {
+    public Expression optimizeDateRangeInQuery(Expression where, AliasedQuerySource aqs) {
         if (aqs.getExpression() instanceof Retrieve) {
             Retrieve retrieve = (Retrieve) aqs.getExpression();
             String alias = aqs.getAlias();
@@ -3435,47 +3440,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression) {
-                    String functionName = parseString(ctx.identifier());
-                    if (functionName.equals("first")) {
-                        List<Expression> params = new ArrayList<Expression>();
-                        params.add(target);
-                        if (ctx.paramList() != null && ctx.paramList().expression() != null) {
-                            for (cqlParser.ExpressionContext param : ctx.paramList().expression()) {
-                                params.add((Expression)visit(param));
-                            }
-                        }
-                        return resolveFunction(null, "First", params);
-                    }
-                    else if (functionName.equals("where")) {
-                        QueryContext queryContext = new QueryContext();
-                        queries.push(queryContext);
-                        try {
-                            queryContext.setIsImplicit(true); // Set to an implicit context to allow for implicit resolution of property names
-                            List<AliasedQuerySource> sources = new ArrayList<>();
-                            AliasedQuerySource source = of.createAliasedQuerySource().withExpression(target).withAlias("$this");
-                            source.setResultType(target.getResultType());
-                            sources.add(source);
-                            queryContext.addQuerySources(sources);
-
-                            Expression where = (Expression)visit(ctx.paramList().expression(0));
-                            if (dateRangeOptimization) {
-                                where = optimizeDateRangeInQuery(where, source);
-                            }
-
-                            Query query = of.createQuery()
-                                    .withSource(sources)
-                                    .withWhere(where);
-
-                            query.setResultType(sources.get(0).getResultType());
-
-                            return query;
-                        }
-                        finally {
-                            queries.pop();
-                        }
-                    }
-                    // Need a way to support rewriting method invocations....
-                    throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
+                    return systemMethodResolver.resolveMethod((Expression)target, ctx);
                 }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
@@ -3511,18 +3476,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (!translatedLibrary.contains(fun)) {
-            currentFunctionDef = fun;
-            pushExpressionContext(currentContext);
-            try {
-                fun.setExpression(parseExpression(ctx.functionBody()));
+        currentFunctionDef = fun;
+        pushExpressionContext(currentContext);
+        try {
+            fun.setExpression(parseExpression(ctx.functionBody()));
             } finally {
-                currentFunctionDef = null;
-                popExpressionContext();
-            }
+            currentFunctionDef = null;
+            popExpressionContext();
+        }
 
-            fun.setContext(currentContext);
-            fun.setResultType(fun.getExpression().getResultType());
-            addToLibrary(fun);
+        fun.setContext(currentContext);
+        fun.setResultType(fun.getExpression().getResultType());
+        addToLibrary(fun);
         }
 
         return fun;
@@ -3645,7 +3610,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return pt == null ? AccessModifier.PUBLIC : (AccessModifier)visit(pt);
     }
 
-    private String parseString(ParseTree pt) {
+    public String parseString(ParseTree pt) {
         return StringEscapeUtils.unescapeCql(pt == null ? null : (String) visit(pt));
     }
 
@@ -3885,9 +3850,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (result == null) {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(operatorName);
             if (functionInfos != null) {
-                for (FunctionDefinitionInfo functionInfo : functionInfos) {
+            for (FunctionDefinitionInfo functionInfo : functionInfos) {
                     internalVisitFunctionDefinition(functionInfo.getDefinition());
-                }
+            }
             }
             result = resolveCall(libraryName, operatorName, invocation, true);
         }
@@ -3932,8 +3897,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 invocation.setOperands(convertedOperands);
             }
             invocation.setResultType(resolution.getOperator().getResultType());
-            return invocation.getExpression();
-        }
+        return invocation.getExpression();
+    }
         return null;
     }
 
@@ -4029,7 +3994,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private Expression convertExpression(Expression expression, Conversion conversion) {
-        if (conversion.isCast() && conversion.getFromType().isSuperTypeOf(conversion.getToType())) {
+        if (conversion.isCast()
+                && (conversion.getFromType().isSuperTypeOf(conversion.getToType())
+                    || conversion.getFromType().isCompatibleWith(conversion.getToType()))) {
             As castedOperand = (As)of.createAs()
                     .withOperand(expression)
                     .withResultType(conversion.getToType());
@@ -4040,6 +4007,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
 
             return castedOperand;
+        }
+        else if (conversion.isCast() && conversion.getConversion() != null
+                && (conversion.getFromType().isSuperTypeOf(conversion.getConversion().getFromType())
+                    || conversion.getFromType().isCompatibleWith(conversion.getConversion().getFromType()))) {
+            As castedOperand = (As)of.createAs()
+                    .withOperand(expression)
+                    .withResultType(conversion.getConversion().getFromType());
+
+            castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
+            if (castedOperand.getResultType() instanceof NamedType) {
+                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
+            }
+
+            return convertExpression(castedOperand, conversion.getConversion());
         }
         else if (conversion.isListConversion()) {
             return convertListExpression(expression, conversion);
@@ -4210,30 +4191,30 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
-    private Literal createLiteral(String val, String type) {
+    public Literal createLiteral(String val, String type) {
         DataType resultType = resolveTypeName("System", type);
         Literal result = of.createLiteral().withValue(val).withValueType(dataTypeToQName(resultType));
         result.setResultType(resultType);
         return result;
     }
 
-    private Literal createLiteral(String string) {
+    public Literal createLiteral(String string) {
         return createLiteral(String.valueOf(string), "String");
     }
 
-    private Literal createLiteral(Boolean bool) {
+    public Literal createLiteral(Boolean bool) {
         return createLiteral(String.valueOf(bool), "Boolean");
     }
 
-    private Literal createLiteral(Integer integer) {
+    public Literal createLiteral(Integer integer) {
         return createLiteral(String.valueOf(integer), "Integer");
     }
 
-    private Literal createLiteral(Double value) {
+    public Literal createLiteral(Double value) {
         return createLiteral(String.valueOf(value), "Decimal");
     }
 
-    private Literal createNumberLiteral(String value) {
+    public Literal createNumberLiteral(String value) {
         DataType resultType = resolveTypeName("System", value.contains(".") ? "Decimal" : "Integer");
         Literal result = of.createLiteral()
                 .withValue(value)
@@ -4242,7 +4223,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return result;
     }
 
-    private Interval createInterval(Expression low, boolean lowClosed, Expression high, boolean highClosed) {
+    public Interval createInterval(Expression low, boolean lowClosed, Expression high, boolean highClosed) {
         Interval result = of.createInterval()
                 .withLow(low)
                 .withLowClosed(lowClosed)
@@ -4295,6 +4276,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return null;
+    }
+
+    public void pushQueryContext(QueryContext context) {
+        queries.push(context);
+    }
+
+    public QueryContext popQueryContext() {
+        return queries.pop();
+    }
+
+    public QueryContext peekQueryContext() {
+        return queries.peek();
     }
 
     private Expression resolveQueryThisElement(String identifier) {
