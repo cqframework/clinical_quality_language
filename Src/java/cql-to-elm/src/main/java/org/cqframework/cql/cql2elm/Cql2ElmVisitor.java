@@ -2720,6 +2720,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return ends;
     }
 
+    public Expression resolveIfThenElse(If ifObject) {
+        ifObject.setCondition(convertExpression(ifObject.getCondition(), resolveTypeName("System", "Boolean")));
+        DataType resultType = ensureCompatibleTypes(ifObject.getThen().getResultType(), ifObject.getElse().getResultType());
+        ifObject.setResultType(resultType);
+        ifObject.setThen(ensureCompatible(ifObject.getThen(), resultType));
+        ifObject.setElse(ensureCompatible(ifObject.getElse(), resultType));
+        return ifObject;
+    }
+
     @Override
     public Object visitIfThenElseExpressionTerm(@NotNull cqlParser.IfThenElseExpressionTermContext ctx) {
         If ifObject = of.createIf()
@@ -2727,12 +2736,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withThen(parseExpression(ctx.expression(1)))
                 .withElse(parseExpression(ctx.expression(2)));
 
-        DataTypes.verifyType(ifObject.getCondition().getResultType(), resolveTypeName("System", "Boolean"));
-        DataType resultType = ensureCompatibleTypes(ifObject.getThen().getResultType(), ifObject.getElse().getResultType());
-        ifObject.setResultType(resultType);
-        ifObject.setThen(ensureCompatible(ifObject.getThen(), resultType));
-        ifObject.setElse(ensureCompatible(ifObject.getElse(), resultType));
-        return ifObject;
+        return resolveIfThenElse(ifObject);
     }
 
     @Override
