@@ -425,12 +425,16 @@ conceptSelector
 identifier
     : IDENTIFIER | QUOTEDIDENTIFIER
     // Include here any keyword that should not be a reserved word
+    | 'all'
     | 'Code'
     | 'code'
     | 'Concept'
     | 'concept'
     | 'date'
     | 'display'
+    | 'distinct'
+    | 'exists'
+    | 'not'
     | 'time'
     | 'timezone'
     | 'version'
