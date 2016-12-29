@@ -430,6 +430,7 @@ identifier
     | 'code'
     | 'Concept'
     | 'concept'
+    | 'contains'
     | 'date'
     | 'display'
     | 'distinct'
