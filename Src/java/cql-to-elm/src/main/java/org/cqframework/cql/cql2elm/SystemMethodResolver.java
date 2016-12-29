@@ -12,6 +12,9 @@ import java.util.List;
 
 
 
+
+
+
 /**
  * Created by Bryn on 12/27/2016.
  */
@@ -169,30 +172,26 @@ public class SystemMethodResolver {
                 params.add(query);
                 return visitor.resolveFunction(null, "AllTrue", params);
             }
-            case "allTrue": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "AllTrue", params);
+            case "allTrue": return visitor.resolveFunction(null, "AllTrue", getParams(target, ctx));
+            case "anyTrue": return visitor.resolveFunction(null, "AnyTrue", getParams(target, ctx));
+            case "allFalse": return visitor.resolveFunction(null, "AllFalse", getParams(target, ctx));
+            case "anyFalse": return visitor.resolveFunction(null, "AnyFalse", getParams(target, ctx));
+            // TODO: children...
+            case "contains": {
+                checkArgumentCount(ctx, functionName, 1);
+                List<Expression> params = new ArrayList<Expression>();
+                Expression argument = (Expression)visitor.visit(ctx.paramList().expression(0));
+                params.add(argument);
+                params.add(target);
+                Expression result = visitor.resolveFunction(null, "PositionOf", params);
+                params = new ArrayList<Expression>();
+                params.add(result);
+                params.add(visitor.createLiteral(0));
+                return visitor.resolveFunction(null, "GreaterOrEqual", params);
             }
-            case "anyTrue": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "AnyTrue", params);
-            }
-            case "allFalse": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "AllFalse", params);
-            }
-            case "anyFalse": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "AnyFalse", params);
-            }
-            case "count": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "Count", params);
-            }
-            case "distinct": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "Distinct", params);
-            }
+            case "count": return visitor.resolveFunction(null, "Count", getParams(target, ctx));
+            // TODO: descendents...
+            case "distinct": return visitor.resolveFunction(null, "Distinct", getParams(target, ctx));
             case "empty": {
                 List<Expression> params = getParams(target, ctx);
                 Expression exists = visitor.resolveFunction(null, "Exists", params);
@@ -200,6 +199,7 @@ public class SystemMethodResolver {
                 params.add(exists);
                 return visitor.resolveFunction(null, "Not", params);
             }
+            case "endsWith": return visitor.resolveFunction(null, "EndsWith", getParams(target, ctx));
             case "exists": {
                 if (ctx.paramList() == null || ctx.paramList().expression() == null || ctx.paramList().expression().isEmpty()) {
                     List<Expression> params = getParams(target, ctx);
@@ -213,28 +213,55 @@ public class SystemMethodResolver {
                     return visitor.resolveFunction(null, "Exists", params);
                 }
             }
-            case "first": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "First", params);
+            case "first": return visitor.resolveFunction(null, "First", getParams(target, ctx));
+            case "iif": {
+                Expression result = target;
+                List<Expression> params = null;
+                if (result.getResultType() instanceof ListType) {
+                    params = new ArrayList();
+                    params.add(result);
+                    result = visitor.resolveFunction(null, "SingletonFrom", params);
+                }
+                Expression thenExpression = (Expression)visitor.visit(ctx.paramList().expression(0));
+                Expression elseExpression = ctx.paramList().expression().size() == 2 ? (Expression)visitor.visit(ctx.paramList().expression(1)) : of.createNull();
+                result = of.createIf().withCondition(result).withThen(thenExpression).withElse(elseExpression);
+                return visitor.resolveIfThenElse((If)result);
+            }
+            case "indexOf": {
+                checkArgumentCount(ctx, functionName, 1);
+                List<Expression> params = new ArrayList<Expression>();
+                Expression argument = (Expression)visitor.visit(ctx.paramList().expression(0));
+                params.add(argument);
+                params.add(target);
+                return visitor.resolveFunction(null, "PositionOf", params);
             }
             // TODO: isDistinct // resolves as .count() = .distinct().count() // somewhat tricky in that it needs to duplicate the target expression...
-            case "not": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "Not", params);
-            }
-            // TODO: ofType // resolves as .where($this is type).return($this as type)
+            case "last": return visitor.resolveFunction(null, "Last", getParams(target, ctx));
+            case "length": return visitor.resolveFunction(null, "Length", getParams(target, ctx));
+            case "matches": return visitor.resolveFunction(null, "Matches", getParams(target, ctx));
+            case "not": return visitor.resolveFunction(null, "Not", getParams(target, ctx));
+            // TODO: ofType // resolves as .where($this is type).select($this as type)
             // TODO: repeat // involves a new ELM operator to support recursive evaluation...
+            case "replace": return visitor.resolveFunction(null, "Replace", getParams(target, ctx));
+            // TODO: replaceMatches // involves a new ELM operator
             case "select": {
                 return createSelect(target, functionName, ctx);
             }
-            case "subsetOf": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "IncludedIn", params);
-            }
-            case "supersetOf": {
-                List<Expression> params = getParams(target, ctx);
-                return visitor.resolveFunction(null, "Includes", params);
-            }
+            case "single": return visitor.resolveFunction(null, "SingletonFrom", getParams(target, ctx));
+            // TODO: skip // Involves a new ELM operator Skip...
+            case "startsWith": return visitor.resolveFunction(null, "StartsWith", getParams(target, ctx));
+            case "subsetOf": return visitor.resolveFunction(null, "IncludedIn", getParams(target, ctx));
+            case "substring": return visitor.resolveFunction(null, "Substring", getParams(target, ctx));
+            case "supersetOf": return visitor.resolveFunction(null, "Includes", getParams(target, ctx));
+            // TODO: tail // involves a new ELM operator Tail...
+            // TODO: take // involves a new ELM operator Take...
+            case "toBoolean": return visitor.resolveFunction(null, "ToBoolean", getParams(target, ctx));
+            case "toDateTime": return visitor.resolveFunction(null, "ToDateTime", getParams(target, ctx));
+            case "toDecimal": return visitor.resolveFunction(null, "ToDecimal", getParams(target, ctx));
+            case "toInteger": return visitor.resolveFunction(null, "ToInteger", getParams(target, ctx));
+            case "toString": return visitor.resolveFunction(null, "ToString", getParams(target, ctx));
+            case "toTime": return visitor.resolveFunction(null, "ToTime", getParams(target, ctx));
+            // TODO: trace
             case "where": {
                 return createWhere(target, functionName, ctx);
             }

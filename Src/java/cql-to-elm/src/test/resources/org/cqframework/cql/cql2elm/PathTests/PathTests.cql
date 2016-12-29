@@ -47,3 +47,6 @@ define TestSelect: Patient.name.select(given.value + ' ' + family.value)
 define TestSelectImplicit: Patient.name.select(given + ' ' + family)
 //TODO: define TestRepeat: Questionnaire.repeat(group | question).question
 //TODO: define TestOfType: Bundle.entry.resource.ofType(Patient)
+define TestContains: Patient.name.given.contains('abc')
+define TestIif: Patient.deceased.iif('is deceased', 'is not deceased')
+define TestIndexOf: Patient.name.given.indexOf('abc')
