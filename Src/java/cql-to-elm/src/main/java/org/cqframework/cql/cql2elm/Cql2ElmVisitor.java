@@ -3168,11 +3168,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
-                            }
-                        finally {
+            }
+            finally {
                 libraryBuilder.pushExpressionTarget(target);
-                        }
-                    }
+            }
+        }
 
         // If we are in an implicit $this context, the function may be resolved as a method invocation
         Expression thisRef = libraryBuilder.resolveIdentifier("$this", false);
