@@ -7,7 +7,8 @@ import java.io.InputStream;
 public class TestLibrarySourceProvider implements LibrarySourceProvider {
     @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
-        return TestLibrarySourceProvider.class.getResourceAsStream(String.format("LibraryTests/%s.cql",
-                libraryIdentifier.getId()));
+        String libraryFileName = String.format("LibraryTests/%s%s.cql",
+                libraryIdentifier.getId(), libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
+        return TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
     }
 }

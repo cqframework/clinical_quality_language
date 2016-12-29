@@ -15,8 +15,14 @@ import static org.hamcrest.Matchers.is;
  * Created by Bryn on 12/11/2016.
  */
 public class PathTests {
+
+    private static LibraryManager libraryManager;
+
     @BeforeClass
     public void setup() {
+        libraryManager = new LibraryManager();
+        libraryManager.getLibrarySourceLoader().clearProviders();
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         ModelInfoLoader.registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"),
                 new TestFhirModelInfoProvider());
     }
@@ -30,7 +36,7 @@ public class PathTests {
     public void testPaths() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("PathTests/PathTests.cql"), new LibraryManager());
+            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("PathTests/PathTests.cql"), libraryManager);
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
