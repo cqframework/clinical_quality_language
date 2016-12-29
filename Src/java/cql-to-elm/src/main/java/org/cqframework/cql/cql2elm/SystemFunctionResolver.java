@@ -195,6 +195,18 @@ public class SystemFunctionResolver {
                     return resolveSubstring(fun);
                 }
 
+                // Logical Functions
+                case "Not": {
+                    return resolveUnary(fun);
+                }
+
+                case "And":
+                case "Or":
+                case "Xor":
+                case "Implies": {
+                    return resolveBinary(fun);
+                }
+
                 // Type Functions
                 case "ToString":
                 case "ToBoolean":
