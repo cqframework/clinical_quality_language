@@ -48,6 +48,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         this.libraryInfo = libraryInfo;
     }
+    private final SystemMethodResolver systemMethodResolver = new SystemMethodResolver(this);
 
     //Put them here for now, but eventually somewhere else?
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
@@ -3164,7 +3165,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression) {
                     return systemMethodResolver.resolveMethod((Expression)target, ctx, true);
-                            }
+                }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
                             }
