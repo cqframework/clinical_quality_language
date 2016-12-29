@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
@@ -63,6 +64,27 @@ public class ConversionMap {
         }
 
         return null;
+    }
+
+    public Conversion findChoiceConversion(ChoiceType fromType, DataType toType, OperatorMap operatorMap) {
+        DataType selectedChoice = null;
+        Conversion result = null;
+        for (DataType choice : fromType.getTypes()) {
+            Conversion choiceConversion = findConversion(choice, toType, true, operatorMap);
+            if (choiceConversion != null) {
+                if (selectedChoice != null) {
+                    throw new IllegalArgumentException(String.format("Ambiguous choice conversion from %s of %s to %s.",
+                            selectedChoice.toString(), fromType.toString(), toType.toString()));
+                }
+
+                else {
+                    selectedChoice = choice;
+                    result = new Conversion(fromType, toType, choiceConversion);
+                }
+            }
+        }
+
+        return result;
     }
 
     public Conversion findListConversion(ListType fromType, ListType toType, OperatorMap operatorMap) {
@@ -174,6 +196,11 @@ public class ConversionMap {
 
             if (!(fromType instanceof ListType) && toType instanceof ListType) {
                 result = findListPromotion(fromType, (ListType)toType, operatorMap);
+            }
+
+            // If the from type is a choice, attempt to find a conversion between one of the choice types
+            if (fromType instanceof ChoiceType) {
+                result = findChoiceConversion((ChoiceType)fromType, toType, operatorMap);
             }
 
             // If both types are lists, attempt to find a conversion between the element types
