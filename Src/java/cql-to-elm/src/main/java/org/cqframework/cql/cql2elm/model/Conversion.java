@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
@@ -22,6 +23,22 @@ public class Conversion {
         setIsImplicit(true);
         this.fromType = fromType;
         this.toType = toType;
+        this.isCastFlag = true;
+    }
+
+    public Conversion(ChoiceType fromType, DataType toType, Conversion choiceConversion) {
+        if (fromType == null) {
+            throw new IllegalArgumentException("fromType is null");
+        }
+
+        if (toType == null) {
+            throw new IllegalArgumentException("toType is null");
+        }
+
+        setIsImplicit(true);
+        this.fromType = fromType;
+        this.toType = toType;
+        this.conversionField = choiceConversion;
         this.isCastFlag = true;
     }
 

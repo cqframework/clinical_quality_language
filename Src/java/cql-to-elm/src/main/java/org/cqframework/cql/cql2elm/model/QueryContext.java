@@ -18,6 +18,10 @@ public class QueryContext {
         }
     }
 
+    public Collection<AliasedQuerySource> getQuerySources() {
+        return sources.values();
+    }
+
     public void addQuerySource(AliasedQuerySource source) {
         sources.put(source.getAlias(), source);
         if (source.getResultType() instanceof ListType) {
