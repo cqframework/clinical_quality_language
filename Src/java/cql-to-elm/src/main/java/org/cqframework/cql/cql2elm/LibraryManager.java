@@ -16,11 +16,16 @@ import java.util.Stack;
  * librarySourceLoader, translated and cached for later use.
  */
 public class LibraryManager {
+    private ModelManager modelManager;
     private final Map<String, TranslatedLibrary> libraries;
     private final Stack<String> translationStack;
     private final DefaultLibrarySourceLoader librarySourceLoader;
 
-    public LibraryManager() {
+    public LibraryManager(ModelManager modelManager) {
+        if (modelManager == null) {
+            throw new IllegalArgumentException("modelManager is null");
+        }
+        this.modelManager = modelManager;
         libraries = new HashMap<>();
         translationStack = new Stack<>();
         this.librarySourceLoader = new DefaultLibrarySourceLoader();
@@ -69,7 +74,7 @@ public class LibraryManager {
         }
 
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(librarySource, this);
+            CqlTranslator translator = CqlTranslator.fromStream(librarySource, modelManager, this);
             if (errors != null) {
                 errors.addAll(translator.getErrors());
             }
