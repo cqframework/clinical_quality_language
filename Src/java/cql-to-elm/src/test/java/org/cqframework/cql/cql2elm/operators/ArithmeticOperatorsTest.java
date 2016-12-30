@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.Abs;
 import org.hl7.elm.r1.Ceiling;
 import org.hl7.elm.r1.ExpressionDef;
@@ -33,7 +34,8 @@ public class ArithmeticOperatorsTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        CqlTranslator translator = CqlTranslator.fromStream(ArithmeticOperatorsTest.class.getResourceAsStream("../OperatorTests/ArithmeticOperators.cql"), new LibraryManager());
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromStream(ArithmeticOperatorsTest.class.getResourceAsStream("../OperatorTests/ArithmeticOperators.cql"), modelManager, new LibraryManager(modelManager));
         Library library = translator.toELM();
         defs = new HashMap<>();
         for (ExpressionDef def: library.getStatements().getDef()) {

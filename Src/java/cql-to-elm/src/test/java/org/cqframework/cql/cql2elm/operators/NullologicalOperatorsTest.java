@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.Coalesce;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.ExpressionDef;
@@ -26,7 +27,8 @@ public class NullologicalOperatorsTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        CqlTranslator translator = CqlTranslator.fromStream(NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"), new LibraryManager());
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromStream(NullologicalOperatorsTest.class.getResourceAsStream("../OperatorTests/NullologicalOperators.cql"), modelManager, new LibraryManager(modelManager));
         Library library = translator.toELM();
         defs = new HashMap<>();
         for (ExpressionDef def: library.getStatements().getDef()) {

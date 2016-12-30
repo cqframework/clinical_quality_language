@@ -27,13 +27,15 @@ public class TestUtils {
     }
 
     public static Object visitData(String cqlData) {
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, new LibraryManager());
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, modelManager, new LibraryManager(modelManager));
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
-        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, new LibraryManager());
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, modelManager, new LibraryManager(modelManager));
         ensureValid(translator);
         return translator.toELM();
     }
@@ -46,7 +48,8 @@ public class TestUtils {
         if (enableDateRangeOptimization) {
             options.add(CqlTranslator.Options.EnableDateRangeOptimization);
         }
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, new LibraryManager(), options.toArray(new CqlTranslator.Options[options.size()]));
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, modelManager, new LibraryManager(modelManager), options.toArray(new CqlTranslator.Options[options.size()]));
         ensureValid(translator);
         return translator.toObject();
     }
@@ -64,8 +67,10 @@ public class TestUtils {
     private static Cql2ElmVisitor createElmTranslatorVisitor(TokenStream tokens, ParseTree tree) {
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);
-        LibraryManager libraryManager = new LibraryManager();
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryManager);
+        ModelManager modelManager = new ModelManager();
+        LibraryManager libraryManager = new LibraryManager(modelManager);
+        LibraryBuilder libraryBuilder = new LibraryBuilder(modelManager, libraryManager);
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
         return visitor;
