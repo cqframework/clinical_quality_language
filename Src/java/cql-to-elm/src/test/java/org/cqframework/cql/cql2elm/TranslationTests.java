@@ -18,7 +18,8 @@ public class TranslationTests {
         String expectedXml = new Scanner(expectedXmlFile, "UTF-8").useDelimiter("\\Z").next();
 
         File propertyTestFile = new File(Cql2ElmVisitorTest.class.getResource("PropertyTest.cql").getFile());
-        String actualXml = CqlTranslator.fromFile(propertyTestFile, new LibraryManager()).toXml();
+        ModelManager modelManager = new ModelManager();
+        String actualXml = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager)).toXml();
         assertThat(actualXml, is(expectedXml));
     }
 
@@ -26,7 +27,8 @@ public class TranslationTests {
     public void testCMS146v2XML() throws IOException {
         String expectedXml = "";
         File cqlFile = new File(Cql2ElmVisitorTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());
-        String actualXml = CqlTranslator.fromFile(cqlFile, new LibraryManager()).toXml();
+        ModelManager modelManager = new ModelManager();
+        String actualXml = CqlTranslator.fromFile(cqlFile, modelManager, new LibraryManager(modelManager)).toXml();
         assertThat(actualXml, is(expectedXml));
     }
 }

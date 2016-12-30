@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -24,11 +25,14 @@ public class AggregateOperatorsTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        CqlTranslator translator = CqlTranslator.fromStream(AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"), new LibraryManager());
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromStream(AggregateOperatorsTest.class.getResourceAsStream("../OperatorTests/AggregateOperators.cql"), modelManager, new LibraryManager(modelManager));
         Library library = translator.toELM();
         defs = new HashMap<>();
-        for (ExpressionDef def: library.getStatements().getDef()) {
-            defs.put(def.getName(), def);
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
         }
     }
 

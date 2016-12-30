@@ -23,6 +23,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;
 import org.mozilla.javascript.ImporterTopLevel;
@@ -49,7 +50,8 @@ public class Engine {
     private static CodeService codeService;
     private static Path workingArea;
     private static boolean debugJavascript = false;
-    private static LibraryManager libraryManager = new LibraryManager();
+    private static ModelManager modelManager = new ModelManager();
+    private static LibraryManager libraryManager = new LibraryManager(modelManager);
 
     /**
      * Set the PatientSource to be used by all CQL scripts.
@@ -126,7 +128,7 @@ public class Engine {
      */
     public static Results executeCql(File file) throws Exception
     {
-        CqlTranslator rosetta = CqlTranslator.fromFile(file, libraryManager);
+        CqlTranslator rosetta = CqlTranslator.fromFile(file, modelManager, libraryManager);
         String json = "(function() { module.exports = " + rosetta.toJson() + "; }).call(this);";
         return execute(json, true);
     }
@@ -139,7 +141,7 @@ public class Engine {
      */
     public static Results executeCql(String cql) throws Exception
     {
-        CqlTranslator rosetta = CqlTranslator.fromText(cql, libraryManager);
+        CqlTranslator rosetta = CqlTranslator.fromText(cql, modelManager, libraryManager);
         String json = rosetta.toJson();
         return execute(json,true);
     }

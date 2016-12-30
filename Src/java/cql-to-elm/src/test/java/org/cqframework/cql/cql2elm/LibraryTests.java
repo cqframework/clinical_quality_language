@@ -13,11 +13,13 @@ import static org.hamcrest.Matchers.not;
 
 public class LibraryTests {
 
+    ModelManager modelManager;
     LibraryManager libraryManager;
   
     @BeforeClass
     public void setup() {
-        libraryManager = new LibraryManager();
+        modelManager = new ModelManager();
+        libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
     }
 
@@ -30,7 +32,7 @@ public class LibraryTests {
     public void testLibraryReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"), libraryManager);
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
             e.printStackTrace();
@@ -41,7 +43,7 @@ public class LibraryTests {
     public void testInvalidLibraryReferences() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/InvalidReferencingLibrary.cql"), libraryManager);
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/InvalidReferencingLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(not(0)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,7 +54,7 @@ public class LibraryTests {
     public void testDuplicateExpressionLibrary() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/DuplicateExpressionLibrary.cql"), libraryManager);
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/DuplicateExpressionLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(1));
         } catch (IOException e) {
             e.printStackTrace();
