@@ -24,7 +24,8 @@ public class CMS146ElmTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), new LibraryManager());
+        ModelManager modelManager = new ModelManager();
+        translator = CqlTranslator.fromStream(CMS146ElmTest.class.getResourceAsStream("CMS146v2_Test_CQM.cql"), modelManager, new LibraryManager(modelManager));
         library = translator.toELM();
         of = new ObjectFactory();
     }

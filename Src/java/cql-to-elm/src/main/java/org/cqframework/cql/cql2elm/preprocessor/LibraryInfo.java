@@ -6,6 +6,7 @@ public class LibraryInfo {
     private String libraryName;
     private String version;
 
+    private UsingDefinitionInfo preferredUsingDefinition;
     private final Map<String, UsingDefinitionInfo> usingDefinitions;
     private final Map<String, IncludeDefinitionInfo> includeDefinitions;
     private final Map<String, CodesystemDefinitionInfo> codesystemDefinitions;
@@ -55,11 +56,28 @@ public class LibraryInfo {
     }
 
     public void addUsingDefinition(UsingDefinitionInfo usingDefinition) {
+        // First using definition encountered is "preferred", meaning it will resolve as the default model info
+        if (preferredUsingDefinition == null) {
+            preferredUsingDefinition = usingDefinition;
+        }
         usingDefinitions.put(usingDefinition.getName(), usingDefinition);
     }
 
     public UsingDefinitionInfo resolveModelReference(String identifier) {
         return usingDefinitions.get(identifier);
+    }
+
+    public UsingDefinitionInfo getDefaultUsingDefinition() {
+        return preferredUsingDefinition;
+    }
+
+    public String getDefaultModelName() {
+        UsingDefinitionInfo usingDefinitionInfo = getDefaultUsingDefinition();
+        if (usingDefinitionInfo == null) {
+            throw new IllegalArgumentException("Could not determine a default model because no usings have been defined.");
+        }
+
+        return usingDefinitionInfo.getName();
     }
 
     public void addIncludeDefinition(IncludeDefinitionInfo includeDefinition) {

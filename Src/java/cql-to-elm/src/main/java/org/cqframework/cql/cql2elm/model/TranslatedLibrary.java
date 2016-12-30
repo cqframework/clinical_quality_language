@@ -90,7 +90,7 @@ public class TranslatedLibrary {
 
     private void ensureLibrary(Operator operator) {
         // Functions can be defined in an anonymous library
-        if (this.identifier != null) {
+        if (this.identifier != null && this.identifier.getId() != null) {
             if (operator.getLibraryName() == null) {
                 operator.setLibraryName(this.identifier.getId());
             }
