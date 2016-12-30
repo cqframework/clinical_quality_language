@@ -96,7 +96,17 @@ public class OperatorEntry {
         private Map<Signature, SignatureNode> signatures = new HashMap<>();
 
         public boolean contains(Operator operator) {
-            return signatures.containsKey(operator.getSignature());
+            boolean result = signatures.containsKey(operator.getSignature());
+            if (!result) {
+                for (SignatureNode n : signatures.values()) {
+                    result = n.subSignatures.contains(operator);
+                    if (result) {
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
 
         public void add(SignatureNode node) {
