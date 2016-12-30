@@ -18,7 +18,8 @@ public class CMS146JsonTest {
         String expectedJson = new Scanner(expectedJsonFile, "UTF-8").useDelimiter("\\Z").next();
 
         File cms146 = new File(URLDecoder.decode(CMS146JsonTest.class.getResource("CMS146v2_Test_CQM.cql").getFile(), "UTF-8"));
-        String actualJson = CqlTranslator.fromFile(cms146, new LibraryManager()).toJson();
+        ModelManager modelManager = new ModelManager();
+        String actualJson = CqlTranslator.fromFile(cms146, modelManager, new LibraryManager(modelManager)).toJson();
         assertThat(actualJson, sameJSONAs(expectedJson));
     }
 }

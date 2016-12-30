@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.operators;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.DateTime;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
@@ -25,7 +26,8 @@ public class DateTimeOperatorsTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        CqlTranslator translator = CqlTranslator.fromStream(DateTimeOperatorsTest.class.getResourceAsStream("../OperatorTests/DateTimeOperators.cql"), new LibraryManager());
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromStream(DateTimeOperatorsTest.class.getResourceAsStream("../OperatorTests/DateTimeOperators.cql"), modelManager, new LibraryManager(modelManager));
         Library library = translator.toELM();
         defs = new HashMap<>();
         for (ExpressionDef def: library.getStatements().getDef()) {
