@@ -228,7 +228,7 @@ public class OperatorEntry {
             InstantiationResult instantiationResult = genericOperator.instantiate(signature, operatorMap, conversionMap);
             if (instantiationResult.getOperator() != null) {
                 if (instantiationResult.getConversionScore() <= lowestConversionScore) {
-                    if (instantiation == null) {
+                    if (instantiation == null || instantiationResult.getConversionScore() < lowestConversionScore) {
                         instantiation = instantiationResult.getOperator();
                         lowestConversionScore = instantiationResult.getConversionScore();
                     }
