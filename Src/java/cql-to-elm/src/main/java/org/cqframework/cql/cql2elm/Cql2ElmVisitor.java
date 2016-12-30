@@ -60,8 +60,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Stack<String> expressionContext = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final Stack<Narrative> narratives = new Stack<>();
-    private final Stack<Expression> targets = new Stack<>();
-    private FunctionDef currentFunctionDef = null;
+    private String currentContext = "Patient"; // default context to patient
     private String currentContext = "Patient"; // default context to patient
     private int currentToken = -1;
     private int nextLocalId = 1;
@@ -70,15 +69,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean implicitPatientCreated = false;
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
-      super();
+        super();
 
         if (libraryBuilder == null) {
             throw new IllegalArgumentException("libraryBuilder is null");
-    }
+        }
 
         this.libraryBuilder = libraryBuilder;
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
-      }
+    }
 
     public void enableAnnotations() {
         annotate = true;
@@ -281,9 +280,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitLibrary(@NotNull cqlParser.LibraryContext ctx) {
-        getOrInitializeLibrary();
-        translatedLibrary = new TranslatedLibrary();
-        translatedLibrary.setLibrary(library);
     public Object visitLibrary(@NotNull cqlParser.LibraryContext ctx) {
 
         Object lastResult = null;
@@ -3212,10 +3208,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         try {
             libraryBuilder.pushExpressionContext(currentContext);
             try {
-            fun.setExpression(parseExpression(ctx.functionBody()));
+                fun.setExpression(parseExpression(ctx.functionBody()));
             } finally {
                 libraryBuilder.popExpressionContext();
+            }
         }
+            finally {
+            libraryBuilder.endFunctionDef();
+            }
         }
         finally {
             libraryBuilder.endFunctionDef();
