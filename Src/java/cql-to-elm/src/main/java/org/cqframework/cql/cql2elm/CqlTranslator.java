@@ -134,6 +134,8 @@ public class CqlTranslator {
         parser.setBuildParseTree(true);
 
         errors = new ArrayList<>();
+        LibraryBuilder builder = new LibraryBuilder(modelManager, libraryManager);
+        parser.addErrorListener(new CqlErrorListener(builder));
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryManager);
         List<Options> optionList = Arrays.asList(options);
         if (optionList.contains(Options.EnableDateRangeOptimization)) {
@@ -210,6 +212,7 @@ public class CqlTranslator {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
+        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options.toArray(new Options[options.size()]));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
         CqlTranslator translator = fromFile(inPath.toFile(), libraryManager, options.toArray(new Options[options.size()]));
         CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options.toArray(new Options[options.size()]));
