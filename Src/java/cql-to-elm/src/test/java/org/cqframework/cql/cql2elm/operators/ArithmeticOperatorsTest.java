@@ -2,7 +2,17 @@ package org.cqframework.cql.cql2elm.operators;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.ModelManager;
-import org.hl7.elm.r1.*;
+import org.hl7.elm.r1.Abs;
+import org.hl7.elm.r1.Ceiling;
+import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.Floor;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.Ln;
+import org.hl7.elm.r1.Log;
+import org.hl7.elm.r1.Negate;
+import org.hl7.elm.r1.Quantity;
+import org.hl7.elm.r1.Round;
+import org.hl7.elm.r1.Truncate;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -154,21 +164,6 @@ public class ArithmeticOperatorsTest {
 
         ln = (Ln) def.getExpression();
         assertThat(ln.getOperand(), literalFor(1000.0));
-    }
-
-    @Test
-    public void testExp() {
-        ExpressionDef def = defs.get("IntegerExp");
-        assertThat(def, hasTypeAndResult(Exp.class, "System.Decimal"));
-
-        Exp exp = (Exp)def.getExpression();
-        assertThat(exp.getOperand(), convertsToDecimalFrom(1000));
-
-        def = defs.get("DecimalExp");
-        assertThat(def, hasTypeAndResult(Exp.class, "System.Decimal"));
-
-        exp = (Exp)def.getExpression();
-        assertThat(exp.getOperand(), literalFor(1000.0));
     }
 
     @Test
