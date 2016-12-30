@@ -175,15 +175,6 @@ public class LibraryBuilder {
 
         if (result == null) {
             if (modelName == null || modelName.equals("")) {
-                // Attempt to resolve in the default model if one is available
-                if (defaultModel != null) {
-                    DataType modelResult = defaultModel.resolveTypeName(typeName);
-                    if (modelResult != null) {
-                        return modelResult;
-                    }
-                }
-
-                // Otherwise, resolve across all models and throw for ambiguous resolution
                 for (Model model : models.values()) {
                     DataType modelResult = model.resolveTypeName(typeName);
                     if (modelResult != null) {
@@ -424,10 +415,6 @@ public class LibraryBuilder {
     }
 
     public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
-        return resolveCall(libraryName, operatorName, invocation, true);
-    }
-
-    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
@@ -440,27 +427,26 @@ public class LibraryBuilder {
 
         CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
-        if (resolution != null || mustResolve) {
-            checkOperator(callContext, resolution);
+        checkOperator(callContext, resolution);
 
-            if (resolution.hasConversions()) {
-                List<Expression> convertedOperands = new ArrayList<>();
-                Iterator<Expression> operandIterator = operands.iterator();
-                Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
-                while (operandIterator.hasNext()) {
-                    Expression operand = operandIterator.next();
-                    Conversion conversion = conversionIterator.next();
-                    if (conversion != null) {
-                        convertedOperands.add(convertExpression(operand, conversion));
-                    } else {
-                        convertedOperands.add(operand);
-                    }
+        if (resolution.hasConversions()) {
+            List<Expression> convertedOperands = new ArrayList<>();
+            Iterator<Expression> operandIterator = operands.iterator();
+            Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
+            while (operandIterator.hasNext()) {
+                Expression operand = operandIterator.next();
+                Conversion conversion = conversionIterator.next();
+                if (conversion != null) {
+                    convertedOperands.add(convertExpression(operand, conversion));
                 }
-
-                invocation.setOperands(convertedOperands);
+                else {
+                    convertedOperands.add(operand);
+                }
             }
-            invocation.setResultType(resolution.getOperator().getResultType());
+
+            invocation.setOperands(convertedOperands);
         }
+        invocation.setResultType(resolution.getOperator().getResultType());
         return invocation.getExpression();
     }
 
@@ -512,10 +498,6 @@ public class LibraryBuilder {
     }
 
     public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList) {
-        return resolveFunction(libraryName, functionName, paramList, true);
-    }
-
-    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve) {
         FunctionRef fun = of.createFunctionRef()
                 .withLibraryName(libraryName)
                 .withName(functionName);
@@ -529,7 +511,7 @@ public class LibraryBuilder {
             return systemFunction;
         }
 
-        resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve);
+        resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun));
 
         return fun;
     }
