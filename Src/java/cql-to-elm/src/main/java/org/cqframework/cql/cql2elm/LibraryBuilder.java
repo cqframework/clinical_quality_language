@@ -49,7 +49,7 @@ public class LibraryBuilder {
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
-    private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
+    private final Stack<String> expressionDefinitions = new Stack<>();
     private final Stack<Expression> targets = new Stack<>();
     private FunctionDef currentFunctionDef = null;
     private ModelManager modelManager = null;
@@ -151,7 +151,7 @@ public class LibraryBuilder {
                 if (modelResult != null) {
                     if (result != null) {
                         throw new IllegalArgumentException(String.format("Label %s is ambiguous between %s and %s.",
-                                label, result.getLabel(), modelResult.getLabel()));
+                                label, result.getName(), modelResult.getName()));
                     }
 
                     result = modelResult;
@@ -175,15 +175,6 @@ public class LibraryBuilder {
 
         if (result == null) {
             if (modelName == null || modelName.equals("")) {
-                // Attempt to resolve in the default model if one is available
-                if (defaultModel != null) {
-                    DataType modelResult = defaultModel.resolveTypeName(typeName);
-                    if (modelResult != null) {
-                        return modelResult;
-                    }
-                }
-
-                // Otherwise, resolve across all models and throw for ambiguous resolution
                 for (Model model : models.values()) {
                     DataType modelResult = model.resolveTypeName(typeName);
                     if (modelResult != null) {
@@ -254,7 +245,7 @@ public class LibraryBuilder {
         errors.add(e);
         CqlToElmError err = af.createCqlToElmError();
         err.setMessage(e.getMessage());
-        err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : ErrorType.SEMANTIC);
+        err.setErrorType(ErrorType.SYNTAX);
         if (e.getLocator() != null) {
             err.setStartLine(e.getLocator().getStartLine());
             err.setEndLine(e.getLocator().getEndLine());
@@ -424,10 +415,6 @@ public class LibraryBuilder {
     }
 
     public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
-        return resolveCall(libraryName, operatorName, invocation, true);
-    }
-
-    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
@@ -440,29 +427,27 @@ public class LibraryBuilder {
 
         CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
-        if (resolution != null || mustResolve) {
-            checkOperator(callContext, resolution);
+        checkOperator(callContext, resolution);
 
-            if (resolution.hasConversions()) {
-                List<Expression> convertedOperands = new ArrayList<>();
-                Iterator<Expression> operandIterator = operands.iterator();
-                Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
-                while (operandIterator.hasNext()) {
-                    Expression operand = operandIterator.next();
-                    Conversion conversion = conversionIterator.next();
-                    if (conversion != null) {
-                        convertedOperands.add(convertExpression(operand, conversion));
-                    } else {
-                        convertedOperands.add(operand);
-                    }
+        if (resolution.hasConversions()) {
+            List<Expression> convertedOperands = new ArrayList<>();
+            Iterator<Expression> operandIterator = operands.iterator();
+            Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
+            while (operandIterator.hasNext()) {
+                Expression operand = operandIterator.next();
+                Conversion conversion = conversionIterator.next();
+                if (conversion != null) {
+                    convertedOperands.add(convertExpression(operand, conversion));
                 }
-
-                invocation.setOperands(convertedOperands);
+                else {
+                    convertedOperands.add(operand);
+                }
             }
-            invocation.setResultType(resolution.getOperator().getResultType());
-            return invocation.getExpression();
+
+            invocation.setOperands(convertedOperands);
         }
-        return null;
+        invocation.setResultType(resolution.getOperator().getResultType());
+        return invocation.getExpression();
     }
 
     public OperatorResolution resolveCall(CallContext callContext) {
@@ -513,10 +498,6 @@ public class LibraryBuilder {
     }
 
     public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList) {
-        return resolveFunction(libraryName, functionName, paramList, true);
-    }
-
-    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve) {
         FunctionRef fun = of.createFunctionRef()
                 .withLibraryName(libraryName)
                 .withName(functionName);
@@ -530,16 +511,9 @@ public class LibraryBuilder {
             return systemFunction;
         }
 
-        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve);
+        resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun));
 
         return fun;
-    }
-
-    public void verifyComparable(DataType dataType) {
-        Expression left = (Expression)of.createLiteral().withResultType(dataType);
-        Expression right = (Expression)of.createLiteral().withResultType(dataType);
-        BinaryExpression comparison = of.createLess().withOperand(left, right);
-        resolveBinaryCall("System", "Less", comparison);
     }
 
     public Expression convertExpression(Expression expression, DataType targetType) {
@@ -935,7 +909,7 @@ public class LibraryBuilder {
         }
 
         if (mustResolve) {
-            throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
+            throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType));
         }
 
         return null;
@@ -995,40 +969,24 @@ public class LibraryBuilder {
         if (element instanceof ExpressionDef) {
             ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
             expressionRef.setResultType(getExpressionDefResultType((ExpressionDef)element));
-            if (expressionRef.getResultType() == null) {
-                throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
-                        expressionRef.getName()));
-            }
             return expressionRef;
         }
 
         if (element instanceof ParameterDef) {
             ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
             parameterRef.setResultType(element.getResultType());
-            if (parameterRef.getResultType() == null) {
-                throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
-                        parameterRef.getName()));
-            }
             return parameterRef;
         }
 
         if (element instanceof ValueSetDef) {
             ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
             valuesetRef.setResultType(element.getResultType());
-            if (valuesetRef.getResultType() == null) {
-                throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
-                        valuesetRef.getName()));
-            }
             return valuesetRef;
         }
 
         if (element instanceof CodeSystemDef) {
             CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
             codesystemRef.setResultType(element.getResultType());
-            if (codesystemRef.getResultType() == null) {
-                throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
-                        codesystemRef.getName()));
-            }
             return codesystemRef;
 
         }
@@ -1036,20 +994,12 @@ public class LibraryBuilder {
         if (element instanceof CodeDef) {
             CodeRef codeRef = of.createCodeRef().withName(((CodeDef)element).getName());
             codeRef.setResultType(element.getResultType());
-            if (codeRef.getResultType() == null) {
-                throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
-                        codeRef.getName()));
-            }
             return codeRef;
         }
 
         if (element instanceof ConceptDef) {
             ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef)element).getName());
             conceptRef.setResultType(element.getResultType());
-            if (conceptRef.getResultType() == null) {
-                throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
-                        conceptRef.getName()));
-            }
             return conceptRef;
         }
 
@@ -1308,62 +1258,11 @@ public class LibraryBuilder {
         throw new IllegalArgumentException(String.format("Invalid context reference from %s context to %s context.", currentExpressionContext(), expressionDef.getContext()));
     }
 
-    private class ExpressionDefinitionContext {
-        public ExpressionDefinitionContext(String identifier) {
-            this.identifier = identifier;
-        }
-        private String identifier;
-        public String getIdentifier() {
-            return identifier;
-        }
-
-        private Exception rootCause;
-        public Exception getRootCause() {
-            return rootCause;
-        }
-
-        public void setRootCause(Exception rootCause) {
-            this.rootCause = rootCause;
-        }
-    }
-
-    private class ExpressionDefinitionContextStack extends Stack<ExpressionDefinitionContext> {
-        public boolean contains(String identifier) {
-            for (int i = 0; i < this.elementCount; i++) {
-                if (this.elementAt(i).getIdentifier().equals(identifier)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
-    public Exception determineRootCause() {
-        if (!expressionDefinitions.isEmpty()) {
-            ExpressionDefinitionContext currentContext = expressionDefinitions.peek();
-            if (currentContext != null) {
-                return currentContext.getRootCause();
-            }
-        }
-
-        return null;
-    }
-
-    public void setRootCause(Exception rootCause) {
-        if (!expressionDefinitions.isEmpty()) {
-            ExpressionDefinitionContext currentContext = expressionDefinitions.peek();
-            if (currentContext != null) {
-                currentContext.setRootCause(rootCause);
-            }
-        }
-    }
-
     public void pushExpressionDefinition(String identifier) {
         if (expressionDefinitions.contains(identifier)) {
             throw new IllegalArgumentException(String.format("Cannot resolve reference to expression %s because it results in a circular reference.", identifier));
         }
-        expressionDefinitions.push(new ExpressionDefinitionContext(identifier));
+        expressionDefinitions.push(identifier);
     }
 
     public void popExpressionDefinition() {
