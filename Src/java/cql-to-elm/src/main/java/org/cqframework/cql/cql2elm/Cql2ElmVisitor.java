@@ -1477,7 +1477,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             ListType leftListType = (ListType)left.getResultType();
             ListType rightListType = (ListType)right.getResultType();
 
-            if (!(leftListType.isCompatibleWith(rightListType) || rightListType.isCompatibleWith(leftListType))) {
+            if (!(leftListType.isSuperTypeOf(rightListType) || rightListType.isSuperTypeOf(leftListType))
+                    && !(leftListType.isCompatibleWith(rightListType) || rightListType.isCompatibleWith(leftListType))) {
                 Set<DataType> elementTypes = new HashSet<DataType>();
                 if (leftListType.getElementType() instanceof ChoiceType) {
                     for (DataType choice : ((ChoiceType)leftListType.getElementType()).getTypes()) {
