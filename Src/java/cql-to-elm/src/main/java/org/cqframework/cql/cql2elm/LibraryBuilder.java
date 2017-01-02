@@ -175,6 +175,15 @@ public class LibraryBuilder {
 
         if (result == null) {
             if (modelName == null || modelName.equals("")) {
+                // Attempt to resolve in the default model if one is available
+                if (defaultModel != null) {
+                    DataType modelResult = defaultModel.resolveTypeName(typeName);
+                    if (modelResult != null) {
+                        return modelResult;
+                    }
+                }
+
+                // Otherwise, resolve across all models and throw for ambiguous resolution
                 for (Model model : models.values()) {
                     DataType modelResult = model.resolveTypeName(typeName);
                     if (modelResult != null) {
