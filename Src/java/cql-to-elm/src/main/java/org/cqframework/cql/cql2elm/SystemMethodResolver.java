@@ -156,7 +156,7 @@ public class SystemMethodResolver {
         }
     }
 
-    public Expression resolveMethod(Expression target, @NotNull cqlParser.FunctionContext ctx) {
+    public Expression resolveMethod(Expression target, @NotNull cqlParser.FunctionContext ctx, boolean mustResolve) {
         String functionName = visitor.parseString(ctx.identifier());
         switch (functionName) {
             case "all": {
@@ -272,7 +272,11 @@ public class SystemMethodResolver {
             }
 
             default: {
-                throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
+                if (mustResolve) {
+                    throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
+                }
+
+                return null;
             }
         }
     }
