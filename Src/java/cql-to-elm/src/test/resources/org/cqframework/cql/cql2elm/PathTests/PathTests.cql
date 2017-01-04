@@ -20,8 +20,8 @@ define TestFromListConversionImplicit: Patient.name.given + ' ' + Patient.name.f
 // The instantiation favors promotion because it encounters the list type first
 // But if during instantiation, we find that a type parameter has been bound to a list and the signature contains a list of the same type
 // The type parameter should be demoted
-//define TestGenericFromListConversion: { 1 } in { 1, 2, 3, 4, 5 }
-//define TestListInListOfLists: { 1 } in { { 1 }, { 2 }, { 3 }, { 4 }, { 5 } }
+define TestGenericFromListConversion: { 1 } in { 1, 2, 3, 4, 5 }
+define TestListInListOfLists: { 1 } in { { 1 }, { 2 }, { 3 }, { 4 }, { 5 } }
 
 define TestEquality: Patient.name.given = 'Smith'
 define TestEmpty: Patient.name.given.empty()
@@ -38,15 +38,15 @@ define TestAnyTrue: Patient.deceased.value.anyTrue()
 define TestAnyTrueImplicit: Patient.deceased.anyTrue()
 //TODO: define TestAllFalse: Patient.deceased.value.allFalse()
 //TODO: define TestAnyFalse: Patient.deceased.value.anyFalse()
-//define TestSubsetOf: Patient.name.where(use.value = 'official').subsetOf(Patient.name)
-//define TestSubsetOfImplicit: Patient.name.where(use = 'official').subsetOf(Patient.name)
-//define TestSupersetOf: Patient.name.supersetOf(Patient.name.where(use.value = 'official'))
-//define TestSupersetOfImplicit: Patient.name.supersetOf(Patient.name.where(use = 'official'))
+define TestSubsetOf: Patient.name.where(use.value = 'official').subsetOf(Patient.name)
+define TestSubsetOfImplicit: Patient.name.where(use = 'official').subsetOf(Patient.name)
+define TestSupersetOf: Patient.name.supersetOf(Patient.name.where(use.value = 'official'))
+define TestSupersetOfImplicit: Patient.name.supersetOf(Patient.name.where(use = 'official'))
 //TODO: define TestIsDistinct: Patient.name.given.isDistinct()
-//define TestDistinct: Patient.name.given.distinct()
-//define TestCount: Patient.name.given.count()
-//define TestSelect: Patient.name.select(given.value + ' ' + family.value)
-//define TestSelectImplicit: Patient.name.select(given + ' ' + family)
+define TestDistinct: Patient.name.given.distinct()
+define TestCount: Patient.name.given.count()
+define TestSelect: Patient.name.select(given.value + ' ' + family.value)
+define TestSelectImplicit: Patient.name.select(given + ' ' + family)
 //TODO: define TestRepeat: Questionnaire.repeat(group | question).question
 //TODO: define TestOfType: Bundle.entry.resource.ofType(Patient)
 define TestContains: Patient.name.given.contains('abc')
