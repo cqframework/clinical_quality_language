@@ -3090,11 +3090,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 current = resolveIdentifier(identifier);
             } else {
                 current = libraryBuilder.resolveAccessor(current, identifier);
-    }
+            }
         }
 
         return current;
-        }
+    }
 
     private Expression resolveIdentifier(String identifier) {
         // If the identifier cannot be resolved in the library builder, check for forward declarations for expressions and parameters
@@ -3104,17 +3104,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (expressionInfo != null) {
                 String saveContext = currentContext;
                 currentContext = expressionInfo.getContext();
-        try {
+                try {
                     visitExpressionDefinition(expressionInfo.getDefinition());
                 } finally {
                     currentContext = saveContext;
-        }
+                }
             }
 
             ParameterDefinitionInfo parameterInfo = libraryInfo.resolveParameterReference(identifier);
             if (parameterInfo != null) {
                 visitParameterDefinition(parameterInfo.getDefinition());
-        }
+            }
             result = libraryBuilder.resolveIdentifier(identifier, true);
         }
 
