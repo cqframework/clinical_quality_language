@@ -62,3 +62,4 @@ define MaximumDecimal: maximum Decimal
 define MaximumDateTime: maximum DateTime
 define MaximumTime: maximum Time
 
+define CastChoice: ({ 'A', 'B', 'C' } union { 1, 2, 3 }) X where (X as String) = 'A'

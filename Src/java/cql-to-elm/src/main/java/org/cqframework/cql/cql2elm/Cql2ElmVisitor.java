@@ -3052,7 +3052,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Expression visitThisInvocation(@NotNull cqlParser.ThisInvocationContext ctx) {
-        return (Expression)new IdentifierRef().withName(ctx.getText()).withResultType(libraryBuilder.getSystemModel().getVoid());
+        return libraryBuilder.resolveIdentifier(ctx.getText(), true);
     }
 
     @Override
@@ -3137,13 +3137,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression) {
-                    return systemMethodResolver.resolveMethod((Expression)target, ctx);
+                    return systemMethodResolver.resolveMethod((Expression)target, ctx, true);
                 }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
             }
             finally {
                 libraryBuilder.pushExpressionTarget(target);
+            }
+        }
+
+        // If we are in an implicit $this context, the function may be resolved as a method invocation
+        Expression thisRef = libraryBuilder.resolveIdentifier("$this", false);
+        if (thisRef != null) {
+            Expression result = systemMethodResolver.resolveMethod(thisRef, ctx, false);
+            if (result != null) {
+                return result;
             }
         }
 
