@@ -14,7 +14,8 @@ public class DataTypes {
     }
 
     public static void verifyCast(DataType targetType, DataType sourceType) {
-        if (!subTypeOf(targetType, sourceType)) {
+        // Casting can be used for compatible types as well as subtypes
+        if (!(subTypeOf(targetType, sourceType) || compatibleWith(sourceType, targetType))) {
             throw new IllegalArgumentException(String.format("Expression of type '%s' cannot be cast as a value of type '%s'.",
                     sourceType != null ? sourceType.toString() : "<unknown>",
                     targetType != null ? targetType.toString() : "<unknown>"
@@ -24,6 +25,10 @@ public class DataTypes {
 
     public static boolean equal(DataType a, DataType b) {
         return a != null && b != null && a.equals(b);
+    }
+
+    public static boolean compatibleWith(DataType a, DataType b) {
+        return a != null && b != null && a.isCompatibleWith(b);
     }
 
     public static boolean subTypeOf(DataType a, DataType b) {

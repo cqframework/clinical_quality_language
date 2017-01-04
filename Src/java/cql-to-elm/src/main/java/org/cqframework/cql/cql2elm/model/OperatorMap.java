@@ -45,7 +45,11 @@ public class OperatorMap {
                 // for each operand
                     // exact match = 0
                     // subtype = 1
-                    // conversion = 2
+                    // compatible = 2
+                    // cast = 3
+                    // conversion = 4
+                    // demotion = 5
+                    // promotion = 6
                 Iterator<DataType> operands = resolution.getOperator().getSignature().getOperandTypes().iterator();
                 Iterator<DataType> callOperands = callContext.getSignature().getOperandTypes().iterator();
                 Iterator<Conversion> conversions = resolution.hasConversions() ? resolution.getConversions().iterator() : null;
@@ -60,8 +64,22 @@ public class OperatorMap {
                     else if (operand.isSuperTypeOf(callOperand)) {
                         score += 1;
                     }
-                    else if (conversion != null) {
+                    else if (callOperand.isCompatibleWith(operand)) {
                         score += 2;
+                    }
+                    else if (conversion != null) {
+                        if (conversion.isCast()) {
+                            score += 3;
+                        }
+                        else if (conversion.isListDemotion()) {
+                            score += 5;
+                        }
+                        else if (conversion.isListPromotion()) {
+                            score += 6;
+                        }
+                        else {
+                            score += 4;
+                        }
                     }
                 }
 
