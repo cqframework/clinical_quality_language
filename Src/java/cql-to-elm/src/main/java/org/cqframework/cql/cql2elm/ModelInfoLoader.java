@@ -22,6 +22,7 @@ public class ModelInfoLoader {
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.1.2"), new QdmModelInfoProvider().withVersion("4.1.2"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.6"), new FhirModelInfoProvider().withVersion("1.6"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.4"), new FhirModelInfoProvider().withVersion("1.4"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"), new FhirModelInfoProvider().withVersion("1.8"));
     }
 
     public static ModelInfoProvider getModelInfoProvider(VersionedIdentifier modelIdentifier) {
