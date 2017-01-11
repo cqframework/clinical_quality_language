@@ -157,7 +157,7 @@ define function ToString(value FHIR.FlagStatus): value.value
 define function ToString(value FHIR.AllergyIntoleranceCertainty): value.value
 define function ToString(value FHIR.CarePlanStatus): value.value
 define function ToString(value FHIR.ListStatus): value.value
-define function Tobase64Binary(value FHIR.base64Binary): value.value
+define function ToString(value FHIR.base64Binary): value.value
 define function ToString(value FHIR.MeasureScoring): value.value
 define function ToString(value FHIR.AuditEventAgentNetworkType): value.value
 define function ToString(value FHIR.AddressUse): value.value
