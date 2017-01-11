@@ -957,7 +957,7 @@
             <operandTypeSpecifier name="fhir:ListStatus" xsi:type="NamedTypeSpecifier"/>
          </operand>
       </def>
-      <def name="Tobase64Binary" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+      <def name="ToString" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
          <expression path="value" xsi:type="Property">
             <source name="value" xsi:type="OperandRef"/>
          </expression>

@@ -3986,7 +3986,7 @@
     <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceCertainty" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.CarePlanStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ListStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.base64Binary" toType="xs.base64Binary" functionName="FHIRHelpers.Tobase64Binary"/>
+    <ns4:conversionInfo fromType="FHIR.base64Binary" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.AddressUse" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ConditionalDeleteStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ContactPointUse" toType="System.String" functionName="FHIRHelpers.ToString"/>
