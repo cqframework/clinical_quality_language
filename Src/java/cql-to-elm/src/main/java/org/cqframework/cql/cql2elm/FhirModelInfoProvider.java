@@ -23,6 +23,10 @@ public class FhirModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load() {
         String localVersion = version == null ? "" : version;
         switch (localVersion) {
+            case "1.0.2":
+                return JAXB.unmarshal(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.0.2.xml"),
+                        ModelInfo.class);
+
             case "1.4":
                 return JAXB.unmarshal(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml"),
                         ModelInfo.class);
