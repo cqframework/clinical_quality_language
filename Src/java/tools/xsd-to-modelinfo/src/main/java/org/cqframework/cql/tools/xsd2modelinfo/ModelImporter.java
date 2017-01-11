@@ -555,6 +555,28 @@ public class ModelImporter {
         return typeName;
     }
 
+    private int indexOfFirstDifference(String original, String comparison) {
+        // Returns the index of the first difference between the two strings
+        if (original == null) {
+            throw new IllegalArgumentException("original is null");
+        }
+
+        if (comparison == null) {
+            throw new IllegalArgumentException("comparison is null");
+        }
+
+        int result = -1;
+        do {
+            result++;
+
+            if (result >= original.length() || result >= comparison.length() || original.charAt(result) != comparison.charAt(result)) {
+                break;
+            }
+        } while (true);
+
+        return result;
+    }
+
     private void resolveClassTypeElements(XmlSchemaParticle particle, List<ClassTypeElement> elements) {
         if (particle instanceof XmlSchemaElement) {
             ClassTypeElement element = resolveClassTypeElement((XmlSchemaElement)particle);
@@ -588,7 +610,13 @@ public class ModelImporter {
                     ClassTypeElement choiceElement = resolveClassTypeElement((XmlSchemaElement) member);
                     if (choiceElement != null) {
                         if (elementName == null) {
-                            elementName = choiceElement.getName().substring(0, choiceElement.getName().toLowerCase().lastIndexOf(((NamedType)choiceElement.getType()).getSimpleName().toLowerCase()));
+                            elementName = choiceElement.getName();
+                        }
+                        else {
+                            int firstDifference = indexOfFirstDifference(elementName, choiceElement.getName());
+                            if (firstDifference < elementName.length()) {
+                                elementName = elementName.substring(0, firstDifference);
+                            }
                         }
                         choices.add(choiceElement.getType());
                     }
