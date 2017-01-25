@@ -17,7 +17,7 @@ module.exports.Context = class Context
     get: -> @_codeService || @parent?.codeService
     set: (cs) -> @_codeService = cs
 
-  
+
   withParameters: (params) ->
     @parameters = params ? {}
     @
@@ -25,7 +25,7 @@ module.exports.Context = class Context
   withCodeService: (cs) ->
     @codeService = cs
     @
-  
+
   rootContext:  ->
     if ( @parent ) then @parent.rootContext() else @
 
@@ -36,7 +36,7 @@ module.exports.Context = class Context
     ctx = new Context(@)
     ctx.context_values = context_values
     ctx
-  
+
   getLibraryContext: (library) ->
     @parent?.getLibraryContext(library)
 
@@ -45,6 +45,9 @@ module.exports.Context = class Context
 
   getValueSet: (name) ->
     @parent?.getValueSet(name)
+
+  getCodeSystem: (name) ->
+    @parent?.getCodeSystem(name)
 
   get: (identifier) ->
     @context_values[identifier] ? @parent?.get(identifier)
@@ -60,7 +63,7 @@ module.exports.PatientContext = class PatientContext extends Context
 
   getLibraryContext: (library) ->
     @library_context[library] ||= new PatientContext(@get(library),@patient,@codeService,@parameters)
-  
+
   findRecords: ( profile) ->
     @patient?.findRecords(profile)
 
@@ -70,7 +73,7 @@ module.exports.PopulationContext = class PopulationContext extends Context
 
   constructor: (@library, @results, codeService, parameters) ->
     super(@library,codeService,parameters)
-   
+
   rootContext:  -> @
 
   findRecords: (template) ->
@@ -78,11 +81,11 @@ module.exports.PopulationContext = class PopulationContext extends Context
 
   getLibraryContext: (library) ->
      throw new Exception("Library expressions are not currently supported in Population Context")
-  
+
   get: (identifier) ->
     #First check to see if the identifier is a population context expression that has already been cached
     return @context_values[identifier] if @context_values[identifier]
-    #if not look to see if the library has a population expression of that identifier 
+    #if not look to see if the library has a population expression of that identifier
     return @library.expressions[identifier] if @library[identifier]?.context == "Population"
     #lastley attempt to gather all patient level results that have that identifier
     # should this compact null values before return ?

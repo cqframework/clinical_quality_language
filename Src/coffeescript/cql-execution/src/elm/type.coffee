@@ -24,6 +24,15 @@ module.exports.ToDateTime = class ToDateTime extends FunctionRef
     ary = @execArgs ctx
     if ary.length > 0  and ary[0]? then DateTime.parse(ary[0]) else null
 
+module.exports.ToDecimal = class ToDecimal extends Expression
+ constructor: (json) ->
+  super
+
+ exec: (ctx) ->
+  arg = @execArgs(ctx)
+  if arg? and typeof arg != 'undefined'
+   parseFloat(arg.toString())
+
 module.exports.Convert = class Convert extends Expression
   constructor: (json) ->
     super
