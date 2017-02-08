@@ -3047,7 +3047,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Expression visitExternalConstant(@NotNull cqlParser.ExternalConstantContext ctx) {
-        return (Expression)new IdentifierRef().withName(ctx.getText()).withResultType(libraryBuilder.getSystemModel().getVoid());
+        return libraryBuilder.resolveIdentifier(ctx.getText(), true);
     }
 
     @Override
