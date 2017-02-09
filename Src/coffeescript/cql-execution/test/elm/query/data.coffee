@@ -753,16 +753,16 @@ module.exports['QueryRelationship'] = {
    }
 }
 
-### QueryDefine
+### QueryLet
 library TestSnippet version '1'
 using QUICK
 context Patient
 define query:  [Encounter] E
-define a: E
+let a: E
 return {E: E, a:a}
 ###
 
-module.exports['QueryDefine'] = {
+module.exports['QueryLet'] = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -807,7 +807,7 @@ module.exports['QueryDefine'] = {
                      "type" : "Retrieve"
                   }
                } ],
-               "define" : [ {
+               "let" : [ {
                   "identifier" : "a",
                   "expression" : {
                      "name" : "E",
@@ -828,7 +828,7 @@ module.exports['QueryDefine'] = {
                         "name" : "a",
                         "value" : {
                            "name" : "a",
-                           "type" : "QueryDefineRef"
+                           "type" : "QueryLetRef"
                         }
                      } ]
                   }
@@ -987,11 +987,8 @@ module.exports['Sorting'] = {
                "sort" : {
                   "by" : [ {
                      "direction" : "asc",
-                     "type" : "ByExpression",
-                     "expression" : {
-                        "name" : "id",
-                        "type" : "IdentifierRef"
-                     }
+                     "path" : "id",
+                     "type" : "ByColumn"
                   } ]
                }
             }
@@ -1019,11 +1016,8 @@ module.exports['Sorting'] = {
                "sort" : {
                   "by" : [ {
                      "direction" : "asc",
-                     "type" : "ByExpression",
-                     "expression" : {
-                        "name" : "id",
-                        "type" : "IdentifierRef"
-                     }
+                     "path" : "id",
+                     "type" : "ByColumn"
                   } ]
                }
             }
@@ -1060,8 +1054,11 @@ module.exports['Sorting'] = {
                      "type" : "ByExpression",
                      "expression" : {
                         "path" : "id",
-                        "scope" : "E",
-                        "type" : "Property"
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "E",
+                           "type" : "IdentifierRef"
+                        }
                      }
                   } ]
                }
@@ -1084,11 +1081,8 @@ module.exports['Sorting'] = {
                "sort" : {
                   "by" : [ {
                      "direction" : "desc",
-                     "type" : "ByExpression",
-                     "expression" : {
-                        "name" : "id",
-                        "type" : "IdentifierRef"
-                     }
+                     "path" : "id",
+                     "type" : "ByColumn"
                   } ]
                }
             }
@@ -1116,11 +1110,8 @@ module.exports['Sorting'] = {
                "sort" : {
                   "by" : [ {
                      "direction" : "desc",
-                     "type" : "ByExpression",
-                     "expression" : {
-                        "name" : "id",
-                        "type" : "IdentifierRef"
-                     }
+                     "path" : "id",
+                     "type" : "ByColumn"
                   } ]
                }
             }
@@ -1157,8 +1148,11 @@ module.exports['Sorting'] = {
                      "type" : "ByExpression",
                      "expression" : {
                         "path" : "id",
-                        "scope" : "E",
-                        "type" : "Property"
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "E",
+                           "type" : "IdentifierRef"
+                        }
                      }
                   } ]
                }

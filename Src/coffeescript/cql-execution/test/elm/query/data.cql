@@ -34,9 +34,9 @@ without [Condition] C such that C.id = 'http://cqframework.org/3/'
 define withOutQuery2:  [Encounter] E
 without [Condition] C such that C.id = 'http://cqframework.org/3/2'
 
-// @Test: QueryDefine
+// @Test: QueryLet
 define query:  [Encounter] E
-define a: E
+let a: E
 return {E: E, a:a}
 
 // @Test: Tuple

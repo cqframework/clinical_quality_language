@@ -49,7 +49,7 @@ define nullPattern: PositionOf(null, 'abcdefg')
 define nullString: PositionOf('cde', null)
 
 // @Test: Substring
-define World: Substring('HelloWorld', 6)
+define World: Substring('HelloWorld', 5)
 define Or: Substring('HelloWorld', 7, 2)
 define ZeroLength: Substring('HelloWorld', 7, 0)
 define StartTooLow: Substring('HelloWorld', 0)

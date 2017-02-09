@@ -13,7 +13,7 @@ valueset "Known": '2.16.840.1.113883.3.464.1003.101.12.1061'
 valueset "Unknown One Arg": '1.2.3.4.5.6.7.8.9'
 valueset "Unknown Two Arg": '1.2.3.4.5.6.7.8.9' version '1'
 context Patient
-define Foo: "Bar"
+define Foo: 'Bar'
 ###
 
 module.exports['ValueSetDef'] = {
@@ -68,8 +68,9 @@ module.exports['ValueSetDef'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Bar",
-               "type" : "IdentifierRef"
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
+               "value" : "Bar",
+               "type" : "Literal"
             }
          } ]
       }

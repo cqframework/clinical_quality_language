@@ -8,10 +8,10 @@ define decimalInvalid: convert 'abc' to Decimal
 define integerValid: convert '10' to Integer
 define integerDropDecimal: convert '10.2' to Integer
 define integerInvalid: convert 'abc' to Integer
-define quantityStr: convert '10 ''A''' to Quantity
-define posQuantityStr: convert '+10 ''A''' to Quantity
-define negQuantityStr: convert '-10 ''A''' to Quantity
-define quantityStrDecimal: convert '10.0''mA''' to Quantity
+define quantityStr: convert '10 \'A\'' to Quantity
+define posQuantityStr: convert '+10 \'A\'' to Quantity
+define negQuantityStr: convert '-10 \'A\'' to Quantity
+define quantityStrDecimal: convert '10.0 \'mA\'' to Quantity
 define dateStr: convert '2015-01-02' to DateTime
 
 // @Test: FromInteger

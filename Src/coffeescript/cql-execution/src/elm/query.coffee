@@ -9,7 +9,7 @@ module.exports.AliasedQuerySource = class AliasedQuerySource
     @alias = json.alias
     @expression = build json.expression
 
-module.exports.DefineClause = class DefineClause
+module.exports.LetClause = class LetClause
   constructor: (json) ->
     @identifier = json.identifier
     @expression = build json.expression
@@ -52,9 +52,6 @@ module.exports.ByDirection = class ByDirection extends Expression
     else
       @high_order
 
-# ELM-only, not a product of CQL
-module.exports.ByColumn = class ByColumn extends UnimplementedExpression
-
 module.exports.ByExpression = class ByExpression extends Expression
   constructor: (json) ->
     super
@@ -76,6 +73,14 @@ module.exports.ByExpression = class ByExpression extends Expression
       @low_order
     else
       @high_order
+
+module.exports.ByColumn = class ByColumn extends ByExpression
+  constructor: (json) ->
+    super
+    @expression = build {
+      "name" : json.path,
+      "type" : "IdentifierRef"
+    }
 
 module.exports.ReturnClause = ReturnClause = class ReturnClause
   constructor:(json) ->
@@ -107,7 +112,7 @@ module.exports.Query = class Query extends Expression
   constructor: (json) ->
     super
     @sources = new MultiSource((new AliasedQuerySource(s) for s in json.source))
-    @defineClauses = (new DefineClause(d) for d in (json.define ? []))
+    @letClauses = (new LetClause(d) for d in (json.let ? []))
     @relationship = if json.relationship? then build json.relationship else []
     @where = build json.where
     @returnClause = if json.return? then new ReturnClause(json.return) else null
@@ -117,7 +122,7 @@ module.exports.Query = class Query extends Expression
   exec: (ctx) ->
     returnedValues = []
     @sources.forEach(ctx, (rctx) =>
-      for def in @defineClauses
+      for def in @letClauses
         rctx.set def.identifier, def.expression.exec(rctx)
 
       relations = for rel in @relationship
@@ -150,7 +155,7 @@ module.exports.AliasRef = class AliasRef extends Expression
   exec: (ctx) ->
     ctx?.get(@name)
 
-module.exports.QueryDefineRef = class QueryDefineRef extends AliasRef
+module.exports.QueryLetRef = class QueryLetRef extends AliasRef
   constructor: (json) ->
     super
 

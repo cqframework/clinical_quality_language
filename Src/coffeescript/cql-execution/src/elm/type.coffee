@@ -1,6 +1,6 @@
 { Expression, UnimplementedExpression } = require './expression'
 { FunctionRef } = require './reusable'
-{ DateTime } = require '../datatypes/datetime'
+{ Concept, DateTime } = require '../datatypes/datetime'
 { parseQuantity } = require './quantity'
 
 # TODO: Casting and Conversion needs unit tests!
@@ -16,38 +16,109 @@ module.exports.As = class As extends Expression
     # TODO: Currently just returns the arg (which works for null, but probably not others)
     @execArgs(ctx)
 
-module.exports.ToDateTime = class ToDateTime extends FunctionRef
+module.exports.ToBoolean = class ToBoolean extends Expression
   constructor: (json) ->
     super
 
-  exec: (ctx) ->
-    ary = @execArgs ctx
-    if ary.length > 0  and ary[0]? then DateTime.parse(ary[0]) else null
-
-module.exports.Convert = class Convert extends Expression
-  constructor: (json) ->
-    super
-    @toType = json.toType
-    
   exec: (ctx) ->
     arg = @execArgs(ctx)
     if arg? and typeof arg != 'undefined'
       strArg = arg.toString()
-      switch @toType
-        when "{urn:hl7-org:elm-types:r1}Boolean"
-          if strArg=="true"
-            true
-          else
-            false
-        when "{urn:hl7-org:elm-types:r1}Decimal" then parseFloat(strArg)
-        when "{urn:hl7-org:elm-types:r1}Integer" then parseInt(strArg)
-        when "{urn:hl7-org:elm-types:r1}String" then strArg
-        when "{urn:hl7-org:elm-types:r1}Quantity" then parseQuantity(strArg)
-        when "{urn:hl7-org:elm-types:r1}DateTime" then DateTime.parse(strArg)
-        else
-          arg
+      if strArg in ["true", "t", "yes", "y", "1"]
+        true
+      else if strArg in ["false", "f", "no", "n", "0"]
+        false
+      else
+        throw new Error("cannot convert #{strArg} to Boolean")
     else
-      arg
+      null
+
+module.exports.ToConcept = class ToConcept extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs(ctx)
+    if arg? and typeof arg != 'undefined' then new Concept([arg], arg.display) else null
+
+module.exports.ToDateTime = class ToDateTime extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs(ctx)
+    if arg? and typeof arg != 'undefined' then DateTime.parse(arg.toString()) else null
+
+module.exports.ToDecimal = class ToDecimal extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs(ctx)
+    if arg? and typeof arg != 'undefined' then parseFloat(arg.toString()) else null
+
+module.exports.ToInteger = class ToInteger extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs(ctx)
+    if arg? and typeof arg != 'undefined' then parseInt(arg.toString()) else null
+
+module.exports.ToQuantity = class ToQuantity extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs(ctx)
+    if arg? and typeof arg != 'undefined' then parseQuantity(arg.toString()) else null
+
+module.exports.ToString = class ToString extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs(ctx)
+    if arg? and typeof arg != 'undefined' then arg.toString() else null
+
+module.exports.ToTime = class ToTime extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs(ctx)
+    if arg? and typeof arg != 'undefined'
+      dt = DateTime.parse(arg.toString())
+      if dt? and typeof dt != 'undefined' then dt.getTime() else null
+    else
+      null
+
+module.exports.Convert = class Convert extends Expression
+  constructor: (json) ->
+    super
+    @operand = json.operand
+    @toType = json.toType
+
+  exec: (ctx) ->
+    switch @toType
+      when "{urn:hl7-org:elm-types:r1}Boolean"
+        new ToBoolean({"type": "ToBoolean", "operand": @operand}).exec(ctx)
+      when "{urn:hl7-org:elm-types:r1}Concept"
+        new ToConcept({"type": "ToConcept", "operand": @operand}).exec(ctx)
+      when "{urn:hl7-org:elm-types:r1}Decimal"
+        new ToDecimal({"type": "ToDecimal", "operand": @operand}).exec(ctx)
+      when "{urn:hl7-org:elm-types:r1}Integer"
+        new ToInteger({"type": "ToInteger", "operand": @operand}).exec(ctx)
+      when "{urn:hl7-org:elm-types:r1}String"
+        new ToString({"type": "ToString", "operand": @operand}).exec(ctx)
+      when "{urn:hl7-org:elm-types:r1}Quantity"
+        new ToQuantity({"type": "ToQuantity", "operand": @operand}).exec(ctx)
+      when "{urn:hl7-org:elm-types:r1}DateTime"
+        new ToDateTime({"type": "ToDateTime", "operand": @operand}).exec(ctx)
+      when "{urn:hl7-org:elm-types:r1}Time"
+        new ToTime({"type": "ToTime", "operand": @operand}).exec(ctx)
+      else
+        @execArgs(ctx)
 
 module.exports.Is = class Is extends UnimplementedExpression
 

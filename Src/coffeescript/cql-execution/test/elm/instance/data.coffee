@@ -71,16 +71,11 @@ module.exports['Instance'] = {
                }, {
                   "name" : "value",
                   "value" : {
-                     "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "Convert",
+                     "type" : "ToDecimal",
                      "operand" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "12",
                         "type" : "Literal"
-                     },
-                     "toTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]

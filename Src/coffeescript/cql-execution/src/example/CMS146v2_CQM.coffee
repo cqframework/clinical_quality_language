@@ -498,12 +498,11 @@ module.exports = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Count",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Count",
+               "source" : {
                   "name" : "PharyngitisEncounters",
                   "type" : "ExpressionRef"
-               } ]
+               }
             }
          }, {
             "name" : "DenominatorCount",
@@ -518,21 +517,19 @@ module.exports = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Count",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Count",
+               "source" : {
                   "name" : "ExcludedEncounters",
                   "type" : "ExpressionRef"
-               } ]
+               }
             }
          }, {
             "name" : "NumeratorCount",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "Count",
-               "type" : "FunctionRef",
-               "operand" : [ {
+               "type" : "Count",
+               "source" : {
                   "type" : "Except",
                   "operand" : [ {
                      "name" : "StrepTestEncounters",
@@ -541,7 +538,7 @@ module.exports = {
                      "name" : "ExcludedEncounters",
                      "type" : "ExpressionRef"
                   } ]
-               } ]
+               }
             }
          } ]
       }

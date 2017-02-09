@@ -20,13 +20,13 @@ define EqualTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 
 define UnequalTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } = List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
 
 // @Test: NotEqual
-define EqualIntList: {1, 2, 3} <> {1, 2, 3}
-define UnequalIntList: {1, 2, 3} <> {1, 2}
-define ReverseIntList: {1, 2, 3} <> {3, 2, 1}
-define EqualStringList: {'hello', 'world'} <> {'hello', 'world'}
-define UnequalStringList: {'hello', 'world'} <> {'foo', 'bar'}
-define EqualTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } <> List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} }
-define UnequalTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } <> List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
+define EqualIntList: {1, 2, 3} != {1, 2, 3}
+define UnequalIntList: {1, 2, 3} != {1, 2}
+define ReverseIntList: {1, 2, 3} != {3, 2, 1}
+define EqualStringList: {'hello', 'world'} != {'hello', 'world'}
+define UnequalStringList: {'hello', 'world'} != {'foo', 'bar'}
+define EqualTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } != List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} }
+define UnequalTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } != List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
 
 // @Test: Union
 define OneToTen: {1, 2, 3, 4, 5} union {6, 7, 8, 9, 10}
@@ -67,7 +67,7 @@ define NullList: IndexOf(null, 'a')
 define NullItem: IndexOf({'a', 'b', 'c'}, null)
 
 // @Test: Indexer
-define SecondItem: {'a', 'b', 'c', 'd'}[2]
+define SecondItem: {'a', 'b', 'c', 'd'}[1]
 define ZeroIndex: {'a', 'b', 'c', 'd'}[0]
 define OutOfBounds: {'a', 'b', 'c', 'd'}[100]
 define NullList: (null as List<String>)[1]
@@ -129,9 +129,9 @@ define TuplesNotIncluded: {Tuple{a:2, b:'d'}, Tuple{a:3, b:'c'}} properly includ
 define NullIncludes: {1, 2, 3, 4, 5} properly included in null
 define NullIncluded: (null as List<Integer>) properly included in {1, 2, 3, 4, 5}
 
-// @Test: Expand
-define ListOfLists: expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
-define NullValue: expand null
+// @Test: Flatten
+define ListOfLists: flatten { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
+define NullValue: flatten null
 
 // @Test: Distinct
 define LotsOfDups: distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}

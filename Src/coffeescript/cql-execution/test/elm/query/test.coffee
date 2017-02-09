@@ -68,7 +68,7 @@ describe.skip 'QueryRelationship', ->
     e = @withOutQuery2.exec(@ctx)
     e.should.have.length(0)
 
-describe 'QueryDefine', ->
+describe 'QueryLet', ->
   @beforeEach ->
     setup @, data, [ p1 ]
 

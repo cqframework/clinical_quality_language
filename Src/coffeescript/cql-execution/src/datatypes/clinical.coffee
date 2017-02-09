@@ -3,10 +3,15 @@
 module.exports.Code = class Code
   constructor: (@code, @system, @version, @display) ->
 
+module.exports.Concept = class Concept
+  constructor: (@codes = [], @text) ->
+
 module.exports.ValueSet = class ValueSet
   constructor: (@oid, @version, @codes = []) ->
 
   hasCode: (code, system, version) ->
+    if code? && typeIsArray code.codes
+      code = code.codes
     if typeIsArray code
       matches = for c in code
         @hasCode c
@@ -23,4 +28,5 @@ module.exports.ValueSet = class ValueSet
     if version? then matches = (c for c in matches when c.version is version)
     return matches.length > 0
 
-# TODO: Concept (and support for constructing by literal or instance)
+module.exports.CodeSystem = class CodeSystem
+  constructor: (@id, @version) ->

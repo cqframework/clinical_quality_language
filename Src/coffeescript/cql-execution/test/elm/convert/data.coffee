@@ -19,10 +19,10 @@ define decimalInvalid: convert 'abc' to Decimal
 define integerValid: convert '10' to Integer
 define integerDropDecimal: convert '10.2' to Integer
 define integerInvalid: convert 'abc' to Integer
-define quantityStr: convert '10 ''A''' to Quantity
-define posQuantityStr: convert '+10 ''A''' to Quantity
-define negQuantityStr: convert '-10 ''A''' to Quantity
-define quantityStrDecimal: convert '10.0''mA''' to Quantity
+define quantityStr: convert '10 \'A\'' to Quantity
+define posQuantityStr: convert '+10 \'A\'' to Quantity
+define negQuantityStr: convert '-10 \'A\'' to Quantity
+define quantityStrDecimal: convert '10.0 \'mA\'' to Quantity
 define dateStr: convert '2015-01-02' to DateTime
 ###
 
@@ -94,16 +94,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Boolean",
-               "type" : "Convert",
+               "type" : "ToBoolean",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "true",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -111,16 +106,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Boolean",
-               "type" : "Convert",
+               "type" : "ToBoolean",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "false",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -128,16 +118,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-               "type" : "Convert",
+               "type" : "ToDecimal",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "10.2",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -145,16 +130,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-               "type" : "Convert",
+               "type" : "ToDecimal",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "abc",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -162,16 +142,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Integer",
-               "type" : "Convert",
+               "type" : "ToInteger",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "10",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -179,16 +154,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Integer",
-               "type" : "Convert",
+               "type" : "ToInteger",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "10.2",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -196,16 +166,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Integer",
-               "type" : "Convert",
+               "type" : "ToInteger",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "abc",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -213,16 +178,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Quantity",
-               "type" : "Convert",
+               "type" : "ToQuantity",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "10 'A'",
+                  "value" : "10 \\'A\\'",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -230,16 +190,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Quantity",
-               "type" : "Convert",
+               "type" : "ToQuantity",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "+10 'A'",
+                  "value" : "+10 \\'A\\'",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -247,16 +202,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Quantity",
-               "type" : "Convert",
+               "type" : "ToQuantity",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "-10 'A'",
+                  "value" : "-10 \\'A\\'",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -264,16 +214,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Quantity",
-               "type" : "Convert",
+               "type" : "ToQuantity",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "10.0'mA'",
+                  "value" : "10.0 \\'mA\\'",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -281,16 +226,11 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}DateTime",
-               "type" : "Convert",
+               "type" : "ToDateTime",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "2015-01-02",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          } ]
@@ -344,16 +284,11 @@ module.exports['FromInteger'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "Convert",
+               "type" : "ToString",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -361,16 +296,11 @@ module.exports['FromInteger'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-               "type" : "Convert",
+               "type" : "ToDecimal",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                   "value" : "10",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -456,16 +386,11 @@ module.exports['FromQuantity'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "Convert",
+               "type" : "ToString",
                "operand" : {
                   "value" : 10,
                   "unit" : "A",
                   "type" : "Quantity"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -473,8 +398,7 @@ module.exports['FromQuantity'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "Convert",
+               "type" : "ToString",
                "operand" : {
                   "type" : "Negate",
                   "operand" : {
@@ -482,10 +406,6 @@ module.exports['FromQuantity'] = {
                      "unit" : "A",
                      "type" : "Quantity"
                   }
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -493,16 +413,11 @@ module.exports['FromQuantity'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "Convert",
+               "type" : "ToString",
                "operand" : {
                   "value" : 10,
                   "unit" : "A",
                   "type" : "Quantity"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -573,16 +488,11 @@ module.exports['FromBoolean'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "Convert",
+               "type" : "ToString",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -590,16 +500,11 @@ module.exports['FromBoolean'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "Convert",
+               "type" : "ToString",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
                   "type" : "Literal"
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -685,8 +590,7 @@ module.exports['FromDateTime'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "Convert",
+               "type" : "ToString",
                "operand" : {
                   "type" : "DateTime",
                   "year" : {
@@ -704,10 +608,6 @@ module.exports['FromDateTime'] = {
                      "value" : "2",
                      "type" : "Literal"
                   }
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -789,8 +689,7 @@ module.exports['FromTime'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "toType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "Convert",
+               "type" : "ToString",
                "operand" : {
                   "type" : "Time",
                   "hour" : {
@@ -803,10 +702,6 @@ module.exports['FromTime'] = {
                      "value" : "57",
                      "type" : "Literal"
                   }
-               },
-               "toTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {

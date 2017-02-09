@@ -14,7 +14,7 @@ parameter IntParameter Integer
 parameter ListParameter List<String>
 parameter TupleParameter Tuple{a Integer, b String, c Boolean, d List<Integer>, e Tuple{ f String, g Boolean}}
 context Patient
-define foo: "bar"
+define foo: 'bar'
 ###
 
 module.exports['ParameterDef'] = {
@@ -133,8 +133,9 @@ module.exports['ParameterDef'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "bar",
-               "type" : "IdentifierRef"
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
+               "value" : "bar",
+               "type" : "Literal"
             }
          } ]
       }

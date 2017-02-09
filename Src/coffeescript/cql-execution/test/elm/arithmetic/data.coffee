@@ -498,28 +498,18 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -530,28 +520,18 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -566,54 +546,34 @@ module.exports['Divide'] = {
                   "operand" : [ {
                      "type" : "Divide",
                      "operand" : [ {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "1000",
                            "type" : "Literal"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }, {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                            "value" : "4",
                            "type" : "Literal"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      } ]
                   }, {
-                     "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "Convert",
+                     "type" : "ToDecimal",
                      "operand" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "10",
                         "type" : "Literal"
-                     },
-                     "toTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "NamedTypeSpecifier"
                      }
                   } ]
                }, {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "5",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -624,26 +584,16 @@ module.exports['Divide'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "name" : "Hundred",
                      "type" : "ExpressionRef"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "name" : "Four",
                      "type" : "ExpressionRef"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -753,8 +703,7 @@ module.exports['MathPrecedence'] = {
             "expression" : {
                "type" : "Subtract",
                "operand" : [ {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "type" : "Add",
                      "operand" : [ {
@@ -773,36 +722,22 @@ module.exports['MathPrecedence'] = {
                            "type" : "Literal"
                         } ]
                      } ]
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "Divide",
                   "operand" : [ {
-                     "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "Convert",
+                     "type" : "ToDecimal",
                      "operand" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "15",
                         "type" : "Literal"
-                     },
-                     "toTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
-                     "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "Convert",
+                     "type" : "ToDecimal",
                      "operand" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "3",
                         "type" : "Literal"
-                     },
-                     "toTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "NamedTypeSpecifier"
                      }
                   } ]
                } ]
@@ -814,8 +749,7 @@ module.exports['MathPrecedence'] = {
             "expression" : {
                "type" : "Divide",
                "operand" : [ {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "type" : "Multiply",
                      "operand" : [ {
@@ -841,22 +775,13 @@ module.exports['MathPrecedence'] = {
                            "type" : "Literal"
                         } ]
                      } ]
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "3",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -1117,16 +1042,11 @@ module.exports['Ceiling'] = {
             "expression" : {
                "type" : "Ceiling",
                "operand" : {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1193,16 +1113,11 @@ module.exports['Floor'] = {
             "expression" : {
                "type" : "Floor",
                "operand" : {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1269,16 +1184,11 @@ module.exports['Truncate'] = {
             "expression" : {
                "type" : "Truncate",
                "operand" : {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1520,16 +1430,11 @@ module.exports['Ln'] = {
             "expression" : {
                "type" : "Ln",
                "operand" : {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1583,28 +1488,18 @@ module.exports['Log'] = {
             "expression" : {
                "type" : "Log",
                "operand" : [ {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10000",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -2373,16 +2268,11 @@ module.exports['Quantity'] = {
                "element" : [ {
                   "name" : "value",
                   "value" : {
-                     "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "Convert",
+                     "type" : "ToDecimal",
                      "operand" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "10",
                         "type" : "Literal"
-                     },
-                     "toTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -2482,16 +2372,11 @@ module.exports['Quantity'] = {
                   "name" : "days_10",
                   "type" : "ExpressionRef"
                }, {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -2519,16 +2404,11 @@ module.exports['Quantity'] = {
                   "name" : "days_10",
                   "type" : "ExpressionRef"
                }, {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -2539,16 +2419,11 @@ module.exports['Quantity'] = {
             "expression" : {
                "type" : "Multiply",
                "operand" : [ {
-                  "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "Convert",
+                  "type" : "ToDecimal",
                   "operand" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"
-                  },
-                  "toTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "name" : "QL10Days",

@@ -899,15 +899,10 @@ module.exports['Avg'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -959,15 +954,10 @@ module.exports['Avg'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -1060,15 +1050,10 @@ module.exports['Avg'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -1166,15 +1151,10 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -1222,15 +1202,10 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -1319,15 +1294,10 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -1379,15 +1349,10 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -1443,15 +1408,10 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -1511,15 +1471,10 @@ module.exports['Median'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -1922,15 +1877,10 @@ module.exports['Variance'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -2155,15 +2105,10 @@ module.exports['StdDev'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }
@@ -2282,15 +2227,10 @@ module.exports['PopulationStdDev'] = {
                   "return" : {
                      "distinct" : false,
                      "expression" : {
-                        "toType" : "{urn:hl7-org:elm-types:r1}Decimal",
-                        "type" : "Convert",
+                        "type" : "ToDecimal",
                         "operand" : {
                            "name" : "X",
                            "type" : "AliasRef"
-                        },
-                        "toTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }

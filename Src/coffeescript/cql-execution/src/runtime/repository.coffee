@@ -1,4 +1,4 @@
-{ Library } =  require '../../../lib/cql'
+cql = require '../cql'
 module.exports.Repository = class Repository
   constructor: (@data) ->
     @libraries = for k,v of @data
@@ -6,5 +6,5 @@ module.exports.Repository = class Repository
 
   resolve: (library,version) ->
     for lib in @libraries
-      if lib.library.identifier?.id == library && lib.library.identifier?.version == version
-        return new Library(lib,@)
+      if lib.library?.identifier?.id == library && lib.library?.identifier?.version == version
+        return new cql.Library(lib,@)
