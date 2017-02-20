@@ -626,13 +626,13 @@ module.exports['Equal'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EqualIntList: {1, 2, 3} <> {1, 2, 3}
-define UnequalIntList: {1, 2, 3} <> {1, 2}
-define ReverseIntList: {1, 2, 3} <> {3, 2, 1}
-define EqualStringList: {'hello', 'world'} <> {'hello', 'world'}
-define UnequalStringList: {'hello', 'world'} <> {'foo', 'bar'}
-define EqualTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } <> List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} }
-define UnequalTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } <> List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
+define EqualIntList: {1, 2, 3} != {1, 2, 3}
+define UnequalIntList: {1, 2, 3} != {1, 2}
+define ReverseIntList: {1, 2, 3} != {3, 2, 1}
+define EqualStringList: {'hello', 'world'} != {'hello', 'world'}
+define UnequalStringList: {'hello', 'world'} != {'foo', 'bar'}
+define EqualTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } != List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} }
+define UnequalTupleList: List<Any>{ Tuple{a: 1, b: Tuple{c: 1}}, Tuple{x: 'y', z: 2} } != List<Any>{ Tuple{a: 1, b: Tuple{c: -1}}, Tuple{x: 'y', z: 2} }
 ###
 
 module.exports['NotEqual'] = {
@@ -2723,7 +2723,7 @@ module.exports['IndexOf'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define SecondItem: {'a', 'b', 'c', 'd'}[2]
+define SecondItem: {'a', 'b', 'c', 'd'}[1]
 define ZeroIndex: {'a', 'b', 'c', 'd'}[0]
 define OutOfBounds: {'a', 'b', 'c', 'd'}[100]
 define NullList: (null as List<String>)[1]
@@ -2788,7 +2788,7 @@ module.exports['Indexer'] = {
                   } ]
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                  "value" : "2",
+                  "value" : "1",
                   "type" : "Literal"
                } ]
             }
@@ -5659,15 +5659,15 @@ module.exports['ProperIncludedIn'] = {
    }
 }
 
-### Expand
+### Flatten
 library TestSnippet version '1'
 using QUICK
 context Patient
-define ListOfLists: expand { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
-define NullValue: expand null
+define ListOfLists: flatten { {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {9, 8, 7, 6, 5}, {4}, {3, 2, 1} }
+define NullValue: flatten null
 ###
 
-module.exports['Expand'] = {
+module.exports['Flatten'] = {
    "library" : {
       "identifier" : {
          "id" : "TestSnippet",
@@ -5703,7 +5703,7 @@ module.exports['Expand'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Expand",
+               "type" : "Flatten",
                "operand" : {
                   "type" : "List",
                   "element" : [ {
@@ -5804,7 +5804,7 @@ module.exports['Expand'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Expand",
+               "type" : "Flatten",
                "operand" : {
                   "type" : "As",
                   "operand" : {

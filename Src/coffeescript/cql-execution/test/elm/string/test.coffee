@@ -120,14 +120,13 @@ describe 'Indexer', ->
     setup @, data
 
   it 'should get letter at index', ->
-    @helloWorldSix.exec(@ctx).should.equal 'W'
+    @helloWorldSix.exec(@ctx).should.equal 'o'
 
   it 'should error on index 0 (out of bounds)', ->
     try
       @helloWorldZero.exec(@ctx)
-      should.fail()
     catch e
-      e.should.be.instanceof ArrayIndexOutOfBoundsException
+      should.fail("index 0 should NOT throw OutOfBoundsException")
 
   it 'should error on index 20 (out of bounds)', ->
     try
@@ -149,11 +148,11 @@ describe 'PositionOf', ->
   it.skip 'should be a PositionOf', ->
     @found.should.be.an.instanceOf(str.Pos)
 
-  it 'should return 1-based position', ->
-    @found.exec(@ctx).should.equal 3
+  it 'should return 0-based position', ->
+    @found.exec(@ctx).should.equal 2
 
-  it 'should return 0 when not found', ->
-    @notFound.exec(@ctx).should.equal 0
+  it 'should return -1 when not found', ->
+    @notFound.exec(@ctx).should.equal -1
 
   it 'should return null when pattern is null', ->
     should(@nullPattern.exec(@ctx)).be.null
@@ -172,7 +171,7 @@ describe 'Substring', ->
     @world.exec(@ctx).should.equal 'World'
 
   it 'should get substring with length', ->
-    @or.exec(@ctx).should.equal 'or'
+    @or.exec(@ctx).should.equal 'rl'
 
   it 'should get substring with zero length', ->
     @zeroLength.exec(@ctx).should.equal ''

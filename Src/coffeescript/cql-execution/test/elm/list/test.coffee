@@ -161,17 +161,17 @@ describe 'IndexOf', ->
   @beforeEach ->
     setup @, data
 
-  it 'should return the correct 1-based index when an item is in the list', ->
-    @indexOfSecond.exec(@ctx).should.equal 2
+  it 'should return the correct 0-based index when an item is in the list', ->
+    @indexOfSecond.exec(@ctx).should.equal 1
 
   it 'should work with complex types like tuples', ->
-    @indexOfThirdTuple.exec(@ctx).should.equal 3
+    @indexOfThirdTuple.exec(@ctx).should.equal 2
 
   it 'should return the first index when there are multiple matches', ->
-    @multipleMatches.exec(@ctx).should.equal 4
+    @multipleMatches.exec(@ctx).should.equal 3
 
-  it 'should return 0 when the item is not in the list', ->
-    @itemNotFound.exec(@ctx).should.equal 0
+  it 'should return -1 when the item is not in the list', ->
+    @itemNotFound.exec(@ctx).should.equal -1
 
   it 'should return null if either arg is null', ->
     should(@nullList.exec(@ctx)).be.null
@@ -181,15 +181,14 @@ describe 'Indexer', ->
   @beforeEach ->
     setup @, data
 
-  it 'should return the correct item based on the 1-based index', ->
+  it 'should return the correct item based on the 0-based index', ->
     @secondItem.exec(@ctx).should.equal 'b'
 
-  it 'should throw ArrayIndexOutOfBoundsException when accessing index 0', ->
+  it 'should NOT throw ArrayIndexOutOfBoundsException when accessing index 0', ->
     try
       @zeroIndex.exec(@ctx)
-      should.fail("Accessing index zero should throw ArrayIndexOutOfBoundsException")
     catch e
-      e.should.be.instanceof ArrayIndexOutOfBoundsException
+      should.fail("Accessing index zero should not throw ArrayIndexOutOfBoundsException")
 
   it 'should throw ArrayIndexOutOfBoundsException when accessing out of bounds index', ->
     try
@@ -347,11 +346,11 @@ describe 'ProperIncludedIn', ->
     should(@nullIncluded.exec(@ctx)).be.null
     should(@nullIncludes.exec(@ctx)).be.null
 
-describe 'Expand', ->
+describe 'Flatten', ->
   @beforeEach ->
     setup @, data
 
-  it 'should expand a list of lists', ->
+  it 'should flatten a list of lists', ->
     @listOfLists.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
   it 'should return null for a null list', ->

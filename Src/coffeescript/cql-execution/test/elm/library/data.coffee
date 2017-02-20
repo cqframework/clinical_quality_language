@@ -346,7 +346,7 @@ context Patient
 
 define ID: common.InDemographic
 
-define L : Length(Patient.name[1].given[1])
+define L : Length(Patient.name[0].given[0])
 define FuncTest : common.foo(2, 5)
 ###
 
@@ -465,13 +465,13 @@ module.exports['Using CommonLib'] = {
                            }
                         }, {
                            "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                           "value" : "1",
+                           "value" : "0",
                            "type" : "Literal"
                         } ]
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1",
+                     "value" : "0",
                      "type" : "Literal"
                   } ]
                }

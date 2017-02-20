@@ -63,7 +63,7 @@ module.exports.IndexOf = class IndexOf extends Expression
     el = @element.exec ctx
     if not src? or not el? then return null
     (index = i; break) for itm, i in src when equals itm, el
-    if index? then return index + 1 else return 0
+    if index? then return index else return -1
 
 # Indexer is completely handled by overloaded#Indexer
 
@@ -83,7 +83,7 @@ module.exports.doProperIncludes = (list, sublist) ->
 # ELM-only, not a product of CQL
 module.exports.ForEach = class ForEach extends UnimplementedExpression
 
-module.exports.Expand = class Expand extends Expression
+module.exports.Flatten = class Flatten extends Expression
   constructor: (json) ->
     super
 

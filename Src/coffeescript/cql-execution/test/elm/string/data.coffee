@@ -1083,7 +1083,7 @@ module.exports['PositionOf'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define World: Substring('HelloWorld', 6)
+define World: Substring('HelloWorld', 5)
 define Or: Substring('HelloWorld', 7, 2)
 define ZeroLength: Substring('HelloWorld', 7, 0)
 define StartTooLow: Substring('HelloWorld', 0)
@@ -1137,7 +1137,7 @@ module.exports['Substring'] = {
                },
                "startIndex" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                  "value" : "6",
+                  "value" : "5",
                   "type" : "Literal"
                }
             }

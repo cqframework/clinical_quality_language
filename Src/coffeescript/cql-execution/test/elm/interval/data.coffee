@@ -1016,16 +1016,16 @@ module.exports['Equal'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define EqualClosed: Interval[1, 5] <> Interval[1, 5]
-define EqualOpen: Interval(1, 5) <> Interval(1, 5)
-define EqualOpenClosed: Interval(1, 5) <> Interval[2, 4]
-define UnequalClosed: Interval[1, 5] <> Interval[2, 4]
-define UnequalOpen: Interval(1, 5) <> Interval(2, 4)
-define UnequalClosedOpen: Interval[1, 5] <> Interval(2, 4)
-define EqualDates: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) <> Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
-define EqualDatesOpenClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) <> Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
-define SameDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) <> Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
-define DifferentDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) <> Interval[DateTime(2012, 1, 1), DateTime(2012, 7, 1))
+define EqualClosed: Interval[1, 5] != Interval[1, 5]
+define EqualOpen: Interval(1, 5) != Interval(1, 5)
+define EqualOpenClosed: Interval(1, 5) != Interval[2, 4]
+define UnequalClosed: Interval[1, 5] != Interval[2, 4]
+define UnequalOpen: Interval(1, 5) != Interval(2, 4)
+define UnequalClosedOpen: Interval[1, 5] != Interval(2, 4)
+define EqualDates: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) != Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
+define EqualDatesOpenClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) != Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
+define SameDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) != Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
+define DifferentDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) != Interval[DateTime(2012, 1, 1), DateTime(2012, 7, 1))
 ###
 
 module.exports['NotEqual'] = {

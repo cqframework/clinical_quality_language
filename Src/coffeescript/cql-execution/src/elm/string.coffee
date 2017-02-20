@@ -60,7 +60,7 @@ module.exports.PositionOf = class PositionOf extends Expression
   exec: (ctx) ->
     pattern = @pattern.exec(ctx)
     string = @string.exec(ctx)
-    if not (pattern? and string?) then null else 1 + string.indexOf(pattern)
+    if not (pattern? and string?) then null else string.indexOf(pattern)
 
 module.exports.Substring = class Substring extends Expression
   constructor: (json) ->
@@ -75,11 +75,11 @@ module.exports.Substring = class Substring extends Expression
     length = if @length? then @length.exec(ctx) else null
     if not (stringToSub? and startIndex?)
       null
-    else if startIndex < 1
-      throw new Error "Start index must be at least 1"
+    else if startIndex < 0
+      throw new Error "Start index must be at least zero"
     else if length? and length < 0
       throw new Error "Length must be at least zero"
     else if length?
-      stringToSub.substr(startIndex-1, length)
+      stringToSub.substr(startIndex, length)
     else
-      stringToSub.substr(startIndex-1)
+      stringToSub.substr(startIndex)
