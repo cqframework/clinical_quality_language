@@ -3140,7 +3140,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             for (FunctionDefinitionInfo functionInfo : functionInfos) {
                 visitFunctionDefinition(functionInfo.getDefinition());
-    }
+            }
             result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
         }
 
@@ -3177,7 +3177,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (result != null) {
                 return result;
             }
-            }
+        }
 
         // If there is no target, resolve as a system function
         return resolveFunction(null, ctx);
