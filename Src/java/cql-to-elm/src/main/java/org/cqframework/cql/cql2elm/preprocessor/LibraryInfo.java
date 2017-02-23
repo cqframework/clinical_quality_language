@@ -186,9 +186,9 @@ public class LibraryInfo {
     }
 
     public String resolveFunctionName(String identifier) {
-        Iterable<FunctionDefinitionInfo> infos = resolveFunctionReference(identifier);
-        for (FunctionDefinitionInfo info : infos) {
-            return info.getName();
+        Iterable<FunctionDefinitionInfo> functionDefinitions = resolveFunctionReference(identifier);
+        for (FunctionDefinitionInfo functionInfo : functionDefinitions) {
+            return functionInfo.getName();
         }
 
         return null;

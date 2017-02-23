@@ -424,6 +424,10 @@ public class LibraryBuilder {
     }
 
     public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
+        return resolveCall(libraryName, operatorName, invocation, true);
+    }
+
+    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
@@ -436,26 +440,27 @@ public class LibraryBuilder {
 
         CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
-        checkOperator(callContext, resolution);
+        if (resolution != null || mustResolve) {
+            checkOperator(callContext, resolution);
 
-        if (resolution.hasConversions()) {
-            List<Expression> convertedOperands = new ArrayList<>();
-            Iterator<Expression> operandIterator = operands.iterator();
-            Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
-            while (operandIterator.hasNext()) {
-                Expression operand = operandIterator.next();
-                Conversion conversion = conversionIterator.next();
-                if (conversion != null) {
-                    convertedOperands.add(convertExpression(operand, conversion));
+            if (resolution.hasConversions()) {
+                List<Expression> convertedOperands = new ArrayList<>();
+                Iterator<Expression> operandIterator = operands.iterator();
+                Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
+                while (operandIterator.hasNext()) {
+                    Expression operand = operandIterator.next();
+                    Conversion conversion = conversionIterator.next();
+                    if (conversion != null) {
+                        convertedOperands.add(convertExpression(operand, conversion));
+                    } else {
+                        convertedOperands.add(operand);
+                    }
                 }
-                else {
-                    convertedOperands.add(operand);
-                }
+
+                invocation.setOperands(convertedOperands);
             }
-
-            invocation.setOperands(convertedOperands);
+            invocation.setResultType(resolution.getOperator().getResultType());
         }
-        invocation.setResultType(resolution.getOperator().getResultType());
         return invocation.getExpression();
     }
 
@@ -507,6 +512,10 @@ public class LibraryBuilder {
     }
 
     public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList) {
+        return resolveFunction(libraryName, functionName, paramList, true);
+    }
+
+    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve) {
         FunctionRef fun = of.createFunctionRef()
                 .withLibraryName(libraryName)
                 .withName(functionName);
@@ -520,7 +529,7 @@ public class LibraryBuilder {
             return systemFunction;
         }
 
-        resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun));
+        resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve);
 
         return fun;
     }
