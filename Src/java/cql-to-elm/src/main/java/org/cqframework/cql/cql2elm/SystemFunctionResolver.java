@@ -109,12 +109,20 @@ public class SystemFunctionResolver {
                     return resolveDateTime(fun);
                 }
 
+                case "Time": {
+                    return resolveTime(fun);
+                }
+
                 case "Now": {
                     return resolveNow(fun);
                 }
 
                 case "Today": {
                     return resolveToday(fun);
+                }
+
+                case "TimeOfDay": {
+                    return resolveTimeOfDay(fun);
                 }
 
                 // List Functions
@@ -294,6 +302,13 @@ public class SystemFunctionResolver {
         return dt;
     }
 
+    private Time resolveTime(FunctionRef fun) {
+        final Time t = of.createTime();
+        TimeInvocation.setTimeFieldsFromOperands(t, fun.getOperand());
+        visitor.resolveCall("System", "Time", new TimeInvocation(t));
+        return t;
+    }
+
     private Now resolveNow(FunctionRef fun) {
         checkNumberOfOperands(fun, 0);
         final Now now = of.createNow();
@@ -306,6 +321,13 @@ public class SystemFunctionResolver {
         final Today today = of.createToday();
         visitor.resolveCall("System", "Today", new ZeroOperandExpressionInvocation(today));
         return today;
+    }
+
+    private TimeOfDay resolveTimeOfDay(FunctionRef fun) {
+        checkNumberOfOperands(fun, 0);
+        final TimeOfDay timeOfDay = of.createTimeOfDay();
+        visitor.resolveCall("System", "TimeOfDay", new ZeroOperandExpressionInvocation(timeOfDay));
+        return timeOfDay;
     }
 
     // List Function Support

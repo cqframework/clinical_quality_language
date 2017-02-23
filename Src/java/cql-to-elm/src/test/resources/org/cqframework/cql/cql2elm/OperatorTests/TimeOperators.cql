@@ -17,4 +17,3 @@ define SameAsExpression: Time(10, 30, 0) same hour as Time(10, 45, 0)
 define SameOrAfterExpression: Time(10, 30, 0) same hour or after Time(9, 30, 0)
 define SameOrBeforeExpression: Time(10, 30, 0) same hour or before Time(11, 30, 0)
 define TimeSubtract: Time(10, 30, 0) - 1 hour
-define TimeOfDayExpression: TimeOfDay()
