@@ -15,7 +15,7 @@ public class LibraryInfo {
     private final Map<String, ConceptDefinitionInfo> conceptDefinitions;
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
     private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
-    private final Map<String, FunctionDefinitionInfo> functionDefinitions; // TODO: Overloads...
+    private final Map<String, List<FunctionDefinitionInfo>> functionDefinitions;
 
     public LibraryInfo() {
         usingDefinitions = new LinkedHashMap<>();
@@ -173,17 +173,22 @@ public class LibraryInfo {
     }
 
     public void addFunctionDefinition(FunctionDefinitionInfo functionDefinition) {
-        functionDefinitions.put(functionDefinition.getName(), functionDefinition);
+        List<FunctionDefinitionInfo> infos = functionDefinitions.get(functionDefinition.getName());
+        if (infos == null) {
+            infos = new ArrayList<FunctionDefinitionInfo>();
+            functionDefinitions.put(functionDefinition.getName(), infos);
+        }
+        infos.add(functionDefinition);
     }
 
-    public FunctionDefinitionInfo resolveFunctionReference(String identifier) {
+    public Iterable<FunctionDefinitionInfo> resolveFunctionReference(String identifier) {
         return functionDefinitions.get(identifier);
     }
 
     public String resolveFunctionName(String identifier) {
-        FunctionDefinitionInfo functionDefinition = resolveFunctionReference(identifier);
-        if (functionDefinition != null) {
-            return functionDefinition.getName();
+        Iterable<FunctionDefinitionInfo> functionDefinitions = resolveFunctionReference(identifier);
+        for (FunctionDefinitionInfo functionInfo : functionDefinitions) {
+            return functionInfo.getName();
         }
 
         return null;

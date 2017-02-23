@@ -3044,7 +3044,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
-        return libraryBuilder.resolveFunction(libraryName, functionName, expressions);
+        // If the function cannot be resolved in the builder and the call is to a function in the current library,
+        // check for forward declarations of functions
+        boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
+        Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward);
+        if (result == null) {
+            Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
+            for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                visitFunctionDefinition(functionInfo.getDefinition());
+            }
+            result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
+        }
+
+        return result;
     }
 
     @Override
