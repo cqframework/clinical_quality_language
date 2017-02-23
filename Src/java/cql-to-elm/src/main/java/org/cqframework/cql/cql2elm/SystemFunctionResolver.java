@@ -317,7 +317,7 @@ public class SystemFunctionResolver {
     private Time resolveTime(FunctionRef fun) {
         final Time t = of.createTime();
         TimeInvocation.setTimeFieldsFromOperands(t, fun.getOperand());
-        visitor.resolveCall("System", "Time", new TimeInvocation(t));
+        builder.resolveCall("System", "Time", new TimeInvocation(t));
         return t;
     }
 
@@ -338,7 +338,7 @@ public class SystemFunctionResolver {
     private TimeOfDay resolveTimeOfDay(FunctionRef fun) {
         checkNumberOfOperands(fun, 0);
         final TimeOfDay timeOfDay = of.createTimeOfDay();
-        visitor.resolveCall("System", "TimeOfDay", new ZeroOperandExpressionInvocation(timeOfDay));
+        builder.resolveCall("System", "TimeOfDay", new ZeroOperandExpressionInvocation(timeOfDay));
         return timeOfDay;
     }
 
