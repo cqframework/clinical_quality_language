@@ -3160,7 +3160,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             return systemFunction;
         }
 
-        resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun));
+        resolveFunction(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun));
 
         return fun;
     }
@@ -3489,7 +3489,27 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return null;
     }
 
+    protected Expression resolveFunction(String libraryName, String operatorName, Invocation invocation) {
+        // If the function cannot be resolved in the builder and the call is to a function in the current library,
+        // check for forward declarations of functions
+        boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
+        Expression result = resolveCall(libraryName, operatorName, invocation, !checkForward);
+        if (result == null) {
+            Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(operatorName);
+            for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                visitFunctionDefinition(functionInfo.getDefinition());
+            }
+            result = resolveCall(libraryName, operatorName, invocation, true);
+        }
+
+        return result;
+    }
+
     protected Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
+        return resolveCall(libraryName, operatorName, invocation, true);
+    }
+
+    protected Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
@@ -3502,26 +3522,27 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
-        checkOperator(callContext, resolution);
+        if (resolution != null || mustResolve) {
+            checkOperator(callContext, resolution);
 
-        if (resolution.hasConversions()) {
-            List<Expression> convertedOperands = new ArrayList<>();
-            Iterator<Expression> operandIterator = operands.iterator();
-            Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
-            while (operandIterator.hasNext()) {
-                Expression operand = operandIterator.next();
-                Conversion conversion = conversionIterator.next();
-                if (conversion != null) {
-                    convertedOperands.add(convertExpression(operand, conversion));
+            if (resolution.hasConversions()) {
+                List<Expression> convertedOperands = new ArrayList<>();
+                Iterator<Expression> operandIterator = operands.iterator();
+                Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
+                while (operandIterator.hasNext()) {
+                    Expression operand = operandIterator.next();
+                    Conversion conversion = conversionIterator.next();
+                    if (conversion != null) {
+                        convertedOperands.add(convertExpression(operand, conversion));
+                    } else {
+                        convertedOperands.add(operand);
+                    }
                 }
-                else {
-                    convertedOperands.add(operand);
-                }
+
+                invocation.setOperands(convertedOperands);
             }
-
-            invocation.setOperands(convertedOperands);
+            invocation.setResultType(resolution.getOperator().getResultType());
         }
-        invocation.setResultType(resolution.getOperator().getResultType());
         return invocation.getExpression();
     }
 
