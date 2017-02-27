@@ -41,6 +41,7 @@ public class SystemFunctionResolver {
                 case "Ceiling":
                 case "Floor":
                 case "Ln":
+                case "Exp":
                 case "Truncate":
                 case "Negate":
                 case "Predecessor":
