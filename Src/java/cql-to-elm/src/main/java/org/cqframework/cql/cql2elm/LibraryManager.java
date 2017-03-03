@@ -67,7 +67,14 @@ public class LibraryManager {
                 errors.addAll(translator.getErrors());
             }
 
-            return translator.getTranslatedLibrary();
+            TranslatedLibrary result = translator.getTranslatedLibrary();
+            if (libraryIdentifier.getVersion() != null && !libraryIdentifier.getVersion().equals(result.getIdentifier().getVersion())) {
+                throw new CqlTranslatorIncludeException(String.format("Library %s was included as version %s, but version %s of the library was found.",
+                        libraryIdentifier.getId(), libraryIdentifier.getVersion(), result.getIdentifier().getVersion()),
+                        libraryIdentifier.getId(), libraryIdentifier.getVersion());
+            }
+
+            return result;
         } catch (IOException e) {
             throw new CqlTranslatorIncludeException(String.format("Errors occurred translating library %s, version %s.",
                     libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
