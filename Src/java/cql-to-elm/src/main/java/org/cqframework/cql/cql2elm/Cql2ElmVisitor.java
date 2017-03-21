@@ -149,7 +149,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private void pushNarrative(@NotNull ParseTree tree) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
-        System.out.println(String.format("Push: %d..%d, Tree: %s", sourceInterval.a, sourceInterval.b, tree.getText()));
+        // Debugging line for Github issues #61 & 86
+        //System.out.println(String.format("Push: %d..%d, Tree: %s", sourceInterval.a, sourceInterval.b, tree.getText()));
 
         // If there is a parent narrative
         // add the text from the current text pointer to the start of the new source context to the narrative
@@ -158,7 +159,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             org.antlr.v4.runtime.misc.Interval tokenInterval =
                     new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.a - 1);
             String content = tokenStream.getText(tokenInterval);
-            System.out.println(String.format("CurrentToken: %d, Content: %s", currentToken, content));
+            // Debugging line for Github issues #61 & 86
+            //System.out.println(String.format("CurrentToken: %d, Content: %s", currentToken, content));
             parentNarrative.getContent().add(content);
         }
 
@@ -174,7 +176,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Narrative popNarrative(@NotNull ParseTree tree, Object o) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
-        System.out.println(String.format("Pop: %d..%d, Tree: %s", sourceInterval.a, sourceInterval.b, tree.getText()));
+        // Debugging line for Github issues #61 & 86
+        //System.out.println(String.format("Pop: %d..%d, Tree: %s", sourceInterval.a, sourceInterval.b, tree.getText()));
 
         // Pop the narrative off the narrative stack
         Narrative currentNarrative = narratives.pop();
@@ -184,7 +187,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             org.antlr.v4.runtime.misc.Interval tokenInterval =
                     new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.b);
             String content = tokenStream.getText(tokenInterval);
-            System.out.println(String.format("CurrentToken: %d, Content: %s", currentToken, content));
+            // Debugging line for Github issues #61 & 86
+            //System.out.println(String.format("CurrentToken: %d, Content: %s", currentToken, content));
             currentNarrative.getContent().add(content);
         }
 
@@ -216,8 +220,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 // If the current element is an expression def, set the narrative as the annotation
                 if (o instanceof ExpressionDef) {
+                    // Github issues #61 & #86 -> Full resolution requires rethinking the way this narrative is produced
+                    // Emitting with a single span for now to address both issues until we have a need to emit with links
+                    // to the local ids.
+                    //expressionDef.getAnnotation().add(af.createAnnotation().withS(currentNarrative));
                     ExpressionDef expressionDef = (ExpressionDef) o;
-                    expressionDef.getAnnotation().add(af.createAnnotation().withS(currentNarrative));
+                    Narrative defNarrative = af.createNarrative();
+                    String content = tokenStream.getText(sourceInterval);
+                    defNarrative.getContent().add(content);
+                    expressionDef.getAnnotation().add(af.createAnnotation().withS(defNarrative));
                 }
             } else {
                 if (!narratives.isEmpty()) {
