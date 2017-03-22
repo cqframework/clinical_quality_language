@@ -48,6 +48,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
     private final ConversionMap conversionMap = new ConversionMap();
     private final Stack<String> expressionDefinitions = new Stack<>();
+    private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Stack<QueryContext> queries = new Stack<>();
     private final Stack<String> expressionContext = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
@@ -598,8 +599,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return currentContext;
     }
 
-    @Override
-    public ExpressionDef visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
+    public ExpressionDef internalVisitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = translatedLibrary.resolveExpressionRef(identifier);
         if (def == null) {
@@ -621,6 +621,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return def;
+    }
+
+    @Override
+    public ExpressionDef visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
+        ExpressionDef expressionDef = internalVisitExpressionDefinition(ctx);
+        if (definedExpressionDefinitions.contains(expressionDef.getName())) {
+            throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
+        }
+
+        // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed because they are
+        // overwritten by name when they are encountered by the preprocessor.
+        definedExpressionDefinitions.add(expressionDef.getName());
+        return expressionDef;
     }
 
     @Override
@@ -1715,7 +1728,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 String saveContext = currentContext;
                 currentContext = expressionInfo.getContext();
                 try {
-                    ExpressionDef expressionDef = visitExpressionDefinition(expressionInfo.getDefinition());
+                    ExpressionDef expressionDef = internalVisitExpressionDefinition(expressionInfo.getDefinition());
                     element = expressionDef;
                 } finally {
                     currentContext = saveContext;
