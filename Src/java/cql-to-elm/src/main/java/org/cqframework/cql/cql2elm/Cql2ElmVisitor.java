@@ -48,6 +48,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
     private final ConversionMap conversionMap = new ConversionMap();
     private final Stack<String> expressionDefinitions = new Stack<>();
+    private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
     private final Stack<QueryContext> queries = new Stack<>();
     private final Stack<String> expressionContext = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
@@ -3187,8 +3188,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return visit(ctx.expression());
     }
 
-    @Override
-    public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
+    private Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()));
@@ -3203,21 +3203,42 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 );
             }
         }
-        currentFunctionDef = fun;
-        pushExpressionContext(currentContext);
-        try {
-            fun.setExpression(parseExpression(ctx.functionBody()));
-        }
-        finally {
-            currentFunctionDef = null;
-            popExpressionContext();
-        }
 
-        fun.setContext(currentContext);
-        fun.setResultType(fun.getExpression().getResultType());
-        addToLibrary(fun);
+        if (!translatedLibrary.contains(fun)) {
+            currentFunctionDef = fun;
+            pushExpressionContext(currentContext);
+            try {
+                fun.setExpression(parseExpression(ctx.functionBody()));
+            } finally {
+                currentFunctionDef = null;
+                popExpressionContext();
+            }
+
+            fun.setContext(currentContext);
+            fun.setResultType(fun.getExpression().getResultType());
+            addToLibrary(fun);
+        }
 
         return fun;
+    }
+
+    @Override
+    public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
+        FunctionDef result = (FunctionDef)internalVisitFunctionDefinition(ctx);
+        Operator operator = Operator.fromFunctionDef(result);
+        Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
+        if (definedSignatures == null) {
+            definedSignatures = new HashSet<>();
+            definedFunctionDefinitions.put(operator.getName(), definedSignatures);
+        }
+
+        if (definedSignatures.contains(operator.getSignature())) {
+            throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
+        }
+
+        definedSignatures.add(operator.getSignature());
+
+        return result;
     }
 
     private UsingDef buildUsingDef(VersionedIdentifier modelIdentifier, Model model) {
@@ -3513,8 +3534,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression result = resolveCall(libraryName, operatorName, invocation, !checkForward);
         if (result == null) {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(operatorName);
-            for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                visitFunctionDefinition(functionInfo.getDefinition());
+            if (functionInfos != null) {
+                for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                    internalVisitFunctionDefinition(functionInfo.getDefinition());
+                }
             }
             result = resolveCall(libraryName, operatorName, invocation, true);
         }
@@ -3559,8 +3582,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 invocation.setOperands(convertedOperands);
             }
             invocation.setResultType(resolution.getOperator().getResultType());
+            return invocation.getExpression();
         }
-        return invocation.getExpression();
+        return null;
     }
 
     private Expression ensureCompatible(Expression expression, DataType targetType) {

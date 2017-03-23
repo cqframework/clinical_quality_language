@@ -2,8 +2,22 @@ package org.cqframework.cql.cql2elm.model;
 
 import org.cqframework.cql.elm.tracking.DataType;
 import org.hl7.elm.r1.AccessModifier;
+import org.hl7.elm.r1.FunctionDef;
+import org.hl7.elm.r1.OperandDef;
+
+import java.util.ArrayList;
 
 public class Operator {
+
+    public static Operator fromFunctionDef(FunctionDef functionDef) {
+        java.util.List<DataType> operandTypes = new ArrayList<>();
+        for (OperandDef operand : functionDef.getOperand()) {
+            operandTypes.add(operand.getResultType());
+        }
+        return new Operator(functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])),
+                functionDef.getResultType()).withAccessLevel(functionDef.getAccessLevel());
+    }
+
     public Operator(String name, Signature signature, DataType resultType) {
         if (name == null || name.equals("")) {
             throw new IllegalArgumentException("name is null or empty");
@@ -11,10 +25,6 @@ public class Operator {
 
         if (signature == null) {
             throw new IllegalArgumentException("signature is null");
-        }
-
-        if (resultType == null) {
-            throw new IllegalArgumentException("resultType is null");
         }
 
         this.name = name;

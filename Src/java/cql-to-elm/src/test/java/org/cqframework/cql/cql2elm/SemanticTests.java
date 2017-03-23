@@ -135,6 +135,16 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/ForwardReferences.cql", 0);
     }
 
+    @Test
+    public void testUndeclaredForward() throws IOException {
+        runSemanticTest("OperatorTests/UndeclaredForward.cql", 1);
+    }
+
+    @Test
+    public void testUndeclaredSignature() throws IOException {
+        runSemanticTest("OperatorTests/UndeclaredSignature.cql", 1);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }

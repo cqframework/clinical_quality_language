@@ -146,6 +146,15 @@ public class OperatorEntry {
         }
     }
 
+    public boolean containsOperator(Operator operator) {
+        if (operator instanceof GenericOperator) {
+            return containsGenericOperator((GenericOperator)operator);
+        }
+        else {
+            return signatures.contains(operator);
+        }
+    }
+
     public void addOperator(Operator operator) {
         if (operator instanceof GenericOperator) {
             addGenericOperator((GenericOperator)operator);
@@ -153,6 +162,10 @@ public class OperatorEntry {
         else {
             signatures.add(new SignatureNode(operator));
         }
+    }
+
+    private boolean containsGenericOperator(GenericOperator operator) {
+        return genericOperators.containsKey(operator.getSignature());
     }
 
     private void addGenericOperator(GenericOperator operator) {
