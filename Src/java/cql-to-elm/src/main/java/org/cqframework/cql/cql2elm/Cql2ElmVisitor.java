@@ -149,6 +149,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private void pushNarrative(@NotNull ParseTree tree) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
+        // Debugging line for Github issues #61 & 86
+        //System.out.println(String.format("Push: %d..%d, Tree: %s", sourceInterval.a, sourceInterval.b, tree.getText()));
 
         // If there is a parent narrative
         // add the text from the current text pointer to the start of the new source context to the narrative
@@ -156,7 +158,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (parentNarrative != null && sourceInterval.a - 1 - currentToken >= 0) {
             org.antlr.v4.runtime.misc.Interval tokenInterval =
                     new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.a - 1);
-            parentNarrative.getContent().add(tokenStream.getText(tokenInterval));
+            String content = tokenStream.getText(tokenInterval);
+            // Debugging line for Github issues #61 & 86
+            //System.out.println(String.format("CurrentToken: %d, Content: %s", currentToken, content));
+            parentNarrative.getContent().add(content);
         }
 
         // advance the token pointer to the start of the new source context
@@ -171,6 +176,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Narrative popNarrative(@NotNull ParseTree tree, Object o) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
+        // Debugging line for Github issues #61 & 86
+        //System.out.println(String.format("Pop: %d..%d, Tree: %s", sourceInterval.a, sourceInterval.b, tree.getText()));
 
         // Pop the narrative off the narrative stack
         Narrative currentNarrative = narratives.pop();
@@ -179,20 +186,23 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (sourceInterval.b - currentToken >= 0) {
             org.antlr.v4.runtime.misc.Interval tokenInterval =
                     new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.b);
-            currentNarrative.getContent().add(tokenStream.getText(tokenInterval));
+            String content = tokenStream.getText(tokenInterval);
+            // Debugging line for Github issues #61 & 86
+            //System.out.println(String.format("CurrentToken: %d, Content: %s", currentToken, content));
+            currentNarrative.getContent().add(content);
         }
 
         // Advance the token pointer after the end of the current source context
         currentToken = sourceInterval.b + 1;
 
         // If the narrative corresponds to an element returned by the parser
-        // if the element doesn't have a localId
-        // set the narrative's reference id
-        // if there is a parent narrative
-        // add this narrative to the content of the parent
+        //   if the element doesn't have a localId
+        //     set the narrative's reference id
+        //     if there is a parent narrative
+        //       add this narrative to the content of the parent
         // else
-        // if there is a parent narrative
-        // add the contents of this narrative to that narrative
+        //   if there is a parent narrative
+        //     add the contents of this narrative to that narrative
         if (o instanceof Element) {
             Element element = (Element) o;
             if (element.getLocalId() == null) {
@@ -210,8 +220,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 // If the current element is an expression def, set the narrative as the annotation
                 if (o instanceof ExpressionDef) {
+                    // Github issues #61 & #86 -> Full resolution requires rethinking the way this narrative is produced
+                    // Emitting with a single span for now to address both issues until we have a need to emit with links
+                    // to the local ids.
+                    //expressionDef.getAnnotation().add(af.createAnnotation().withS(currentNarrative));
                     ExpressionDef expressionDef = (ExpressionDef) o;
-                    expressionDef.getAnnotation().add(af.createAnnotation().withS(currentNarrative));
+                    Narrative defNarrative = af.createNarrative();
+                    String content = tokenStream.getText(sourceInterval);
+                    defNarrative.getContent().add(content);
+                    expressionDef.getAnnotation().add(af.createAnnotation().withS(defNarrative));
                 }
             } else {
                 if (!narratives.isEmpty()) {
