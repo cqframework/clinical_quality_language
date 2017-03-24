@@ -135,6 +135,11 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/ForwardReferences.cql", 0);
     }
 
+    @Test
+    public void testInvalidSortClauses() throws IOException {
+        runSemanticTest("OperatorTests/InvalidSortClauses.cql", 3);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }
