@@ -130,6 +130,19 @@ public class TupleType extends DataType {
     }
 
     @Override
+    public String toLabel() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("tuple of ");
+        for (int i = 0; i < elements.size(); i++) {
+            if (i > 0) {
+                builder.append(", ");
+            }
+            builder.append(elements.get(i).toLabel());
+        }
+        return builder.toString();
+    }
+
+    @Override
     public boolean isCompatibleWith(DataType other) {
         if (other instanceof ClassType) {
             ClassType classType = (ClassType)other;

@@ -58,6 +58,11 @@ public class ListType extends DataType {
     }
 
     @Override
+    public String toLabel() {
+        return String.format("List of %s", elementType.toLabel());
+    }
+
+    @Override
     public boolean isGeneric() {
         return elementType.isGeneric();
     }
