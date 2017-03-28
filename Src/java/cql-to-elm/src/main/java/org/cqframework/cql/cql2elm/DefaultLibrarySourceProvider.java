@@ -55,16 +55,21 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
                 }
             }
 
-            if (mostRecentFile == null) {
-                throw new IllegalArgumentException(String.format("Could not resolve most recent source library for library %s.", libraryIdentifier.getId()));
-            }
+            // Do not throw, allow the loader to throw, just report null
+            //if (mostRecentFile == null) {
+            //    throw new IllegalArgumentException(String.format("Could not resolve most recent source library for library %s.", libraryIdentifier.getId()));
+            //}
 
             libraryFile = mostRecentFile;
         }
         try {
-            return new FileInputStream(libraryFile);
+            if (libraryFile != null) {
+                return new FileInputStream(libraryFile);
+            }
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(String.format("Could not load source for library %s.", libraryIdentifier.getId()), e);
         }
+
+        return null;
     }
 }

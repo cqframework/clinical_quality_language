@@ -185,6 +185,7 @@ public class CqlTranslator {
 
         LibraryManager libraryManager = new LibraryManager();
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
         CqlTranslator translator = fromFile(inPath.toFile(), libraryManager, options.toArray(new Options[options.size()]));
         libraryManager.getLibrarySourceLoader().clearProviders();
 

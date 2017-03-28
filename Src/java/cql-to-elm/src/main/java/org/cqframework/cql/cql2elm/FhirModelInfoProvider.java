@@ -36,8 +36,12 @@ public class FhirModelInfoProvider implements ModelInfoProvider {
                         ModelInfo.class);
 
             case "1.8":
-            case "":
                 return JAXB.unmarshal(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.8.xml"),
+                        ModelInfo.class);
+
+            case "3.0.0":
+            case "":
+                return JAXB.unmarshal(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.0.xml"),
                         ModelInfo.class);
 
             default:
