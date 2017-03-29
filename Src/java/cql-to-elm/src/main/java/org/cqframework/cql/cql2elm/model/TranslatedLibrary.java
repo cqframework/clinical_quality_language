@@ -71,21 +71,12 @@ public class TranslatedLibrary {
     public void add(ExpressionDef expression) {
         if (expression instanceof FunctionDef) {
             // Register the operator signature
-            add(expressionDefToOperator((FunctionDef)expression));
+            add(Operator.fromFunctionDef((FunctionDef)expression));
         }
         else {
             checkNamespace(expression.getName());
             namespace.put(expression.getName(), expression);
         }
-    }
-
-    private Operator expressionDefToOperator(FunctionDef functionDef) {
-        java.util.List<DataType> operandTypes = new ArrayList<>();
-        for (OperandDef operand : functionDef.getOperand()) {
-            operandTypes.add(operand.getResultType());
-        }
-        return new Operator(functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])),
-                functionDef.getResultType()).withAccessLevel(functionDef.getAccessLevel());
     }
 
     private void ensureLibrary(Operator operator) {
@@ -103,9 +94,25 @@ public class TranslatedLibrary {
         }
     }
 
+    private void ensureResultType(Operator operator) {
+        if (operator.getResultType() == null) {
+            throw new IllegalArgumentException(String.format("Operator %s cannot be registered in library %s because it does not have a result type defined.",
+                    operator.getName(), this.identifier.getId()));
+        }
+    }
+
     public void add(Operator operator) {
         ensureLibrary(operator);
+        ensureResultType(operator);
         operators.addOperator(operator);
+    }
+
+    public boolean contains(FunctionDef functionDef) {
+        return contains(Operator.fromFunctionDef(functionDef));
+    }
+
+    public boolean contains(Operator operator) {
+        return operators.containsOperator(operator);
     }
 
     public void add(Conversion conversion) {

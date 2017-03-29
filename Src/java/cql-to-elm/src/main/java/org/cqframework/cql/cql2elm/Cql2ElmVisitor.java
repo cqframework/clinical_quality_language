@@ -49,6 +49,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
     private final ConversionMap conversionMap = new ConversionMap();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
+    private final Set<String> definedExpressionDefinitions = new HashSet<>();
+    private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
     private final Stack<QueryContext> queries = new Stack<>();
     private final Stack<String> expressionContext = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
@@ -66,7 +68,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
       super();
       this.libraryManager = libraryManager;
     }
-    
+
     /**
      * Record any errors while parsing in both the list of errors but also in the library
      * itself so they can be processed easily by a remote client
@@ -91,7 +93,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
       }
       getOrInitializeLibrary().getAnnotation().add(err);
     }
-    
+
     public void enableAnnotations() {
         annotate = true;
     }
@@ -316,7 +318,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
       }
       return library;
     }
-    
+
     @Override
     public Object visitLogic(@NotNull cqlParser.LogicContext ctx) {
         getOrInitializeLibrary();
@@ -640,8 +642,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return currentContext;
     }
 
-    @Override
-    public ExpressionDef visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
+    public ExpressionDef internalVisitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = translatedLibrary.resolveExpressionRef(identifier);
         if (def == null) {
@@ -663,6 +664,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return def;
+    }
+
+    @Override
+    public ExpressionDef visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
+        ExpressionDef expressionDef = internalVisitExpressionDefinition(ctx);
+        if (definedExpressionDefinitions.contains(expressionDef.getName())) {
+            throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
+        }
+
+        // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed because they are
+        // overwritten by name when they are encountered by the preprocessor.
+        definedExpressionDefinitions.add(expressionDef.getName());
+        return expressionDef;
     }
 
     @Override
@@ -1757,7 +1771,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 String saveContext = currentContext;
                 currentContext = expressionInfo.getContext();
                 try {
-                    ExpressionDef expressionDef = visitExpressionDefinition(expressionInfo.getDefinition());
+                    ExpressionDef expressionDef = internalVisitExpressionDefinition(expressionInfo.getDefinition());
                     element = expressionDef;
                 } finally {
                     currentContext = saveContext;
@@ -2743,6 +2757,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return sources;
     }
 
+    private void verifyComparable(DataType dataType) {
+        Expression left = (Expression)of.createLiteral().withResultType(dataType);
+        Expression right = (Expression)of.createLiteral().withResultType(dataType);
+        BinaryExpression comparison = of.createLess().withOperand(left, right);
+        resolveBinaryCall("System", "Less", comparison);
+    }
+
     @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
@@ -2816,9 +2837,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 queryContext.setResultElementType(queryContext.isSingular() ? null : ((ListType)queryResultType).getElementType());
                 SortClause sort = null;
                 if (ctx.sortClause() != null) {
+                    if (queryContext.isSingular()) {
+                        throw new IllegalArgumentException("Sort clause cannot be used in a singular query.");
+                    }
+
                     queryContext.enterSortClause();
                     try {
                         sort = (SortClause)visit(ctx.sortClause());
+
+                        // Validate that the sort can be performed based on the existence of comparison operators for all types involved
+                        for (SortByItem sortByItem : sort.getBy()) {
+                            if (sortByItem instanceof ByDirection) {
+                                // validate that there is a comparison operator defined for the result element type of the query context
+                                verifyComparable(queryContext.getResultElementType());
+                            }
+                            else {
+                                verifyComparable(sortByItem.getResultType());
+                            }
+                        }
                     }
                     finally {
                         queryContext.exitSortClause();
@@ -2833,13 +2869,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withReturn(ret)
                         .withSort(sort);
 
-                if (ret == null) {
-                    query.setResultType(sources.get(0).getResultType());
-                }
-                else {
-                    query.setResultType(ret.getResultType());
-                }
-
+                query.setResultType(queryResultType);
                 return query;
             }
             finally {
@@ -3160,14 +3190,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public SortByItem visitSortByItem(@NotNull cqlParser.SortByItemContext ctx) {
         Expression sortExpression = parseExpression(ctx.expressionTerm());
         if (sortExpression instanceof IdentifierRef) {
-            return of.createByColumn()
+            return (SortByItem)of.createByColumn()
                     .withPath(((IdentifierRef)sortExpression).getName())
-                    .withDirection(parseSortDirection(ctx.sortDirection()));
+                    .withDirection(parseSortDirection(ctx.sortDirection()))
+                    .withResultType(sortExpression.getResultType());
         }
 
-        return of.createByExpression()
+        return (SortByItem)of.createByExpression()
                 .withExpression(sortExpression)
-                .withDirection(parseSortDirection(ctx.sortDirection()));
+                .withDirection(parseSortDirection(ctx.sortDirection()))
+                .withResultType(sortExpression.getResultType());
     }
 
     @Override
@@ -3236,8 +3268,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return visit(ctx.expression());
     }
 
-    @Override
-    public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
+    private Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()));
@@ -3252,21 +3283,42 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 );
             }
         }
-        currentFunctionDef = fun;
-        pushExpressionContext(currentContext);
-        try {
-            fun.setExpression(parseExpression(ctx.functionBody()));
-        }
-        finally {
-            currentFunctionDef = null;
-            popExpressionContext();
-        }
 
-        fun.setContext(currentContext);
-        fun.setResultType(fun.getExpression().getResultType());
-        addToLibrary(fun);
+        if (!translatedLibrary.contains(fun)) {
+            currentFunctionDef = fun;
+            pushExpressionContext(currentContext);
+            try {
+                fun.setExpression(parseExpression(ctx.functionBody()));
+            } finally {
+                currentFunctionDef = null;
+                popExpressionContext();
+            }
+
+            fun.setContext(currentContext);
+            fun.setResultType(fun.getExpression().getResultType());
+            addToLibrary(fun);
+        }
 
         return fun;
+    }
+
+    @Override
+    public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
+        FunctionDef result = (FunctionDef)internalVisitFunctionDefinition(ctx);
+        Operator operator = Operator.fromFunctionDef(result);
+        Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
+        if (definedSignatures == null) {
+            definedSignatures = new HashSet<>();
+            definedFunctionDefinitions.put(operator.getName(), definedSignatures);
+        }
+
+        if (definedSignatures.contains(operator.getSignature())) {
+            throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
+        }
+
+        definedSignatures.add(operator.getSignature());
+
+        return result;
     }
 
     private UsingDef buildUsingDef(VersionedIdentifier modelIdentifier, Model model) {
@@ -3368,7 +3420,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private String parseString(ParseTree pt) {
-        return pt == null ? null : (String) visit(pt);
+        return StringEscapeUtils.unescapeCql(pt == null ? null : (String) visit(pt));
     }
 
     private Expression parseExpression(ParseTree pt) {
@@ -3562,8 +3614,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression result = resolveCall(libraryName, operatorName, invocation, !checkForward);
         if (result == null) {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(operatorName);
-            for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                visitFunctionDefinition(functionInfo.getDefinition());
+            if (functionInfos != null) {
+                for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                    internalVisitFunctionDefinition(functionInfo.getDefinition());
+                }
             }
             result = resolveCall(libraryName, operatorName, invocation, true);
         }
@@ -3608,8 +3662,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 invocation.setOperands(convertedOperands);
             }
             invocation.setResultType(resolution.getOperator().getResultType());
+            return invocation.getExpression();
         }
-        return invocation.getExpression();
+        return null;
     }
 
     private Expression ensureCompatible(Expression expression, DataType targetType) {

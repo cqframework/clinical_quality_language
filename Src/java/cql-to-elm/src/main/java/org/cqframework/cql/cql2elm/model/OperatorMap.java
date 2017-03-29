@@ -7,6 +7,11 @@ import java.util.*;
 public class OperatorMap {
     private Map<String, OperatorEntry> operators = new HashMap<>();
 
+    public boolean containsOperator(Operator operator) {
+        OperatorEntry entry = getEntry(operator.getName());
+        return entry.containsOperator(operator);
+    }
+
     public void addOperator(Operator operator) {
         OperatorEntry entry = getEntry(operator.getName());
         entry.addOperator(operator);
