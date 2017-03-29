@@ -40,7 +40,7 @@ public class SemanticTests {
     public void testCMS146v2() throws IOException {
         runSemanticTest("CMS146v2_Test_CQM.cql");
     }
-    
+
     @Test
     public void testAggregateOperators() throws IOException {
         runSemanticTest("OperatorTests/AggregateOperators.cql");
@@ -133,6 +133,11 @@ public class SemanticTests {
     @Test
     public void testForwardReferences() throws IOException {
         runSemanticTest("OperatorTests/ForwardReferences.cql", 0);
+    }
+
+    @Test
+    public void testInvalidSortClauses() throws IOException {
+        runSemanticTest("OperatorTests/InvalidSortClauses.cql", 3);
     }
 
     @Test

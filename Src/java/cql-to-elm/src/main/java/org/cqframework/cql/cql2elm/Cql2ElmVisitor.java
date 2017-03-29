@@ -2708,6 +2708,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return sources;
     }
 
+    private void verifyComparable(DataType dataType) {
+        Expression left = (Expression)of.createLiteral().withResultType(dataType);
+        Expression right = (Expression)of.createLiteral().withResultType(dataType);
+        BinaryExpression comparison = of.createLess().withOperand(left, right);
+        resolveBinaryCall("System", "Less", comparison);
+    }
+
     @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
@@ -2781,9 +2788,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 queryContext.setResultElementType(queryContext.isSingular() ? null : ((ListType)queryResultType).getElementType());
                 SortClause sort = null;
                 if (ctx.sortClause() != null) {
+                    if (queryContext.isSingular()) {
+                        throw new IllegalArgumentException("Sort clause cannot be used in a singular query.");
+                    }
+
                     queryContext.enterSortClause();
                     try {
                         sort = (SortClause)visit(ctx.sortClause());
+
+                        // Validate that the sort can be performed based on the existence of comparison operators for all types involved
+                        for (SortByItem sortByItem : sort.getBy()) {
+                            if (sortByItem instanceof ByDirection) {
+                                // validate that there is a comparison operator defined for the result element type of the query context
+                                verifyComparable(queryContext.getResultElementType());
+                            }
+                            else {
+                                verifyComparable(sortByItem.getResultType());
+                            }
+                        }
                     }
                     finally {
                         queryContext.exitSortClause();
@@ -2798,13 +2820,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withReturn(ret)
                         .withSort(sort);
 
-                if (ret == null) {
-                    query.setResultType(sources.get(0).getResultType());
-                }
-                else {
-                    query.setResultType(ret.getResultType());
-                }
-
+                query.setResultType(queryResultType);
                 return query;
             }
             finally {
@@ -3125,14 +3141,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public SortByItem visitSortByItem(@NotNull cqlParser.SortByItemContext ctx) {
         Expression sortExpression = parseExpression(ctx.expressionTerm());
         if (sortExpression instanceof IdentifierRef) {
-            return of.createByColumn()
+            return (SortByItem)of.createByColumn()
                     .withPath(((IdentifierRef)sortExpression).getName())
-                    .withDirection(parseSortDirection(ctx.sortDirection()));
+                    .withDirection(parseSortDirection(ctx.sortDirection()))
+                    .withResultType(sortExpression.getResultType());
         }
 
-        return of.createByExpression()
+        return (SortByItem)of.createByExpression()
                 .withExpression(sortExpression)
-                .withDirection(parseSortDirection(ctx.sortDirection()));
+                .withDirection(parseSortDirection(ctx.sortDirection()))
+                .withResultType(sortExpression.getResultType());
     }
 
     @Override
