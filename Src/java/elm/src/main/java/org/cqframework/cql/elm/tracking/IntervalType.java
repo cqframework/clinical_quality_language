@@ -58,6 +58,11 @@ public class IntervalType extends DataType {
     }
 
     @Override
+    public String toLabel() {
+        return String.format("Interval of %s", pointType.toLabel());
+    }
+
+    @Override
     public boolean isGeneric() {
         return pointType.isGeneric();
     }

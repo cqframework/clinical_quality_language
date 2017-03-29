@@ -52,4 +52,8 @@ public class TupleTypeElement {
     public String toString() {
         return String.format("%s:%s", this.name, this.type.toString());
     }
+
+    public String toLabel() {
+        return String.format("%s: %s", this.name, this.type.toLabel());
+    }
 }

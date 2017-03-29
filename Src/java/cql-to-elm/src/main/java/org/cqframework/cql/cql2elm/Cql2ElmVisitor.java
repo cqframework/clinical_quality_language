@@ -34,6 +34,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean annotate = false;
     private boolean dateRangeOptimization = false;
+    private boolean detailedErrors = false;
 
     private TokenStream tokenStream;
 
@@ -47,7 +48,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     //Put them here for now, but eventually somewhere else?
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
     private final ConversionMap conversionMap = new ConversionMap();
-    private final Stack<String> expressionDefinitions = new Stack<>();
+    private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
     private final Stack<QueryContext> queries = new Stack<>();
@@ -77,7 +78,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
       errors.add(e);
       CqlToElmError err = af.createCqlToElmError();
       err.setMessage(e.getMessage());
-      err.setErrorType(ErrorType.SYNTAX);
+      err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : ErrorType.SEMANTIC);
       if (e.getLocator() != null) {
         err.setStartLine(e.getLocator().getStartLine());
         err.setEndLine(e.getLocator().getEndLine());
@@ -107,6 +108,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public void disableDateRangeOptimization() {
         dateRangeOptimization = false;
+    }
+
+    public void enableDetailedErrors() {
+        detailedErrors = true;
+    }
+
+    public void disableDetailedErrors() {
+        detailedErrors = false;
+    }
+
+    public boolean isDetailedErrorsEnabled() {
+        return detailedErrors;
     }
 
     public TokenStream getTokenStream() {
@@ -262,10 +275,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             } catch (CqlTranslatorException e) {
                 recordParsingException(e);
             } catch (Exception e) {
-                recordParsingException(new CqlTranslatorException(
+                CqlTranslatorException ex = new CqlSemanticException(
                         e.getMessage() == null ? "Internal translator error." : e.getMessage(),
                         tree instanceof ParserRuleContext ? getTrackBack((ParserRuleContext) tree) : null,
-                        e));
+                        e);
+
+                Exception rootCause = determineRootCause();
+                if (rootCause == null) {
+                    rootCause = ex;
+                    recordParsingException(ex);
+                    setRootCause(rootCause);
+                }
+                else {
+                    if (detailedErrors) {
+                        recordParsingException(ex);
+                    }
+                }
                 o = of.createNull();
             }
         } finally {
@@ -1763,24 +1788,40 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (element instanceof ExpressionDef) {
             ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
             expressionRef.setResultType(getExpressionDefResultType((ExpressionDef)element));
+            if (expressionRef.getResultType() == null) {
+                throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
+                        expressionRef.getName()));
+            }
             return expressionRef;
         }
 
         if (element instanceof ParameterDef) {
             ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
             parameterRef.setResultType(element.getResultType());
+            if (parameterRef.getResultType() == null) {
+                throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
+                        parameterRef.getName()));
+            }
             return parameterRef;
         }
 
         if (element instanceof ValueSetDef) {
             ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
             valuesetRef.setResultType(element.getResultType());
+            if (valuesetRef.getResultType() == null) {
+                throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
+                        valuesetRef.getName()));
+            }
             return valuesetRef;
         }
 
         if (element instanceof CodeSystemDef) {
             CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
             codesystemRef.setResultType(element.getResultType());
+            if (codesystemRef.getResultType() == null) {
+                throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
+                        codesystemRef.getName()));
+            }
             return codesystemRef;
 
         }
@@ -1788,12 +1829,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (element instanceof CodeDef) {
             CodeRef codeRef = of.createCodeRef().withName(((CodeDef)element).getName());
             codeRef.setResultType(element.getResultType());
+            if (codeRef.getResultType() == null) {
+                throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
+                        codeRef.getName()));
+            }
             return codeRef;
         }
 
         if (element instanceof ConceptDef) {
             ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef)element).getName());
             conceptRef.setResultType(element.getResultType());
+            if (conceptRef.getResultType() == null) {
+                throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
+                        conceptRef.getName()));
+            }
             return conceptRef;
         }
 
@@ -3449,7 +3498,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (modelResult != null) {
                     if (result != null) {
                         throw new IllegalArgumentException(String.format("Label %s is ambiguous between %s and %s.",
-                                label, result.getName(), modelResult.getName()));
+                                label, result.getLabel(), modelResult.getLabel()));
                     }
 
                     result = modelResult;
@@ -3552,7 +3601,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (mustResolve) {
-            throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType));
+            throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
         }
 
         return null;
@@ -4027,11 +4076,62 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         translatedLibrary.add(expDef);
     }
 
+    private class ExpressionDefinitionContext {
+        public ExpressionDefinitionContext(String identifier) {
+            this.identifier = identifier;
+        }
+        private String identifier;
+        public String getIdentifier() {
+            return identifier;
+        }
+
+        private Exception rootCause;
+        public Exception getRootCause() {
+            return rootCause;
+        }
+
+        public void setRootCause(Exception rootCause) {
+            this.rootCause = rootCause;
+        }
+    }
+
+    private class ExpressionDefinitionContextStack extends Stack<ExpressionDefinitionContext> {
+        public boolean contains(String identifier) {
+            for (int i = 0; i < this.elementCount; i++) {
+                if (this.elementAt(i).getIdentifier().equals(identifier)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    private Exception determineRootCause() {
+        if (!expressionDefinitions.isEmpty()) {
+            ExpressionDefinitionContext currentContext = expressionDefinitions.peek();
+            if (currentContext != null) {
+                return currentContext.getRootCause();
+            }
+        }
+
+        return null;
+    }
+
+    private void setRootCause(Exception rootCause) {
+        if (!expressionDefinitions.isEmpty()) {
+            ExpressionDefinitionContext currentContext = expressionDefinitions.peek();
+            if (currentContext != null) {
+                currentContext.setRootCause(rootCause);
+            }
+        }
+    }
+
     private void pushExpressionDefinition(String identifier) {
         if (expressionDefinitions.contains(identifier)) {
             throw new IllegalArgumentException(String.format("Cannot resolve reference to expression %s because it results in a circular reference.", identifier));
         }
-        expressionDefinitions.push(identifier);
+        expressionDefinitions.push(new ExpressionDefinitionContext(identifier));
     }
 
     private void popExpressionDefinition() {

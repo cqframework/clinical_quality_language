@@ -13,6 +13,10 @@ public abstract class DataType {
         return baseType;
     }
 
+    public String toLabel() {
+        return toString();
+    }
+
     public boolean isSubTypeOf(DataType other) {
         DataType currentType = this;
         while (currentType != null) {

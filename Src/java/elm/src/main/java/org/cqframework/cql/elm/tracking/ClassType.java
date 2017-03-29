@@ -183,6 +183,11 @@ public class ClassType extends DataType implements NamedType {
         return this.name;
     }
 
+    @Override
+    public String toLabel() {
+        return this.label == null ? this.name : this.label;
+    }
+
     private TupleType tupleType;
     public TupleType getTupleType() {
         if (tupleType == null) {

@@ -7,8 +7,8 @@ public class DataTypes {
         if (!subTypeOf(actualType, expectedType)) {
             throw new IllegalArgumentException(String.format(
                     "Expected an expression of type '%s', but found an expression of type '%s'.",
-                    expectedType != null ? expectedType.toString() : "<unknown>",
-                    actualType != null ? actualType.toString() : "<unknown>"
+                    expectedType != null ? expectedType.toLabel() : "<unknown>",
+                    actualType != null ? actualType.toLabel() : "<unknown>"
             ));
         }
     }
@@ -16,8 +16,8 @@ public class DataTypes {
     public static void verifyCast(DataType targetType, DataType sourceType) {
         if (!subTypeOf(targetType, sourceType)) {
             throw new IllegalArgumentException(String.format("Expression of type '%s' cannot be cast as a value of type '%s'.",
-                    sourceType != null ? sourceType.toString() : "<unknown>",
-                    targetType != null ? targetType.toString() : "<unknown>"
+                    sourceType != null ? sourceType.toLabel() : "<unknown>",
+                    targetType != null ? targetType.toLabel() : "<unknown>"
             ));
         }
     }
