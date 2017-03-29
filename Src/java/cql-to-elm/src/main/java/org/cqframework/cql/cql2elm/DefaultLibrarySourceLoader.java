@@ -51,6 +51,11 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader {
             }
         }
 
+        if (source == null) {
+            throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
+                    libraryIdentifier.getId(), libraryIdentifier.getVersion()));
+        }
+
         return source;
     }
 }
