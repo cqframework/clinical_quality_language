@@ -48,7 +48,7 @@ public class LibraryTests {
         }
     }
 
-    //@Test
+    @Test
     public void testDuplicateExpressionLibrary() {
         CqlTranslator translator = null;
         try {
