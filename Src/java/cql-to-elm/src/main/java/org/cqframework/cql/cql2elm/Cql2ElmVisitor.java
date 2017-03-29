@@ -3332,7 +3332,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private String parseString(ParseTree pt) {
-        return pt == null ? null : (String) visit(pt);
+        return StringEscapeUtils.unescapeCql(pt == null ? null : (String) visit(pt));
     }
 
     private Expression parseExpression(ParseTree pt) {
