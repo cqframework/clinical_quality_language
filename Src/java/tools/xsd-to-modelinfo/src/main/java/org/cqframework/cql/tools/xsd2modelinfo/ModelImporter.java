@@ -287,16 +287,6 @@ public class ModelImporter {
         return choiceTypeSpecifier;
     }
 
-    private TypeSpecifier toChoiceTypeSpecifier(ChoiceType dataType) {
-        List<TypeSpecifier> choiceTypes = new ArrayList<>();
-        for (DataType choice : dataType.getTypes()) {
-            choiceTypes.add(toTypeSpecifier(choice));
-        }
-        ChoiceTypeSpecifier choiceTypeSpecifier = new ChoiceTypeSpecifier()
-                .withChoice(choiceTypes);
-        return choiceTypeSpecifier;
-    }
-
     private String getTypeName(QName schemaTypeName, Map<String, String> namespaces) {
         if (schemaTypeName == null) {
             throw new IllegalArgumentException("schemaTypeName is null");

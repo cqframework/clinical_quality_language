@@ -35,7 +35,6 @@ define "Pregnancy Conditions":
   [Condition: "Pregnancy"] C
     where C.clinicalStatus = 'active'
       and C.verificationStatus = 'confirmed'
-      // well, this is ugly....
       and Interval[C.onsetDateTime, C.abatementDateTime] includes Today()
 
 define "Is Patient Pregnant":
@@ -124,7 +123,7 @@ define "Has Possible Zika Exposure":
 define "Zika Symptom Onset":
   First(
     "Zika Symptoms" S
-      sort by (S.onsetDateTime)
+      sort by S.onsetDateTime
   ).onsetDateTime
 
 define "Time Since Symptom Onset":

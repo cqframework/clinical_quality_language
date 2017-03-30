@@ -2,17 +2,7 @@ package org.cqframework.cql.cql2elm.operators;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.ModelManager;
-import org.hl7.elm.r1.Abs;
-import org.hl7.elm.r1.Ceiling;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.Floor;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.Ln;
-import org.hl7.elm.r1.Log;
-import org.hl7.elm.r1.Negate;
-import org.hl7.elm.r1.Quantity;
-import org.hl7.elm.r1.Round;
-import org.hl7.elm.r1.Truncate;
+import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 

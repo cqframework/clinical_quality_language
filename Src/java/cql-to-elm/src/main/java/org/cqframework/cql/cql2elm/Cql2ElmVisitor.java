@@ -35,7 +35,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean annotate = false;
     private boolean dateRangeOptimization = false;
     private boolean detailedErrors = false;
-
     private TokenStream tokenStream;
 
     private final LibraryBuilder libraryBuilder;
@@ -48,19 +47,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         this.libraryInfo = libraryInfo;
     }
-    private final SystemMethodResolver systemMethodResolver = new SystemMethodResolver(this);
 
     //Put them here for now, but eventually somewhere else?
-    private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
-    private final ConversionMap conversionMap = new ConversionMap();
-    private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
-    private final Stack<QueryContext> queries = new Stack<>();
-    private final Stack<String> expressionContext = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private final Stack<Narrative> narratives = new Stack<>();
-    private String currentContext = "Patient"; // default context to patient
     private String currentContext = "Patient"; // default context to patient
     private int currentToken = -1;
     private int nextLocalId = 1;
@@ -78,7 +70,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         this.libraryBuilder = libraryBuilder;
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
     }
-
+    
     public void enableAnnotations() {
         annotate = true;
     }
@@ -110,7 +102,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public boolean isDetailedErrorsEnabled() {
         return detailedErrors;
     }
-
     public TokenStream getTokenStream() {
         return tokenStream;
     }
@@ -244,20 +235,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             } catch (CqlTranslatorException e) {
                 libraryBuilder.recordParsingException(e);
             } catch (Exception e) {
-                libraryBuilder.recordParsingException(new CqlTranslatorException(
+                CqlTranslatorException ex = new CqlSemanticException(
                         e.getMessage() == null ? "Internal translator error." : e.getMessage(),
                         tree instanceof ParserRuleContext ? getTrackBack((ParserRuleContext) tree) : null,
                         e);
-
-                Exception rootCause = determineRootCause();
+                Exception rootCause = libraryBuilder.determineRootCause();
                 if (rootCause == null) {
                     rootCause = ex;
-                    recordParsingException(ex);
-                    setRootCause(rootCause);
+                    libraryBuilder.recordParsingException(ex);
+                    libraryBuilder.setRootCause(rootCause);
                 }
                 else {
                     if (detailedErrors) {
-                        recordParsingException(ex);
+                        libraryBuilder.recordParsingException(ex);
                     }
                 }
                 o = of.createNull();
@@ -279,7 +269,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitLibrary(@NotNull cqlParser.LibraryContext ctx) {
     public Object visitLibrary(@NotNull cqlParser.LibraryContext ctx) {
 
         Object lastResult = null;
@@ -1187,14 +1176,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         result.setResultType(((ListType)result.getOperand().getResultType()).getElementType());
 
         libraryBuilder.resolveUnaryCall("System", "SingletonFrom", result);
-
-        if (!(result.getOperand().getResultType() instanceof ListType)) {
-            throw new IllegalArgumentException("List type expected.");
-        }
-
-        result.setResultType(((ListType)result.getOperand().getResultType()).getElementType());
-
-        resolveUnaryCall("System", "SingletonFrom", result);
         return result;
     }
 
@@ -2561,13 +2542,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return sources;
     }
 
-    private void verifyComparable(DataType dataType) {
-        Expression left = (Expression)of.createLiteral().withResultType(dataType);
-        Expression right = (Expression)of.createLiteral().withResultType(dataType);
-        BinaryExpression comparison = of.createLess().withOperand(left, right);
-        resolveBinaryCall("System", "Less", comparison);
-    }
-
     @Override
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
@@ -2644,19 +2618,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (queryContext.isSingular()) {
                         throw new IllegalArgumentException("Sort clause cannot be used in a singular query.");
                     }
-
                     queryContext.enterSortClause();
                     try {
                         sort = (SortClause)visit(ctx.sortClause());
-
                         // Validate that the sort can be performed based on the existence of comparison operators for all types involved
                         for (SortByItem sortByItem : sort.getBy()) {
                             if (sortByItem instanceof ByDirection) {
                                 // validate that there is a comparison operator defined for the result element type of the query context
-                                verifyComparable(queryContext.getResultElementType());
-                    }
+                                libraryBuilder.verifyComparable(queryContext.getResultElementType());		                    }
                             else {
-                                verifyComparable(sortByItem.getResultType());
+                                libraryBuilder.verifyComparable(sortByItem.getResultType());
                             }
                         }
                     }
@@ -3105,7 +3076,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 String saveContext = currentContext;
                 currentContext = expressionInfo.getContext();
                 try {
-                    visitExpressionDefinition(expressionInfo.getDefinition());
+                    internalVisitExpressionDefinition(expressionInfo.getDefinition());
                 } finally {
                     currentContext = saveContext;
                 }
@@ -3140,14 +3111,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward);
         if (result == null) {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
-            for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                visitFunctionDefinition(functionInfo.getDefinition());
+            if (functionInfos != null) {
+                for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                    internalVisitFunctionDefinition(functionInfo.getDefinition());
+                }
             }
             result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
         }
 
         return result;
-        }
+    }
 
     @Override
     public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
@@ -3190,7 +3163,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return visit(ctx.expression());
     }
 
-    private Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
+    public Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()));
@@ -3206,29 +3179,44 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
-        libraryBuilder.beginFunctionDef(fun);
-        try {
-            libraryBuilder.pushExpressionContext(currentContext);
+        if (!libraryBuilder.getTranslatedLibrary().contains(fun)) {
+            libraryBuilder.beginFunctionDef(fun);
             try {
-                fun.setExpression(parseExpression(ctx.functionBody()));
+                libraryBuilder.pushExpressionContext(currentContext);
+                try {
+                    fun.setExpression(parseExpression(ctx.functionBody()));
+                } finally {
+                    libraryBuilder.popExpressionContext();
+                }
             } finally {
-                libraryBuilder.popExpressionContext();
+                libraryBuilder.endFunctionDef();
             }
-        }
-            finally {
-            libraryBuilder.endFunctionDef();
-            }
-        }
-        finally {
-            libraryBuilder.endFunctionDef();
-        }
 
-        fun.setContext(currentContext);
-        fun.setResultType(fun.getExpression().getResultType());
-        libraryBuilder.addExpression(fun);
+            fun.setContext(currentContext);
+            fun.setResultType(fun.getExpression().getResultType());
+            libraryBuilder.addExpression(fun);
         }
 
         return fun;
+    }
+
+    @Override
+    public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
+        FunctionDef result = (FunctionDef)internalVisitFunctionDefinition(ctx);
+        Operator operator = Operator.fromFunctionDef(result);
+        Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
+        if (definedSignatures == null) {
+            definedSignatures = new HashSet<>();
+            definedFunctionDefinitions.put(operator.getName(), definedSignatures);
+        }
+
+        if (definedSignatures.contains(operator.getSignature())) {
+            throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
+        }
+
+        definedSignatures.add(operator.getSignature());
+
+        return result;
     }
 
     private AccessModifier parseAccessModifier(ParseTree pt) {
@@ -3245,575 +3233,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private TypeSpecifier parseTypeSpecifier(ParseTree pt) {
         return pt == null ? null : (TypeSpecifier) visit(pt);
-    }
-
-    protected QName dataTypeToQName(DataType type) {
-        if (type instanceof NamedType) {
-            NamedType namedType = (NamedType)type;
-            ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
-            return new QName(modelInfo.getUrl(), namedType.getSimpleName());
-        }
-
-        throw new IllegalArgumentException("A named type is required in this context.");
-    }
-
-    private TypeSpecifier dataTypeToTypeSpecifier(DataType type) {
-        // Convert the given type into an ELM TypeSpecifier representation.
-        if (type instanceof NamedType) {
-            return (TypeSpecifier)of.createNamedTypeSpecifier().withName(dataTypeToQName(type)).withResultType(type);
-        }
-        else if (type instanceof ListType) {
-            return listTypeToTypeSpecifier((ListType)type);
-        }
-        else if (type instanceof IntervalType) {
-            return intervalTypeToTypeSpecifier((IntervalType)type);
-        }
-        else if (type instanceof TupleType) {
-            return tupleTypeToTypeSpecifier((TupleType)type);
-        }
-        else if (type instanceof ChoiceType) {
-            return choiceTypeToTypeSpecifier((ChoiceType)type);
-        }
-        else {
-            throw new IllegalArgumentException(String.format("Could not convert type %s to a type specifier.", type));
-        }
-    }
-
-    private TypeSpecifier listTypeToTypeSpecifier(ListType type) {
-        return (TypeSpecifier)of.createListTypeSpecifier()
-                .withElementType(dataTypeToTypeSpecifier(type.getElementType()))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier intervalTypeToTypeSpecifier(IntervalType type) {
-        return (TypeSpecifier)of.createIntervalTypeSpecifier()
-                .withPointType(dataTypeToTypeSpecifier(type.getPointType()))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier tupleTypeToTypeSpecifier(TupleType type) {
-        return (TypeSpecifier)of.createTupleTypeSpecifier()
-                .withElement(tupleTypeElementsToTupleElementDefinitions(type.getElements()))
-                .withResultType(type);
-    }
-
-    private TupleElementDefinition[] tupleTypeElementsToTupleElementDefinitions(Iterable<TupleTypeElement> elements) {
-        List<TupleElementDefinition> definitions = new ArrayList<>();
-
-        for (TupleTypeElement element : elements) {
-            definitions.add(of.createTupleElementDefinition()
-                    .withName(element.getName())
-                    .withType(dataTypeToTypeSpecifier(element.getType())));
-        }
-
-        return definitions.toArray(new TupleElementDefinition[definitions.size()]);
-    }
-
-    private TypeSpecifier choiceTypeToTypeSpecifier(ChoiceType type) {
-        return (TypeSpecifier)of.createChoiceTypeSpecifier()
-                .withType(choiceTypeTypesToTypeSpecifiers(type))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier[] choiceTypeTypesToTypeSpecifiers(ChoiceType choiceType) {
-        List<TypeSpecifier> specifiers = new ArrayList<>();
-
-        for (DataType type : choiceType.getTypes()) {
-            specifiers.add(dataTypeToTypeSpecifier(type));
-        }
-
-        return specifiers.toArray(new TypeSpecifier[specifiers.size()]);
-    }
-
-    private ClassType resolveLabel(String modelName, String label) {
-        ClassType result = null;
-        if (modelName == null || modelName.equals("")) {
-            for (Model model : models.values()) {
-                ClassType modelResult = model.resolveLabel(label);
-                if (modelResult != null) {
-                    if (result != null) {
-                        throw new IllegalArgumentException(String.format("Label %s is ambiguous between %s and %s.",
-                                label, result.getLabel(), modelResult.getLabel()));
-                    }
-
-                    result = modelResult;
-                }
-            }
-        }
-        else {
-            result = getModel(modelName).resolveLabel(label);
-        }
-
-        return result;
-    }
-
-    private DataType resolveTypeName(String typeName) {
-        return resolveTypeName(null, typeName);
-    }
-
-    private DataType resolveTypeName(String modelName, String typeName) {
-        // Attempt to resolve as a label first
-        DataType result = resolveLabel(modelName, typeName);
-
-        if (result == null) {
-            if (modelName == null || modelName.equals("")) {
-                for (Model model : models.values()) {
-                    DataType modelResult = model.resolveTypeName(typeName);
-                    if (modelResult != null) {
-                        if (result != null) {
-                            throw new IllegalArgumentException(String.format("Type name %s is ambiguous between %s and %s.",
-                                    typeName, ((NamedType) result).getName(), ((NamedType) modelResult).getName()));
-                        }
-
-                        result = modelResult;
-                    }
-                }
-            } else {
-                result = getModel(modelName).resolveTypeName(typeName);
-            }
-        }
-
-        return result;
-    }
-
-    protected DataType resolvePath(DataType sourceType, String path) {
-        // TODO: This is using a naive implementation for now... needs full path support (but not full FluentPath support...)
-        String[] identifiers = path.split("\\.");
-        for (int i = 0; i < identifiers.length; i++) {
-            sourceType = resolveProperty(sourceType, identifiers[i]);
-        }
-
-        return sourceType;
-    }
-
-    protected DataType resolveProperty(DataType sourceType, String identifier) {
-        return resolveProperty(sourceType, identifier, true);
-    }
-
-    // TODO: Support case-insensitive models
-    protected DataType resolveProperty(DataType sourceType, String identifier, boolean mustResolve) {
-        DataType currentType = sourceType;
-        while (currentType != null) {
-            if (currentType instanceof ClassType) {
-                ClassType classType = (ClassType)currentType;
-                for (ClassTypeElement e : classType.getElements()) {
-                    if (e.getName().equals(identifier)) {
-                        if (e.isProhibited()) {
-                            throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
-                        }
-
-                        return e.getType();
-                    }
-                }
-            }
-            else if (currentType instanceof TupleType) {
-                TupleType tupleType = (TupleType)currentType;
-                for (TupleTypeElement e : tupleType.getElements()) {
-                    if (e.getName().equals(identifier)) {
-                        return e.getType();
-                    }
-                }
-            }
-            else if (currentType instanceof IntervalType) {
-                IntervalType intervalType = (IntervalType)currentType;
-                switch (identifier) {
-                    case "low":
-                    case "high":
-                        return intervalType.getPointType();
-                    case "lowClosed":
-                    case "highClosed":
-                        return resolveTypeName("System", "Boolean");
-                    default:
-                        throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
-                }
-            }
-            else if (currentType instanceof ChoiceType) {
-                ChoiceType choiceType = (ChoiceType)currentType;
-                // TODO: Issue a warning if the property does not resolve against every type in the choice
-
-                // Resolve the property against each type in the choice
-                Set<DataType> resultTypes = new HashSet<>();
-                for (DataType choice : choiceType.getTypes()) {
-                    DataType resultType = resolveProperty(choice, identifier, false);
-                    if (resultType != null) {
-                        resultTypes.add(resultType);
-                    }
-                }
-
-                // The result type is a choice of all the resolved types
-                if (resultTypes.size() > 1) {
-                    return new ChoiceType(resultTypes);
-                }
-
-                if (resultTypes.size() == 1) {
-                    for (DataType resultType : resultTypes) {
-                        return resultType;
-                    }
-                }
-            }
-
-            if (currentType.getBaseType() != null) {
-                currentType = currentType.getBaseType();
-            }
-            else {
-                break;
-            }
-        }
-
-        if (mustResolve) {
-            throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
-        }
-
-        return null;
-    }
-
-    protected Expression resolveFunction(String libraryName, String operatorName, Invocation invocation) {
-        // If the function cannot be resolved in the builder and the call is to a function in the current library,
-        // check for forward declarations of functions
-        boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
-        Expression result = resolveCall(libraryName, operatorName, invocation, !checkForward);
-        if (result == null) {
-            Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(operatorName);
-            if (functionInfos != null) {
-            for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                    internalVisitFunctionDefinition(functionInfo.getDefinition());
-            }
-            }
-            result = resolveCall(libraryName, operatorName, invocation, true);
-        }
-
-        return result;
-    }
-
-    protected Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
-        return resolveCall(libraryName, operatorName, invocation, true);
-    }
-
-    protected Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve) {
-        Iterable<Expression> operands = invocation.getOperands();
-        List<DataType> dataTypes = new ArrayList<>();
-        for (Expression operand : operands) {
-            if (operand.getResultType() == null) {
-                throw new IllegalArgumentException(String.format("Could not determine signature for invocation of operator %s%s.",
-                        libraryName == null ? "" : libraryName + ".", operatorName));
-            }
-            dataTypes.add(operand.getResultType());
-        }
-
-        CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
-        OperatorResolution resolution = resolveCall(callContext);
-        if (resolution != null || mustResolve) {
-        checkOperator(callContext, resolution);
-
-        if (resolution.hasConversions()) {
-            List<Expression> convertedOperands = new ArrayList<>();
-            Iterator<Expression> operandIterator = operands.iterator();
-            Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
-            while (operandIterator.hasNext()) {
-                Expression operand = operandIterator.next();
-                Conversion conversion = conversionIterator.next();
-                if (conversion != null) {
-                    convertedOperands.add(convertExpression(operand, conversion));
-                    } else {
-                    convertedOperands.add(operand);
-                }
-            }
-
-            invocation.setOperands(convertedOperands);
-        }
-        invocation.setResultType(resolution.getOperator().getResultType());
-        return invocation.getExpression();
-    }
-        return null;
-    }
-
-    private Expression ensureCompatible(Expression expression, DataType targetType) {
-        if (!targetType.isSuperTypeOf(expression.getResultType())) {
-            return convertExpression(expression, targetType);
-        }
-
-        return expression;
-    }
-
-    private Expression convertExpression(Expression expression, DataType targetType) {
-        Conversion conversion = conversionMap.findConversion(expression.getResultType(), targetType, true, translatedLibrary.getOperatorMap());
-        if (conversion != null) {
-            return convertExpression(expression, conversion);
-        }
-
-        DataTypes.verifyType(expression.getResultType(), targetType);
-        return expression;
-    }
-
-    private Expression convertListExpression(Expression expression, Conversion conversion) {
-        ListType fromType = (ListType)conversion.getFromType();
-        ListType toType = (ListType)conversion.getToType();
-
-        Query query = (Query)of.createQuery()
-                .withSource((AliasedQuerySource) of.createAliasedQuerySource()
-                        .withAlias("X")
-                        .withExpression(expression)
-                        .withResultType(fromType))
-                .withReturn((ReturnClause) of.createReturnClause()
-                        .withDistinct(false)
-                        .withExpression(convertExpression((AliasRef) of.createAliasRef()
-                                        .withName("X")
-                                        .withResultType(fromType.getElementType()),
-                                conversion.getConversion()))
-                        .withResultType(toType))
-                .withResultType(toType);
-        return query;
-    }
-
-    private Expression demoteListExpression(Expression expression, Conversion conversion) {
-        ListType fromType = (ListType)conversion.getFromType();
-        DataType toType = conversion.getToType();
-
-        SingletonFrom singletonFrom = of.createSingletonFrom().withOperand(expression);
-        singletonFrom.setResultType(fromType.getElementType());
-        resolveUnaryCall("System", "SingletonFrom", singletonFrom);
-
-        if (conversion.getConversion() != null) {
-            return convertExpression(singletonFrom, conversion.getConversion());
-        }
-        else {
-            return singletonFrom;
-        }
-    }
-
-    private Expression promoteListExpression(Expression expression, Conversion conversion) {
-        if (conversion.getConversion() != null) {
-            expression = convertExpression(expression, conversion.getConversion());
-        }
-
-        org.hl7.elm.r1.List list = of.createList();
-        list.getElement().add(expression);
-        list.setResultType(new ListType(expression.getResultType()));
-        return list;
-    }
-
-    private Expression convertIntervalExpression(Expression expression, Conversion conversion) {
-        IntervalType fromType = (IntervalType)conversion.getFromType();
-        IntervalType toType = (IntervalType)conversion.getToType();
-        Interval interval = (Interval)of.createInterval()
-                .withLow(convertExpression((Property)of.createProperty()
-                        .withSource(expression)
-                        .withPath("low")
-                        .withResultType(fromType.getPointType()),
-                        conversion.getConversion()))
-                .withLowClosedExpression((Property) of.createProperty()
-                        .withSource(expression)
-                        .withPath("lowClosed")
-                        .withResultType(resolveTypeName("System", "Boolean")))
-                .withHigh(convertExpression((Property) of.createProperty()
-                                .withSource(expression)
-                                .withPath("high")
-                                .withResultType(fromType.getPointType()),
-                        conversion.getConversion()))
-                .withHighClosedExpression((Property) of.createProperty()
-                        .withSource(expression)
-                        .withPath("highClosed")
-                        .withResultType(resolveTypeName("System", "Boolean")))
-                .withResultType(toType);
-        return interval;
-    }
-
-    private Expression convertExpression(Expression expression, Conversion conversion) {
-        if (conversion.isCast()
-                && (conversion.getFromType().isSuperTypeOf(conversion.getToType())
-                    || conversion.getFromType().isCompatibleWith(conversion.getToType()))) {
-            As castedOperand = (As)of.createAs()
-                    .withOperand(expression)
-                    .withResultType(conversion.getToType());
-
-            castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
-            if (castedOperand.getResultType() instanceof NamedType) {
-                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
-            }
-
-            return castedOperand;
-        }
-        else if (conversion.isCast() && conversion.getConversion() != null
-                && (conversion.getFromType().isSuperTypeOf(conversion.getConversion().getFromType())
-                    || conversion.getFromType().isCompatibleWith(conversion.getConversion().getFromType()))) {
-            As castedOperand = (As)of.createAs()
-                    .withOperand(expression)
-                    .withResultType(conversion.getConversion().getFromType());
-
-            castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
-            if (castedOperand.getResultType() instanceof NamedType) {
-                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
-            }
-
-            return convertExpression(castedOperand, conversion.getConversion());
-        }
-        else if (conversion.isListConversion()) {
-            return convertListExpression(expression, conversion);
-        }
-        else if (conversion.isListDemotion()) {
-            return demoteListExpression(expression, conversion);
-        }
-        else if (conversion.isListPromotion()) {
-            return promoteListExpression(expression, conversion);
-        }
-        else if (conversion.isIntervalConversion()) {
-            return convertIntervalExpression(expression, conversion);
-        }
-        else if (conversion.getOperator() != null) {
-            FunctionRef functionRef = (FunctionRef)of.createFunctionRef()
-                    .withLibraryName(conversion.getOperator().getLibraryName())
-                    .withName(conversion.getOperator().getName())
-                    .withOperand(expression);
-
-            Expression systemFunction = systemFunctionResolver.resolveSystemFunction(functionRef);
-            if (systemFunction != null) {
-                return systemFunction;
-            }
-
-            resolveCall(functionRef.getLibraryName(), functionRef.getName(), new FunctionRefInvocation(functionRef));
-
-            return functionRef;
-        }
-        else {
-            if (conversion.getToType().equals(resolveTypeName("System", "Boolean"))) {
-                return (Expression)of.createToBoolean().withOperand(expression).withResultType(conversion.getToType());
-            }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Integer"))) {
-                return (Expression)of.createToInteger().withOperand(expression).withResultType(conversion.getToType());
-            }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Decimal"))) {
-                return (Expression)of.createToDecimal().withOperand(expression).withResultType(conversion.getToType());
-            }
-            else if (conversion.getToType().equals(resolveTypeName("System", "String"))) {
-                return (Expression)of.createToString().withOperand(expression).withResultType(conversion.getToType());
-            }
-            else if (conversion.getToType().equals(resolveTypeName("System", "DateTime"))) {
-                return (Expression)of.createToDateTime().withOperand(expression).withResultType(conversion.getToType());
-            }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Time"))) {
-                return (Expression)of.createToTime().withOperand(expression).withResultType(conversion.getToType());
-            }
-            else if (conversion.getToType().equals(resolveTypeName("System", "Quantity"))) {
-                return (Expression)of.createToQuantity().withOperand(expression).withResultType(conversion.getToType());
-            }
-            else {
-                Convert convertedOperand = (Convert)of.createConvert()
-                        .withOperand(expression)
-                        .withResultType(conversion.getToType());
-
-                if (convertedOperand.getResultType() instanceof NamedType) {
-                    convertedOperand.setToType(dataTypeToQName(convertedOperand.getResultType()));
-                }
-                else {
-                    convertedOperand.setToTypeSpecifier(dataTypeToTypeSpecifier(convertedOperand.getResultType()));
-                }
-
-                return convertedOperand;
-            }
-        }
-    }
-
-    private void verifyType(DataType actualType, DataType expectedType) {
-        if (expectedType.isSuperTypeOf(actualType) || actualType.isCompatibleWith(expectedType)) {
-            return;
-        }
-
-        Conversion conversion = conversionMap.findConversion(actualType, expectedType, true, translatedLibrary.getOperatorMap());
-        if (conversion != null) {
-            return;
-        }
-
-        DataTypes.verifyType(actualType, expectedType);
-    }
-
-    private DataType ensureCompatibleTypes(DataType first, DataType second) {
-        if (first.equals(DataType.ANY)) {
-            return second;
-        }
-
-        if (second.equals(DataType.ANY)) {
-            return first;
-        }
-
-        if (first.isSuperTypeOf(second) || second.isCompatibleWith(first)) {
-            return first;
-        }
-
-        if (second.isSuperTypeOf(first) || first.isCompatibleWith(second)) {
-            return second;
-        }
-
-        Conversion conversion = conversionMap.findConversion(second, first, true, translatedLibrary.getOperatorMap());
-        if (conversion != null) {
-            return first;
-        }
-
-        conversion = conversionMap.findConversion(first, second, true, translatedLibrary.getOperatorMap());
-        if (conversion != null) {
-            return second;
-        }
-
-        DataTypes.verifyType(second, first);
-        return first;
-    }
-
-    protected Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression));
-    }
-
-    protected Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression));
-    }
-
-    protected Expression resolveAggregateCall(String libraryName, String operatorName, AggregateExpression expression) {
-        return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression));
-    }
-
-    private OperatorResolution resolveCall(CallContext callContext) {
-        OperatorResolution result = null;
-        if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
-            result = translatedLibrary.resolveCall(callContext, conversionMap);
-            if (result == null) {
-                result = getSystemLibrary().resolveCall(callContext, conversionMap);
-                /*
-                // Implicit resolution is only allowed for the system library functions.
-                for (TranslatedLibrary library : libraries.values()) {
-                    OperatorResolution libraryResult = library.resolveCall(callContext, conversionMap);
-                    if (libraryResult != null) {
-                        if (result != null) {
-                            throw new IllegalArgumentException(String.format("Operator name %s is ambiguous between %s and %s.",
-                                    callContext.getOperatorName(), result.getOperator().getName(), libraryResult.getOperator().getName()));
-                        }
-
-                        result = libraryResult;
-                    }
-                }
-                */
-
-                if (result != null) {
-                    checkAccessLevel(result.getOperator().getLibraryName(), result.getOperator().getName(),
-                            result.getOperator().getAccessLevel());
-                }
-            }
-        }
-        else {
-            result = resolveLibrary(callContext.getLibraryName()).resolveCall(callContext, conversionMap);
-        }
-
-        return result;
-    }
-
-    private void checkOperator(CallContext callContext, OperatorResolution resolution) {
-        if (resolution == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with signature %s.",
-                    callContext.getOperatorName(), callContext.getSignature()));
-        }
-    }
-
-    private void checkAccessLevel(String libraryName, String objectName, AccessModifier accessModifier) {
-        if (accessModifier == AccessModifier.PRIVATE) {
-            throw new IllegalArgumentException(String.format("Object %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
-        }
     }
 
     public Literal createLiteral(String val, String type) {

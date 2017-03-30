@@ -101,10 +101,12 @@ public class CqlTranslator {
 
     private class CqlErrorListener extends BaseErrorListener {
         
-        LibraryBuilder builder;
+        private LibraryBuilder builder;
+        private boolean detailedErrors;
       
-        public CqlErrorListener(LibraryBuilder builder) {
+        public CqlErrorListener(LibraryBuilder builder, boolean detailedErrors) {
             this.builder = builder;
+            this.detailedErrors = detailedErrors;
         }
       
         @Override
@@ -112,16 +114,16 @@ public class CqlTranslator {
             TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
 //            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
 
-            if (visitor.isDetailedErrorsEnabled()) {
-                visitor.recordParsingException(new CqlSyntaxException(msg, trackback, e));
+            if (detailedErrors) {
+                builder.recordParsingException(new CqlSyntaxException(msg, trackback, e));
             builder.recordParsingException(new CqlTranslatorException(msg, trackback, e));
         }
             else {
                 if (offendingSymbol instanceof CommonToken) {
                     CommonToken token = (CommonToken) offendingSymbol;
-                    visitor.recordParsingException(new CqlSyntaxException(String.format("Syntax error at %s", token.getText()), trackback, e));
+                    builder.recordParsingException(new CqlSyntaxException(String.format("Syntax error at %s", token.getText()), trackback, e));
                 } else {
-                    visitor.recordParsingException(new CqlSyntaxException("Syntax error", trackback, e));
+                    builder.recordParsingException(new CqlSyntaxException("Syntax error", trackback, e));
     }
             }
         }
@@ -135,9 +137,8 @@ public class CqlTranslator {
 
         errors = new ArrayList<>();
         LibraryBuilder builder = new LibraryBuilder(modelManager, libraryManager);
-        parser.addErrorListener(new CqlErrorListener(builder));
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryManager);
         List<Options> optionList = Arrays.asList(options);
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         if (optionList.contains(Options.EnableDateRangeOptimization)) {
             visitor.enableDateRangeOptimization();
         }
@@ -149,13 +150,12 @@ public class CqlTranslator {
         }
 
         parser.removeErrorListeners(); // Clear the default console listener
-        parser.addErrorListener(new CqlErrorListener(visitor));
+        parser.addErrorListener(new CqlErrorListener(builder, visitor.isDetailedErrorsEnabled()));
         ParseTree tree = parser.library();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
         preprocessor.visit(tree);
 
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
 
@@ -212,9 +212,7 @@ public class CqlTranslator {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
-        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options.toArray(new Options[options.size()]));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        CqlTranslator translator = fromFile(inPath.toFile(), libraryManager, options.toArray(new Options[options.size()]));
         CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options.toArray(new Options[options.size()]));
         libraryManager.getLibrarySourceLoader().clearProviders();
 
