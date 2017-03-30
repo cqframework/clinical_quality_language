@@ -30,7 +30,6 @@ public class ModelTests {
             ModelManager modelManager = new ModelManager();
             translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), modelManager, new LibraryManager(modelManager));
             Library library = translator.toELM();
-            Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
             e.printStackTrace();
