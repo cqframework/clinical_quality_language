@@ -35,7 +35,12 @@ define "Pregnancy Conditions":
   [Condition: "Pregnancy"] C
     where C.clinicalStatus = 'active'
       and C.verificationStatus = 'confirmed'
-      and Interval[C.onsetDateTime, C.abatementDateTime] includes Today()
+      // this is pretty awkward formulation...
+      and Today() between C.onset and C.abatement
+      // This is sub-optimal, would be better if the compiler "converged" on a type
+      // The problem is the choices for onsete and abatement are not the same set, so
+      // there would be a lossy implicit conversion involved.
+      //and Interval[C.onset as dateTime, C.abatement as dateTime] includes Today()
 
 define "Is Patient Pregnant":
   Patient.gender = 'female'
@@ -49,7 +54,7 @@ define "Zika Exposure Assessment Result":
     [Observation: "Zika Exposure Assessment"] O
       where O.status = 'final'
         and O.encounter.reference = "Current Encounter".id // TODO: fix
-      sort by (O.effectiveDateTime) desc
+      sort by (O.effective) desc
   )
 
 define "Has Zika Exposure Assessment":
@@ -74,35 +79,35 @@ define "Resident of or Frequent Traveler to Zika Area":
     "Zika Exposure Assessment Result".component C
       // TODO: Need to streamline, this ought to have worked, not sure why it didn't (without the coding[0] access)
       where C.code.coding[0] = "CDE: Resident of or Frequent Traveler to Zika Area"
-        and C.valueString in "Yes"
+        and C.value in "Yes"
   )
 
 define "Recent Travel to Zika Area":
   exists (
     "Zika Exposure Assessment Result".component C
       where C.code.coding[0] = "CDE: Recent Travel to Zika Area"
-        and C.valueString in "Yes"
+        and C.value in "Yes"
   )
 
 define "Time Since Returned From Travel":
   singleton from (
     "Zika Exposure Assessment Result".component C
       where C.code.coding[0] = "CDE: Time Since Returned From Travel"
-      return C.valueQuantity
+      return C.value
   )
 
 define "Recent Sexual Encounter With Traveler to Zika Area":
   exists (
     "Zika Exposure Assessment Result".component C
       where C.code.coding[0] = "CDE: Recent Sexual Encounter With Traveler to Zika Area"
-        and C.valueString in "Yes"
+        and C.value in "Yes"
   )
 
 define "Time Since Sexual Encounter":
   singleton from (
     "Zika Exposure Assessment Result".component C
       where C.code.coding[0] = "CDE: Time Since Sexual Encounter"
-      return C.valueQuantity
+      return C.value as Quantity
   )
 
 define "Time Since Possible Exposure":
@@ -112,7 +117,7 @@ define "Planned Travel to Zika Area":
   exists (
     "Zika Exposure Assessment Result".component C
       where C.code.coding[0] = "CDE: Planned Travel to Zika Area"
-        and C.valueString in "Yes"
+        and C.value in "Yes"
   )
 
 define "Has Possible Zika Exposure":
@@ -123,8 +128,10 @@ define "Has Possible Zika Exposure":
 define "Zika Symptom Onset":
   First(
     "Zika Symptoms" S
-      sort by S.onsetDateTime
-  ).onsetDateTime
+      // This is suboptimal, it would be better if the compiler could resolve this,
+      // but it can't currently trace both the choice convergence and the implicit conversion
+      sort by (S.onset as dateTime)
+  ).onset
 
 define "Time Since Symptom Onset":
   System.Quantity { value: weeks between "Zika Symptom Onset" and Today(), unit: 'wk' }
