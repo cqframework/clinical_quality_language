@@ -37,3 +37,6 @@ describe.skip 'Coalesce', ->
 
   it 'should return null when they are all null', ->
     should(@allNull.exec(@ctx)).be.null
+
+  it 'should return first non-null in array', ->
+    @listArgStartsWithNull.exec(@ctx).should.equal 'One'

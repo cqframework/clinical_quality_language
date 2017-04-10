@@ -181,7 +181,7 @@ module.exports['FromString'] = {
                "type" : "ToQuantity",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "10 \\'A\\'",
+                  "value" : "10 'A'",
                   "type" : "Literal"
                }
             }
@@ -193,7 +193,7 @@ module.exports['FromString'] = {
                "type" : "ToQuantity",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "+10 \\'A\\'",
+                  "value" : "+10 'A'",
                   "type" : "Literal"
                }
             }
@@ -205,7 +205,7 @@ module.exports['FromString'] = {
                "type" : "ToQuantity",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "-10 \\'A\\'",
+                  "value" : "-10 'A'",
                   "type" : "Literal"
                }
             }
@@ -217,7 +217,7 @@ module.exports['FromString'] = {
                "type" : "ToQuantity",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "10.0 \\'mA\\'",
+                  "value" : "10.0 'mA'",
                   "type" : "Literal"
                }
             }
