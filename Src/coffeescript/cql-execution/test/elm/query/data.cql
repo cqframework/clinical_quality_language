@@ -42,6 +42,9 @@ return {E: E, a:a}
 // @Test: Tuple
 define query:  [Encounter] E return {id: E.id, thing: E.status}
 
+// @Test: QueryFilterNulls
+define query:  (List{null, 'One', null, 'Two', null}) I where I is not null
+
 // @Test: Sorting
 define TupleAsc: [Encounter] E sort by id
 define TupleReturnAsc: [Encounter] E return E sort by id

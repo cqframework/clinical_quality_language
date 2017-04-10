@@ -50,7 +50,12 @@ module.exports.Context = class Context
     @parent?.getCodeSystem(name)
 
   get: (identifier) ->
-    @context_values[identifier] ? @parent?.get(identifier)
+    # Check for undefined because if its null, we actually *do* want to return null (rather than looking at parent),
+    # but if it's really undefined, *then* look at the parent
+    if typeof @context_values[identifier] isnt 'undefined'
+      @context_values[identifier]
+    else
+      @parent?.get(identifier)
 
   set: (identifier, value) ->
     @context_values[identifier] = value
