@@ -10,6 +10,7 @@ define StringIsNull: '' is null
 define NonNullVarIsNull: One is null
 
 // @Test: Coalesce
-define NullNullHelloNullWorld: Coalesce(null as String, null as String, 'Hello', null as String, 'World')
-define FooNullNullBar: Coalesce('Foo', null as String, null as String, 'Bar')
-define AllNull: Coalesce(null as String, null as String, null as String)
+define NullNullHelloNullWorld: Coalesce(null, null, 'Hello', null, 'World')
+define FooNullNullBar: Coalesce('Foo', null, null, 'Bar')
+define AllNull: Coalesce(null, null, null)
+define ListArgStartsWithNull: Coalesce(List{null, null, 'One', null, 'Two'})

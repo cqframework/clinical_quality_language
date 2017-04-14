@@ -168,9 +168,10 @@ module.exports['IsNull'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define NullNullHelloNullWorld: Coalesce(null as String, null as String, 'Hello', null as String, 'World')
-define FooNullNullBar: Coalesce('Foo', null as String, null as String, 'Bar')
-define AllNull: Coalesce(null as String, null as String, null as String)
+define NullNullHelloNullWorld: Coalesce(null, null, 'Hello', null, 'World')
+define FooNullNullBar: Coalesce('Foo', null, null, 'Bar')
+define AllNull: Coalesce(null, null, null)
+define ListArgStartsWithNull: Coalesce(List{null, null, 'One', null, 'Two'})
 ###
 
 module.exports['Coalesce'] = {
@@ -211,39 +212,15 @@ module.exports['Coalesce'] = {
             "expression" : {
                "type" : "Coalesce",
                "operand" : [ {
-                  "strict" : false,
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
-                  }
+                  "type" : "Null"
                }, {
-                  "strict" : false,
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
-                  }
+                  "type" : "Null"
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Hello",
                   "type" : "Literal"
                }, {
-                  "strict" : false,
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
-                  }
+                  "type" : "Null"
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "World",
@@ -261,7 +238,7 @@ module.exports['Coalesce'] = {
                   "value" : "Foo",
                   "type" : "Literal"
                }, {
-                  "strict" : false,
+                  "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -271,7 +248,7 @@ module.exports['Coalesce'] = {
                      "type" : "NamedTypeSpecifier"
                   }
                }, {
-                  "strict" : false,
+                  "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -293,35 +270,60 @@ module.exports['Coalesce'] = {
             "expression" : {
                "type" : "Coalesce",
                "operand" : [ {
-                  "strict" : false,
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
-                  }
+                  "type" : "Null"
                }, {
-                  "strict" : false,
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
-                  }
+                  "type" : "Null"
                }, {
-                  "strict" : false,
-                  "type" : "As",
-                  "operand" : {
-                     "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
-                  }
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "ListArgStartsWithNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Coalesce",
+               "operand" : [ {
+                  "type" : "List",
+                  "element" : [ {
+                     "asType" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }, {
+                     "asType" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "One",
+                     "type" : "Literal"
+                  }, {
+                     "asType" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "Two",
+                     "type" : "Literal"
+                  } ]
                } ]
             }
          } ]
