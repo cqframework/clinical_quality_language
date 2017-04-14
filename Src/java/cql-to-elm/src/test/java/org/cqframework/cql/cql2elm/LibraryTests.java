@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
 
 public class LibraryTests {
@@ -54,6 +55,19 @@ public class LibraryTests {
         try {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/DuplicateExpressionLibrary.cql"), libraryManager);
             assertThat(translator.getErrors().size(), is(1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testMissingLibrary() {
+        CqlTranslator translator = null;
+        try {
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/MissingLibrary.cql"), libraryManager);
+            assertThat(translator.getErrors().size(), is(1));
+            assertThat(translator.getErrors().get(0), instanceOf(CqlTranslatorException.class));
+            assertThat(translator.getErrors().get(0).getCause(), instanceOf(CqlTranslatorIncludeException.class));
         } catch (IOException e) {
             e.printStackTrace();
         }
