@@ -55,7 +55,14 @@ public class LibraryManager {
     }
 
     private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
-        InputStream librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+        InputStream librarySource = null;
+        try {
+            librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+        }
+        catch (Exception e) {
+            throw new CqlTranslatorIncludeException(e.getMessage(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
+        }
+
         if (librarySource == null) {
             throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
                     libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
