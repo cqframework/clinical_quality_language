@@ -2792,9 +2792,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             try {
 
                 List<LetClause> dfcx = ctx.letClause() != null ? (List<LetClause>) visit(ctx.letClause()) : null;
-                if (dfcx != null) {
-                    queryContext.addLetClauses(dfcx);
-                }
 
                 List<RelationshipClause> qicx = new ArrayList<>();
                 if (ctx.queryInclusionClause() != null) {
@@ -3095,6 +3092,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         LetClause letClause = of.createLetClause().withExpression(parseExpression(ctx.expression()))
                 .withIdentifier(parseString(ctx.identifier()));
         letClause.setResultType(letClause.getExpression().getResultType());
+        queries.peek().addLetClause(letClause);
         return letClause;
     }
 
