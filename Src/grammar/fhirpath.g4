@@ -15,7 +15,7 @@ expression
         | expression '|' expression                                 #unionExpression
         | expression ('<=' | '<' | '>' | '>=') expression           #inequalityExpression
         | expression ('is' | 'as') typeSpecifier                    #typeExpression
-        | expression ('=' | '~' | '!=' | '!~' | '<>') expression    #equalityExpression
+        | expression ('=' | '~' | '!=' | '!~') expression           #equalityExpression
         | expression ('in' | 'contains') expression                 #membershipExpression
         | expression 'and' expression                               #andExpression
         | expression ('or' | 'xor') expression                      #orExpression
@@ -81,12 +81,14 @@ typeSpecifier
         ;
 
 qualifiedIdentifier
-        : (identifier)* '.' identifier
+        : identifier ('.' identifier)*
         ;
 
 identifier
         : IDENTIFIER
         | QUOTEDIDENTIFIER
+        | 'as'
+        | 'is'
         ;
 
 
@@ -113,9 +115,7 @@ DATETIME
                 (
                     '-'[0-9][0-9] // day
                     (
-                        'T'
-                            [0-9][0-9] (':'[0-9][0-9] (':'[0-9][0-9] ('.'[0-9]+)?)?)?
-                            (('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone
+                        'T' TIMEFORMAT
                     )?
                  )?
              )?
@@ -123,10 +123,13 @@ DATETIME
         ;
 
 TIME
-        : '@'
-            'T'
-                [0-9][0-9] (':'[0-9][0-9] (':'[0-9][0-9] ('.'[0-9]+)?)?)?
-                ('Z' | (('+' | '-') [0-9][0-9]':'[0-9][0-9]))? // timezone
+        : '@' 'T' TIMEFORMAT
+        ;
+
+fragment TIMEFORMAT
+        :
+            [0-9][0-9] (':'[0-9][0-9] (':'[0-9][0-9] ('.'[0-9]+)?)?)?
+            ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone
         ;
 
 IDENTIFIER
@@ -134,11 +137,11 @@ IDENTIFIER
         ;
 
 QUOTEDIDENTIFIER
-        : '"' (ESC | ~[\\"])* '"'
+        : '"' (ESC | .)*? '"'
         ;
 
 STRING
-        : '\'' (ESC | ~[\'])* '\''
+        : '\'' (ESC | .)*? '\''
         ;
 
 // Also allows leading zeroes now (just like CQL and XSD)
