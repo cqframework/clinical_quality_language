@@ -136,16 +136,16 @@ The following changes were made since the initial informative ballot in Septembe
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ChoiceTypeSpecifier">
-	  <xs:annotation>
-	    <xs:documentation>ChoiceTypeSpecifier defines the possible types of a choice type.</xs:documentation>
-	  </xs:annotation>
-	  <xs:complexContent>
-		  <xs:extension base="TypeSpecifier">
-		    <xs:sequence>
-				<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
-		    </xs:sequence>
-		  </xs:extension>
-	  </xs:complexContent>
+		<xs:annotation>
+			<xs:documentation>ChoiceTypeSpecifier defines the possible types of a choice type.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Expression" abstract="true">
 		<xs:annotation>
@@ -1473,6 +1473,14 @@ For comparisons involving date/time or time values with imprecision, note that t
 	<!-- Interval Operators -->
 	<!-- Equal (already defined) -->
 	<!-- NotEqual (already defined) -->
+	<xs:complexType name="PointFrom">
+		<xs:annotation>
+			<xs:documentation>The PointFrom expression extracts the single point from the source interval. The source interval must be a unit interval (meaning an interval of width one (1)), otherwise, a run-time error is thrown. If the source interval is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Width">
 		<xs:annotation>
 			<xs:documentation>The Width operator returns the width of an interval. The result of this operator is equivalent to invoking: End(i) - Start(i) + point-size.

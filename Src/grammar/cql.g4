@@ -318,6 +318,7 @@ expressionTerm
     | 'successor' 'of' expressionTerm                                    #successorExpressionTerm
     | 'predecessor' 'of' expressionTerm                                  #predecessorExpressionTerm
     | 'singleton' 'from' expressionTerm                                  #elementExtractorExpressionTerm
+    | 'point' 'from' expressionTerm                                      #pointExtractorExpressionTerm
     | ('minimum' | 'maximum') namedTypeSpecifier                         #typeExtentExpressionTerm
     | expressionTerm '^' expressionTerm                                  #powerExpressionTerm
     | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm          #multiplicationExpressionTerm

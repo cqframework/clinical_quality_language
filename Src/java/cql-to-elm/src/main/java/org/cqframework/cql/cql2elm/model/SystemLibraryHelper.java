@@ -293,6 +293,9 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("OverlapsBefore", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // OverlapsAfter<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("OverlapsAfter", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // PointFrom<T>(interval<T>) : T
+        GenericOperator pointFrom = new GenericOperator("PointFrom", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T"));
+        system.add(pointFrom);
         // ProperContains<T>(interval<T>, T) : Boolean
         system.add(new GenericOperator("ProperContains", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // ProperIn<T>(T, interval<T>) : Boolean

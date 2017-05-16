@@ -1180,6 +1180,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitPointExtractorExpressionTerm(@NotNull cqlParser.PointExtractorExpressionTermContext ctx) {
+        PointFrom result = of.createPointFrom().withOperand(parseExpression(ctx.expressionTerm()));
+
+        if (!(result.getOperand().getResultType() instanceof IntervalType)) {
+            throw new IllegalArgumentException("Interval type expected.");
+        }
+
+        result.setResultType(((IntervalType)result.getOperand().getResultType()).getPointType());
+
+        libraryBuilder.resolveUnaryCall("System", "PointFrom", result);
+        return result;
+    }
+
+    @Override
     public Object visitTypeExtentExpressionTerm(@NotNull cqlParser.TypeExtentExpressionTermContext ctx) {
         String extent = parseString(ctx.getChild(0));
         TypeSpecifier targetType = parseTypeSpecifier(ctx.namedTypeSpecifier());
