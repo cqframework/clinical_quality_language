@@ -3122,13 +3122,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
         Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward);
         if (result == null) {
-            Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
-            if (functionInfos != null) {
-                for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                    internalVisitFunctionDefinition(functionInfo.getDefinition());
+            libraryBuilder.pushExpressionDefinition(functionName);
+            try {
+                Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
+                if (functionInfos != null) {
+                    for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                        internalVisitFunctionDefinition(functionInfo.getDefinition());
+                    }
                 }
+                result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
             }
-            result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
+            finally {
+                libraryBuilder.popExpressionDefinition();
+            }
         }
 
         return result;
@@ -3206,7 +3212,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             fun.setContext(currentContext);
             fun.setResultType(fun.getExpression().getResultType());
-            libraryBuilder.addExpression(fun);
+            if (fun.getResultType() != null) {
+                libraryBuilder.addExpression(fun);
+            }
         }
 
         return fun;

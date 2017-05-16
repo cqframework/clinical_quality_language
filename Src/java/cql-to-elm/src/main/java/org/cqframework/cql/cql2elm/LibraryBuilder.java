@@ -734,6 +734,10 @@ public class LibraryBuilder {
     }
 
     public DataType ensureCompatibleTypes(DataType first, DataType second) {
+        if (first == null || second == null) {
+            return null;
+        }
+
         if (first.equals(DataType.ANY)) {
             return second;
         }
@@ -765,6 +769,10 @@ public class LibraryBuilder {
     }
 
     public Expression ensureCompatible(Expression expression, DataType targetType) {
+        if (targetType == null) {
+            return of.createNull();
+        }
+
         if (!targetType.isSuperTypeOf(expression.getResultType())) {
             return convertExpression(expression, targetType);
         }
@@ -1361,7 +1369,7 @@ public class LibraryBuilder {
 
     public void pushExpressionDefinition(String identifier) {
         if (expressionDefinitions.contains(identifier)) {
-            throw new IllegalArgumentException(String.format("Cannot resolve reference to expression %s because it results in a circular reference.", identifier));
+            throw new IllegalArgumentException(String.format("Cannot resolve reference to expression or function %s because it results in a circular reference.", identifier));
         }
         expressionDefinitions.push(new ExpressionDefinitionContext(identifier));
     }

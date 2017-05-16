@@ -136,6 +136,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testRecursiveFunctions() throws IOException {
+        runSemanticTest("OperatorTests/RecursiveFunctions.cql", 2);
+    }
+
+    @Test
     public void testInvalidSortClauses() throws IOException {
         runSemanticTest("OperatorTests/InvalidSortClauses.cql", 3);
     }
