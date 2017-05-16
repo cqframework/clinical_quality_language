@@ -31,7 +31,7 @@ import java.util.*;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class CqlTranslator {
-    public static enum Options { EnableDateRangeOptimization, EnableAnnotations }
+    public static enum Options { EnableDateRangeOptimization, EnableAnnotations, EnableDetailedErrors }
     public static enum Format { XML, JSON, COFFEE }
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
@@ -101,17 +101,31 @@ public class CqlTranslator {
 
     private class CqlErrorListener extends BaseErrorListener {
         
-        LibraryBuilder builder;
+        private LibraryBuilder builder;
+        private boolean detailedErrors;
       
-        public CqlErrorListener(LibraryBuilder builder) {
+        public CqlErrorListener(LibraryBuilder builder, boolean detailedErrors) {
             this.builder = builder;
+            this.detailedErrors = detailedErrors;
         }
       
         @Override
         public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
             TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
 //            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
+
+            if (detailedErrors) {
+                builder.recordParsingException(new CqlSyntaxException(msg, trackback, e));
             builder.recordParsingException(new CqlTranslatorException(msg, trackback, e));
+        }
+            else {
+                if (offendingSymbol instanceof CommonToken) {
+                    CommonToken token = (CommonToken) offendingSymbol;
+                    builder.recordParsingException(new CqlSyntaxException(String.format("Syntax error at %s", token.getText()), trackback, e));
+                } else {
+                    builder.recordParsingException(new CqlSyntaxException("Syntax error", trackback, e));
+    }
+            }
         }
     }
 
@@ -123,23 +137,28 @@ public class CqlTranslator {
 
         errors = new ArrayList<>();
         LibraryBuilder builder = new LibraryBuilder(modelManager, libraryManager);
-        parser.addErrorListener(new CqlErrorListener(builder));
-        ParseTree tree = parser.library();
-
-        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
-        preprocessor.visit(tree);
-
-        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
-        visitor.setTokenStream(tokens);
-        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
-
         List<Options> optionList = Arrays.asList(options);
+        Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         if (optionList.contains(Options.EnableDateRangeOptimization)) {
             visitor.enableDateRangeOptimization();
         }
         if (optionList.contains(Options.EnableAnnotations)) {
             visitor.enableAnnotations();
         }
+        if (optionList.contains(Options.EnableDetailedErrors)) {
+            visitor.enableDetailedErrors();
+        }
+
+        parser.removeErrorListeners(); // Clear the default console listener
+        parser.addErrorListener(new CqlErrorListener(builder, visitor.isDetailedErrorsEnabled()));
+        ParseTree tree = parser.library();
+
+        CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
+        preprocessor.visit(tree);
+
+        visitor.setTokenStream(tokens);
+        visitor.setLibraryInfo(preprocessor.getLibraryInfo());
+
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
         translatedLibrary = builder.getTranslatedLibrary();
@@ -175,13 +194,16 @@ public class CqlTranslator {
         ModelInfoLoader.registerModelInfoProvider(modelId, modelProvider);
     }
 
-    private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations, boolean annotations, boolean verifyOnly) throws IOException {
+    private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations, boolean annotations, boolean verifyOnly, boolean detailedErrors) throws IOException {
         ArrayList<Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
             options.add(Options.EnableDateRangeOptimization);
         }
         if (annotations) {
             options.add(Options.EnableAnnotations);
+        }
+        if (detailedErrors) {
+            options.add(Options.EnableDetailedErrors);
         }
 
         System.err.println("================================================================================");
@@ -190,6 +212,7 @@ public class CqlTranslator {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
         CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options.toArray(new Options[options.size()]));
         libraryManager.getLibrarySourceLoader().clearProviders();
 
@@ -231,6 +254,7 @@ public class CqlTranslator {
         OptionSpec verify = parser.accepts("verify");
         OptionSpec optimization = parser.accepts("date-range-optimization");
         OptionSpec annotations = parser.accepts("annotations");
+        OptionSpec detailedErrors = parser.accepts("detailed-errors");
 
         OptionSet options = parser.parse(args);
 
@@ -298,7 +322,7 @@ public class CqlTranslator {
                 loadModelInfo(modelFile);
             }
 
-            writeELM(in, out, outputFormat, options.has(optimization), options.has(annotations), options.has(verify));
+            writeELM(in, out, outputFormat, options.has(optimization), options.has(annotations), options.has(verify), options.has(detailedErrors));
         }
     }
 }
