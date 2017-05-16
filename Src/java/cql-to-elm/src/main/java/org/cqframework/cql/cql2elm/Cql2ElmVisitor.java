@@ -2867,7 +2867,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         LetClause letClause = of.createLetClause().withExpression(parseExpression(ctx.expression()))
                 .withIdentifier(parseString(ctx.identifier()));
         letClause.setResultType(letClause.getExpression().getResultType());
-        queries.peek().addLetClause(letClause);
+        libraryBuilder.peekQueryContext().addLetClause(letClause);
         return letClause;
     }
 
