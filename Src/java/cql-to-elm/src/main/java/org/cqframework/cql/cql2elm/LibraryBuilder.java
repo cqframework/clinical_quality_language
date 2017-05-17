@@ -203,6 +203,33 @@ public class LibraryBuilder {
         return result;
     }
 
+    public DataType resolveTypeSpecifier(String typeSpecifier) {
+        if (typeSpecifier == null) {
+            throw new IllegalArgumentException("typeSpecifier is null");
+        }
+
+        // typeSpecifier: simpleTypeSpecifier | intervalTypeSpecifier | listTypeSpecifier
+        // simpleTypeSpecifier: (identifier '.')? identifier
+        // intervalTypeSpecifier: 'interval' '<' typeSpecifier '>'
+        // listTypeSpecifier: 'list' '<' typeSpecifier '>'
+        if (typeSpecifier.toLowerCase().startsWith("interval<")) {
+            DataType pointType = resolveTypeSpecifier(typeSpecifier.substring(typeSpecifier.indexOf('<') + 1, typeSpecifier.lastIndexOf('>')));
+            return new IntervalType(pointType);
+        }
+        else if (typeSpecifier.toLowerCase().startsWith("list<")) {
+            DataType elementType = resolveTypeName(typeSpecifier.substring(typeSpecifier.indexOf('<') + 1, typeSpecifier.lastIndexOf('>')));
+            return new ListType(elementType);
+        }
+        else if (typeSpecifier.indexOf(".") >= 0) {
+            String modelName = typeSpecifier.substring(0, typeSpecifier.indexOf("."));
+            String typeName = typeSpecifier.substring(typeSpecifier.indexOf(".") + 1);
+            return resolveTypeName(modelName, typeName);
+        }
+        else {
+            return resolveTypeName(typeSpecifier);
+        }
+    }
+
     public UsingDef resolveUsingRef(String modelName) {
         return translatedLibrary.resolveUsingRef(modelName);
     }

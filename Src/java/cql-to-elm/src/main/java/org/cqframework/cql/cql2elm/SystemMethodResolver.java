@@ -3,7 +3,9 @@ package org.cqframework.cql.cql2elm;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.cqframework.cql.cql2elm.model.QueryContext;
 import org.cqframework.cql.gen.cqlParser;
+import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
+import org.hl7.cql.model.NamedType;
 import org.hl7.elm.r1.*;
 
 import java.util.ArrayList;
@@ -108,6 +110,45 @@ public class SystemMethodResolver {
             }
 
             return createQuery(source, null, where, null);
+        }
+        finally {
+            exitQueryContext();
+        }
+    }
+
+    // X.ofType(T) === X $this where $this is T
+    private Expression createOfType(Expression target, String functionName, @NotNull cqlParser.FunctionContext ctx) {
+        AliasedQuerySource source = enterQueryContext(target);
+        try {
+            checkArgumentCount(ctx, functionName, 1);
+            Expression typeArgument = (Expression)visitor.visit(ctx.paramList().expression(0));
+            if (!(typeArgument instanceof Literal)) {
+                throw new IllegalArgumentException("Expected literal argument");
+            }
+
+            Literal typeLiteral = (Literal)typeArgument;
+            if (!(DataTypes.equal(typeLiteral.getResultType(), builder.resolveTypeName("System", "String")))) {
+                throw new IllegalArgumentException("Expected string literal argument");
+            }
+
+            String typeSpecifier = ((Literal)typeArgument).getValue();
+            DataType isType = builder.resolveTypeSpecifier(typeSpecifier);
+
+            AliasRef thisRef = of.createAliasRef().withName(source.getAlias());
+            boolean isSingular = !(source.getResultType() instanceof ListType);
+            DataType elementType = isSingular ? source.getResultType() : ((ListType)source.getResultType()).getElementType();
+            thisRef.setResultType(elementType);
+
+            Is is = of.createIs().withOperand(thisRef);
+            if (isType instanceof NamedType) {
+                is.setIsType(builder.dataTypeToQName(isType));
+            }
+            else {
+                is.setIsTypeSpecifier(builder.dataTypeToTypeSpecifier(isType));
+            }
+            is.setResultType(builder.resolveTypeName("System", "Boolean"));
+
+            return createQuery(source, null, is, null);
         }
         finally {
             exitQueryContext();
@@ -273,7 +314,7 @@ public class SystemMethodResolver {
             case "length": return builder.resolveFunction(null, "Length", getParams(target, ctx));
             case "matches": return builder.resolveFunction(null, "Matches", getParams(target, ctx));
             case "not": return builder.resolveFunction(null, "Not", getParams(target, ctx));
-            // TODO: ofType // resolves as .where($this is type).select($this as type)
+            case "ofType": return createOfType(target, functionName, ctx);
             case "repeat": return createRepeat(target, functionName, ctx);
             case "replace": return builder.resolveFunction(null, "Replace", getParams(target, ctx));
             // TODO: replaceMatches // involves a new ELM operator
