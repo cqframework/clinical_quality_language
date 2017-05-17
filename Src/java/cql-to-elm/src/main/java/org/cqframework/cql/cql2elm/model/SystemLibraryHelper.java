@@ -365,6 +365,8 @@ public class SystemLibraryHelper {
         //// NOTE: FHIRPath Implicit List Demotion
         // Generic conversions turned out to be computationally expensive, so we added explicit list promotion/demotion in the conversion map directly instead.
         //system.add(new Conversion(singletonFrom, true));
+        // Take(list<T>, Integer): list<T>
+        system.add(new GenericOperator("Take", new Signature(new ListType(new TypeParameter("T")), systemModel.getInteger()), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // Union<T>(list<T>, list<T>) : list<T>
         system.add(new GenericOperator("Union", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
 

@@ -60,6 +60,17 @@ public class ListOperatorsTest {
     }
 
     @Test
+    public void testTake() {
+        ExpressionDef def = defs.get("ListTake");
+        assertThat(def, hasTypeAndResult(Slice.class, "list<System.Integer>"));
+
+        Slice slice = (Slice)def.getExpression();
+        assertThat(slice.getSource(), listOfLiterals(1, 2, 3));
+        assertThat(slice.getStartIndex(), literalFor(0));
+        assertThat(slice.getEndIndex(), literalFor(1));
+    }
+
+    @Test
     public void testLength() {
         ExpressionDef def = defs.get("ListLength");
         assertThat(def, hasTypeAndResult(Length.class, "System.Integer"));

@@ -232,7 +232,7 @@ public class SystemMethodResolver {
                 // .all(criteria) resolves as .where(criteria).select(true).allTrue()
                 Query query = createWhere(target, functionName, ctx);
                 ReturnClause returnClause = of.createReturnClause();
-                returnClause.setExpression(visitor.createLiteral(Boolean.valueOf(true)));
+                returnClause.setExpression(builder.createLiteral(Boolean.valueOf(true)));
                 if (query.getResultType() instanceof ListType) {
                     returnClause.setResultType(new ListType(returnClause.getExpression().getResultType()));
                 }
@@ -260,7 +260,7 @@ public class SystemMethodResolver {
                 Expression result = builder.resolveFunction(null, "PositionOf", params);
                 params = new ArrayList<Expression>();
                 params.add(result);
-                params.add(visitor.createLiteral(0));
+                params.add(builder.createLiteral(0));
                 return builder.resolveFunction(null, "GreaterOrEqual", params);
             }
             case "count": return builder.resolveFunction(null, "Count", getParams(target, ctx));

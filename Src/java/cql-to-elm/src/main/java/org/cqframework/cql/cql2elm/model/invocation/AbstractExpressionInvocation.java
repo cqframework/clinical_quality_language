@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The AbstractExpressionInvocation can be used to more simply make invocations for classess that only extend
+ * The AbstractExpressionInvocation can be used to more simply make invocations for classes that only extend
  * Expression.
  */
 public abstract class AbstractExpressionInvocation implements Invocation {

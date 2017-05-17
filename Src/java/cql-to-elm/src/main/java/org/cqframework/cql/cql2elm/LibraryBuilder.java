@@ -807,6 +807,54 @@ public class LibraryBuilder {
         return expression;
     }
 
+    public Literal createLiteral(String val, String type) {
+        DataType resultType = resolveTypeName("System", type);
+        Literal result = of.createLiteral().withValue(val).withValueType(dataTypeToQName(resultType));
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public Literal createLiteral(String string) {
+        return createLiteral(String.valueOf(string), "String");
+    }
+
+    public Literal createLiteral(Boolean bool) {
+        return createLiteral(String.valueOf(bool), "Boolean");
+    }
+
+    public Literal createLiteral(Integer integer) {
+        return createLiteral(String.valueOf(integer), "Integer");
+    }
+
+    public Literal createLiteral(Double value) {
+        return createLiteral(String.valueOf(value), "Decimal");
+    }
+
+    public Literal createNumberLiteral(String value) {
+        DataType resultType = resolveTypeName("System", value.contains(".") ? "Decimal" : "Integer");
+        Literal result = of.createLiteral()
+                .withValue(value)
+                .withValueType(dataTypeToQName(resultType));
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public Interval createInterval(Expression low, boolean lowClosed, Expression high, boolean highClosed) {
+        Interval result = of.createInterval()
+                .withLow(low)
+                .withLowClosed(lowClosed)
+                .withHigh(high)
+                .withHighClosed(highClosed);
+
+        DataType pointType = ensureCompatibleTypes(result.getLow().getResultType(), result.getHigh().getResultType());
+        result.setResultType(new IntervalType(pointType));
+
+        result.setLow(ensureCompatible(result.getLow(), pointType));
+        result.setHigh(ensureCompatible(result.getHigh(), pointType));
+
+        return result;
+    }
+
     public QName dataTypeToQName(DataType type) {
         if (type instanceof NamedType) {
             NamedType namedType = (NamedType)type;

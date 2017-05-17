@@ -139,6 +139,10 @@ public class SystemFunctionResolver {
                     return resolveLast(fun);
                 }
 
+                case "Take": {
+                    return resolveTake(fun);
+                }
+
                 case "Contains":
                 case "Except":
                 case "In":
@@ -360,6 +364,16 @@ public class SystemFunctionResolver {
         first.setSource(fun.getOperand().get(0));
         builder.resolveCall("System", "First", new FirstInvocation(first));
         return first;
+    }
+
+    private Slice resolveTake(FunctionRef fun) {
+        checkNumberOfOperands(fun, 2);
+        Slice slice = of.createSlice();
+        slice.setSource(fun.getOperand().get(0));
+        slice.setStartIndex(builder.createLiteral(0));
+        slice.setEndIndex(fun.getOperand().get(1));
+        builder.resolveCall("System", "Take", new TakeInvocation(slice));
+        return slice;
     }
 
     private Last resolveLast(FunctionRef fun) {

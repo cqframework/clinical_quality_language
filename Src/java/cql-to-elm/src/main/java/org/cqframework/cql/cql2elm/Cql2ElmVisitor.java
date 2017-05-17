@@ -658,17 +658,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Literal visitStringLiteral(@NotNull cqlParser.StringLiteralContext ctx) {
-        return createLiteral(parseString(ctx.STRING()));
+        return libraryBuilder.createLiteral(parseString(ctx.STRING()));
     }
 
     @Override
     public Literal visitBooleanLiteral(@NotNull cqlParser.BooleanLiteralContext ctx) {
-        return createLiteral(Boolean.valueOf(ctx.getText()));
+        return libraryBuilder.createLiteral(Boolean.valueOf(ctx.getText()));
     }
 
     @Override
     public Object visitIntervalSelector(@NotNull cqlParser.IntervalSelectorContext ctx) {
-        return createInterval(parseExpression(ctx.expression(0)), ctx.getChild(1).getText().equals("["),
+        return libraryBuilder.createInterval(parseExpression(ctx.expression(0)), ctx.getChild(1).getText().equals("["),
                 parseExpression(ctx.expression(1)), ctx.getChild(5).getText().equals("]"));
     }
 
@@ -825,14 +825,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (hour < 0 || hour > 24) {
                     throw new IllegalArgumentException(String.format("Invalid hour in time literal (%s).", input));
                 }
-                result.setHour(createLiteral(hour));
+                result.setHour(libraryBuilder.createLiteral(hour));
 
                 if (matcher.group(4) != null) {
                     minute = Integer.parseInt(matcher.group(4));
                     if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid minute in time literal (%s).", input));
                     }
-                    result.setMinute(createLiteral(minute));
+                    result.setMinute(libraryBuilder.createLiteral(minute));
                 }
 
                 if (matcher.group(6) != null) {
@@ -840,7 +840,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid second in time literal (%s).", input));
                     }
-                    result.setSecond(createLiteral(second));
+                    result.setSecond(libraryBuilder.createLiteral(second));
                 }
 
                 if (matcher.group(8) != null) {
@@ -848,11 +848,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid millisecond in time literal (%s).", input));
                     }
-                    result.setMillisecond(createLiteral(millisecond));
+                    result.setMillisecond(libraryBuilder.createLiteral(millisecond));
                 }
 
                 if (matcher.group(10) != null && matcher.group(10).equals("Z")) {
-                    result.setTimezoneOffset(createLiteral(0.0));
+                    result.setTimezoneOffset(libraryBuilder.createLiteral(0.0));
                 }
 
                 if (matcher.group(12) != null) {
@@ -868,7 +868,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         if (minuteOffset < 0 || minuteOffset >= 60 || (hourOffset == 14 && minuteOffset > 0)) {
                             throw new IllegalArgumentException(String.format("Timezone minute offset out of range in time literal (%s).", input));
                         }
-                        result.setTimezoneOffset(createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
+                        result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
                     }
                     else {
                         if (matcher.group(13) != null) {
@@ -876,7 +876,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             if (hourOffset < 0 || hourOffset > 14) {
                                 throw new IllegalArgumentException(String.format("Timezone hour offset out of range in time literal (%s).", input));
                             }
-                            result.setTimezoneOffset(createLiteral((double)(hourOffset * offsetPolarity)));
+                            result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset * offsetPolarity)));
                         }
                     }
                 }
@@ -917,13 +917,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 int minute = -1;
                 int second = -1;
                 int millisecond = -1;
-                result.setYear(createLiteral(year));
+                result.setYear(libraryBuilder.createLiteral(year));
                 if (matcher.group(3) != null) {
                     month = Integer.parseInt(matcher.group(3));
                     if (month < 0 || month > 12) {
                         throw new IllegalArgumentException(String.format("Invalid month in date/time literal (%s).", input));
                     }
-                    result.setMonth(createLiteral(month));
+                    result.setMonth(libraryBuilder.createLiteral(month));
                 }
 
                 if (matcher.group(5) != null) {
@@ -945,7 +945,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         throw new IllegalArgumentException(String.format("Invalid day in date/time literal (%s).", input));
                     }
 
-                    result.setDay(createLiteral(day));
+                    result.setDay(libraryBuilder.createLiteral(day));
                 }
 
                 if (matcher.group(10) != null) {
@@ -953,7 +953,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (hour < 0 || hour > 24) {
                         throw new IllegalArgumentException(String.format("Invalid hour in date/time literal (%s).", input));
                     }
-                    result.setHour(createLiteral(hour));
+                    result.setHour(libraryBuilder.createLiteral(hour));
                 }
 
                 if (matcher.group(12) != null) {
@@ -961,7 +961,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid minute in date/time literal (%s).", input));
                     }
-                    result.setMinute(createLiteral(minute));
+                    result.setMinute(libraryBuilder.createLiteral(minute));
                 }
 
                 if (matcher.group(14) != null) {
@@ -969,7 +969,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid second in date/time literal (%s).", input));
                     }
-                    result.setSecond(createLiteral(second));
+                    result.setSecond(libraryBuilder.createLiteral(second));
                 }
 
                 if (matcher.group(16) != null) {
@@ -977,12 +977,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid millisecond in date/time literal (%s).", input));
                     }
-                    result.setMillisecond(createLiteral(millisecond));
+                    result.setMillisecond(libraryBuilder.createLiteral(millisecond));
                 }
 
                 if ((matcher.group(7) != null && matcher.group(7).equals("Z"))
                         || ((matcher.group(18) != null) && matcher.group(18).equals("Z"))) {
-                    result.setTimezoneOffset(createLiteral(0.0));
+                    result.setTimezoneOffset(libraryBuilder.createLiteral(0.0));
                 }
 
                 if (matcher.group(20) != null) {
@@ -999,7 +999,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             throw new IllegalArgumentException(String.format("Timezone minute offset is out of range in date/time literal (%s).", input));
                         }
 
-                        result.setTimezoneOffset(createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
+                        result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
                     }
                     else {
                         if (matcher.group(21) != null) {
@@ -1008,7 +1008,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
                             }
 
-                            result.setTimezoneOffset(createLiteral((double)(hourOffset * offsetPolarity)));
+                            result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset * offsetPolarity)));
                         }
                     }
                 }
@@ -1034,7 +1034,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Expression visitNumberLiteral(@NotNull cqlParser.NumberLiteralContext ctx) {
-        return createNumberLiteral(ctx.NUMBER().getText());
+        return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
     }
 
     @Override
@@ -1052,7 +1052,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 throw new IllegalArgumentException(String.format("Could not parse quantity literal: %s", ctx.getText()), e);
             }
         } else {
-            return createNumberLiteral(ctx.NUMBER().getText());
+            return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
         }
     }
 
@@ -1352,7 +1352,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (first.getResultType() instanceof IntervalType) {
             BinaryExpression result = isProper ? of.createProperIncludedIn() : of.createIncludedIn()
-                    .withOperand(first, createInterval(second, true, third, true));
+                    .withOperand(first, libraryBuilder.createInterval(second, true, third, true));
 
             libraryBuilder.resolveBinaryCall("System", isProper ? "ProperIncludedIn" : "IncludedIn", result);
             return result;
@@ -2124,7 +2124,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         } else {
             Quantity quantity = (Quantity)visit(ctx.quantityOffset().quantity());
-            Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
+            Literal quantityLiteral = libraryBuilder.createLiteral(quantity.getValue().intValueExact());
             Expression lowerBound = null;
             Expression upperBound = null;
 
@@ -2194,7 +2194,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         case "or less":
                             if (isBefore) {
                                 Interval quantityInterval = of.createInterval()
-                                        .withLow(createLiteral(0)).withLowClosed(false)
+                                        .withLow(libraryBuilder.createLiteral(0)).withLowClosed(false)
                                         .withHigh(quantityLiteral).withHighClosed(true);
                                 quantityInterval.setResultType(new IntervalType(quantityInterval.getLow().getResultType()));
                                 In in = of.createIn().withOperand(betweenOperator, quantityInterval);
@@ -2205,7 +2205,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 libraryBuilder.resolveUnaryCall("System", "Negate", negate);
                                 Interval quantityInterval = of.createInterval()
                                         .withLow(negate).withLowClosed(true)
-                                        .withHigh(createLiteral(0)).withHighClosed(false);
+                                        .withHigh(libraryBuilder.createLiteral(0)).withHighClosed(false);
                                 quantityInterval.setResultType(new IntervalType(quantityInterval.getLow().getResultType()));
                                 In in = of.createIn().withOperand(betweenOperator, quantityInterval);
                                 libraryBuilder.resolveBinaryCall("System", "In", in);
@@ -2275,8 +2275,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         Quantity quantity = (Quantity)visit(ctx.quantity());
-        Literal quantityLiteral = createLiteral(quantity.getValue().intValueExact());
-        Negate negativeQuantityLiteral = of.createNegate().withOperand(createLiteral(quantity.getValue().intValueExact()));
+        Literal quantityLiteral = libraryBuilder.createLiteral(quantity.getValue().intValueExact());
+        Negate negativeQuantityLiteral = of.createNegate().withOperand(libraryBuilder.createLiteral(quantity.getValue().intValueExact()));
         libraryBuilder.resolveUnaryCall("System", "Negate", negativeQuantityLiteral);
 
         Expression lowerBound = null;
@@ -2775,7 +2775,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Expression operand = and.getOperand().get(i);
             if ((operand instanceof IncludedIn || operand instanceof In) && attemptDateRangeOptimization((BinaryExpression) operand, retrieve, alias)) {
                 // Replace optimized part in And with true -- to be optimized out later
-                and.getOperand().set(i, createLiteral(true));
+                and.getOperand().set(i, libraryBuilder.createLiteral(true));
                 return true;
             } else if (operand instanceof And && attemptDateRangeOptimization((And) operand, retrieve, alias)) {
                 return true;
@@ -3253,54 +3253,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private TypeSpecifier parseTypeSpecifier(ParseTree pt) {
         return pt == null ? null : (TypeSpecifier) visit(pt);
-    }
-
-    public Literal createLiteral(String val, String type) {
-        DataType resultType = libraryBuilder.resolveTypeName("System", type);
-        Literal result = of.createLiteral().withValue(val).withValueType(libraryBuilder.dataTypeToQName(resultType));
-        result.setResultType(resultType);
-        return result;
-    }
-
-    public Literal createLiteral(String string) {
-        return createLiteral(String.valueOf(string), "String");
-    }
-
-    public Literal createLiteral(Boolean bool) {
-        return createLiteral(String.valueOf(bool), "Boolean");
-    }
-
-    public Literal createLiteral(Integer integer) {
-        return createLiteral(String.valueOf(integer), "Integer");
-    }
-
-    public Literal createLiteral(Double value) {
-        return createLiteral(String.valueOf(value), "Decimal");
-    }
-
-    public Literal createNumberLiteral(String value) {
-        DataType resultType = libraryBuilder.resolveTypeName("System", value.contains(".") ? "Decimal" : "Integer");
-        Literal result = of.createLiteral()
-                .withValue(value)
-                .withValueType(libraryBuilder.dataTypeToQName(resultType));
-        result.setResultType(resultType);
-        return result;
-    }
-
-    public Interval createInterval(Expression low, boolean lowClosed, Expression high, boolean highClosed) {
-        Interval result = of.createInterval()
-                .withLow(low)
-                .withLowClosed(lowClosed)
-                .withHigh(high)
-                .withHighClosed(highClosed);
-
-        DataType pointType = libraryBuilder.ensureCompatibleTypes(result.getLow().getResultType(), result.getHigh().getResultType());
-        result.setResultType(new IntervalType(pointType));
-
-        result.setLow(libraryBuilder.ensureCompatible(result.getLow(), pointType));
-        result.setHigh(libraryBuilder.ensureCompatible(result.getHigh(), pointType));
-
-        return result;
     }
 
     private boolean isBooleanLiteral(Expression expression, Boolean bool) {

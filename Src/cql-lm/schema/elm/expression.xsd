@@ -1993,6 +1993,28 @@ If the argument is null, the result is null.</xs:documentation>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Slice">
+		<xs:annotation>
+			<xs:documentation>The Slice operator returns a portion of the elements in a list, beginning at the start index and ending just before the ending index.
+			
+If the source list is null, the result is null.
+
+If the startIndex is null, the slice begins at the first element of the list.
+
+If the endIndex is null, the slice continues to the last element of the list.
+
+If the startIndex or endIndex is less than 0, the result is an empty list.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="source" type="Expression"/>
+					<xs:element name="startIndex" type="Expression"/>
+					<xs:element name="endIndex" type="Expression"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- Indexer (already defined) -->
 	<xs:complexType name="IndexOf">
 		<xs:annotation>
