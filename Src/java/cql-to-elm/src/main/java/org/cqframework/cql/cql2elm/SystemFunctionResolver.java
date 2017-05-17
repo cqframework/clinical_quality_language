@@ -143,6 +143,10 @@ public class SystemFunctionResolver {
                     return resolveTake(fun);
                 }
 
+                case "Tail": {
+                    return resolveTail(fun);
+                }
+
                 case "Contains":
                 case "Except":
                 case "In":
@@ -366,6 +370,14 @@ public class SystemFunctionResolver {
         return first;
     }
 
+    private Last resolveLast(FunctionRef fun) {
+        checkNumberOfOperands(fun, 1);
+        final Last last = of.createLast();
+        last.setSource(fun.getOperand().get(0));
+        builder.resolveCall("System", "Last", new LastInvocation(last));
+        return last;
+    }
+
     private Slice resolveTake(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         Slice slice = of.createSlice();
@@ -376,12 +388,13 @@ public class SystemFunctionResolver {
         return slice;
     }
 
-    private Last resolveLast(FunctionRef fun) {
+    private Slice resolveTail(FunctionRef fun) {
         checkNumberOfOperands(fun, 1);
-        final Last last = of.createLast();
-        last.setSource(fun.getOperand().get(0));
-        builder.resolveCall("System", "Last", new LastInvocation(last));
-        return last;
+        Slice slice = of.createSlice();
+        slice.setSource(fun.getOperand().get(0));
+        slice.setStartIndex(builder.createLiteral(1));
+        builder.resolveCall("System", "Tail", new TailInvocation(slice));
+        return slice;
     }
 
     // String Function Support

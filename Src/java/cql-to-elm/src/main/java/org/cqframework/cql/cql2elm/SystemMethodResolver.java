@@ -327,8 +327,8 @@ public class SystemMethodResolver {
             case "subsetOf": return builder.resolveFunction(null, "IncludedIn", getParams(target, ctx));
             case "substring": return builder.resolveFunction(null, "Substring", getParams(target, ctx));
             case "supersetOf": return builder.resolveFunction(null, "Includes", getParams(target, ctx));
-            // TODO: tail // involves a new ELM operator Tail...
-            // TODO: take // involves a new ELM operator Take...
+            case "tail": return builder.resolveFunction(null, "Tail", getParams(target, ctx));
+            case "take": return builder.resolveFunction(null, "Take", getParams(target, ctx));
             case "toBoolean": return builder.resolveFunction(null, "ToBoolean", getParams(target, ctx));
             case "toDateTime": return builder.resolveFunction(null, "ToDateTime", getParams(target, ctx));
             case "toDecimal": return builder.resolveFunction(null, "ToDecimal", getParams(target, ctx));
