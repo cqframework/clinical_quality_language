@@ -2062,6 +2062,26 @@ If the element argument evaluates to null for some item in the source list, the 
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Repeat">
+		<xs:annotation>
+			<xs:documentation>The Repeat expression performs successive ForEach until no new elements are returned.
+			
+The operator uses equivalence comparison semantics as defined in the Equivalent operator.
+
+If the source argument is null, the result is null.
+
+If the element argument evaluates to null for some item in the source list, the resulting list will contain a null for that element.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="element" type="Expression" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="scope" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Distinct">
 		<xs:annotation>
 			<xs:documentation>The Distinct operator takes a list of elements and returns a list containing only the unique elements within the input. For example, given the list of integers { 1, 1, 1, 2, 2, 3, 4, 4 }, the result of Distinct would be { 1, 2, 3, 4 }.

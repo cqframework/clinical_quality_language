@@ -114,6 +114,31 @@ public class SystemMethodResolver {
         }
     }
 
+    private Expression createRepeat(Expression target, String functionName, @NotNull cqlParser.FunctionContext ctx) {
+        AliasedQuerySource source = enterQueryContext(target);
+        try {
+            boolean isSingular = !(source.getResultType() instanceof ListType);
+            checkArgumentCount(ctx, functionName, 1);
+            Expression select = (Expression)visitor.visit(ctx.paramList().expression(0));
+            Repeat repeat = of.createRepeat();
+            repeat.setSource(target);
+            repeat.setElement(select);
+            repeat.setScope("$this");
+            // TODO: This isn't quite right, it glosses over the fact that the type of the result may include the result of invoking the element expression on intermediate results
+            if (isSingular) {
+                repeat.setResultType(new ListType(select.getResultType()));
+            }
+            else {
+                repeat.setResultType(select.getResultType());
+            }
+
+            return repeat;
+        }
+        finally {
+            exitQueryContext();
+        }
+    }
+
     private Expression createSelect(Expression target, String functionName, @NotNull cqlParser.FunctionContext ctx) {
         boolean isListResult = false;
         boolean isSingular = false;
@@ -249,7 +274,7 @@ public class SystemMethodResolver {
             case "matches": return builder.resolveFunction(null, "Matches", getParams(target, ctx));
             case "not": return builder.resolveFunction(null, "Not", getParams(target, ctx));
             // TODO: ofType // resolves as .where($this is type).select($this as type)
-            // TODO: repeat // involves a new ELM operator to support recursive evaluation...
+            case "repeat": return createRepeat(target, functionName, ctx);
             case "replace": return builder.resolveFunction(null, "Replace", getParams(target, ctx));
             // TODO: replaceMatches // involves a new ELM operator
             case "select": {
