@@ -139,6 +139,10 @@ public class SystemFunctionResolver {
                     return resolveLast(fun);
                 }
 
+                case "Skip": {
+                    return resolveSkip(fun);
+                }
+
                 case "Take": {
                     return resolveTake(fun);
                 }
@@ -376,6 +380,15 @@ public class SystemFunctionResolver {
         last.setSource(fun.getOperand().get(0));
         builder.resolveCall("System", "Last", new LastInvocation(last));
         return last;
+    }
+
+    private Slice resolveSkip(FunctionRef fun) {
+        checkNumberOfOperands(fun, 2);
+        Slice slice = of.createSlice();
+        slice.setSource(fun.getOperand().get(0));
+        slice.setStartIndex(fun.getOperand().get(1));
+        builder.resolveCall("System", "Skip", new SkipInvocation(slice));
+        return slice;
     }
 
     private Slice resolveTake(FunctionRef fun) {

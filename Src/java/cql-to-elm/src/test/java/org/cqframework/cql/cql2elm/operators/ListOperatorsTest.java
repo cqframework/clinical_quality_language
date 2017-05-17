@@ -60,6 +60,16 @@ public class ListOperatorsTest {
     }
 
     @Test
+    public void testSkip() {
+        ExpressionDef def = defs.get("ListSkip");
+        assertThat(def, hasTypeAndResult(Slice.class, "list<System.Integer>"));
+
+        Slice slice = (Slice)def.getExpression();
+        assertThat(slice.getSource(), listOfLiterals(1, 2, 3));
+        assertThat(slice.getStartIndex(), literalFor(1));
+    }
+
+    @Test
     public void testTail() {
         ExpressionDef def = defs.get("ListTail");
         assertThat(def, hasTypeAndResult(Slice.class, "list<System.Integer>"));

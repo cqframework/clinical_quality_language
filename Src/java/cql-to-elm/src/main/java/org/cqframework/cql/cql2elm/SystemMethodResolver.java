@@ -322,7 +322,7 @@ public class SystemMethodResolver {
                 return createSelect(target, functionName, ctx);
             }
             case "single": return builder.resolveFunction(null, "SingletonFrom", getParams(target, ctx));
-            // TODO: skip // Involves a new ELM operator Skip...
+            case "skip": return builder.resolveFunction(null, "Skip", getParams(target, ctx));
             case "startsWith": return builder.resolveFunction(null, "StartsWith", getParams(target, ctx));
             case "subsetOf": return builder.resolveFunction(null, "IncludedIn", getParams(target, ctx));
             case "substring": return builder.resolveFunction(null, "Substring", getParams(target, ctx));

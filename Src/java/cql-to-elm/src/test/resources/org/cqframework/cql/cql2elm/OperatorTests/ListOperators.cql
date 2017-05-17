@@ -16,6 +16,7 @@ define ListLength: Length( { 1, 2, 3, 4, 5 })
 define ListProperIncludes: { 1, 2, 3, 4, 5 } properly includes { 2, 3, 4 }
 define ListProperIncludedIn: { 2, 3, 4 } properly included in { 1, 2, 3, 4, 5 }
 define ListSingletonFrom: singleton from { 1 }
+define ListSkip: Skip({ 1, 2, 3 }, 1)
 define ListTail: Tail({ 1, 2, 3 })
 define ListTake: Take({ 1, 2, 3 }, 1)
 define ListUnion: { 1, 2, 3 } union { 4, 5, 6 }
