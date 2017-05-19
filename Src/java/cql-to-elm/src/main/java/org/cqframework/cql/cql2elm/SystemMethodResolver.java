@@ -326,6 +326,14 @@ public class SystemMethodResolver {
             }
             // TODO: isDistinct // resolves as .count() = .distinct().count() // somewhat tricky in that it needs to duplicate the target expression...
             case "last": return builder.resolveFunction(null, "Last", getParams(target, ctx));
+            case "lastIndexOf": {
+                checkArgumentCount(ctx, functionName, 1);
+                List<Expression> params = new ArrayList<Expression>();
+                Expression argument = (Expression)visitor.visit(ctx.paramList().expression(0));
+                params.add(argument);
+                params.add(target);
+                return builder.resolveFunction(null, "LastPositionOf", params);
+            }
             case "length": return builder.resolveFunction(null, "Length", getParams(target, ctx));
             case "matches": return builder.resolveFunction(null, "Matches", getParams(target, ctx));
             case "not": return builder.resolveFunction(null, "Not", getParams(target, ctx));

@@ -219,6 +219,10 @@ public class SystemFunctionResolver {
                     return resolvePositionOf(fun);
                 }
 
+                case "LastPositionOf": {
+                    return resolveLastPositionOf(fun);
+                }
+
                 case "Substring": {
                     return resolveSubstring(fun);
                 }
@@ -446,6 +450,15 @@ public class SystemFunctionResolver {
                 .withPattern(fun.getOperand().get(0))
                 .withString(fun.getOperand().get(1));
         builder.resolveCall("System", "PositionOf", new PositionOfInvocation(pos));
+        return pos;
+    }
+
+    private LastPositionOf resolveLastPositionOf(FunctionRef fun) {
+        checkNumberOfOperands(fun, 2);
+        final LastPositionOf pos = of.createLastPositionOf()
+                .withPattern(fun.getOperand().get(0))
+                .withString(fun.getOperand().get(1));
+        builder.resolveCall("System", "LastPositionOf", new LastPositionOfInvocation(pos));
         return pos;
     }
 

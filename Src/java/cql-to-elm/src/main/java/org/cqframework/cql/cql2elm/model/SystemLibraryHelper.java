@@ -198,6 +198,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Concatenate", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getString()));
         system.add(new Operator("EndsWith", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("Indexer", new Signature(systemModel.getString(), systemModel.getInteger()), systemModel.getString()));
+        system.add(new Operator("LastPositionOf", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getInteger()));
         system.add(new Operator("Length", new Signature(systemModel.getString()), systemModel.getInteger()));
         system.add(new Operator("Lower", new Signature(systemModel.getString()), systemModel.getString()));
         system.add(new Operator("Matches", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));

@@ -84,6 +84,15 @@ public class StringOperatorsTest {
     }
 
     @Test
+    public void testLastPositionOf() {
+        ExpressionDef def = defs.get("StringLastPositionOf");
+        assertThat(def, hasTypeAndResult(LastPositionOf.class, "System.Integer"));
+        LastPositionOf lastPositionOf = (LastPositionOf) def.getExpression();
+        assertThat(lastPositionOf.getPattern(), literalFor("J"));
+        assertThat(lastPositionOf.getString(), literalFor("John"));
+    }
+
+    @Test
     public void testSubstring() {
         ExpressionDef def = defs.get("StringSubstring");
         assertThat(def, hasTypeAndResult(Substring.class, "System.String"));

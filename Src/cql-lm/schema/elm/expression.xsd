@@ -1225,7 +1225,24 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="PositionOf">
 		<xs:annotation>
-			<xs:documentation>The PositionOf operator returns the 0-based index of the given pattern in the given string.
+			<xs:documentation>The PositionOf operator returns the 0-based index of the beginning given pattern in the given string.
+			
+If the pattern is not found, the result is -1.
+
+If either argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="pattern" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="string" type="Expression" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LastPositionOf">
+		<xs:annotation>
+			<xs:documentation>The LastPositionOf operator returns the 0-based index of the beginning of the last appearance of the given pattern in the given string.
 			
 If the pattern is not found, the result is -1.
 
