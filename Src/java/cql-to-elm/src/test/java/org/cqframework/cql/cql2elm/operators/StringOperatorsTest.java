@@ -2,16 +2,7 @@ package org.cqframework.cql.cql2elm.operators;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.ModelManager;
-import org.hl7.elm.r1.Combine;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.Length;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.Lower;
-import org.hl7.elm.r1.PositionOf;
-import org.hl7.elm.r1.Split;
-import org.hl7.elm.r1.Substring;
-import org.hl7.elm.r1.Upper;
+import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -116,5 +107,29 @@ public class StringOperatorsTest {
 
         Length length = (Length) def.getExpression();
         assertThat(length.getOperand(), literalFor("John"));
+    }
+
+    @Test
+    public void testStartsWith() {
+        ExpressionDef def = defs.get("StringStartsWith");
+        assertThat(def, hasTypeAndResult(StartsWith.class, "System.Boolean"));
+    }
+
+    @Test
+    public void testEndsWith() {
+        ExpressionDef def = defs.get("StringEndsWith");
+        assertThat(def, hasTypeAndResult(EndsWith.class, "System.Boolean"));
+    }
+
+    @Test
+    public void testMatches() {
+        ExpressionDef def = defs.get("StringMatches");
+        assertThat(def, hasTypeAndResult(Matches.class, "System.Boolean"));
+    }
+
+    @Test
+    public void testReplaceMatches() {
+        ExpressionDef def = defs.get("StringReplaceMatches");
+        assertThat(def, hasTypeAndResult(ReplaceMatches.class, "System.Boolean"));
     }
 }

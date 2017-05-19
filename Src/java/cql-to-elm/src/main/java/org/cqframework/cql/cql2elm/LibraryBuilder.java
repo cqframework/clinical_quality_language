@@ -1,10 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.*;
-import org.cqframework.cql.cql2elm.model.invocation.AggregateExpressionInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.BinaryExpressionInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.FunctionRefInvocation;
-import org.cqframework.cql.cql2elm.model.invocation.UnaryExpressionInvocation;
+import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.ErrorType;
@@ -444,6 +441,10 @@ public class LibraryBuilder {
 
     public Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression) {
         return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression));
+    }
+
+    public Expression resolveTernaryCall(String libraryName, String operatorName, TernaryExpression expression) {
+        return resolveCall(libraryName, operatorName, new TernaryExpressionInvocation(expression));
     }
 
     public Expression resolveAggregateCall(String libraryName, String operatorName, AggregateExpression expression) {

@@ -187,8 +187,15 @@ public class SystemFunctionResolver {
                 }
 
                 // String Functions
-                case "Indexer": {
+                case "Indexer":
+                case "StartsWith":
+                case "EndsWith":
+                case "Matches": {
                     return resolveBinary(fun);
+                }
+
+                case "ReplaceMatches": {
+                    return resolveTernary(fun);
                 }
 
                 case "Concatenate": {
@@ -523,6 +530,24 @@ public class SystemFunctionResolver {
                 return operator;
             }
         } catch (Exception e) {
+            // Do nothing but fall through
+        }
+        return null;
+    }
+
+    private TernaryExpression resolveTernary(FunctionRef fun) {
+        TernaryExpression operator = null;
+        try {
+            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            if (TernaryExpression.class.isAssignableFrom(clazz)) {
+                operator = (TernaryExpression)clazz.newInstance();
+                checkNumberOfOperands(fun, 3);
+                operator.getOperand().addAll(fun.getOperand());
+                builder.resolveTernaryCall("System", fun.getName(), operator);
+                return operator;
+            }
+        }
+        catch (Exception e) {
             // Do nothing but fall through
         }
         return null;

@@ -1258,6 +1258,54 @@ If stringToSub or startIndex is null, or startIndex is out of range, the result 
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="StartsWith">
+        <xs:annotation>
+		    <xs:documentation>The StartsWith operator returns true if the given string starts with the given prefix.
+		  
+If the prefix is the empty string, the result is true.
+  
+If either argument is null, the result is null.</xs:documentation>
+        </xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EndsWith">
+        <xs:annotation>
+		   <xs:documentation>The EndsWith operator returns true if the given string ends with the given suffix.
+
+If the suffix is the empty string, the result is true.
+  
+If either argument is null, the result is null.</xs:documentation>
+        </xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Matches">
+        <xs:annotation>
+			<xs:documentation>The Matches operator returns true if the given string matches the given regular expression pattern. Regular expressions should function consistently, regardless of any culture- and locale-specific settings in the environment, should be case-sensitive, use single line mode, and allow Unicode characters.
+		   
+If either argument is null, the result is null.
+
+Platforms will typically use native regular expression implementations. These are typically fairly similar, but there will always be small differences. As such, CQL does not prescribe a particular dialect, but recommends the use of the dialect defined as part of XML Schema 1.1 as the dialect most likely to be broadly supported and understood.</xs:documentation>
+        </xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ReplaceMatches">
+        <xs:annotation>
+			<xs:documentation>The ReplaceMatches operator matches the given string using the regular expression pattern, replacing each match with the given substitution. The substitution string may refer to identified match groups in the regular expression. Regular expressions should function consistently, regardless of any culture- and locale-specific settings in the environment, should be case-sensitive, use single line mode and allow Unicode characters.
+		   
+If any argument is null, the result is null.
+
+Platforms will typically use native regular expression implementations. These are typically fairly similar, but there will always be small differences. As such, CQL does not prescribe a particular dialect, but recommends the use of the dialect defined as part of XML Schema 1.1 as the dialect most likely to be broadly supported and understood.</xs:documentation>
+        </xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TernaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- TODO: Trimming, Padding, Replicating, Insert, IsDigit, IsLetter, IsWhitespace? 
 	These operators are not primitive, but they are very useful shorthands. Do we want to leave them out for now? (CREF doesn't actually have any of these, and hasn't needed them so far...)
 	-->

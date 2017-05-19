@@ -332,7 +332,7 @@ public class SystemMethodResolver {
             case "ofType": return createOfType(target, functionName, ctx);
             case "repeat": return createRepeat(target, functionName, ctx);
             case "replace": return builder.resolveFunction(null, "Replace", getParams(target, ctx));
-            // TODO: replaceMatches // involves a new ELM operator
+            case "replaceMatches": return builder.resolveFunction(null, "ReplaceMatches", getParams(target, ctx));
             case "select": {
                 return createSelect(target, functionName, ctx);
             }
