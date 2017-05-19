@@ -202,7 +202,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Lower", new Signature(systemModel.getString()), systemModel.getString()));
         system.add(new Operator("Matches", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("PositionOf", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getInteger()));
-        system.add(new Operator("ReplaceMatches", new Signature(systemModel.getString(), systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
+        system.add(new Operator("ReplaceMatches", new Signature(systemModel.getString(), systemModel.getString(), systemModel.getString()), systemModel.getString()));
         system.add(new Operator("Split", new Signature(systemModel.getString(), systemModel.getString()), new ListType(systemModel.getString())));
         system.add(new Operator("StartsWith", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("Substring", new Signature(systemModel.getString(), systemModel.getInteger()), systemModel.getString()));

@@ -130,6 +130,6 @@ public class StringOperatorsTest {
     @Test
     public void testReplaceMatches() {
         ExpressionDef def = defs.get("StringReplaceMatches");
-        assertThat(def, hasTypeAndResult(ReplaceMatches.class, "System.Boolean"));
+        assertThat(def, hasTypeAndResult(ReplaceMatches.class, "System.String"));
     }
 }
