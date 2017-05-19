@@ -251,6 +251,21 @@ public class SystemMethodResolver {
             case "allFalse": return builder.resolveFunction(null, "AllFalse", getParams(target, ctx));
             case "anyFalse": return builder.resolveFunction(null, "AnyFalse", getParams(target, ctx));
             // TODO: children...
+            case "combine": {
+                checkArgumentCount(ctx, functionName, 1);
+                List<Expression> elements = new ArrayList<>();
+                Expression argument = (Expression)visitor.visit(ctx.paramList().expression(0));
+                elements.add(target);
+                elements.add(argument);
+                DataType elementType = builder.ensureCompatibleTypes(target.getResultType(), argument.getResultType());
+                org.hl7.elm.r1.List list = of.createList();
+                list.setResultType(new ListType(elementType));
+                list.getElement().add(builder.ensureCompatible(target, elementType));
+                list.getElement().add(builder.ensureCompatible(argument, elementType));
+                ArrayList<Expression> params = new ArrayList<Expression>();
+                params.add(list);
+                return builder.resolveFunction(null, "Flatten", params);
+            }
             case "contains": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> params = new ArrayList<Expression>();

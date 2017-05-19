@@ -760,7 +760,7 @@ public class LibraryBuilder {
         DataTypes.verifyType(actualType, expectedType);
     }
 
-    public DataType ensureCompatibleTypes(DataType first, DataType second) {
+    public DataType findCompatibleType(DataType first, DataType second) {
         if (first == null || second == null) {
             return null;
         }
@@ -789,6 +789,15 @@ public class LibraryBuilder {
         conversion = findConversion(first, second, true);
         if (conversion != null) {
             return second;
+        }
+
+        return null;
+    }
+
+    public DataType ensureCompatibleTypes(DataType first, DataType second) {
+        DataType compatibleType = findCompatibleType(first, second);
+        if (compatibleType != null) {
+            return compatibleType;
         }
 
         DataTypes.verifyType(second, first);

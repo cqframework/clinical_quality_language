@@ -774,7 +774,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     inferredElementType = element.getResultType();
                 }
                 else {
-                    inferredElementType = libraryBuilder.ensureCompatibleTypes(inferredElementType, element.getResultType());
+                    DataType compatibleType = libraryBuilder.findCompatibleType(inferredElementType, element.getResultType());
+                    if (compatibleType != null) {
+                        inferredElementType = compatibleType;
+                    }
+                    else {
+                        inferredElementType = libraryBuilder.resolveTypeName("System", "Any");
+                    }
                 }
             }
 
@@ -787,7 +793,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         for (Expression element : elements) {
             if (!elementType.isSuperTypeOf(element.getResultType())) {
-                list.getElement().add(libraryBuilder.convertExpression(element, elementType));
+                Conversion conversion = libraryBuilder.findConversion(element.getResultType(), elementType, true);
+                if (conversion != null) {
+                    list.getElement().add(libraryBuilder.convertExpression(element, conversion));
+                }
+                else {
+                    list.getElement().add(element);
+                }
             }
             else {
                 list.getElement().add(element);
