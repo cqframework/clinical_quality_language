@@ -24,6 +24,7 @@ public class TimeOperatorsTest {
     public void setup() throws IOException {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromStream(TimeOperatorsTest.class.getResourceAsStream("../OperatorTests/TimeOperators.cql"), modelManager, new LibraryManager(modelManager));
+        assertThat(translator.getErrors().size(), is(0));
         Library library = translator.toELM();
         defs = new HashMap<>();
         for (ExpressionDef def: library.getStatements().getDef()) {

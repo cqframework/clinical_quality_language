@@ -1510,6 +1510,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
+    @Override
     public Expression visitImpliesExpression(@NotNull cqlParser.ImpliesExpressionContext ctx) {
         Implies implies = of.createImplies().withOperand(
                 parseExpression(ctx.expression(0)),
