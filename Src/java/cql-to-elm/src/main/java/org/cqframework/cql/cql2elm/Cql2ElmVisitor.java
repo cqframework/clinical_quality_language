@@ -35,6 +35,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean annotate = false;
     private boolean dateRangeOptimization = false;
     private boolean detailedErrors = false;
+    private boolean methodInvocation = true;
     private TokenStream tokenStream;
 
     private final LibraryBuilder libraryBuilder;
@@ -102,6 +103,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public boolean isDetailedErrorsEnabled() {
         return detailedErrors;
     }
+
+    public void enableMethodInvocation() {
+        methodInvocation = true;
+    }
+
+    public void disableMethodInvocation() {
+        methodInvocation = false;
+    }
+
     public TokenStream getTokenStream() {
         return tokenStream;
     }
@@ -3165,7 +3175,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
-                if (target instanceof Expression) {
+                if (target instanceof Expression && methodInvocation) {
                     return systemMethodResolver.resolveMethod((Expression)target, ctx, true);
                 }
 

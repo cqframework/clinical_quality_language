@@ -13,6 +13,24 @@ import java.util.Map;
 public class ConversionMap {
     private Map<DataType, List<Conversion>> map = new HashMap<>();
     private List<Conversion> genericConversions = new ArrayList<>();
+    private boolean demotion = true;
+    private boolean promotion = true;
+
+    public void enableDemotion() {
+        demotion = true;
+    }
+
+    public void disableDemotion() {
+        demotion = false;
+    }
+
+    public void enablePromotion() {
+        promotion = true;
+    }
+
+    public void disablePromotion() {
+        promotion = false;
+    }
 
     public void add(Conversion conversion) {
         if (conversion == null) {
@@ -190,11 +208,11 @@ public class ConversionMap {
             // NOTE: FHIRPath Implicit conversion from list to singleton
             // If the from type is a list and the target type is a singleton (potentially with a compatible conversion),
             // Convert by invoking a singleton
-            if (fromType instanceof ListType && !(toType instanceof ListType)) {
+            if (fromType instanceof ListType && !(toType instanceof ListType) && demotion) {
                 result = findListDemotion((ListType)fromType, toType, operatorMap);
             }
 
-            if (!(fromType instanceof ListType) && toType instanceof ListType) {
+            if (!(fromType instanceof ListType) && toType instanceof ListType && promotion) {
                 result = findListPromotion(fromType, (ListType)toType, operatorMap);
             }
 

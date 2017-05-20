@@ -66,6 +66,15 @@ public class LibraryBuilder {
     }
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
+    private boolean listTraversal = true;
+
+    public void enableListTraversal() {
+        listTraversal = true;
+    }
+
+    public void disableListTraversal() {
+        listTraversal = false;
+    }
 
     private final Stack<QueryContext> queries = new Stack<>();
 
@@ -1246,7 +1255,7 @@ public class LibraryBuilder {
             result.setResultType(resolveProperty(left.getResultType(), memberIdentifier));
             return result;
         }
-        else if (left.getResultType() instanceof ListType) {
+        else if (left.getResultType() instanceof ListType && listTraversal) {
             // NOTE: FHIRPath path traversal support
             // Resolve property access of a list of items as a query:
             // listValue.property ::= listValue X where X.property is not null return X.property

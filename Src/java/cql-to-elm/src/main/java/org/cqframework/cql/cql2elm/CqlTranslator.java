@@ -31,7 +31,15 @@ import java.util.*;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class CqlTranslator {
-    public static enum Options { EnableDateRangeOptimization, EnableAnnotations, EnableDetailedErrors }
+    public static enum Options {
+        EnableDateRangeOptimization,
+        EnableAnnotations,
+        EnableDetailedErrors,
+        DisableListTraversal,
+        DisableDemotion,
+        DisablePromotion,
+        DisableMethodInvocation
+    }
     public static enum Format { XML, JSON, COFFEE }
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
@@ -148,6 +156,18 @@ public class CqlTranslator {
         if (optionList.contains(Options.EnableDetailedErrors)) {
             visitor.enableDetailedErrors();
         }
+        if (optionList.contains(Options.DisableListTraversal)) {
+            builder.disableListTraversal();
+        }
+        if (optionList.contains(Options.DisableDemotion)) {
+            builder.getConversionMap().disableDemotion();
+        }
+        if (optionList.contains(Options.DisablePromotion)) {
+            builder.getConversionMap().disablePromotion();
+        }
+        if (optionList.contains(Options.DisableMethodInvocation)) {
+            visitor.disableMethodInvocation();
+        }
 
         parser.removeErrorListeners(); // Clear the default console listener
         parser.addErrorListener(new CqlErrorListener(builder, visitor.isDetailedErrorsEnabled()));
@@ -194,7 +214,10 @@ public class CqlTranslator {
         ModelInfoLoader.registerModelInfoProvider(modelId, modelProvider);
     }
 
-    private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations, boolean annotations, boolean verifyOnly, boolean detailedErrors) throws IOException {
+    private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations,
+                                 boolean annotations, boolean verifyOnly, boolean detailedErrors,
+                                 boolean disableListTraversal, boolean disableDemotion, boolean disablePromotion,
+                                 boolean disableMethodInvocation) throws IOException {
         ArrayList<Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
             options.add(Options.EnableDateRangeOptimization);
@@ -204,6 +227,18 @@ public class CqlTranslator {
         }
         if (detailedErrors) {
             options.add(Options.EnableDetailedErrors);
+        }
+        if (disableListTraversal) {
+            options.add(Options.DisableListTraversal);
+        }
+        if (disableDemotion) {
+            options.add(Options.DisableDemotion);
+        }
+        if (disablePromotion) {
+            options.add(Options.DisablePromotion);
+        }
+        if (disableMethodInvocation) {
+            options.add(Options.DisableMethodInvocation);
         }
 
         System.err.println("================================================================================");
@@ -255,11 +290,19 @@ public class CqlTranslator {
         OptionSpec optimization = parser.accepts("date-range-optimization");
         OptionSpec annotations = parser.accepts("annotations");
         OptionSpec detailedErrors = parser.accepts("detailed-errors");
+        OptionSpec disableListTraversal = parser.accepts("disable-list-traversal");
+        OptionSpec disableDemotion = parser.accepts("disable-demotion");
+        OptionSpec disablePromotion = parser.accepts("disable-promotion");
+        OptionSpec disableMethodInvocation = parser.accepts("disable-method-invocation");
+        OptionSpec strict = parser.accepts("strict");
 
         OptionSet options = parser.parse(args);
 
         final Path source = input.value(options).toPath();
-        final Path destination = output.value(options) != null ? output.value(options).toPath() : source.toFile().isDirectory() ? source : source.getParent();
+        final Path destination =
+                output.value(options) != null
+                        ? output.value(options).toPath()
+                        : source.toFile().isDirectory() ? source : source.getParent();
         final Format outputFormat = format.value(options);
 
         Map<Path, Path> inOutMap = new HashMap<>();
@@ -322,7 +365,10 @@ public class CqlTranslator {
                 loadModelInfo(modelFile);
             }
 
-            writeELM(in, out, outputFormat, options.has(optimization), options.has(annotations), options.has(verify), options.has(detailedErrors));
+            writeELM(in, out, outputFormat, options.has(optimization), options.has(annotations), options.has(verify),
+                    options.has(detailedErrors), options.has(strict) || options.has(disableListTraversal),
+                    options.has(strict) || options.has(disableDemotion), options.has(strict) || options.has(disablePromotion),
+                    options.has(strict) || options.has(disableMethodInvocation));
         }
     }
 }
