@@ -137,11 +137,13 @@ describe 'In', ->
   it 'should accept contained items', ->
     @containsInt.exec(@ctx).should.be.true
     @containsReal.exec(@ctx).should.be.true
+    @containsQuantity.exec(@ctx).should.be.true
     @containsDate.exec(@ctx).should.be.true
 
   it 'should reject uncontained items', ->
     @notContainsInt.exec(@ctx).should.be.false
     @notContainsReal.exec(@ctx).should.be.false
+    @notContainsQuantity.exec(@ctx).should.be.false
     @notContainsDate.exec(@ctx).should.be.false
 
   it 'should correctly handle null endpoints (int)', ->

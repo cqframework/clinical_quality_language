@@ -3746,6 +3746,8 @@ define ContainsInt: 3 in Interval[1, 5]
 define NotContainsInt: 1 in Interval(1, 5]
 define ContainsReal: 2.345 in Interval[1.234, 3.456]
 define NotContainsReal: 4.567 in Interval[1.234, 3.456]
+define ContainsQuantity: 5 '%' in Interval[4 '%', 6 '%']
+define NotContainsQuantity: 3 '%' in Interval[4 '%', 6 '%']
 define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
 define ContainsDate: DateTime(2012, 6, 1, 0, 0, 0, 0) in DateIvl
 define NotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in DateIvl
@@ -3910,6 +3912,58 @@ module.exports['In'] = {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "3.456",
                      "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ContainsQuantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "%",
+                  "type" : "Quantity"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 4,
+                     "unit" : "%",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 6,
+                     "unit" : "%",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotContainsQuantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "value" : 3,
+                  "unit" : "%",
+                  "type" : "Quantity"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 4,
+                     "unit" : "%",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 6,
+                     "unit" : "%",
+                     "type" : "Quantity"
                   }
                } ]
             }
