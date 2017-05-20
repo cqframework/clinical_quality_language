@@ -2589,4 +2589,36 @@ Property expressions can also be used to access the individual points and closed
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Children">
+		<xs:annotation>
+			<xs:documentation>For structured types, the Children operator returns a list of all the values of the elements of the type. List-valued elements are expanded and added to the result individually, rather than as a single list.
+			
+For list types, the result is the same as invoking Children on each element in the list and flattening the resulting lists into a single result.
+			
+If the source is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Descendents">
+		<xs:annotation>
+			<xs:documentation>For structured types, the Descendents operator returns a list of all the values of the elements of the type, recursively. List-valued elements are expanded and added to the result individually, rather than as a single list.
+			
+For list types, the result is the same as invoking Descendents on each element in the list and flattening the resulting lists into a single result.
+
+If the source is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>

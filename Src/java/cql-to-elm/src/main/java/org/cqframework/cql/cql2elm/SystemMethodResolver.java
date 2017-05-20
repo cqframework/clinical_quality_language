@@ -3,16 +3,13 @@ package org.cqframework.cql.cql2elm;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.cqframework.cql.cql2elm.model.QueryContext;
 import org.cqframework.cql.gen.cqlParser;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.ListType;
-import org.hl7.cql.model.NamedType;
+import org.hl7.cql.model.*;
 import org.hl7.elm.r1.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-
+import java.util.Set;
 
 
 /**
@@ -225,6 +222,39 @@ public class SystemMethodResolver {
         }
     }
 
+    private void gatherChildTypes(DataType dataType, boolean recurse, Set<DataType> dataTypes) {
+        if (dataType instanceof ClassType) {
+            for (ClassTypeElement element : ((ClassType)dataType).getElements()) {
+                DataType elementType = element.getType() instanceof ListType ?
+                        ((ListType)element.getType()).getElementType() : element.getType();
+                dataTypes.add(elementType);
+                if (recurse) {
+                    gatherChildTypes(elementType, recurse, dataTypes);
+                }
+            }
+        }
+        else if (dataType instanceof TupleType) {
+            for (TupleTypeElement element : ((TupleType)dataType).getElements()) {
+                DataType elementType = element.getType() instanceof ListType ?
+                        ((ListType)element.getType()).getElementType() : element.getType();
+                dataTypes.add(elementType);
+                if (recurse) {
+                    gatherChildTypes(elementType, recurse, dataTypes);
+                }
+            }
+        }
+        else if (dataType instanceof ListType) {
+            DataType elementType = ((ListType)dataType).getElementType();
+            dataTypes.add(elementType);
+            if (recurse) {
+                gatherChildTypes(elementType, recurse, dataTypes);
+            }
+        }
+        else {
+            dataTypes.add(builder.resolveTypeName("System.Any"));
+        }
+    }
+
     public Expression resolveMethod(Expression target, @NotNull cqlParser.FunctionContext ctx, boolean mustResolve) {
         String functionName = visitor.parseString(ctx.identifier());
         switch (functionName) {
@@ -250,7 +280,20 @@ public class SystemMethodResolver {
             case "anyTrue": return builder.resolveFunction(null, "AnyTrue", getParams(target, ctx));
             case "allFalse": return builder.resolveFunction(null, "AllFalse", getParams(target, ctx));
             case "anyFalse": return builder.resolveFunction(null, "AnyFalse", getParams(target, ctx));
-            // TODO: children...
+            case "children": {
+                checkArgumentCount(ctx, functionName, 0);
+                Children children = of.createChildren();
+                children.setSource(target);
+                Set<DataType> dataTypes = new java.util.HashSet<DataType>();
+                gatherChildTypes(target.getResultType(), false, dataTypes);
+                if (dataTypes.size() == 1) {
+                    children.setResultType(new ListType((DataType)dataTypes.toArray()[0]));
+                }
+                else {
+                    children.setResultType(new ListType(new ChoiceType(dataTypes)));
+                }
+                return children;
+            }
             case "combine": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> elements = new ArrayList<>();
@@ -279,7 +322,20 @@ public class SystemMethodResolver {
                 return builder.resolveFunction(null, "GreaterOrEqual", params);
             }
             case "count": return builder.resolveFunction(null, "Count", getParams(target, ctx));
-            // TODO: descendents...
+            case "descendents": {
+                checkArgumentCount(ctx, functionName, 0);
+                Descendents descendents = of.createDescendents();
+                descendents.setSource(target);
+                Set<DataType> dataTypes = new java.util.HashSet<DataType>();
+                gatherChildTypes(target.getResultType(), true, dataTypes);
+                if (dataTypes.size() == 1) {
+                    descendents.setResultType(new ListType((DataType)dataTypes.toArray()[0]));
+                }
+                else {
+                    descendents.setResultType(new ListType(new ChoiceType(dataTypes)));
+                }
+                return descendents;
+            }
             case "distinct": return builder.resolveFunction(null, "Distinct", getParams(target, ctx));
             case "empty": {
                 List<Expression> params = getParams(target, ctx);
