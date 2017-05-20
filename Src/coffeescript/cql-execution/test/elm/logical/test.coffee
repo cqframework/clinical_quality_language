@@ -71,3 +71,29 @@ describe 'XOr', ->
     should(@nN.exec(@ctx)).be.null
     should(@nT.exec(@ctx)).be.null
     should(@nF.exec(@ctx)).be.null
+
+describe 'IsTrue', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute true is true...', ->
+    @trueIsTrue.exec(@ctx).should.be.true
+
+  it 'should execute false is true...', ->
+    @falseIsTrue.exec(@ctx).should.be.false
+
+  it 'should execute null is true...', ->
+    @nullIsTrue.exec(@ctx).should.be.false
+
+describe 'IsFalse', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute true is false...', ->
+    @trueIsFalse.exec(@ctx).should.be.false
+
+  it 'should execute false is false...', ->
+    @falseIsFalse.exec(@ctx).should.be.true
+
+  it 'should execute null is false...', ->
+    @nullIsFalse.exec(@ctx).should.be.false
