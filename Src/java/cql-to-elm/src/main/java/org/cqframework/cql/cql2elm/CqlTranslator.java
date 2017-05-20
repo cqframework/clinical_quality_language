@@ -45,7 +45,10 @@ public class CqlTranslator {
     private TranslatedLibrary translatedLibrary = null;
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
+    private List<CqlTranslatorException> exceptions = null;
     private List<CqlTranslatorException> errors = null;
+    private List<CqlTranslatorException> warnings = null;
+    private List<CqlTranslatorException> messages = null;
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
 
@@ -105,7 +108,13 @@ public class CqlTranslator {
         return retrieves;
     }
 
+    public List<CqlTranslatorException> getExceptions() { return exceptions; }
+
     public List<CqlTranslatorException> getErrors() { return errors; }
+
+    public List<CqlTranslatorException> getWarnings() { return warnings; }
+
+    public List<CqlTranslatorException> getMessages() { return messages; }
 
     private class CqlErrorListener extends BaseErrorListener {
         
@@ -143,7 +152,10 @@ public class CqlTranslator {
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
 
+        exceptions = new ArrayList<>();
         errors = new ArrayList<>();
+        warnings = new ArrayList<>();
+        messages = new ArrayList<>();
         LibraryBuilder builder = new LibraryBuilder(modelManager, libraryManager);
         List<Options> optionList = Arrays.asList(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
@@ -183,7 +195,10 @@ public class CqlTranslator {
         library = builder.getLibrary();
         translatedLibrary = builder.getTranslatedLibrary();
         retrieves = visitor.getRetrieves();
+        exceptions.addAll(builder.getExceptions());
         errors.addAll(builder.getErrors());
+        warnings.addAll(builder.getWarnings());
+        messages.addAll(builder.getMessages());
     }
 
     public static String convertToXML(Library library) throws JAXBException {
@@ -212,6 +227,15 @@ public class CqlTranslator {
         final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
         final ModelInfoProvider modelProvider = () -> modelInfo;
         ModelInfoLoader.registerModelInfoProvider(modelId, modelProvider);
+    }
+
+    private static void outputExceptions(Iterable<CqlTranslatorException> exceptions) {
+        for (CqlTranslatorException error : exceptions) {
+            TrackBack tb = error.getLocator();
+            String lines = tb == null ? "[n/a]" : String.format("[%d:%d, %d:%d]",
+                    tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
+            System.err.printf("%s:%s %s%n", error.getSeverity(), lines, error.getMessage());
+        }
     }
 
     private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations,
@@ -253,13 +277,15 @@ public class CqlTranslator {
 
         if (translator.getErrors().size() > 0) {
             System.err.println("Translation failed due to errors:");
-            for (CqlTranslatorException error : translator.getErrors()) {
-                TrackBack tb = error.getLocator();
-                String lines = tb == null ? "[n/a]" : String.format("[%d:%d, %d:%d]",
-                        tb.getStartLine(), tb.getStartChar(), tb.getEndLine(), tb.getEndChar());
-                System.err.printf("%s %s%n", lines, error.getMessage());
-            }
+            outputExceptions(translator.getExceptions());
         } else if (! verifyOnly) {
+            if (translator.getExceptions().size() == 0) {
+                System.err.println("Translation completed successfully.");
+            }
+            else {
+                System.err.println("Translation completed with messages:");
+                outputExceptions(translator.getExceptions());
+            }
             try (PrintWriter pw = new PrintWriter(outPath.toFile(), "UTF-8")) {
                 switch (format) {
                     case COFFEE:
@@ -275,6 +301,7 @@ public class CqlTranslator {
                 }
                 pw.println();
             }
+            System.err.println(String.format("ELM output written to: %s", outPath.toString()));
         }
 
         System.err.println();

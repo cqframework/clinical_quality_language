@@ -2,8 +2,10 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
+import org.cqframework.cql.elm.tracking.TrackBack;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
+import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
@@ -37,9 +39,28 @@ public class LibraryBuilder {
         translatedLibrary.setLibrary(library);
     }
 
+    // Only exceptions of severity Error
     private final java.util.List<CqlTranslatorException> errors = new ArrayList<>();
     public List<CqlTranslatorException> getErrors() {
         return errors;
+    }
+
+    // Only exceptions of severity Warning
+    private final java.util.List<CqlTranslatorException> warnings = new ArrayList<>();
+    public List<CqlTranslatorException> getWarnings() {
+        return warnings;
+    }
+
+    // Only exceptions of severity Info
+    private final java.util.List<CqlTranslatorException> messages = new ArrayList<>();
+    public List<CqlTranslatorException> getMessages() {
+        return messages;
+    }
+
+    // All exceptions
+    private final java.util.List<CqlTranslatorException> exceptions = new ArrayList<>();
+    public List<CqlTranslatorException> getExceptions() {
+        return exceptions;
     }
 
     private final Map<String, Model> models = new HashMap<>();
@@ -278,16 +299,47 @@ public class LibraryBuilder {
         return result;
     }
 
+    private ErrorSeverity toErrorSeverity(CqlTranslatorException.ErrorSeverity severity) {
+        if (severity == CqlTranslatorException.ErrorSeverity.Info) {
+            return ErrorSeverity.INFO;
+        }
+        else if (severity == CqlTranslatorException.ErrorSeverity.Warning) {
+            return ErrorSeverity.WARNING;
+        }
+        else if (severity == CqlTranslatorException.ErrorSeverity.Error) {
+            return ErrorSeverity.ERROR;
+        }
+        else {
+            throw new IllegalArgumentException(String.format("Unknown error severity %s", severity.toString()));
+        }
+    }
+
+    private void addException(CqlTranslatorException e) {
+        // Always add to the list of all exceptions
+        exceptions.add(e);
+
+        if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Error) {
+            errors.add(e);
+        }
+        else if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Warning) {
+            warnings.add(e);
+        }
+        else if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Info) {
+            messages.add(e);
+        }
+    }
+
     /**
      * Record any errors while parsing in both the list of errors but also in the library
      * itself so they can be processed easily by a remote client
      * @param e the exception to record
      */
     public void recordParsingException(CqlTranslatorException e) {
-        errors.add(e);
+        addException(e);
         CqlToElmError err = af.createCqlToElmError();
         err.setMessage(e.getMessage());
-        err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : ErrorType.SEMANTIC);
+        err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : (e instanceof CqlSemanticException ? ErrorType.SEMANTIC : ErrorType.INTERNAL));
+        err.setErrorSeverity(toErrorSeverity(e.getSeverity()));
         if (e.getLocator() != null) {
             err.setStartLine(e.getLocator().getStartLine());
             err.setEndLine(e.getLocator().getEndLine());
@@ -609,6 +661,12 @@ public class LibraryBuilder {
         return query;
     }
 
+    private void reportWarning(String message, Expression expression) {
+        TrackBack trackback = expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
+        CqlSemanticException warning = new CqlSemanticException(message, CqlTranslatorException.ErrorSeverity.Warning, trackback);
+        recordParsingException(warning);
+    }
+
     private Expression demoteListExpression(Expression expression, Conversion conversion) {
         ListType fromType = (ListType)conversion.getFromType();
         DataType toType = conversion.getToType();
@@ -616,6 +674,7 @@ public class LibraryBuilder {
         SingletonFrom singletonFrom = of.createSingletonFrom().withOperand(expression);
         singletonFrom.setResultType(fromType.getElementType());
         resolveUnaryCall("System", "SingletonFrom", singletonFrom);
+        reportWarning("List-valued expression was demoted to a singleton.", expression);
 
         if (conversion.getConversion() != null) {
             return convertExpression(singletonFrom, conversion.getConversion());

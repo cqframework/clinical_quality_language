@@ -241,14 +241,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             try {
                 o = super.visit(tree);
             } catch (CqlTranslatorIncludeException e) {
-                libraryBuilder.recordParsingException(new CqlTranslatorException(e.getMessage(), getTrackBack((ParserRuleContext) tree), e));
+                libraryBuilder.recordParsingException(new CqlTranslatorException(e.getMessage(), getTrackBack(tree), e));
             } catch (CqlTranslatorException e) {
                 libraryBuilder.recordParsingException(e);
             } catch (Exception e) {
-                CqlTranslatorException ex = new CqlSemanticException(
-                        e.getMessage() == null ? "Internal translator error." : e.getMessage(),
-                        tree instanceof ParserRuleContext ? getTrackBack((ParserRuleContext) tree) : null,
-                        e);
+                CqlTranslatorException ex = null;
+                if (e.getMessage() == null) {
+                    ex = new CqlInternalException("Internal translator error.", getTrackBack(tree), e);
+                }
+                else {
+                    ex = new CqlSemanticException(e.getMessage(), getTrackBack(tree), e);
+                }
+
                 Exception rootCause = libraryBuilder.determineRootCause();
                 if (rootCause == null) {
                     rootCause = ex;
@@ -3292,6 +3296,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private void addExpression(Expression expression) {
         expressions.add(expression);
+    }
+
+    private TrackBack getTrackBack(ParseTree tree) {
+        if (tree instanceof ParserRuleContext) {
+            return getTrackBack((ParserRuleContext)tree);
+        }
+        return null;
     }
 
     private TrackBack getTrackBack(ParserRuleContext ctx) {
