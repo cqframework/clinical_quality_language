@@ -2250,7 +2250,7 @@ If the list is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Min">
 		<xs:annotation>
-			<xs:documentation>The Min operator returns the minimum element in the source. 
+			<xs:documentation>The Min operator returns the minimum element in the source. Comparison semantics are defined by the comparison operators for the type of the values being aggregated.
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
@@ -2264,7 +2264,7 @@ If the source is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Max">
 		<xs:annotation>
-			<xs:documentation>The Max operator returns the maximum element in the source.
+			<xs:documentation>The Max operator returns the maximum element in the source. Comparison semantics are defined by the comparison operators for the type of the values being aggregated.
 
 If a path is specified, elements with no value for the property specified by the path are ignored.
 
