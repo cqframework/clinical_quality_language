@@ -508,6 +508,10 @@ public class LibraryBuilder {
         return resolveCall(libraryName, operatorName, new TernaryExpressionInvocation(expression));
     }
 
+    public Expression resolveNaryCall(String libraryName, String operatorName, NaryExpression expression) {
+        return resolveCall(libraryName, operatorName, new NaryExpressionInvocation(expression));
+    }
+
     public Expression resolveAggregateCall(String libraryName, String operatorName, AggregateExpression expression) {
         return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression));
     }

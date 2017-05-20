@@ -2,6 +2,7 @@ define StringAdd: 'John' + ' ' + 'Doe'
 define StringCombine: Combine({ 'First', 'Second', 'Third', 'Fourth' }, ',')
 define StringCombineNoSeparator: Combine({ 'abc', 'def', 'ghi', 'jkl' })
 define StringConcatenate: Concatenate('John', 'Doe')
+define StringConcatenateWithAmpersand: 'John' & ' ' & 'Doe'
 define StringEndsWith: EndsWith('John Doe', 'Doe')
 define StringIndexer: 'John'[1]
 define StringLength: Length('John')

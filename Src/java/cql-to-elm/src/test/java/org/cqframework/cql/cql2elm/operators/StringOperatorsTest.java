@@ -35,6 +35,29 @@ public class StringOperatorsTest {
     }
 
     @Test
+    public void testAdd() {
+        ExpressionDef def = defs.get("StringAdd");
+        assertThat(def, hasTypeAndResult(Concatenate.class, "System.String"));
+    }
+
+    @Test
+    public void testConcatenate() {
+        ExpressionDef def = defs.get("StringConcatenate");
+        assertThat(def, hasTypeAndResult(Concatenate.class, "System.String"));
+    }
+
+    @Test
+    public void testConcatenateWithAmpersand() {
+        ExpressionDef def = defs.get("StringConcatenateWithAmpersand");
+        assertThat(def, hasTypeAndResult(Concatenate.class, "System.String"));
+
+        Concatenate concatenate = (Concatenate)def.getExpression();
+        for (Expression operand : concatenate.getOperand()) {
+            assertThat(operand.getClass() == Coalesce.class, is(true));
+        }
+    }
+
+    @Test
     public void testCombine() {
         ExpressionDef def = defs.get("StringCombine");
         assertThat(def, hasTypeAndResult(Combine.class, "System.String"));

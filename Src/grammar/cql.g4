@@ -322,7 +322,7 @@ expressionTerm
     | ('minimum' | 'maximum') namedTypeSpecifier                         #typeExtentExpressionTerm
     | expressionTerm '^' expressionTerm                                  #powerExpressionTerm
     | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm          #multiplicationExpressionTerm
-    | expressionTerm ('+' | '-') expressionTerm                          #additionExpressionTerm
+    | expressionTerm ('+' | '-' | '&') expressionTerm                    #additionExpressionTerm
     | 'if' expression 'then' expression 'else' expression                #ifThenElseExpressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     #caseExpressionTerm
     | ('distinct' | 'collapse' | 'flatten') expression                   #aggregateExpressionTerm

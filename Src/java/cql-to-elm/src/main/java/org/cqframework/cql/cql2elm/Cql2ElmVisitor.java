@@ -1153,8 +1153,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public BinaryExpression visitAdditionExpressionTerm(@NotNull cqlParser.AdditionExpressionTermContext ctx) {
-        BinaryExpression exp = null;
+    public Expression visitAdditionExpressionTerm(@NotNull cqlParser.AdditionExpressionTermContext ctx) {
+        Expression exp = null;
         String operatorName = null;
         switch (ctx.getChild(1).getText()) {
             case "+":
@@ -1165,15 +1165,45 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 exp = of.createSubtract();
                 operatorName = "Subtract";
                 break;
+            case "&":
+                exp = of.createConcatenate();
+                operatorName = "Concatenate";
+                break;
             default:
                 throw new IllegalArgumentException(String.format("Unsupported operator: %s.", ctx.getChild(1).getText()));
         }
 
-        exp.withOperand(
-                parseExpression(ctx.expressionTerm(0)),
-                parseExpression(ctx.expressionTerm(1)));
+        if (exp instanceof BinaryExpression) {
+            ((BinaryExpression)exp).withOperand(
+                    parseExpression(ctx.expressionTerm(0)),
+                    parseExpression(ctx.expressionTerm(1)));
 
-        libraryBuilder.resolveBinaryCall("System", operatorName, exp);
+            libraryBuilder.resolveBinaryCall("System", operatorName, (BinaryExpression)exp);
+
+            if (exp.getResultType() == libraryBuilder.resolveTypeName("System", "String")) {
+                Concatenate concatenate = of.createConcatenate();
+                concatenate.getOperand().addAll(((BinaryExpression)exp).getOperand());
+                concatenate.setResultType(exp.getResultType());
+                exp = concatenate;
+            }
+        }
+        else {
+            Concatenate concatenate = (Concatenate)exp;
+            concatenate.withOperand(
+                    parseExpression(ctx.expressionTerm(0)),
+                    parseExpression(ctx.expressionTerm(1)));
+
+            for (int i = 0; i < concatenate.getOperand().size(); i++) {
+                Expression operand = concatenate.getOperand().get(i);
+                Literal empty = libraryBuilder.createLiteral("");
+                ArrayList<Expression> params = new ArrayList<Expression>();
+                params.add(operand);
+                params.add(empty);
+                Expression coalesce = libraryBuilder.resolveFunction("System", "Coalesce", params);
+                concatenate.getOperand().set(i, coalesce);
+            }
+            libraryBuilder.resolveNaryCall("System", operatorName, concatenate);
+        }
         return exp;
     }
 
