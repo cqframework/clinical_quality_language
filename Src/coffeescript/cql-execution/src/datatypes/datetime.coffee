@@ -232,6 +232,9 @@ module.exports.DateTime = class DateTime
     else
       new Date(y, mo, d, h, mi, s, ms)
 
+  toJSON: () ->
+    @toString()
+
   _pad: (num) ->
     String("0" + num).slice(-2);
 
