@@ -740,7 +740,7 @@ If the argument is null, the result is null.</xs:documentation>
 
 For simple types, this means that equality returns true if and only if the result of each argument evaluates to the same value.
 
-For quantities, this means that the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For quantities, this means that the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements by name are equal.
 
@@ -792,7 +792,7 @@ The NotEqual operator is a shorthand for invocation of logical negation of the E
 		<xs:annotation>
 			<xs:documentation>The Less operator returns true if the first argument is less than the second argument.
 			
-For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 If either argument is null, the result is null.
 
@@ -806,7 +806,7 @@ The Less operator is defined for the Integer, Decimal, String, DateTime, Time, a
 		<xs:annotation>
 			<xs:documentation>The Greater operator returns true if the first argument is greater than the second argument.
 
-For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 If either argument is null, the result is null.
 
@@ -820,7 +820,7 @@ The Greater operator is defined for the Integer, Decimal, String, DateTime, Time
 		<xs:annotation>
 			<xs:documentation>The LessOrEqual operator returns true if the first argument is less than or equal to the second argument.
 
-For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 If either argument is null, the result is null.
 
@@ -834,7 +834,7 @@ The LessOrEqual operator is defined for the Integer, Decimal, String, DateTime, 
 		<xs:annotation>
 			<xs:documentation>The GreaterOrEqual operator returns true if the first argument is greater than or equal to the second argument.
 
-For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not.
+For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 If either argument is null, the result is null.
 
@@ -849,7 +849,7 @@ The GreaterOrEqual operator is defined for the Integer, Decimal, String, DateTim
 		<xs:annotation>
 			<xs:documentation>The Add operator performs numeric addition of its arguments.
 			
-When adding quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be added, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input.
+When adding quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be added, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input. Attempting to operate on quantities with invalid units will result in a run-time error.
 			
 The Add operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be added to a DateTime or Time using this operator.
 
@@ -871,7 +871,7 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Subtract operator performs numeric subtraction of its arguments.
 			
-When subtracting quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be subtracted, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input.
+When subtracting quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be subtracted, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 The Subtract operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be subtracted from a DateTime or Time using this operator.
 
@@ -1276,49 +1276,49 @@ If stringToSub or startIndex is null, or startIndex is out of range, the result 
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="StartsWith">
-        <xs:annotation>
-		    <xs:documentation>The StartsWith operator returns true if the given string starts with the given prefix.
+		<xs:annotation>
+			<xs:documentation>The StartsWith operator returns true if the given string starts with the given prefix.
 		  
 If the prefix is the empty string, the result is true.
   
 If either argument is null, the result is null.</xs:documentation>
-        </xs:annotation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="EndsWith">
-        <xs:annotation>
-		   <xs:documentation>The EndsWith operator returns true if the given string ends with the given suffix.
+		<xs:annotation>
+			<xs:documentation>The EndsWith operator returns true if the given string ends with the given suffix.
 
 If the suffix is the empty string, the result is true.
   
 If either argument is null, the result is null.</xs:documentation>
-        </xs:annotation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Matches">
-        <xs:annotation>
+		<xs:annotation>
 			<xs:documentation>The Matches operator returns true if the given string matches the given regular expression pattern. Regular expressions should function consistently, regardless of any culture- and locale-specific settings in the environment, should be case-sensitive, use single line mode, and allow Unicode characters.
 		   
 If either argument is null, the result is null.
 
 Platforms will typically use native regular expression implementations. These are typically fairly similar, but there will always be small differences. As such, CQL does not prescribe a particular dialect, but recommends the use of the dialect defined as part of XML Schema 1.1 as the dialect most likely to be broadly supported and understood.</xs:documentation>
-        </xs:annotation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ReplaceMatches">
-        <xs:annotation>
+		<xs:annotation>
 			<xs:documentation>The ReplaceMatches operator matches the given string using the regular expression pattern, replacing each match with the given substitution. The substitution string may refer to identified match groups in the regular expression. Regular expressions should function consistently, regardless of any culture- and locale-specific settings in the environment, should be case-sensitive, use single line mode and allow Unicode characters.
 		   
 If any argument is null, the result is null.
 
 Platforms will typically use native regular expression implementations. These are typically fairly similar, but there will always be small differences. As such, CQL does not prescribe a particular dialect, but recommends the use of the dialect defined as part of XML Schema 1.1 as the dialect most likely to be broadly supported and understood.</xs:documentation>
-        </xs:annotation>
+		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="TernaryExpression"/>
 		</xs:complexContent>
