@@ -1183,7 +1183,7 @@ For strings, the length is the number of characters in the string.
 
 For lists, the length is the number of elements in the list.
 
-If the argument is null, the result is null.</xs:documentation>
+If the argument is null, the result is 0.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
@@ -1597,11 +1597,9 @@ There are two overloads of this operator:
 	List, T : The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 	
-For the List, T overload, this operator returns true if the given element is in the list, using equivalence semantics.
+For the List, T overload, this operator returns true if the given element is in the list, using equivalence semantics. If the list-valued argument is null, it should be treated as the empty list.
 
-For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true.
-
-If either argument is null, the result is null.</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1638,11 +1636,9 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns true if the given element is in the given list, using equivalence semantics.
+For the T, List overload, this operator returns true if the given element is in the given list, using equivalence semantics. If the list-valued argument is null, it should be treated as an empty list.
 
-For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true.
-
-If either argument is null, the result is null.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1659,7 +1655,7 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equivalence semantics.
+For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equivalence semantics. If the list-valued argument is null, it should be treated as an empty list.
 
 For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators.</xs:documentation>
 		</xs:annotation>
@@ -1678,13 +1674,11 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equivalence semantics.
+For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equivalence semantics. If either argument is null, it should be treated as an empty list.
 
-For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval.
+For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. If either argument is null, the result is null.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
-
-If either argument is null, the result is null.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1701,13 +1695,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 	
-For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equivalence semantics.
+For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equivalence semantics. If either argument is null, it should be treated as an empty list.
 
-For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval.
+For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If either argument is null, the result is null.
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If either argument is null, the result is null.</xs:documentation>
+</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1724,13 +1718,11 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 	
-For the List, List overload, this operator returns true if the first list includes every element of the second list, using equivalence semantics, and first list is strictly larger.
+For the List, List overload, this operator returns true if the first list includes every element of the second list, using equivalence semantics, and the first list is strictly larger. If either argument is null, it should be treated as an empty list.
 
-For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal.
+For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If either argument is null, the result is null.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
-
-If either argument is null, the result is null.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1747,13 +1739,11 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equivalence semantics, and the first list is strictly smaller.
+For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equivalence semantics, and the first list is strictly smaller. If either argument is null, it should be treated as an empty list.
 
-For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal.
+For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If either argument is null, the result is null.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
-
-If either argument is null, the result is null.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1976,11 +1966,9 @@ This operator has two overloads:
 	List, List
 	Interval, Interval
 
-For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equivalence semantics.
+For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equivalence semantics. If either argument is null, it should be treated as an empty list.
 
-For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null.
-
-If either argument is null, the result is null.</xs:documentation>
+For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null. If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1991,7 +1979,7 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Exists operator returns true if the list contains any elements.
 
-If the argument is null, the result is null.</xs:documentation>
+If the argument is null, the result is false.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
@@ -2228,7 +2216,7 @@ If a path is specified, the count returns the number of elements that have a val
 
 If the list is empty, the result is 0.
 
-If the list is null, the result is null.</xs:documentation>
+If the list is null, the result is 0.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -2382,7 +2370,7 @@ If a path is specified, elements with no value for the property specified by the
 
 If the source contains no non-null elements, true is returned.
 
-If the source is null, the result is null.</xs:documentation>
+If the source is null, the result is true.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
@@ -2396,7 +2384,7 @@ If a path is specified, elements with no value for the property specified by the
 
 If the source contains no non-null elements, false is returned.
 
-If the source is null, the result is null.</xs:documentation>
+If the source is null, the result is false.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AggregateExpression"/>
