@@ -340,9 +340,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
+        String identifier = parseString(ctx.identifier());
         IncludeDef library = of.createIncludeDef()
-                .withLocalIdentifier(parseString(ctx.localIdentifier()))
-                .withPath(parseString(ctx.identifier()))
+                .withLocalIdentifier(ctx.localIdentifier() == null ? identifier : parseString(ctx.localIdentifier()))
+                .withPath(identifier)
                 .withVersion(parseString(ctx.versionSpecifier()));
 
         libraryBuilder.addInclude(library);

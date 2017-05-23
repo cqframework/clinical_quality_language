@@ -37,7 +37,7 @@ usingDefinition
     ;
 
 includeDefinition
-    : 'include' identifier ('version' versionSpecifier)? 'called' localIdentifier
+    : 'include' identifier ('version' versionSpecifier)? ('called' localIdentifier)?
     ;
 
 localIdentifier
