@@ -1192,7 +1192,9 @@ If the argument is null, the result is 0.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Upper">
 		<xs:annotation>
-			<xs:documentation>The Upper operator returns the upper case of its argument.
+			<xs:documentation>The Upper operator returns the given string with all characters converted to their upper case equivalents.
+
+Note that the definition of uppercase for a given character is a locale-dependent determination, and is not specified by CQL. Implementations are expected to provide appropriate and consistent handling of locale for their environment.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1202,7 +1204,9 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Lower">
 		<xs:annotation>
-			<xs:documentation>The Lower operator returns the lower case of its argument.
+			<xs:documentation>The Lower operator returns the given string with all characters converted to their lowercase equivalents.
+
+Note that the definition of lowercase for a given character is a locale-dependent determination, and is not specified by CQL. Implementations are expected to provide appropriate and consistent handling of locale for their environment.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1216,7 +1220,7 @@ If the argument is null, the result is null.</xs:documentation>
 			
 Indexes in strings and lists are defined to be 0-based.
 
-If the index is greater than the length of the string or list being indexed, the result is null.
+If the index is less than 0 or greater than the length of the string or list being indexed, the result is null.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
