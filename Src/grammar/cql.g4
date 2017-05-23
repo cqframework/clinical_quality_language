@@ -160,7 +160,9 @@ contextDefinition
     ;
 
 functionDefinition
-    : 'define' accessModifier? 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')' ':' functionBody
+    : 'define' accessModifier? 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')'
+        ('returns' typeSpecifier)?
+        ':' (functionBody | 'external')
     ;
 
 operandDefinition

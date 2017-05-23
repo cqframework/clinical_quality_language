@@ -220,7 +220,7 @@ The following changes were made since the initial informative ballot in Septembe
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
-					<xs:element name="expression" type="Expression"/>
+					<xs:element name="expression" type="Expression" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="context" type="xs:string" use="optional"/>
@@ -237,6 +237,7 @@ The following changes were made since the initial informative ballot in Septembe
 				<xs:sequence>
 					<xs:element name="operand" type="OperandDef" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
+				<xs:attribute name="external" type="xs:boolean" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

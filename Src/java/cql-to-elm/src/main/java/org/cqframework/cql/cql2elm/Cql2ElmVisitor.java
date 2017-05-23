@@ -3254,21 +3254,43 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
+        TypeSpecifier resultType = null;
+        if (ctx.typeSpecifier() != null) {
+            resultType = parseTypeSpecifier(ctx.typeSpecifier());
+        }
+
         if (!libraryBuilder.getTranslatedLibrary().contains(fun)) {
-            libraryBuilder.beginFunctionDef(fun);
-            try {
-                libraryBuilder.pushExpressionContext(currentContext);
+            if (ctx.functionBody() != null) {
+                libraryBuilder.beginFunctionDef(fun);
                 try {
-                    fun.setExpression(parseExpression(ctx.functionBody()));
+                    libraryBuilder.pushExpressionContext(currentContext);
+                    try {
+                        fun.setExpression(parseExpression(ctx.functionBody()));
+                    } finally {
+                        libraryBuilder.popExpressionContext();
+                    }
                 } finally {
-                    libraryBuilder.popExpressionContext();
+                    libraryBuilder.endFunctionDef();
                 }
-            } finally {
-                libraryBuilder.endFunctionDef();
+
+                if (resultType != null && fun.getExpression() != null && fun.getExpression().getResultType() != null) {
+                    if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
+                        throw new IllegalArgumentException(String.format("Function %s has declared return type %s but the function body returns incompatible type %s.",
+                                fun.getName(), resultType.getResultType(), fun.getExpression().getResultType()));
+                    }
+                }
+
+                fun.setResultType(fun.getExpression().getResultType());
+            }
+            else {
+                fun.setExternal(true);
+                if (resultType == null) {
+                    throw new IllegalArgumentException(String.format("Function %s is marked external but does not declare a return type.", fun.getName()));
+                }
+                fun.setResultType(resultType.getResultType());
             }
 
             fun.setContext(currentContext);
-            fun.setResultType(fun.getExpression().getResultType());
             if (fun.getResultType() != null) {
                 libraryBuilder.addExpression(fun);
             }
