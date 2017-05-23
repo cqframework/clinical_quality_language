@@ -144,9 +144,12 @@ define IntervalBeforeWithPrecision: A before day of B
 define IntervalBeforeWithOffset: A 3 days before B
 define IntervalBeforeWithOffsetOrLess: A 3 days or less before B
 define IntervalBeforeWithOffsetOrMore: A 3 days or more before B
+define IntervalBeforeWithLessThanOffset: A less than 3 days before B
+define IntervalBeforeWithMoreThanOffset: A more than 3 days before B
 define IntervalBeforeWithOffsetWithPrecision: A 3 days before day of B
 define IntervalBeforeWithOffsetOrLessWithPrecision: A 3 days or less before day of B
 define IntervalBeforeWithOffsetOrMoreWithPrecision: A 3 days or more before day of B
+
 
 define IntervalBeforeUsingUCUM: A 3 'd' before B
 

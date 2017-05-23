@@ -2112,6 +2112,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // A starts 3 days or less after start B
         // days between start of A and start of B in [-3, 0)
 
+        // less/more than duration before/after
+        // A starts more than 3 days before start B
+        // days between start of A and start of B > 3
+        // A starts more than 3 days after start B
+        // days between start of A and start of B < -3
+        // A starts less than 3 days before start B
+        // days between start of A and start of B in (0, 3)
+        // A starts less than 3 days after start B
+        // days between start of A and start of B in (-3, 0)
+
         TimingOperatorContext timingOperator = timingOperators.peek();
         Boolean isBefore = false;
         for (ParseTree child : ctx.children) {
@@ -2219,7 +2229,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(), lowerBound, upperBound);
             if (betweenOperator != null) {
-                if (ctx.quantityOffset().offsetRelativeQualifier() == null) {
+                if (ctx.quantityOffset().offsetRelativeQualifier() == null && ctx.quantityOffset().exclusiveRelativeQualifier() == null) {
                     if (isBefore) {
                         Equal equal = of.createEqual().withOperand(betweenOperator, quantityLiteral);
                         libraryBuilder.resolveBinaryCall("System", "Equal", equal);
@@ -2232,27 +2242,32 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         return equal;
                     }
                 } else {
-                    switch (ctx.quantityOffset().offsetRelativeQualifier().getText()) {
+                    boolean isInclusive = ctx.quantityOffset().offsetRelativeQualifier() != null;
+                    String qualifier = ctx.quantityOffset().offsetRelativeQualifier() != null
+                            ? ctx.quantityOffset().offsetRelativeQualifier().getText()
+                            : ctx.quantityOffset().exclusiveRelativeQualifier().getText();
+                    switch (qualifier) {
+                        case "more than":
                         case "or more":
                             if (isBefore) {
-                                GreaterOrEqual greaterOrEqual = of.createGreaterOrEqual().withOperand(
-                                        betweenOperator,
-                                        quantityLiteral
-                                );
-                                libraryBuilder.resolveBinaryCall("System", "GreaterOrEqual", greaterOrEqual);
-                                return greaterOrEqual;
+                                BinaryExpression comparison = (isInclusive ? of.createGreaterOrEqual() : of.createGreater())
+                                        .withOperand(betweenOperator, quantityLiteral);
+                                libraryBuilder.resolveBinaryCall("System", isInclusive ? "GreaterOrEqual" : "Greater", comparison);
+                                return comparison;
                             } else {
                                 Negate negate = of.createNegate().withOperand(quantityLiteral);
                                 libraryBuilder.resolveUnaryCall("System", "Negate", negate);
-                                LessOrEqual lessOrEqual = of.createLessOrEqual().withOperand(betweenOperator, negate);
-                                libraryBuilder.resolveBinaryCall("System", "LessOrEqual", lessOrEqual);
-                                return lessOrEqual;
+                                BinaryExpression comparison = (isInclusive ? of.createLessOrEqual() : of.createLess())
+                                        .withOperand(betweenOperator, negate);
+                                libraryBuilder.resolveBinaryCall("System", isInclusive ? "LessOrEqual" : "Less", comparison);
+                                return comparison;
                             }
+                        case "less than":
                         case "or less":
                             if (isBefore) {
                                 Interval quantityInterval = of.createInterval()
                                         .withLow(libraryBuilder.createLiteral(0)).withLowClosed(false)
-                                        .withHigh(quantityLiteral).withHighClosed(true);
+                                        .withHigh(quantityLiteral).withHighClosed(isInclusive);
                                 quantityInterval.setResultType(new IntervalType(quantityInterval.getLow().getResultType()));
                                 In in = of.createIn().withOperand(betweenOperator, quantityInterval);
                                 libraryBuilder.resolveBinaryCall("System", "In", in);
@@ -2261,7 +2276,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 Negate negate = of.createNegate().withOperand(quantityLiteral);
                                 libraryBuilder.resolveUnaryCall("System", "Negate", negate);
                                 Interval quantityInterval = of.createInterval()
-                                        .withLow(negate).withLowClosed(true)
+                                        .withLow(negate).withLowClosed(isInclusive)
                                         .withHigh(libraryBuilder.createLiteral(0)).withHighClosed(false);
                                 quantityInterval.setResultType(new IntervalType(quantityInterval.getLow().getResultType()));
                                 In in = of.createIn().withOperand(betweenOperator, quantityInterval);

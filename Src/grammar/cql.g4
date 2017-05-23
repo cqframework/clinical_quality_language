@@ -348,8 +348,14 @@ offsetRelativeQualifier
     | 'or less'
     ;
 
+exclusiveRelativeQualifier
+    : 'less than'
+    | 'more than'
+    ;
+
 quantityOffset
-    : quantity offsetRelativeQualifier?
+    : (quantity offsetRelativeQualifier?)
+    | (exclusiveRelativeQualifier quantity)
     ;
 
 intervalOperatorPhrase
