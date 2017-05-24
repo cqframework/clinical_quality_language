@@ -2620,8 +2620,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 retrieve.setCodeProperty(classType.getPrimaryCodePath());
             }
 
-            List<String> identifiers = (List<String>) visit(ctx.terminology());
-            retrieve.setCodes(resolveQualifiedIdentifier(identifiers));
+            if (ctx.terminology().qualifiedIdentifier() != null) {
+                List<String> identifiers = (List<String>) visit(ctx.terminology());
+                retrieve.setCodes(resolveQualifiedIdentifier(identifiers));
+            }
+            else {
+                retrieve.setCodes(parseExpression(ctx.terminology().expression()));
+            }
         }
 
         retrieves.add(retrieve);

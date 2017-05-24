@@ -214,6 +214,7 @@ codePath
 
 terminology
     : qualifiedIdentifier
+    | expression
     ;
 
 qualifier
