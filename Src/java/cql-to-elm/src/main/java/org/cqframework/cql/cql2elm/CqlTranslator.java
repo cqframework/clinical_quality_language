@@ -34,6 +34,8 @@ public class CqlTranslator {
     public static enum Options {
         EnableDateRangeOptimization,
         EnableAnnotations,
+        EnableLocators,
+        EnableResultTypes,
         EnableDetailedErrors,
         DisableListTraversal,
         DisableDemotion,
@@ -165,6 +167,12 @@ public class CqlTranslator {
         if (optionList.contains(Options.EnableAnnotations)) {
             visitor.enableAnnotations();
         }
+        if (optionList.contains(Options.EnableLocators)) {
+            visitor.enableLocators();
+        }
+        if (optionList.contains(Options.EnableResultTypes)) {
+            visitor.enableResultTypes();
+        }
         if (optionList.contains(Options.EnableDetailedErrors)) {
             visitor.enableDetailedErrors();
         }
@@ -239,15 +247,21 @@ public class CqlTranslator {
     }
 
     private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations,
-                                 boolean annotations, boolean verifyOnly, boolean detailedErrors,
-                                 boolean disableListTraversal, boolean disableDemotion, boolean disablePromotion,
-                                 boolean disableMethodInvocation) throws IOException {
+                                 boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
+                                 boolean detailedErrors, boolean disableListTraversal, boolean disableDemotion,
+                                 boolean disablePromotion, boolean disableMethodInvocation) throws IOException {
         ArrayList<Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
             options.add(Options.EnableDateRangeOptimization);
         }
         if (annotations) {
             options.add(Options.EnableAnnotations);
+        }
+        if (locators) {
+            options.add(Options.EnableLocators);
+        }
+        if (resultTypes) {
+            options.add(Options.EnableResultTypes);
         }
         if (detailedErrors) {
             options.add(Options.EnableDetailedErrors);
@@ -316,12 +330,15 @@ public class CqlTranslator {
         OptionSpec verify = parser.accepts("verify");
         OptionSpec optimization = parser.accepts("date-range-optimization");
         OptionSpec annotations = parser.accepts("annotations");
+        OptionSpec locators = parser.accepts("locators");
+        OptionSpec resultTypes = parser.accepts("result-types");
         OptionSpec detailedErrors = parser.accepts("detailed-errors");
         OptionSpec disableListTraversal = parser.accepts("disable-list-traversal");
         OptionSpec disableDemotion = parser.accepts("disable-demotion");
         OptionSpec disablePromotion = parser.accepts("disable-promotion");
         OptionSpec disableMethodInvocation = parser.accepts("disable-method-invocation");
         OptionSpec strict = parser.accepts("strict");
+        OptionSpec debug = parser.accepts("debug");
 
         OptionSet options = parser.parse(args);
 
@@ -392,9 +409,15 @@ public class CqlTranslator {
                 loadModelInfo(modelFile);
             }
 
-            writeELM(in, out, outputFormat, options.has(optimization), options.has(annotations), options.has(verify),
-                    options.has(detailedErrors), options.has(strict) || options.has(disableListTraversal),
-                    options.has(strict) || options.has(disableDemotion), options.has(strict) || options.has(disablePromotion),
+            writeELM(in, out, outputFormat, options.has(optimization),
+                    options.has(debug) || options.has(annotations),
+                    options.has(debug) || options.has(locators),
+                    options.has(debug) || options.has(resultTypes),
+                    options.has(verify),
+                    options.has(detailedErrors), // Didn't include in debug, maybe should...
+                    options.has(strict) || options.has(disableListTraversal),
+                    options.has(strict) || options.has(disableDemotion),
+                    options.has(strict) || options.has(disablePromotion),
                     options.has(strict) || options.has(disableMethodInvocation));
         }
     }

@@ -63,8 +63,23 @@ The following changes were made since the initial informative ballot in Septembe
 					<xs:documentation>The annotation element provides a mechanism for decorating expressions with application-specific information such as translation hints, visual designer information, or debug symbols.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
+			<xs:element name="resultTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>The resultTypeSpecifier element describes the type information for this ELM node. ELM documents are not required to contain result type information, but if they do, the result type of each node is specified using the resultTypeName attribute for named types, and this resultTypeSpecifier element for non-named types.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="localId" type="xs:string" use="optional"/>
+		<xs:attribute name="locator" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The locator for an ELM node identifies the location in the source document that produced the ELM. The format is L:C[-L:C], where L is a line number and C is a column number. For locators that span a range, an optional range can be given to an ending line and column number. Line and column numbers are 1-based.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="resultTypeName" type="xs:QName" use="optional">
+			<xs:annotation>
+				<xs:documentation>The resultTypeName attribute is part of type information for an ELM document. ELM documents are not required to specify result type information, but if they do, the result type of each node is specified using this attribute for named types, or the resultTypeSpecifier element for non-named types.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="TypeSpecifier" abstract="true">
 		<xs:annotation>

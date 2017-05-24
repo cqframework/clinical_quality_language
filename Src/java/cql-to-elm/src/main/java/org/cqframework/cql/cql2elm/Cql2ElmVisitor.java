@@ -33,6 +33,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean annotate = false;
+    private boolean locate = false;
+    private boolean resultTypes = false;
     private boolean dateRangeOptimization = false;
     private boolean detailedErrors = false;
     private boolean methodInvocation = true;
@@ -78,6 +80,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public void disableAnnotations() {
         annotate = false;
+    }
+
+    public void enableLocators() {
+        locate = true;
+    }
+
+    public void disableLocators() {
+        locate = false;
+    }
+
+    public void enableResultTypes() {
+        resultTypes = true;
+    }
+
+    public void disableResultTypes() {
+        resultTypes = false;
     }
 
     public void enableDateRangeOptimization() {
@@ -3388,6 +3406,23 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         TrackBack tb = getTrackBack(ctx);
 
         trackable.getTrackbacks().add(tb);
+
+        if (trackable instanceof Element) {
+            Element element = (Element)trackable;
+
+            if (locate) {
+                element.setLocator(tb.toLocator());
+            }
+
+            if (resultTypes && element.getResultType() != null) {
+                if (element.getResultType() instanceof NamedType) {
+                    element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
+                }
+                else {
+                    element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
+                }
+            }
+        }
 
         return tb;
     }

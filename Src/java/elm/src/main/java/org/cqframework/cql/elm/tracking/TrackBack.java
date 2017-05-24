@@ -87,4 +87,11 @@ public class TrackBack {
                 ", endChar=" + endChar +
                 '}';
     }
+
+    public String toLocator() {
+        return
+            startLine == endLine && startChar == endChar
+                ? String.format("%s:%s", startLine, startChar)
+                : String.format("%s:%s-%s:%s", startLine, startChar, endLine, endChar);
+    }
 }
