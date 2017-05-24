@@ -2629,4 +2629,31 @@ If the source is null, the result is null.</xs:documentation>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<!-- Errors and Messages -->
+	<xs:complexType name="Message">
+		<xs:annotation>
+			<xs:documentation>The Message operator is used to support errors, warnings, messages, and tracing in an ELM evaluation environment.
+
+The operator is defined to return the input source.
+
+If the severity is Error, the operator is expected to raise a run-time error and return the message to the calling environment. This is the only severity that stops processing. All other severities continue evaluation of the expression.
+
+If the severity is Trace, the operator is expected to make the message available to a tracing mechanism such as a debug log in the calling environment.
+
+If the severity is Warning, the operator is expected to provide the message as a warning to the calling environment.
+
+If the severity is Message, the operator is expected to provide the message as information to the calling environment.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="condition" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="code" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="severity" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="message" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>

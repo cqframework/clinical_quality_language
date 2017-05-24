@@ -440,6 +440,12 @@ public class SystemLibraryHelper {
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
 
+        // Errors
+        // Message(source T, condition Boolean, code String, severity String, message String) T
+        system.add(new GenericOperator("Message", new Signature(new TypeParameter("T"), systemModel.getBoolean(),
+                systemModel.getString(), systemModel.getString(), systemModel.getString()), new TypeParameter("T"),
+                new TypeParameter("T")));
+
         return system;
     }
 }

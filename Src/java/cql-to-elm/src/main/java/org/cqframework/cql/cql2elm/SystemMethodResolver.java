@@ -414,7 +414,16 @@ public class SystemMethodResolver {
             case "toInteger": return builder.resolveFunction(null, "ToInteger", getParams(target, ctx));
             case "toString": return builder.resolveFunction(null, "ToString", getParams(target, ctx));
             case "toTime": return builder.resolveFunction(null, "ToTime", getParams(target, ctx));
-            // TODO: trace
+            case "trace": {
+                checkArgumentCount(ctx, functionName, 1);
+                List<Expression> params = new ArrayList<Expression>();
+                params.add(target);
+                params.add(builder.createLiteral(true));
+                params.add(builder.createLiteral("TRACE"));
+                params.add(builder.createLiteral("Trace"));
+                params.add((Expression)visitor.visit(ctx.paramList().expression(0)));
+                return builder.resolveFunction(null, "Message", params);
+            }
             case "where": {
                 return createWhere(target, functionName, ctx);
             }

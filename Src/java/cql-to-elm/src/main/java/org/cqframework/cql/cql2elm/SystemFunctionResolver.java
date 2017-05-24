@@ -261,6 +261,10 @@ public class SystemFunctionResolver {
                 case "Equivalent": {
                     return resolveBinary(fun);
                 }
+
+                // Error Functions
+                case "Message":
+                    return resolveMessage(fun);
             }
         }
 
@@ -474,6 +478,23 @@ public class SystemFunctionResolver {
         }
         builder.resolveCall("System", "Substring", new SubstringInvocation(substring));
         return substring;
+    }
+
+    // Error Functions
+    private Message resolveMessage(FunctionRef fun) {
+        if (fun.getOperand().size() != 5) {
+            throw new IllegalArgumentException("Could not resolve call to system operator Message. Expected 5 arguments.");
+        }
+
+        Message message = of.createMessage()
+                .withSource(fun.getOperand().get(0))
+                .withCondition(fun.getOperand().get(1))
+                .withCode(fun.getOperand().get(2))
+                .withSeverity(fun.getOperand().get(3))
+                .withMessage(fun.getOperand().get(4));
+
+        builder.resolveCall("System", "Message", new MessageInvocation(message));
+        return message;
     }
 
     // Type Functions

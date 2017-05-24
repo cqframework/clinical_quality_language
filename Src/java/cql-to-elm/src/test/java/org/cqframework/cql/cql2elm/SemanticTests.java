@@ -155,6 +155,11 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/UndeclaredSignature.cql", 1);
     }
 
+    @Test
+    public void testMessageOperators() throws IOException {
+        runSemanticTest("OperatorTests/MessageOperators.cql", 0);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }
