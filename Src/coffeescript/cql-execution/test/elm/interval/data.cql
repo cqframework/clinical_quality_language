@@ -11,6 +11,12 @@ define EqualOpenClosed: Interval(1, 5) = Interval[2, 4]
 define UnequalClosed: Interval[1, 5] = Interval[2, 4]
 define UnequalOpen: Interval(1, 5) = Interval(2, 4)
 define UnequalClosedOpen: Interval[1, 5] = Interval(2, 4)
+define EqualQuantityClosed: Interval[1 'mg', 5 'mg'] = Interval[1 'mg', 5 'mg']
+define EqualQuantityOpen: Interval(1 'mg', 5 'mg') = Interval(1 'mg', 5 'mg')
+define EqualQuantityOpenClosed: Interval(1 'mg', 5 'mg') = Interval[2 'mg', 4 'mg']
+define UnequalQuantityClosed: Interval[1 'mg', 5 'mg'] = Interval[2 'mg', 4 'mg']
+define UnequalQuantityOpen: Interval(1 'mg', 5 'mg') = Interval(2 'mg', 4 'mg')
+define UnequalQuantityClosedOpen: Interval[1 'mg', 5 'mg'] = Interval(2 'mg', 4 'mg')
 define EqualDates: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) = Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
 define EqualDatesOpenClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) = Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
 define SameDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) = Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
@@ -23,6 +29,12 @@ define EqualOpenClosed: Interval(1, 5) != Interval[2, 4]
 define UnequalClosed: Interval[1, 5] != Interval[2, 4]
 define UnequalOpen: Interval(1, 5) != Interval(2, 4)
 define UnequalClosedOpen: Interval[1, 5] != Interval(2, 4)
+define EqualQuantityClosed: Interval[1 'mg', 5 'mg'] != Interval[1 'mg', 5 'mg']
+define EqualQuantityOpen: Interval(1 'mg', 5 'mg') != Interval(1 'mg', 5 'mg')
+define EqualQuantityOpenClosed: Interval(1 'mg', 5 'mg') != Interval[2 'mg', 4 'mg']
+define UnequalQuantityClosed: Interval[1 'mg', 5 'mg'] != Interval[2 'mg', 4 'mg']
+define UnequalQuantityOpen: Interval(1 'mg', 5 'mg') != Interval(2 'mg', 4 'mg')
+define UnequalQuantityClosedOpen: Interval[1 'mg', 5 'mg'] != Interval(2 'mg', 4 'mg')
 define EqualDates: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) != Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
 define EqualDatesOpenClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) != Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
 define SameDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) != Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
@@ -33,6 +45,10 @@ define ContainsInt: Interval[1, 5] contains 3
 define NotContainsInt: Interval(1, 5] contains 1
 define ContainsReal: Interval[1.234, 3.456] contains 2.345
 define NotContainsReal: Interval[1.234, 3.456] contains 4.567
+define ContainsQuantity: Interval[1 'mg', 5 'mg'] contains 3 'mg'
+define ContainsQuantityInclusiveEdge: Interval[1 'mg', 5 'mg'] contains 5 'mg'
+define NotContainsQuantity: Interval[2 'mg', 5 'mg'] contains 1 'mg'
+define NotContainsQuantityExclusiveEdge: Interval(1 'mg', 5 'mg'] contains 1 'mg'
 define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
 define ContainsDate: DateIvl contains DateTime(2012, 6, 1, 0, 0, 0, 0)
 define NotContainsDate: DateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
@@ -69,8 +85,10 @@ define ContainsInt: 3 in Interval[1, 5]
 define NotContainsInt: 1 in Interval(1, 5]
 define ContainsReal: 2.345 in Interval[1.234, 3.456]
 define NotContainsReal: 4.567 in Interval[1.234, 3.456]
-define ContainsQuantity: 5 '%' in Interval[4 '%', 6 '%']
-define NotContainsQuantity: 3 '%' in Interval[4 '%', 6 '%']
+define ContainsQuantity: 5 'mg' in Interval[4 'mg', 6 'mg']
+define ContainsQuantityInclusiveEdge: 6 'mg' in Interval[4 'mg', 6 'mg']
+define NotContainsQuantity: 3 'mg' in Interval[4 'mg', 6 'mg']
+define NotContainsQuantityExclusiveEdge: 6 'mg' in Interval[4 'mg', 6 'mg')
 define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
 define ContainsDate: DateTime(2012, 6, 1, 0, 0, 0, 0) in DateIvl
 define NotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in DateIvl

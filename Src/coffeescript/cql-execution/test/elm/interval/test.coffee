@@ -54,6 +54,16 @@ describe 'Equal', ->
     @unequalOpen.exec(@ctx).should.be.false
     @unequalClosedOpen.exec(@ctx).should.be.false
 
+  it 'should determine equal quantity intervals', ->
+    @equalQuantityClosed.exec(@ctx).should.be.true()
+    @equalQuantityOpen.exec(@ctx).should.be.true()
+    @equalQuantityOpenClosed.exec(@ctx).should.be.true()
+
+  it 'should determine unequal quantity intervals', ->
+    @unequalQuantityClosed.exec(@ctx).should.be.false()
+    @unequalQuantityOpen.exec(@ctx).should.be.false()
+    @unequalQuantityClosedOpen.exec(@ctx).should.be.false()
+
   it 'should determine equal datetime intervals', ->
     @equalDates.exec(@ctx).should.be.true
     @equalDatesOpenClosed.exec(@ctx).should.be.true
@@ -76,6 +86,16 @@ describe 'NotEqual', ->
     @unequalOpen.exec(@ctx).should.be.true
     @unequalClosedOpen.exec(@ctx).should.be.true
 
+  it 'should determine equal quantity intervals', ->
+    @equalQuantityClosed.exec(@ctx).should.be.false()
+    @equalQuantityOpen.exec(@ctx).should.be.false()
+    @equalQuantityOpenClosed.exec(@ctx).should.be.false()
+
+  it 'should determine unequal quantity intervals', ->
+    @unequalQuantityClosed.exec(@ctx).should.be.true()
+    @unequalQuantityOpen.exec(@ctx).should.be.true()
+    @unequalQuantityClosedOpen.exec(@ctx).should.be.true()
+
   it 'should determine equal datetime intervals', ->
     @equalDates.exec(@ctx).should.be.false
     @equalDatesOpenClosed.exec(@ctx).should.be.false
@@ -91,11 +111,15 @@ describe 'Contains', ->
   it 'should accept contained items', ->
     @containsInt.exec(@ctx).should.be.true
     @containsReal.exec(@ctx).should.be.true
-    @containsDate.exec(@ctx).should.be.true
+    @containsQuantity.exec(@ctx).should.be.true()
+    @containsQuantityInclusiveEdge.exec(@ctx).should.be.true()
+    @containsDate.exec(@ctx).should.be.true()
 
   it 'should reject uncontained items', ->
     @notContainsInt.exec(@ctx).should.be.false
     @notContainsReal.exec(@ctx).should.be.false
+    @notContainsQuantity.exec(@ctx).should.be.false()
+    @notContainsQuantityExclusiveEdge.exec(@ctx).should.be.false()
     @notContainsDate.exec(@ctx).should.be.false
 
   it 'should correctly handle null endpoints (int)', ->
@@ -138,12 +162,14 @@ describe 'In', ->
     @containsInt.exec(@ctx).should.be.true
     @containsReal.exec(@ctx).should.be.true
     @containsQuantity.exec(@ctx).should.be.true
+    @containsQuantityInclusiveEdge.exec(@ctx).should.be.true()
     @containsDate.exec(@ctx).should.be.true
 
   it 'should reject uncontained items', ->
     @notContainsInt.exec(@ctx).should.be.false
     @notContainsReal.exec(@ctx).should.be.false
     @notContainsQuantity.exec(@ctx).should.be.false
+    @notContainsQuantityExclusiveEdge.exec(@ctx).should.be.false()
     @notContainsDate.exec(@ctx).should.be.false
 
   it 'should correctly handle null endpoints (int)', ->
