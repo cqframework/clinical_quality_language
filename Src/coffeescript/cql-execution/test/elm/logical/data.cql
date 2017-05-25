@@ -42,6 +42,6 @@ define FalseIsTrue: false is true
 define NullIsTrue: null is true
 
 // @Test: IsFalse
-define TrueIsFalse: true is true
-define FalseIsFalse: false is true
-define NullIsFalse: null is true
+define TrueIsFalse: true is false
+define FalseIsFalse: false is false
+define NullIsFalse: null is false

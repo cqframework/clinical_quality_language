@@ -877,9 +877,9 @@ module.exports['IsTrue'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define TrueIsFalse: true is true
-define FalseIsFalse: false is true
-define NullIsFalse: null is true
+define TrueIsFalse: true is false
+define FalseIsFalse: false is false
+define NullIsFalse: null is false
 ###
 
 module.exports['IsFalse'] = {
@@ -918,7 +918,7 @@ module.exports['IsFalse'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "IsTrue",
+               "type" : "IsFalse",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "true",
@@ -930,7 +930,7 @@ module.exports['IsFalse'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "IsTrue",
+               "type" : "IsFalse",
                "operand" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "value" : "false",
@@ -942,7 +942,7 @@ module.exports['IsFalse'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "IsTrue",
+               "type" : "IsFalse",
                "operand" : {
                   "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
