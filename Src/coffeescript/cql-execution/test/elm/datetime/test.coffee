@@ -225,50 +225,50 @@ describe 'SameAs', ->
     setup @, data
 
   it 'should properly determine when year is the same', ->
-    @sameYear.exec(@ctx).should.be.true
-    @notSameYear.exec(@ctx).should.be.false
+    @sameYear.exec(@ctx).should.be.true()
+    @notSameYear.exec(@ctx).should.be.false()
 
   it 'should properly determine when month is the same', ->
-    @sameMonth.exec(@ctx).should.be.true
-    @notSameMonth.exec(@ctx).should.be.false
-    @sameMonthWrongYear.exec(@ctx).should.be.false
+    @sameMonth.exec(@ctx).should.be.true()
+    @notSameMonth.exec(@ctx).should.be.false()
+    @sameMonthWrongYear.exec(@ctx).should.be.false()
 
   it 'should properly determine when day is the same', ->
-    @sameDay.exec(@ctx).should.be.true
-    @notSameDay.exec(@ctx).should.be.false
-    @sameDayWrongMonth.exec(@ctx).should.be.false
+    @sameDay.exec(@ctx).should.be.true()
+    @notSameDay.exec(@ctx).should.be.false()
+    @sameDayWrongMonth.exec(@ctx).should.be.false()
 
   it 'should properly determine when hour is the same', ->
-    @sameHour.exec(@ctx).should.be.true
-    @notSameHour.exec(@ctx).should.be.false
-    @sameHourWrongDay.exec(@ctx).should.be.false
+    @sameHour.exec(@ctx).should.be.true()
+    @notSameHour.exec(@ctx).should.be.false()
+    @sameHourWrongDay.exec(@ctx).should.be.false()
 
   it 'should properly determine when minute is the same', ->
-    @sameMinute.exec(@ctx).should.be.true
-    @notSameMinute.exec(@ctx).should.be.false
-    @sameMinuteWrongHour.exec(@ctx).should.be.false
+    @sameMinute.exec(@ctx).should.be.true()
+    @notSameMinute.exec(@ctx).should.be.false()
+    @sameMinuteWrongHour.exec(@ctx).should.be.false()
 
   it 'should properly determine when second is the same', ->
-    @sameSecond.exec(@ctx).should.be.true
-    @notSameSecond.exec(@ctx).should.be.false
-    @sameSecondWrongMinute.exec(@ctx).should.be.false
+    @sameSecond.exec(@ctx).should.be.true()
+    @notSameSecond.exec(@ctx).should.be.false()
+    @sameSecondWrongMinute.exec(@ctx).should.be.false()
 
   it 'should properly determine when millisecond is the same', ->
-    @sameMillisecond.exec(@ctx).should.be.true
-    @notSameMillisecond.exec(@ctx).should.be.false
-    @sameMillisecondWrongSecond.exec(@ctx).should.be.false
+    @sameMillisecond.exec(@ctx).should.be.true()
+    @notSameMillisecond.exec(@ctx).should.be.false()
+    @sameMillisecondWrongSecond.exec(@ctx).should.be.false()
 
   it 'should properly determine same as using milliseconds', ->
-    @same.exec(@ctx).should.be.true
-    @notSame.exec(@ctx).should.be.false
+    @same.exec(@ctx).should.be.true()
+    @notSame.exec(@ctx).should.be.false()
 
   it 'should normalize timezones when determining sameness', ->
-    @sameNormalized.exec(@ctx).should.be.true
-    @sameHourWrongTimezone.exec(@ctx).should.be.false
+    @sameNormalized.exec(@ctx).should.be.true()
+    @sameHourWrongTimezone.exec(@ctx).should.be.false()
 
   it 'should handle imprecision', ->
     should(@impreciseHour.exec(@ctx)).be.null
-    @impreciseHourWrongDay.exec(@ctx).should.be.false
+    @impreciseHourWrongDay.exec(@ctx).should.be.false()
 
   it 'should return null when either argument is null', ->
     should(@nullLeft.exec(@ctx)).be.null
@@ -280,59 +280,59 @@ describe 'SameOrAfter', ->
     setup @, data
 
   it 'should properly determine when year is same or after', ->
-    @sameYear.exec(@ctx).should.be.true
-    @yearAfter.exec(@ctx).should.be.true
-    @yearBefore.exec(@ctx).should.be.false
+    @sameYear.exec(@ctx).should.be.true()
+    @yearAfter.exec(@ctx).should.be.true()
+    @yearBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when month is same or after', ->
-    @sameMonth.exec(@ctx).should.be.true
-    @monthAfter.exec(@ctx).should.be.true
-    @monthBefore.exec(@ctx).should.be.false
+    @sameMonth.exec(@ctx).should.be.true()
+    @monthAfter.exec(@ctx).should.be.true()
+    @monthBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when day is same or after', ->
-    @sameDay.exec(@ctx).should.be.true
-    @dayAfter.exec(@ctx).should.be.true
-    @dayBefore.exec(@ctx).should.be.false
+    @sameDay.exec(@ctx).should.be.true()
+    @dayAfter.exec(@ctx).should.be.true()
+    @dayBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when hour is same or after', ->
-    @sameHour.exec(@ctx).should.be.true
-    @hourAfter.exec(@ctx).should.be.true
-    @hourBefore.exec(@ctx).should.be.false
+    @sameHour.exec(@ctx).should.be.true()
+    @hourAfter.exec(@ctx).should.be.true()
+    @hourBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when minute is same or after', ->
-    @sameMinute.exec(@ctx).should.be.true
-    @minuteAfter.exec(@ctx).should.be.true
-    @minuteBefore.exec(@ctx).should.be.false
+    @sameMinute.exec(@ctx).should.be.true()
+    @minuteAfter.exec(@ctx).should.be.true()
+    @minuteBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when second is same or after', ->
-    @sameSecond.exec(@ctx).should.be.true
-    @secondAfter.exec(@ctx).should.be.true
-    @secondBefore.exec(@ctx).should.be.false
+    @sameSecond.exec(@ctx).should.be.true()
+    @secondAfter.exec(@ctx).should.be.true()
+    @secondBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when millisecond is same or after', ->
-    @sameMillisecond.exec(@ctx).should.be.true
-    @millisecondAfter.exec(@ctx).should.be.true
-    @millisecondBefore.exec(@ctx).should.be.false
+    @sameMillisecond.exec(@ctx).should.be.true()
+    @millisecondAfter.exec(@ctx).should.be.true()
+    @millisecondBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine same or after using ms when no precision defined', ->
-    @same.exec(@ctx).should.be.true
-    @after.exec(@ctx).should.be.true
-    @before.exec(@ctx).should.be.false
+    @same.exec(@ctx).should.be.true()
+    @after.exec(@ctx).should.be.true()
+    @before.exec(@ctx).should.be.false()
 
   it 'should consider precision units above the specified unit', ->
-    @sameDayMonthBefore.exec(@ctx).should.be.false
-    @dayAfterMonthBefore.exec(@ctx).should.be.false
-    @dayBeforeMonthAfter.exec(@ctx).should.be.true
+    @sameDayMonthBefore.exec(@ctx).should.be.false()
+    @dayAfterMonthBefore.exec(@ctx).should.be.false()
+    @dayBeforeMonthAfter.exec(@ctx).should.be.true()
 
   it 'should handle imprecision', ->
     should(@impreciseDay.exec(@ctx)).be.null
-    @impreciseDayMonthAfter.exec(@ctx).should.be.true
-    @impreciseDayMonthBefore.exec(@ctx).should.be.false
+    @impreciseDayMonthAfter.exec(@ctx).should.be.true()
+    @impreciseDayMonthBefore.exec(@ctx).should.be.false()
 
   it 'should normalize timezones', ->
-    @sameHourNormalizeZones.exec(@ctx).should.be.true
-    @hourAfterNormalizeZones.exec(@ctx).should.be.true
-    @hourBeforeNormalizeZones.exec(@ctx).should.be.false
+    @sameHourNormalizeZones.exec(@ctx).should.be.true()
+    @hourAfterNormalizeZones.exec(@ctx).should.be.true()
+    @hourBeforeNormalizeZones.exec(@ctx).should.be.false()
 
   it 'should return null when either argument is null', ->
     should(@nullLeft.exec(@ctx)).be.null
@@ -344,59 +344,59 @@ describe 'SameOrBefore', ->
     setup @, data
 
   it 'should properly determine when year is same or after', ->
-    @sameYear.exec(@ctx).should.be.true
-    @yearAfter.exec(@ctx).should.be.false
-    @yearBefore.exec(@ctx).should.be.true
+    @sameYear.exec(@ctx).should.be.true()
+    @yearAfter.exec(@ctx).should.be.false()
+    @yearBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when month is same or after', ->
-    @sameMonth.exec(@ctx).should.be.true
-    @monthAfter.exec(@ctx).should.be.false
-    @monthBefore.exec(@ctx).should.be.true
+    @sameMonth.exec(@ctx).should.be.true()
+    @monthAfter.exec(@ctx).should.be.false()
+    @monthBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when day is same or after', ->
-    @sameDay.exec(@ctx).should.be.true
-    @dayAfter.exec(@ctx).should.be.false
-    @dayBefore.exec(@ctx).should.be.true
+    @sameDay.exec(@ctx).should.be.true()
+    @dayAfter.exec(@ctx).should.be.false()
+    @dayBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when hour is same or after', ->
-    @sameHour.exec(@ctx).should.be.true
-    @hourAfter.exec(@ctx).should.be.false
-    @hourBefore.exec(@ctx).should.be.true
+    @sameHour.exec(@ctx).should.be.true()
+    @hourAfter.exec(@ctx).should.be.false()
+    @hourBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when minute is same or after', ->
-    @sameMinute.exec(@ctx).should.be.true
-    @minuteAfter.exec(@ctx).should.be.false
-    @minuteBefore.exec(@ctx).should.be.true
+    @sameMinute.exec(@ctx).should.be.true()
+    @minuteAfter.exec(@ctx).should.be.false()
+    @minuteBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when second is same or after', ->
-    @sameSecond.exec(@ctx).should.be.true
-    @secondAfter.exec(@ctx).should.be.false
-    @secondBefore.exec(@ctx).should.be.true
+    @sameSecond.exec(@ctx).should.be.true()
+    @secondAfter.exec(@ctx).should.be.false()
+    @secondBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when millisecond is same or after', ->
-    @sameMillisecond.exec(@ctx).should.be.true
-    @millisecondAfter.exec(@ctx).should.be.false
-    @millisecondBefore.exec(@ctx).should.be.true
+    @sameMillisecond.exec(@ctx).should.be.true()
+    @millisecondAfter.exec(@ctx).should.be.false()
+    @millisecondBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine same or after using ms when no precision defined', ->
-    @same.exec(@ctx).should.be.true
-    @after.exec(@ctx).should.be.false
-    @before.exec(@ctx).should.be.true
+    @same.exec(@ctx).should.be.true()
+    @after.exec(@ctx).should.be.false()
+    @before.exec(@ctx).should.be.true()
 
   it 'should consider precision units above the specified unit', ->
-    @sameDayMonthBefore.exec(@ctx).should.be.true
-    @dayAfterMonthBefore.exec(@ctx).should.be.true
-    @dayBeforeMonthAfter.exec(@ctx).should.be.false
+    @sameDayMonthBefore.exec(@ctx).should.be.true()
+    @dayAfterMonthBefore.exec(@ctx).should.be.true()
+    @dayBeforeMonthAfter.exec(@ctx).should.be.false()
 
   it 'should handle imprecision', ->
     should(@impreciseDay.exec(@ctx)).be.null
-    @impreciseDayMonthAfter.exec(@ctx).should.be.false
-    @impreciseDayMonthBefore.exec(@ctx).should.be.true
+    @impreciseDayMonthAfter.exec(@ctx).should.be.false()
+    @impreciseDayMonthBefore.exec(@ctx).should.be.true()
 
   it 'should normalize timezones', ->
-    @sameHourNormalizeZones.exec(@ctx).should.be.true
-    @hourAfterNormalizeZones.exec(@ctx).should.be.false
-    @hourBeforeNormalizeZones.exec(@ctx).should.be.true
+    @sameHourNormalizeZones.exec(@ctx).should.be.true()
+    @hourAfterNormalizeZones.exec(@ctx).should.be.false()
+    @hourBeforeNormalizeZones.exec(@ctx).should.be.true()
 
   it 'should return null when either argument is null', ->
     should(@nullLeft.exec(@ctx)).be.null
@@ -408,54 +408,54 @@ describe 'After', ->
     setup @, data
 
   it 'should properly determine when year is same or after', ->
-    @sameYear.exec(@ctx).should.be.false
-    @yearAfter.exec(@ctx).should.be.true
-    @yearBefore.exec(@ctx).should.be.false
+    @sameYear.exec(@ctx).should.be.false()
+    @yearAfter.exec(@ctx).should.be.true()
+    @yearBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when month is same or after', ->
-    @sameMonth.exec(@ctx).should.be.false
-    @monthAfter.exec(@ctx).should.be.true
-    @monthBefore.exec(@ctx).should.be.false
+    @sameMonth.exec(@ctx).should.be.false()
+    @monthAfter.exec(@ctx).should.be.true()
+    @monthBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when day is same or after', ->
-    @sameDay.exec(@ctx).should.be.false
-    @dayAfter.exec(@ctx).should.be.true
-    @dayBefore.exec(@ctx).should.be.false
+    @sameDay.exec(@ctx).should.be.false()
+    @dayAfter.exec(@ctx).should.be.true()
+    @dayBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when hour is same or after', ->
-    @sameHour.exec(@ctx).should.be.false
-    @hourAfter.exec(@ctx).should.be.true
-    @hourBefore.exec(@ctx).should.be.false
+    @sameHour.exec(@ctx).should.be.false()
+    @hourAfter.exec(@ctx).should.be.true()
+    @hourBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when minute is same or after', ->
-    @sameMinute.exec(@ctx).should.be.false
-    @minuteAfter.exec(@ctx).should.be.true
-    @minuteBefore.exec(@ctx).should.be.false
+    @sameMinute.exec(@ctx).should.be.false()
+    @minuteAfter.exec(@ctx).should.be.true()
+    @minuteBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when second is same or after', ->
-    @sameSecond.exec(@ctx).should.be.false
-    @secondAfter.exec(@ctx).should.be.true
-    @secondBefore.exec(@ctx).should.be.false
+    @sameSecond.exec(@ctx).should.be.false()
+    @secondAfter.exec(@ctx).should.be.true()
+    @secondBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine when millisecond is same or after', ->
-    @sameMillisecond.exec(@ctx).should.be.false
-    @millisecondAfter.exec(@ctx).should.be.true
-    @millisecondBefore.exec(@ctx).should.be.false
+    @sameMillisecond.exec(@ctx).should.be.false()
+    @millisecondAfter.exec(@ctx).should.be.true()
+    @millisecondBefore.exec(@ctx).should.be.false()
 
   it 'should properly determine same or after using ms when no precision defined', ->
-    @same.exec(@ctx).should.be.false
-    @after.exec(@ctx).should.be.true
-    @before.exec(@ctx).should.be.false
+    @same.exec(@ctx).should.be.false()
+    @after.exec(@ctx).should.be.true()
+    @before.exec(@ctx).should.be.false()
 
   it 'should handle imprecision', ->
     should(@impreciseDay.exec(@ctx)).be.null
-    @impreciseDayMonthAfter.exec(@ctx).should.be.true
-    @impreciseDayMonthBefore.exec(@ctx).should.be.false
+    @impreciseDayMonthAfter.exec(@ctx).should.be.true()
+    @impreciseDayMonthBefore.exec(@ctx).should.be.false()
 
   it 'should normalize timezones', ->
-    @sameHourNormalizeZones.exec(@ctx).should.be.false
-    @hourAfterNormalizeZones.exec(@ctx).should.be.true
-    @hourBeforeNormalizeZones.exec(@ctx).should.be.false
+    @sameHourNormalizeZones.exec(@ctx).should.be.false()
+    @hourAfterNormalizeZones.exec(@ctx).should.be.true()
+    @hourBeforeNormalizeZones.exec(@ctx).should.be.false()
 
   it 'should return null when either argument is null', ->
     should(@nullLeft.exec(@ctx)).be.null
@@ -467,54 +467,54 @@ describe 'Before', ->
     setup @, data
 
   it 'should properly determine when year is same or after', ->
-    @sameYear.exec(@ctx).should.be.false
-    @yearAfter.exec(@ctx).should.be.false
-    @yearBefore.exec(@ctx).should.be.true
+    @sameYear.exec(@ctx).should.be.false()
+    @yearAfter.exec(@ctx).should.be.false()
+    @yearBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when month is same or after', ->
-    @sameMonth.exec(@ctx).should.be.false
-    @monthAfter.exec(@ctx).should.be.false
-    @monthBefore.exec(@ctx).should.be.true
+    @sameMonth.exec(@ctx).should.be.false()
+    @monthAfter.exec(@ctx).should.be.false()
+    @monthBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when day is same or after', ->
-    @sameDay.exec(@ctx).should.be.false
-    @dayAfter.exec(@ctx).should.be.false
-    @dayBefore.exec(@ctx).should.be.true
+    @sameDay.exec(@ctx).should.be.false()
+    @dayAfter.exec(@ctx).should.be.false()
+    @dayBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when hour is same or after', ->
-    @sameHour.exec(@ctx).should.be.false
-    @hourAfter.exec(@ctx).should.be.false
-    @hourBefore.exec(@ctx).should.be.true
+    @sameHour.exec(@ctx).should.be.false()
+    @hourAfter.exec(@ctx).should.be.false()
+    @hourBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when minute is same or after', ->
-    @sameMinute.exec(@ctx).should.be.false
-    @minuteAfter.exec(@ctx).should.be.false
-    @minuteBefore.exec(@ctx).should.be.true
+    @sameMinute.exec(@ctx).should.be.false()
+    @minuteAfter.exec(@ctx).should.be.false()
+    @minuteBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when second is same or after', ->
-    @sameSecond.exec(@ctx).should.be.false
-    @secondAfter.exec(@ctx).should.be.false
-    @secondBefore.exec(@ctx).should.be.true
+    @sameSecond.exec(@ctx).should.be.false()
+    @secondAfter.exec(@ctx).should.be.false()
+    @secondBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine when millisecond is same or after', ->
-    @sameMillisecond.exec(@ctx).should.be.false
-    @millisecondAfter.exec(@ctx).should.be.false
-    @millisecondBefore.exec(@ctx).should.be.true
+    @sameMillisecond.exec(@ctx).should.be.false()
+    @millisecondAfter.exec(@ctx).should.be.false()
+    @millisecondBefore.exec(@ctx).should.be.true()
 
   it 'should properly determine same or after using ms when no precision defined', ->
-    @same.exec(@ctx).should.be.false
-    @after.exec(@ctx).should.be.false
-    @before.exec(@ctx).should.be.true
+    @same.exec(@ctx).should.be.false()
+    @after.exec(@ctx).should.be.false()
+    @before.exec(@ctx).should.be.true()
 
   it 'should handle imprecision', ->
     should(@impreciseDay.exec(@ctx)).be.null
-    @impreciseDayMonthAfter.exec(@ctx).should.be.false
-    @impreciseDayMonthBefore.exec(@ctx).should.be.true
+    @impreciseDayMonthAfter.exec(@ctx).should.be.false()
+    @impreciseDayMonthBefore.exec(@ctx).should.be.true()
 
   it 'should normalize timezones', ->
-    @sameHourNormalizeZones.exec(@ctx).should.be.false
-    @hourAfterNormalizeZones.exec(@ctx).should.be.false
-    @hourBeforeNormalizeZones.exec(@ctx).should.be.true
+    @sameHourNormalizeZones.exec(@ctx).should.be.false()
+    @hourAfterNormalizeZones.exec(@ctx).should.be.false()
+    @hourBeforeNormalizeZones.exec(@ctx).should.be.true()
 
   it 'should return null when either argument is null', ->
     should(@nullLeft.exec(@ctx)).be.null
@@ -578,31 +578,31 @@ describe 'DurationBetween Comparisons', ->
     setup @, data
 
   it 'should calculate days between > x', ->
-    @greaterThan25DaysAfter.exec(@ctx).should.be.true
+    @greaterThan25DaysAfter.exec(@ctx).should.be.true()
     should(@greaterThan40DaysAfter.exec(@ctx)).be.null
-    @greaterThan80DaysAfter.exec(@ctx).should.be.false
+    @greaterThan80DaysAfter.exec(@ctx).should.be.false()
 
   it 'should calculate days between >= x', ->
-    @greaterOrEqualTo25DaysAfter.exec(@ctx).should.be.true
+    @greaterOrEqualTo25DaysAfter.exec(@ctx).should.be.true()
     should(@greaterOrEqualTo40DaysAfter.exec(@ctx)).be.null
-    @greaterOrEqualTo80DaysAfter.exec(@ctx).should.be.false
+    @greaterOrEqualTo80DaysAfter.exec(@ctx).should.be.false()
 
   it 'should calculate days between = x', ->
-    @equalTo25DaysAfter.exec(@ctx).should.be.false
+    @equalTo25DaysAfter.exec(@ctx).should.be.false()
     should(@equalTo40DaysAfter.exec(@ctx)).be.null
-    @equalTo80DaysAfter.exec(@ctx).should.be.false
+    @equalTo80DaysAfter.exec(@ctx).should.be.false()
 
   it 'should calculate days between <= x', ->
-    @lessOrEqualTo25DaysAfter.exec(@ctx).should.be.false
+    @lessOrEqualTo25DaysAfter.exec(@ctx).should.be.false()
     should(@lessOrEqualTo40DaysAfter.exec(@ctx)).be.null
-    @lessOrEqualTo80DaysAfter.exec(@ctx).should.be.true
+    @lessOrEqualTo80DaysAfter.exec(@ctx).should.be.true()
 
   it 'should calculate days between < x', ->
-    @lessThan25DaysAfter.exec(@ctx).should.be.false
+    @lessThan25DaysAfter.exec(@ctx).should.be.false()
     should(@lessThan40DaysAfter.exec(@ctx)).be.null
-    @lessThan80DaysAfter.exec(@ctx).should.be.true
+    @lessThan80DaysAfter.exec(@ctx).should.be.true()
 
   it 'should calculate other way too', ->
-    @twentyFiveDaysLessThanDaysBetween.exec(@ctx).should.be.true
+    @twentyFiveDaysLessThanDaysBetween.exec(@ctx).should.be.true()
     should(@fortyDaysEqualToDaysBetween.exec(@ctx)).be.null
-    @twentyFiveDaysGreaterThanDaysBetween.exec(@ctx).should.be.false
+    @twentyFiveDaysGreaterThanDaysBetween.exec(@ctx).should.be.false()

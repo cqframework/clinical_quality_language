@@ -41,34 +41,34 @@ describe 'InValueSet', ->
     setup @, data, [], vsets
 
   it 'should find string code in value set', ->
-    @string.exec(@ctx).should.be.true
+    @string.exec(@ctx).should.be.true()
 
   it 'should find string code in versioned value set', ->
-    @stringInVersionedValueSet.exec(@ctx).should.be.true
+    @stringInVersionedValueSet.exec(@ctx).should.be.true()
 
   it 'should find short code in value set', ->
-    @shortCode.exec(@ctx).should.be.true
+    @shortCode.exec(@ctx).should.be.true()
 
   it 'should find medium code in value set', ->
-    @mediumCode.exec(@ctx).should.be.true
+    @mediumCode.exec(@ctx).should.be.true()
 
   it 'should find long code in value set', ->
-    @longCode.exec(@ctx).should.be.true
+    @longCode.exec(@ctx).should.be.true()
 
   it 'should not find string code in value set', ->
-    @wrongString.exec(@ctx).should.be.false
+    @wrongString.exec(@ctx).should.be.false()
 
   it 'should not find string code in versioned value set', ->
-    @wrongStringInVersionedValueSet.exec(@ctx).should.be.false
+    @wrongStringInVersionedValueSet.exec(@ctx).should.be.false()
 
   it 'should not find short code in value set', ->
-    @wrongShortCode.exec(@ctx).should.be.false
+    @wrongShortCode.exec(@ctx).should.be.false()
 
   it 'should not find medium code in value set', ->
-    @wrongMediumCode.exec(@ctx).should.be.false
+    @wrongMediumCode.exec(@ctx).should.be.false()
 
   it 'should not find long code in value set', ->
-    @wrongLongCode.exec(@ctx).should.be.false
+    @wrongLongCode.exec(@ctx).should.be.false()
 
 describe 'Patient Property In ValueSet', ->
   @beforeEach ->
@@ -76,11 +76,11 @@ describe 'Patient Property In ValueSet', ->
 
   it 'should find that John is not female', ->
     @ctx.patient =  new PatientSource([ p1 ]).currentPatient()
-    @isFemale.exec(@ctx).should.be.false
+    @isFemale.exec(@ctx).should.be.false()
 
   it 'should find that Sally is female', ->
     @ctx.patient =  new PatientSource([ p2 ]).currentPatient()
-    @isFemale.exec(@ctx).should.be.true
+    @isFemale.exec(@ctx).should.be.true()
 
 describe 'CalculateAge', ->
   @beforeEach ->

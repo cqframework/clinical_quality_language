@@ -35,29 +35,29 @@ describe 'Uncertainty', ->
     oneToFive.high.should.equal 5
 
   it 'should detect zero-width intervals as points', ->
-    new Uncertainty(2).isPoint().should.be.true
-    new Uncertainty(2, 2).isPoint().should.be.true
-    new Uncertainty(null, null).isPoint().should.be.false
-    new Uncertainty(2, null).isPoint().should.be.false
-    new Uncertainty(null, 2).isPoint().should.be.false
-    new Uncertainty(1, 2).isPoint().should.be.false
-    new Uncertainty().isPoint().should.be.false
+    new Uncertainty(2).isPoint().should.be.true()
+    new Uncertainty(2, 2).isPoint().should.be.true()
+    new Uncertainty(null, null).isPoint().should.be.false()
+    new Uncertainty(2, null).isPoint().should.be.false()
+    new Uncertainty(null, 2).isPoint().should.be.false()
+    new Uncertainty(1, 2).isPoint().should.be.false()
+    new Uncertainty().isPoint().should.be.false()
 
   it 'should properly calculate equality', ->
 
     # Equality
-    new Uncertainty(1, 1).equals(new Uncertainty(1, 1)).should.be.true
+    new Uncertainty(1, 1).equals(new Uncertainty(1, 1)).should.be.true()
 
     # <
-    new Uncertainty(null, 1).equals(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(null, 1).equals(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(null, 1).equals(new Uncertainty(2, null)).should.be.false
-    new Uncertainty(0, 1).equals(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(0, 1).equals(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(0, 1).equals(new Uncertainty(2, null)).should.be.false
-    new Uncertainty(1, 1).equals(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(1, 1).equals(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(1, 1).equals(new Uncertainty(2, null)).should.be.false
+    new Uncertainty(null, 1).equals(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(null, 1).equals(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(null, 1).equals(new Uncertainty(2, null)).should.be.false()
+    new Uncertainty(0, 1).equals(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(0, 1).equals(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(0, 1).equals(new Uncertainty(2, null)).should.be.false()
+    new Uncertainty(1, 1).equals(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(1, 1).equals(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(1, 1).equals(new Uncertainty(2, null)).should.be.false()
 
     # <=
     should.not.exist new Uncertainty(null, 1).equals(new Uncertainty(1, 1))
@@ -100,31 +100,31 @@ describe 'Uncertainty', ->
     should.not.exist new Uncertainty(1, 1).equals(new Uncertainty(0, 1))
 
     # >
-    new Uncertainty(2, 2).equals(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, 3).equals(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, null).equals(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, 2).equals(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, 3).equals(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, null).equals(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, 2).equals(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(2, 3).equals(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(2, null).equals(new Uncertainty(1, 1)).should.be.false
+    new Uncertainty(2, 2).equals(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, 3).equals(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, null).equals(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, 2).equals(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, 3).equals(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, null).equals(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, 2).equals(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(2, 3).equals(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(2, null).equals(new Uncertainty(1, 1)).should.be.false()
 
   it 'should properly calculate "less than" inequality', ->
 
     # Equality
-    new Uncertainty(1, 1).lessThan(new Uncertainty(1, 1)).should.be.false
+    new Uncertainty(1, 1).lessThan(new Uncertainty(1, 1)).should.be.false()
 
     # <
-    new Uncertainty(null, 1).lessThan(new Uncertainty(2, 2)).should.be.true
-    new Uncertainty(null, 1).lessThan(new Uncertainty(2, 3)).should.be.true
-    new Uncertainty(null, 1).lessThan(new Uncertainty(2, null)).should.be.true
-    new Uncertainty(0, 1).lessThan(new Uncertainty(2, 2)).should.be.true
-    new Uncertainty(0, 1).lessThan(new Uncertainty(2, 3)).should.be.true
-    new Uncertainty(0, 1).lessThan(new Uncertainty(2, null)).should.be.true
-    new Uncertainty(1, 1).lessThan(new Uncertainty(2, 2)).should.be.true
-    new Uncertainty(1, 1).lessThan(new Uncertainty(2, 3)).should.be.true
-    new Uncertainty(1, 1).lessThan(new Uncertainty(2, null)).should.be.true
+    new Uncertainty(null, 1).lessThan(new Uncertainty(2, 2)).should.be.true()
+    new Uncertainty(null, 1).lessThan(new Uncertainty(2, 3)).should.be.true()
+    new Uncertainty(null, 1).lessThan(new Uncertainty(2, null)).should.be.true()
+    new Uncertainty(0, 1).lessThan(new Uncertainty(2, 2)).should.be.true()
+    new Uncertainty(0, 1).lessThan(new Uncertainty(2, 3)).should.be.true()
+    new Uncertainty(0, 1).lessThan(new Uncertainty(2, null)).should.be.true()
+    new Uncertainty(1, 1).lessThan(new Uncertainty(2, 2)).should.be.true()
+    new Uncertainty(1, 1).lessThan(new Uncertainty(2, 3)).should.be.true()
+    new Uncertainty(1, 1).lessThan(new Uncertainty(2, null)).should.be.true()
 
     # <=
     should.not.exist new Uncertainty(null, 1).lessThan(new Uncertainty(1, 1))
@@ -156,51 +156,51 @@ describe 'Uncertainty', ->
     should.not.exist new Uncertainty(10, null).lessThan(new Uncertainty(5, null))
 
     # >=
-    new Uncertainty(1, null).lessThan(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(1, null).lessThan(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(1, null).lessThan(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(1, 2).lessThan(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(1, 2).lessThan(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(1, 2).lessThan(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(1, 1).lessThan(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(1, 1).lessThan(new Uncertainty(0, 1)).should.be.false
+    new Uncertainty(1, null).lessThan(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(1, null).lessThan(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(1, null).lessThan(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(1, 2).lessThan(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(1, 2).lessThan(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(1, 2).lessThan(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(1, 1).lessThan(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(1, 1).lessThan(new Uncertainty(0, 1)).should.be.false()
 
     # >
-    new Uncertainty(2, 2).lessThan(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, 3).lessThan(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, null).lessThan(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, 2).lessThan(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, 3).lessThan(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, null).lessThan(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, 2).lessThan(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(2, 3).lessThan(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(2, null).lessThan(new Uncertainty(1, 1)).should.be.false
+    new Uncertainty(2, 2).lessThan(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, 3).lessThan(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, null).lessThan(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, 2).lessThan(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, 3).lessThan(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, null).lessThan(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, 2).lessThan(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(2, 3).lessThan(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(2, null).lessThan(new Uncertainty(1, 1)).should.be.false()
 
   it 'should properly calculate "less than or equals" inequality', ->
 
     # Equality
-    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(1, 1)).should.be.true
+    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(1, 1)).should.be.true()
 
     # <
-    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(2, 2)).should.be.true
-    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(2, 3)).should.be.true
-    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(2, null)).should.be.true
-    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(2, 2)).should.be.true
-    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(2, 3)).should.be.true
-    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(2, null)).should.be.true
-    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(2, 2)).should.be.true
-    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(2, 3)).should.be.true
-    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(2, null)).should.be.true
+    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(2, 2)).should.be.true()
+    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(2, 3)).should.be.true()
+    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(2, null)).should.be.true()
+    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(2, 2)).should.be.true()
+    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(2, 3)).should.be.true()
+    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(2, null)).should.be.true()
+    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(2, 2)).should.be.true()
+    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(2, 3)).should.be.true()
+    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(2, null)).should.be.true()
 
     # <=
-    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(1, 1)).should.be.true
-    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(1, 2)).should.be.true
-    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(1, null)).should.be.true
-    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(1, 1)).should.be.true
-    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(1, 2)).should.be.true
-    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(1, null)).should.be.true
-    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(1, 2)).should.be.true
-    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(1, null)).should.be.true
+    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(1, 1)).should.be.true()
+    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(1, 2)).should.be.true()
+    new Uncertainty(null, 1).lessThanOrEquals(new Uncertainty(1, null)).should.be.true()
+    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(1, 1)).should.be.true()
+    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(1, 2)).should.be.true()
+    new Uncertainty(0, 1).lessThanOrEquals(new Uncertainty(1, null)).should.be.true()
+    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(1, 2)).should.be.true()
+    new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(1, null)).should.be.true()
 
     # overlaps
     should.not.exist new Uncertainty(null, null).lessThanOrEquals(new Uncertainty(null, null))
@@ -232,41 +232,41 @@ describe 'Uncertainty', ->
     should.not.exist new Uncertainty(1, 1).lessThanOrEquals(new Uncertainty(0, 1))
 
     # >
-    new Uncertainty(2, 2).lessThanOrEquals(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, 3).lessThanOrEquals(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, null).lessThanOrEquals(new Uncertainty(null, 1)).should.be.false
-    new Uncertainty(2, 2).lessThanOrEquals(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, 3).lessThanOrEquals(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, null).lessThanOrEquals(new Uncertainty(0, 1)).should.be.false
-    new Uncertainty(2, 2).lessThanOrEquals(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(2, 3).lessThanOrEquals(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(2, null).lessThanOrEquals(new Uncertainty(1, 1)).should.be.false
+    new Uncertainty(2, 2).lessThanOrEquals(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, 3).lessThanOrEquals(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, null).lessThanOrEquals(new Uncertainty(null, 1)).should.be.false()
+    new Uncertainty(2, 2).lessThanOrEquals(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, 3).lessThanOrEquals(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, null).lessThanOrEquals(new Uncertainty(0, 1)).should.be.false()
+    new Uncertainty(2, 2).lessThanOrEquals(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(2, 3).lessThanOrEquals(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(2, null).lessThanOrEquals(new Uncertainty(1, 1)).should.be.false()
 
   it 'should properly calculate "greater than" inequality', ->
 
     # Equality
-    new Uncertainty(1, 1).greaterThan(new Uncertainty(1, 1)).should.be.false
+    new Uncertainty(1, 1).greaterThan(new Uncertainty(1, 1)).should.be.false()
 
     # <
-    new Uncertainty(null, 1).greaterThan(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(null, 1).greaterThan(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(null, 1).greaterThan(new Uncertainty(2, null)).should.be.false
-    new Uncertainty(0, 1).greaterThan(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(0, 1).greaterThan(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(0, 1).greaterThan(new Uncertainty(2, null)).should.be.false
-    new Uncertainty(1, 1).greaterThan(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(1, 1).greaterThan(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(1, 1).greaterThan(new Uncertainty(2, null)).should.be.false
+    new Uncertainty(null, 1).greaterThan(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(null, 1).greaterThan(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(null, 1).greaterThan(new Uncertainty(2, null)).should.be.false()
+    new Uncertainty(0, 1).greaterThan(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(0, 1).greaterThan(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(0, 1).greaterThan(new Uncertainty(2, null)).should.be.false()
+    new Uncertainty(1, 1).greaterThan(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(1, 1).greaterThan(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(1, 1).greaterThan(new Uncertainty(2, null)).should.be.false()
 
     # <=
-    new Uncertainty(null, 1).greaterThan(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(null, 1).greaterThan(new Uncertainty(1, 2)).should.be.false
-    new Uncertainty(null, 1).greaterThan(new Uncertainty(1, null)).should.be.false
-    new Uncertainty(0, 1).greaterThan(new Uncertainty(1, 1)).should.be.false
-    new Uncertainty(0, 1).greaterThan(new Uncertainty(1, 2)).should.be.false
-    new Uncertainty(0, 1).greaterThan(new Uncertainty(1, null)).should.be.false
-    new Uncertainty(1, 1).greaterThan(new Uncertainty(1, 2)).should.be.false
-    new Uncertainty(1, 1).greaterThan(new Uncertainty(1, null)).should.be.false
+    new Uncertainty(null, 1).greaterThan(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(null, 1).greaterThan(new Uncertainty(1, 2)).should.be.false()
+    new Uncertainty(null, 1).greaterThan(new Uncertainty(1, null)).should.be.false()
+    new Uncertainty(0, 1).greaterThan(new Uncertainty(1, 1)).should.be.false()
+    new Uncertainty(0, 1).greaterThan(new Uncertainty(1, 2)).should.be.false()
+    new Uncertainty(0, 1).greaterThan(new Uncertainty(1, null)).should.be.false()
+    new Uncertainty(1, 1).greaterThan(new Uncertainty(1, 2)).should.be.false()
+    new Uncertainty(1, 1).greaterThan(new Uncertainty(1, null)).should.be.false()
 
     # overlaps
     should.not.exist new Uncertainty(null, null).greaterThan(new Uncertainty(null, null))
@@ -298,31 +298,31 @@ describe 'Uncertainty', ->
     should.not.exist new Uncertainty(1, 1).greaterThan(new Uncertainty(0, 1))
 
     # >
-    new Uncertainty(2, 2).greaterThan(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(2, 3).greaterThan(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(2, null).greaterThan(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(2, 2).greaterThan(new Uncertainty(0, 1)).should.be.true
-    new Uncertainty(2, 3).greaterThan(new Uncertainty(0, 1)).should.be.true
-    new Uncertainty(2, null).greaterThan(new Uncertainty(0, 1)).should.be.true
-    new Uncertainty(2, 2).greaterThan(new Uncertainty(1, 1)).should.be.true
-    new Uncertainty(2, 3).greaterThan(new Uncertainty(1, 1)).should.be.true
-    new Uncertainty(2, null).greaterThan(new Uncertainty(1, 1)).should.be.true
+    new Uncertainty(2, 2).greaterThan(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(2, 3).greaterThan(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(2, null).greaterThan(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(2, 2).greaterThan(new Uncertainty(0, 1)).should.be.true()
+    new Uncertainty(2, 3).greaterThan(new Uncertainty(0, 1)).should.be.true()
+    new Uncertainty(2, null).greaterThan(new Uncertainty(0, 1)).should.be.true()
+    new Uncertainty(2, 2).greaterThan(new Uncertainty(1, 1)).should.be.true()
+    new Uncertainty(2, 3).greaterThan(new Uncertainty(1, 1)).should.be.true()
+    new Uncertainty(2, null).greaterThan(new Uncertainty(1, 1)).should.be.true()
 
   it 'should properly calculate "greater than or equals" inequality', ->
 
     # Equality
-    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true
+    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true()
 
     # <
-    new Uncertainty(null, 1).greaterThanOrEquals(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(null, 1).greaterThanOrEquals(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(null, 1).greaterThanOrEquals(new Uncertainty(2, null)).should.be.false
-    new Uncertainty(0, 1).greaterThanOrEquals(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(0, 1).greaterThanOrEquals(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(0, 1).greaterThanOrEquals(new Uncertainty(2, null)).should.be.false
-    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(2, 2)).should.be.false
-    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(2, 3)).should.be.false
-    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(2, null)).should.be.false
+    new Uncertainty(null, 1).greaterThanOrEquals(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(null, 1).greaterThanOrEquals(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(null, 1).greaterThanOrEquals(new Uncertainty(2, null)).should.be.false()
+    new Uncertainty(0, 1).greaterThanOrEquals(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(0, 1).greaterThanOrEquals(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(0, 1).greaterThanOrEquals(new Uncertainty(2, null)).should.be.false()
+    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(2, 2)).should.be.false()
+    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(2, 3)).should.be.false()
+    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(2, null)).should.be.false()
 
     # <=
     should.not.exist new Uncertainty(null, 1).greaterThanOrEquals(new Uncertainty(1, 1))
@@ -354,22 +354,22 @@ describe 'Uncertainty', ->
     should.not.exist new Uncertainty(10, null).greaterThanOrEquals(new Uncertainty(5, null))
 
     # >=
-    new Uncertainty(1, null).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(1, null).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true
-    new Uncertainty(1, null).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true
-    new Uncertainty(1, 2).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(1, 2).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true
-    new Uncertainty(1, 2).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true
-    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true
+    new Uncertainty(1, null).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(1, null).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true()
+    new Uncertainty(1, null).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true()
+    new Uncertainty(1, 2).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(1, 2).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true()
+    new Uncertainty(1, 2).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true()
+    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(1, 1).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true()
 
     # >
-    new Uncertainty(2, 2).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(2, 3).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(2, null).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true
-    new Uncertainty(2, 2).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true
-    new Uncertainty(2, 3).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true
-    new Uncertainty(2, null).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true
-    new Uncertainty(2, 2).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true
-    new Uncertainty(2, 3).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true
-    new Uncertainty(2, null).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true
+    new Uncertainty(2, 2).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(2, 3).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(2, null).greaterThanOrEquals(new Uncertainty(null, 1)).should.be.true()
+    new Uncertainty(2, 2).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true()
+    new Uncertainty(2, 3).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true()
+    new Uncertainty(2, null).greaterThanOrEquals(new Uncertainty(0, 1)).should.be.true()
+    new Uncertainty(2, 2).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true()
+    new Uncertainty(2, 3).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true()
+    new Uncertainty(2, null).greaterThanOrEquals(new Uncertainty(1, 1)).should.be.true()

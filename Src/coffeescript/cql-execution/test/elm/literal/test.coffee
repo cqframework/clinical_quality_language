@@ -7,16 +7,16 @@ describe 'Literal', ->
     setup @, data
 
   it 'should convert true to boolean true', ->
-    @boolTrue.value.should.be.true
+    @boolTrue.value.should.be.true()
 
   it 'should execute true as true', ->
-    @boolTrue.exec(@ctx).should.be.true
+    @boolTrue.exec(@ctx).should.be.true()
 
   it 'should convert false to boolean false', ->
-    @boolFalse.value.should.be.false
+    @boolFalse.value.should.be.false()
 
   it 'should execute false as false', ->
-    @boolFalse.exec(@ctx).should.be.false
+    @boolFalse.exec(@ctx).should.be.false()
 
   it 'should convert 1 to int 1', ->
     @intOne.value.should.equal 1

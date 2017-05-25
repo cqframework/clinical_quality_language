@@ -27,25 +27,25 @@ describe 'ValueSet', ->
     @valueSet.codes[2].should.eql new Code('GHI', '5.4.3.4.5', '3')
 
   it 'should find code by name', ->
-    @valueSet.hasCode('DEF').should.be.true
+    @valueSet.hasCode('DEF').should.be.true()
 
   it 'should find code by name and system', ->
-    @valueSet.hasCode('DEF', '5.4.3.2.1').should.be.true
+    @valueSet.hasCode('DEF', '5.4.3.2.1').should.be.true()
 
   it 'should find code by name, system, and version', ->
-    @valueSet.hasCode('DEF', '5.4.3.2.1', '2').should.be.true
+    @valueSet.hasCode('DEF', '5.4.3.2.1', '2').should.be.true()
 
   it 'should find code by Code object', ->
-    @valueSet.hasCode(new Code('DEF', '5.4.3.2.1', '2')).should.be.true
+    @valueSet.hasCode(new Code('DEF', '5.4.3.2.1', '2')).should.be.true()
 
   it 'should not find code with wrong name', ->
-    @valueSet.hasCode('XYZ').should.be.false
+    @valueSet.hasCode('XYZ').should.be.false()
 
   it 'should not find code with wrong system', ->
-    @valueSet.hasCode('DEF', '0.0.0.0.0').should.be.false
+    @valueSet.hasCode('DEF', '0.0.0.0.0').should.be.false()
 
   it 'should not find code with wrong version', ->
-    @valueSet.hasCode('DEF', '5.4.3.2.1', '3').should.be.false
+    @valueSet.hasCode('DEF', '5.4.3.2.1', '3').should.be.false()
 
   it 'should not find code with wrong Code object', ->
-    @valueSet.hasCode(new Code('DEF', '5.4.3.2.1', '3')).should.be.false
+    @valueSet.hasCode(new Code('DEF', '5.4.3.2.1', '3')).should.be.false()
