@@ -693,6 +693,10 @@ public class LibraryBuilder {
             expression = convertExpression(expression, conversion.getConversion());
         }
 
+        // TODO: This needs to treat a null as an empty list...
+        // Obviously could put an if expression in place, but that would duplicate the expression
+        // Would be better to have an ELM ToList operator, but that would necessitate prescribing the
+        // behavior as part of the engine implementation
         org.hl7.elm.r1.List list = of.createList();
         list.getElement().add(expression);
         list.setResultType(new ListType(expression.getResultType()));
