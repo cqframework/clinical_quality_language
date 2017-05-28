@@ -2142,7 +2142,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // days between start of A and start of B in (-3, 0)
 
         TimingOperatorContext timingOperator = timingOperators.peek();
-        Boolean isBefore = false;
+        boolean isBefore = false;
+        boolean isInclusive = false;
         for (ParseTree child : ctx.children) {
             if ("starts".equals(child.getText())) {
                 Start start = of.createStart().withOperand(timingOperator.getLeft());
@@ -2171,9 +2172,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 timingOperator.setRight(end);
                 continue;
             }
+        }
 
+        for (ParseTree child : ctx.temporalRelationship().children) {
             if ("before".equals(child.getText())) {
                 isBefore = true;
+                continue;
+            }
+
+            if ("on or".equals(child.getText()) || "or on".equals(child.getText())) {
+                isInclusive = true;
                 continue;
             }
         }
@@ -2183,30 +2191,41 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 : null;
 
         if (ctx.quantityOffset() == null) {
-            if (isBefore) {
-                if (dateTimePrecision != null) {
-                    Before before = of.createBefore()
-                            .withPrecision(parseDateTimePrecision(dateTimePrecision))
-                            .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+            if (isInclusive) {
+                if (isBefore) {
+                    SameOrBefore sameOrBefore = of.createSameOrBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                    if (dateTimePrecision != null) {
+                        sameOrBefore.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                    }
+                    libraryBuilder.resolveBinaryCall("System", "SameOrBefore", sameOrBefore);
+                    return sameOrBefore;
+
+                } else {
+                    SameOrAfter sameOrAfter = of.createSameOrAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                    if (dateTimePrecision != null) {
+                        sameOrAfter.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                    }
+                    libraryBuilder.resolveBinaryCall("System", "SameOrAfter", sameOrAfter);
+                    return sameOrAfter;
+                }
+            }
+            else {
+                if (isBefore) {
+                    Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                    if (dateTimePrecision != null) {
+                        before.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                    }
                     libraryBuilder.resolveBinaryCall("System", "Before", before);
                     return before;
-                }
 
-                Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
-                libraryBuilder.resolveBinaryCall("System", "Before", before);
-                return before;
-            } else {
-                if (dateTimePrecision != null) {
-                    After after = of.createAfter()
-                            .withPrecision(parseDateTimePrecision(dateTimePrecision))
-                            .withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                } else {
+                    After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                    if (dateTimePrecision != null) {
+                        after.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                    }
                     libraryBuilder.resolveBinaryCall("System", "After", after);
                     return after;
                 }
-
-                After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
-                libraryBuilder.resolveBinaryCall("System", "After", after);
-                return after;
             }
         } else {
             Quantity quantity = (Quantity)visit(ctx.quantityOffset().quantity());
@@ -2261,7 +2280,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         return equal;
                     }
                 } else {
-                    boolean isInclusive = ctx.quantityOffset().offsetRelativeQualifier() != null;
+                    boolean isOffsetInclusive = ctx.quantityOffset().offsetRelativeQualifier() != null;
                     String qualifier = ctx.quantityOffset().offsetRelativeQualifier() != null
                             ? ctx.quantityOffset().offsetRelativeQualifier().getText()
                             : ctx.quantityOffset().exclusiveRelativeQualifier().getText();
@@ -2269,24 +2288,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         case "more than":
                         case "or more":
                             if (isBefore) {
-                                BinaryExpression comparison = (isInclusive ? of.createGreaterOrEqual() : of.createGreater())
+                                BinaryExpression comparison = (isOffsetInclusive ? of.createGreaterOrEqual() : of.createGreater())
                                         .withOperand(betweenOperator, quantityLiteral);
-                                libraryBuilder.resolveBinaryCall("System", isInclusive ? "GreaterOrEqual" : "Greater", comparison);
+                                libraryBuilder.resolveBinaryCall("System", isOffsetInclusive ? "GreaterOrEqual" : "Greater", comparison);
                                 return comparison;
                             } else {
                                 Negate negate = of.createNegate().withOperand(quantityLiteral);
                                 libraryBuilder.resolveUnaryCall("System", "Negate", negate);
-                                BinaryExpression comparison = (isInclusive ? of.createLessOrEqual() : of.createLess())
+                                BinaryExpression comparison = (isOffsetInclusive ? of.createLessOrEqual() : of.createLess())
                                         .withOperand(betweenOperator, negate);
-                                libraryBuilder.resolveBinaryCall("System", isInclusive ? "LessOrEqual" : "Less", comparison);
+                                libraryBuilder.resolveBinaryCall("System", isOffsetInclusive ? "LessOrEqual" : "Less", comparison);
                                 return comparison;
                             }
                         case "less than":
                         case "or less":
                             if (isBefore) {
                                 Interval quantityInterval = of.createInterval()
-                                        .withLow(libraryBuilder.createLiteral(0)).withLowClosed(false)
-                                        .withHigh(quantityLiteral).withHighClosed(isInclusive);
+                                        .withLow(libraryBuilder.createLiteral(0)).withLowClosed(isInclusive)
+                                        .withHigh(quantityLiteral).withHighClosed(isOffsetInclusive);
                                 quantityInterval.setResultType(new IntervalType(quantityInterval.getLow().getResultType()));
                                 In in = of.createIn().withOperand(betweenOperator, quantityInterval);
                                 libraryBuilder.resolveBinaryCall("System", "In", in);
@@ -2295,8 +2314,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 Negate negate = of.createNegate().withOperand(quantityLiteral);
                                 libraryBuilder.resolveUnaryCall("System", "Negate", negate);
                                 Interval quantityInterval = of.createInterval()
-                                        .withLow(negate).withLowClosed(isInclusive)
-                                        .withHigh(libraryBuilder.createLiteral(0)).withHighClosed(false);
+                                        .withLow(negate).withLowClosed(isOffsetInclusive)
+                                        .withHigh(libraryBuilder.createLiteral(0)).withHighClosed(isInclusive);
                                 quantityInterval.setResultType(new IntervalType(quantityInterval.getLow().getResultType()));
                                 In in = of.createIn().withOperand(betweenOperator, quantityInterval);
                                 libraryBuilder.resolveBinaryCall("System", "In", in);

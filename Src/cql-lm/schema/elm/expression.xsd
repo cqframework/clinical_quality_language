@@ -1508,14 +1508,21 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 	</xs:complexType>
 	<xs:complexType name="SameAs">
 		<xs:annotation>
-			<xs:documentation>The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
+			<xs:documentation>The SameAs operator is defined for DateTime and Time values, as well as date/time-based intervals.
 			
+The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
+			
+For the Interval overload, the SameAs operator returns true if the intervals start and end at the same value.
+
+For the Interval/point overloads, the SameAs operator returns true if the interval starts and ends at the point value.
+
+For intervals, this operator uses the semantics described in the Start and End operator to determine interval boundaries.
+
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
 If either or both arguments are null, the result is null.
 			
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
-			</xs:documentation>
+For Time values, precision must be one of hours, minutes, seconds, or milliseconds.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1525,7 +1532,13 @@ For Time values, precision must be one of hours, minutes, seconds, or millisecon
 	</xs:complexType>
 	<xs:complexType name="SameOrBefore">
 		<xs:annotation>
-			<xs:documentation>The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. If either or both arguments are null, the result is null.
+			<xs:documentation>The SameOrBefore operator is defined for DateTime and Time values, as well as date/time-based intervals.
+
+The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. If either or both arguments are null, the result is null.
+
+For the Interval overload, the SameOrBefore operator returns true if the first interval ends on or before the second one starts. In other words, if the ending point of the first interval is less than or equal to the starting point of the second interval.
+
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
@@ -1541,7 +1554,13 @@ For comparisons involving date/time or time values with imprecision, note that t
 	</xs:complexType>
 	<xs:complexType name="SameOrAfter">
 		<xs:annotation>
-			<xs:documentation>The SameOrAfter operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. If either or both arguments are null, the result is null.
+			<xs:documentation>The SameOrAfter operator is defined DateTime and Time values, as well as date/time-based intervals.
+			
+The SameOrAfter operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. If either or both arguments are null, the result is null.
+
+For the Interval overload, the SameOrAfter operator returns true if the first interval starts on or after the second one ends. In other words, if the starting point of the first interval is greater than or equal to the ending point of the second interval.
+			
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
@@ -1619,7 +1638,7 @@ There are two overloads of this operator:
 	
 For the List, T overload, this operator returns true if the given element is in the list, using equivalence semantics. If the list-valued argument is null, it should be treated as the empty list.
 
-For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null.</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1638,8 +1657,7 @@ There are two overloads of this operator:
 	
 For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equivalence semantics.
 
-For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.
-			</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1658,7 +1676,7 @@ There are two overloads of this operator:
 	
 For the T, List overload, this operator returns true if the given element is in the given list, using equivalence semantics. If the list-valued argument is null, it should be treated as an empty list.
 
-For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1677,7 +1695,7 @@ There are two overloads of this operator:
 	
 For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equivalence semantics. If the list-valued argument is null, it should be treated as an empty list.
 
-For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1717,11 +1735,9 @@ There are two overloads of this operator:
 	
 For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equivalence semantics. If either argument is null, it should be treated as an empty list.
 
-For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If either argument is null, the result is null.
+For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If either argument is null, the result is null.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
-
-</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1740,7 +1756,7 @@ There are two overloads of this operator:
 	
 For the List, List overload, this operator returns true if the first list includes every element of the second list, using equivalence semantics, and the first list is strictly larger. If either argument is null, it should be treated as an empty list.
 
-For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If either argument is null, the result is null.
+For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
 		</xs:annotation>
@@ -1761,7 +1777,7 @@ There are two overloads of this operator:
 
 For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equivalence semantics, and the first list is strictly smaller. If either argument is null, it should be treated as an empty list.
 
-For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If either argument is null, the result is null.
+For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
 		</xs:annotation>
@@ -1774,13 +1790,15 @@ This operator uses the semantics described in the Start and End operators to det
 	</xs:complexType>
 	<xs:complexType name="Before">
 		<xs:annotation>
-			<xs:documentation>The Before operator is defined for Intervals, as well as DateTime values.
+			<xs:documentation>The Before operator is defined for Intervals, as well as DateTime and Time values.
 			
 For the Interval overload, the Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval.
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-For the DateTime overload, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+For the DateTime and Time overloads, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1793,14 +1811,16 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="After">
 		<xs:annotation>
-			<xs:documentation>The After operator is defined for Intervals, as well as DateTime values.
+			<xs:documentation>The After operator is defined for Intervals, as well as DateTime and Time values.
 			
 For the Interval overload, the After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval.
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-For the DateTime overload, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+For the DateTime and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+ 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1816,6 +1836,8 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+ 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1831,6 +1853,8 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+ 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1846,6 +1870,8 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+ 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1861,6 +1887,8 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+ 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1875,6 +1903,8 @@ If either argument is null, the result is null.</xs:documentation>
 			<xs:documentation>The OverlapsBefore operator returns true if the first interval starts before and overlaps the second. In other words, if the first interval contains the starting point of the second interval.
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1891,6 +1921,8 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+ 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1906,6 +1938,8 @@ If either argument is null, the result is null.</xs:documentation>
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+ 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1921,6 +1955,8 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
+If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+ 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>

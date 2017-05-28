@@ -311,10 +311,22 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("ProperIncludedIn", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameAs<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameAs", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameAs<T>(interval<T>, T) : Boolean
+        system.add(new GenericOperator("SameAs", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameAs<T>(T, interval<T>) : Boolean
+        system.add(new GenericOperator("SameAs", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameOrAfter<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameOrAfter", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameOrAfter<T>(interval<T>, T) : Boolean
+        system.add(new GenericOperator("SameOrAfter", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameOrAfter<T>(T, interval<T>) : Boolean
+        system.add(new GenericOperator("SameOrAfter", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameOrBefore<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameOrBefore", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameOrBefore<T>(interval<T>, T) : Boolean
+        system.add(new GenericOperator("SameOrBefore", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // SameOrBefore<T>(T, interval<T>) : Boolean
+        system.add(new GenericOperator("SameOrBefore", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Start<T>(interval<T>) : T
         system.add(new GenericOperator("Start", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Starts<T>(interval<T>, interval<T>) : Boolean
