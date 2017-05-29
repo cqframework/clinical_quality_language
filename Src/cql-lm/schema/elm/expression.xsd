@@ -714,6 +714,20 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ToList">
+		<xs:annotation>
+			<xs:documentation>The ToList operator returns its argument as a List value. The operator accepts a singleton value of any type and returns a list with the value as the single element.
+
+If the argument is null, the operator returns an empty list.
+
+The operator is effectively shorthand for &quot;if operand is null then { } else { operand }&quot;.
+
+The operator is used to implement list promotion efficiently.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ToString">
 		<xs:annotation>
 			<xs:documentation>The ToString operator converts the value of its argument to a String value. The operator uses the following string representations for each type:
