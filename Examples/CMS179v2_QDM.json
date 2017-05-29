@@ -1,0 +1,1555 @@
+{
+   "library" : {
+      "identifier" : {
+         "id" : "CMS179_QDM",
+         "version" : "2"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QDM",
+            "uri" : "urn:healthit-gov:qdm:v5_0_1_draft",
+            "version" : "5.0.2"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
+            "default" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Atrial Fibrillation/Flutter",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.202",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Warfarin",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.232",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Face-to-Face Interaction",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1048",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Office Visit",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1001",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Valvular Heart Disease",
+            "id" : "2.16.840.1.113883.3.464.1003.104.12.1017",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "INR",
+            "id" : "2.16.840.1.113883.3.117.1.7.1.213",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "birth date",
+            "id" : "2.16.840.1.113883.3.560.100.4",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Computed Value INR percent TTR",
+            "id" : "2.16.840.1.113883.3.464.1003.104.12.1018",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Patient",
+                  "templateId" : "Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "FlutterDiagnoses",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Diagnosis",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "Atrial Fibrillation/Flutter",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "WarfarinMedications",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}MedicationActive",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "Warfarin",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "FaceToFaceEncounters",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}EncounterPerformed",
+               "templateId" : "PositiveEncounterPerformed",
+               "codeProperty" : "code",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "Face-to-Face Interaction",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "OfficeVisitEncounters",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}EncounterPerformed",
+               "templateId" : "PositiveEncounterPerformed",
+               "codeProperty" : "code",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "Office Visit",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "ValvularHeartDiseaseDiagnoses",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Diagnosis",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "Valvular Heart Disease",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "INRLabResults",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}LaboratoryTestPerformed",
+               "templateId" : "PositiveLaboratoryTestPerformed",
+               "codeProperty" : "code",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "INR",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "BirthDate",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PatientCharacteristicBirthdate",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "birth date",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "ComputedValueINRPercentTTR",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}LaboratoryTestPerformed",
+               "templateId" : "PositiveLaboratoryTestPerformed",
+               "codeProperty" : "code",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "Computed Value INR percent TTR",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "InDemographic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "precision" : "Year",
+                  "type" : "CalculateAgeAt",
+                  "operand" : [ {
+                     "path" : "birthDatetime",
+                     "type" : "Property",
+                     "source" : {
+                        "name" : "Patient",
+                        "type" : "ExpressionRef"
+                     }
+                  }, {
+                     "type" : "Start",
+                     "operand" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  } ]
+               }, {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "18",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "InpatientEncounters",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "name" : "FaceToFaceEncounters",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "OfficeVisitEncounters",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "ActiveFlutterDiagnoses",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "F",
+                  "expression" : {
+                     "name" : "FlutterDiagnoses",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "OverlapsBefore",
+                  "operand" : [ {
+                     "path" : "prevalencePeriod",
+                     "scope" : "F",
+                     "type" : "Property"
+                  }, {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "ActiveValvularHeartDiseaseDiagnoses",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "D",
+                  "expression" : {
+                     "name" : "ValvularHeartDiseaseDiagnoses",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "OverlapsBefore",
+                  "operand" : [ {
+                     "path" : "prevalencePeriod",
+                     "scope" : "D",
+                     "type" : "Property"
+                  }, {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "LookbackInterval",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : true,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "Subtract",
+                  "operand" : [ {
+                     "type" : "Start",
+                     "operand" : {
+                        "name" : "MeasurementPeriod",
+                        "type" : "ParameterRef"
+                     }
+                  }, {
+                     "value" : 200,
+                     "unit" : "days",
+                     "type" : "Quantity"
+                  } ]
+               },
+               "high" : {
+                  "type" : "Start",
+                  "operand" : {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  }
+               }
+            }
+         }, {
+            "name" : "ActiveWarfarinDuringLookback",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "M",
+                  "expression" : {
+                     "name" : "WarfarinMedications",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Overlaps",
+                  "operand" : [ {
+                     "path" : "relevantPeriod",
+                     "scope" : "M",
+                     "type" : "Property"
+                  }, {
+                     "name" : "LookbackInterval",
+                     "type" : "ExpressionRef"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "WarfarinUsageIntervals",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Collapse",
+               "operand" : {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "M",
+                     "expression" : {
+                        "name" : "ActiveWarfarinDuringLookback",
+                        "type" : "ExpressionRef"
+                     }
+                  } ],
+                  "relationship" : [ ],
+                  "return" : {
+                     "expression" : {
+                        "type" : "Intersect",
+                        "operand" : [ {
+                           "path" : "relevantPeriod",
+                           "scope" : "M",
+                           "type" : "Property"
+                        }, {
+                           "name" : "LookbackInterval",
+                           "type" : "ExpressionRef"
+                        } ]
+                     }
+                  }
+               }
+            }
+         }, {
+            "name" : "WarfarinUsage",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Sum",
+               "source" : {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "I",
+                     "expression" : {
+                        "name" : "WarfarinUsageIntervals",
+                        "type" : "ExpressionRef"
+                     }
+                  } ],
+                  "relationship" : [ ],
+                  "return" : {
+                     "expression" : {
+                        "precision" : "Day",
+                        "type" : "DurationBetween",
+                        "operand" : [ {
+                           "type" : "Start",
+                           "operand" : {
+                              "name" : "I",
+                              "type" : "AliasRef"
+                           }
+                        }, {
+                           "type" : "End",
+                           "operand" : {
+                              "name" : "I",
+                              "type" : "AliasRef"
+                           }
+                        } ]
+                     }
+                  }
+               }
+            }
+         }, {
+            "name" : "INROutpatientLabResult",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "R",
+                  "expression" : {
+                     "name" : "INRLabResults",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Not",
+                  "operand" : {
+                     "type" : "Exists",
+                     "operand" : {
+                        "type" : "Query",
+                        "source" : [ {
+                           "alias" : "E",
+                           "expression" : {
+                              "name" : "InpatientEncounters",
+                              "type" : "ExpressionRef"
+                           }
+                        } ],
+                        "relationship" : [ ],
+                        "where" : {
+                           "type" : "And",
+                           "operand" : [ {
+                              "type" : "Greater",
+                              "operand" : [ {
+                                 "precision" : "Hour",
+                                 "type" : "DurationBetween",
+                                 "operand" : [ {
+                                    "type" : "Start",
+                                    "operand" : {
+                                       "path" : "relevantPeriod",
+                                       "scope" : "E",
+                                       "type" : "Property"
+                                    }
+                                 }, {
+                                    "type" : "End",
+                                    "operand" : {
+                                       "path" : "relevantPeriod",
+                                       "scope" : "E",
+                                       "type" : "Property"
+                                    }
+                                 } ]
+                              }, {
+                                 "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                                 "value" : "23",
+                                 "type" : "Literal"
+                              } ]
+                           }, {
+                              "type" : "IncludedIn",
+                              "operand" : [ {
+                                 "path" : "relevantPeriod",
+                                 "scope" : "R",
+                                 "type" : "Property"
+                              }, {
+                                 "path" : "relevantPeriod",
+                                 "scope" : "E",
+                                 "type" : "Property"
+                              } ]
+                           } ]
+                        }
+                     }
+                  }
+               }
+            }
+         }, {
+            "name" : "INRResultsByDay",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "L",
+                  "expression" : {
+                     "name" : "INROutpatientLabResult",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Greater",
+                  "operand" : [ {
+                     "asType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "type" : "As",
+                     "operand" : {
+                        "path" : "result",
+                        "scope" : "L",
+                        "type" : "Property"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "value" : "0.8",
+                     "type" : "Literal"
+                  } ]
+               },
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "resultDate",
+                        "value" : {
+                           "type" : "DateFrom",
+                           "operand" : {
+                              "path" : "resultDatetime",
+                              "scope" : "L",
+                              "type" : "Property"
+                           }
+                        }
+                     }, {
+                        "name" : "result",
+                        "value" : {
+                           "type" : "If",
+                           "condition" : {
+                              "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
+                              "type" : "As",
+                              "operand" : {
+                                 "type" : "Greater",
+                                 "operand" : [ {
+                                    "asType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                    "type" : "As",
+                                    "operand" : {
+                                       "path" : "result",
+                                       "scope" : "L",
+                                       "type" : "Property"
+                                    },
+                                    "asTypeSpecifier" : {
+                                       "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                       "type" : "NamedTypeSpecifier"
+                                    }
+                                 }, {
+                                    "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                    "value" : "10.0",
+                                    "type" : "Literal"
+                                 } ]
+                              },
+                              "asTypeSpecifier" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           },
+                           "then" : {
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                              "value" : "10.0",
+                              "type" : "Literal"
+                           },
+                           "else" : {
+                              "asType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                              "type" : "As",
+                              "operand" : {
+                                 "path" : "result",
+                                 "scope" : "L",
+                                 "type" : "Property"
+                              },
+                              "asTypeSpecifier" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }
+                        }
+                     }, {
+                        "name" : "distanceFromMidpoint",
+                        "value" : {
+                           "type" : "Abs",
+                           "operand" : {
+                              "type" : "Subtract",
+                              "operand" : [ {
+                                 "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                 "value" : "2.5",
+                                 "type" : "Literal"
+                              }, {
+                                 "asType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                 "type" : "As",
+                                 "operand" : {
+                                    "path" : "result",
+                                    "scope" : "L",
+                                    "type" : "Property"
+                                 },
+                                 "asTypeSpecifier" : {
+                                    "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              } ]
+                           }
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "INRResultsPerDay",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "X",
+                  "expression" : {
+                     "type" : "Query",
+                     "source" : [ {
+                        "alias" : "D",
+                        "expression" : {
+                           "type" : "Distinct",
+                           "operand" : {
+                              "type" : "Query",
+                              "source" : [ {
+                                 "alias" : "X",
+                                 "expression" : {
+                                    "name" : "INRResultsByDay",
+                                    "type" : "ExpressionRef"
+                                 }
+                              } ],
+                              "relationship" : [ ],
+                              "return" : {
+                                 "expression" : {
+                                    "path" : "resultDate",
+                                    "scope" : "X",
+                                    "type" : "Property"
+                                 }
+                              }
+                           }
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "return" : {
+                        "expression" : {
+                           "type" : "First",
+                           "source" : {
+                              "type" : "Query",
+                              "source" : [ {
+                                 "alias" : "R",
+                                 "expression" : {
+                                    "name" : "INRResultsByDay",
+                                    "type" : "ExpressionRef"
+                                 }
+                              } ],
+                              "relationship" : [ ],
+                              "where" : {
+                                 "type" : "Equal",
+                                 "operand" : [ {
+                                    "path" : "resultDate",
+                                    "scope" : "R",
+                                    "type" : "Property"
+                                 }, {
+                                    "name" : "D",
+                                    "type" : "AliasRef"
+                                 } ]
+                              },
+                              "sort" : {
+                                 "by" : [ {
+                                    "direction" : "asc",
+                                    "type" : "ByExpression",
+                                    "expression" : {
+                                       "path" : "distanceFromMidpoint",
+                                       "scope" : "R",
+                                       "type" : "Property"
+                                    }
+                                 } ]
+                              }
+                           }
+                        }
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByExpression",
+                     "expression" : {
+                        "path" : "resultDate",
+                        "scope" : "X",
+                        "type" : "Property"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "TherapeuticRange",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : true,
+               "type" : "Interval",
+               "low" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                  "value" : "2.0",
+                  "type" : "Literal"
+               },
+               "high" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                  "value" : "3.0",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "INRIntervals",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "X",
+                  "expression" : {
+                     "type" : "Query",
+                     "source" : [ {
+                        "alias" : "S",
+                        "expression" : {
+                           "name" : "INRResultsPerDay",
+                           "type" : "ExpressionRef"
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "return" : {
+                        "expression" : {
+                           "type" : "Tuple",
+                           "element" : [ {
+                              "name" : "startResult",
+                              "value" : {
+                                 "name" : "S",
+                                 "type" : "AliasRef"
+                              }
+                           }, {
+                              "name" : "endResult",
+                              "value" : {
+                                 "type" : "First",
+                                 "source" : {
+                                    "type" : "Query",
+                                    "source" : [ {
+                                       "alias" : "E",
+                                       "expression" : {
+                                          "name" : "INRResultsPerDay",
+                                          "type" : "ExpressionRef"
+                                       }
+                                    } ],
+                                    "relationship" : [ ],
+                                    "where" : {
+                                       "type" : "Greater",
+                                       "operand" : [ {
+                                          "path" : "resultDate",
+                                          "scope" : "S",
+                                          "type" : "Property"
+                                       }, {
+                                          "path" : "resultDate",
+                                          "scope" : "E",
+                                          "type" : "Property"
+                                       } ]
+                                    }
+                                 }
+                              }
+                           } ]
+                        }
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "startDate",
+                        "value" : {
+                           "path" : "resultDate",
+                           "type" : "Property",
+                           "source" : {
+                              "path" : "startResult",
+                              "scope" : "X",
+                              "type" : "Property"
+                           }
+                        }
+                     }, {
+                        "name" : "endDate",
+                        "value" : {
+                           "path" : "resultDate",
+                           "type" : "Property",
+                           "source" : {
+                              "path" : "endResult",
+                              "scope" : "X",
+                              "type" : "Property"
+                           }
+                        }
+                     }, {
+                        "name" : "resultDays",
+                        "value" : {
+                           "precision" : "Day",
+                           "type" : "DurationBetween",
+                           "operand" : [ {
+                              "path" : "resultDate",
+                              "type" : "Property",
+                              "source" : {
+                                 "path" : "startResult",
+                                 "scope" : "X",
+                                 "type" : "Property"
+                              }
+                           }, {
+                              "path" : "resultDate",
+                              "type" : "Property",
+                              "source" : {
+                                 "path" : "endResult",
+                                 "scope" : "X",
+                                 "type" : "Property"
+                              }
+                           } ]
+                        }
+                     }, {
+                        "name" : "resultDifference",
+                        "value" : {
+                           "type" : "Subtract",
+                           "operand" : [ {
+                              "path" : "result",
+                              "type" : "Property",
+                              "source" : {
+                                 "path" : "endResult",
+                                 "scope" : "X",
+                                 "type" : "Property"
+                              }
+                           }, {
+                              "path" : "result",
+                              "type" : "Property",
+                              "source" : {
+                                 "path" : "startResult",
+                                 "scope" : "X",
+                                 "type" : "Property"
+                              }
+                           } ]
+                        }
+                     }, {
+                        "name" : "resultsWithinBounds",
+                        "value" : {
+                           "type" : "And",
+                           "operand" : [ {
+                              "type" : "In",
+                              "operand" : [ {
+                                 "path" : "result",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "path" : "startResult",
+                                    "scope" : "X",
+                                    "type" : "Property"
+                                 }
+                              }, {
+                                 "name" : "TherapeuticRange",
+                                 "type" : "ExpressionRef"
+                              } ]
+                           }, {
+                              "type" : "In",
+                              "operand" : [ {
+                                 "path" : "result",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "path" : "endResult",
+                                    "scope" : "X",
+                                    "type" : "Property"
+                                 }
+                              }, {
+                                 "name" : "TherapeuticRange",
+                                 "type" : "ExpressionRef"
+                              } ]
+                           } ]
+                        }
+                     }, {
+                        "name" : "boundedDifference",
+                        "value" : {
+                           "type" : "If",
+                           "condition" : {
+                              "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
+                              "type" : "As",
+                              "operand" : {
+                                 "type" : "GreaterOrEqual",
+                                 "operand" : [ {
+                                    "path" : "result",
+                                    "type" : "Property",
+                                    "source" : {
+                                       "path" : "endResult",
+                                       "scope" : "X",
+                                       "type" : "Property"
+                                    }
+                                 }, {
+                                    "path" : "result",
+                                    "type" : "Property",
+                                    "source" : {
+                                       "path" : "startResult",
+                                       "scope" : "X",
+                                       "type" : "Property"
+                                    }
+                                 } ]
+                              },
+                              "asTypeSpecifier" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           },
+                           "then" : {
+                              "type" : "If",
+                              "condition" : {
+                                 "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "As",
+                                 "operand" : {
+                                    "type" : "Or",
+                                    "operand" : [ {
+                                       "type" : "Greater",
+                                       "operand" : [ {
+                                          "path" : "result",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "path" : "startResult",
+                                             "scope" : "X",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "type" : "End",
+                                          "operand" : {
+                                             "name" : "TherapeuticRange",
+                                             "type" : "ExpressionRef"
+                                          }
+                                       } ]
+                                    }, {
+                                       "type" : "Less",
+                                       "operand" : [ {
+                                          "path" : "result",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "path" : "endResult",
+                                             "scope" : "X",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "type" : "Start",
+                                          "operand" : {
+                                             "name" : "TherapeuticRange",
+                                             "type" : "ExpressionRef"
+                                          }
+                                       } ]
+                                    } ]
+                                 },
+                                 "asTypeSpecifier" : {
+                                    "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              },
+                              "then" : {
+                                 "asType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                 "type" : "As",
+                                 "operand" : {
+                                    "type" : "Null"
+                                 },
+                                 "asTypeSpecifier" : {
+                                    "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              },
+                              "else" : {
+                                 "type" : "Subtract",
+                                 "operand" : [ {
+                                    "type" : "Min",
+                                    "source" : {
+                                       "type" : "List",
+                                       "element" : [ {
+                                          "path" : "result",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "path" : "endResult",
+                                             "scope" : "X",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "type" : "End",
+                                          "operand" : {
+                                             "name" : "TherapeuticRange",
+                                             "type" : "ExpressionRef"
+                                          }
+                                       } ]
+                                    }
+                                 }, {
+                                    "type" : "Max",
+                                    "source" : {
+                                       "type" : "List",
+                                       "element" : [ {
+                                          "path" : "result",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "path" : "startResult",
+                                             "scope" : "X",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "type" : "Start",
+                                          "operand" : {
+                                             "name" : "TherapeuticRange",
+                                             "type" : "ExpressionRef"
+                                          }
+                                       } ]
+                                    }
+                                 } ]
+                              }
+                           },
+                           "else" : {
+                              "type" : "If",
+                              "condition" : {
+                                 "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "As",
+                                 "operand" : {
+                                    "type" : "Or",
+                                    "operand" : [ {
+                                       "type" : "Greater",
+                                       "operand" : [ {
+                                          "path" : "result",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "path" : "endResult",
+                                             "scope" : "X",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "type" : "End",
+                                          "operand" : {
+                                             "name" : "TherapeuticRange",
+                                             "type" : "ExpressionRef"
+                                          }
+                                       } ]
+                                    }, {
+                                       "type" : "Less",
+                                       "operand" : [ {
+                                          "path" : "result",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "path" : "startResult",
+                                             "scope" : "X",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "type" : "Start",
+                                          "operand" : {
+                                             "name" : "TherapeuticRange",
+                                             "type" : "ExpressionRef"
+                                          }
+                                       } ]
+                                    } ]
+                                 },
+                                 "asTypeSpecifier" : {
+                                    "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              },
+                              "then" : {
+                                 "asType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                 "type" : "As",
+                                 "operand" : {
+                                    "type" : "Null"
+                                 },
+                                 "asTypeSpecifier" : {
+                                    "name" : "{urn:hl7-org:elm-types:r1}Decimal",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              },
+                              "else" : {
+                                 "type" : "Subtract",
+                                 "operand" : [ {
+                                    "type" : "Min",
+                                    "source" : {
+                                       "type" : "List",
+                                       "element" : [ {
+                                          "path" : "result",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "path" : "startResult",
+                                             "scope" : "X",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "type" : "End",
+                                          "operand" : {
+                                             "name" : "TherapeuticRange",
+                                             "type" : "ExpressionRef"
+                                          }
+                                       } ]
+                                    }
+                                 }, {
+                                    "type" : "Max",
+                                    "source" : {
+                                       "type" : "List",
+                                       "element" : [ {
+                                          "path" : "result",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "path" : "endResult",
+                                             "scope" : "X",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "type" : "Start",
+                                          "operand" : {
+                                             "name" : "TherapeuticRange",
+                                             "type" : "ExpressionRef"
+                                          }
+                                       } ]
+                                    }
+                                 } ]
+                              }
+                           }
+                        }
+                     }, {
+                        "name" : "isValid",
+                        "value" : {
+                           "type" : "LessOrEqual",
+                           "operand" : [ {
+                              "precision" : "Day",
+                              "type" : "DurationBetween",
+                              "operand" : [ {
+                                 "path" : "resultDate",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "path" : "startResult",
+                                    "scope" : "X",
+                                    "type" : "Property"
+                                 }
+                              }, {
+                                 "path" : "resultDate",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "path" : "endResult",
+                                    "scope" : "X",
+                                    "type" : "Property"
+                                 }
+                              } ]
+                           }, {
+                              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                              "value" : "56",
+                              "type" : "Literal"
+                           } ]
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "TherapeuticDays",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "I",
+                  "expression" : {
+                     "name" : "INRIntervals",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "startDate",
+                        "value" : {
+                           "path" : "startDate",
+                           "scope" : "I",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "endDate",
+                        "value" : {
+                           "path" : "endDate",
+                           "scope" : "I",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "isValid",
+                        "value" : {
+                           "path" : "isValid",
+                           "scope" : "I",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "resultDays",
+                        "value" : {
+                           "path" : "resultDays",
+                           "scope" : "I",
+                           "type" : "Property"
+                        }
+                     }, {
+                        "name" : "daysInRange",
+                        "value" : {
+                           "type" : "If",
+                           "condition" : {
+                              "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
+                              "type" : "As",
+                              "operand" : {
+                                 "path" : "resultsWithinBounds",
+                                 "scope" : "I",
+                                 "type" : "Property"
+                              },
+                              "asTypeSpecifier" : {
+                                 "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           },
+                           "then" : {
+                              "type" : "ToDecimal",
+                              "operand" : {
+                                 "path" : "resultDays",
+                                 "scope" : "I",
+                                 "type" : "Property"
+                              }
+                           },
+                           "else" : {
+                              "type" : "Coalesce",
+                              "operand" : [ {
+                                 "type" : "Multiply",
+                                 "operand" : [ {
+                                    "type" : "ToDecimal",
+                                    "operand" : {
+                                       "path" : "resultDays",
+                                       "scope" : "I",
+                                       "type" : "Property"
+                                    }
+                                 }, {
+                                    "type" : "Abs",
+                                    "operand" : {
+                                       "type" : "Divide",
+                                       "operand" : [ {
+                                          "path" : "boundedDifference",
+                                          "scope" : "I",
+                                          "type" : "Property"
+                                       }, {
+                                          "type" : "ToDecimal",
+                                          "operand" : {
+                                             "type" : "If",
+                                             "condition" : {
+                                                "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                                "type" : "As",
+                                                "operand" : {
+                                                   "type" : "Equal",
+                                                   "operand" : [ {
+                                                      "path" : "resultDays",
+                                                      "scope" : "I",
+                                                      "type" : "Property"
+                                                   }, {
+                                                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                                                      "value" : "0",
+                                                      "type" : "Literal"
+                                                   } ]
+                                                },
+                                                "asTypeSpecifier" : {
+                                                   "name" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                                   "type" : "NamedTypeSpecifier"
+                                                }
+                                             },
+                                             "then" : {
+                                                "asType" : "{urn:hl7-org:elm-types:r1}Integer",
+                                                "type" : "As",
+                                                "operand" : {
+                                                   "type" : "Null"
+                                                },
+                                                "asTypeSpecifier" : {
+                                                   "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                                                   "type" : "NamedTypeSpecifier"
+                                                }
+                                             },
+                                             "else" : {
+                                                "path" : "resultDays",
+                                                "scope" : "I",
+                                                "type" : "Property"
+                                             }
+                                          }
+                                       } ]
+                                    }
+                                 } ]
+                              }, {
+                                 "type" : "ToDecimal",
+                                 "operand" : {
+                                    "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                                    "value" : "0",
+                                    "type" : "Literal"
+                                 }
+                              } ]
+                           }
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "TherapeuticTimeInRange",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Round",
+               "operand" : {
+                  "type" : "Multiply",
+                  "operand" : [ {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "100",
+                        "type" : "Literal"
+                     }
+                  }, {
+                     "type" : "Divide",
+                     "operand" : [ {
+                        "type" : "Sum",
+                        "source" : {
+                           "type" : "Query",
+                           "source" : [ {
+                              "alias" : "X",
+                              "expression" : {
+                                 "name" : "TherapeuticDays",
+                                 "type" : "ExpressionRef"
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "return" : {
+                              "expression" : {
+                                 "path" : "daysInRange",
+                                 "scope" : "X",
+                                 "type" : "Property"
+                              }
+                           }
+                        }
+                     }, {
+                        "type" : "ToDecimal",
+                        "operand" : {
+                           "type" : "Sum",
+                           "source" : {
+                              "type" : "Query",
+                              "source" : [ {
+                                 "alias" : "X",
+                                 "expression" : {
+                                    "name" : "TherapeuticDays",
+                                    "type" : "ExpressionRef"
+                                 }
+                              } ],
+                              "relationship" : [ ],
+                              "return" : {
+                                 "expression" : {
+                                    "path" : "resultDays",
+                                    "scope" : "X",
+                                    "type" : "Property"
+                                 }
+                              }
+                           }
+                        }
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "NumberOfValidIntervals",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Count",
+               "source" : {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "D",
+                     "expression" : {
+                        "name" : "TherapeuticDays",
+                        "type" : "ExpressionRef"
+                     }
+                  } ],
+                  "relationship" : [ ],
+                  "where" : {
+                     "path" : "isValid",
+                     "scope" : "D",
+                     "type" : "Property"
+                  }
+               }
+            }
+         }, {
+            "name" : "HasValidIntervals",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "name" : "NumberOfValidIntervals",
+                  "type" : "ExpressionRef"
+               }, {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "InitialPopulation",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "And",
+                     "operand" : [ {
+                        "type" : "And",
+                        "operand" : [ {
+                           "name" : "InDemographic",
+                           "type" : "ExpressionRef"
+                        }, {
+                           "type" : "Exists",
+                           "operand" : {
+                              "name" : "InpatientEncounters",
+                              "type" : "ExpressionRef"
+                           }
+                        } ]
+                     }, {
+                        "type" : "Exists",
+                        "operand" : {
+                           "name" : "ActiveFlutterDiagnoses",
+                           "type" : "ExpressionRef"
+                        }
+                     } ]
+                  }, {
+                     "type" : "GreaterOrEqual",
+                     "operand" : [ {
+                        "name" : "WarfarinUsage",
+                        "type" : "ExpressionRef"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "180",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "type" : "Not",
+                  "operand" : {
+                     "type" : "Exists",
+                     "operand" : {
+                        "name" : "ActiveValvularHeartDiseaseDiagnoses",
+                        "type" : "ExpressionRef"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MeasurePopulation",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "HasValidIntervals",
+               "type" : "ExpressionRef"
+            }
+         }, {
+            "name" : "MeasureObservation",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "TherapeuticTimeInRange",
+               "type" : "ExpressionRef"
+            }
+         }, {
+            "name" : "MeasureScore",
+            "context" : "Population",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Avg",
+               "source" : {
+                  "name" : "MeasureObservation",
+                  "type" : "ExpressionRef"
+               }
+            }
+         } ]
+      }
+   }
+}
+

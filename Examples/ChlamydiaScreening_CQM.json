@@ -1,0 +1,1005 @@
+{
+   "library" : {
+      "identifier" : {
+         "id" : "ChlamydiaScreening_CQM",
+         "version" : "2"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
+            "default" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Female Administrative Sex",
+            "id" : "2.16.840.1.113883.3.560.100.2",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Other Female Reproductive Conditions",
+            "id" : "2.16.840.1.113883.3.464.1003.111.12.1006",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Genital Herpes",
+            "id" : "2.16.840.1.113883.3.464.1003.110.12.1049",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Genococcal Infections and Venereal Diseases",
+            "id" : "2.16.840.1.113883.3.464.1003.112.12.1001",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Inflammatory Diseases of Female Reproductive Organs",
+            "id" : "2.16.840.1.113883.3.464.1003.112.12.1004",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Chlamydia",
+            "id" : "2.16.840.1.113883.3.464.1003.112.12.1003",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "HIV",
+            "id" : "2.16.840.1.113883.3.464.1003.120.12.1003",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Syphilis",
+            "id" : "2.16.840.1.113883.3.464.1003.112.12.1002",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Complications of Pregnancy, Childbirth and the Puerperium",
+            "id" : "2.16.840.1.113883.3.464.1003.111.12.1012",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Pregnancy Test",
+            "id" : "2.16.840.1.113883.3.464.1003.111.12.1011",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Pap Test",
+            "id" : "2.16.840.1.113883.3.464.1003.108.12.1017",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Lab Tests During Pregnancy",
+            "id" : "2.16.840.1.113883.3.464.1003.111.12.1007",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Lab Tests for Sexually Transmitted Infections",
+            "id" : "2.16.840.1.113883.3.464.1003.110.12.1051",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Chlamydia Screening",
+            "id" : "2.16.840.1.113883.3.464.1003.110.12.1052",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "InDemographic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "And",
+                  "operand" : [ {
+                     "type" : "GreaterOrEqual",
+                     "operand" : [ {
+                        "precision" : "Year",
+                        "type" : "CalculateAgeAt",
+                        "operand" : [ {
+                           "path" : "birthDate",
+                           "type" : "Property",
+                           "source" : {
+                              "name" : "Patient",
+                              "type" : "ExpressionRef"
+                           }
+                        }, {
+                           "type" : "Start",
+                           "operand" : {
+                              "name" : "MeasurementPeriod",
+                              "type" : "ParameterRef"
+                           }
+                        } ]
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "16",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "type" : "Less",
+                     "operand" : [ {
+                        "precision" : "Year",
+                        "type" : "CalculateAgeAt",
+                        "operand" : [ {
+                           "path" : "birthDate",
+                           "type" : "Property",
+                           "source" : {
+                              "name" : "Patient",
+                              "type" : "ExpressionRef"
+                           }
+                        }, {
+                           "type" : "Start",
+                           "operand" : {
+                              "name" : "MeasurementPeriod",
+                              "type" : "ParameterRef"
+                           }
+                        } ]
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "24",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "type" : "InValueSet",
+                  "code" : {
+                     "path" : "gender",
+                     "type" : "Property",
+                     "source" : {
+                        "name" : "Patient",
+                        "type" : "ExpressionRef"
+                     }
+                  },
+                  "valueset" : {
+                     "name" : "Female Administrative Sex"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "SexuallyActive",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Or",
+               "operand" : [ {
+                  "type" : "Or",
+                  "operand" : [ {
+                     "type" : "Or",
+                     "operand" : [ {
+                        "type" : "Or",
+                        "operand" : [ {
+                           "type" : "Or",
+                           "operand" : [ {
+                              "type" : "Or",
+                              "operand" : [ {
+                                 "type" : "Or",
+                                 "operand" : [ {
+                                    "type" : "Or",
+                                    "operand" : [ {
+                                       "type" : "Or",
+                                       "operand" : [ {
+                                          "type" : "Or",
+                                          "operand" : [ {
+                                             "type" : "Or",
+                                             "operand" : [ {
+                                                "type" : "Exists",
+                                                "operand" : {
+                                                   "type" : "Query",
+                                                   "source" : [ {
+                                                      "alias" : "C",
+                                                      "expression" : {
+                                                         "dataType" : "{http://hl7.org/fhir}Condition",
+                                                         "templateId" : "condition-qicore-qicore-condition",
+                                                         "codeProperty" : "code",
+                                                         "type" : "Retrieve",
+                                                         "codes" : {
+                                                            "name" : "Other Female Reproductive Conditions",
+                                                            "type" : "ValueSetRef"
+                                                         }
+                                                      }
+                                                   } ],
+                                                   "relationship" : [ ],
+                                                   "where" : {
+                                                      "type" : "Overlaps",
+                                                      "operand" : [ {
+                                                         "lowClosed" : true,
+                                                         "highClosed" : true,
+                                                         "type" : "Interval",
+                                                         "low" : {
+                                                            "path" : "onsetDateTime",
+                                                            "scope" : "C",
+                                                            "type" : "Property"
+                                                         },
+                                                         "high" : {
+                                                            "path" : "abatementDate",
+                                                            "scope" : "C",
+                                                            "type" : "Property"
+                                                         }
+                                                      }, {
+                                                         "name" : "MeasurementPeriod",
+                                                         "type" : "ParameterRef"
+                                                      } ]
+                                                   }
+                                                }
+                                             }, {
+                                                "type" : "Exists",
+                                                "operand" : {
+                                                   "type" : "Query",
+                                                   "source" : [ {
+                                                      "alias" : "C",
+                                                      "expression" : {
+                                                         "dataType" : "{http://hl7.org/fhir}Condition",
+                                                         "templateId" : "condition-qicore-qicore-condition",
+                                                         "codeProperty" : "code",
+                                                         "type" : "Retrieve",
+                                                         "codes" : {
+                                                            "name" : "Genital Herpes",
+                                                            "type" : "ValueSetRef"
+                                                         }
+                                                      }
+                                                   } ],
+                                                   "relationship" : [ ],
+                                                   "where" : {
+                                                      "type" : "Overlaps",
+                                                      "operand" : [ {
+                                                         "lowClosed" : true,
+                                                         "highClosed" : true,
+                                                         "type" : "Interval",
+                                                         "low" : {
+                                                            "path" : "onsetDateTime",
+                                                            "scope" : "C",
+                                                            "type" : "Property"
+                                                         },
+                                                         "high" : {
+                                                            "path" : "abatementDate",
+                                                            "scope" : "C",
+                                                            "type" : "Property"
+                                                         }
+                                                      }, {
+                                                         "name" : "MeasurementPeriod",
+                                                         "type" : "ParameterRef"
+                                                      } ]
+                                                   }
+                                                }
+                                             } ]
+                                          }, {
+                                             "type" : "Exists",
+                                             "operand" : {
+                                                "type" : "Query",
+                                                "source" : [ {
+                                                   "alias" : "C",
+                                                   "expression" : {
+                                                      "dataType" : "{http://hl7.org/fhir}Condition",
+                                                      "templateId" : "condition-qicore-qicore-condition",
+                                                      "codeProperty" : "code",
+                                                      "type" : "Retrieve",
+                                                      "codes" : {
+                                                         "name" : "Genococcal Infections and Venereal Diseases",
+                                                         "type" : "ValueSetRef"
+                                                      }
+                                                   }
+                                                } ],
+                                                "relationship" : [ ],
+                                                "where" : {
+                                                   "type" : "Overlaps",
+                                                   "operand" : [ {
+                                                      "lowClosed" : true,
+                                                      "highClosed" : true,
+                                                      "type" : "Interval",
+                                                      "low" : {
+                                                         "path" : "onsetDateTime",
+                                                         "scope" : "C",
+                                                         "type" : "Property"
+                                                      },
+                                                      "high" : {
+                                                         "path" : "abatementDate",
+                                                         "scope" : "C",
+                                                         "type" : "Property"
+                                                      }
+                                                   }, {
+                                                      "name" : "MeasurementPeriod",
+                                                      "type" : "ParameterRef"
+                                                   } ]
+                                                }
+                                             }
+                                          } ]
+                                       }, {
+                                          "type" : "Exists",
+                                          "operand" : {
+                                             "type" : "Query",
+                                             "source" : [ {
+                                                "alias" : "C",
+                                                "expression" : {
+                                                   "dataType" : "{http://hl7.org/fhir}Condition",
+                                                   "templateId" : "condition-qicore-qicore-condition",
+                                                   "codeProperty" : "code",
+                                                   "type" : "Retrieve",
+                                                   "codes" : {
+                                                      "name" : "Inflammatory Diseases of Female Reproductive Organs",
+                                                      "type" : "ValueSetRef"
+                                                   }
+                                                }
+                                             } ],
+                                             "relationship" : [ ],
+                                             "where" : {
+                                                "type" : "Overlaps",
+                                                "operand" : [ {
+                                                   "lowClosed" : true,
+                                                   "highClosed" : true,
+                                                   "type" : "Interval",
+                                                   "low" : {
+                                                      "path" : "onsetDateTime",
+                                                      "scope" : "C",
+                                                      "type" : "Property"
+                                                   },
+                                                   "high" : {
+                                                      "path" : "abatementDate",
+                                                      "scope" : "C",
+                                                      "type" : "Property"
+                                                   }
+                                                }, {
+                                                   "name" : "MeasurementPeriod",
+                                                   "type" : "ParameterRef"
+                                                } ]
+                                             }
+                                          }
+                                       } ]
+                                    }, {
+                                       "type" : "Exists",
+                                       "operand" : {
+                                          "type" : "Query",
+                                          "source" : [ {
+                                             "alias" : "C",
+                                             "expression" : {
+                                                "dataType" : "{http://hl7.org/fhir}Condition",
+                                                "templateId" : "condition-qicore-qicore-condition",
+                                                "codeProperty" : "code",
+                                                "type" : "Retrieve",
+                                                "codes" : {
+                                                   "name" : "Chlamydia",
+                                                   "type" : "ValueSetRef"
+                                                }
+                                             }
+                                          } ],
+                                          "relationship" : [ ],
+                                          "where" : {
+                                             "type" : "Overlaps",
+                                             "operand" : [ {
+                                                "lowClosed" : true,
+                                                "highClosed" : true,
+                                                "type" : "Interval",
+                                                "low" : {
+                                                   "path" : "onsetDateTime",
+                                                   "scope" : "C",
+                                                   "type" : "Property"
+                                                },
+                                                "high" : {
+                                                   "path" : "abatementDate",
+                                                   "scope" : "C",
+                                                   "type" : "Property"
+                                                }
+                                             }, {
+                                                "name" : "MeasurementPeriod",
+                                                "type" : "ParameterRef"
+                                             } ]
+                                          }
+                                       }
+                                    } ]
+                                 }, {
+                                    "type" : "Exists",
+                                    "operand" : {
+                                       "type" : "Query",
+                                       "source" : [ {
+                                          "alias" : "C",
+                                          "expression" : {
+                                             "dataType" : "{http://hl7.org/fhir}Condition",
+                                             "templateId" : "condition-qicore-qicore-condition",
+                                             "codeProperty" : "code",
+                                             "type" : "Retrieve",
+                                             "codes" : {
+                                                "name" : "HIV",
+                                                "type" : "ValueSetRef"
+                                             }
+                                          }
+                                       } ],
+                                       "relationship" : [ ],
+                                       "where" : {
+                                          "type" : "Overlaps",
+                                          "operand" : [ {
+                                             "lowClosed" : true,
+                                             "highClosed" : true,
+                                             "type" : "Interval",
+                                             "low" : {
+                                                "path" : "onsetDateTime",
+                                                "scope" : "C",
+                                                "type" : "Property"
+                                             },
+                                             "high" : {
+                                                "path" : "abatementDate",
+                                                "scope" : "C",
+                                                "type" : "Property"
+                                             }
+                                          }, {
+                                             "name" : "MeasurementPeriod",
+                                             "type" : "ParameterRef"
+                                          } ]
+                                       }
+                                    }
+                                 } ]
+                              }, {
+                                 "type" : "Exists",
+                                 "operand" : {
+                                    "type" : "Query",
+                                    "source" : [ {
+                                       "alias" : "C",
+                                       "expression" : {
+                                          "dataType" : "{http://hl7.org/fhir}Condition",
+                                          "templateId" : "condition-qicore-qicore-condition",
+                                          "codeProperty" : "code",
+                                          "type" : "Retrieve",
+                                          "codes" : {
+                                             "name" : "Syphilis",
+                                             "type" : "ValueSetRef"
+                                          }
+                                       }
+                                    } ],
+                                    "relationship" : [ ],
+                                    "where" : {
+                                       "type" : "Overlaps",
+                                       "operand" : [ {
+                                          "lowClosed" : true,
+                                          "highClosed" : true,
+                                          "type" : "Interval",
+                                          "low" : {
+                                             "path" : "onsetDateTime",
+                                             "scope" : "C",
+                                             "type" : "Property"
+                                          },
+                                          "high" : {
+                                             "path" : "abatementDate",
+                                             "scope" : "C",
+                                             "type" : "Property"
+                                          }
+                                       }, {
+                                          "name" : "MeasurementPeriod",
+                                          "type" : "ParameterRef"
+                                       } ]
+                                    }
+                                 }
+                              } ]
+                           }, {
+                              "type" : "Exists",
+                              "operand" : {
+                                 "type" : "Query",
+                                 "source" : [ {
+                                    "alias" : "C",
+                                    "expression" : {
+                                       "dataType" : "{http://hl7.org/fhir}Condition",
+                                       "templateId" : "condition-qicore-qicore-condition",
+                                       "codeProperty" : "code",
+                                       "type" : "Retrieve",
+                                       "codes" : {
+                                          "name" : "Complications of Pregnancy, Childbirth and the Puerperium",
+                                          "type" : "ValueSetRef"
+                                       }
+                                    }
+                                 } ],
+                                 "relationship" : [ ],
+                                 "where" : {
+                                    "type" : "Overlaps",
+                                    "operand" : [ {
+                                       "lowClosed" : true,
+                                       "highClosed" : true,
+                                       "type" : "Interval",
+                                       "low" : {
+                                          "path" : "onsetDateTime",
+                                          "scope" : "C",
+                                          "type" : "Property"
+                                       },
+                                       "high" : {
+                                          "path" : "abatementDate",
+                                          "scope" : "C",
+                                          "type" : "Property"
+                                       }
+                                    }, {
+                                       "name" : "MeasurementPeriod",
+                                       "type" : "ParameterRef"
+                                    } ]
+                                 }
+                              }
+                           } ]
+                        }, {
+                           "type" : "Exists",
+                           "operand" : {
+                              "type" : "Query",
+                              "source" : [ {
+                                 "alias" : "O",
+                                 "expression" : {
+                                    "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
+                                    "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
+                                    "codeProperty" : "item[].code",
+                                    "type" : "Retrieve",
+                                    "codes" : {
+                                       "name" : "Pregnancy Test",
+                                       "type" : "ValueSetRef"
+                                    }
+                                 }
+                              } ],
+                              "relationship" : [ ],
+                              "where" : {
+                                 "type" : "In",
+                                 "operand" : [ {
+                                    "path" : "dateTime",
+                                    "type" : "Property",
+                                    "source" : {
+                                       "type" : "Last",
+                                       "source" : {
+                                          "type" : "Query",
+                                          "source" : [ {
+                                             "alias" : "E",
+                                             "expression" : {
+                                                "path" : "event",
+                                                "scope" : "O",
+                                                "type" : "Property"
+                                             }
+                                          } ],
+                                          "relationship" : [ ],
+                                          "where" : {
+                                             "type" : "Equal",
+                                             "operand" : [ {
+                                                "path" : "status",
+                                                "scope" : "E",
+                                                "type" : "Property"
+                                             }, {
+                                                "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                                                "value" : "completed",
+                                                "type" : "Literal"
+                                             } ]
+                                          },
+                                          "sort" : {
+                                             "by" : [ {
+                                                "direction" : "asc",
+                                                "type" : "ByExpression",
+                                                "expression" : {
+                                                   "path" : "dateTime",
+                                                   "scope" : "E",
+                                                   "type" : "Property"
+                                                }
+                                             } ]
+                                          }
+                                       }
+                                    }
+                                 }, {
+                                    "name" : "MeasurementPeriod",
+                                    "type" : "ParameterRef"
+                                 } ]
+                              }
+                           }
+                        } ]
+                     }, {
+                        "type" : "Exists",
+                        "operand" : {
+                           "type" : "Query",
+                           "source" : [ {
+                              "alias" : "O",
+                              "expression" : {
+                                 "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
+                                 "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
+                                 "codeProperty" : "item[].code",
+                                 "type" : "Retrieve",
+                                 "codes" : {
+                                    "name" : "Pap Test",
+                                    "type" : "ValueSetRef"
+                                 }
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "type" : "In",
+                              "operand" : [ {
+                                 "path" : "dateTime",
+                                 "type" : "Property",
+                                 "source" : {
+                                    "type" : "Last",
+                                    "source" : {
+                                       "type" : "Query",
+                                       "source" : [ {
+                                          "alias" : "E",
+                                          "expression" : {
+                                             "path" : "event",
+                                             "scope" : "O",
+                                             "type" : "Property"
+                                          }
+                                       } ],
+                                       "relationship" : [ ],
+                                       "where" : {
+                                          "type" : "Equal",
+                                          "operand" : [ {
+                                             "path" : "status",
+                                             "scope" : "E",
+                                             "type" : "Property"
+                                          }, {
+                                             "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                                             "value" : "completed",
+                                             "type" : "Literal"
+                                          } ]
+                                       },
+                                       "sort" : {
+                                          "by" : [ {
+                                             "direction" : "asc",
+                                             "type" : "ByExpression",
+                                             "expression" : {
+                                                "path" : "dateTime",
+                                                "scope" : "E",
+                                                "type" : "Property"
+                                             }
+                                          } ]
+                                       }
+                                    }
+                                 }
+                              }, {
+                                 "name" : "MeasurementPeriod",
+                                 "type" : "ParameterRef"
+                              } ]
+                           }
+                        }
+                     } ]
+                  }, {
+                     "type" : "Exists",
+                     "operand" : {
+                        "type" : "Query",
+                        "source" : [ {
+                           "alias" : "O",
+                           "expression" : {
+                              "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
+                              "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
+                              "codeProperty" : "item[].code",
+                              "type" : "Retrieve",
+                              "codes" : {
+                                 "name" : "Lab Tests During Pregnancy",
+                                 "type" : "ValueSetRef"
+                              }
+                           }
+                        } ],
+                        "relationship" : [ ],
+                        "where" : {
+                           "type" : "In",
+                           "operand" : [ {
+                              "path" : "dateTime",
+                              "type" : "Property",
+                              "source" : {
+                                 "type" : "Last",
+                                 "source" : {
+                                    "type" : "Query",
+                                    "source" : [ {
+                                       "alias" : "E",
+                                       "expression" : {
+                                          "path" : "event",
+                                          "scope" : "O",
+                                          "type" : "Property"
+                                       }
+                                    } ],
+                                    "relationship" : [ ],
+                                    "where" : {
+                                       "type" : "Equal",
+                                       "operand" : [ {
+                                          "path" : "status",
+                                          "scope" : "E",
+                                          "type" : "Property"
+                                       }, {
+                                          "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                                          "value" : "completed",
+                                          "type" : "Literal"
+                                       } ]
+                                    }
+                                 }
+                              }
+                           }, {
+                              "name" : "MeasurementPeriod",
+                              "type" : "ParameterRef"
+                           } ]
+                        }
+                     }
+                  } ]
+               }, {
+                  "type" : "Exists",
+                  "operand" : {
+                     "type" : "Query",
+                     "source" : [ {
+                        "alias" : "O",
+                        "expression" : {
+                           "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
+                           "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
+                           "codeProperty" : "item[].code",
+                           "type" : "Retrieve",
+                           "codes" : {
+                              "name" : "Lab Tests for Sexually Transmitted Infections",
+                              "type" : "ValueSetRef"
+                           }
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "where" : {
+                        "type" : "In",
+                        "operand" : [ {
+                           "path" : "dateTime",
+                           "type" : "Property",
+                           "source" : {
+                              "type" : "Last",
+                              "source" : {
+                                 "type" : "Query",
+                                 "source" : [ {
+                                    "alias" : "E",
+                                    "expression" : {
+                                       "path" : "event",
+                                       "scope" : "O",
+                                       "type" : "Property"
+                                    }
+                                 } ],
+                                 "relationship" : [ ],
+                                 "where" : {
+                                    "type" : "Equal",
+                                    "operand" : [ {
+                                       "path" : "status",
+                                       "scope" : "E",
+                                       "type" : "Property"
+                                    }, {
+                                       "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                                       "value" : "completed",
+                                       "type" : "Literal"
+                                    } ]
+                                 }
+                              }
+                           }
+                        }, {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        } ]
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "InInitialPopulation",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "name" : "InDemographic",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "SexuallyActive",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "InDenominator",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
+               "value" : "true",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "InNumerator",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Exists",
+               "operand" : {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "R",
+                     "expression" : {
+                        "dataType" : "{http://hl7.org/fhir}DiagnosticReport",
+                        "templateId" : "diagnosticreport-qicore-qicore-diagnosticreport",
+                        "codeProperty" : "name",
+                        "type" : "Retrieve",
+                        "codes" : {
+                           "name" : "Chlamydia Screening",
+                           "type" : "ValueSetRef"
+                        }
+                     }
+                  } ],
+                  "relationship" : [ ],
+                  "where" : {
+                     "type" : "And",
+                     "operand" : [ {
+                        "type" : "In",
+                        "operand" : [ {
+                           "path" : "issued",
+                           "scope" : "R",
+                           "type" : "Property"
+                        }, {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        } ]
+                     }, {
+                        "type" : "Not",
+                        "operand" : {
+                           "type" : "IsNull",
+                           "operand" : {
+                              "path" : "result",
+                              "scope" : "R",
+                              "type" : "Property"
+                           }
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "MeasureScore",
+            "context" : "Population",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "type" : "Divide",
+                  "operand" : [ {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "type" : "Count",
+                        "source" : {
+                           "type" : "Query",
+                           "source" : [ {
+                              "alias" : "P",
+                              "expression" : {
+                                 "name" : "Patient",
+                                 "type" : "ExpressionRef"
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "type" : "And",
+                              "operand" : [ {
+                                 "type" : "And",
+                                 "operand" : [ {
+                                    "name" : "InInitialPopulation",
+                                    "type" : "ExpressionRef"
+                                 }, {
+                                    "name" : "InDenominator",
+                                    "type" : "ExpressionRef"
+                                 } ]
+                              }, {
+                                 "name" : "InNumerator",
+                                 "type" : "ExpressionRef"
+                              } ]
+                           }
+                        }
+                     }
+                  }, {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "type" : "Count",
+                        "source" : {
+                           "type" : "Query",
+                           "source" : [ {
+                              "alias" : "P",
+                              "expression" : {
+                                 "name" : "Patient",
+                                 "type" : "ExpressionRef"
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "type" : "And",
+                              "operand" : [ {
+                                 "name" : "InInitialPopulation",
+                                 "type" : "ExpressionRef"
+                              }, {
+                                 "name" : "InDenominator",
+                                 "type" : "ExpressionRef"
+                              } ]
+                           }
+                        }
+                     }
+                  } ]
+               }, {
+                  "type" : "ToDecimal",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

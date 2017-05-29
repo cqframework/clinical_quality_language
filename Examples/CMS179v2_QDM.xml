@@ -4,7 +4,7 @@
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
-      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_2" version="4.2"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_0_1_draft" version="5.0.2"/>
    </usings>
    <parameters>
       <def name="MeasurementPeriod" accessLevel="Public">
@@ -43,89 +43,53 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand xmlns:ns0="urn:healthit-gov:qdm:v4_2" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+            <operand xmlns:ns0="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="FlutterDiagnoses" context="Patient" accessLevel="Public">
-         <expression xmlns:ns1="urn:healthit-gov:qdm:v4_2" dataType="ns1:Diagnosis" templateId="Diagnosis" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" xsi:type="Retrieve">
             <codes name="Atrial Fibrillation/Flutter" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="WarfarinMedications" context="Patient" accessLevel="Public">
-         <expression xmlns:ns2="urn:healthit-gov:qdm:v4_2" dataType="ns2:MedicationActive" templateId="MedicationActive" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns2:MedicationActive" xsi:type="Retrieve">
             <codes name="Warfarin" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="FaceToFaceEncounters" context="Patient" accessLevel="Public">
-         <expression xsi:type="Query">
-            <source alias="E">
-               <expression xmlns:ns3="urn:healthit-gov:qdm:v4_2" dataType="ns3:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
-                  <codes name="Face-to-Face Interaction" xsi:type="ValueSetRef"/>
-               </expression>
-            </source>
-            <where xsi:type="Not">
-               <operand xsi:type="IsNull">
-                  <operand path="negationRationale" scope="E" xsi:type="Property"/>
-               </operand>
-            </where>
+         <expression xmlns:ns3="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns3:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+            <codes name="Face-to-Face Interaction" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="OfficeVisitEncounters" context="Patient" accessLevel="Public">
-         <expression xsi:type="Query">
-            <source alias="E">
-               <expression xmlns:ns4="urn:healthit-gov:qdm:v4_2" dataType="ns4:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
-                  <codes name="Office Visit" xsi:type="ValueSetRef"/>
-               </expression>
-            </source>
-            <where xsi:type="Not">
-               <operand xsi:type="IsNull">
-                  <operand path="negationRationale" scope="E" xsi:type="Property"/>
-               </operand>
-            </where>
+         <expression xmlns:ns4="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns4:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+            <codes name="Office Visit" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="ValvularHeartDiseaseDiagnoses" context="Patient" accessLevel="Public">
-         <expression xmlns:ns5="urn:healthit-gov:qdm:v4_2" dataType="ns5:Diagnosis" templateId="Diagnosis" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns5="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns5:Diagnosis" xsi:type="Retrieve">
             <codes name="Valvular Heart Disease" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="INRLabResults" context="Patient" accessLevel="Public">
-         <expression xsi:type="Query">
-            <source alias="L">
-               <expression xmlns:ns6="urn:healthit-gov:qdm:v4_2" dataType="ns6:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
-                  <codes name="INR" xsi:type="ValueSetRef"/>
-               </expression>
-            </source>
-            <where xsi:type="Not">
-               <operand xsi:type="IsNull">
-                  <operand path="negationRationale" scope="L" xsi:type="Property"/>
-               </operand>
-            </where>
+         <expression xmlns:ns6="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns6:LaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+            <codes name="INR" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="BirthDate" context="Patient" accessLevel="Public">
-         <expression xmlns:ns7="urn:healthit-gov:qdm:v4_2" dataType="ns7:PatientCharacteristicBirthdate" templateId="PatientCharacteristicBirthdate" xsi:type="Retrieve">
+         <expression xmlns:ns7="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns7:PatientCharacteristicBirthdate" xsi:type="Retrieve">
             <codes name="birth date" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="ComputedValueINRPercentTTR" context="Patient" accessLevel="Public">
-         <expression xsi:type="Query">
-            <source alias="L">
-               <expression xmlns:ns8="urn:healthit-gov:qdm:v4_2" dataType="ns8:LaboratoryTestPerformed" templateId="LaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
-                  <codes name="Computed Value INR percent TTR" xsi:type="ValueSetRef"/>
-               </expression>
-            </source>
-            <where xsi:type="Not">
-               <operand xsi:type="IsNull">
-                  <operand path="negationRationale" scope="L" xsi:type="Property"/>
-               </operand>
-            </where>
+         <expression xmlns:ns8="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns8:LaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+            <codes name="Computed Value INR percent TTR" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="InDemographic" context="Patient" accessLevel="Public">
          <expression xsi:type="GreaterOrEqual">
             <operand precision="Year" xsi:type="CalculateAgeAt">
-               <operand path="birth datetime" xsi:type="Property">
+               <operand path="birthDatetime" xsi:type="Property">
                   <source name="Patient" xsi:type="ExpressionRef"/>
                </operand>
                <operand xsi:type="Start">
@@ -147,10 +111,7 @@
                <expression name="FlutterDiagnoses" xsi:type="ExpressionRef"/>
             </source>
             <where xsi:type="OverlapsBefore">
-               <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                  <low path="onsetDatetime" scope="F" xsi:type="Property"/>
-                  <high path="abatementDatetime" scope="F" xsi:type="Property"/>
-               </operand>
+               <operand path="prevalencePeriod" scope="F" xsi:type="Property"/>
                <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
             </where>
          </expression>
@@ -161,10 +122,7 @@
                <expression name="ValvularHeartDiseaseDiagnoses" xsi:type="ExpressionRef"/>
             </source>
             <where xsi:type="OverlapsBefore">
-               <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                  <low path="onsetDatetime" scope="D" xsi:type="Property"/>
-                  <high path="abatementDatetime" scope="D" xsi:type="Property"/>
-               </operand>
+               <operand path="prevalencePeriod" scope="D" xsi:type="Property"/>
                <operand name="MeasurementPeriod" xsi:type="ParameterRef"/>
             </where>
          </expression>
@@ -188,10 +146,7 @@
                <expression name="WarfarinMedications" xsi:type="ExpressionRef"/>
             </source>
             <where xsi:type="Overlaps">
-               <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                  <low path="startDatetime" scope="M" xsi:type="Property"/>
-                  <high path="stopDatetime" scope="M" xsi:type="Property"/>
-               </operand>
+               <operand path="relevantPeriod" scope="M" xsi:type="Property"/>
                <operand name="LookbackInterval" xsi:type="ExpressionRef"/>
             </where>
          </expression>
@@ -204,10 +159,7 @@
                </source>
                <return>
                   <expression xsi:type="Intersect">
-                     <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                        <low path="startDatetime" scope="M" xsi:type="Property"/>
-                        <high path="stopDatetime" scope="M" xsi:type="Property"/>
-                     </operand>
+                     <operand path="relevantPeriod" scope="M" xsi:type="Property"/>
                      <operand name="LookbackInterval" xsi:type="ExpressionRef"/>
                   </expression>
                </return>
@@ -248,29 +200,17 @@
                         <operand xsi:type="Greater">
                            <operand precision="Hour" xsi:type="DurationBetween">
                               <operand xsi:type="Start">
-                                 <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                                    <low path="admissionDatetime" scope="E" xsi:type="Property"/>
-                                    <high path="dischargeDatetime" scope="E" xsi:type="Property"/>
-                                 </operand>
+                                 <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
                               </operand>
                               <operand xsi:type="End">
-                                 <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                                    <low path="admissionDatetime" scope="E" xsi:type="Property"/>
-                                    <high path="dischargeDatetime" scope="E" xsi:type="Property"/>
-                                 </operand>
+                                 <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
                               </operand>
                            </operand>
                            <operand valueType="t:Integer" value="23" xsi:type="Literal"/>
                         </operand>
                         <operand xsi:type="IncludedIn">
-                           <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                              <low path="startDatetime" scope="R" xsi:type="Property"/>
-                              <high path="stopDatetime" scope="R" xsi:type="Property"/>
-                           </operand>
-                           <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                              <low path="admissionDatetime" scope="E" xsi:type="Property"/>
-                              <high path="dischargeDatetime" scope="E" xsi:type="Property"/>
-                           </operand>
+                           <operand path="relevantPeriod" scope="R" xsi:type="Property"/>
+                           <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
                         </operand>
                      </where>
                   </operand>
@@ -294,17 +234,20 @@
                <expression xsi:type="Tuple">
                   <element name="resultDate">
                      <value xsi:type="DateFrom">
-                        <operand path="startDatetime" scope="L" xsi:type="Property"/>
+                        <operand path="resultDatetime" scope="L" xsi:type="Property"/>
                      </value>
                   </element>
                   <element name="result">
                      <value xsi:type="If">
-                        <condition xsi:type="Greater">
-                           <operand asType="t:Decimal" xsi:type="As">
-                              <operand path="result" scope="L" xsi:type="Property"/>
-                              <asTypeSpecifier name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                        <condition asType="t:Boolean" xsi:type="As">
+                           <operand xsi:type="Greater">
+                              <operand asType="t:Decimal" xsi:type="As">
+                                 <operand path="result" scope="L" xsi:type="Property"/>
+                                 <asTypeSpecifier name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                              </operand>
+                              <operand valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
                            </operand>
-                           <operand valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
+                           <asTypeSpecifier name="t:Boolean" xsi:type="NamedTypeSpecifier"/>
                         </condition>
                         <then valueType="t:Decimal" value="10.0" xsi:type="Literal"/>
                         <else asType="t:Decimal" xsi:type="As">
@@ -456,32 +399,38 @@
                   </element>
                   <element name="boundedDifference">
                      <value xsi:type="If">
-                        <condition xsi:type="GreaterOrEqual">
-                           <operand path="result" xsi:type="Property">
-                              <source path="endResult" scope="X" xsi:type="Property"/>
+                        <condition asType="t:Boolean" xsi:type="As">
+                           <operand xsi:type="GreaterOrEqual">
+                              <operand path="result" xsi:type="Property">
+                                 <source path="endResult" scope="X" xsi:type="Property"/>
+                              </operand>
+                              <operand path="result" xsi:type="Property">
+                                 <source path="startResult" scope="X" xsi:type="Property"/>
+                              </operand>
                            </operand>
-                           <operand path="result" xsi:type="Property">
-                              <source path="startResult" scope="X" xsi:type="Property"/>
-                           </operand>
+                           <asTypeSpecifier name="t:Boolean" xsi:type="NamedTypeSpecifier"/>
                         </condition>
                         <then xsi:type="If">
-                           <condition xsi:type="Or">
-                              <operand xsi:type="Greater">
-                                 <operand path="result" xsi:type="Property">
-                                    <source path="startResult" scope="X" xsi:type="Property"/>
+                           <condition asType="t:Boolean" xsi:type="As">
+                              <operand xsi:type="Or">
+                                 <operand xsi:type="Greater">
+                                    <operand path="result" xsi:type="Property">
+                                       <source path="startResult" scope="X" xsi:type="Property"/>
+                                    </operand>
+                                    <operand xsi:type="End">
+                                       <operand name="TherapeuticRange" xsi:type="ExpressionRef"/>
+                                    </operand>
                                  </operand>
-                                 <operand xsi:type="End">
-                                    <operand name="TherapeuticRange" xsi:type="ExpressionRef"/>
+                                 <operand xsi:type="Less">
+                                    <operand path="result" xsi:type="Property">
+                                       <source path="endResult" scope="X" xsi:type="Property"/>
+                                    </operand>
+                                    <operand xsi:type="Start">
+                                       <operand name="TherapeuticRange" xsi:type="ExpressionRef"/>
+                                    </operand>
                                  </operand>
                               </operand>
-                              <operand xsi:type="Less">
-                                 <operand path="result" xsi:type="Property">
-                                    <source path="endResult" scope="X" xsi:type="Property"/>
-                                 </operand>
-                                 <operand xsi:type="Start">
-                                    <operand name="TherapeuticRange" xsi:type="ExpressionRef"/>
-                                 </operand>
-                              </operand>
+                              <asTypeSpecifier name="t:Boolean" xsi:type="NamedTypeSpecifier"/>
                            </condition>
                            <then asType="t:Decimal" xsi:type="As">
                               <operand xsi:type="Null"/>
@@ -511,23 +460,26 @@
                            </else>
                         </then>
                         <else xsi:type="If">
-                           <condition xsi:type="Or">
-                              <operand xsi:type="Greater">
-                                 <operand path="result" xsi:type="Property">
-                                    <source path="endResult" scope="X" xsi:type="Property"/>
+                           <condition asType="t:Boolean" xsi:type="As">
+                              <operand xsi:type="Or">
+                                 <operand xsi:type="Greater">
+                                    <operand path="result" xsi:type="Property">
+                                       <source path="endResult" scope="X" xsi:type="Property"/>
+                                    </operand>
+                                    <operand xsi:type="End">
+                                       <operand name="TherapeuticRange" xsi:type="ExpressionRef"/>
+                                    </operand>
                                  </operand>
-                                 <operand xsi:type="End">
-                                    <operand name="TherapeuticRange" xsi:type="ExpressionRef"/>
+                                 <operand xsi:type="Less">
+                                    <operand path="result" xsi:type="Property">
+                                       <source path="startResult" scope="X" xsi:type="Property"/>
+                                    </operand>
+                                    <operand xsi:type="Start">
+                                       <operand name="TherapeuticRange" xsi:type="ExpressionRef"/>
+                                    </operand>
                                  </operand>
                               </operand>
-                              <operand xsi:type="Less">
-                                 <operand path="result" xsi:type="Property">
-                                    <source path="startResult" scope="X" xsi:type="Property"/>
-                                 </operand>
-                                 <operand xsi:type="Start">
-                                    <operand name="TherapeuticRange" xsi:type="ExpressionRef"/>
-                                 </operand>
-                              </operand>
+                              <asTypeSpecifier name="t:Boolean" xsi:type="NamedTypeSpecifier"/>
                            </condition>
                            <then asType="t:Decimal" xsi:type="As">
                               <operand xsi:type="Null"/>
@@ -596,7 +548,10 @@
                   </element>
                   <element name="daysInRange">
                      <value xsi:type="If">
-                        <condition path="resultsWithinBounds" scope="I" xsi:type="Property"/>
+                        <condition asType="t:Boolean" xsi:type="As">
+                           <operand path="resultsWithinBounds" scope="I" xsi:type="Property"/>
+                           <asTypeSpecifier name="t:Boolean" xsi:type="NamedTypeSpecifier"/>
+                        </condition>
                         <then xsi:type="ToDecimal">
                            <operand path="resultDays" scope="I" xsi:type="Property"/>
                         </then>
@@ -610,9 +565,12 @@
                                     <operand path="boundedDifference" scope="I" xsi:type="Property"/>
                                     <operand xsi:type="ToDecimal">
                                        <operand xsi:type="If">
-                                          <condition xsi:type="Equal">
-                                             <operand path="resultDays" scope="I" xsi:type="Property"/>
-                                             <operand valueType="t:Integer" value="0" xsi:type="Literal"/>
+                                          <condition asType="t:Boolean" xsi:type="As">
+                                             <operand xsi:type="Equal">
+                                                <operand path="resultDays" scope="I" xsi:type="Property"/>
+                                                <operand valueType="t:Integer" value="0" xsi:type="Literal"/>
+                                             </operand>
+                                             <asTypeSpecifier name="t:Boolean" xsi:type="NamedTypeSpecifier"/>
                                           </condition>
                                           <then asType="t:Integer" xsi:type="As">
                                              <operand xsi:type="Null"/>

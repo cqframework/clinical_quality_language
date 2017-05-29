@@ -1,0 +1,648 @@
+{
+   "library" : {
+      "identifier" : {
+         "id" : "ChlamydiaScreening_CDS",
+         "version" : "2"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localId" : "1",
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "codeSystems" : {
+         "def" : [ {
+            "localId" : "2",
+            "name" : "SNOMED",
+            "id" : "http://snomed.info/sct",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "localId" : "3",
+            "name" : "Female Administrative Sex",
+            "id" : "2.16.840.1.113883.3.560.100.2",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "4",
+            "name" : "Other Female Reproductive Conditions",
+            "id" : "2.16.840.1.113883.3.464.1003.111.12.1006",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "5",
+            "name" : "Genital Herpes",
+            "id" : "2.16.840.1.113883.3.464.1003.110.12.1049",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "6",
+            "name" : "Genococcal Infections and Venereal Diseases",
+            "id" : "2.16.840.1.113883.3.464.1003.112.12.1001",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "7",
+            "name" : "Inflammatory Diseases of Female Reproductive Organs",
+            "id" : "2.16.840.1.113883.3.464.1003.112.12.1004",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "8",
+            "name" : "Chlamydia",
+            "id" : "2.16.840.1.113883.3.464.1003.112.12.1003",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "9",
+            "name" : "HIV",
+            "id" : "2.16.840.1.113883.3.464.1003.120.12.1003",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "10",
+            "name" : "Syphilis",
+            "id" : "2.16.840.1.113883.3.464.1003.112.12.1002",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "11",
+            "name" : "Complications of Pregnancy, Childbirth and the Puerperium",
+            "id" : "2.16.840.1.113883.3.464.1003.111.12.1012",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "12",
+            "name" : "Pregnancy Test",
+            "id" : "2.16.840.1.113883.3.464.1003.111.12.1011",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "13",
+            "name" : "Pap Test",
+            "id" : "2.16.840.1.113883.3.464.1003.108.12.1017",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "14",
+            "name" : "Lab Tests During Pregnancy",
+            "id" : "2.16.840.1.113883.3.464.1003.111.12.1007",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "15",
+            "name" : "Lab Tests for Sexually Transmitted Infections",
+            "id" : "2.16.840.1.113883.3.464.1003.110.12.1051",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "16",
+            "name" : "Chlamydia Screening",
+            "id" : "2.16.840.1.113883.3.464.1003.110.12.1052",
+            "accessLevel" : "Public"
+         }, {
+            "localId" : "17",
+            "name" : "Reason for not performing Chlamydia Screening",
+            "id" : "TBD",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "localId" : "30",
+            "name" : "InDemographic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "value" : [ "define \"InDemographic\":\r\n\tAgeInYears() >= 16 and AgeInYears() < 24 and \"Patient\".\"gender\" in \"Female Administrative Sex\"" ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "29",
+               "type" : "And",
+               "operand" : [ {
+                  "localId" : "24",
+                  "type" : "And",
+                  "operand" : [ {
+                     "localId" : "20",
+                     "type" : "GreaterOrEqual",
+                     "operand" : [ {
+                        "localId" : "18",
+                        "precision" : "Year",
+                        "type" : "CalculateAge",
+                        "operand" : {
+                           "path" : "birthDate",
+                           "type" : "Property",
+                           "source" : {
+                              "name" : "Patient",
+                              "type" : "ExpressionRef"
+                           }
+                        }
+                     }, {
+                        "localId" : "19",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "16",
+                        "type" : "Literal"
+                     } ]
+                  }, {
+                     "localId" : "23",
+                     "type" : "Less",
+                     "operand" : [ {
+                        "localId" : "21",
+                        "precision" : "Year",
+                        "type" : "CalculateAge",
+                        "operand" : {
+                           "path" : "birthDate",
+                           "type" : "Property",
+                           "source" : {
+                              "name" : "Patient",
+                              "type" : "ExpressionRef"
+                           }
+                        }
+                     }, {
+                        "localId" : "22",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "24",
+                        "type" : "Literal"
+                     } ]
+                  } ]
+               }, {
+                  "localId" : "28",
+                  "type" : "InValueSet",
+                  "code" : {
+                     "localId" : "26",
+                     "path" : "gender",
+                     "type" : "Property",
+                     "source" : {
+                        "localId" : "25",
+                        "name" : "Patient",
+                        "type" : "ExpressionRef"
+                     }
+                  },
+                  "valueset" : {
+                     "localId" : "27",
+                     "name" : "Female Administrative Sex"
+                  }
+               } ]
+            }
+         }, {
+            "localId" : "66",
+            "name" : "SexuallyActive",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "value" : [ "define \"SexuallyActive\":\r\n\texists ([\"Condition\": \"Other Female Reproductive Conditions\"])\r\n\tor exists ([\"Condition\": \"Genital Herpes\"])\r\n\tor exists ([\"Condition\": \"Genococcal Infections and Venereal Diseases\"])\r\n\tor exists ([\"Condition\": \"Inflammatory Diseases of Female Reproductive Organs\"])\r\n\tor exists ([\"Condition\": \"Chlamydia\"])\r\n\tor exists ([\"Condition\": \"HIV\"])\r\n\tor exists ([\"Condition\": \"Syphilis\"])\r\n\tor exists ([\"Condition\": \"Complications of Pregnancy, Childbirth and the Puerperium\"])\r\n\tor exists ([\"DiagnosticOrder\": \"Pregnancy Test\"])\r\n\tor exists ([\"DiagnosticOrder\": \"Pap Test\"])\r\n\tor exists ([\"DiagnosticOrder\": \"Lab Tests During Pregnancy\"])\r\n\tor exists ([\"DiagnosticOrder\": \"Lab Tests for Sexually Transmitted Infections\"])" ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "65",
+               "type" : "Or",
+               "operand" : [ {
+                  "localId" : "62",
+                  "type" : "Or",
+                  "operand" : [ {
+                     "localId" : "59",
+                     "type" : "Or",
+                     "operand" : [ {
+                        "localId" : "56",
+                        "type" : "Or",
+                        "operand" : [ {
+                           "localId" : "53",
+                           "type" : "Or",
+                           "operand" : [ {
+                              "localId" : "50",
+                              "type" : "Or",
+                              "operand" : [ {
+                                 "localId" : "47",
+                                 "type" : "Or",
+                                 "operand" : [ {
+                                    "localId" : "44",
+                                    "type" : "Or",
+                                    "operand" : [ {
+                                       "localId" : "41",
+                                       "type" : "Or",
+                                       "operand" : [ {
+                                          "localId" : "38",
+                                          "type" : "Or",
+                                          "operand" : [ {
+                                             "localId" : "35",
+                                             "type" : "Or",
+                                             "operand" : [ {
+                                                "localId" : "32",
+                                                "type" : "Exists",
+                                                "operand" : {
+                                                   "localId" : "31",
+                                                   "dataType" : "{http://hl7.org/fhir}Condition",
+                                                   "templateId" : "condition-qicore-qicore-condition",
+                                                   "codeProperty" : "code",
+                                                   "type" : "Retrieve",
+                                                   "codes" : {
+                                                      "name" : "Other Female Reproductive Conditions",
+                                                      "type" : "ValueSetRef"
+                                                   }
+                                                }
+                                             }, {
+                                                "localId" : "34",
+                                                "type" : "Exists",
+                                                "operand" : {
+                                                   "localId" : "33",
+                                                   "dataType" : "{http://hl7.org/fhir}Condition",
+                                                   "templateId" : "condition-qicore-qicore-condition",
+                                                   "codeProperty" : "code",
+                                                   "type" : "Retrieve",
+                                                   "codes" : {
+                                                      "name" : "Genital Herpes",
+                                                      "type" : "ValueSetRef"
+                                                   }
+                                                }
+                                             } ]
+                                          }, {
+                                             "localId" : "37",
+                                             "type" : "Exists",
+                                             "operand" : {
+                                                "localId" : "36",
+                                                "dataType" : "{http://hl7.org/fhir}Condition",
+                                                "templateId" : "condition-qicore-qicore-condition",
+                                                "codeProperty" : "code",
+                                                "type" : "Retrieve",
+                                                "codes" : {
+                                                   "name" : "Genococcal Infections and Venereal Diseases",
+                                                   "type" : "ValueSetRef"
+                                                }
+                                             }
+                                          } ]
+                                       }, {
+                                          "localId" : "40",
+                                          "type" : "Exists",
+                                          "operand" : {
+                                             "localId" : "39",
+                                             "dataType" : "{http://hl7.org/fhir}Condition",
+                                             "templateId" : "condition-qicore-qicore-condition",
+                                             "codeProperty" : "code",
+                                             "type" : "Retrieve",
+                                             "codes" : {
+                                                "name" : "Inflammatory Diseases of Female Reproductive Organs",
+                                                "type" : "ValueSetRef"
+                                             }
+                                          }
+                                       } ]
+                                    }, {
+                                       "localId" : "43",
+                                       "type" : "Exists",
+                                       "operand" : {
+                                          "localId" : "42",
+                                          "dataType" : "{http://hl7.org/fhir}Condition",
+                                          "templateId" : "condition-qicore-qicore-condition",
+                                          "codeProperty" : "code",
+                                          "type" : "Retrieve",
+                                          "codes" : {
+                                             "name" : "Chlamydia",
+                                             "type" : "ValueSetRef"
+                                          }
+                                       }
+                                    } ]
+                                 }, {
+                                    "localId" : "46",
+                                    "type" : "Exists",
+                                    "operand" : {
+                                       "localId" : "45",
+                                       "dataType" : "{http://hl7.org/fhir}Condition",
+                                       "templateId" : "condition-qicore-qicore-condition",
+                                       "codeProperty" : "code",
+                                       "type" : "Retrieve",
+                                       "codes" : {
+                                          "name" : "HIV",
+                                          "type" : "ValueSetRef"
+                                       }
+                                    }
+                                 } ]
+                              }, {
+                                 "localId" : "49",
+                                 "type" : "Exists",
+                                 "operand" : {
+                                    "localId" : "48",
+                                    "dataType" : "{http://hl7.org/fhir}Condition",
+                                    "templateId" : "condition-qicore-qicore-condition",
+                                    "codeProperty" : "code",
+                                    "type" : "Retrieve",
+                                    "codes" : {
+                                       "name" : "Syphilis",
+                                       "type" : "ValueSetRef"
+                                    }
+                                 }
+                              } ]
+                           }, {
+                              "localId" : "52",
+                              "type" : "Exists",
+                              "operand" : {
+                                 "localId" : "51",
+                                 "dataType" : "{http://hl7.org/fhir}Condition",
+                                 "templateId" : "condition-qicore-qicore-condition",
+                                 "codeProperty" : "code",
+                                 "type" : "Retrieve",
+                                 "codes" : {
+                                    "name" : "Complications of Pregnancy, Childbirth and the Puerperium",
+                                    "type" : "ValueSetRef"
+                                 }
+                              }
+                           } ]
+                        }, {
+                           "localId" : "55",
+                           "type" : "Exists",
+                           "operand" : {
+                              "localId" : "54",
+                              "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
+                              "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
+                              "codeProperty" : "item[].code",
+                              "type" : "Retrieve",
+                              "codes" : {
+                                 "name" : "Pregnancy Test",
+                                 "type" : "ValueSetRef"
+                              }
+                           }
+                        } ]
+                     }, {
+                        "localId" : "58",
+                        "type" : "Exists",
+                        "operand" : {
+                           "localId" : "57",
+                           "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
+                           "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
+                           "codeProperty" : "item[].code",
+                           "type" : "Retrieve",
+                           "codes" : {
+                              "name" : "Pap Test",
+                              "type" : "ValueSetRef"
+                           }
+                        }
+                     } ]
+                  }, {
+                     "localId" : "61",
+                     "type" : "Exists",
+                     "operand" : {
+                        "localId" : "60",
+                        "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
+                        "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
+                        "codeProperty" : "item[].code",
+                        "type" : "Retrieve",
+                        "codes" : {
+                           "name" : "Lab Tests During Pregnancy",
+                           "type" : "ValueSetRef"
+                        }
+                     }
+                  } ]
+               }, {
+                  "localId" : "64",
+                  "type" : "Exists",
+                  "operand" : {
+                     "localId" : "63",
+                     "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
+                     "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
+                     "codeProperty" : "item[].code",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Lab Tests for Sexually Transmitted Infections",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "localId" : "98",
+            "name" : "NoScreening",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "value" : [ "define \"NoScreening\":\r\n  not exists ([\"DiagnosticReport\": \"Chlamydia Screening\"] R where R.\"issued\" during Interval[Today() - 1 years, Today()] and R.\"result\" is not null)\r\n  and not exists ([\"ProcedureRequest\": \"Chlamydia Screening\"] P where P.\"orderedOn\" same day or after Today())\r\n\tand not exists ([\"Observation\": \"Reason for not performing Chlamydia Screening\"])" ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "97",
+               "type" : "And",
+               "operand" : [ {
+                  "localId" : "93",
+                  "type" : "And",
+                  "operand" : [ {
+                     "localId" : "83",
+                     "type" : "Not",
+                     "operand" : {
+                        "localId" : "82",
+                        "type" : "Exists",
+                        "operand" : {
+                           "localId" : "81",
+                           "type" : "Query",
+                           "source" : [ {
+                              "localId" : "68",
+                              "alias" : "R",
+                              "expression" : {
+                                 "localId" : "67",
+                                 "dataType" : "{http://hl7.org/fhir}DiagnosticReport",
+                                 "templateId" : "diagnosticreport-qicore-qicore-diagnosticreport",
+                                 "codeProperty" : "name",
+                                 "type" : "Retrieve",
+                                 "codes" : {
+                                    "name" : "Chlamydia Screening",
+                                    "type" : "ValueSetRef"
+                                 }
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "localId" : "80",
+                              "type" : "And",
+                              "operand" : [ {
+                                 "localId" : "76",
+                                 "type" : "In",
+                                 "operand" : [ {
+                                    "localId" : "70",
+                                    "path" : "issued",
+                                    "scope" : "R",
+                                    "type" : "Property"
+                                 }, {
+                                    "localId" : "75",
+                                    "lowClosed" : true,
+                                    "highClosed" : true,
+                                    "type" : "Interval",
+                                    "low" : {
+                                       "localId" : "73",
+                                       "type" : "Subtract",
+                                       "operand" : [ {
+                                          "localId" : "71",
+                                          "type" : "Today"
+                                       }, {
+                                          "localId" : "72",
+                                          "value" : 1,
+                                          "unit" : "years",
+                                          "type" : "Quantity"
+                                       } ]
+                                    },
+                                    "high" : {
+                                       "localId" : "74",
+                                       "type" : "Today"
+                                    }
+                                 } ]
+                              }, {
+                                 "localId" : "79",
+                                 "type" : "Not",
+                                 "operand" : {
+                                    "type" : "IsNull",
+                                    "operand" : {
+                                       "localId" : "78",
+                                       "path" : "result",
+                                       "scope" : "R",
+                                       "type" : "Property"
+                                    }
+                                 }
+                              } ]
+                           }
+                        }
+                     }
+                  }, {
+                     "localId" : "92",
+                     "type" : "Not",
+                     "operand" : {
+                        "localId" : "91",
+                        "type" : "Exists",
+                        "operand" : {
+                           "localId" : "90",
+                           "type" : "Query",
+                           "source" : [ {
+                              "localId" : "85",
+                              "alias" : "P",
+                              "expression" : {
+                                 "localId" : "84",
+                                 "dataType" : "{http://hl7.org/fhir}ProcedureRequest",
+                                 "templateId" : "procedurerequest-qicore-qicore-procedurerequest",
+                                 "codeProperty" : "type",
+                                 "type" : "Retrieve",
+                                 "codes" : {
+                                    "name" : "Chlamydia Screening",
+                                    "type" : "ValueSetRef"
+                                 }
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "localId" : "89",
+                              "precision" : "Day",
+                              "type" : "SameOrAfter",
+                              "operand" : [ {
+                                 "localId" : "87",
+                                 "path" : "orderedOn",
+                                 "scope" : "P",
+                                 "type" : "Property"
+                              }, {
+                                 "localId" : "88",
+                                 "type" : "Today"
+                              } ]
+                           }
+                        }
+                     }
+                  } ]
+               }, {
+                  "localId" : "96",
+                  "type" : "Not",
+                  "operand" : {
+                     "localId" : "95",
+                     "type" : "Exists",
+                     "operand" : {
+                        "localId" : "94",
+                        "dataType" : "{http://hl7.org/fhir}Observation",
+                        "templateId" : "observation-qicore-qicore-observation",
+                        "codeProperty" : "code",
+                        "type" : "Retrieve",
+                        "codes" : {
+                           "name" : "Reason for not performing Chlamydia Screening",
+                           "type" : "ValueSetRef"
+                        }
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "localId" : "104",
+            "name" : "NeedScreening",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "value" : [ "define \"NeedScreening\": \"InDemographic\" and \"SexuallyActive\" and \"NoScreening\"" ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "103",
+               "type" : "And",
+               "operand" : [ {
+                  "localId" : "101",
+                  "type" : "And",
+                  "operand" : [ {
+                     "localId" : "99",
+                     "name" : "InDemographic",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "localId" : "100",
+                     "name" : "SexuallyActive",
+                     "type" : "ExpressionRef"
+                  } ]
+               }, {
+                  "localId" : "102",
+                  "name" : "NoScreening",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "localId" : "109",
+            "name" : "ChlamydiaScreeningRequest",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "value" : [ "define \"ChlamydiaScreeningRequest\": Tuple {\r\n  type: Code '442487003' from \"SNOMED\" display 'Screening for Chlamydia trachomatis (procedure)',\r\n  status: 'proposed'\r\n  // values for other elements of the request...\r\n}" ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "108",
+               "type" : "Tuple",
+               "element" : [ {
+                  "name" : "type",
+                  "value" : {
+                     "localId" : "106",
+                     "code" : "442487003",
+                     "display" : "Screening for Chlamydia trachomatis (procedure)",
+                     "type" : "Code",
+                     "system" : {
+                        "localId" : "105",
+                        "name" : "SNOMED"
+                     }
+                  }
+               }, {
+                  "name" : "status",
+                  "value" : {
+                     "localId" : "107",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "proposed",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

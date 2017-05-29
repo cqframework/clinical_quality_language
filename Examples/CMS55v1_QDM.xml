@@ -4,7 +4,7 @@
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
-      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_0_draft" version="5.0"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_0_1_draft" version="5.0.2"/>
    </usings>
    <parameters>
       <def name="Measurement Period" accessLevel="Public">
@@ -20,13 +20,13 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand xmlns:ns0="urn:healthit-gov:qdm:v5_0_draft" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+            <operand xmlns:ns0="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="Inpatient Encounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_draft" dataType="ns1:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Inpatient" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -47,24 +47,26 @@
       <def name="Emergency Department Encounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="ED">
-               <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_draft" dataType="ns2:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns2:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Emergency Department Visit" xsi:type="ValueSetRef"/>
                </expression>
             </source>
             <relationship alias="E" xsi:type="With">
                <expression name="Inpatient Encounters" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="In">
-                  <operand precision="Hour" xsi:type="DurationBetween">
-                     <operand xsi:type="End">
-                        <operand path="relevantPeriod" scope="ED" xsi:type="Property"/>
-                     </operand>
-                     <operand xsi:type="Start">
-                        <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
-                     </operand>
+                  <operand xsi:type="End">
+                     <operand path="relevantPeriod" scope="ED" xsi:type="Property"/>
                   </operand>
-                  <operand lowClosed="false" highClosed="true" xsi:type="Interval">
-                     <low valueType="t:Integer" value="0" xsi:type="Literal"/>
-                     <high valueType="t:Integer" value="1" xsi:type="Literal"/>
+                  <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <low xsi:type="Subtract">
+                        <operand xsi:type="Start">
+                           <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                        </operand>
+                        <operand value="1" unit="hour" xsi:type="Quantity"/>
+                     </low>
+                     <high xsi:type="Start">
+                        <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+                     </high>
                   </operand>
                </suchThat>
             </relationship>

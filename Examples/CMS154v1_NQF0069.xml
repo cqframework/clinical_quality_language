@@ -178,15 +178,13 @@
                         </expression>
                      </source>
                      <where xsi:type="In">
-                        <operand precision="Day" xsi:type="DurationBetween">
-                           <operand path="dateWritten" scope="M" xsi:type="Property"/>
-                           <operand path="onsetDateTime" scope="V" xsi:type="Property"/>
-                        </operand>
-                        <operand lowClosed="true" highClosed="false" xsi:type="Interval">
-                           <low xsi:type="Negate">
-                              <operand valueType="t:Integer" value="3" xsi:type="Literal"/>
-                           </low>
-                           <high valueType="t:Integer" value="0" xsi:type="Literal"/>
+                        <operand path="dateWritten" scope="M" xsi:type="Property"/>
+                        <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                           <low path="onsetDateTime" scope="V" xsi:type="Property"/>
+                           <high xsi:type="Add">
+                              <operand path="onsetDateTime" scope="V" xsi:type="Property"/>
+                              <operand value="3" unit="days" xsi:type="Quantity"/>
+                           </high>
                         </operand>
                      </where>
                   </operand>

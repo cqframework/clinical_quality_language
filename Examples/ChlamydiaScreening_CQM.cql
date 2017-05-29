@@ -45,17 +45,11 @@ define "InInitialPopulation":
 define "InDenominator":
 	true
 
-define "InDenominator":
-	"InInitialPopulation"
-
 define "InNumerator":
 	exists (["DiagnosticReport": "Chlamydia Screening"] R where R."issued" during MeasurementPeriod and R."result" is not null)
-
-define "InNumerator":
-	"InDenominator" and exists (["DiagnosticReport": "Chlamydia Screening"] R where R."diagnosticDateTime" during MeasurementPeriod and R."result" is not null)
 
 context Population
 
 define "MeasureScore": (Count(Patient P where "InInitialPopulation" and "InDenominator" and "InNumerator") / Count("Patient" P where "InInitialPopulation" and "InDenominator")) * 100
 
-define "MeasureScore": (Count(Patient P where "InNumerator") / Count(Patient P where "InDenominator")) * 100
+

@@ -4,7 +4,7 @@
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
-      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v4_2" version="4.2"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_0_1_draft" version="5.0.2"/>
    </usings>
    <parameters>
       <def name="Measurement Period" accessLevel="Public">
@@ -38,38 +38,22 @@
       <def name="Long-Term Residential Facility Encounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression xmlns:ns0="urn:healthit-gov:qdm:v4_2" dataType="ns0:EncounterPerformed" templateId="EncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns0="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns0:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Care Services in Long-Term Residential Facility" xsi:type="ValueSetRef"/>
                </expression>
             </source>
             <relationship alias="D" xsi:type="With">
-               <expression xmlns:ns1="urn:healthit-gov:qdm:v4_2" dataType="ns1:Diagnosis" templateId="Diagnosis" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" xsi:type="Retrieve">
                   <codes name="Heart Failure" xsi:type="ValueSetRef"/>
                </expression>
                <suchThat xsi:type="OverlapsBefore">
-                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                     <low path="onsetDatetime" scope="D" xsi:type="Property"/>
-                     <high path="abatementDatetime" scope="D" xsi:type="Property"/>
-                  </operand>
-                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                     <low path="admissionDatetime" scope="E" xsi:type="Property"/>
-                     <high path="dischargeDatetime" scope="E" xsi:type="Property"/>
-                  </operand>
+                  <operand path="prevalencePeriod" scope="D" xsi:type="Property"/>
+                  <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
                </suchThat>
             </relationship>
-            <where xsi:type="And">
-               <operand xsi:type="IncludedIn">
-                  <operand lowClosed="true" highClosed="true" xsi:type="Interval">
-                     <low path="admissionDatetime" scope="E" xsi:type="Property"/>
-                     <high path="dischargeDatetime" scope="E" xsi:type="Property"/>
-                  </operand>
-                  <operand name="Measurement Period" xsi:type="ParameterRef"/>
-               </operand>
-               <operand xsi:type="Not">
-                  <operand xsi:type="IsNull">
-                     <operand path="negationRationale" scope="E" xsi:type="Property"/>
-                  </operand>
-               </operand>
+            <where xsi:type="IncludedIn">
+               <operand path="relevantPeriod" scope="E" xsi:type="Property"/>
+               <operand name="Measurement Period" xsi:type="ParameterRef"/>
             </where>
          </expression>
       </def>

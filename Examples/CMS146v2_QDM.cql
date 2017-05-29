@@ -5,7 +5,7 @@ library CMS146_QDM version '2'
  * repeated timing logic between the encounter and pharyngitis.
  */
 
-using QDM version '4.2'
+using QDM version '5.0.2'
 
 valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Acute Tonsillitis": '2.16.840.1.113883.3.464.1003.102.12.1012'
@@ -18,53 +18,50 @@ parameter MeasurementPeriod Interval<DateTime>
 context Patient
 
 define "InDemographic":
-    AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
+  AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
 define "Pharyngitis":
-    ["Diagnosis": "Acute Pharyngitis"] union ["Diagnosis": "Acute Tonsillitis"]
+  ["Diagnosis": "Acute Pharyngitis"] union ["Diagnosis": "Acute Tonsillitis"]
 
 define "Antibiotics":
-    ["MedicationOrder": "Antibiotic Medications"] M
-       where M."negationRationale" is not null
+  ["Medication, Order": "Antibiotic Medications"] M
 
 define function isRelated(P "Diagnosis", E "EncounterPerformed") :
-    Interval[P."onsetDatetime", P."abatementDatetime"] includes Interval[E."admissionDatetime", E."dischargeDatetime"]
-      or P."onsetDatetime" in Interval[E."admissionDatetime", E."dischargeDatetime"]
+  P.prevalencePeriod includes E.relevantPeriod
+    or P.prevalencePeriod starts during E.relevantPeriod
 
 define "MeasurementPeriodEncounters":
-    ["EncounterPerformed": "Ambulatory/ED Visit"] E
-        where "InDemographic"
-            and E."negationRationale" is not null
-            and Interval[E."admissionDatetime", E."dischargeDatetime"] during MeasurementPeriod
+  ["Encounter, Performed": "Ambulatory/ED Visit"] E
+    where "InDemographic"
+      and E.relevantPeriod during MeasurementPeriod
 
 define "PharyngitisEncounters":
-    "MeasurementPeriodEncounters" E
-        with "Pharyngitis" P such that isRelated(P, E)
-        with "Antibiotics" A such that A."signedDatetime" 3 days or less after E."admissionDatetime"
+  "MeasurementPeriodEncounters" E
+    with "Pharyngitis" P such that isRelated(P, E)
+    with "Antibiotics" A such that A.authorDatetime 3 days or less after start of E.relevantPeriod
 
 define "PharyngitisWithPriorAntibiotics":
-    "Pharyngitis" P
-        with "Antibiotics" A such that A."signedDatetime" 30 days or less before P."onsetDatetime"
+  "Pharyngitis" P
+    with "Antibiotics" A such that A.authorDatetime 30 days or less before start of P.prevalencePeriod
 
 define "ExcludedEncounters":
-    "PharyngitisEncounters" E
-        with "PharyngitisWithPriorAntibiotics" P such that isRelated(P, E)
+  "PharyngitisEncounters" E
+    with "PharyngitisWithPriorAntibiotics" P such that isRelated(P, E)
 
 define "StrepTestEncounters":
-    "PharyngitisEncounters" E
-        with ["LaboratoryTestPerformed": "Group A Streptococcus Test"] T
-            such that T."negationRationale" is not null
-                and T."result" is not null
-                and T."startDatetime" in Interval[E."admissionDatetime" - 3 days, E."dischargeDatetime" + 3 days]
+  "PharyngitisEncounters" E
+    with ["Laboratory Test, Performed": "Group A Streptococcus Test"] T
+      such that T."result" is not null
+        and T.relevantPeriod starts within 3 days of E.relevantPeriod
 
 define "IPPCount":
-    Count("PharyngitisEncounters")
+  Count("PharyngitisEncounters")
 
 define "DenominatorCount":
-    "IPPCount"
+  "IPPCount"
 
 define "DenominatorExclusionsCount":
-    Count("ExcludedEncounters")
+  Count("ExcludedEncounters")
 
 define "NumeratorCount":
-    Count("StrepTestEncounters" except "ExcludedEncounters")
+  Count("StrepTestEncounters" except "ExcludedEncounters")

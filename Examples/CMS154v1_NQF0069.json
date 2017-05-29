@@ -1,0 +1,542 @@
+{
+   "library" : {
+      "identifier" : {
+         "id" : "CMS154",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "MeasurementPeriod",
+            "accessLevel" : "Public",
+            "default" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2013",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2014",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "name" : "Competing Conditions for Respiratory Conditions",
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1017",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Upper Respiratory Infection",
+            "id" : "2.16.840.1.113883.3.464.1003.102.12.1022",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Emergency Department Visit",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1010",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Face-to-Face Interaction",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1048",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Hospital Observation Care - Initial",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1002",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Office Visit",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1001",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Preventive Care - Established Office Visit, 0 to 17",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1024",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Preventive Care- Initial Office Visit, 0 to 17",
+            "id" : "2.16.840.1.113883.3.464.1003.101.12.1022",
+            "accessLevel" : "Public"
+         }, {
+            "name" : "Antibiotic Medications",
+            "id" : "2.16.840.1.113883.3.464.1003.196.12.1001",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "InDemographic",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "And",
+               "operand" : [ {
+                  "type" : "GreaterOrEqual",
+                  "operand" : [ {
+                     "precision" : "Month",
+                     "type" : "CalculateAgeAt",
+                     "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
+                        "type" : "Start",
+                        "operand" : {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        }
+                     } ]
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  } ]
+               }, {
+                  "type" : "LessOrEqual",
+                  "operand" : [ {
+                     "precision" : "Year",
+                     "type" : "CalculateAgeAt",
+                     "operand" : [ {
+                        "path" : "birthDate",
+                        "type" : "Property",
+                        "source" : {
+                           "name" : "Patient",
+                           "type" : "ExpressionRef"
+                        }
+                     }, {
+                        "type" : "Start",
+                        "operand" : {
+                           "name" : "MeasurementPeriod",
+                           "type" : "ParameterRef"
+                        }
+                     } ]
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "18",
+                     "type" : "Literal"
+                  } ]
+               } ]
+            }
+         }, {
+            "name" : "ValidEncounters",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Union",
+               "operand" : [ {
+                  "type" : "Union",
+                  "operand" : [ {
+                     "type" : "Union",
+                     "operand" : [ {
+                        "type" : "Union",
+                        "operand" : [ {
+                           "type" : "Union",
+                           "operand" : [ {
+                              "dataType" : "{http://hl7.org/fhir}Encounter",
+                              "templateId" : "encounter-qicore-qicore-encounter",
+                              "codeProperty" : "type",
+                              "type" : "Retrieve",
+                              "codes" : {
+                                 "name" : "Office Visit",
+                                 "type" : "ValueSetRef"
+                              }
+                           }, {
+                              "dataType" : "{http://hl7.org/fhir}Encounter",
+                              "templateId" : "encounter-qicore-qicore-encounter",
+                              "codeProperty" : "type",
+                              "type" : "Retrieve",
+                              "codes" : {
+                                 "name" : "Emergency Department Visit",
+                                 "type" : "ValueSetRef"
+                              }
+                           } ]
+                        }, {
+                           "dataType" : "{http://hl7.org/fhir}Encounter",
+                           "templateId" : "encounter-qicore-qicore-encounter",
+                           "codeProperty" : "type",
+                           "type" : "Retrieve",
+                           "codes" : {
+                              "name" : "Preventive Care- Initial Office Visit, 0 to 17",
+                              "type" : "ValueSetRef"
+                           }
+                        } ]
+                     }, {
+                        "dataType" : "{http://hl7.org/fhir}Encounter",
+                        "templateId" : "encounter-qicore-qicore-encounter",
+                        "codeProperty" : "type",
+                        "type" : "Retrieve",
+                        "codes" : {
+                           "name" : "Preventive Care - Established Office Visit, 0 to 17",
+                           "type" : "ValueSetRef"
+                        }
+                     } ]
+                  }, {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "codeProperty" : "type",
+                     "type" : "Retrieve",
+                     "codes" : {
+                        "name" : "Hospital Observation Care - Initial",
+                        "type" : "ValueSetRef"
+                     }
+                  } ]
+               }, {
+                  "dataType" : "{http://hl7.org/fhir}Encounter",
+                  "templateId" : "encounter-qicore-qicore-encounter",
+                  "codeProperty" : "type",
+                  "type" : "Retrieve",
+                  "codes" : {
+                     "name" : "Face-to-Face Interaction",
+                     "type" : "ValueSetRef"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "EncountersDuringMeasurementPeriod",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "ValidEncounters",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "IncludedIn",
+                  "operand" : [ {
+                     "path" : "period",
+                     "scope" : "E",
+                     "type" : "Property"
+                  }, {
+                     "name" : "MeasurementPeriod",
+                     "type" : "ParameterRef"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "URIDiagnosis",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{http://hl7.org/fhir}Condition",
+               "templateId" : "condition-qicore-qicore-condition",
+               "codeProperty" : "code",
+               "type" : "Retrieve",
+               "codes" : {
+                  "name" : "Upper Respiratory Infection",
+                  "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "ValidDiagnosis",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "U",
+                  "expression" : {
+                     "name" : "URIDiagnosis",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Or",
+                  "operand" : [ {
+                     "type" : "Exists",
+                     "operand" : {
+                        "type" : "Query",
+                        "source" : [ {
+                           "alias" : "E",
+                           "expression" : {
+                              "name" : "EncountersDuringMeasurementPeriod",
+                              "type" : "ExpressionRef"
+                           }
+                        } ],
+                        "relationship" : [ ],
+                        "where" : {
+                           "type" : "In",
+                           "operand" : [ {
+                              "path" : "onsetDateTime",
+                              "scope" : "U",
+                              "type" : "Property"
+                           }, {
+                              "path" : "period",
+                              "scope" : "E",
+                              "type" : "Property"
+                           } ]
+                        }
+                     }
+                  }, {
+                     "type" : "Exists",
+                     "operand" : {
+                        "type" : "Query",
+                        "source" : [ {
+                           "alias" : "E",
+                           "expression" : {
+                              "name" : "ValidEncounters",
+                              "type" : "ExpressionRef"
+                           }
+                        } ],
+                        "relationship" : [ ],
+                        "where" : {
+                           "type" : "Includes",
+                           "operand" : [ {
+                              "lowClosed" : true,
+                              "highClosed" : true,
+                              "type" : "Interval",
+                              "low" : {
+                                 "path" : "onsetDateTime",
+                                 "scope" : "U",
+                                 "type" : "Property"
+                              },
+                              "high" : {
+                                 "path" : "abatementDate",
+                                 "scope" : "U",
+                                 "type" : "Property"
+                              }
+                           }, {
+                              "path" : "period",
+                              "scope" : "E",
+                              "type" : "Property"
+                           } ]
+                        }
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "InitialPopulation",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "V",
+                  "expression" : {
+                     "name" : "ValidDiagnosis",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "name" : "InDemographic",
+                  "type" : "ExpressionRef"
+               }
+            }
+         }, {
+            "name" : "Denominator",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
+               "value" : "true",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "Numerator",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "V",
+                  "expression" : {
+                     "name" : "ValidDiagnosis",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Not",
+                  "operand" : {
+                     "type" : "Exists",
+                     "operand" : {
+                        "type" : "Query",
+                        "source" : [ {
+                           "alias" : "M",
+                           "expression" : {
+                              "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
+                              "templateId" : "medicationprescription-qicore-qicore-medicationprescription",
+                              "codeProperty" : "medication.code",
+                              "type" : "Retrieve",
+                              "codes" : {
+                                 "name" : "Antibiotic Medications",
+                                 "type" : "ValueSetRef"
+                              }
+                           }
+                        } ],
+                        "relationship" : [ ],
+                        "where" : {
+                           "type" : "In",
+                           "operand" : [ {
+                              "path" : "dateWritten",
+                              "scope" : "M",
+                              "type" : "Property"
+                           }, {
+                              "lowClosed" : false,
+                              "highClosed" : true,
+                              "type" : "Interval",
+                              "low" : {
+                                 "path" : "onsetDateTime",
+                                 "scope" : "V",
+                                 "type" : "Property"
+                              },
+                              "high" : {
+                                 "type" : "Add",
+                                 "operand" : [ {
+                                    "path" : "onsetDateTime",
+                                    "scope" : "V",
+                                    "type" : "Property"
+                                 }, {
+                                    "value" : 3,
+                                    "unit" : "days",
+                                    "type" : "Quantity"
+                                 } ]
+                              }
+                           } ]
+                        }
+                     }
+                  }
+               }
+            }
+         }, {
+            "name" : "MeasureScore",
+            "context" : "Population",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "type" : "Divide",
+                  "operand" : [ {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "type" : "Count",
+                        "source" : {
+                           "name" : "Numerator",
+                           "type" : "ExpressionRef"
+                        }
+                     }
+                  }, {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "type" : "Count",
+                        "source" : {
+                           "name" : "Denominator",
+                           "type" : "ExpressionRef"
+                        }
+                     }
+                  } ]
+               }, {
+                  "type" : "ToDecimal",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "100",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

@@ -107,17 +107,17 @@
             <relationship alias="A" xsi:type="With">
                <expression name="Antibiotics" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="In">
-                  <operand precision="Day" xsi:type="DurationBetween">
-                     <operand path="dateWritten" scope="A" xsi:type="Property"/>
-                     <operand xsi:type="Start">
+                  <operand path="dateWritten" scope="A" xsi:type="Property"/>
+                  <operand lowClosed="false" highClosed="true" xsi:type="Interval">
+                     <low xsi:type="Start">
                         <operand path="period" scope="E" xsi:type="Property"/>
-                     </operand>
-                  </operand>
-                  <operand lowClosed="true" highClosed="false" xsi:type="Interval">
-                     <low xsi:type="Negate">
-                        <operand valueType="t:Integer" value="3" xsi:type="Literal"/>
                      </low>
-                     <high valueType="t:Integer" value="0" xsi:type="Literal"/>
+                     <high xsi:type="Add">
+                        <operand xsi:type="Start">
+                           <operand path="period" scope="E" xsi:type="Property"/>
+                        </operand>
+                        <operand value="3" unit="days" xsi:type="Quantity"/>
+                     </high>
                   </operand>
                </suchThat>
             </relationship>
@@ -131,13 +131,13 @@
             <relationship alias="A" xsi:type="With">
                <expression name="Antibiotics" xsi:type="ExpressionRef"/>
                <suchThat xsi:type="In">
-                  <operand precision="Day" xsi:type="DurationBetween">
-                     <operand path="dateWritten" scope="A" xsi:type="Property"/>
-                     <operand path="onsetDateTime" scope="P" xsi:type="Property"/>
-                  </operand>
-                  <operand lowClosed="false" highClosed="true" xsi:type="Interval">
-                     <low valueType="t:Integer" value="0" xsi:type="Literal"/>
-                     <high valueType="t:Integer" value="30" xsi:type="Literal"/>
+                  <operand path="dateWritten" scope="A" xsi:type="Property"/>
+                  <operand lowClosed="true" highClosed="false" xsi:type="Interval">
+                     <low xsi:type="Subtract">
+                        <operand path="onsetDateTime" scope="P" xsi:type="Property"/>
+                        <operand value="30" unit="days" xsi:type="Quantity"/>
+                     </low>
+                     <high path="onsetDateTime" scope="P" xsi:type="Property"/>
                   </operand>
                </suchThat>
             </relationship>

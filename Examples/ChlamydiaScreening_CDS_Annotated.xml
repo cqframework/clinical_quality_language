@@ -34,17 +34,8 @@
       </def>
       <def localId="30" name="InDemographic" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="30">define &quot;InDemographic&quot;:&#xd;
-	<a:s r="29">
-                  <a:s r="24">
-                     <a:s r="20">AgeInYears() >=<a:s r="18">AgeInYears()</a:s> >= <a:s r="19">16</a:s>
-                     </a:s> and <a:s r="23">AgeInYears() &lt;<a:s r="21">AgeInYears()</a:s> &lt; <a:s r="22">24</a:s>
-                     </a:s>
-                  </a:s> and <a:s r="28">
-                     <a:s r="25">&quot;Patient&quot;</a:s>.<a:s r="26">&quot;gender&quot;</a:s> in <a:s r="27">&quot;Female Administrative Sex&quot;</a:s>
-                  </a:s>
-               </a:s>
-            </a:s>
+            <a:s>define &quot;InDemographic&quot;:&#xd;
+	AgeInYears() >= 16 and AgeInYears() &lt; 24 and &quot;Patient&quot;.&quot;gender&quot; in &quot;Female Administrative Sex&quot;</a:s>
          </annotation>
          <expression localId="29" xsi:type="And">
             <operand localId="24" xsi:type="And">
@@ -75,42 +66,19 @@
       </def>
       <def localId="66" name="SexuallyActive" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="66">define &quot;SexuallyActive&quot;:&#xd;
-	<a:s r="65">
-                  <a:s r="62">
-                     <a:s r="59">
-                        <a:s r="56">
-                           <a:s r="53">
-                              <a:s r="50">
-                                 <a:s r="47">
-                                    <a:s r="44">
-                                       <a:s r="41">
-                                          <a:s r="38">
-                                             <a:s r="35">
-                                                <a:s r="32">exists (<a:s r="31">[&quot;Condition&quot;: &quot;Other Female Reproductive Conditions&quot;]</a:s>)</a:s>&#xd;
-	or <a:s r="34">exists (<a:s r="33">[&quot;Condition&quot;: &quot;Genital Herpes&quot;]</a:s>)</a:s>
-                                             </a:s>&#xd;
-	or <a:s r="37">exists (<a:s r="36">[&quot;Condition&quot;: &quot;Genococcal Infections and Venereal Diseases&quot;]</a:s>)</a:s>
-                                          </a:s>&#xd;
-	or <a:s r="40">exists (<a:s r="39">[&quot;Condition&quot;: &quot;Inflammatory Diseases of Female Reproductive Organs&quot;]</a:s>)</a:s>
-                                       </a:s>&#xd;
-	or <a:s r="43">exists (<a:s r="42">[&quot;Condition&quot;: &quot;Chlamydia&quot;]</a:s>)</a:s>
-                                    </a:s>&#xd;
-	or <a:s r="46">exists (<a:s r="45">[&quot;Condition&quot;: &quot;HIV&quot;]</a:s>)</a:s>
-                                 </a:s>&#xd;
-	or <a:s r="49">exists (<a:s r="48">[&quot;Condition&quot;: &quot;Syphilis&quot;]</a:s>)</a:s>
-                              </a:s>&#xd;
-	or <a:s r="52">exists (<a:s r="51">[&quot;Condition&quot;: &quot;Complications of Pregnancy, Childbirth and the Puerperium&quot;]</a:s>)</a:s>
-                           </a:s>&#xd;
-	or <a:s r="55">exists (<a:s r="54">[&quot;DiagnosticOrder&quot;: &quot;Pregnancy Test&quot;]</a:s>)</a:s>
-                        </a:s>&#xd;
-	or <a:s r="58">exists (<a:s r="57">[&quot;DiagnosticOrder&quot;: &quot;Pap Test&quot;]</a:s>)</a:s>
-                     </a:s>&#xd;
-	or <a:s r="61">exists (<a:s r="60">[&quot;DiagnosticOrder&quot;: &quot;Lab Tests During Pregnancy&quot;]</a:s>)</a:s>
-                  </a:s>&#xd;
-	or <a:s r="64">exists (<a:s r="63">[&quot;DiagnosticOrder&quot;: &quot;Lab Tests for Sexually Transmitted Infections&quot;]</a:s>)</a:s>
-               </a:s>
-            </a:s>
+            <a:s>define &quot;SexuallyActive&quot;:&#xd;
+	exists ([&quot;Condition&quot;: &quot;Other Female Reproductive Conditions&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Genital Herpes&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Genococcal Infections and Venereal Diseases&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Inflammatory Diseases of Female Reproductive Organs&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Chlamydia&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;HIV&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Syphilis&quot;])&#xd;
+	or exists ([&quot;Condition&quot;: &quot;Complications of Pregnancy, Childbirth and the Puerperium&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Pregnancy Test&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Pap Test&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Lab Tests During Pregnancy&quot;])&#xd;
+	or exists ([&quot;DiagnosticOrder&quot;: &quot;Lab Tests for Sexually Transmitted Infections&quot;])</a:s>
          </annotation>
          <expression localId="65" xsi:type="Or">
             <operand localId="62" xsi:type="Or">
@@ -197,30 +165,10 @@
       </def>
       <def localId="98" name="NoScreening" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="98">define &quot;NoScreening&quot;:&#xd;
-  <a:s r="97">
-                  <a:s r="93">
-                     <a:s r="83">not <a:s r="82">exists (<a:s r="81">
-                              <a:s r="68">
-                                 <a:s r="67">[&quot;DiagnosticReport&quot;: &quot;Chlamydia Screening&quot;]</a:s> R</a:s> where <a:s r="80">
-                                 <a:s r="69">R</a:s>.<a:s r="70">&quot;issued&quot;</a:s> during <a:s r="75">Interval[<a:s r="73">
-                                       <a:s r="71">Today()</a:s> - <a:s r="72">1 years</a:s>
-                                    </a:s>, <a:s r="74">Today()</a:s>]</a:s>
-                                 <a:s r="76">during</a:s> Interval[Today() - 1 years, Today()] and <a:s r="79">
-                                    <a:s r="77">R</a:s>.<a:s r="78">&quot;result&quot;</a:s> is not null</a:s>
-                              </a:s>
-                           </a:s>)</a:s>
-                     </a:s>&#xd;
-  and <a:s r="92">not <a:s r="91">exists (<a:s r="90">
-                              <a:s r="85">
-                                 <a:s r="84">[&quot;ProcedureRequest&quot;: &quot;Chlamydia Screening&quot;]</a:s> P</a:s> where <a:s r="86">P</a:s>.<a:s r="87">&quot;orderedOn&quot;</a:s> same day or after <a:s r="88">Today()</a:s>
-                              <a:s r="89">same day or after</a:s> Today()</a:s>)</a:s>
-                     </a:s>
-                  </a:s>&#xd;
-	and <a:s r="96">not <a:s r="95">exists (<a:s r="94">[&quot;Observation&quot;: &quot;Reason for not performing Chlamydia Screening&quot;]</a:s>)</a:s>
-                  </a:s>
-               </a:s>
-            </a:s>
+            <a:s>define &quot;NoScreening&quot;:&#xd;
+  not exists ([&quot;DiagnosticReport&quot;: &quot;Chlamydia Screening&quot;] R where R.&quot;issued&quot; during Interval[Today() - 1 years, Today()] and R.&quot;result&quot; is not null)&#xd;
+  and not exists ([&quot;ProcedureRequest&quot;: &quot;Chlamydia Screening&quot;] P where P.&quot;orderedOn&quot; same day or after Today())&#xd;
+	and not exists ([&quot;Observation&quot;: &quot;Reason for not performing Chlamydia Screening&quot;])</a:s>
          </annotation>
          <expression localId="97" xsi:type="And">
             <operand localId="93" xsi:type="And">
@@ -279,12 +227,7 @@
       </def>
       <def localId="104" name="NeedScreening" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="104">define &quot;NeedScreening&quot;: <a:s r="103">
-                  <a:s r="101">
-                     <a:s r="99">&quot;InDemographic&quot;</a:s> and <a:s r="100">&quot;SexuallyActive&quot;</a:s>
-                  </a:s> and <a:s r="102">&quot;NoScreening&quot;</a:s>
-               </a:s>
-            </a:s>
+            <a:s>define &quot;NeedScreening&quot;: &quot;InDemographic&quot; and &quot;SexuallyActive&quot; and &quot;NoScreening&quot;</a:s>
          </annotation>
          <expression localId="103" xsi:type="And">
             <operand localId="101" xsi:type="And">
@@ -296,12 +239,11 @@
       </def>
       <def localId="109" name="ChlamydiaScreeningRequest" context="Patient" accessLevel="Public">
          <annotation xsi:type="a:Annotation">
-            <a:s r="109">define &quot;ChlamydiaScreeningRequest&quot;: <a:s r="108">Tuple {&#xd;
-  type: <a:s r="106">Code '442487003' from <a:s r="105">&quot;SNOMED&quot;</a:s> display 'Screening for Chlamydia trachomatis (procedure)'</a:s>,&#xd;
-  status: <a:s r="107">'proposed'</a:s>&#xd;
+            <a:s>define &quot;ChlamydiaScreeningRequest&quot;: Tuple {&#xd;
+  type: Code '442487003' from &quot;SNOMED&quot; display 'Screening for Chlamydia trachomatis (procedure)',&#xd;
+  status: 'proposed'&#xd;
   // values for other elements of the request...&#xd;
 }</a:s>
-            </a:s>
          </annotation>
          <expression localId="108" xsi:type="Tuple">
             <element name="type">

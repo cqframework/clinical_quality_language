@@ -1,6 +1,6 @@
 library CMS135_QDM
 
-using QDM version '4.2'
+using QDM version '5.0.2'
 
 // Valueset definitions allow local names to be used within the artifact
 valueset "Care Services in Long-Term Residential Facility": '...'
@@ -15,9 +15,8 @@ define "Long-Term Residential Facility Encounters":
     ["Encounter, Performed": "Care Services in Long-Term Residential Facility"] E
         // By always specifying the attribute involved, filtering is explicit, rather than implicit in the model
         with ["Diagnosis": "Heart Failure"] D
-          such that Interval[D.onsetDatetime, D.abatementDatetime] overlaps before Interval[E.admissionDatetime, E.dischargeDatetime]
-        where Interval[E.admissionDatetime, E.dischargeDatetime] during "Measurement Period"
-          and E.negationRationale is not null
+          such that D.prevalencePeriod overlaps before E.relevantPeriod
+        where E.relevantPeriod during "Measurement Period"
 
 define "Relevant Encounters":
     "Long-Term Residential Facility Encounters"
