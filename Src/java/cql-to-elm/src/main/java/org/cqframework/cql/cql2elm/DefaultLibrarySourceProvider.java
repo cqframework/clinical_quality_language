@@ -53,6 +53,12 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
                         mostRecentFile = file;
                     }
                 }
+                else {
+                    // If the file is named correctly, but has no version, consider it the most recent version
+                    if (mostRecent == null) {
+                        mostRecentFile = file;
+                    }
+                }
             }
 
             // Do not throw, allow the loader to throw, just report null
