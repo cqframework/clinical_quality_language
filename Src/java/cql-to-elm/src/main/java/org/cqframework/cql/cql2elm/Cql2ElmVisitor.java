@@ -2117,29 +2117,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         // duration before/after
         // A starts 3 days before start B
-        // days between start of A and start of B = 3
+        //* start of A same day as start of B - 3 days
         // A starts 3 days after start B
-        // days between start of A and start of B = -3
+        //* start of A same day as start of B + 3 days
 
         // or more/less duration before/after
         // A starts 3 days or more before start B
-        // days between start of A and start of B >= 3
+        //* start of A <= start of B - 3 days
         // A starts 3 days or more after start B
-        // days between start of A and start of B <= -3
+        //* start of A >= start of B + 3 days
         // A starts 3 days or less before start B
-        // days between start of A and start of B in (0, 3]
+        //* start of A in [start of B - 3 days, start of B)
         // A starts 3 days or less after start B
-        // days between start of A and start of B in [-3, 0)
+        //* start of A in (start of B, start of B + 3 days]
 
         // less/more than duration before/after
         // A starts more than 3 days before start B
-        // days between start of A and start of B > 3
+        //* start of A < start of B - 3 days
         // A starts more than 3 days after start B
-        // days between start of A and start of B < -3
+        //* start of A > start of B + 3 days
         // A starts less than 3 days before start B
-        // days between start of A and start of B in (0, 3)
+        //* start of A in (start of B - 3 days, start of B)
         // A starts less than 3 days after start B
-        // days between start of A and start of B in (-3, 0)
+        //* start of A in (start of B, start of B + 3 days)
 
         TimingOperatorContext timingOperator = timingOperators.peek();
         boolean isBefore = false;
@@ -2229,99 +2229,146 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         } else {
             Quantity quantity = (Quantity)visit(ctx.quantityOffset().quantity());
-            Literal quantityLiteral = libraryBuilder.createLiteral(quantity.getValue().intValueExact());
-            Expression lowerBound = null;
-            Expression upperBound = null;
 
             if (timingOperator.getLeft().getResultType() instanceof IntervalType) {
                 if (isBefore) {
                     End end = of.createEnd().withOperand(timingOperator.getLeft());
                     libraryBuilder.resolveUnaryCall("System", "End", end);
-                    lowerBound = end;
+                    timingOperator.setLeft(end);
                 }
                 else {
                     Start start = of.createStart().withOperand(timingOperator.getLeft());
                     libraryBuilder.resolveUnaryCall("System", "Start", start);
-                    lowerBound = start;
+                    timingOperator.setLeft(start);
                 }
-            }
-            else {
-                lowerBound = timingOperator.getLeft();
             }
 
             if (timingOperator.getRight().getResultType() instanceof IntervalType) {
                 if (isBefore) {
                     Start start = of.createStart().withOperand(timingOperator.getRight());
                     libraryBuilder.resolveUnaryCall("System", "Start", start);
-                    upperBound = start;
+                    timingOperator.setRight(start);
                 }
                 else {
                     End end = of.createEnd().withOperand(timingOperator.getRight());
                     libraryBuilder.resolveUnaryCall("System", "End", end);
-                    upperBound = end;
+                    timingOperator.setRight(end);
                 }
             }
-            else {
-                upperBound = timingOperator.getRight();
-            }
 
-            BinaryExpression betweenOperator = resolveBetweenOperator(quantity.getUnit(), lowerBound, upperBound);
-            if (betweenOperator != null) {
-                if (ctx.quantityOffset().offsetRelativeQualifier() == null && ctx.quantityOffset().exclusiveRelativeQualifier() == null) {
-                    if (isBefore) {
-                        Equal equal = of.createEqual().withOperand(betweenOperator, quantityLiteral);
-                        libraryBuilder.resolveBinaryCall("System", "Equal", equal);
-                        return equal;
-                    } else {
-                        Negate negate = of.createNegate().withOperand(quantityLiteral);
-                        libraryBuilder.resolveUnaryCall("System", "Negate", negate);
-                        Equal equal = of.createEqual().withOperand(betweenOperator, negate);
-                        libraryBuilder.resolveBinaryCall("System", "Equal", equal);
-                        return equal;
-                    }
-                } else {
-                    boolean isOffsetInclusive = ctx.quantityOffset().offsetRelativeQualifier() != null;
-                    String qualifier = ctx.quantityOffset().offsetRelativeQualifier() != null
-                            ? ctx.quantityOffset().offsetRelativeQualifier().getText()
-                            : ctx.quantityOffset().exclusiveRelativeQualifier().getText();
-                    switch (qualifier) {
-                        case "more than":
-                        case "or more":
-                            if (isBefore) {
-                                BinaryExpression comparison = (isOffsetInclusive ? of.createGreaterOrEqual() : of.createGreater())
-                                        .withOperand(betweenOperator, quantityLiteral);
-                                libraryBuilder.resolveBinaryCall("System", isOffsetInclusive ? "GreaterOrEqual" : "Greater", comparison);
-                                return comparison;
-                            } else {
-                                Negate negate = of.createNegate().withOperand(quantityLiteral);
-                                libraryBuilder.resolveUnaryCall("System", "Negate", negate);
-                                BinaryExpression comparison = (isOffsetInclusive ? of.createLessOrEqual() : of.createLess())
-                                        .withOperand(betweenOperator, negate);
-                                libraryBuilder.resolveBinaryCall("System", isOffsetInclusive ? "LessOrEqual" : "Less", comparison);
-                                return comparison;
+            if (ctx.quantityOffset().offsetRelativeQualifier() == null && ctx.quantityOffset().exclusiveRelativeQualifier() == null) {
+                // Use a SameAs
+                // For a Before, subtract the quantity from the right operand
+                // For an After, add the quantity to the right operand
+                if (isBefore) {
+                    Subtract subtract = of.createSubtract().withOperand(timingOperator.getRight(), quantity);
+                    libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
+                    timingOperator.setRight(subtract);
+                }
+                else {
+                    Add add = of.createAdd().withOperand(timingOperator.getRight(), quantity);
+                    libraryBuilder.resolveBinaryCall("System", "Add", add);
+                    timingOperator.setRight(add);
+                }
+
+                SameAs sameAs = of.createSameAs().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                if (dateTimePrecision != null) {
+                    sameAs.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                }
+                libraryBuilder.resolveBinaryCall("System", "SameAs", sameAs);
+                return sameAs;
+            }
+            else {
+                boolean isOffsetInclusive = ctx.quantityOffset().offsetRelativeQualifier() != null;
+                String qualifier = ctx.quantityOffset().offsetRelativeQualifier() != null
+                        ? ctx.quantityOffset().offsetRelativeQualifier().getText()
+                        : ctx.quantityOffset().exclusiveRelativeQualifier().getText();
+
+                switch (qualifier) {
+                    case "more than":
+                    case "or more":
+                        // For More Than/Or More, Use a Before/After/SameOrBefore/SameOrAfter
+                        // For a Before, subtract the quantity from the right operand
+                        // For an After, add the quantity to the right operand
+                        if (isBefore) {
+                            Subtract subtract = of.createSubtract().withOperand(timingOperator.getRight(), quantity);
+                            libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
+                            timingOperator.setRight(subtract);
+
+                            if (isOffsetInclusive) {
+                                Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                                if (dateTimePrecision != null) {
+                                    before.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                                }
+                                libraryBuilder.resolveBinaryCall("System", "Before", before);
+                                return before;
                             }
-                        case "less than":
-                        case "or less":
-                            if (isBefore) {
-                                Interval quantityInterval = of.createInterval()
-                                        .withLow(libraryBuilder.createLiteral(0)).withLowClosed(isInclusive)
-                                        .withHigh(quantityLiteral).withHighClosed(isOffsetInclusive);
-                                quantityInterval.setResultType(new IntervalType(quantityInterval.getLow().getResultType()));
-                                In in = of.createIn().withOperand(betweenOperator, quantityInterval);
-                                libraryBuilder.resolveBinaryCall("System", "In", in);
-                                return in;
-                            } else {
-                                Negate negate = of.createNegate().withOperand(quantityLiteral);
-                                libraryBuilder.resolveUnaryCall("System", "Negate", negate);
-                                Interval quantityInterval = of.createInterval()
-                                        .withLow(negate).withLowClosed(isOffsetInclusive)
-                                        .withHigh(libraryBuilder.createLiteral(0)).withHighClosed(isInclusive);
-                                quantityInterval.setResultType(new IntervalType(quantityInterval.getLow().getResultType()));
-                                In in = of.createIn().withOperand(betweenOperator, quantityInterval);
-                                libraryBuilder.resolveBinaryCall("System", "In", in);
-                                return in;
+                            else {
+                                SameOrBefore sameOrBefore = of.createSameOrBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                                if (dateTimePrecision != null) {
+                                    sameOrBefore.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                                }
+                                libraryBuilder.resolveBinaryCall("System", "SameOrBefore", sameOrBefore);
+                                return sameOrBefore;
                             }
-                    }
+                        }
+                        else {
+                            Add add = of.createAdd().withOperand(timingOperator.getRight(), quantity);
+                            libraryBuilder.resolveBinaryCall("System", "Add", add);
+                            timingOperator.setRight(add);
+
+                            if (isOffsetInclusive) {
+                                After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                                if (dateTimePrecision != null) {
+                                    after.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                                }
+                                libraryBuilder.resolveBinaryCall("System", "After", after);
+                                return after;
+                            }
+                            else {
+                                SameOrAfter sameOrAfter = of.createSameOrAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
+                                if (dateTimePrecision != null) {
+                                    sameOrAfter.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                                }
+                                libraryBuilder.resolveBinaryCall("System", "SameOrAfter", sameOrAfter);
+                                return sameOrAfter;
+                            }
+                        }
+
+                    case "less than":
+                    case "or less":
+                        // For Less Than/Or Less, Use an In
+                        // For Before, construct an interval from right - quantity to right
+                        // For After, construct an interval from right to right + quantity
+                        Expression lowerBound = null;
+                        Expression upperBound = null;
+                        Expression right = timingOperator.getRight();
+                        if (isBefore) {
+                            lowerBound = of.createSubtract().withOperand(right, quantity);
+                            libraryBuilder.resolveBinaryCall("System", "Subtract", (BinaryExpression)lowerBound);
+                            upperBound = right;
+                        }
+                        else {
+                            lowerBound = right;
+                            upperBound = of.createAdd().withOperand(right, quantity);
+                            libraryBuilder.resolveBinaryCall("System", "Add", (BinaryExpression)upperBound);
+                        }
+
+                        // 3 days or less before -> [B - 3 days, B)
+                        // less than 3 days before -> (B - 3 days, B)
+                        // 3 days or less after -> (B, B + 3 days]
+                        // less than 3 days after -> (B, B + 3 days)
+                        Interval interval =
+                                isBefore
+                                ? libraryBuilder.createInterval(lowerBound, isOffsetInclusive, upperBound, isInclusive)
+                                : libraryBuilder.createInterval(lowerBound, isInclusive, upperBound, isOffsetInclusive);
+
+                        In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
+                        if (dateTimePrecision != null) {
+                            in.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                        }
+                        libraryBuilder.resolveBinaryCall("System", "In", in);
+                        return in;
                 }
             }
         }
