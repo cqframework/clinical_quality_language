@@ -2390,9 +2390,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitWithinIntervalOperatorPhrase(@NotNull cqlParser.WithinIntervalOperatorPhraseContext ctx) {
         // ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
         // A starts within 3 days of start B
-        // days between start of A and start of B >= -3 and days between start of A and start of B <= 3
+        //* start of A in [start of B - 3 days, start of B + 3 days]
         // A starts within 3 days of B
-        // days between start of A and start of B >= -3 and days between start of A and end of B <= 3
+        //* start of A in [start of B - 3 days, end of B + 3 days]
 
         TimingOperatorContext timingOperator = timingOperators.peek();
         boolean isProper = false;
@@ -2432,10 +2432,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         Quantity quantity = (Quantity)visit(ctx.quantity());
-        Literal quantityLiteral = libraryBuilder.createLiteral(quantity.getValue().intValueExact());
-        Negate negativeQuantityLiteral = of.createNegate().withOperand(libraryBuilder.createLiteral(quantity.getValue().intValueExact()));
-        libraryBuilder.resolveUnaryCall("System", "Negate", negativeQuantityLiteral);
-
         Expression lowerBound = null;
         Expression upperBound = null;
         if (timingOperator.getRight().getResultType() instanceof IntervalType) {
@@ -2449,20 +2445,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             upperBound = timingOperator.getRight();
         }
 
-        BinaryExpression leftBetween = resolveBetweenOperator(quantity.getUnit(), timingOperator.getLeft(), lowerBound);
-        BinaryExpression rightBetween = resolveBetweenOperator(quantity.getUnit(), timingOperator.getLeft(), upperBound);
+        lowerBound = of.createSubtract().withOperand(lowerBound, quantity);
+        libraryBuilder.resolveBinaryCall("System", "Subtract", (BinaryExpression)lowerBound);
 
-        BinaryExpression leftCompare = (isProper ? of.createGreater() : of.createGreaterOrEqual())
-                .withOperand(leftBetween, negativeQuantityLiteral);
-        libraryBuilder.resolveBinaryCall("System", isProper ? "Greater" : "GreaterOrEqual", leftCompare);
+        upperBound = of.createAdd().withOperand(upperBound, quantity);
+        libraryBuilder.resolveBinaryCall("System", "Add", (BinaryExpression)upperBound);
 
-        BinaryExpression rightCompare = (isProper ? of.createLess() : of.createLessOrEqual())
-                .withOperand(rightBetween, quantityLiteral);
-        libraryBuilder.resolveBinaryCall("System", isProper ? "Less" : "LessOrEqual", rightCompare);
+        Interval interval = libraryBuilder.createInterval(lowerBound, !isProper, upperBound, !isProper);
 
-        And result = of.createAnd().withOperand(leftCompare, rightCompare);
-        libraryBuilder.resolveBinaryCall("System", "And", result);
-        return result;
+        In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
+        libraryBuilder.resolveBinaryCall("System", "In", in);
+        return in;
     }
 
     @Override
