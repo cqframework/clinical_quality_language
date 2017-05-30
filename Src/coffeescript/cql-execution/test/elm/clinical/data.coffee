@@ -505,6 +505,314 @@ module.exports['Patient Property In ValueSet'] = {
    }
 }
 
+### CodeDef
+library TestSnippet version '1'
+using QUICK
+codesystem "LOINC": 'http://loinc.org'
+code "Tobacco smoking status code": '72166-2' from "LOINC" display 'Tobacco smoking status'
+context Patient
+define Foo: 'Bar'
+###
+
+module.exports['CodeDef'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "codeSystems" : {
+         "def" : [ {
+            "name" : "LOINC",
+            "id" : "http://loinc.org",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "codes" : {
+         "def" : [ {
+            "name" : "Tobacco smoking status code",
+            "id" : "72166-2",
+            "display" : "Tobacco smoking status",
+            "accessLevel" : "Public",
+            "codeSystem" : {
+               "name" : "LOINC"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Foo",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
+               "value" : "Bar",
+               "type" : "Literal"
+            }
+         } ]
+      }
+   }
+}
+
+### CodeRef
+library TestSnippet version '1'
+using QUICK
+codesystem "LOINC": 'http://loinc.org'
+code "Tobacco smoking status code": '72166-2' from "LOINC" display 'Tobacco smoking status'
+context Patient
+define Foo: "Tobacco smoking status code"
+###
+
+module.exports['CodeRef'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "codeSystems" : {
+         "def" : [ {
+            "name" : "LOINC",
+            "id" : "http://loinc.org",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "codes" : {
+         "def" : [ {
+            "name" : "Tobacco smoking status code",
+            "id" : "72166-2",
+            "display" : "Tobacco smoking status",
+            "accessLevel" : "Public",
+            "codeSystem" : {
+               "name" : "LOINC"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Foo",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Tobacco smoking status code",
+               "type" : "CodeRef"
+            }
+         } ]
+      }
+   }
+}
+
+### ConceptDef
+library TestSnippet version '1'
+using QUICK
+codesystem "LOINC": 'http://loinc.org'
+code "Tobacco smoking status code": '72166-2' from "LOINC" display 'Tobacco smoking status'
+concept "Tobacco smoking status": { "Tobacco smoking status code" } display 'Tobacco smoking status'
+context Patient
+define Foo: 'Bar'
+###
+
+module.exports['ConceptDef'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "codeSystems" : {
+         "def" : [ {
+            "name" : "LOINC",
+            "id" : "http://loinc.org",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "codes" : {
+         "def" : [ {
+            "name" : "Tobacco smoking status code",
+            "id" : "72166-2",
+            "display" : "Tobacco smoking status",
+            "accessLevel" : "Public",
+            "codeSystem" : {
+               "name" : "LOINC"
+            }
+         } ]
+      },
+      "concepts" : {
+         "def" : [ {
+            "name" : "Tobacco smoking status",
+            "display" : "Tobacco smoking status",
+            "accessLevel" : "Public",
+            "code" : [ {
+               "name" : "Tobacco smoking status code"
+            } ]
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Foo",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
+               "value" : "Bar",
+               "type" : "Literal"
+            }
+         } ]
+      }
+   }
+}
+
+### ConceptRef
+library TestSnippet version '1'
+using QUICK
+codesystem "LOINC": 'http://loinc.org'
+code "Tobacco smoking status code": '72166-2' from "LOINC" display 'Tobacco smoking status'
+concept "Tobacco smoking status": { "Tobacco smoking status code" } display 'Tobacco smoking status'
+context Patient
+define Foo: "Tobacco smoking status"
+###
+
+module.exports['ConceptRef'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "codeSystems" : {
+         "def" : [ {
+            "name" : "LOINC",
+            "id" : "http://loinc.org",
+            "accessLevel" : "Public"
+         } ]
+      },
+      "codes" : {
+         "def" : [ {
+            "name" : "Tobacco smoking status code",
+            "id" : "72166-2",
+            "display" : "Tobacco smoking status",
+            "accessLevel" : "Public",
+            "codeSystem" : {
+               "name" : "LOINC"
+            }
+         } ]
+      },
+      "concepts" : {
+         "def" : [ {
+            "name" : "Tobacco smoking status",
+            "display" : "Tobacco smoking status",
+            "accessLevel" : "Public",
+            "code" : [ {
+               "name" : "Tobacco smoking status code"
+            } ]
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Foo",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "Tobacco smoking status",
+               "type" : "ConceptRef"
+            }
+         } ]
+      }
+   }
+}
+
 ### CalculateAge
 library TestSnippet version '1'
 using QUICK

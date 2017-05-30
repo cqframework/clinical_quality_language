@@ -49,6 +49,12 @@ module.exports.Context = class Context
   getCodeSystem: (name) ->
     @parent?.getCodeSystem(name)
 
+  getCode: (name) ->
+    @parent?.getCode(name)
+
+  getConcept: (name) ->
+    @parent?.getConcept(name)
+
   get: (identifier) ->
     # Check for undefined because if its null, we actually *do* want to return null (rather than looking at parent),
     # but if it's really undefined, *then* look at the parent

@@ -82,6 +82,72 @@ describe 'Patient Property In ValueSet', ->
     @ctx.patient =  new PatientSource([ p2 ]).currentPatient()
     @isFemale.exec(@ctx).should.be.true()
 
+describe 'CodeDef', ->
+  @beforeEach ->
+    setup @, data, []
+
+  it 'should return a CodeDef', ->
+    codeDef = @lib.getCode('Tobacco smoking status code')
+    codeDef.constructor.name.should.equal 'CodeDef'
+    codeDef.name.should.equal 'Tobacco smoking status code'
+
+  it 'should execute to a Code datatype', ->
+    codeDef = @lib.getCode('Tobacco smoking status code')
+    code = codeDef.exec(@ctx)
+    code.code.should.equal('72166-2')
+    code.system.should.equal('http://loinc.org')
+    should.not.exist(code.version)
+    code.display.should.equal('Tobacco smoking status')
+
+describe 'CodeRef', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should have a name', ->
+    @foo.name.should.equal 'Tobacco smoking status code'
+
+  it 'should execute to the defined code', ->
+    code = @foo.exec(@ctx)
+    code.code.should.equal('72166-2')
+    code.system.should.equal('http://loinc.org')
+    should.not.exist(code.version)
+    code.display.should.equal('Tobacco smoking status')
+
+describe 'ConceptDef', ->
+  @beforeEach ->
+    setup @, data, []
+
+  it 'should return a ConceptDef', ->
+    conceptDef = @lib.getConcept('Tobacco smoking status')
+    conceptDef.constructor.name.should.equal 'ConceptDef'
+    conceptDef.name.should.equal 'Tobacco smoking status'
+
+  it 'should execute to a Concept datatype', ->
+    conceptDef = @lib.getConcept('Tobacco smoking status')
+    concept = conceptDef.exec(@ctx)
+    concept.text.should.equal('Tobacco smoking status')
+    concept.codes.should.have.length(1)
+    concept.codes[0].code.should.equal('72166-2')
+    concept.codes[0].system.should.equal('http://loinc.org')
+    should.not.exist(concept.codes[0].version)
+    concept.codes[0].display.should.equal('Tobacco smoking status')
+
+describe 'ConceptRef', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should have a name', ->
+    @foo.name.should.equal 'Tobacco smoking status'
+
+  it 'should execute to the defined concept', ->
+    concept = @foo.exec(@ctx)
+    concept.text.should.equal('Tobacco smoking status')
+    concept.codes.should.have.length(1)
+    concept.codes[0].code.should.equal('72166-2')
+    concept.codes[0].system.should.equal('http://loinc.org')
+    should.not.exist(concept.codes[0].version)
+    concept.codes[0].display.should.equal('Tobacco smoking status')
+
 describe 'CalculateAge', ->
   @beforeEach ->
     setup @, data, [ p1 ]
