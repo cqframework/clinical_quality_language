@@ -1751,6 +1751,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitTermExpression(@NotNull cqlParser.TermExpressionContext ctx) {
+        Object result = super.visitTermExpression(ctx);
+
+        if (result instanceof LibraryRef) {
+            throw new IllegalArgumentException(String.format("Identifier %s is a library and cannot be used as an expression.", ((LibraryRef)result).getLibraryName()));
+        }
+
+        return result;
+    }
+
+    @Override
     public Object visitTerminal(@NotNull TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
@@ -3218,6 +3229,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 libraryBuilder.pushExpressionTarget(target);
             }
         }
+
         return resolveIdentifier(identifier);
     }
 

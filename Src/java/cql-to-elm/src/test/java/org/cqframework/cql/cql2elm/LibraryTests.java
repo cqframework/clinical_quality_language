@@ -52,6 +52,17 @@ public class LibraryTests {
     }
 
     @Test
+    public void testInvalidLibraryReference() {
+        CqlTranslator translator = null;
+        try {
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/InvalidLibraryReference.cql"), modelManager, libraryManager);
+            assertThat(translator.getErrors().size(), is(not(0)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void testDuplicateExpressionLibrary() {
         CqlTranslator translator = null;
         try {
