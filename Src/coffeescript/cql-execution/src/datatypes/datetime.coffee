@@ -271,6 +271,9 @@ module.exports.DateTime = class DateTime
   getTime: () ->
     new DateTime(1900, 1, 1, @hour, @minute, @second, @millisecond, @timezoneOffset)
 
+  isTime: () ->
+    @year == 1900 && @month == 1 && @day == 1
+
   reducedPrecision: (unitField = DateTime.Unit.MILLISECOND) ->
     reduced = @copy()
     if unitField isnt DateTime.Unit.MILLISECOND

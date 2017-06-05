@@ -6,6 +6,7 @@ module.exports.ParameterDef = class ParameterDef extends Expression
     super
     @name = json.name
     @default = build(json.default)
+    @parameterTypeSpecifier = json.parameterTypeSpecifier
 
   exec: (ctx) ->
     if (ctx?.parameters[@name]?) then ctx.parameters[@name]

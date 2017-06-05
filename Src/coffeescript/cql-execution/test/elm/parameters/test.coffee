@@ -1,6 +1,10 @@
 should = require 'should'
 setup = require '../../setup'
 data = require './data'
+{Code, Concept} = require '../../../lib/datatypes/clinical'
+{DateTime} = require '../../../lib/datatypes/datetime'
+{Interval} = require '../../../lib/datatypes/interval'
+{Quantity} = require '../../../lib/elm/quantity'
 
 describe 'ParameterDef', ->
   @beforeEach ->
@@ -22,7 +26,7 @@ describe 'ParameterDef', ->
 
   it 'should work with typed list parameters', ->
     listParam = @lib.parameters.ListParameter
-    listParam.exec(@ctx.withParameters { ListParameter: {'a', 'b', 'c'} }).should.eql {'a', 'b', 'c'}
+    listParam.exec(@ctx.withParameters { ListParameter: ['a', 'b', 'c'] }).should.eql ['a', 'b', 'c']
 
   it 'should work with typed tuple parameters', ->
     tupleParam = @lib.parameters.TupleParameter
@@ -41,3 +45,194 @@ describe 'ParameterRef', ->
 
   it 'should execute to provided value', ->
     @foo.exec(@ctx.withParameters { FooP: 'Bah' }).should.equal 'Bah'
+
+  it 'should fail when provided value is wrong type', ->
+    @foo.exec(@ctx.withParameters { FooP: 12 }).should.equal 12
+
+describe 'BooleanParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    @foo.exec(@ctx.withParameters { FooP: true }).should.equal true
+
+  it 'should throw when provided value is wrong type', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: 12 })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'DecimalParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    @foo.exec(@ctx.withParameters { FooP: 3.0 }).should.equal 3.0
+
+  it 'should throw when provided value is wrong type', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: '3' })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'IntegerParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    @foo.exec(@ctx.withParameters { FooP: 3 }).should.equal 3
+
+  it 'should throw when provided value is wrong type', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: 3.5 })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'StringParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    @foo.exec(@ctx.withParameters { FooP: 'Hello World' }).should.equal 'Hello World'
+
+  it 'should throw when provided value is wrong type', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: 42 })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'ConceptParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    c = new Concept([new Code("foo", "http://foo.org")], "Foo")
+    @foo.exec(@ctx.withParameters { FooP: c }).should.equal c
+
+  it 'should throw when provided value is wrong type', ->
+    c = new Code("foo", "http://foo.org")
+    try
+      @foo.exec(@ctx.withParameters { FooP: c })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'DateTimeParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    d = DateTime.parse('2012-10-25T12:55:14.456+00')
+    @foo.exec(@ctx.withParameters { FooP: d }).should.equal d
+
+  it 'should throw when provided value is wrong type', ->
+    d = "2012-10-25T12:55:14.456+00"
+    try
+      @foo.exec(@ctx.withParameters { FooP: d })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'QuantityParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    q = new Quantity({value: 5, unit: "mg"})
+    @foo.exec(@ctx.withParameters { FooP: q }).should.equal q
+
+  it 'should throw when provided value is wrong type', ->
+    q = 5
+    try
+      @foo.exec(@ctx.withParameters { FooP: q })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'TimeParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    t = DateTime.parse('2012-10-25T12:55:14.456+00').getTime()
+    @foo.exec(@ctx.withParameters { FooP: t }).should.equal t
+
+  it 'should throw when provided value is wrong type', ->
+    t = DateTime.parse('2012-10-25T12:55:14.456+00')
+    try
+      @foo.exec(@ctx.withParameters { FooP: t })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'ListParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    @foo.exec(@ctx.withParameters { FooP: ["Hello", "World"] }).should.eql ["Hello", "World"]
+
+  it 'should throw when provided value is not a list', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: "Hello World" })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+  it 'should throw when list contains a wrong type', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: ["Hello", 2468] })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'IntervalParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    @foo.exec(@ctx.withParameters { FooP: new Interval(1, 5) }).should.eql new Interval(1, 5)
+
+  it 'should throw when provided value is not an interval', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: [1, 5] })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+  it 'should throw when interval contains a wrong point type', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: new Interval(1.5, 5.5) })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+describe 'TupleParameterTypes', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute to provided valid value', ->
+    t = { Hello: "World", MeaningOfLife: 42 }
+    @foo.exec(@ctx.withParameters { FooP: t }).should.eql t
+
+  it 'should allow missing tuple properties', ->
+    t = { MeaningOfLife: 42 }
+    @foo.exec(@ctx.withParameters { FooP: t }).should.eql t
+
+  it 'should throw when provided value is not a tuple', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: "Hello World" })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
+
+  it 'should throw when tuple contains a wrong property type', ->
+    try
+      @foo.exec(@ctx.withParameters { FooP: { Hello: "World", MeaningOfLife: "Forty-Two" } })
+      should.fail("Passing in wrong parameter type should throw an error")
+    catch e
+      e.should.be.instanceof Error
