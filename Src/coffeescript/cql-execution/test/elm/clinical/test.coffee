@@ -161,7 +161,7 @@ describe 'CalculateAge', ->
 
     # this is getting the possible number of months in years with the addtion of an offset
     # to get the correct number of months
-    @full_months = ((@today.getFullYear() - 1980) * 12) + (@today.getMonth() - 5)
+    @full_months = ((@today.getFullYear() - 1980) * 12) + (@today.getMonth() - 6)
     @timediff = @today - @bday # diff in milliseconds
 
   it 'should execute age in years', ->
