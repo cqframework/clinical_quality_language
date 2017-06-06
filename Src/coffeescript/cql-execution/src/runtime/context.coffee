@@ -72,44 +72,76 @@ module.exports.Context = class Context
 
   checkParameters: (params) ->
     for pName, pVal of params
-      console.log(util.inspect(@getParameter(pName), { colors: true, depth: null }))
       pDef = @getParameter(pName)
       if ! pVal?
         return # Null can theoretically be any type
       if typeof pDef is "undefined"
         throw new Error("Passed in parameter '#{pName}' is not a named parameter in the library")
-      else if pDef.parameterTypeSpecifier? && !@isRightType(pVal, pDef.parameterTypeSpecifier)
+      else if pDef.parameterTypeSpecifier? && !@matchesTypeSpecifier(pVal, pDef.parameterTypeSpecifier)
+        throw new Error("Passed in parameter '#{pName}' is wrong type")
+      else if pDef['default']? && !@matchesInstanceType(pVal, pDef['default'])
         throw new Error("Passed in parameter '#{pName}' is wrong type")
     true
 
-  isRightType: (val, typeSpecifier) ->
-    switch typeSpecifier.type
-      when "NamedTypeSpecifier" then @isNamedType(val, typeSpecifier.name)
-      when "ListTypeSpecifier" then @isListType(val, typeSpecifier.elementType)
-      when "TupleTypeSpecifier" then @isTupleType(val, typeSpecifier.element)
-      when "IntervalTypeSpecifier" then @isIntervalType(val, typeSpecifier.pointType)
+  matchesTypeSpecifier: (val, spec) ->
+    switch spec.type
+      when "NamedTypeSpecifier" then @matchesNamedTypeSpecifier(val, spec)
+      when "ListTypeSpecifier" then @matchesListTypeSpecifier(val, spec)
+      when "TupleTypeSpecifier" then @matchesTupleTypeSpecifier(val, spec)
+      when "IntervalTypeSpecifier" then @matchesIntervalTypeSpecifier(val, spec)
+      else true # default to true when we don't know
 
-  isListType: (val, elementType) ->
+  matchesListTypeSpecifier: (val, spec) ->
     thiz = @
-    typeIsArray(val) && val.every (x) -> thiz.isRightType(x, elementType)
+    typeIsArray(val) && val.every (x) -> thiz.matchesTypeSpecifier(x, spec.elementType)
 
-  isTupleType: (val, elements) ->
+  matchesTupleTypeSpecifier: (val, spec) ->
     thiz = @
     typeof val is "object" &&
       ! typeIsArray(val) &&
-      elements.every (x) -> (typeof val[x.name] is "undefined" || thiz.isRightType(val[x.name], x.type))
+      spec.element.every (x) -> (typeof val[x.name] is "undefined" || thiz.matchesTypeSpecifier(val[x.name], x.type))
 
-  isIntervalType: (val, pointType) ->
+  matchesIntervalTypeSpecifier: (val, spec) ->
     val.constructor?.name is "Interval" &&
-      ((! val.low?) || @isRightType(val.low, pointType)) &&
-      ((! val.high?) || @isRightType(val.high, pointType))
+      ((! val.low?) || @matchesTypeSpecifier(val.low, spec.pointType)) &&
+      ((! val.high?) || @matchesTypeSpecifier(val.high, spec.pointType))
 
-  isNamedType: (val, typeName) ->
-    # Allow null to always match
-    if val is null
-      return true
-    # It's non-null so check against know / supported types
-    switch typeName
+  matchesNamedTypeSpecifier: (val, spec) ->
+    @matchesTypeString(val, spec.name)
+
+  matchesInstanceType: (val, inst) ->
+    switch inst.type
+      when 'Literal' then matchesLiteralInstanceType(val, inst)
+      when 'Concept' then val?.constructor?.name is 'Concept'
+      when 'DateTime' then val?.constructor?.name is 'DateTime'
+      when 'Quantity' then val?.constructor?.name is 'Quantity'
+      when 'Time' then val?.constructor?.name is 'DateTime' && val.isTime()
+      when 'List' then matchesListInstanceType(val, inst)
+      when 'Tuple' then matchesTupleInstanceType(val, inst)
+      when 'Interval' then matchesIntervalInstanceType(val, inst)
+      else true # default to true when we don't know for sure
+
+  matchesLiteralInstanceType: (val, lit) ->
+    @matchesTypeString(val, lit.valueType)
+
+  matchesListInstanceType: (val, list) ->
+    thiz = @
+    typeIsArray(val) && val.every (x) -> thiz.matchesInstanceType(x, list.element[0])
+
+  matchesTupleInstanceType: (val, tpl) ->
+    thiz = @
+    typeof val is "object" &&
+      ! typeIsArray(val) &&
+      tpl.element.every (x) -> (typeof val[x.name] is "undefined" || thiz.matchesInstanceType(val[x.name], x.value))
+
+  matchesIntervalInstanceType: (val, ivl) ->
+    pointType = ivl.low ? ivl.high
+    val.constructor?.name is "Interval" &&
+      ((! val.low?) || @matchesInstanceType(val.low, pointType)) &&
+      ((! val.high?) || @matchesInstanceType(val.high, pointType))
+
+  matchesTypeString: (val, typeString) ->
+    switch typeString
       when "{urn:hl7-org:elm-types:r1}Boolean" then typeof val is "boolean"
       when "{urn:hl7-org:elm-types:r1}Decimal" then typeof val is "number"
       when "{urn:hl7-org:elm-types:r1}Integer" then typeof val is "number" && Math.floor(val) == val
