@@ -51,7 +51,7 @@ describe 'Literal', ->
   it 'should execute \'\' as correct Time', ->
     d = @timeX.exec(@ctx)
     d.isTime().should.be.true()
-    d.year.should.equal 1900
+    d.year.should.equal 0
     d.month.should.equal 1
     d.day.should.equal 1
     d.hour.should.equal 12

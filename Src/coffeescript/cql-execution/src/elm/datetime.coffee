@@ -22,7 +22,7 @@ module.exports.Time = class Time extends Expression
 
   exec: (ctx) ->
     args = ((if @[p]? then @[p].exec(ctx)) for p in Time.PROPERTIES)
-    (new DT.DateTime(1900, 1, 1, args...)).getTime()
+    (new DT.DateTime(0, 1, 1, args...)).getTime()
 
 # TODO: Update to use timestamp of request, per the spec
 module.exports.Today = class Today extends Expression

@@ -53,7 +53,7 @@ describe 'DateTimeInterval.contains', ->
 
   it 'should properly handle null endpoints', ->
     date = DateTime.parse('2012-01-01T00:00:00.0')
-    early = DateTime.parse('1900-01-01T00:00:00.0')
+    early = DateTime.parse('0001-01-01T00:00:00.0')
     late = DateTime.parse('2999-01-01T00:00:00.0')
     new Interval(null, date).contains(early).should.be.true()
     new Interval(null, date).contains(late).should.be.false()

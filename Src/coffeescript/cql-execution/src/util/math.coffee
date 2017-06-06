@@ -7,7 +7,7 @@ module.exports.MIN_INT_VALUE = MIN_INT_VALUE = Math.pow(-2,31)
 module.exports.MAX_FLOAT_VALUE = MAX_FLOAT_VALUE = ( Math.pow(10,37)-1 ) / Math.pow(10,8)
 module.exports.MIN_FLOAT_VALUE = MIN_FLOAT_VALUE = (Math.pow(-10,37)+1) / Math.pow(10,8)
 module.exports.MIN_FLOAT_PRECISION_VALUE = MIN_FLOAT_PRECISION_VALUE = Math.pow(10,-8)
-module.exports.MIN_DATE_VALUE = MIN_DATE_VALUE = DateTime.parse("1900-01-01T00:00:00.000")
+module.exports.MIN_DATE_VALUE = MIN_DATE_VALUE = DateTime.parse("0001-01-01T00:00:00.000")
 module.exports.MAX_DATE_VALUE = MAX_DATE_VALUE = DateTime.parse("9999-12-31T23:59:59.999")
 
 module.exports.OverFlowException = OverFlowException = class OverFlowException extends Exception

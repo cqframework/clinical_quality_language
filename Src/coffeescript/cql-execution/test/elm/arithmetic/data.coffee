@@ -1866,7 +1866,7 @@ define ymdh_date: predecessor of DateTime(2015,01,01,0)
 define ymdhm_date: predecessor of DateTime(2015,01,01,0,0)
 define ymdhms_date: predecessor of DateTime(2015,01,01,0,0,0)
 define ymdhmsm_date: predecessor of DateTime(2015,01,01,0,0,0,0)
-define min_date: predecessor of DateTime(1900,01,01,0,0,0,0)
+define min_date: predecessor of DateTime(0001,01,01,0,0,0,0)
 ###
 
 module.exports['Predecessor'] = {
@@ -2159,7 +2159,7 @@ module.exports['Predecessor'] = {
                   "type" : "DateTime",
                   "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1900",
+                     "value" : "0001",
                      "type" : "Literal"
                   },
                   "month" : {

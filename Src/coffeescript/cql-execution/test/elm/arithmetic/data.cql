@@ -97,7 +97,7 @@ define ymdh_date: predecessor of DateTime(2015,01,01,0)
 define ymdhm_date: predecessor of DateTime(2015,01,01,0,0)
 define ymdhms_date: predecessor of DateTime(2015,01,01,0,0,0)
 define ymdhmsm_date: predecessor of DateTime(2015,01,01,0,0,0,0)
-define min_date: predecessor of DateTime(1900,01,01,0,0,0,0)
+define min_date: predecessor of DateTime(0001,01,01,0,0,0,0)
 
 // @Test: Quantity
 define days_10: 10 days

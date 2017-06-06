@@ -1419,7 +1419,7 @@ describe 'DateTime.getTime', ->
 
   it 'should properly extract the time from fully specified datetimes', ->
     t = DateTime.parse('2012-10-25T12:55:14.456+00').getTime()
-    t.year.should.equal 1900
+    t.year.should.equal 0
     t.month.should.equal 1
     t.day.should.equal 1
     t.hour.should.equal 12
@@ -1430,7 +1430,7 @@ describe 'DateTime.getTime', ->
 
   it 'should properly extract the time from datetimes without milliseconds', ->
     t = DateTime.parse('2012-10-25T12:55:14+00').getTime()
-    t.year.should.equal 1900
+    t.year.should.equal 0
     t.month.should.equal 1
     t.day.should.equal 1
     t.hour.should.equal 12
@@ -1441,7 +1441,7 @@ describe 'DateTime.getTime', ->
 
   it 'should properly extract the time from datetimes without seconds', ->
     t = DateTime.parse('2012-10-25T12:55+00').getTime()
-    t.year.should.equal 1900
+    t.year.should.equal 0
     t.month.should.equal 1
     t.day.should.equal 1
     t.hour.should.equal 12
@@ -1452,7 +1452,7 @@ describe 'DateTime.getTime', ->
 
   it 'should properly extract the time from datetimes without minutes', ->
     t = DateTime.parse('2012-10-25T12+00').getTime()
-    t.year.should.equal 1900
+    t.year.should.equal 0
     t.month.should.equal 1
     t.day.should.equal 1
     t.hour.should.equal 12
@@ -1463,7 +1463,7 @@ describe 'DateTime.getTime', ->
 
   it 'should properly extract the time from datetimes without hours', ->
     t = DateTime.parse('2012-10-25T+00').getTime()
-    t.year.should.equal 1900
+    t.year.should.equal 0
     t.month.should.equal 1
     t.day.should.equal 1
     should.not.exist t.hour

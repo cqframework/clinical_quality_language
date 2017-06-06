@@ -97,7 +97,7 @@ describe 'Time', ->
   it 'should execute hour precision correctly', ->
     d = @hour.exec(@ctx)
     d.isTime().should.be.true()
-    d.year.should.equal 1900
+    d.year.should.equal 0
     d.month.should.equal 1
     d.day.should.equal 1
     d.hour.should.equal 12
@@ -107,7 +107,7 @@ describe 'Time', ->
   it 'should execute minute precision correctly', ->
     d = @minute.exec(@ctx)
     d.isTime().should.be.true()
-    d.year.should.equal 1900
+    d.year.should.equal 0
     d.month.should.equal 1
     d.day.should.equal 1
     d.hour.should.equal 12
@@ -118,7 +118,7 @@ describe 'Time', ->
   it 'should execute second precision correctly', ->
     d = @second.exec(@ctx)
     d.isTime().should.be.true()
-    d.year.should.equal 1900
+    d.year.should.equal 0
     d.month.should.equal 1
     d.day.should.equal 1
     d.hour.should.equal 12
@@ -130,7 +130,7 @@ describe 'Time', ->
   it 'should execute millisecond precision correctly', ->
     d = @millisecond.exec(@ctx)
     d.isTime().should.be.true()
-    d.year.should.equal 1900
+    d.year.should.equal 0
     d.month.should.equal 1
     d.day.should.equal 1
     d.hour.should.equal 12
@@ -142,7 +142,7 @@ describe 'Time', ->
   it 'should execute timezone offsets correctly', ->
     d = @timezoneOffset.exec(@ctx)
     d.isTime().should.be.true()
-    d.year.should.equal 1900
+    d.year.should.equal 0
     d.month.should.equal 1
     d.day.should.equal 1
     d.hour.should.equal 12
@@ -254,7 +254,7 @@ describe 'TimeFrom', ->
 
   it 'should return the time from a fully defined DateTime (and date should be lowest expressible date)', ->
     time = @time.exec(@ctx)
-    time.year.should.equal 1900
+    time.year.should.equal 0
     time.month.should.equal 1
     time.day.should.equal 1
     time.hour.should.equal 13
@@ -265,7 +265,7 @@ describe 'TimeFrom', ->
 
   it 'should return the null time components from a date with no time', ->
     noTime = @noTime.exec(@ctx)
-    noTime.year.should.equal 1900
+    noTime.year.should.equal 0
     noTime.month.should.equal 1
     noTime.day.should.equal 1
     should.not.exist noTime.hour
