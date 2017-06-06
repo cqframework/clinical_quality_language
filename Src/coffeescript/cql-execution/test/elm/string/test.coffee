@@ -122,18 +122,11 @@ describe 'Indexer', ->
   it 'should get letter at index', ->
     @helloWorldSix.exec(@ctx).should.equal 'o'
 
-  it 'should error on index 0 (out of bounds)', ->
-    try
-      @helloWorldZero.exec(@ctx)
-    catch e
-      should.fail("index 0 should NOT throw OutOfBoundsException")
+  it 'should not error on index 0 (no longer out of bounds)', ->
+    should(() => @helloWorldZero.exec(@ctx)).not.throw(ArrayIndexOutOfBoundsException)
 
   it 'should error on index 20 (out of bounds)', ->
-    try
-      @helloWorldTwenty.exec(@ctx)
-      should.fail()
-    catch e
-      e.should.be.instanceof ArrayIndexOutOfBoundsException
+    should(() => @helloWorldTwenty.exec(@ctx)).throw(ArrayIndexOutOfBoundsException)
 
   it 'should return null when string is null', ->
     should(@nullString.exec(@ctx)).be.null
@@ -176,26 +169,17 @@ describe 'Substring', ->
   it 'should get substring with zero length', ->
     @zeroLength.exec(@ctx).should.equal ''
 
-  it 'should error on index 0 (out of bounds)', ->
-    try
-      @startTooLow.exec(@ctx)
-      should.fail()
-    catch e
-      # Good!
+  it 'should return null on index -1 (out of bounds)', ->
+    should.not.exist @startTooLow.exec(@ctx)
 
-  it 'should error on too much length (out of bounds)', ->
-    try
-      @tooMuchLength.exec(@ctx)
-      should.fail()
-    catch e
-      # Good!
+  it 'should not error on index 0 (not out of bounds)', ->
+    @startZero.exec(@ctx).should.equal 'HelloWorld'
 
-  it 'should error on negative length', ->
-    try
-      @negativeLength.exec(@ctx)
-      should.fail()
-    catch e
-      # Good!
+  it 'should return rest of string on too much length', ->
+    @tooMuchLength.exec(@ctx).should.equal 'rld'
+
+  it 'should return empty string on negative length', ->
+    @negativeLength.exec(@ctx).should.equal ''
 
   it 'should return null when string is null', ->
     should(@nullString.exec(@ctx)).be.null

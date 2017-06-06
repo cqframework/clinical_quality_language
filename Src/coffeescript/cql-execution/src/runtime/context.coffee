@@ -7,9 +7,11 @@ Function::property = (prop, desc) ->
 
 module.exports.Context = class Context
 
-  constructor: (@parent, @_codeService = null, @_parameters = {}) ->
+  constructor: (@parent, @_codeService = null, _parameters = {}) ->
     @context_values = {}
     @library_context = {}
+    @checkParameters(_parameters) # not crazy about possibly throwing an error in a constructor, but...
+    @_parameters = _parameters
 
   @property "parameters" ,
     get: -> @_parameters || @parent?.parameters
@@ -76,7 +78,7 @@ module.exports.Context = class Context
       if ! pVal?
         return # Null can theoretically be any type
       if typeof pDef is "undefined"
-        throw new Error("Passed in parameter '#{pName}' is not a named parameter in the library")
+        return # This will happen if the parameter is declared in a different (included) library
       else if pDef.parameterTypeSpecifier? && !@matchesTypeSpecifier(pVal, pDef.parameterTypeSpecifier)
         throw new Error("Passed in parameter '#{pName}' is wrong type")
       else if pDef['default']? && !@matchesInstanceType(pVal, pDef['default'])
@@ -92,14 +94,12 @@ module.exports.Context = class Context
       else true # default to true when we don't know
 
   matchesListTypeSpecifier: (val, spec) ->
-    thiz = @
-    typeIsArray(val) && val.every (x) -> thiz.matchesTypeSpecifier(x, spec.elementType)
+    typeIsArray(val) && val.every (x) => @matchesTypeSpecifier(x, spec.elementType)
 
   matchesTupleTypeSpecifier: (val, spec) ->
-    thiz = @
     typeof val is "object" &&
       ! typeIsArray(val) &&
-      spec.element.every (x) -> (typeof val[x.name] is "undefined" || thiz.matchesTypeSpecifier(val[x.name], x.type))
+      spec.element.every (x) => (typeof val[x.name] is "undefined" || @matchesTypeSpecifier(val[x.name], x.type))
 
   matchesIntervalTypeSpecifier: (val, spec) ->
     val.constructor?.name is "Interval" &&
@@ -107,41 +107,7 @@ module.exports.Context = class Context
       ((! val.high?) || @matchesTypeSpecifier(val.high, spec.pointType))
 
   matchesNamedTypeSpecifier: (val, spec) ->
-    @matchesTypeString(val, spec.name)
-
-  matchesInstanceType: (val, inst) ->
-    switch inst.type
-      when 'Literal' then matchesLiteralInstanceType(val, inst)
-      when 'Concept' then val?.constructor?.name is 'Concept'
-      when 'DateTime' then val?.constructor?.name is 'DateTime'
-      when 'Quantity' then val?.constructor?.name is 'Quantity'
-      when 'Time' then val?.constructor?.name is 'DateTime' && val.isTime()
-      when 'List' then matchesListInstanceType(val, inst)
-      when 'Tuple' then matchesTupleInstanceType(val, inst)
-      when 'Interval' then matchesIntervalInstanceType(val, inst)
-      else true # default to true when we don't know for sure
-
-  matchesLiteralInstanceType: (val, lit) ->
-    @matchesTypeString(val, lit.valueType)
-
-  matchesListInstanceType: (val, list) ->
-    thiz = @
-    typeIsArray(val) && val.every (x) -> thiz.matchesInstanceType(x, list.element[0])
-
-  matchesTupleInstanceType: (val, tpl) ->
-    thiz = @
-    typeof val is "object" &&
-      ! typeIsArray(val) &&
-      tpl.element.every (x) -> (typeof val[x.name] is "undefined" || thiz.matchesInstanceType(val[x.name], x.value))
-
-  matchesIntervalInstanceType: (val, ivl) ->
-    pointType = ivl.low ? ivl.high
-    val.constructor?.name is "Interval" &&
-      ((! val.low?) || @matchesInstanceType(val.low, pointType)) &&
-      ((! val.high?) || @matchesInstanceType(val.high, pointType))
-
-  matchesTypeString: (val, typeString) ->
-    switch typeString
+    switch spec.name
       when "{urn:hl7-org:elm-types:r1}Boolean" then typeof val is "boolean"
       when "{urn:hl7-org:elm-types:r1}Decimal" then typeof val is "number"
       when "{urn:hl7-org:elm-types:r1}Integer" then typeof val is "number" && Math.floor(val) == val
@@ -151,6 +117,35 @@ module.exports.Context = class Context
       when "{urn:hl7-org:elm-types:r1}Quantity" then val?.constructor?.name is 'Quantity'
       when "{urn:hl7-org:elm-types:r1}Time" then val?.constructor?.name is 'DateTime' && val.isTime()
       else true # TODO: Better checking of custom or complex types
+
+  matchesInstanceType: (val, inst) ->
+    switch inst.constructor?.name
+      when "BooleanLiteral" then typeof val is "boolean"
+      when "DecimalLiteral" then typeof val is "number"
+      when "IntegerLiteral" then typeof val is "number" && Math.floor(val) == val
+      when "StringLiteral" then typeof val is "string"
+      when "Concept" then val?.constructor?.name is "Concept"
+      when "DateTime" then val?.constructor?.name is "DateTime"
+      when "Quantity" then val?.constructor?.name is "Quantity"
+      when "Time" then val?.constructor?.name is "DateTime" && val.isTime()
+      when "List" then @matchesListInstanceType(val, inst)
+      when "Tuple" then @matchesTupleInstanceType(val, inst)
+      when "Interval" then @matchesIntervalInstanceType(val, inst)
+      else true # default to true when we don't know for sure
+
+  matchesListInstanceType: (val, list) ->
+    typeIsArray(val) && val.every (x) => @matchesInstanceType(x, list.elements[0])
+
+  matchesTupleInstanceType: (val, tpl) ->
+    typeof val is "object" &&
+      ! typeIsArray(val) &&
+      tpl.elements.every (x) => (typeof val[x.name] is "undefined" || @matchesInstanceType(val[x.name], x.value))
+
+  matchesIntervalInstanceType: (val, ivl) ->
+    pointType = ivl.low ? ivl.high
+    val.constructor?.name is "Interval" &&
+      ((! val.low?) || @matchesInstanceType(val.low, pointType)) &&
+      ((! val.high?) || @matchesInstanceType(val.high, pointType))
 
 module.exports.PatientContext = class PatientContext extends Context
   constructor: (@library,@patient,codeService,parameters) ->

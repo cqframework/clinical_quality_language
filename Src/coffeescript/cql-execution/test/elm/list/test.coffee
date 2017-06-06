@@ -185,17 +185,10 @@ describe 'Indexer', ->
     @secondItem.exec(@ctx).should.equal 'b'
 
   it 'should NOT throw ArrayIndexOutOfBoundsException when accessing index 0', ->
-    try
-      @zeroIndex.exec(@ctx)
-    catch e
-      should.fail("Accessing index zero should not throw ArrayIndexOutOfBoundsException")
+    should(() => @zeroIndex.exec(@ctx)).not.throw(ArrayIndexOutOfBoundsException)
 
   it 'should throw ArrayIndexOutOfBoundsException when accessing out of bounds index', ->
-    try
-      @outOfBounds.exec(@ctx)
-      should.fail("Accessing out of bounds index should throw ArrayIndexOutOfBoundsException")
-    catch e
-      e.should.be.instanceof ArrayIndexOutOfBoundsException
+    should(() => @outOfBounds.exec(@ctx)).throw(ArrayIndexOutOfBoundsException)
 
   it 'should return null if either arg is null', ->
     should(@nullList.exec(@ctx)).be.null

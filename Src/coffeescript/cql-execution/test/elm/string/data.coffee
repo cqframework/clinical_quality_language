@@ -1086,7 +1086,8 @@ context Patient
 define World: Substring('HelloWorld', 5)
 define Or: Substring('HelloWorld', 7, 2)
 define ZeroLength: Substring('HelloWorld', 7, 0)
-define StartTooLow: Substring('HelloWorld', 0)
+define StartTooLow: Substring('HelloWorld', -1)
+define StartZero: Substring('HelloWorld', 0)
 define TooMuchLength: Substring('HelloWorld', 7, 25)
 define NegativeLength: Substring('HelloWorld', 7, -1)
 define NullString: Substring(null, 5)
@@ -1187,6 +1188,26 @@ module.exports['Substring'] = {
             }
          }, {
             "name" : "StartTooLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Substring",
+               "stringToSub" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                  "value" : "HelloWorld",
+                  "type" : "Literal"
+               },
+               "startIndex" : {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "StartZero",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {

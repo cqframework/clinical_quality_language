@@ -88,11 +88,7 @@ describe 'DateTimeInterval.contains', ->
     @all2012.closed.contains(@mid2012.toYear).should.be.true()
 
   it 'should throw when the argument is an interval', ->
-    try
-      @all2012.closed.contains @all2012
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @all2012.closed.contains @all2012.open).throw(Error)
 
 describe 'DateTimeInterval.includes', ->
   @beforeEach ->
@@ -207,11 +203,7 @@ describe 'DateTimeInterval.includes', ->
     should.not.exist x.toYear.includes(y.closed)
 
   it 'should throw when the argument is a point', ->
-    try
-      @all2012.closed.includes @mid2012
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @all2012.closed.includes @mid2012.closed).throw(Error)
 
 describe 'DateTimeInterval.includedIn', ->
   @beforeEach ->
@@ -326,11 +318,7 @@ describe 'DateTimeInterval.includedIn', ->
     x.toYear.includedIn(y.closed).should.be.true()
 
   it 'should throw when the argument is a point', ->
-    try
-      @all2012.closed.includedIn @mid2012
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @all2012.closed.includedIn @mid2012.closed).throw(Error)
 
 describe 'DateTimeInterval.overlaps(DateTimeInterval)', ->
   @beforeEach ->
@@ -790,11 +778,7 @@ describe 'DateTimeInterval.union', ->
     x.toMonth.high.sameAs(j.high, DateTime.Unit.MONTH).should.be.true()
 
   it 'should throw when the argument is a point', ->
-    try
-      @all2012.union @mid2012
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @all2012.closed.union @mid2012.closed).throw(Error)
 
 describe 'DateTimeInterval.intersect', ->
   @beforeEach ->
@@ -908,11 +892,7 @@ describe 'DateTimeInterval.intersect', ->
     y.toDay.intersect(x.toDay).high.should.eql x.toDay.high
 
   it 'should throw when the argument is a point', ->
-    try
-      @all2012.intersect DateTime.parse('2012-07-01T00:00:00.0')
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @all2012.intersect DateTime.parse('2012-07-01T00:00:00.0')).throw(Error)
 
 describe 'DateTimeInterval.except', ->
   @beforeEach ->
@@ -1034,11 +1014,7 @@ describe 'DateTimeInterval.except', ->
     should.not.exist y.toDay.except(x.toDay)
 
   it 'should throw when the argument is a point', ->
-    try
-      @all2012.except DateTime.parse('2012-07-01T00:00:00.0')
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @all2012.closed.except DateTime.parse('2012-07-01T00:00:00.0')).throw(Error)
 
 describe 'DateTimeInterval.after', ->
   @beforeEach ->
@@ -1673,11 +1649,7 @@ describe 'IntegerInterval.contains', ->
     uIvl.contains(new Uncertainty(25,30)).should.be.false()
 
   it 'should throw when the argument is an interval', ->
-    try
-      @zeroToHundred.closed.contains new Interval(5, 10)
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @zeroToHundred.closed.contains new Interval(5, 10)).throw(Error)
 
 describe 'IntegerInterval.includes', ->
   @beforeEach ->
@@ -1782,11 +1754,7 @@ describe 'IntegerInterval.includes', ->
     should.not.exist uIvl.includes(uIvl)
 
   it 'should throw when the argument is a point', ->
-    try
-      @zeroToHundred.closed.includes 50
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @zeroToHundred.closed.includes 50).throw(Error)
 
 describe 'IntegerInterval.includedIn', ->
   @beforeEach ->
@@ -1892,11 +1860,7 @@ describe 'IntegerInterval.includedIn', ->
     should.not.exist uIvl.includedIn(uIvl)
 
   it 'should throw when the argument is a point', ->
-    try
-      @zeroToHundred.closed.includedIn 50
-      should.fail
-    catch e
-      (e?).should.be.true()
+    should(() => @zeroToHundred.closed.includedIn 50).throw(Error)
 
 describe 'IntegerInterval.overlaps(IntegerInterval)', ->
   @beforeEach ->
@@ -2308,12 +2272,7 @@ describe 'IntegerInterval.union', ->
     uIvl.union(ivl).equals(ivl).should.be.true()
 
   it 'should throw when the argument is a point', ->
-    try
-      @zeroToHundred.union 300
-      should.fail
-    catch e
-      (e?).should.be.true()
-
+    should(() => @zeroToHundred.union 300).throw(Error)
 
 describe 'IntegerInterval.intersect', ->
   @beforeEach ->
@@ -2437,12 +2396,7 @@ describe 'IntegerInterval.intersect', ->
     y.intersect(x).should.eql new Interval(new Uncertainty(8, 10), new Uncertainty(15, 17))
 
   it 'should throw when the argument is a point', ->
-    try
-      @zeroToHundred.intersect 50
-      should.fail
-    catch e
-      (e?).should.be.true()
-
+    should(() => @zeroToHundred.intersect 50).throw(Error)
 
 describe 'IntegerInterval.except', ->
   @beforeEach ->
@@ -2564,12 +2518,7 @@ describe 'IntegerInterval.except', ->
     y.except(x).should.eql y
 
   it 'should throw when the argument is a point', ->
-    try
-      @zeroToHundred.except 100
-      should.fail
-    catch e
-      (e?).should.be.true()
-
+    should(() => @zeroToHundred.except 100).throw(Error)
 
 describe 'IntegerInterval.after', ->
   @beforeEach ->

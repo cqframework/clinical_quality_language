@@ -47,7 +47,7 @@ describe 'ParameterRef', ->
     @foo.exec(@ctx.withParameters { FooP: 'Bah' }).should.equal 'Bah'
 
   it 'should fail when provided value is wrong type', ->
-    @foo.exec(@ctx.withParameters { FooP: 12 }).should.equal 12
+    should(() => @foo.exec(@ctx.withParameters { FooP: 12 })).throw(/.*wrong type.*/)
 
 describe 'BooleanParameterTypes', ->
   @beforeEach ->
@@ -57,11 +57,7 @@ describe 'BooleanParameterTypes', ->
     @foo.exec(@ctx.withParameters { FooP: true }).should.equal true
 
   it 'should throw when provided value is wrong type', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: 12 })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: 12 })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.equal true
@@ -70,11 +66,7 @@ describe 'BooleanParameterTypes', ->
     @foo2.exec(@ctx.withParameters { FooDP: false }).should.equal false
 
   it 'should throw when overriding value is wrong type', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: 12 })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooDP: 12 })).throw(/.*wrong type.*/)
 
 describe 'DecimalParameterTypes', ->
   @beforeEach ->
@@ -84,11 +76,7 @@ describe 'DecimalParameterTypes', ->
     @foo.exec(@ctx.withParameters { FooP: 3.0 }).should.equal 3.0
 
   it 'should throw when provided value is wrong type', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: '3' })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: '3' })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.equal 1.5
@@ -97,11 +85,7 @@ describe 'DecimalParameterTypes', ->
     @foo2.exec(@ctx.withParameters { FooDP: 3.0 }).should.equal 3.0
 
   it 'should throw when overriding value is wrong type', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: '3' })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooDP: '3' })).throw(/.*wrong type.*/)
 
 describe 'IntegerParameterTypes', ->
   @beforeEach ->
@@ -111,11 +95,7 @@ describe 'IntegerParameterTypes', ->
     @foo.exec(@ctx.withParameters { FooP: 3 }).should.equal 3
 
   it 'should throw when provided value is wrong type', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: 3.5 })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: 3.5 })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.equal 2
@@ -124,11 +104,7 @@ describe 'IntegerParameterTypes', ->
     @foo2.exec(@ctx.withParameters { FooDP: 3 }).should.equal 3
 
   it 'should throw when overriding value is wrong type', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: 3.5 })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooDP: 3.5 })).throw(/.*wrong type.*/)
 
 describe 'StringParameterTypes', ->
   @beforeEach ->
@@ -138,11 +114,7 @@ describe 'StringParameterTypes', ->
     @foo.exec(@ctx.withParameters { FooP: 'Hello World' }).should.equal 'Hello World'
 
   it 'should throw when provided value is wrong type', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: 42 })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: 42 })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.equal 'Hello'
@@ -151,11 +123,7 @@ describe 'StringParameterTypes', ->
     @foo2.exec(@ctx.withParameters { FooDP: 'Hello World' }).should.equal 'Hello World'
 
   it 'should throw when overriding value is wrong type', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: 42 })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooDP: 42 })).throw(/.*wrong type.*/)
 
 describe 'ConceptParameterTypes', ->
   @beforeEach ->
@@ -167,11 +135,7 @@ describe 'ConceptParameterTypes', ->
 
   it 'should throw when provided value is wrong type', ->
     c = new Code("foo", "http://foo.org")
-    try
-      @foo.exec(@ctx.withParameters { FooP: c })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: c })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.eql new Concept([new Code("FooTest", "http://footest.org")], "Foo Test")
@@ -182,11 +146,7 @@ describe 'ConceptParameterTypes', ->
 
   it 'should throw when overriding value is wrong type', ->
     c = new Code("foo", "http://foo.org")
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: c })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooDP: c })).throw(/.*wrong type.*/)
 
 describe 'DateTimeParameterTypes', ->
   @beforeEach ->
@@ -198,11 +158,7 @@ describe 'DateTimeParameterTypes', ->
 
   it 'should throw when provided value is wrong type', ->
     d = "2012-10-25T12:55:14.456+00"
-    try
-      @foo.exec(@ctx.withParameters { FooP: d })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: d })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.eql DateTime.parse('2012-04-01')
@@ -213,11 +169,7 @@ describe 'DateTimeParameterTypes', ->
 
   it 'should throw when overriding value is wrong type', ->
     d = "2012-10-25T12:55:14.456+00"
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: d })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: d })).throw(/.*wrong type.*/)
 
 describe 'QuantityParameterTypes', ->
   @beforeEach ->
@@ -229,11 +181,7 @@ describe 'QuantityParameterTypes', ->
 
   it 'should throw when provided value is wrong type', ->
     q = 5
-    try
-      @foo.exec(@ctx.withParameters { FooP: q })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: q })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.eql new Quantity({value: 10, unit: "dL"})
@@ -244,11 +192,7 @@ describe 'QuantityParameterTypes', ->
 
   it 'should throw when overriding value is wrong type', ->
     q = 5
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: q })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: q })).throw(/.*wrong type.*/)
 
 describe 'TimeParameterTypes', ->
   @beforeEach ->
@@ -260,11 +204,7 @@ describe 'TimeParameterTypes', ->
 
   it 'should throw when provided value is wrong type', ->
     t = DateTime.parse('2012-10-25T12:55:14.456+00')
-    try
-      @foo.exec(@ctx.withParameters { FooP: t })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: t })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.eql DateTime.parse('2012-10-25T12:00:00').getTime()
@@ -275,11 +215,7 @@ describe 'TimeParameterTypes', ->
 
   it 'should throw when overriding value is wrong type', ->
     t = DateTime.parse('2012-10-25T12:55:14.456+00')
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: t })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: t })).throw(/.*wrong type.*/)
 
 describe 'ListParameterTypes', ->
   @beforeEach ->
@@ -289,18 +225,10 @@ describe 'ListParameterTypes', ->
     @foo.exec(@ctx.withParameters { FooP: ["Hello", "World"] }).should.eql ["Hello", "World"]
 
   it 'should throw when provided value is not a list', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: "Hello World" })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: "Hello World" })).throw(/.*wrong type.*/)
 
   it 'should throw when list contains a wrong type', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: ["Hello", 2468] })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: ["Hello", 2468] })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.eql ['a', 'b', 'c']
@@ -309,18 +237,10 @@ describe 'ListParameterTypes', ->
     @foo2.exec(@ctx.withParameters { FooDP: ["Hello", "World"] }).should.eql ["Hello", "World"]
 
   it 'should throw when overriding value is not a list', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: "Hello World" })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: "Hello World" })).throw(/.*wrong type.*/)
 
   it 'should throw when overriding list contains a wrong type', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: ["Hello", 2468] })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: ["Hello", 2468] })).throw(/.*wrong type.*/)
 
 describe 'IntervalParameterTypes', ->
   @beforeEach ->
@@ -330,18 +250,10 @@ describe 'IntervalParameterTypes', ->
     @foo.exec(@ctx.withParameters { FooP: new Interval(1, 5) }).should.eql new Interval(1, 5)
 
   it 'should throw when provided value is not an interval', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: [1, 5] })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: [1, 5] })).throw(/.*wrong type.*/)
 
   it 'should throw when interval contains a wrong point type', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: new Interval(1.5, 5.5) })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: new Interval(1.5, 5.5) })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.eql new Interval(2, 6)
@@ -350,18 +262,10 @@ describe 'IntervalParameterTypes', ->
     @foo2.exec(@ctx.withParameters { FooDP: new Interval(1, 5) }).should.eql new Interval(1, 5)
 
   it 'should throw when overriding value is not an interval', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: [1, 5] })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: [1, 5] })).throw(/.*wrong type.*/)
 
   it 'should throw when overriding interval contains a wrong point type', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: new Interval(1.5, 5.5) })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: new Interval(1.5, 5.5) })).throw(/.*wrong type.*/)
 
 describe 'TupleParameterTypes', ->
   @beforeEach ->
@@ -376,18 +280,10 @@ describe 'TupleParameterTypes', ->
     @foo.exec(@ctx.withParameters { FooP: t }).should.eql t
 
   it 'should throw when provided value is not a tuple', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: "Hello World" })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: "Hello World" })).throw(/.*wrong type.*/)
 
   it 'should throw when tuple contains a wrong property type', ->
-    try
-      @foo.exec(@ctx.withParameters { FooP: { Hello: "World", MeaningOfLife: "Forty-Two" } })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo.exec(@ctx.withParameters { FooP: { Hello: "World", MeaningOfLife: "Forty-Two" } })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.eql { Hello: "Universe", MeaningOfLife: 24 }
@@ -401,15 +297,7 @@ describe 'TupleParameterTypes', ->
     @foo2.exec(@ctx.withParameters { FooDP: t }).should.eql t
 
   it 'should throw when overriding value is not a tuple', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: "Hello World" })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: "Hello World" })).throw(/.*wrong type.*/)
 
   it 'should throw when overriding tuple contains a wrong property type', ->
-    try
-      @foo2.exec(@ctx.withParameters { FooDP: { Hello: "World", MeaningOfLife: "Forty-Two" } })
-      should.fail("Passing in wrong parameter type should throw an error")
-    catch e
-      e.should.be.instanceof Error
+    should(() => @foo2.exec(@ctx.withParameters { FooP: { Hello: "World", MeaningOfLife: "Forty-Two" } })).throw(/.*wrong type.*/)
