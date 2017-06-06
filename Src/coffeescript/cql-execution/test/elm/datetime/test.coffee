@@ -10,12 +10,14 @@ describe 'DateTime', ->
 
   it 'should execute year precision correctly', ->
     d = @year.exec(@ctx)
+    d.isTime().should.be.false()
     d.year.should.equal 2012
     d.timezoneOffset.should.equal @defaultOffset
     should.not.exist(d[field]) for field in [ 'month', 'day', 'hour', 'minute', 'second', 'millisecond' ]
 
   it 'should execute month precision correctly', ->
     d = @month.exec(@ctx)
+    d.isTime().should.be.false()
     d.year.should.equal 2012
     d.month.should.equal 2
     d.timezoneOffset.should.equal @defaultOffset
@@ -23,6 +25,7 @@ describe 'DateTime', ->
 
   it 'should execute day precision correctly', ->
     d = @day.exec(@ctx)
+    d.isTime().should.be.false()
     d.year.should.equal 2012
     d.month.should.equal 2
     d.day.should.equal 15
@@ -31,6 +34,7 @@ describe 'DateTime', ->
 
   it 'should execute hour precision correctly', ->
     d = @hour.exec(@ctx)
+    d.isTime().should.be.false()
     d.year.should.equal 2012
     d.month.should.equal 2
     d.day.should.equal 15
@@ -40,6 +44,7 @@ describe 'DateTime', ->
 
   it 'should execute minute precision correctly', ->
     d = @minute.exec(@ctx)
+    d.isTime().should.be.false()
     d.year.should.equal 2012
     d.month.should.equal 2
     d.day.should.equal 15
@@ -50,6 +55,7 @@ describe 'DateTime', ->
 
   it 'should execute second precision correctly', ->
     d = @second.exec(@ctx)
+    d.isTime().should.be.false()
     d.year.should.equal 2012
     d.month.should.equal 2
     d.day.should.equal 15
@@ -61,6 +67,7 @@ describe 'DateTime', ->
 
   it 'should execute millisecond precision correctly', ->
     d = @millisecond.exec(@ctx)
+    d.isTime().should.be.false()
     d.year.should.equal 2012
     d.month.should.equal 2
     d.day.should.equal 15
@@ -72,9 +79,72 @@ describe 'DateTime', ->
 
   it 'should execute timezone offsets correctly', ->
     d = @timezoneOffset.exec(@ctx)
+    d.isTime().should.be.false()
     d.year.should.equal 2012
     d.month.should.equal 2
     d.day.should.equal 15
+    d.hour.should.equal 12
+    d.minute.should.equal 10
+    d.second.should.equal 59
+    d.millisecond.should.equal 456
+    d.timezoneOffset.should.equal -8
+
+describe 'Time', ->
+  @beforeEach ->
+    setup @, data
+    @defaultOffset = (new Date()).getTimezoneOffset() / 60 * -1
+
+  it 'should execute hour precision correctly', ->
+    d = @hour.exec(@ctx)
+    d.isTime().should.be.true()
+    d.year.should.equal 1900
+    d.month.should.equal 1
+    d.day.should.equal 1
+    d.hour.should.equal 12
+    d.timezoneOffset.should.equal @defaultOffset
+    should.not.exist(d[field]) for field in [ 'minute', 'second', 'millisecond' ]
+
+  it 'should execute minute precision correctly', ->
+    d = @minute.exec(@ctx)
+    d.isTime().should.be.true()
+    d.year.should.equal 1900
+    d.month.should.equal 1
+    d.day.should.equal 1
+    d.hour.should.equal 12
+    d.minute.should.equal 10
+    d.timezoneOffset.should.equal @defaultOffset
+    should.not.exist(d[field]) for field in [ 'second', 'millisecond' ]
+
+  it 'should execute second precision correctly', ->
+    d = @second.exec(@ctx)
+    d.isTime().should.be.true()
+    d.year.should.equal 1900
+    d.month.should.equal 1
+    d.day.should.equal 1
+    d.hour.should.equal 12
+    d.minute.should.equal 10
+    d.second.should.equal 59
+    d.timezoneOffset.should.equal @defaultOffset
+    should.not.exist(d.millisecond)
+
+  it 'should execute millisecond precision correctly', ->
+    d = @millisecond.exec(@ctx)
+    d.isTime().should.be.true()
+    d.year.should.equal 1900
+    d.month.should.equal 1
+    d.day.should.equal 1
+    d.hour.should.equal 12
+    d.minute.should.equal 10
+    d.second.should.equal 59
+    d.millisecond.should.equal 456
+    d.timezoneOffset.should.equal @defaultOffset
+
+  it 'should execute timezone offsets correctly', ->
+    d = @timezoneOffset.exec(@ctx)
+    d.isTime().should.be.true()
+    d.year.should.equal 1900
+    d.month.should.equal 1
+    d.day.should.equal 1
     d.hour.should.equal 12
     d.minute.should.equal 10
     d.second.should.equal 59

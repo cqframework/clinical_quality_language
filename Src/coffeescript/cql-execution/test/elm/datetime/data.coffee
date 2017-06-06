@@ -295,6 +295,166 @@ module.exports['DateTime'] = {
    }
 }
 
+### Time
+library TestSnippet version '1'
+using QUICK
+context Patient
+define Hour: Time(12)
+define Minute: Time(12, 10)
+define Second: Time(12, 10, 59)
+define Millisecond: Time(12, 10, 59, 456)
+define TimezoneOffset: Time(12, 10, 59, 456, -8.0)
+###
+
+module.exports['Time'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Hour",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Time",
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "12",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "Minute",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Time",
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "12",
+                  "type" : "Literal"
+               },
+               "minute" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "10",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "Second",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Time",
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "12",
+                  "type" : "Literal"
+               },
+               "minute" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "10",
+                  "type" : "Literal"
+               },
+               "second" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "59",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "Millisecond",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Time",
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "12",
+                  "type" : "Literal"
+               },
+               "minute" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "10",
+                  "type" : "Literal"
+               },
+               "second" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "59",
+                  "type" : "Literal"
+               },
+               "millisecond" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "456",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "TimezoneOffset",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Time",
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "12",
+                  "type" : "Literal"
+               },
+               "minute" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "10",
+                  "type" : "Literal"
+               },
+               "second" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "59",
+                  "type" : "Literal"
+               },
+               "millisecond" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "456",
+                  "type" : "Literal"
+               },
+               "timezoneOffset" : {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "value" : "8.0",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         } ]
+      }
+   }
+}
+
 ### Today
 library TestSnippet version '1'
 using QUICK

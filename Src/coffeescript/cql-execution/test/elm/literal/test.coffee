@@ -35,3 +35,27 @@ describe 'Literal', ->
 
   it 'should execute \'true\' as \'true\'', ->
     @stringTrue.exec(@ctx).should.equal 'true'
+
+  it 'should execute \'\' as correct DateTime', ->
+    d = @dateTimeX.exec(@ctx)
+    d.isTime().should.be.false()
+    d.year.should.equal 2012
+    d.month.should.equal 2
+    d.day.should.equal 15
+    d.hour.should.equal 12
+    d.minute.should.equal 10
+    d.second.should.equal 59
+    d.millisecond.should.equal 456
+    d.timezoneOffset.should.equal 0
+
+  it 'should execute \'\' as correct Time', ->
+    d = @timeX.exec(@ctx)
+    d.isTime().should.be.true()
+    d.year.should.equal 1900
+    d.month.should.equal 1
+    d.day.should.equal 1
+    d.hour.should.equal 12
+    d.minute.should.equal 10
+    d.second.should.equal 59
+    d.millisecond.should.equal 456
+    d.timezoneOffset.should.equal 0

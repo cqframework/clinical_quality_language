@@ -13,6 +13,17 @@ module.exports.DateTime = class DateTime extends Expression
     args = ((if @[p]? then @[p].exec(ctx)) for p in DateTime.PROPERTIES)
     new DT.DateTime(args...)
 
+module.exports.Time = class Time extends Expression
+  @PROPERTIES = ['hour', 'minute', 'second', 'millisecond', 'timezoneOffset']
+  constructor: (json) ->
+    super
+    for property in Time.PROPERTIES
+      if json[property]? then @[property] = build json[property]
+
+  exec: (ctx) ->
+    args = ((if @[p]? then @[p].exec(ctx)) for p in Time.PROPERTIES)
+    (new DT.DateTime(1900, 1, 1, args...)).getTime()
+
 # TODO: Update to use timestamp of request, per the spec
 module.exports.Today = class Today extends Expression
   constructor: (json) ->

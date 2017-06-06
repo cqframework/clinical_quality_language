@@ -8,6 +8,13 @@ define Second: DateTime(2012, 2, 15, 12, 10, 59)
 define Millisecond: DateTime(2012, 2, 15, 12, 10, 59, 456)
 define TimezoneOffset: DateTime(2012, 2, 15, 12, 10, 59, 456, -8.0)
 
+// @Test: Time
+define Hour: Time(12)
+define Minute: Time(12, 10)
+define Second: Time(12, 10, 59)
+define Millisecond: Time(12, 10, 59, 456)
+define TimezoneOffset: Time(12, 10, 59, 456, -8.0)
+
 // @Test: Today
 define TodayVar: Today()
 

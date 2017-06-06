@@ -266,10 +266,8 @@ describe 'TimeParameterTypes', ->
     catch e
       e.should.be.instanceof Error
 
-  ### Currently Time literals and constructors don't work in execution engine
   it 'should execute to default value', ->
     @foo2.exec(@ctx).should.eql DateTime.parse('2012-10-25T12:00:00').getTime()
-  ###
 
   it 'should execute to overriding valid value', ->
     t = DateTime.parse('2012-10-25T12:55:14.456+00').getTime()
