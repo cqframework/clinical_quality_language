@@ -40,6 +40,14 @@ module.exports.Now = class Now extends Expression
   exec: (ctx) ->
     DT.DateTime.fromDate(new Date())
 
+# TODO: Update to use timestamp of request, per the spec
+module.exports.TimeOfDay = class TimeOfDay extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    DT.DateTime.fromDate(new Date()).getTime()
+
 module.exports.DateTimeComponentFrom = class DateTimeComponentFrom extends Expression
   constructor: (json) ->
     super

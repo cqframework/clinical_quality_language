@@ -158,6 +158,7 @@ describe 'Today', ->
   it 'should return only day components and timezone of today', ->
     jsDate = new Date()
     today = @todayVar.exec @ctx
+    today.isTime().should.be.false()
     today.year.should.equal jsDate.getFullYear()
     today.month.should.equal jsDate.getMonth() + 1
     today.day.should.equal jsDate.getDate()
@@ -171,6 +172,7 @@ describe 'Now', ->
   it 'should return all date components representing now', ->
     jsDate = new Date()
     now = @nowVar.exec @ctx
+    now.isTime().should.be.false()
     now.year.should.equal jsDate.getFullYear()
     now.month.should.equal jsDate.getMonth() + 1
     now.day.should.equal jsDate.getDate()
@@ -179,6 +181,23 @@ describe 'Now', ->
     now.second.should.exist
     now.millisecond.should.exist
     now.timezoneOffset.should.equal jsDate.getTimezoneOffset() / 60 * -1
+
+describe 'TimeOfDay', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should return all date components representing now', ->
+    jsDate = new Date()
+    tod = @timeOfDayVar.exec @ctx
+    tod.isTime().should.be.true()
+    tod.year.should.equal 0
+    tod.month.should.equal 1
+    tod.day.should.equal 1
+    tod.hour.should.equal jsDate.getHours()
+    tod.minute.should.exist
+    tod.second.should.exist
+    tod.millisecond.should.exist
+    tod.timezoneOffset.should.equal jsDate.getTimezoneOffset() / 60 * -1
 
 describe 'DateTimeComponentFrom', ->
   @beforeEach ->

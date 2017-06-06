@@ -555,6 +555,56 @@ module.exports['Now'] = {
    }
 }
 
+### TimeOfDay
+library TestSnippet version '1'
+using QUICK
+context Patient
+define TimeOfDayVar: TimeOfDay()
+###
+
+module.exports['TimeOfDay'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "TimeOfDayVar",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "TimeOfDay"
+            }
+         } ]
+      }
+   }
+}
+
 ### DateTimeComponentFrom
 library TestSnippet version '1'
 using QUICK

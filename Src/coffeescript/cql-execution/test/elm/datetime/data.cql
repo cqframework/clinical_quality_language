@@ -21,6 +21,9 @@ define TodayVar: Today()
 // @Test: Now
 define NowVar: Now()
 
+// @Test: TimeOfDay
+define TimeOfDayVar: TimeOfDay()
+
 // @Test: DateTimeComponentFrom
 define IdesOfMarch: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0)
 define Year: year from IdesOfMarch
