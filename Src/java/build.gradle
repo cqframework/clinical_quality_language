@@ -84,9 +84,15 @@ subprojects {
         classifier = 'sources'
         from sourceSets.main.allSource
     }
+
+    task fatJar(type: Jar) {
+        classifier = 'fat'
+        from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+        with jar
+    }
     
     artifacts {
-        archives javadocJar, sourcesJar
+        archives javadocJar, sourcesJar, fatJar
     }
 }
 
@@ -156,7 +162,7 @@ configure(subprojects.findAll {it.name in ['elm', 'quick', 'qdm', 'cql-execution
 configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm', 'qdm']}) {
     apply plugin: 'maven'
     apply plugin: 'signing'
-    
+
     signing {
         required { gradle.taskGraph.hasTask(uploadArchives) }
         sign configurations.archives
@@ -222,6 +228,7 @@ configure(subprojects.findAll {it.name in ['cql', 'elm', 'quick', 'cql-to-elm', 
     }
     uploadArchives.dependsOn javadocJar
     uploadArchives.dependsOn sourcesJar
+    uploadArchives.dependsOn fatJar
 }
 
 task wrapper(type: Wrapper) {
