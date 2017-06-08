@@ -1,5 +1,29 @@
 {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 22,
+         "startChar" : 5,
+         "endLine" : 22,
+         "endChar" : 54,
+         "message" : "Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "startLine" : 22,
+         "startChar" : 5,
+         "endLine" : 22,
+         "endChar" : 54,
+         "message" : "Could not resolve membership operator for terminology target of the retrieve.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "CMS146",
          "version" : "2"

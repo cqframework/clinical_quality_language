@@ -516,6 +516,28 @@ public class LibraryBuilder {
         return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression));
     }
 
+    public Expression resolveIn(Expression left, Expression right) {
+        if (right instanceof ValueSetRef) {
+            InValueSet in = of.createInValueSet()
+                    .withCode(left)
+                    .withValueset((ValueSetRef) right);
+            resolveCall("System", "InValueSet", new InValueSetInvocation(in));
+            return in;
+        }
+
+        if (right instanceof CodeSystemRef) {
+            InCodeSystem in = of.createInCodeSystem()
+                    .withCode(left)
+                    .withCodesystem((CodeSystemRef)right);
+            resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
+            return in;
+        }
+
+        In in = of.createIn().withOperand(left, right);
+        resolveBinaryCall("System", "In", in);
+        return in;
+    }
+
     public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
         return resolveCall(libraryName, operatorName, invocation, true);
     }
@@ -1089,6 +1111,14 @@ public class LibraryBuilder {
                         return resultType;
                     }
                 }
+            }
+            else if (currentType instanceof ListType && listTraversal) {
+                // NOTE: FHIRPath path traversal support
+                // Resolve property as a list of items of property of the element type
+                ListType listType = (ListType)currentType;
+                DataType resultType = resolveProperty(listType.getElementType(), identifier);
+                return new ListType(resultType);
+
             }
 
             if (currentType.getBaseType() != null) {

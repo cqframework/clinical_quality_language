@@ -77,7 +77,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="lengthOfStay" type="System.Quantity"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Diagnosis" retrievable="true" baseType="QDM.QDMBaseType" label="Diagnosis">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Diagnosis" retrievable="true" baseType="QDM.QDMBaseType" label="Diagnosis" primaryCodePath="code">
         <ns4:element name="prevalencePeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="anatomicalLocationSite" type="System.Code"/>
         <ns4:element name="severity" type="System.Code"/>

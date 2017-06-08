@@ -440,8 +440,7 @@
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Practitioner" baseType="QUICK.DomainResource"
-                  retrievable="true" identifier="practitioner-qicore-qicore-practitioner" primaryCodePath="practitionerRole[].role">
-                                                                                          <!-- note: primaryCodePath is invalid -->
+                  retrievable="true" identifier="practitioner-qicore-qicore-practitioner" primaryCodePath="practitionerRole.role">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="name" type="QUICK.HumanName"/>
         <ns4:element name="telecom" type="list&lt;QUICK.ContactPoint&gt;"/>
@@ -1523,8 +1522,7 @@
         <ns4:element name="related" type="list&lt;QUICK.Observation.Related&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.DiagnosticOrder" baseType="QUICK.DomainResource"
-                  retrievable="true" identifier="diagnosticorder-qicore-qicore-diagnosticorder" primaryCodePath="item[].code">
-                                                                                                <!-- note: primaryCodePath is invalid -->
+                  retrievable="true" identifier="diagnosticorder-qicore-qicore-diagnosticorder" primaryCodePath="item.code">
         <ns4:element name="subject" type="System.Any"/>
         <ns4:element name="orderer" type="System.Any"/>
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
@@ -1587,8 +1585,7 @@
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.ImmunizationRecommendation" baseType="QUICK.DomainResource"
-                  retrievable="true" identifier="immunizationrecommendation-qicore-qicore-immunizationrec" primaryCodePath="recommendation[].vaccineType">
-                                                                                                           <!-- note: primaryCodePath is invalid -->
+                  retrievable="true" identifier="immunizationrecommendation-qicore-qicore-immunizationrec" primaryCodePath="recommendation.vaccineType">
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="patient" type="System.Any"/>
         <ns4:element name="recommendation" type="list&lt;QUICK.ImmunizationRecommendation.Recommendation&gt;"/>

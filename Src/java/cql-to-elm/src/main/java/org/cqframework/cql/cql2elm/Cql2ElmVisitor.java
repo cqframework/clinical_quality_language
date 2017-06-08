@@ -1499,25 +1499,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 } else {
                     Expression left = parseExpression(ctx.expression(0));
                     Expression right = parseExpression(ctx.expression(1));
-                    if (right instanceof ValueSetRef) {
-                        InValueSet in = of.createInValueSet()
-                                .withCode(left)
-                                .withValueset((ValueSetRef) right);
-                        libraryBuilder.resolveCall("System", "InValueSet", new InValueSetInvocation(in));
-                        return in;
-                    }
-
-                    if (right instanceof CodeSystemRef) {
-                        InCodeSystem in = of.createInCodeSystem()
-                                .withCode(left)
-                                .withCodesystem((CodeSystemRef)right);
-                        libraryBuilder.resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
-                        return in;
-                    }
-
-                    In in = of.createIn().withOperand(left, right);
-                    libraryBuilder.resolveBinaryCall("System", "In", in);
-                    return in;
+                    return libraryBuilder.resolveIn(left, right);
                 }
             case "contains":
                 if (ctx.dateTimePrecisionSpecifier() != null) {
@@ -2690,12 +2672,51 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 retrieve.setCodeProperty(classType.getPrimaryCodePath());
             }
 
-            if (ctx.terminology().qualifiedIdentifier() != null) {
-                List<String> identifiers = (List<String>) visit(ctx.terminology());
-                retrieve.setCodes(resolveQualifiedIdentifier(identifiers));
+            Property property = null;
+            if (retrieve.getCodeProperty() == null) {
+                libraryBuilder.recordParsingException(new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
+                        CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
             }
             else {
-                retrieve.setCodes(parseExpression(ctx.terminology().expression()));
+                try {
+                    DataType codeType = libraryBuilder.resolvePath((DataType) namedType, retrieve.getCodeProperty());
+                    property = of.createProperty().withPath(retrieve.getCodeProperty());
+                    property.setResultType(codeType);
+                }
+                catch (Exception e) {
+                    libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
+                            retrieve.getCodeProperty(), namedType.getName()), CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx), e));
+                }
+            }
+
+            Expression terminology = null;
+            if (ctx.terminology().qualifiedIdentifier() != null) {
+                List<String> identifiers = (List<String>) visit(ctx.terminology());
+                terminology = resolveQualifiedIdentifier(identifiers);
+            }
+            else {
+                terminology = parseExpression(ctx.terminology().expression());
+            }
+
+            // Resolve the terminology target using an in operator
+            try {
+                Expression in = libraryBuilder.resolveIn(property, terminology);
+                if (in instanceof In) {
+                    retrieve.setCodes(((In) in).getOperand().get(1));
+                } else if (in instanceof InValueSet) {
+                    retrieve.setCodes(((InValueSet) in).getValueset());
+                } else if (in instanceof InCodeSystem) {
+                    retrieve.setCodes(((InCodeSystem) in).getCodesystem());
+                } else {
+                    libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
+                            CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                }
+            }
+            catch (Exception e) {
+                // If something goes wrong attempting to resolve, just set to the expression and report it as a warning, it shouldn't prevent translation
+                retrieve.setCodes(terminology);
+                libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
+                        CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx), e));
             }
         }
 
