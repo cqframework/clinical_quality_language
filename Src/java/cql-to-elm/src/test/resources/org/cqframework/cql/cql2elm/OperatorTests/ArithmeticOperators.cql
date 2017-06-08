@@ -1,3 +1,5 @@
+library ArithmeticOperators version '2'
+
 define IntegerAbs: Abs(-1)
 define DecimalAbs: Abs(-1.0)
 define QuantityAbs: Abs(-1.0'cm')

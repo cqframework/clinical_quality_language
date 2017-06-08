@@ -1,3 +1,5 @@
+library IntervalOperatorPhrases version '2'
+
 define A: Interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1, 0, 0, 0, 0))
 define B: Interval[DateTime(2014, 6, 1, 0, 0, 0, 0), DateTime(2014, 6, 2, 0, 0, 0, 0))
 define PointA: DateTime(2014, 1, 1, 0, 0, 0, 0)

@@ -1,3 +1,5 @@
+library ImplicitConversion version '2'
+
 codesystem "http://snomed.info/sct": 'http://snome.info/sct'
 
 // Integer to Decimal

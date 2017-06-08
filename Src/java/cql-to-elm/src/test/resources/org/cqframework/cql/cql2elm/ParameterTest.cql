@@ -1,3 +1,5 @@
+library ParameterTest version '2'
+
 parameter x Tuple { x Boolean }
 parameter a List<List<Boolean>>
 

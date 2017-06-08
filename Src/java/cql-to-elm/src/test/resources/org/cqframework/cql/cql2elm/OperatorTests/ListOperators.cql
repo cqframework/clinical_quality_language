@@ -1,3 +1,5 @@
+library ListOperators version '2'
+
 define ListContains: { 1, 2, 3 } contains 2
 define ListDistinct: distinct { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 }
 define ListEqual: { 1, 2, 3 } = { 1, 2, 3 }

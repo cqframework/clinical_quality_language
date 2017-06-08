@@ -1,3 +1,5 @@
+library IntervalOperators version '2'
+
 define IntervalAfter: Interval[10, 15] after Interval [1, 5]
 define PointIntervalAfter: 10 after Interval [1, 5]
 define IntervalPointAfter: Interval[10, 15] after 5

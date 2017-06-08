@@ -1,3 +1,5 @@
+library InTest version '2'
+
 parameter AnyParameter Any
 
 define AnyExpression: null

@@ -1,3 +1,5 @@
+library NullologicalOperators version '2'
+
 define CoalesceList: Coalesce({ 1, 2, 3, 4, 5 })
 define CoalesceTwoArgument: Coalesce(1, 2)
 define CoalesceThreeArgument: Coalesce(1, 2, 3)

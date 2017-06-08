@@ -1,3 +1,5 @@
+library DateTimeLiteralTest version '2'
+
 define YearLiteral: @2014
 define UTCYearLiteral: @2014Z
 define YearMonthLiteral: @2014-12
