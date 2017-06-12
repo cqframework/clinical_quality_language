@@ -1,7 +1,7 @@
 { Expression } = require './expression'
 { build } = require './builder'
 
-module.exports.Concat = class Concat extends Expression
+module.exports.Concatenate = class Concatenate extends Expression
   constructor: (json) ->
     super
 

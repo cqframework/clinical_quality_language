@@ -19,6 +19,17 @@ define AmbulatoryEncountersIncludedInMP: [Encounter: "Ambulatory/ED Visit"] E wh
 
 module.exports['DateRangeOptimizedQuery'] = {
    "library" : {
+      "annotation" : [ {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -191,6 +202,12 @@ define MPIncludedAmbulatoryEncounters: [Encounter: "Ambulatory/ED Visit"] E wher
 
 module.exports['IncludesQuery'] = {
    "library" : {
+      "annotation" : [ {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"

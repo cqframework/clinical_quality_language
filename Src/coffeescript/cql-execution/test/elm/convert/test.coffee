@@ -9,7 +9,7 @@ describe 'FromString', ->
 
   it "should convert 'str' to 'str'", ->
     @stringStr.exec(@ctx).should.equal "str"
-    
+
   it "should convert null to null", ->
     isNull(@stringNull.exec(@ctx)).should.equal true
 
@@ -18,7 +18,7 @@ describe 'FromString', ->
 
   it "should convert 'false' to false", ->
     @boolFalse.exec(@ctx).should.equal false
-    
+
   it "should convert '10.2' to Decimal", ->
     @decimalValid.exec(@ctx).should.equal 10.2
 
@@ -53,7 +53,7 @@ describe 'FromString', ->
     quantity = @quantityStrDecimal.exec(@ctx)
     quantity.value.should.equal 10.0
     quantity.unit.should.equal "mA"
-    
+
   it "should convert '2015-01-02' to DateTime", ->
     date = @dateStr.exec(@ctx)
     date.year.should.equal 2015
@@ -69,7 +69,7 @@ describe 'FromInteger', ->
 
   it "should convert 10 to 10.0", ->
     @decimal10.exec(@ctx).should.equal 10.0
-    
+
   it "should convert null to null", ->
     isNull(@intNull.exec(@ctx)).should.equal true
 
@@ -89,10 +89,13 @@ describe 'FromQuantity', ->
   it "should convert \"-10 'A'\" to \"10 'A'\"", ->
     @negQuantityStr.exec(@ctx).should.equal "-10 'A'"
 
+  ###
+  Commented out below due to bug (?) in cql-to-elm: https://github.com/cqframework/clinical_quality_language/issues/119
   it "should convert \"10 'A'\" to \"10 'A'\"", ->
     quantity = @quantityQuantity.exec(@ctx)
     quantity.value.should.equal 10
     quantity.unit.should.equal 'A'
+  ###
 
 describe 'FromBoolean', ->
   @beforeEach ->
@@ -122,7 +125,7 @@ describe 'FromDateTime', ->
     date.year.should.equal 2015
     date.month.should.equal 1
     date.day.should.equal 2
-    
+
 describe 'FromTime', ->
   @beforeEach ->
     setup @, data
@@ -134,13 +137,13 @@ describe 'FromTime', ->
     time = @timeTime.exec(@ctx)
     time.hour.should.equal 11
     time.minute.should.equal 57
-    
+
 describe 'FromCode', ->
   @beforeEach ->
     setup @, data
-    
+
   it.skip "should convert hepB to a concept", ->
     concept = @codeConcept.exec(@ctx)
-    
+
   it.skip "should convert hepB to a code", ->
     code = @codeCode.exec(@ctx)

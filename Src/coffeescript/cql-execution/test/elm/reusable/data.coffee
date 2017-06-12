@@ -284,7 +284,7 @@ module.exports['FunctionOverloads'] = {
             "accessLevel" : "Public",
             "type" : "FunctionDef",
             "expression" : {
-               "type" : "Add",
+               "type" : "Concatenate",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Hello ",

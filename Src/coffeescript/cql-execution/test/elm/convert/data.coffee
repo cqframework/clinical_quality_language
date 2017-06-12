@@ -347,7 +347,8 @@ context Patient
 define quantityStr: convert 10 'A' to String
 define negQuantityStr: convert -10 'A' to String
 define posQuantityStr: convert +10 'A' to String
-define quantityQuantity: convert 10 'A' to Quantity
+// Commented out below due to bug (?) in cql-to-elm: https://github.com/cqframework/clinical_quality_language/issues/119
+// define quantityQuantity: convert 10 'A' to Quantity
 ###
 
 module.exports['FromQuantity'] = {
@@ -418,23 +419,6 @@ module.exports['FromQuantity'] = {
                   "value" : 10,
                   "unit" : "A",
                   "type" : "Quantity"
-               }
-            }
-         }, {
-            "name" : "quantityQuantity",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
-               "type" : "As",
-               "operand" : {
-                  "value" : 10,
-                  "unit" : "A",
-                  "type" : "Quantity"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          } ]

@@ -21,7 +21,7 @@ define SeparateUsingNull: Split('a,b,c', null)
 
 // @Test: Length
 define ElevenLetters: Length('Hello World')
-define NullString: Length(null)
+define NullString: Length(null as String)
 
 // @Test: Upper
 define LowerC: Upper('abcdefg123')
@@ -39,7 +39,7 @@ define NullString: Lower(null)
 define HelloWorldSix: 'HelloWorld'[6]
 define HelloWorldZero: 'HelloWorld'[0]
 define HelloWorldTwenty: 'HelloWorld'[20]
-define NullString: null[4]
+define NullString: (null as String)[4]
 define NullIndex: 'HelloWorld'[null]
 
 // @Test: PositionOf
