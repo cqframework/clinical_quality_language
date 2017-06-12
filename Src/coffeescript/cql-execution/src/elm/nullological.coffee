@@ -12,7 +12,7 @@ module.exports.IsNull = class IsNull extends Expression
     super
 
   exec: (ctx) ->
-    @execArgs(ctx) == null
+    not @execArgs(ctx)?
 
 module.exports.Coalesce = class Coalesce extends Expression
   constructor: (json) ->

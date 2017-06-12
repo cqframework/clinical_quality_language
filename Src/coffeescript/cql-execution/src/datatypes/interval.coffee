@@ -92,12 +92,14 @@ module.exports.Interval = class Interval
         when cmp.lessThanOrEquals(a.low, b.low) then [@low, @lowClosed]
         when cmp.greaterThanOrEquals(a.low, b.low) then [other.low, other.lowClosed]
         when areNumeric(a.low, b.low) then [lowestNumericUncertainty(a.low, b.low), true]
+        # TODO: Do we need to support quantities here?
         when areDateTimes(a.low, b.low) and a.low.isMorePrecise(b.low) then [other.low, other.lowClosed]
         else [@low, @lowClosed]
       [h, hc] = switch
         when cmp.greaterThanOrEquals(a.high, b.high) then [@high, @highClosed]
         when cmp.lessThanOrEquals(a.high, b.high) then [other.high, other.highClosed]
         when areNumeric(a.low, b.low) then [highestNumericUncertainty(a.high, b.high), true]
+        # TODO: Do we need to support quantities here?
         when areDateTimes(a.high, b.high) and a.high.isMorePrecise(b.high) then [other.high, other.highClosed]
         else [@high, @highClosed]
       new Interval(l, h, lc, hc)
@@ -113,12 +115,14 @@ module.exports.Interval = class Interval
         when cmp.greaterThanOrEquals(a.low, b.low) then [@low, @lowClosed]
         when cmp.lessThanOrEquals(a.low, b.low) then [other.low, other.lowClosed]
         when areNumeric(a.low, b.low) then [highestNumericUncertainty(a.low, b.low), true]
+        # TODO: Do we need to support quantities here?
         when areDateTimes(a.low, b.low) and b.low.isMorePrecise(a.low) then [other.low, other.lowClosed]
         else [@low, @lowClosed]
       [h, hc] = switch
         when cmp.lessThanOrEquals(a.high, b.high) then [@high, @highClosed]
         when cmp.greaterThanOrEquals(a.high, b.high) then [other.high, other.highClosed]
         when areNumeric(a.low, b.low) then [lowestNumericUncertainty(a.high, b.high), true]
+        # TODO: Do we need to support quantities here?
         when areDateTimes(a.high, b.high) and b.high.isMorePrecise(a.high) then [other.high, other.highClosed]
         else [@high, @highClosed]
       new Interval(l, h, lc, hc)
@@ -198,7 +202,7 @@ module.exports.Interval = class Interval
 
   toClosed: () ->
     point = @low ? @high
-    if typeof(point) is 'number' or point instanceof DateTime
+    if typeof(point) is 'number' or point instanceof DateTime or point?.constructor?.name == 'Quantity'
       low = switch
         when @lowClosed and not @low? then minValueForInstance point
         when not @lowClosed and @low? then successor @low

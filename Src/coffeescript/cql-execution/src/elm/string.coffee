@@ -1,7 +1,7 @@
 { Expression } = require './expression'
 { build } = require './builder'
 
-module.exports.Concat = class Concat extends Expression
+module.exports.Concatenate = class Concatenate extends Expression
   constructor: (json) ->
     super
 
@@ -73,12 +73,9 @@ module.exports.Substring = class Substring extends Expression
     stringToSub = @stringToSub.exec(ctx)
     startIndex = @startIndex.exec(ctx)
     length = if @length? then @length.exec(ctx) else null
-    if not (stringToSub? and startIndex?)
+    # According to spec: If stringToSub or startIndex is null, or startIndex is out of range, the result is null.
+    if not stringToSub? || not startIndex? || startIndex < 0 || startIndex >= stringToSub.length
       null
-    else if startIndex < 0
-      throw new Error "Start index must be at least zero"
-    else if length? and length < 0
-      throw new Error "Length must be at least zero"
     else if length?
       stringToSub.substr(startIndex, length)
     else

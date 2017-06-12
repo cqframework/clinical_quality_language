@@ -14,16 +14,16 @@ describe 'IsNull', ->
     setup @, data
 
   it 'should detect that null is null', ->
-    @nullIsNull.exec(@ctx).should.be.true
+    @nullIsNull.exec(@ctx).should.be.true()
 
   it 'should detect that null variable is null', ->
-    @nullVarIsNull.exec(@ctx).should.be.true
+    @nullVarIsNull.exec(@ctx).should.be.true()
 
   it 'should detect that string is not null', ->
-    @stringIsNull.exec(@ctx).should.be.false
+    @stringIsNull.exec(@ctx).should.be.false()
 
   it 'should detect that non-null variable is not null', ->
-    @nonNullVarIsNull.exec(@ctx).should.be.false
+    @nonNullVarIsNull.exec(@ctx).should.be.false()
 
 describe.skip 'Coalesce', ->
   @beforeEach ->

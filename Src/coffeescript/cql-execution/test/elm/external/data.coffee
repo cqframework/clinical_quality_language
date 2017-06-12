@@ -24,6 +24,17 @@ define WrongCodeProperty: [Encounter: class in "Ambulatory/ED Visit"]
 
 module.exports['Retrieve'] = {
    "library" : {
+      "annotation" : [ {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"

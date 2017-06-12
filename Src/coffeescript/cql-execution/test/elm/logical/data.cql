@@ -35,3 +35,13 @@ define NF: null xor false
 define NotTrue: not true
 define NotFalse: not false
 define NotNull: not null
+
+// @Test: IsTrue
+define TrueIsTrue: true is true
+define FalseIsTrue: false is true
+define NullIsTrue: null is true
+
+// @Test: IsFalse
+define TrueIsFalse: true is false
+define FalseIsFalse: false is false
+define NullIsFalse: null is false

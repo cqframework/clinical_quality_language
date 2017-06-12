@@ -26,6 +26,28 @@ define WrongLongCode: Code { code: 'F', system: '2.16.840.1.113883.18.2', versio
 valueset "Female": '2.16.840.1.113883.3.560.100.2'
 define IsFemale: Patient.gender in "Female"
 
+// @Test: CodeDef
+codesystem "LOINC": 'http://loinc.org'
+code "Tobacco smoking status code": '72166-2' from "LOINC" display 'Tobacco smoking status'
+define Foo: 'Bar'
+
+// @Test: CodeRef
+codesystem "LOINC": 'http://loinc.org'
+code "Tobacco smoking status code": '72166-2' from "LOINC" display 'Tobacco smoking status'
+define Foo: "Tobacco smoking status code"
+
+// @Test: ConceptDef
+codesystem "LOINC": 'http://loinc.org'
+code "Tobacco smoking status code": '72166-2' from "LOINC" display 'Tobacco smoking status'
+concept "Tobacco smoking status": { "Tobacco smoking status code" } display 'Tobacco smoking status'
+define Foo: 'Bar'
+
+// @Test: ConceptRef
+codesystem "LOINC": 'http://loinc.org'
+code "Tobacco smoking status code": '72166-2' from "LOINC" display 'Tobacco smoking status'
+concept "Tobacco smoking status": { "Tobacco smoking status code" } display 'Tobacco smoking status'
+define Foo: "Tobacco smoking status"
+
 // @Test: CalculateAge
 define Years: AgeInYears()
 define Months: AgeInMonths()

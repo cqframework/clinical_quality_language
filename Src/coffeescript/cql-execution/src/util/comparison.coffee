@@ -4,8 +4,8 @@
 areNumbers = (a, b) ->
   typeof a is 'number' and typeof b is 'number'
 
-areDateTimes = (a, b) ->
-  a instanceof DateTime and b instanceof DateTime
+areDateTimesOrQuantities = (a, b) ->
+  (a instanceof DateTime and b instanceof DateTime) or (a?.constructor?.name == 'Quantity' and b?.constructor?.name == 'Quantity')
 
 isUncertainty = (x) ->
   x instanceof Uncertainty
@@ -13,7 +13,7 @@ isUncertainty = (x) ->
 module.exports.lessThan = (a, b, precision = DateTime.Unit.MILLISECOND) ->
   switch
     when areNumbers a, b then a < b
-    when areDateTimes a, b then a.before(b, precision)
+    when areDateTimesOrQuantities a, b then a.before(b, precision)
     when isUncertainty a then a.lessThan b
     when isUncertainty b then Uncertainty.from(a).lessThan b
     else null
@@ -21,7 +21,7 @@ module.exports.lessThan = (a, b, precision = DateTime.Unit.MILLISECOND) ->
 module.exports.lessThanOrEquals = (a, b, precision = DateTime.Unit.MILLISECOND) ->
   switch
     when areNumbers a, b then a <= b
-    when areDateTimes a, b then a.sameOrBefore(b, precision)
+    when areDateTimesOrQuantities a, b then a.sameOrBefore(b, precision)
     when isUncertainty a then a.lessThanOrEquals b
     when isUncertainty b then Uncertainty.from(a).lessThanOrEquals b
     else null
@@ -29,7 +29,7 @@ module.exports.lessThanOrEquals = (a, b, precision = DateTime.Unit.MILLISECOND) 
 module.exports.greaterThan = (a, b, precision = DateTime.Unit.MILLISECOND) ->
   switch
     when areNumbers a, b then a > b
-    when areDateTimes a, b then a.after(b, precision)
+    when areDateTimesOrQuantities a, b then a.after(b, precision)
     when isUncertainty a then a.greaterThan b
     when isUncertainty b then Uncertainty.from(a).greaterThan b
     else null
@@ -37,7 +37,7 @@ module.exports.greaterThan = (a, b, precision = DateTime.Unit.MILLISECOND) ->
 module.exports.greaterThanOrEquals = (a, b, precision = DateTime.Unit.MILLISECOND) ->
   switch
     when areNumbers a, b then a >= b
-    when areDateTimes a, b then a.sameOrAfter(b, precision)
+    when areDateTimesOrQuantities a, b then a.sameOrAfter(b, precision)
     when isUncertainty a then a.greaterThanOrEquals b
     when isUncertainty b then Uncertainty.from(a).greaterThanOrEquals b
     else null

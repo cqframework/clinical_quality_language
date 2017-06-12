@@ -55,7 +55,7 @@ module.exports['Concat'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Add",
+               "type" : "Concatenate",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Hello",
@@ -71,37 +71,37 @@ module.exports['Concat'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Add",
+               "type" : "Concatenate",
                "operand" : [ {
-                  "type" : "Add",
+                  "type" : "Concatenate",
                   "operand" : [ {
-                     "type" : "Add",
+                     "type" : "Concatenate",
                      "operand" : [ {
-                        "type" : "Add",
+                        "type" : "Concatenate",
                         "operand" : [ {
-                           "type" : "Add",
+                           "type" : "Concatenate",
                            "operand" : [ {
-                              "type" : "Add",
+                              "type" : "Concatenate",
                               "operand" : [ {
-                                 "type" : "Add",
+                                 "type" : "Concatenate",
                                  "operand" : [ {
-                                    "type" : "Add",
+                                    "type" : "Concatenate",
                                     "operand" : [ {
-                                       "type" : "Add",
+                                       "type" : "Concatenate",
                                        "operand" : [ {
-                                          "type" : "Add",
+                                          "type" : "Concatenate",
                                           "operand" : [ {
-                                             "type" : "Add",
+                                             "type" : "Concatenate",
                                              "operand" : [ {
-                                                "type" : "Add",
+                                                "type" : "Concatenate",
                                                 "operand" : [ {
-                                                   "type" : "Add",
+                                                   "type" : "Concatenate",
                                                    "operand" : [ {
-                                                      "type" : "Add",
+                                                      "type" : "Concatenate",
                                                       "operand" : [ {
-                                                         "type" : "Add",
+                                                         "type" : "Concatenate",
                                                          "operand" : [ {
-                                                            "type" : "Add",
+                                                            "type" : "Concatenate",
                                                             "operand" : [ {
                                                                "valueType" : "{urn:hl7-org:elm-types:r1}String",
                                                                "value" : "The",
@@ -192,7 +192,7 @@ module.exports['Concat'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Add",
+               "type" : "Concatenate",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
                   "value" : "Hello",
@@ -232,7 +232,7 @@ module.exports['Concat'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "type" : "Add",
+               "type" : "Concatenate",
                "operand" : [ {
                   "name" : "Hello",
                   "type" : "ExpressionRef"
@@ -545,7 +545,7 @@ library TestSnippet version '1'
 using QUICK
 context Patient
 define ElevenLetters: Length('Hello World')
-define NullString: Length(null)
+define NullString: Length(null as String)
 ###
 
 module.exports['Length'] = {
@@ -598,7 +598,7 @@ module.exports['Length'] = {
             "expression" : {
                "type" : "Length",
                "operand" : {
-                  "asType" : "{urn:hl7-org:elm-types:r1}String",
+                  "strict" : false,
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -821,7 +821,7 @@ context Patient
 define HelloWorldSix: 'HelloWorld'[6]
 define HelloWorldZero: 'HelloWorld'[0]
 define HelloWorldTwenty: 'HelloWorld'[20]
-define NullString: null[4]
+define NullString: (null as String)[4]
 define NullIndex: 'HelloWorld'[null]
 ###
 
@@ -911,7 +911,7 @@ module.exports['Indexer'] = {
             "expression" : {
                "type" : "Indexer",
                "operand" : [ {
-                  "asType" : "{urn:hl7-org:elm-types:r1}String",
+                  "strict" : false,
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
@@ -1086,7 +1086,8 @@ context Patient
 define World: Substring('HelloWorld', 5)
 define Or: Substring('HelloWorld', 7, 2)
 define ZeroLength: Substring('HelloWorld', 7, 0)
-define StartTooLow: Substring('HelloWorld', 0)
+define StartTooLow: Substring('HelloWorld', -1)
+define StartZero: Substring('HelloWorld', 0)
 define TooMuchLength: Substring('HelloWorld', 7, 25)
 define NegativeLength: Substring('HelloWorld', 7, -1)
 define NullString: Substring(null, 5)
@@ -1187,6 +1188,26 @@ module.exports['Substring'] = {
             }
          }, {
             "name" : "StartTooLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Substring",
+               "stringToSub" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                  "value" : "HelloWorld",
+                  "type" : "Literal"
+               },
+               "startIndex" : {
+                  "type" : "Negate",
+                  "operand" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "StartZero",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {

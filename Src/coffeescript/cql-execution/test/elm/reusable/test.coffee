@@ -33,3 +33,13 @@ describe 'FunctionDefinitions', ->
   it 'should be able to define and use a simple function' , ->
     e = @testValue.exec(@ctx)
     e.should.equal 3
+
+describe.skip 'FunctionOverloads', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should be able to use the function with Integer argument' , ->
+    e = @testValue1.exec(@ctx)
+    e.should.equal 2
+    e = @testValue2.exec(@ctx)
+    e.should.equal 'Hello World'

@@ -41,34 +41,34 @@ describe 'InValueSet', ->
     setup @, data, [], vsets
 
   it 'should find string code in value set', ->
-    @string.exec(@ctx).should.be.true
+    @string.exec(@ctx).should.be.true()
 
   it 'should find string code in versioned value set', ->
-    @stringInVersionedValueSet.exec(@ctx).should.be.true
+    @stringInVersionedValueSet.exec(@ctx).should.be.true()
 
   it 'should find short code in value set', ->
-    @shortCode.exec(@ctx).should.be.true
+    @shortCode.exec(@ctx).should.be.true()
 
   it 'should find medium code in value set', ->
-    @mediumCode.exec(@ctx).should.be.true
+    @mediumCode.exec(@ctx).should.be.true()
 
   it 'should find long code in value set', ->
-    @longCode.exec(@ctx).should.be.true
+    @longCode.exec(@ctx).should.be.true()
 
   it 'should not find string code in value set', ->
-    @wrongString.exec(@ctx).should.be.false
+    @wrongString.exec(@ctx).should.be.false()
 
   it 'should not find string code in versioned value set', ->
-    @wrongStringInVersionedValueSet.exec(@ctx).should.be.false
+    @wrongStringInVersionedValueSet.exec(@ctx).should.be.false()
 
   it 'should not find short code in value set', ->
-    @wrongShortCode.exec(@ctx).should.be.false
+    @wrongShortCode.exec(@ctx).should.be.false()
 
   it 'should not find medium code in value set', ->
-    @wrongMediumCode.exec(@ctx).should.be.false
+    @wrongMediumCode.exec(@ctx).should.be.false()
 
   it 'should not find long code in value set', ->
-    @wrongLongCode.exec(@ctx).should.be.false
+    @wrongLongCode.exec(@ctx).should.be.false()
 
 describe 'Patient Property In ValueSet', ->
   @beforeEach ->
@@ -76,11 +76,77 @@ describe 'Patient Property In ValueSet', ->
 
   it 'should find that John is not female', ->
     @ctx.patient =  new PatientSource([ p1 ]).currentPatient()
-    @isFemale.exec(@ctx).should.be.false
+    @isFemale.exec(@ctx).should.be.false()
 
   it 'should find that Sally is female', ->
     @ctx.patient =  new PatientSource([ p2 ]).currentPatient()
-    @isFemale.exec(@ctx).should.be.true
+    @isFemale.exec(@ctx).should.be.true()
+
+describe 'CodeDef', ->
+  @beforeEach ->
+    setup @, data, []
+
+  it 'should return a CodeDef', ->
+    codeDef = @lib.getCode('Tobacco smoking status code')
+    codeDef.constructor.name.should.equal 'CodeDef'
+    codeDef.name.should.equal 'Tobacco smoking status code'
+
+  it 'should execute to a Code datatype', ->
+    codeDef = @lib.getCode('Tobacco smoking status code')
+    code = codeDef.exec(@ctx)
+    code.code.should.equal('72166-2')
+    code.system.should.equal('http://loinc.org')
+    should.not.exist(code.version)
+    code.display.should.equal('Tobacco smoking status')
+
+describe 'CodeRef', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should have a name', ->
+    @foo.name.should.equal 'Tobacco smoking status code'
+
+  it 'should execute to the defined code', ->
+    code = @foo.exec(@ctx)
+    code.code.should.equal('72166-2')
+    code.system.should.equal('http://loinc.org')
+    should.not.exist(code.version)
+    code.display.should.equal('Tobacco smoking status')
+
+describe 'ConceptDef', ->
+  @beforeEach ->
+    setup @, data, []
+
+  it 'should return a ConceptDef', ->
+    conceptDef = @lib.getConcept('Tobacco smoking status')
+    conceptDef.constructor.name.should.equal 'ConceptDef'
+    conceptDef.name.should.equal 'Tobacco smoking status'
+
+  it 'should execute to a Concept datatype', ->
+    conceptDef = @lib.getConcept('Tobacco smoking status')
+    concept = conceptDef.exec(@ctx)
+    concept.text.should.equal('Tobacco smoking status')
+    concept.codes.should.have.length(1)
+    concept.codes[0].code.should.equal('72166-2')
+    concept.codes[0].system.should.equal('http://loinc.org')
+    should.not.exist(concept.codes[0].version)
+    concept.codes[0].display.should.equal('Tobacco smoking status')
+
+describe 'ConceptRef', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should have a name', ->
+    @foo.name.should.equal 'Tobacco smoking status'
+
+  it 'should execute to the defined concept', ->
+    concept = @foo.exec(@ctx)
+    concept.text.should.equal('Tobacco smoking status')
+    concept.codes.should.have.length(1)
+    concept.codes[0].code.should.equal('72166-2')
+    concept.codes[0].system.should.equal('http://loinc.org')
+    should.not.exist(concept.codes[0].version)
+    concept.codes[0].display.should.equal('Tobacco smoking status')
 
 describe 'CalculateAge', ->
   @beforeEach ->
@@ -95,7 +161,7 @@ describe 'CalculateAge', ->
 
     # this is getting the possible number of months in years with the addtion of an offset
     # to get the correct number of months
-    @full_months = ((@today.getFullYear() - 1980) * 12) + (@today.getMonth() - 5)
+    @full_months = ((@today.getFullYear() - 1980) * 12) + (@today.getMonth() - 6)
     @timediff = @today - @bday # diff in milliseconds
 
   it 'should execute age in years', ->

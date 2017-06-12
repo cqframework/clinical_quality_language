@@ -46,7 +46,46 @@ module.exports.CodeSystemDef = class CodeSystemDef extends Expression
     @version = json.version
 
   exec: (ctx) ->
-    new CodeSystem(@id, @version)
+    new dt.CodeSystem(@id, @version)
+
+module.exports.CodeDef = class CodeDef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+    @id = json.id
+    @systemName = json.codeSystem.name
+    @display = json.display
+
+  exec: (ctx) ->
+    system = ctx.getCodeSystem(@systemName)?.exec(ctx)
+    new dt.Code(@id, system.id, system.version, @display)
+
+module.exports.CodeRef = class CodeRef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+
+  exec: (ctx) ->
+    ctx.getCode(@name)?.exec(ctx)
+
+module.exports.ConceptDef = class ConceptDef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+    @display = json.display
+    @codes = json.code
+
+  exec: (ctx) ->
+    codes = (ctx.getCode(code.name)?.exec(ctx) for code in @codes)
+    new dt.Concept(codes, @display)
+
+module.exports.ConceptRef = class ConceptRef extends Expression
+  constructor: (json) ->
+    super
+    @name = json.name
+
+  exec: (ctx) ->
+    ctx.getConcept(@name)?.exec(ctx)
 
 module.exports.Concept = class Concept extends Expression
   constructor: (json) ->

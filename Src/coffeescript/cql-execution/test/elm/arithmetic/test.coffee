@@ -166,14 +166,7 @@ describe 'Successor', ->
     @rs.exec(@ctx).should.equal ( 2.2  + Math.pow(10,-8) )
 
   it "should cause runtime error for Successor greater than Integer Max value" , ->
-    a = false
-    try
-      @ofr.exec(@ctx)
-    catch e
-      e.constructor.name.should.equal "OverFlowException"
-      a = true
-
-    a.should.equal true
+    should(() => @ofr.exec(@ctx)).throw(Math.OverFlowException)
 
   it "should be able to get Date Successor for year", ->
     dp = @y_date.exec(@ctx)
@@ -246,14 +239,7 @@ describe 'Successor', ->
     dp.millisecond.should.equal 1
 
   it "should throw an exception when attempting to get the Successor of the maximum allowed date", ->
-    a = false
-    try
-      @max_date.exec(@ctx)
-    catch e
-      e.constructor.name.should.equal "OverFlowException"
-      a = true
-     a.should.equal true
-
+    should(() => @max_date.exec(@ctx)).throw(Math.OverFlowException)
 
 describe 'Predecessor', ->
   @beforeEach ->
@@ -264,14 +250,7 @@ describe 'Predecessor', ->
   it "should be able to get Real Predecessor", ->
     @rs.exec(@ctx).should.equal ( 2.2  - Math.pow(10,-8))
   it "should cause runtime error for Predecessor greater than Integer Max value" , ->
-    a = false
-    try
-      @ufr.exec(@ctx)
-    catch e
-      e.constructor.name.should.equal "OverFlowException"
-      a = true
-
-    a.should.equal true
+    should(() => @ufr.exec(@ctx)).throw(Math.OverFlowException)
 
   it "should be able to get Date Predecessor for year", ->
     dp = @y_date.exec(@ctx)
@@ -342,13 +321,7 @@ describe 'Predecessor', ->
     dp.millisecond.should.equal 999
 
   it "should throw an exception when attempting to get the Predecessor of the minimum allowed date", ->
-    a = false
-    try
-      @min_date.exec(@ctx)
-    catch e
-      e.constructor.name.should.equal "OverFlowException"
-      a = true
-     a.should.equal true
+    should(() => @min_date.exec(@ctx)).throw(Math.OverFlowException)
 
 describe 'Quantity', ->
   @beforeEach ->

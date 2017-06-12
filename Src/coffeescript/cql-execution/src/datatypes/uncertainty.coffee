@@ -12,8 +12,8 @@ module.exports.Uncertainty = class Uncertainty
   isPoint: () ->
     # Note: Can't use normal equality, as that fails for Javascript dates
     # TODO: Fix after we don't need to support Javascript date uncertainties anymore
-    lte = (a, b) -> if a.constructor.name in ['DateTime','Quantity'] then a.sameOrBefore b else a <= b
-    gte = (a, b) -> if a.constructor.name in ['DateTime','Quantity']then a.sameOrAfter b else a >= b
+    lte = (a, b) -> if typeof a.sameOrBefore is 'function' then a.sameOrBefore b else a <= b
+    gte = (a, b) -> if typeof a.sameOrBefore is 'function' then a.sameOrAfter b else a >= b
     @low? and @high? and lte(@low, @high) and gte(@low, @high)
 
   equals: (other) ->
@@ -21,7 +21,7 @@ module.exports.Uncertainty = class Uncertainty
     ThreeValuedLogic.not ThreeValuedLogic.or(@lessThan(other), @greaterThan(other))
 
   lessThan: (other) ->
-    lt = (a, b) -> if a.constructor.name is 'DateTime' then a.before b else a < b
+    lt = (a, b) -> if typeof a.before is 'function' then a.before b else a < b
     other = Uncertainty.from other
     bestCase = not @low? or not other.high? or lt(@low, other.high)
     worstCase = @high? and other.low? and lt(@high, other.low)

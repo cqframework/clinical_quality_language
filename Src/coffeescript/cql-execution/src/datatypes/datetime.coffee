@@ -232,6 +232,9 @@ module.exports.DateTime = class DateTime
     else
       new Date(y, mo, d, h, mi, s, ms)
 
+  toJSON: () ->
+    @toString()
+
   _pad: (num) ->
     String("0" + num).slice(-2);
 
@@ -266,7 +269,10 @@ module.exports.DateTime = class DateTime
     @reducedPrecision DateTime.Unit.DAY
 
   getTime: () ->
-    new DateTime(1900, 1, 1, @hour, @minute, @second, @millisecond, @timezoneOffset)
+    new DateTime(0, 1, 1, @hour, @minute, @second, @millisecond, @timezoneOffset)
+
+  isTime: () ->
+    @year == 0 && @month == 1 && @day == 1
 
   reducedPrecision: (unitField = DateTime.Unit.MILLISECOND) ->
     reduced = @copy()

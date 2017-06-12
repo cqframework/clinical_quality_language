@@ -87,6 +87,15 @@ describe 'Tuple', ->
     e = @query.exec(@ctx)
     e.should.have.length(3)
 
+describe 'QueryFilterNulls', ->
+  @beforeEach ->
+    setup @, data, [ p1 ]
+
+  it 'should properly handle querying over nulls', ->
+    e = @query.exec(@ctx)
+    e.should.have.length(2)
+    e.should.eql(['One', 'Two'])
+
 describe 'Sorting', ->
   @beforeEach ->
     setup @, data, [ p1 ]

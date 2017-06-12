@@ -242,6 +242,12 @@ define EqualOpenClosed: Interval(1, 5) = Interval[2, 4]
 define UnequalClosed: Interval[1, 5] = Interval[2, 4]
 define UnequalOpen: Interval(1, 5) = Interval(2, 4)
 define UnequalClosedOpen: Interval[1, 5] = Interval(2, 4)
+define EqualQuantityClosed: Interval[1 'mg', 5 'mg'] = Interval[1 'mg', 5 'mg']
+define EqualQuantityOpen: Interval(1 'mg', 5 'mg') = Interval(1 'mg', 5 'mg')
+define EqualQuantityOpenClosed: Interval(1 'mg', 5 'mg') = Interval[2 'mg', 4 'mg']
+define UnequalQuantityClosed: Interval[1 'mg', 5 'mg'] = Interval[2 'mg', 4 'mg']
+define UnequalQuantityOpen: Interval(1 'mg', 5 'mg') = Interval(2 'mg', 4 'mg')
+define UnequalQuantityClosedOpen: Interval[1 'mg', 5 'mg'] = Interval(2 'mg', 4 'mg')
 define EqualDates: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) = Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
 define EqualDatesOpenClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) = Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
 define SameDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) = Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
@@ -492,6 +498,222 @@ module.exports['Equal'] = {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "4",
                      "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "EqualQuantityClosed",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "EqualQuantityOpen",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "EqualQuantityOpenClosed",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 2,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 4,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "UnequalQuantityClosed",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 2,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 4,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "UnequalQuantityOpen",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 2,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 4,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "UnequalQuantityClosedOpen",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "lowClosed" : false,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 2,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 4,
+                     "unit" : "mg",
+                     "type" : "Quantity"
                   }
                } ]
             }
@@ -1022,6 +1244,12 @@ define EqualOpenClosed: Interval(1, 5) != Interval[2, 4]
 define UnequalClosed: Interval[1, 5] != Interval[2, 4]
 define UnequalOpen: Interval(1, 5) != Interval(2, 4)
 define UnequalClosedOpen: Interval[1, 5] != Interval(2, 4)
+define EqualQuantityClosed: Interval[1 'mg', 5 'mg'] != Interval[1 'mg', 5 'mg']
+define EqualQuantityOpen: Interval(1 'mg', 5 'mg') != Interval(1 'mg', 5 'mg')
+define EqualQuantityOpenClosed: Interval(1 'mg', 5 'mg') != Interval[2 'mg', 4 'mg']
+define UnequalQuantityClosed: Interval[1 'mg', 5 'mg'] != Interval[2 'mg', 4 'mg']
+define UnequalQuantityOpen: Interval(1 'mg', 5 'mg') != Interval(2 'mg', 4 'mg')
+define UnequalQuantityClosedOpen: Interval[1 'mg', 5 'mg'] != Interval(2 'mg', 4 'mg')
 define EqualDates: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) != Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0))
 define EqualDatesOpenClosed: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)) != Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
 define SameDays: Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1)) != Interval[DateTime(2012, 1, 1), DateTime(2013, 1, 1))
@@ -1289,6 +1517,240 @@ module.exports['NotEqual'] = {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "4",
                         "type" : "Literal"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "EqualQuantityClosed",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 1,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 5,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 1,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 5,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "EqualQuantityOpen",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 1,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 5,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  }, {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 1,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 5,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "EqualQuantityOpenClosed",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 1,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 5,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 2,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 4,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "UnequalQuantityClosed",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 1,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 5,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  }, {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 2,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 4,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "UnequalQuantityOpen",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 1,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 5,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  }, {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 2,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 4,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "UnequalQuantityClosedOpen",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "lowClosed" : true,
+                     "highClosed" : true,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 1,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 5,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     }
+                  }, {
+                     "lowClosed" : false,
+                     "highClosed" : false,
+                     "type" : "Interval",
+                     "low" : {
+                        "value" : 2,
+                        "unit" : "mg",
+                        "type" : "Quantity"
+                     },
+                     "high" : {
+                        "value" : 4,
+                        "unit" : "mg",
+                        "type" : "Quantity"
                      }
                   } ]
                }
@@ -1830,6 +2292,10 @@ define ContainsInt: Interval[1, 5] contains 3
 define NotContainsInt: Interval(1, 5] contains 1
 define ContainsReal: Interval[1.234, 3.456] contains 2.345
 define NotContainsReal: Interval[1.234, 3.456] contains 4.567
+define ContainsQuantity: Interval[1 'mg', 5 'mg'] contains 3 'mg'
+define ContainsQuantityInclusiveEdge: Interval[1 'mg', 5 'mg'] contains 5 'mg'
+define NotContainsQuantity: Interval[2 'mg', 5 'mg'] contains 1 'mg'
+define NotContainsQuantityExclusiveEdge: Interval(1 'mg', 5 'mg'] contains 1 'mg'
 define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
 define ContainsDate: DateIvl contains DateTime(2012, 6, 1, 0, 0, 0, 0)
 define NotContainsDate: DateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
@@ -1850,10 +2316,10 @@ define PosInfEndNotContainsInt: Interval[0, null] contains -1
 define UnknownEndContainsInt: Interval[0, null) contains 0
 define UnknownEndMayContainInt: Interval[0, null) contains 123456789
 define UnknownEndNotContainsInt: Interval[0, null) contains -1
-define NegInfBegContainsDate: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(1900, 1, 1, 0, 0, 0, 0)
+define NegInfBegContainsDate: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(1, 1, 1, 0, 0, 0, 0)
 define NegInfBegNotContainsDate: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2013, 1, 2, 0, 0, 0, 0)
 define UnknownBegContainsDate: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2012, 12, 31, 23, 59, 59, 999)
-define UnknownBegMayContainDate: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(1900, 1, 1, 0, 0, 0, 0)
+define UnknownBegMayContainDate: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(1, 1, 1, 0, 0, 0, 0)
 define UnknownBegNotContainsDate: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) contains DateTime(2013, 1, 2, 0, 0, 0, 0)
 define PosInfEndContainsDate: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] contains DateTime(2014, 1, 1, 0, 0, 0, 0)
 define PosInfEndNotContainsDate: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] contains DateTime(2012, 1, 1, 0, 0, 0, 0)
@@ -1995,6 +2461,110 @@ module.exports['Contains'] = {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                   "value" : "4.567",
                   "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "ContainsQuantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "value" : 3,
+                  "unit" : "mg",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ContainsQuantityInclusiveEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "value" : 5,
+                  "unit" : "mg",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "NotContainsQuantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 2,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "value" : 1,
+                  "unit" : "mg",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "NotContainsQuantityExclusiveEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Contains",
+               "operand" : [ {
+                  "lowClosed" : false,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 1,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 5,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               }, {
+                  "value" : 1,
+                  "unit" : "mg",
+                  "type" : "Quantity"
                } ]
             }
          }, {
@@ -2816,7 +3386,7 @@ module.exports['Contains'] = {
                   "type" : "DateTime",
                   "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1900",
+                     "value" : "1",
                      "type" : "Literal"
                   },
                   "month" : {
@@ -3110,7 +3680,7 @@ module.exports['Contains'] = {
                   "type" : "DateTime",
                   "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1900",
+                     "value" : "1",
                      "type" : "Literal"
                   },
                   "month" : {
@@ -3746,6 +4316,10 @@ define ContainsInt: 3 in Interval[1, 5]
 define NotContainsInt: 1 in Interval(1, 5]
 define ContainsReal: 2.345 in Interval[1.234, 3.456]
 define NotContainsReal: 4.567 in Interval[1.234, 3.456]
+define ContainsQuantity: 5 'mg' in Interval[4 'mg', 6 'mg']
+define ContainsQuantityInclusiveEdge: 6 'mg' in Interval[4 'mg', 6 'mg']
+define NotContainsQuantity: 3 'mg' in Interval[4 'mg', 6 'mg']
+define NotContainsQuantityExclusiveEdge: 6 'mg' in Interval[4 'mg', 6 'mg')
 define DateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 9, 1, 0, 0, 0, 0))
 define ContainsDate: DateTime(2012, 6, 1, 0, 0, 0, 0) in DateIvl
 define NotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in DateIvl
@@ -3766,10 +4340,10 @@ define PosInfEndNotContainsInt: -1 in Interval[0, null]
 define UnknownEndContainsInt: 0 in Interval[0, null)
 define UnknownEndMayContainInt: 123456789 in Interval[0, null)
 define UnknownEndNotContainsInt: -1 in Interval[0, null)
-define NegInfBegContainsDate: DateTime(1900, 1, 1, 0, 0, 0, 0) in Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define NegInfBegContainsDate: DateTime(1, 1, 1, 0, 0, 0, 0) in Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
 define NegInfBegNotContainsDate: DateTime(2013, 1, 2, 0, 0, 0, 0) in Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0))
 define UnknownBegContainsDate: DateTime(2012, 12, 31, 23, 59, 59, 999) in Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
-define UnknownBegMayContainDate: DateTime(1900, 1, 1, 0, 0, 0, 0) in Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
+define UnknownBegMayContainDate: DateTime(1, 1, 1, 0, 0, 0, 0) in Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
 define UnknownBegNotContainsDate: DateTime(2013, 1, 2, 0, 0, 0, 0) in Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0))
 define PosInfEndContainsDate:  DateTime(2014, 1, 1, 0, 0, 0, 0) in Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
 define PosInfEndNotContainsDate: DateTime(2012, 1, 1, 0, 0, 0, 0) in Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null]
@@ -3910,6 +4484,110 @@ module.exports['In'] = {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                      "value" : "3.456",
                      "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ContainsQuantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "mg",
+                  "type" : "Quantity"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 4,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 6,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ContainsQuantityInclusiveEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "value" : 6,
+                  "unit" : "mg",
+                  "type" : "Quantity"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 4,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 6,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotContainsQuantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "value" : 3,
+                  "unit" : "mg",
+                  "type" : "Quantity"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 4,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 6,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotContainsQuantityExclusiveEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "In",
+               "operand" : [ {
+                  "value" : 6,
+                  "unit" : "mg",
+                  "type" : "Quantity"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "value" : 4,
+                     "unit" : "mg",
+                     "type" : "Quantity"
+                  },
+                  "high" : {
+                     "value" : 6,
+                     "unit" : "mg",
+                     "type" : "Quantity"
                   }
                } ]
             }
@@ -4679,7 +5357,7 @@ module.exports['In'] = {
                   "type" : "DateTime",
                   "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1900",
+                     "value" : "1",
                      "type" : "Literal"
                   },
                   "month" : {
@@ -4973,7 +5651,7 @@ module.exports['In'] = {
                   "type" : "DateTime",
                   "year" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1900",
+                     "value" : "1",
                      "type" : "Literal"
                   },
                   "month" : {
@@ -5682,11 +6360,11 @@ define PosInfEndNotIncludesIntIvl: Interval[0, null] includes Interval[-1234, 56
 define UnknownEndIncludesIntIvl: Interval[0, null) includes Interval[0, 0]
 define UnknownEndMayIncludeIntIvl: Interval[0, null) includes Interval[1234, 5678]
 define UnknownEndNotIncludesIntIvl: Interval[0, null) includes Interval[-1234, 5678]
-define NegInfBegIncludesDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
-define NegInfBegNotIncludesDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define NegInfBegIncludesDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
+define NegInfBegNotIncludesDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 define UnknownBegIncludesDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(2012, 12, 31, 23, 59, 59, 999), DateTime(2012, 12, 31, 23, 59, 59, 999)]
-define UnknownBegMayIncludeDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotIncludesDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+define UnknownBegMayIncludeDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotIncludesDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) includes Interval[DateTime(1, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 define PosInfEndIncludesDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] includes Interval[DateTime(2014, 1, 1, 0, 0, 0, 0), DateTime(2015, 1, 1, 0, 0, 0, 0)]
 define PosInfEndNotIncludesDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] includes Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0)]
 define UnknownEndIncludesDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) includes Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
@@ -7056,7 +7734,7 @@ module.exports['Includes'] = {
                      "type" : "DateTime",
                      "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "value" : "1900",
+                        "value" : "1",
                         "type" : "Literal"
                      },
                      "month" : {
@@ -7197,7 +7875,7 @@ module.exports['Includes'] = {
                      "type" : "DateTime",
                      "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "value" : "1900",
+                        "value" : "1",
                         "type" : "Literal"
                      },
                      "month" : {
@@ -7479,7 +8157,7 @@ module.exports['Includes'] = {
                      "type" : "DateTime",
                      "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "value" : "1900",
+                        "value" : "1",
                         "type" : "Literal"
                      },
                      "month" : {
@@ -7620,7 +8298,7 @@ module.exports['Includes'] = {
                      "type" : "DateTime",
                      "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "value" : "1900",
+                        "value" : "1",
                         "type" : "Literal"
                      },
                      "month" : {
@@ -9105,7 +9783,7 @@ define NegInfBegIncludedInDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 
 define NegInfBegNotIncludedInDateIvl: Interval[null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
 define UnknownBegIncludedInDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[null, DateTime(2020, 1, 1, 0, 0, 0, 0)]
 define UnknownBegMayBeIncludedInDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
-define UnknownBegNotIncludedInDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[DateTime(1900, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
+define UnknownBegNotIncludedInDateIvl: Interval(null, DateTime(2013, 1, 1, 0, 0, 0, 0)) included in Interval[DateTime(1, 1, 1, 0, 0, 0, 0), DateTime(2000, 1, 1, 0, 0, 0, 0)]
 define PosInfEndIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
 define PosInfEndNotIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
 define UnknownEndIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
@@ -11018,7 +11696,7 @@ module.exports['IncludedIn'] = {
                      "type" : "DateTime",
                      "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "value" : "1900",
+                        "value" : "1",
                         "type" : "Literal"
                      },
                      "month" : {

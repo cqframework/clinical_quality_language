@@ -24,60 +24,60 @@ describe 'Exists', ->
     setup @, data
 
   it 'should return false for empty list', ->
-    @emptyList.exec(@ctx).should.be.false
+    @emptyList.exec(@ctx).should.be.false()
 
   it 'should return true for full list', ->
-    @fullList.exec(@ctx).should.be.true
+    @fullList.exec(@ctx).should.be.true()
 
 describe 'Equal', ->
   @beforeEach ->
     setup @, data
 
   it 'should identify equal lists of integers', ->
-    @equalIntList.exec(@ctx).should.be.true
+    @equalIntList.exec(@ctx).should.be.true()
 
   it 'should identify unequal lists of integers', ->
-    @unequalIntList.exec(@ctx).should.be.false
+    @unequalIntList.exec(@ctx).should.be.false()
 
   it 'should identify re-ordered lists of integers as unequal', ->
-    @reverseIntList.exec(@ctx).should.be.false
+    @reverseIntList.exec(@ctx).should.be.false()
 
   it 'should identify equal lists of strings', ->
-    @equalStringList.exec(@ctx).should.be.true
+    @equalStringList.exec(@ctx).should.be.true()
 
   it 'should identify unequal lists of strings', ->
-    @unequalStringList.exec(@ctx).should.be.false
+    @unequalStringList.exec(@ctx).should.be.false()
 
   it 'should identify equal lists of tuples', ->
-    @equalTupleList.exec(@ctx).should.be.true
+    @equalTupleList.exec(@ctx).should.be.true()
 
   it 'should identify unequal lists of tuples', ->
-    @unequalTupleList.exec(@ctx).should.be.false
+    @unequalTupleList.exec(@ctx).should.be.false()
 
 describe 'NotEqual', ->
   @beforeEach ->
     setup @, data
 
   it 'should identify equal lists of integers', ->
-    @equalIntList.exec(@ctx).should.be.false
+    @equalIntList.exec(@ctx).should.be.false()
 
   it 'should identify unequal lists of integers', ->
-    @unequalIntList.exec(@ctx).should.be.true
+    @unequalIntList.exec(@ctx).should.be.true()
 
   it 'should identify re-ordered lists of integers as unequal', ->
-    @reverseIntList.exec(@ctx).should.be.true
+    @reverseIntList.exec(@ctx).should.be.true()
 
   it 'should identify equal lists of strings', ->
-    @equalStringList.exec(@ctx).should.be.false
+    @equalStringList.exec(@ctx).should.be.false()
 
   it 'should identify unequal lists of strings', ->
-    @unequalStringList.exec(@ctx).should.be.true
+    @unequalStringList.exec(@ctx).should.be.true()
 
   it 'should identify equal lists of tuples', ->
-    @equalTupleList.exec(@ctx).should.be.false
+    @equalTupleList.exec(@ctx).should.be.false()
 
   it 'should identify unequal lists of tuples', ->
-    @unequalTupleList.exec(@ctx).should.be.true
+    @unequalTupleList.exec(@ctx).should.be.true()
 
 describe 'Union', ->
   @beforeEach ->
@@ -185,17 +185,10 @@ describe 'Indexer', ->
     @secondItem.exec(@ctx).should.equal 'b'
 
   it 'should NOT throw ArrayIndexOutOfBoundsException when accessing index 0', ->
-    try
-      @zeroIndex.exec(@ctx)
-    catch e
-      should.fail("Accessing index zero should not throw ArrayIndexOutOfBoundsException")
+    should(() => @zeroIndex.exec(@ctx)).not.throw(ArrayIndexOutOfBoundsException)
 
   it 'should throw ArrayIndexOutOfBoundsException when accessing out of bounds index', ->
-    try
-      @outOfBounds.exec(@ctx)
-      should.fail("Accessing out of bounds index should throw ArrayIndexOutOfBoundsException")
-    catch e
-      e.should.be.instanceof ArrayIndexOutOfBoundsException
+    should(() => @outOfBounds.exec(@ctx)).throw(ArrayIndexOutOfBoundsException)
 
   it 'should return null if either arg is null', ->
     should(@nullList.exec(@ctx)).be.null
@@ -206,16 +199,16 @@ describe 'In', ->
     setup @, data
 
   it 'should execute to true when item is in list', ->
-    @isIn.exec(@ctx).should.be.true
+    @isIn.exec(@ctx).should.be.true()
 
   it 'should execute to false when item is not in list', ->
-    @isNotIn.exec(@ctx).should.be.false
+    @isNotIn.exec(@ctx).should.be.false()
 
   it 'should execute to true when tuple is in list', ->
-    @tupleIsIn.exec(@ctx).should.be.true
+    @tupleIsIn.exec(@ctx).should.be.true()
 
   it 'should execute to false when tuple is not in list', ->
-    @tupleIsNotIn.exec(@ctx).should.be.false
+    @tupleIsNotIn.exec(@ctx).should.be.false()
 
   it 'should return null if either arg is null', ->
     should(@nullIn.exec(@ctx)).be.null
@@ -226,16 +219,16 @@ describe 'Contains', ->
     setup @, data
 
   it 'should execute to true when item is in list', ->
-    @isIn.exec(@ctx).should.be.true
+    @isIn.exec(@ctx).should.be.true()
 
   it 'should execute to false when item is not in list', ->
-    @isNotIn.exec(@ctx).should.be.false
+    @isNotIn.exec(@ctx).should.be.false()
 
   it 'should execute to true when tuple is in list', ->
-    @tupleIsIn.exec(@ctx).should.be.true
+    @tupleIsIn.exec(@ctx).should.be.true()
 
   it 'should execute to false when tuple is not in list', ->
-    @tupleIsNotIn.exec(@ctx).should.be.false
+    @tupleIsNotIn.exec(@ctx).should.be.false()
 
   it 'should return null if either arg is null', ->
     should(@nullIn.exec(@ctx)).be.null
@@ -246,22 +239,22 @@ describe 'Includes', ->
     setup @, data
 
   it 'should execute to true when sublist is in list', ->
-    @isIncluded.exec(@ctx).should.be.true
+    @isIncluded.exec(@ctx).should.be.true()
 
   it 'should execute to true when sublist is in list in different order', ->
-    @isIncludedReversed.exec(@ctx).should.be.true
+    @isIncludedReversed.exec(@ctx).should.be.true()
 
   it 'should execute to true when lists are the same', ->
-    @isSame.exec(@ctx).should.be.true
+    @isSame.exec(@ctx).should.be.true()
 
   it 'should execute to false when sublist is not in list', ->
-    @isNotIncluded.exec(@ctx).should.be.false
+    @isNotIncluded.exec(@ctx).should.be.false()
 
   it 'should execute to true when tuple sublist is in list', ->
-    @tuplesIncluded.exec(@ctx).should.be.true
+    @tuplesIncluded.exec(@ctx).should.be.true()
 
   it 'should execute to false when tuple sublist is not in list', ->
-    @tuplesNotIncluded.exec(@ctx).should.be.false
+    @tuplesNotIncluded.exec(@ctx).should.be.false()
 
   it 'should return null if either arg is null', ->
     should(@nullIncluded.exec(@ctx)).be.null
@@ -272,22 +265,22 @@ describe 'IncludedIn', ->
     setup @, data
 
   it 'should execute to true when sublist is in list', ->
-    @isIncluded.exec(@ctx).should.be.true
+    @isIncluded.exec(@ctx).should.be.true()
 
   it 'should execute to true when sublist is in list in different order', ->
-    @isIncludedReversed.exec(@ctx).should.be.true
+    @isIncludedReversed.exec(@ctx).should.be.true()
 
   it 'should execute to true when lists are the same', ->
-    @isSame.exec(@ctx).should.be.true
+    @isSame.exec(@ctx).should.be.true()
 
   it 'should execute to false when sublist is not in list', ->
-    @isNotIncluded.exec(@ctx).should.be.false
+    @isNotIncluded.exec(@ctx).should.be.false()
 
   it 'should execute to true when tuple sublist is in list', ->
-    @tuplesIncluded.exec(@ctx).should.be.true
+    @tuplesIncluded.exec(@ctx).should.be.true()
 
   it 'should execute to false when tuple sublist is not in list', ->
-    @tuplesNotIncluded.exec(@ctx).should.be.false
+    @tuplesNotIncluded.exec(@ctx).should.be.false()
 
   it 'should return null if either arg is null', ->
     should(@nullIncluded.exec(@ctx)).be.null
@@ -298,22 +291,22 @@ describe 'ProperIncludes', ->
     setup @, data
 
   it 'should execute to true when sublist is in list', ->
-    @isIncluded.exec(@ctx).should.be.true
+    @isIncluded.exec(@ctx).should.be.true()
 
   it 'should execute to true when sublist is in list in different order', ->
-    @isIncludedReversed.exec(@ctx).should.be.true
+    @isIncludedReversed.exec(@ctx).should.be.true()
 
   it 'should execute to false when lists are the same', ->
-    @isSame.exec(@ctx).should.be.false
+    @isSame.exec(@ctx).should.be.false()
 
   it 'should execute to false when sublist is not in list', ->
-    @isNotIncluded.exec(@ctx).should.be.false
+    @isNotIncluded.exec(@ctx).should.be.false()
 
   it 'should execute to true when tuple sublist is in list', ->
-    @tuplesIncluded.exec(@ctx).should.be.true
+    @tuplesIncluded.exec(@ctx).should.be.true()
 
   it 'should execute to false when tuple sublist is not in list', ->
-    @tuplesNotIncluded.exec(@ctx).should.be.false
+    @tuplesNotIncluded.exec(@ctx).should.be.false()
 
   # TODO: Support for ProperContains
   it.skip 'should return null if either arg is null', ->
@@ -325,22 +318,22 @@ describe 'ProperIncludedIn', ->
     setup @, data
 
   it 'should execute to true when sublist is in list', ->
-    @isIncluded.exec(@ctx).should.be.true
+    @isIncluded.exec(@ctx).should.be.true()
 
   it 'should execute to true when sublist is in list in different order', ->
-    @isIncludedReversed.exec(@ctx).should.be.true
+    @isIncludedReversed.exec(@ctx).should.be.true()
 
   it 'should execute to false when lists are the same', ->
-    @isSame.exec(@ctx).should.be.false
+    @isSame.exec(@ctx).should.be.false()
 
   it 'should execute to false when sublist is not in list', ->
-    @isNotIncluded.exec(@ctx).should.be.false
+    @isNotIncluded.exec(@ctx).should.be.false()
 
   it 'should execute to true when tuple sublist is in list', ->
-    @tuplesIncluded.exec(@ctx).should.be.true
+    @tuplesIncluded.exec(@ctx).should.be.true()
 
   it 'should execute to false when tuple sublist is not in list', ->
-    @tuplesNotIncluded.exec(@ctx).should.be.false
+    @tuplesNotIncluded.exec(@ctx).should.be.false()
 
   it 'should return null if either arg is null', ->
     should(@nullIncluded.exec(@ctx)).be.null

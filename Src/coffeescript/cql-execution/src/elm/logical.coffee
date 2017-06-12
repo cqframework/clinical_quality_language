@@ -28,3 +28,17 @@ module.exports.Xor = class Xor extends Expression
 
   exec: (ctx) ->
     ThreeValuedLogic.xor @execArgs(ctx)...
+
+module.exports.IsTrue = class IsTrue extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    true == @execArgs(ctx)
+
+module.exports.IsFalse = class IsFalse extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    false == @execArgs(ctx)

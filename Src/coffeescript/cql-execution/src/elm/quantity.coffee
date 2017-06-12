@@ -2,11 +2,15 @@
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
 
+# TODO: Quantity should probably be available as a datatype (not just ELM expression)
 module.exports.Quantity = class Quantity extends Expression
   constructor: (json) ->
     super
     @unit = json.unit
     @value = json.value
+
+  clone: () ->
+    new Quantity({value: @value, unit: @unit})
 
   exec: (ctx) ->
     @
