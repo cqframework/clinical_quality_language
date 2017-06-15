@@ -58,7 +58,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
-    private final Stack<Chunk> chunks = new Stack<>();
+    private Stack<Chunk> chunks = new Stack<>();
     private String currentContext = "Patient"; // default context to patient
     private int currentToken = -1;
     private int nextLocalId = 1;
@@ -3307,7 +3307,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 String saveContext = currentContext;
                 currentContext = expressionInfo.getContext();
                 try {
-                    internalVisitExpressionDefinition(expressionInfo.getDefinition());
+                    Stack<Chunk> saveChunks = chunks;
+                    chunks = new Stack<Chunk>();
+                    try {
+                        internalVisitExpressionDefinition(expressionInfo.getDefinition());
+                    }
+                    finally {
+                        chunks = saveChunks;
+                    }
                 } finally {
                     currentContext = saveContext;
                 }
@@ -3352,8 +3359,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             try {
                 Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
                 if (functionInfos != null) {
-                    for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                        internalVisitFunctionDefinition(functionInfo.getDefinition());
+                    Stack<Chunk> saveChunks = chunks;
+                    chunks = new Stack<Chunk>();
+                    try {
+                        for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                            String saveContext = currentContext;
+                            currentContext = functionInfo.getContext();
+                            try {
+                                internalVisitFunctionDefinition(functionInfo.getDefinition());
+                            } finally {
+                                currentContext = saveContext;
+                            }
+                        }
+                    }
+                    finally {
+                        chunks = saveChunks;
                     }
                 }
                 result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
