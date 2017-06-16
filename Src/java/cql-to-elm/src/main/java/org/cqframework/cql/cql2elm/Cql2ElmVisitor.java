@@ -13,6 +13,7 @@ import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.model.*;
 import org.hl7.cql.model.*;
+import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Narrative;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
@@ -21,11 +22,13 @@ import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.bind.*;
 import javax.xml.namespace.QName;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.List;
+import java.util.jar.Pack200;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,7 +58,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
     private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
-    private final Stack<Narrative> narratives = new Stack<>();
+    private Stack<Chunk> chunks = new Stack<>();
     private String currentContext = "Patient"; // default context to patient
     private int currentToken = -1;
     private int nextLocalId = 1;
@@ -150,109 +153,95 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return nextLocalId++;
     }
 
-    private void pushNarrative(@NotNull ParseTree tree) {
+    private void pushChunk(@NotNull ParseTree tree) {
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
-        // Debugging line for Github issues #61 & 86
-        //System.out.println(String.format("Push: %d..%d, Tree: %s", sourceInterval.a, sourceInterval.b, tree.getText()));
-
-        // If there is a parent narrative
-        // add the text from the current text pointer to the start of the new source context to the narrative
-        Narrative parentNarrative = narratives.isEmpty() ? null : narratives.peek();
-        if (parentNarrative != null && sourceInterval.a - 1 - currentToken >= 0) {
-            org.antlr.v4.runtime.misc.Interval tokenInterval =
-                    new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.a - 1);
-            String content = tokenStream.getText(tokenInterval);
-            // Debugging line for Github issues #61 & 86
-            //System.out.println(String.format("CurrentToken: %d, Content: %s", currentToken, content));
-            parentNarrative.getContent().add(content);
-        }
-
-        // advance the token pointer to the start of the new source context
-        currentToken = sourceInterval.a;
-
-        // Create a new narrative
-        // add it to the parent narrative, if there is one
-        // push it on the narrative stack
-        Narrative newNarrative = af.createNarrative();
-        narratives.push(newNarrative);
+        Chunk chunk = new Chunk().withInterval(sourceInterval);
+        chunks.push(chunk);
     }
 
-    private Narrative popNarrative(@NotNull ParseTree tree, Object o) {
-        org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
-        // Debugging line for Github issues #61 & 86
-        //System.out.println(String.format("Pop: %d..%d, Tree: %s", sourceInterval.a, sourceInterval.b, tree.getText()));
-
-        // Pop the narrative off the narrative stack
-        Narrative currentNarrative = narratives.pop();
-
-        // Add the text from the current token pointer to the end of the current source context to the narrative
-        if (sourceInterval.b - currentToken >= 0) {
-            org.antlr.v4.runtime.misc.Interval tokenInterval =
-                    new org.antlr.v4.runtime.misc.Interval(currentToken, sourceInterval.b);
-            String content = tokenStream.getText(tokenInterval);
-            // Debugging line for Github issues #61 & 86
-            //System.out.println(String.format("CurrentToken: %d, Content: %s", currentToken, content));
-            currentNarrative.getContent().add(content);
-        }
-
-        // Advance the token pointer after the end of the current source context
-        currentToken = sourceInterval.b + 1;
-
-        // If the narrative corresponds to an element returned by the parser
-        // if the element doesn't have a localId
-        // set the narrative's reference id
-        // if there is a parent narrative
-        // add this narrative to the content of the parent
-        // else
-        // if there is a parent narrative
-        // add the contents of this narrative to that narrative
+    private void popChunk(@NotNull ParseTree tree, Object o) {
+        Chunk chunk = chunks.pop();
         if (o instanceof Element) {
-            Element element = (Element) o;
+            Element element = (Element)o;
             if (element.getLocalId() == null) {
                 element.setLocalId(Integer.toString(getNextLocalId()));
-                currentNarrative.setR(element.getLocalId());
-
-                if (!narratives.isEmpty()) {
-                    Narrative parentNarrative = narratives.peek();
-                    parentNarrative.getContent().add(
-                            new JAXBElement<>(
-                                    new QName("urn:hl7-org:cql-annotations:r1", "s"),
-                                    Narrative.class,
-                                    currentNarrative));
-                }
-
-                // If the current element is an expression def, set the narrative as the annotation
-                if (o instanceof ExpressionDef) {
-                    // Github issues #61 & #86 -> Full resolution requires rethinking the way this narrative is produced
-                    // Emitting with a single span for now to address both issues until we have a need to emit with links
-                    // to the local ids.
-                    //expressionDef.getAnnotation().add(af.createAnnotation().withS(currentNarrative));
-                    ExpressionDef expressionDef = (ExpressionDef) o;
-                    Narrative defNarrative = af.createNarrative();
-                    String content = tokenStream.getText(sourceInterval);
-                    defNarrative.getContent().add(content);
-                    expressionDef.getAnnotation().add(af.createAnnotation().withS(defNarrative));
-                }
-            } else {
-                if (!narratives.isEmpty()) {
-                    Narrative parentNarrative = narratives.peek();
-                    parentNarrative.getContent().addAll(currentNarrative.getContent());
-                }
             }
-        } else {
-            if (!narratives.isEmpty()) {
-                Narrative parentNarrative = narratives.peek();
-                parentNarrative.getContent().addAll(currentNarrative.getContent());
+            chunk.setElement(element);
+
+            if (element instanceof ExpressionDef && !(tree instanceof cqlParser.LibraryContext)) {
+                ExpressionDef expressionDef = (ExpressionDef)element;
+                expressionDef.getAnnotation().add(buildAnnotation(chunk));
             }
         }
 
-        return currentNarrative;
+        if (!chunks.isEmpty()) {
+            chunks.peek().addChunk(chunk);
+        }
+    }
+
+    private Annotation buildAnnotation(Chunk chunk) {
+        Annotation annotation = af.createAnnotation();
+        annotation.setS(buildNarrative(chunk));
+        return annotation;
+    }
+
+    private Narrative buildNarrative(Chunk chunk) {
+        Narrative narrative = af.createNarrative();
+        if (chunk.getElement() != null) {
+            narrative.setR(chunk.getElement().getLocalId());
+        }
+
+        if (chunk.hasChunks()) {
+            Narrative currentNarrative = null;
+            for (Chunk childChunk : chunk.getChunks()) {
+                Narrative chunkNarrative = buildNarrative(childChunk);
+                if (hasChunks(chunkNarrative)) {
+                    if (currentNarrative != null) {
+                        narrative.getContent().add(wrapNarrative(currentNarrative));
+                        currentNarrative = null;
+                    }
+                    narrative.getContent().add(wrapNarrative(chunkNarrative));
+                }
+                else {
+                    if (currentNarrative == null) {
+                        currentNarrative = chunkNarrative;
+                    }
+                    else {
+                        currentNarrative.getContent().addAll(chunkNarrative.getContent());
+                    }
+                }
+            }
+            if (currentNarrative != null) {
+                narrative.getContent().add(wrapNarrative(currentNarrative));
+            }
+        }
+        else {
+            narrative.getContent().add(tokenStream.getText(chunk.getInterval()));
+        }
+
+        return narrative;
+    }
+
+    private boolean hasChunks(Narrative narrative) {
+        for (Serializable c : narrative.getContent()) {
+            if (!(c instanceof String)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Serializable wrapNarrative(Narrative narrative) {
+        return new JAXBElement<>(
+                new QName("urn:hl7-org:cql-annotations:r1", "s"),
+                Narrative.class,
+                narrative);
     }
 
     @Override
     public Object visit(@NotNull ParseTree tree) {
         if (annotate) {
-            pushNarrative(tree);
+            pushChunk(tree);
         }
         Object o = null;
         try {
@@ -284,20 +273,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 o = of.createNull();
             }
+
+            if (o instanceof Trackable && !(tree instanceof cqlParser.LibraryContext)) {
+                this.track((Trackable) o, tree);
+            }
+            if (o instanceof Expression) {
+                addExpression((Expression) o);
+            }
+
+            return o;
         } finally {
             if (annotate) {
-                popNarrative(tree, o);
+                popChunk(tree, o);
             }
         }
-
-        if (o instanceof Trackable && tree instanceof ParserRuleContext && !(tree instanceof cqlParser.LibraryContext)) {
-            this.track((Trackable) o, (ParserRuleContext) tree);
-        }
-        if (o instanceof Expression) {
-            addExpression((Expression) o);
-        }
-
-        return o;
     }
 
     @Override
@@ -621,6 +610,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 DataType patientType = libraryBuilder.resolveTypeName(modelInfo.getName(), patientTypeName);
                 Retrieve patientRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(patientType));
+                track(patientRetrieve, ctx);
                 patientRetrieve.setResultType(new ListType(patientType));
                 String patientClassIdentifier = modelInfo.getPatientClassIdentifier();
                 if (patientClassIdentifier != null) {
@@ -631,6 +621,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withName("Patient")
                         .withContext(currentContext)
                         .withExpression(of.createSingletonFrom().withOperand(patientRetrieve));
+                track(patientExpressionDef, ctx);
                 patientExpressionDef.getExpression().setResultType(patientType);
                 patientExpressionDef.setResultType(patientType);
                 libraryBuilder.addExpression(patientExpressionDef);
@@ -640,6 +631,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withName("Patient")
                         .withContext(currentContext)
                         .withExpression(of.createNull());
+                track(patientExpressionDef, ctx);
                 patientExpressionDef.getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
                 patientExpressionDef.setResultType(patientExpressionDef.getExpression().getResultType());
                 libraryBuilder.addExpression(patientExpressionDef);
@@ -788,6 +780,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ListType listType = null;
         if (elementTypeSpecifier != null) {
             ListTypeSpecifier listTypeSpecifier = of.createListTypeSpecifier().withElementType(elementTypeSpecifier);
+            track(listTypeSpecifier, ctx.typeSpecifier());
             listType = new ListType(elementTypeSpecifier.getResultType());
             listTypeSpecifier.setResultType(listType);
         }
@@ -1626,9 +1619,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (elementTypes.size() > 1) {
                     ListType targetType = new ListType(new ChoiceType(elementTypes));
                     left = of.createAs().withOperand(left).withAsTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(targetType));
+                    track(left, ctx.expression(0));
                     left.setResultType(targetType);
 
                     right = of.createAs().withOperand(right).withAsTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(targetType));
+                    track(right, ctx.expression(1));
                     right.setResultType(targetType);
                 }
             }
@@ -1663,6 +1658,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
             if (!"~".equals(parseString(ctx.getChild(1)))) {
+                track(equivalent, ctx);
                 Not not = of.createNot().withOperand(equivalent);
                 libraryBuilder.resolveUnaryCall("System", "Not", not);
                 return not;
@@ -1677,6 +1673,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             libraryBuilder.resolveBinaryCall("System", "Equal", equal);
             if (!"=".equals(parseString(ctx.getChild(1)))) {
+                track(equal, ctx);
                 Not not = of.createNot().withOperand(equal);
                 libraryBuilder.resolveUnaryCall("System", "Not", not);
                 return not;
@@ -1834,6 +1831,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if ("not".equals(nextToLast)) {
+            track(exp, ctx);
             exp = of.createNot().withOperand(exp);
             libraryBuilder.resolveUnaryCall("System", "Not", exp);
         }
@@ -1861,12 +1859,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ParseTree firstChild = ctx.getChild(0);
         if ("starts".equals(firstChild.getText())) {
             Start start = of.createStart().withOperand(timingOperator.getLeft());
+            track(start, firstChild);
             libraryBuilder.resolveUnaryCall("System", "Start", start);
             timingOperator.setLeft(start);
         }
 
         if ("ends".equals(firstChild.getText())) {
             End end = of.createEnd().withOperand(timingOperator.getLeft());
+            track(end, firstChild);
             libraryBuilder.resolveUnaryCall("System", "End", end);
             timingOperator.setLeft(end);
         }
@@ -1874,12 +1874,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ParseTree lastChild = ctx.getChild(ctx.getChildCount() - 1);
         if ("start".equals(lastChild.getText())) {
             Start start = of.createStart().withOperand(timingOperator.getRight());
+            track(start, lastChild);
             libraryBuilder.resolveUnaryCall("System", "Start", start);
             timingOperator.setRight(start);
         }
 
         if ("end".equals(lastChild.getText())) {
             End end = of.createEnd().withOperand(timingOperator.getRight());
+            track(end, lastChild);
             libraryBuilder.resolveUnaryCall("System", "End", end);
             timingOperator.setRight(end);
         }
@@ -1938,6 +1940,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("start".equals(pt.getText())) {
                 Start start = of.createStart().withOperand(timingOperator.getRight());
+                track(start, pt);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
                 timingOperator.setRight(start);
                 isRightPoint = true;
@@ -1946,6 +1949,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("end".equals(pt.getText())) {
                 End end = of.createEnd().withOperand(timingOperator.getRight());
+                track(end, pt);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
                 timingOperator.setRight(end);
                 isRightPoint = true;
@@ -2024,6 +2028,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         for (ParseTree pt : ctx.children) {
             if ("starts".equals(pt.getText())) {
                 Start start = of.createStart().withOperand(timingOperator.getLeft());
+                track(start, pt);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
                 timingOperator.setLeft(start);
                 isLeftPoint = true;
@@ -2032,6 +2037,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("ends".equals(pt.getText())) {
                 End end = of.createEnd().withOperand(timingOperator.getLeft());
+                track(end, pt);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
                 timingOperator.setLeft(end);
                 isLeftPoint = true;
@@ -2140,6 +2146,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         for (ParseTree child : ctx.children) {
             if ("starts".equals(child.getText())) {
                 Start start = of.createStart().withOperand(timingOperator.getLeft());
+                track(start, child);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
                 timingOperator.setLeft(start);
                 continue;
@@ -2147,6 +2154,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("ends".equals(child.getText())) {
                 End end = of.createEnd().withOperand(timingOperator.getLeft());
+                track(end, child);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
                 timingOperator.setLeft(end);
                 continue;
@@ -2154,6 +2162,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("start".equals(child.getText())) {
                 Start start = of.createStart().withOperand(timingOperator.getRight());
+                track(start, child);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
                 timingOperator.setRight(start);
                 continue;
@@ -2161,6 +2170,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("end".equals(child.getText())) {
                 End end = of.createEnd().withOperand(timingOperator.getRight());
+                track(end, child);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
                 timingOperator.setRight(end);
                 continue;
@@ -2226,11 +2236,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (timingOperator.getLeft().getResultType() instanceof IntervalType) {
                 if (isBefore) {
                     End end = of.createEnd().withOperand(timingOperator.getLeft());
+                    track(end, timingOperator.getLeft());
                     libraryBuilder.resolveUnaryCall("System", "End", end);
                     timingOperator.setLeft(end);
                 }
                 else {
                     Start start = of.createStart().withOperand(timingOperator.getLeft());
+                    track(start, timingOperator.getLeft());
                     libraryBuilder.resolveUnaryCall("System", "Start", start);
                     timingOperator.setLeft(start);
                 }
@@ -2239,11 +2251,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (timingOperator.getRight().getResultType() instanceof IntervalType) {
                 if (isBefore) {
                     Start start = of.createStart().withOperand(timingOperator.getRight());
+                    track(start, timingOperator.getRight());
                     libraryBuilder.resolveUnaryCall("System", "Start", start);
                     timingOperator.setRight(start);
                 }
                 else {
                     End end = of.createEnd().withOperand(timingOperator.getRight());
+                    track(end, timingOperator.getRight());
                     libraryBuilder.resolveUnaryCall("System", "End", end);
                     timingOperator.setRight(end);
                 }
@@ -2255,11 +2269,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // For an After, add the quantity to the right operand
                 if (isBefore) {
                     Subtract subtract = of.createSubtract().withOperand(timingOperator.getRight(), quantity);
+                    track(subtract, timingOperator.getRight());
                     libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
                     timingOperator.setRight(subtract);
                 }
                 else {
                     Add add = of.createAdd().withOperand(timingOperator.getRight(), quantity);
+                    track(add, timingOperator.getRight());
                     libraryBuilder.resolveBinaryCall("System", "Add", add);
                     timingOperator.setRight(add);
                 }
@@ -2285,6 +2301,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         // For an After, add the quantity to the right operand
                         if (isBefore) {
                             Subtract subtract = of.createSubtract().withOperand(timingOperator.getRight(), quantity);
+                            track(subtract, timingOperator.getRight());
                             libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
                             timingOperator.setRight(subtract);
 
@@ -2307,6 +2324,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         }
                         else {
                             Add add = of.createAdd().withOperand(timingOperator.getRight(), quantity);
+                            track(add, timingOperator.getRight());
                             libraryBuilder.resolveBinaryCall("System", "Add", add);
                             timingOperator.setRight(add);
 
@@ -2338,12 +2356,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         Expression right = timingOperator.getRight();
                         if (isBefore) {
                             lowerBound = of.createSubtract().withOperand(right, quantity);
+                            track(lowerBound, right);
                             libraryBuilder.resolveBinaryCall("System", "Subtract", (BinaryExpression)lowerBound);
                             upperBound = right;
                         }
                         else {
                             lowerBound = right;
                             upperBound = of.createAdd().withOperand(right, quantity);
+                            track(upperBound, right);
                             libraryBuilder.resolveBinaryCall("System", "Add", (BinaryExpression)upperBound);
                         }
 
@@ -2356,10 +2376,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 ? libraryBuilder.createInterval(lowerBound, isOffsetInclusive, upperBound, isInclusive)
                                 : libraryBuilder.createInterval(lowerBound, isInclusive, upperBound, isOffsetInclusive);
 
+                        track(interval, ctx.quantityOffset());
                         In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
                         if (dateTimePrecision != null) {
                             in.setPrecision(parseDateTimePrecision(dateTimePrecision));
                         }
+                        track(in, ctx.quantityOffset());
                         libraryBuilder.resolveBinaryCall("System", "In", in);
                         return in;
                 }
@@ -2392,6 +2414,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         for (ParseTree child : ctx.children) {
             if ("starts".equals(child.getText())) {
                 Start start = of.createStart().withOperand(timingOperator.getLeft());
+                track(start, child);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
                 timingOperator.setLeft(start);
                 continue;
@@ -2399,6 +2422,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("ends".equals(child.getText())) {
                 End end = of.createEnd().withOperand(timingOperator.getLeft());
+                track(end, child);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
                 timingOperator.setLeft(end);
                 continue;
@@ -2406,6 +2430,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("start".equals(child.getText())) {
                 Start start = of.createStart().withOperand(timingOperator.getRight());
+                track(start, child);
                 libraryBuilder.resolveUnaryCall("System", "Start", start);
                 timingOperator.setRight(start);
                 continue;
@@ -2413,6 +2438,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if ("end".equals(child.getText())) {
                 End end = of.createEnd().withOperand(timingOperator.getRight());
+                track(end, child);
                 libraryBuilder.resolveUnaryCall("System", "End", end);
                 timingOperator.setRight(end);
                 continue;
@@ -2429,8 +2455,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression upperBound = null;
         if (timingOperator.getRight().getResultType() instanceof IntervalType) {
             lowerBound = of.createStart().withOperand(timingOperator.getRight());
+            track(lowerBound, ctx.quantity());
             libraryBuilder.resolveUnaryCall("System", "Start", (Start)lowerBound);
             upperBound = of.createEnd().withOperand(timingOperator.getRight());
+            track(upperBound, ctx.quantity());
             libraryBuilder.resolveUnaryCall("System", "End", (End)upperBound);
         }
         else {
@@ -2439,12 +2467,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         lowerBound = of.createSubtract().withOperand(lowerBound, quantity);
+        track(lowerBound, ctx.quantity());
         libraryBuilder.resolveBinaryCall("System", "Subtract", (BinaryExpression)lowerBound);
 
         upperBound = of.createAdd().withOperand(upperBound, quantity);
+        track(upperBound, ctx.quantity());
         libraryBuilder.resolveBinaryCall("System", "Add", (BinaryExpression)upperBound);
 
         Interval interval = libraryBuilder.createInterval(lowerBound, !isProper, upperBound, !isProper);
+        track(interval, ctx.quantity());
 
         In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
         libraryBuilder.resolveBinaryCall("System", "In", in);
@@ -3276,7 +3307,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 String saveContext = currentContext;
                 currentContext = expressionInfo.getContext();
                 try {
-                    internalVisitExpressionDefinition(expressionInfo.getDefinition());
+                    Stack<Chunk> saveChunks = chunks;
+                    chunks = new Stack<Chunk>();
+                    try {
+                        internalVisitExpressionDefinition(expressionInfo.getDefinition());
+                    }
+                    finally {
+                        chunks = saveChunks;
+                    }
                 } finally {
                     currentContext = saveContext;
                 }
@@ -3321,8 +3359,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             try {
                 Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
                 if (functionInfos != null) {
-                    for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                        internalVisitFunctionDefinition(functionInfo.getDefinition());
+                    Stack<Chunk> saveChunks = chunks;
+                    chunks = new Stack<Chunk>();
+                    try {
+                        for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                            String saveContext = currentContext;
+                            currentContext = functionInfo.getContext();
+                            try {
+                                internalVisitFunctionDefinition(functionInfo.getDefinition());
+                            } finally {
+                                currentContext = saveContext;
+                            }
+                        }
+                    }
+                    finally {
+                        chunks = saveChunks;
                     }
                 }
                 result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
@@ -3492,7 +3543,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (tree instanceof ParserRuleContext) {
             return getTrackBack((ParserRuleContext)tree);
         }
+        if (tree instanceof TerminalNode) {
+            return getTrackBack((TerminalNode)tree);
+        }
         return null;
+    }
+
+    private TrackBack getTrackBack(TerminalNode node) {
+        TrackBack tb = new TrackBack(
+                libraryBuilder.getLibraryIdentifier(),
+                node.getSymbol().getLine(),
+                node.getSymbol().getCharPositionInLine() + 1, // 1-based instead of 0-based
+                node.getSymbol().getLine(),
+                node.getSymbol().getCharPositionInLine() + node.getSymbol().getText().length()
+        );
+        return tb;
     }
 
     private TrackBack getTrackBack(ParserRuleContext ctx) {
@@ -3506,26 +3571,44 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return tb;
     }
 
-    private TrackBack track(Trackable trackable, ParserRuleContext ctx) {
-        TrackBack tb = getTrackBack(ctx);
+    private void decorate(Element element, TrackBack tb) {
+        if (locate && tb != null) {
+            element.setLocator(tb.toLocator());
+        }
 
-        trackable.getTrackbacks().add(tb);
+        if (resultTypes && element.getResultType() != null) {
+            if (element.getResultType() instanceof NamedType) {
+                element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
+            }
+            else {
+                element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
+            }
+        }
+    }
+
+    private TrackBack track(Trackable trackable, ParseTree pt) {
+        TrackBack tb = getTrackBack(pt);
+
+        if (tb != null) {
+            trackable.getTrackbacks().add(tb);
+        }
 
         if (trackable instanceof Element) {
-            Element element = (Element)trackable;
+            decorate((Element)trackable, tb);
+        }
 
-            if (locate) {
-                element.setLocator(tb.toLocator());
-            }
+        return tb;
+    }
 
-            if (resultTypes && element.getResultType() != null) {
-                if (element.getResultType() instanceof NamedType) {
-                    element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
-                }
-                else {
-                    element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
-                }
-            }
+    private TrackBack track(Trackable trackable, Element from) {
+        TrackBack tb = from.getTrackbacks().size() > 0 ? from.getTrackbacks().get(0) : null;
+
+        if (tb != null) {
+            trackable.getTrackbacks().add(tb);
+        }
+
+        if (trackable instanceof Element) {
+            decorate((Element)trackable, tb);
         }
 
         return tb;
