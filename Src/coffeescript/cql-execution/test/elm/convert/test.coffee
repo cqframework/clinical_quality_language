@@ -89,13 +89,10 @@ describe 'FromQuantity', ->
   it "should convert \"-10 'A'\" to \"10 'A'\"", ->
     @negQuantityStr.exec(@ctx).should.equal "-10 'A'"
 
-  ###
-  Commented out below due to bug (?) in cql-to-elm: https://github.com/cqframework/clinical_quality_language/issues/119
   it "should convert \"10 'A'\" to \"10 'A'\"", ->
     quantity = @quantityQuantity.exec(@ctx)
     quantity.value.should.equal 10
     quantity.unit.should.equal 'A'
-  ###
 
 describe 'FromBoolean', ->
   @beforeEach ->
