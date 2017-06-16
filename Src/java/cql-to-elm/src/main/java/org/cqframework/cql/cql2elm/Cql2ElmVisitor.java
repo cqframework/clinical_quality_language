@@ -1766,13 +1766,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitConversionExpressionTerm(@NotNull cqlParser.ConversionExpressionTermContext ctx) {
         TypeSpecifier targetType = parseTypeSpecifier(ctx.typeSpecifier());
         Expression operand = parseExpression(ctx.expression());
-        Conversion conversion = libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false);
-        if (conversion == null) {
-            throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
-                    operand.getResultType(), targetType.getResultType()));
+        if (!DataTypes.equal(operand.getResultType(), targetType.getResultType())) {
+            Conversion conversion = libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false);
+            if (conversion == null) {
+                throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
+                        operand.getResultType(), targetType.getResultType()));
+            }
+
+            return libraryBuilder.convertExpression(operand, conversion);
         }
 
-        return libraryBuilder.convertExpression(operand, conversion);
+        return operand;
     }
 
     @Override
