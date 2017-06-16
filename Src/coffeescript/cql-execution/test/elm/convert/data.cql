@@ -24,8 +24,7 @@ define intInt: convert 10 to Integer
 define quantityStr: convert 10 'A' to String
 define negQuantityStr: convert -10 'A' to String
 define posQuantityStr: convert +10 'A' to String
-// Commented out below due to bug (?) in cql-to-elm: https://github.com/cqframework/clinical_quality_language/issues/119
-// define quantityQuantity: convert 10 'A' to Quantity
+define quantityQuantity: convert 10 'A' to Quantity
 
 // @Test: FromBoolean
 define booleanTrueStr: convert true to String

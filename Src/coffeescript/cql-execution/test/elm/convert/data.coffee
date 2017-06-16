@@ -62,17 +62,9 @@ module.exports['FromString'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "asType" : "{urn:hl7-org:elm-types:r1}String",
-               "type" : "As",
-               "operand" : {
-                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
-                  "value" : "str",
-                  "type" : "Literal"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
-               }
+               "valueType" : "{urn:hl7-org:elm-types:r1}String",
+               "value" : "str",
+               "type" : "Literal"
             }
          }, {
             "name" : "stringNull",
@@ -323,17 +315,9 @@ module.exports['FromInteger'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "asType" : "{urn:hl7-org:elm-types:r1}Integer",
-               "type" : "As",
-               "operand" : {
-                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                  "value" : "10",
-                  "type" : "Literal"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                  "type" : "NamedTypeSpecifier"
-               }
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+               "value" : "10",
+               "type" : "Literal"
             }
          } ]
       }
@@ -347,8 +331,7 @@ context Patient
 define quantityStr: convert 10 'A' to String
 define negQuantityStr: convert -10 'A' to String
 define posQuantityStr: convert +10 'A' to String
-// Commented out below due to bug (?) in cql-to-elm: https://github.com/cqframework/clinical_quality_language/issues/119
-// define quantityQuantity: convert 10 'A' to Quantity
+define quantityQuantity: convert 10 'A' to Quantity
 ###
 
 module.exports['FromQuantity'] = {
@@ -420,6 +403,15 @@ module.exports['FromQuantity'] = {
                   "unit" : "A",
                   "type" : "Quantity"
                }
+            }
+         }, {
+            "name" : "quantityQuantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "value" : 10,
+               "unit" : "A",
+               "type" : "Quantity"
             }
          } ]
       }
@@ -496,34 +488,18 @@ module.exports['FromBoolean'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
-               "type" : "As",
-               "operand" : {
-                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
-                  "value" : "true",
-                  "type" : "Literal"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                  "type" : "NamedTypeSpecifier"
-               }
+               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
+               "value" : "true",
+               "type" : "Literal"
             }
          }, {
             "name" : "booleanFalseBool",
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
-               "type" : "As",
-               "operand" : {
-                  "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
-                  "value" : "false",
-                  "type" : "Literal"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                  "type" : "NamedTypeSpecifier"
-               }
+               "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
+               "value" : "false",
+               "type" : "Literal"
             }
          } ]
       }
@@ -599,29 +575,21 @@ module.exports['FromDateTime'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "asType" : "{urn:hl7-org:elm-types:r1}DateTime",
-               "type" : "As",
-               "operand" : {
-                  "type" : "DateTime",
-                  "year" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "2015",
-                     "type" : "Literal"
-                  },
-                  "month" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "1",
-                     "type" : "Literal"
-                  },
-                  "day" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "2",
-                     "type" : "Literal"
-                  }
+               "type" : "DateTime",
+               "year" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2015",
+                  "type" : "Literal"
                },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                  "type" : "NamedTypeSpecifier"
+               "month" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               },
+               "day" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2",
+                  "type" : "Literal"
                }
             }
          } ]
@@ -693,24 +661,16 @@ module.exports['FromTime'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "asType" : "{urn:hl7-org:elm-types:r1}Time",
-               "type" : "As",
-               "operand" : {
-                  "type" : "Time",
-                  "hour" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "11",
-                     "type" : "Literal"
-                  },
-                  "minute" : {
-                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "value" : "57",
-                     "type" : "Literal"
-                  }
+               "type" : "Time",
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "11",
+                  "type" : "Literal"
                },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Time",
-                  "type" : "NamedTypeSpecifier"
+               "minute" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "57",
+                  "type" : "Literal"
                }
             }
          } ]
