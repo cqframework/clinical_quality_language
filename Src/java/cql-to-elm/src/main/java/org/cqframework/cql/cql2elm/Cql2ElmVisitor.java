@@ -165,7 +165,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Element element = (Element)o;
             if (element.getLocalId() == null) {
                 element.setLocalId(Integer.toString(getNextLocalId()));
-            }
+        }
             chunk.setElement(element);
 
             if (element instanceof ExpressionDef && !(tree instanceof cqlParser.LibraryContext)) {
@@ -176,20 +176,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (!chunks.isEmpty()) {
             chunks.peek().addChunk(chunk);
-        }
+    }
     }
 
     private Annotation buildAnnotation(Chunk chunk) {
         Annotation annotation = af.createAnnotation();
         annotation.setS(buildNarrative(chunk));
         return annotation;
-    }
+        }
 
     private Narrative buildNarrative(Chunk chunk) {
         Narrative narrative = af.createNarrative();
         if (chunk.getElement() != null) {
             narrative.setR(chunk.getElement().getLocalId());
-        }
+                }
 
         if (chunk.hasChunks()) {
             Narrative currentNarrative = null;
@@ -199,17 +199,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (currentNarrative != null) {
                         narrative.getContent().add(wrapNarrative(currentNarrative));
                         currentNarrative = null;
-                    }
+                }
                     narrative.getContent().add(wrapNarrative(chunkNarrative));
                 }
                 else {
                     if (currentNarrative == null) {
                         currentNarrative = chunkNarrative;
-                    }
+            }
                     else {
                         currentNarrative.getContent().addAll(chunkNarrative.getContent());
-                    }
-                }
+            }
+        }
             }
             if (currentNarrative != null) {
                 narrative.getContent().add(wrapNarrative(currentNarrative));
@@ -276,16 +276,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if (o instanceof Trackable && !(tree instanceof cqlParser.LibraryContext)) {
                 this.track((Trackable) o, tree);
-            }
-            if (o instanceof Expression) {
-                addExpression((Expression) o);
-            }
+        }
+        if (o instanceof Expression) {
+            addExpression((Expression) o);
+        }
 
-            return o;
+        return o;
         } finally {
             if (annotate) {
                 popChunk(tree, o);
-            }
+    }
         }
     }
 
@@ -648,19 +648,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
         if (def == null) {
-            libraryBuilder.pushExpressionDefinition(identifier);
             libraryBuilder.pushExpressionContext(currentContext);
             try {
-                def = of.createExpressionDef()
-                        .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                        .withName(identifier)
-                        .withContext(currentContext)
-                        .withExpression((Expression) visit(ctx.expression()));
-                def.setResultType(def.getExpression().getResultType());
-                libraryBuilder.addExpression(def);
-            }
-            finally {
-                libraryBuilder.popExpressionDefinition();
+                libraryBuilder.pushExpressionDefinition(identifier);
+                try {
+                    def = of.createExpressionDef()
+                            .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                            .withName(identifier)
+                            .withContext(currentContext)
+                            .withExpression((Expression) visit(ctx.expression()));
+                    def.setResultType(def.getExpression().getResultType());
+                    libraryBuilder.addExpression(def);
+                } finally {
+                    libraryBuilder.popExpressionDefinition();
+                }
+            } finally {
                 libraryBuilder.popExpressionContext();
             }
         }
@@ -3310,7 +3312,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     Stack<Chunk> saveChunks = chunks;
                     chunks = new Stack<Chunk>();
                     try {
-                        internalVisitExpressionDefinition(expressionInfo.getDefinition());
+                    internalVisitExpressionDefinition(expressionInfo.getDefinition());
                     }
                     finally {
                         chunks = saveChunks;
@@ -3355,10 +3357,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
         Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward);
         if (result == null) {
-            libraryBuilder.pushExpressionDefinition(functionName);
-            try {
-                Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
-                if (functionInfos != null) {
+            Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
+            if (functionInfos != null) {
                     Stack<Chunk> saveChunks = chunks;
                     chunks = new Stack<Chunk>();
                     try {
@@ -3376,11 +3376,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         chunks = saveChunks;
                     }
                 }
-                result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
-            }
-            finally {
-                libraryBuilder.popExpressionDefinition();
-            }
+            result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
         }
 
         return result;
@@ -3454,7 +3450,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 try {
                     libraryBuilder.pushExpressionContext(currentContext);
                     try {
-                        fun.setExpression(parseExpression(ctx.functionBody()));
+                        libraryBuilder.pushExpressionDefinition(String.format("%s()", fun.getName()));
+                        try {
+                            fun.setExpression(parseExpression(ctx.functionBody()));
+                        } finally {
+                            libraryBuilder.popExpressionDefinition();
+                        }
                     } finally {
                         libraryBuilder.popExpressionContext();
                     }
@@ -3573,18 +3574,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private void decorate(Element element, TrackBack tb) {
         if (locate && tb != null) {
-            element.setLocator(tb.toLocator());
-        }
+                element.setLocator(tb.toLocator());
+            }
 
-        if (resultTypes && element.getResultType() != null) {
-            if (element.getResultType() instanceof NamedType) {
-                element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
-            }
-            else {
-                element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
+            if (resultTypes && element.getResultType() != null) {
+                if (element.getResultType() instanceof NamedType) {
+                    element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
+                }
+                else {
+                    element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
+                }
             }
         }
-    }
 
     private TrackBack track(Trackable trackable, ParseTree pt) {
         TrackBack tb = getTrackBack(pt);

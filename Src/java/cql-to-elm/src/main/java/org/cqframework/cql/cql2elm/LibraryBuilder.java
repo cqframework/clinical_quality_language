@@ -68,8 +68,7 @@ public class LibraryBuilder {
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
-    private final Stack<Expression> targets = new Stack<>();
-    private FunctionDef currentFunctionDef = null;
+    private final Stack<FunctionDef> functionDefs = new Stack<>();
     private ModelManager modelManager = null;
     private Model defaultModel = null;
     private LibraryManager libraryManager = null;
@@ -96,8 +95,6 @@ public class LibraryBuilder {
     public void disableListTraversal() {
         listTraversal = false;
     }
-
-    private final Stack<QueryContext> queries = new Stack<>();
 
     private Model loadModel(VersionedIdentifier modelIdentifier) {
         Model model = modelManager.resolveModel(modelIdentifier);
@@ -1395,8 +1392,8 @@ public class LibraryBuilder {
     }
 
     private IdentifierRef resolveQueryResultElement(String identifier) {
-        if (queries.size() > 0) {
-            QueryContext query = queries.peek();
+        if (inQueryContext()) {
+            QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
                 DataType sortColumnType = resolveProperty(query.getResultElementType(), identifier, false);
                 if (sortColumnType != null) {
@@ -1411,10 +1408,13 @@ public class LibraryBuilder {
     }
 
     private AliasedQuerySource resolveAlias(String identifier) {
-        for (QueryContext query : queries) {
-            AliasedQuerySource source = query.resolveAlias(identifier);
-            if (source != null) {
-                return source;
+        // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
+        if (inQueryContext()) {
+            for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
+                AliasedQuerySource source = getScope().getQueries().get(i).resolveAlias(identifier);
+                if (source != null) {
+                    return source;
+                }
             }
         }
 
@@ -1422,8 +1422,8 @@ public class LibraryBuilder {
     }
 
     private Expression resolveQueryThisElement(String identifier) {
-        if (queries.size() > 0) {
-            QueryContext query = queries.peek();
+        if (inQueryContext()) {
+            QueryContext query = peekQueryContext();
             if (query.isImplicit()) {
                 AliasedQuerySource source = resolveAlias("$this");
                 if (source != null) {
@@ -1447,10 +1447,13 @@ public class LibraryBuilder {
     }
 
     private LetClause resolveQueryLet(String identifier) {
-        for (QueryContext query : queries) {
-            LetClause let = query.resolveLet(identifier);
-            if (let != null) {
-                return let;
+        // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
+        if (inQueryContext()) {
+            for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
+                LetClause let = getScope().getQueries().get(i).resolveLet(identifier);
+                if (let != null) {
+                    return let;
+                }
             }
         }
 
@@ -1458,8 +1461,8 @@ public class LibraryBuilder {
     }
 
     private OperandRef resolveOperandRef(String identifier) {
-        if (currentFunctionDef != null) {
-            for (OperandDef operand : currentFunctionDef.getOperand()) {
+        if (!functionDefs.empty()) {
+            for (OperandDef operand : functionDefs.peek().getOperand()) {
                 if (operand.getName().equals(identifier)) {
                     return (OperandRef)of.createOperandRef()
                             .withName(identifier)
@@ -1487,8 +1490,8 @@ public class LibraryBuilder {
         // performed for every patient in the population, so the result type is promoted to a list (if it is not already).
         if (inPopulationContext()) {
             // If we are in the source clause of a query, indicate that the source references patient context
-            if (!queries.empty() && queries.peek().inSourceClause()) {
-                queries.peek().referencePatientContext();
+            if (inQueryContext() && getScope().getQueries().peek().inSourceClause()) {
+                getScope().getQueries().peek().referencePatientContext();
             }
 
             DataType resultType = expressionDef.getResultType();
@@ -1503,6 +1506,19 @@ public class LibraryBuilder {
         throw new IllegalArgumentException(String.format("Invalid context reference from %s context to %s context.", currentExpressionContext(), expressionDef.getContext()));
     }
 
+    private class Scope {
+        private final Stack<Expression> targets = new Stack<>();
+        private final Stack<QueryContext> queries = new Stack<>();
+
+        public Stack<Expression> getTargets() {
+            return targets;
+        }
+
+        public Stack<QueryContext> getQueries() {
+            return queries;
+        }
+    }
+
     private class ExpressionDefinitionContext {
         public ExpressionDefinitionContext(String identifier) {
             this.identifier = identifier;
@@ -1510,6 +1526,11 @@ public class LibraryBuilder {
         private String identifier;
         public String getIdentifier() {
             return identifier;
+        }
+
+        private Scope scope = new Scope();
+        public Scope getScope() {
+            return scope;
         }
 
         private Exception rootCause;
@@ -1565,6 +1586,14 @@ public class LibraryBuilder {
         expressionDefinitions.pop();
     }
 
+    private boolean hasScope() {
+        return !expressionDefinitions.empty();
+    }
+
+    private Scope getScope() {
+        return expressionDefinitions.peek().getScope();
+    }
+
     public void pushExpressionContext(String context) {
         expressionContext.push(context);
     }
@@ -1594,38 +1623,38 @@ public class LibraryBuilder {
     }
 
     public boolean inQueryContext() {
-        return queries.size() > 0;
+        return hasScope() && getScope().getQueries().size() > 0;
     }
 
     public void pushQueryContext(QueryContext context) {
-        queries.push(context);
+        getScope().getQueries().push(context);
     }
 
     public QueryContext popQueryContext() {
-        return queries.pop();
+        return getScope().getQueries().pop();
     }
 
     public QueryContext peekQueryContext() {
-        return queries.peek();
+        return getScope().getQueries().peek();
     }
 
     public void pushExpressionTarget(Expression target) {
-        targets.push(target);
+        getScope().getTargets().push(target);
     }
 
     public Expression popExpressionTarget() {
-        return targets.pop();
+        return getScope().getTargets().pop();
     }
 
     public boolean hasExpressionTarget() {
-        return !targets.isEmpty();
+        return hasScope() && !getScope().getTargets().isEmpty();
     }
 
     public void beginFunctionDef(FunctionDef functionDef) {
-        currentFunctionDef = functionDef;
+        functionDefs.push(functionDef);
     }
 
     public void endFunctionDef() {
-        currentFunctionDef = null;
+        functionDefs.pop();
     }
 }

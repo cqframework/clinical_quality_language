@@ -137,7 +137,12 @@ public class SemanticTests {
 
     @Test
     public void testRecursiveFunctions() throws IOException {
-        runSemanticTest("OperatorTests/RecursiveFunctions.cql", 3);
+        runSemanticTest("OperatorTests/RecursiveFunctions.cql", 1);
+    }
+
+    @Test
+    public void testNameHiding() throws IOException {
+        runSemanticTest("OperatorTests/NameHiding.cql", 1);
     }
 
     @Test
