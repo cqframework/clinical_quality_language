@@ -146,6 +146,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testSorting() throws IOException {
+        runSemanticTest("OperatorTests/Sorting.cql", 1);
+    }
+
+    @Test
     public void testInvalidSortClauses() throws IOException {
         runSemanticTest("OperatorTests/InvalidSortClauses.cql", 3);
     }
