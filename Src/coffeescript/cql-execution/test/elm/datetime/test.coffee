@@ -695,3 +695,64 @@ describe 'DurationBetween Comparisons', ->
     @twentyFiveDaysLessThanDaysBetween.exec(@ctx).should.be.true()
     should(@fortyDaysEqualToDaysBetween.exec(@ctx)).be.null
     @twentyFiveDaysGreaterThanDaysBetween.exec(@ctx).should.be.false()
+
+describe 'DateMath', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should properly add and subtract years', ->
+    d = @plusThreeYears.exec(@ctx)
+    dateCheck(d, 2016, 6, 15, 0, 0, 0, 0)
+    d = @minusThreeYears.exec(@ctx)
+    dateCheck(d, 2010, 6, 15, 0, 0, 0, 0)
+
+  it 'should properly add and subtract months', ->
+    d = @plusEightMonths.exec(@ctx)
+    dateCheck(d, 2014, 2, 15, 0, 0, 0, 0)
+    d = @minusEightMonths.exec(@ctx)
+    dateCheck(d, 2012, 10, 15, 0, 0, 0, 0)
+
+  it.skip 'should properly add and subtract weeks', ->
+    d = @plusThreeWeeks.exec(@ctx)
+    dateCheck(d, 2013, 7, 6, 0, 0, 0, 0)
+    d = @minusThreeWeeks.exec(@ctx)
+    dateCheck(d, 2013, 5, 25, 0, 0, 0, 0)
+
+  it 'should properly add and subtract days', ->
+    d = @plusTwentyDays.exec(@ctx)
+    dateCheck(d, 2013, 7, 5, 0, 0, 0, 0)
+    d = @minusTwentyDays.exec(@ctx)
+    dateCheck(d, 2013, 5, 26, 0, 0, 0, 0)
+
+  it 'should properly add and subtract hours', ->
+    d = @plusThreeHours.exec(@ctx)
+    dateCheck(d, 2013, 6, 15, 3, 0, 0, 0)
+    d = @minusThreeHours.exec(@ctx)
+    dateCheck(d, 2013, 6, 14, 21, 0, 0, 0)
+
+  it 'should properly add and subtract minutes', ->
+    d = @plusThreeMinutes.exec(@ctx)
+    dateCheck(d, 2013, 6, 15, 0, 3, 0, 0)
+    d = @minusThreeMinutes.exec(@ctx)
+    dateCheck(d, 2013, 6, 14, 23, 57, 0, 0)
+
+  it 'should properly add and subtract seconds', ->
+    d = @plusThreeSeconds.exec(@ctx)
+    dateCheck(d, 2013, 6, 15, 0, 0, 3, 0)
+    d = @minusThreeSeconds.exec(@ctx)
+    dateCheck(d, 2013, 6, 14, 23, 59, 57, 0)
+
+  it 'should properly add and subtract milliseconds', ->
+    d = @plusThreeMilliseconds.exec(@ctx)
+    dateCheck(d, 2013, 6, 15, 0, 0, 0, 3)
+    d = @minusThreeMilliseconds.exec(@ctx)
+    dateCheck(d, 2013, 6, 14, 23, 59, 59, 997)
+
+dateCheck = (date, year, month, day, hour, minute, second, millisecond) ->
+  date.year.should.equal year
+  date.month.should.equal month
+  date.day.should.equal day
+  date.hour.should.equal hour
+  date.minute.should.equal minute
+  date.second.should.equal second
+  date.millisecond.should.equal millisecond

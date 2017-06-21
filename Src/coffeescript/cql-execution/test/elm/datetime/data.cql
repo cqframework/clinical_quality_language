@@ -280,3 +280,22 @@ define LessThan80DaysAfter: days between NewYear2014 and February2014 < 80
 define TwentyFiveDaysLessThanDaysBetween: 25 < days between NewYear2014 and February2014
 define FortyDaysEqualToDaysBetween: 40 = days between NewYear2014 and February2014
 define TwentyFiveDaysGreaterThanDaysBetween: 25 > days between NewYear2014 and February2014
+
+// @Test: DateMath
+define June15th2013: DateTime(2013, 6, 15, 0, 0, 0, 0)
+define PlusThreeYears: June15th2013 + 3 years
+define MinusThreeYears: June15th2013 - 3 years
+define PlusEightMonths: June15th2013 + 8 months
+define MinusEightMonths: June15th2013 - 8 months
+define PlusThreeWeeks: June15th2013 + 3 weeks
+define MinusThreeWeeks: June15th2013 - 3 weeks
+define PlusTwentyDays: June15th2013 + 20 days
+define MinusTwentyDays: June15th2013 - 20 days
+define PlusThreeHours: June15th2013 + 3 hours
+define MinusThreeHours: June15th2013 - 3 hours
+define PlusThreeMinutes: June15th2013 + 3 minutes
+define MinusThreeMinutes: June15th2013 - 3 minutes
+define PlusThreeSeconds: June15th2013 + 3 seconds
+define MinusThreeSeconds: June15th2013 - 3 seconds
+define PlusThreeMilliseconds: June15th2013 + 3 milliseconds
+define MinusThreeMilliseconds: June15th2013 - 3 milliseconds

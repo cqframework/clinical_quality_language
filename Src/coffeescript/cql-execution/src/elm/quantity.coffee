@@ -30,7 +30,7 @@ module.exports.Quantity = class Quantity extends Expression
   before: (other) ->
     if other instanceof Quantity and other.unit == @unit then @value < other.value else null
 
-time_units = {'years':'year',  'months': 'month',  'days' :'day', 'minutes': 'minute', 'seconds':'seconds', 'milliseconds' : 'millisecond' }
+time_units = {'years':'year',  'months': 'month',  'days' :'day', 'hours': 'hour', 'minutes': 'minute', 'seconds':'second', 'milliseconds' : 'millisecond' }
 
 clean_unit = (units) ->
   if time_units[units] then time_units[units] else units
