@@ -620,6 +620,9 @@ describe 'DurationBetween', ->
   it 'should properly execute months between', ->
     @monthsBetween.exec(@ctx).should.equal 12
 
+  it 'should properly execute weeks between', ->
+    @weeksBetween.exec(@ctx).should.equal 52
+
   it 'should properly execute days between', ->
     @daysBetween.exec(@ctx).should.equal 365
 
@@ -643,6 +646,9 @@ describe 'DurationBetween', ->
 
   it 'should properly execute months between with an uncertainty', ->
     @monthsBetweenUncertainty.exec(@ctx).should.equal 0
+
+  it 'should properly execute weeks between with an uncertainty', ->
+    @weeksBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 4)
 
   it 'should properly execute days between with an uncertainty', ->
     @daysBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 30)
@@ -712,7 +718,7 @@ describe 'DateMath', ->
     d = @minusEightMonths.exec(@ctx)
     dateCheck(d, 2012, 10, 15, 0, 0, 0, 0)
 
-  it.skip 'should properly add and subtract weeks', ->
+  it 'should properly add and subtract weeks', ->
     d = @plusThreeWeeks.exec(@ctx)
     dateCheck(d, 2013, 7, 6, 0, 0, 0, 0)
     d = @minusThreeWeeks.exec(@ctx)

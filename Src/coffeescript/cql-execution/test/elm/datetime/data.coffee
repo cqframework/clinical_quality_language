@@ -16203,6 +16203,7 @@ define NewYear2014: DateTime(2014, 1, 1, 0, 0, 0, 0)
 define January2014: DateTime(2014, 1)
 define YearsBetween: years between NewYear2013 and NewYear2014
 define MonthsBetween: months between NewYear2013 and NewYear2014
+define WeeksBetween: weeks between NewYear2013 and NewYear2014
 define DaysBetween: days between NewYear2013 and NewYear2014
 define HoursBetween: hours between NewYear2013 and NewYear2014
 define MinutesBetween: minutes between NewYear2013 and NewYear2014
@@ -16211,6 +16212,7 @@ define MillisecondsBetween: milliseconds between NewYear2013 and NewYear2014
 define MillisecondsBetweenReversed: milliseconds between NewYear2014 and NewYear2013
 define YearsBetweenUncertainty: years between NewYear2014 and January2014
 define MonthsBetweenUncertainty: months between NewYear2014 and January2014
+define WeeksBetweenUncertainty: weeks between NewYear2014 and January2014
 define DaysBetweenUncertainty: days between NewYear2014 and January2014
 define HoursBetweenUncertainty: hours between NewYear2014 and January2014
 define MinutesBetweenUncertainty: minutes between NewYear2014 and January2014
@@ -16382,6 +16384,21 @@ module.exports['DurationBetween'] = {
                } ]
             }
          }, {
+            "name" : "WeeksBetween",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Week",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "NewYear2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
             "name" : "DaysBetween",
             "context" : "Patient",
             "accessLevel" : "Public",
@@ -16492,6 +16509,21 @@ module.exports['DurationBetween'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Month",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "NewYear2014",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2014",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "WeeksBetweenUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Week",
                "type" : "DurationBetween",
                "operand" : [ {
                   "name" : "NewYear2014",
