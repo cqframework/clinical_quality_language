@@ -60,6 +60,8 @@ define stringAsc: ({'jenny', 'dont', 'change', 'your', 'number'}) S sort asc
 define stringReturnAsc: ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort asc
 define stringDesc: ({'jenny', 'dont', 'change', 'your', 'number'}) S sort desc
 define stringReturnDesc: ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort desc
+define five: 5
+define sortByExpression: ({8, 6, 7, 5, 3, 0, 9}) N return Tuple{N: N} sort by (five + N)
 
 // @Test: Distinct
 define defaultNumbers: ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return N

@@ -154,6 +154,9 @@ describe 'Sorting', ->
     @stringDesc.exec(@ctx).should.eql ['your', 'number', 'jenny', 'dont', 'change']
     @stringReturnDesc.exec(@ctx).should.eql ['your', 'number', 'jenny', 'dont', 'change']
 
+  it 'should be able to sort by an expression that uses another expression in the library', ->
+    @sortByExpression.exec(@ctx).should.eql [{N: 0}, {N: 3}, {N: 5}, {N: 6}, {N: 7}, {N: 8}, {N: 9}]
+
 describe 'Distinct', ->
   @beforeEach ->
     setup @, data

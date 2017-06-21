@@ -161,16 +161,16 @@ describe 'CalculateAge', ->
 
     # this is getting the possible number of months in years with the addtion of an offset
     # to get the correct number of months
-    @full_months = ((@today.getFullYear() - 1980) * 12) + (@today.getMonth() - 6)
+    month_offset = if @today.getMonth() == 5 && @today.getDate() < 17 then 6 else 5
+    @full_months = ((@today.getFullYear() - 1980) * 12) + (@today.getMonth() - month_offset)
+
     @timediff = @today - @bday # diff in milliseconds
 
   it 'should execute age in years', ->
     @years.exec(@ctx).should.equal @full_months // 12
 
   it 'should execute age in months', ->
-    # what is returned will depend on whether the day in the current month has
-    # made it to the 17th day of the month as declared in the birthday
-    [@full_months, @full_months-1].indexOf(@months.exec(@ctx)).should.not.equal -1
+    @months.exec(@ctx).should.equal @full_months
 
   it 'should execute age in days', ->
     @days.exec(@ctx).should.equal @timediff // 1000 // 60 // 60 // 24
