@@ -46,7 +46,7 @@ module.exports.ByDirection = class ByDirection extends Expression
     @low_order = if @direction == "asc" then -1 else 1
     @high_order = @low_order * -1
 
-  exec: (a,b) ->
+  exec: (ctx,a,b) ->
     if a == b
       0
     else if a < b
@@ -62,12 +62,11 @@ module.exports.ByExpression = class ByExpression extends Expression
     @low_order = if @direction == "asc" then -1 else 1
     @high_order = @low_order * -1
 
-  exec: (a,b) ->
-    ctx = new Context()
-    ctx.context_values = a
-    a_val = @expression.execute(ctx)
-    ctx.context_values = b
-    b_val = @expression.execute(ctx)
+  exec: (ctx,a,b) ->
+    sctx = ctx.childContext(a)
+    a_val = @expression.execute(sctx)
+    sctx = ctx.childContext(b)
+    b_val = @expression.execute(sctx)
 
     if a_val == b_val
       0
@@ -93,13 +92,13 @@ module.exports.SortClause = SortClause = class SortClause
   constructor:(json) ->
     @by = build json?.by
 
-  sort: (values) ->
+  sort: (ctx, values) ->
     if @by
       values.sort (a,b) =>
         order = 0
         for item in @by
           # Do not use execute here because the value of the sort order is not important.
-          order = item.exec(a,b)
+          order = item.exec(ctx,a,b)
           if order != 0 then break
         order
 
@@ -147,7 +146,7 @@ module.exports.Query = class Query extends Expression
     distinct = if @returnClause? then @returnClause.distinct else true
     if distinct then returnedValues = toDistinctList(returnedValues)
 
-    @sortClause?.sort(returnedValues)
+    @sortClause?.sort(ctx, returnedValues)
     return if @sources.returnsList() then returnedValues else returnedValues[0]
 
 module.exports.AliasRef = class AliasRef extends Expression

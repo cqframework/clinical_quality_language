@@ -244,6 +244,7 @@ define NewYear2014: DateTime(2014, 1, 1, 0, 0, 0, 0)
 define January2014: DateTime(2014, 1)
 define YearsBetween: difference in years between NewYear2013 and NewYear2014
 define MonthsBetween: difference in months between NewYear2013 and NewYear2014
+define WeeksBetween: difference in weeks between NewYear2013 and NewYear2014
 define DaysBetween: difference in days between NewYear2013 and NewYear2014
 define HoursBetween: difference in hours between NewYear2013 and NewYear2014
 define MinutesBetween: difference in minutes between NewYear2013 and NewYear2014
@@ -252,6 +253,7 @@ define MillisecondsBetween: difference in milliseconds between NewYear2013 and N
 define MillisecondsBetweenReversed: difference in milliseconds between NewYear2014 and NewYear2013
 define YearsBetweenUncertainty: difference in years between NewYear2014 and January2014
 define MonthsBetweenUncertainty: difference in months between NewYear2014 and January2014
+define WeeksBetweenUncertainty: difference in weeks between NewYear2014 and January2014
 define DaysBetweenUncertainty: difference in days between NewYear2014 and January2014
 define HoursBetweenUncertainty: difference in hours between NewYear2014 and January2014
 define MinutesBetweenUncertainty: difference in minutes between NewYear2014 and January2014
@@ -301,3 +303,22 @@ define MinutesBetweenUncertainty: minutes between JanOne2015 and January2015
 define SecondsBetweenUncertainty: seconds between JanOne2015 and January2015
 define MillisecondsBetweenUncertainty: milliseconds between JanOne2015 and January2015
 define MillisecondsBetweenReversedUncertainty: milliseconds between January2015 and JanOne2015
+
+// @Test: DateMath
+define June15th2013: DateTime(2013, 6, 15, 0, 0, 0, 0)
+define PlusThreeYears: June15th2013 + 3 years
+define MinusThreeYears: June15th2013 - 3 years
+define PlusEightMonths: June15th2013 + 8 months
+define MinusEightMonths: June15th2013 - 8 months
+define PlusThreeWeeks: June15th2013 + 3 weeks
+define MinusThreeWeeks: June15th2013 - 3 weeks
+define PlusTwentyDays: June15th2013 + 20 days
+define MinusTwentyDays: June15th2013 - 20 days
+define PlusThreeHours: June15th2013 + 3 hours
+define MinusThreeHours: June15th2013 - 3 hours
+define PlusThreeMinutes: June15th2013 + 3 minutes
+define MinusThreeMinutes: June15th2013 - 3 minutes
+define PlusThreeSeconds: June15th2013 + 3 seconds
+define MinusThreeSeconds: June15th2013 - 3 seconds
+define PlusThreeMilliseconds: June15th2013 + 3 milliseconds
+define MinusThreeMilliseconds: June15th2013 - 3 milliseconds

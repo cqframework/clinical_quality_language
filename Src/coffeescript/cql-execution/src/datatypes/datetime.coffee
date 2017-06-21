@@ -1,7 +1,7 @@
 { Uncertainty } = require './uncertainty'
 
 module.exports.DateTime = class DateTime
-  @Unit: { YEAR: 'year', MONTH: 'month', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second', MILLISECOND: 'millisecond' }
+  @Unit: { YEAR: 'year', MONTH: 'month', WEEK: 'week', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second', MILLISECOND: 'millisecond' }
   @FIELDS: [@Unit.YEAR, @Unit.MONTH, @Unit.DAY, @Unit.HOUR, @Unit.MINUTE, @Unit.SECOND, @Unit.MILLISECOND]
 
   @parse: (string) ->
@@ -139,6 +139,12 @@ module.exports.DateTime = class DateTime
     # TODO: According to spec, 2/29/2000 + 1 year is 2/28/2001
     # Currently, it evaluates to 3/1/2001.  Doh.
     result = @copy()
+
+    # If weeks, convert to days
+    if field == DateTime.Unit.WEEK
+      offset = offset * 7
+      field = DateTime.Unit.DAY
+
     if result[field]?
       # Increment the field, then round-trip to JS date and back for calendar math
       result[field] = result[field] + offset
@@ -163,6 +169,7 @@ module.exports.DateTime = class DateTime
     # To count boundaries below month, we need to floor units at lower precisions
     [a, b] = [a, b].map (x) ->
       switch unitField
+        when DateTime.Unit.WEEK then new Date(x.getFullYear(), x.getMonth(), x.getDate())
         when DateTime.Unit.DAY then new Date(x.getFullYear(), x.getMonth(), x.getDate())
         when DateTime.Unit.HOUR then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours())
         when DateTime.Unit.MINUTE then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes())
@@ -174,6 +181,7 @@ module.exports.DateTime = class DateTime
     switch unitField
       when DateTime.Unit.YEAR then b.getFullYear() - a.getFullYear()
       when DateTime.Unit.MONTH then b.getMonth() - a.getMonth() + (12 * (b.getFullYear() - a.getFullYear()))
+      when DateTime.Unit.WEEK then Math.floor(msDiff / (7 * 24 * 60 * 60 * 1000))
       when DateTime.Unit.DAY then Math.floor(msDiff / (24 * 60 * 60 * 1000))
       when DateTime.Unit.HOUR then Math.floor(msDiff / (60 * 60 * 1000))
       when DateTime.Unit.MINUTE then Math.floor(msDiff / (60 * 1000))

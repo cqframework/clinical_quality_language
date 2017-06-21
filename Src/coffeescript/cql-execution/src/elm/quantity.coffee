@@ -55,7 +55,7 @@ module.exports.Quantity = class Quantity extends Expression
       otherDurationInMilliseconds = durationInMilliseconds(other)
       thisDurationInMilliseconds < otherDurationInMilliseconds
     else null
-    
+
   equals: (other) ->
     if other instanceof Quantity and @unit == other.unit
       @value == parseFloat other.value
@@ -73,7 +73,7 @@ clean_unit = (units) ->
 # See http://unitsofmeasure.org/ucum.html#para-31
 # The CQL specification says that dates are based on the Gregorian calendar
 # UCUM says that years should be Julian. As a result, CQL-based year and month identifiers will
-# be matched to the UCUM gregorian units. UCUM-based year and month identifiers will be matched 
+# be matched to the UCUM gregorian units. UCUM-based year and month identifiers will be matched
 # to the UCUM julian units.
 ucum_time_units = {'years': 'a_g', 'year': 'a_g', 'YEARS': 'a_g', 'YEAR': 'a_g', 'a_g': 'a_g'
   , 'a': 'a_j', 'ANN': 'a_j', 'ann': 'a_j', 'A': 'a_j', 'a_j': 'a_j'
