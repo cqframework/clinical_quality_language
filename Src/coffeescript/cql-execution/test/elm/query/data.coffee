@@ -1059,6 +1059,8 @@ define stringAsc: ({'jenny', 'dont', 'change', 'your', 'number'}) S sort asc
 define stringReturnAsc: ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort asc
 define stringDesc: ({'jenny', 'dont', 'change', 'your', 'number'}) S sort desc
 define stringReturnDesc: ({'jenny', 'dont', 'change', 'your', 'number'}) S return S sort desc
+define five: 5
+define sortByExpression: ({8, 6, 7, 5, 3, 0, 9}) N return Tuple{N: N} sort by (five + N)
 ###
 
 module.exports['Sorting'] = {
@@ -1661,6 +1663,86 @@ module.exports['Sorting'] = {
                   "by" : [ {
                      "direction" : "desc",
                      "type" : "ByDirection"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "five",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+               "value" : "5",
+               "type" : "Literal"
+            }
+         }, {
+            "name" : "sortByExpression",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "8",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "7",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "N",
+                        "value" : {
+                           "name" : "N",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               },
+               "sort" : {
+                  "by" : [ {
+                     "direction" : "asc",
+                     "type" : "ByExpression",
+                     "expression" : {
+                        "type" : "Add",
+                        "operand" : [ {
+                           "name" : "five",
+                           "type" : "ExpressionRef"
+                        }, {
+                           "name" : "N",
+                           "type" : "IdentifierRef"
+                        } ]
+                     }
                   } ]
                }
             }
