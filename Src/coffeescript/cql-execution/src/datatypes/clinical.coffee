@@ -2,6 +2,9 @@
 
 module.exports.Code = class Code
   constructor: (@code, @system, @version, @display) ->
+  
+  hasCode: (code) ->
+    if @code == code then true else false
 
 module.exports.Concept = class Concept
   constructor: (@codes = [], @text) ->

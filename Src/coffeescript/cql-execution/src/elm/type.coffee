@@ -102,21 +102,21 @@ module.exports.Convert = class Convert extends Expression
   exec: (ctx) ->
     switch @toType
       when "{urn:hl7-org:elm-types:r1}Boolean"
-        new ToBoolean({"type": "ToBoolean", "operand": @operand}).exec(ctx)
+        new ToBoolean({"type": "ToBoolean", "operand": @operand}).execute(ctx)
       when "{urn:hl7-org:elm-types:r1}Concept"
-        new ToConcept({"type": "ToConcept", "operand": @operand}).exec(ctx)
+        new ToConcept({"type": "ToConcept", "operand": @operand}).execute(ctx)
       when "{urn:hl7-org:elm-types:r1}Decimal"
-        new ToDecimal({"type": "ToDecimal", "operand": @operand}).exec(ctx)
+        new ToDecimal({"type": "ToDecimal", "operand": @operand}).execute(ctx)
       when "{urn:hl7-org:elm-types:r1}Integer"
-        new ToInteger({"type": "ToInteger", "operand": @operand}).exec(ctx)
+        new ToInteger({"type": "ToInteger", "operand": @operand}).execute(ctx)
       when "{urn:hl7-org:elm-types:r1}String"
-        new ToString({"type": "ToString", "operand": @operand}).exec(ctx)
+        new ToString({"type": "ToString", "operand": @operand}).execute(ctx)
       when "{urn:hl7-org:elm-types:r1}Quantity"
-        new ToQuantity({"type": "ToQuantity", "operand": @operand}).exec(ctx)
+        new ToQuantity({"type": "ToQuantity", "operand": @operand}).execute(ctx)
       when "{urn:hl7-org:elm-types:r1}DateTime"
-        new ToDateTime({"type": "ToDateTime", "operand": @operand}).exec(ctx)
+        new ToDateTime({"type": "ToDateTime", "operand": @operand}).execute(ctx)
       when "{urn:hl7-org:elm-types:r1}Time"
-        new ToTime({"type": "ToTime", "operand": @operand}).exec(ctx)
+        new ToTime({"type": "ToTime", "operand": @operand}).execute(ctx)
       else
         @execArgs(ctx)
 

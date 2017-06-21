@@ -16,8 +16,8 @@ module.exports.Combine = class Combine extends Expression
     @separator = build json.separator
 
   exec: (ctx) ->
-    source = @source.exec(ctx)
-    separator = if @separator? then @separator.exec(ctx) else ''
+    source = @source.execute(ctx)
+    separator = if @separator? then @separator.execute(ctx) else ''
     if (not source? or source.some (x) -> not x?) then null else source.join(separator)
 
 module.exports.Split = class Split extends Expression
@@ -27,8 +27,8 @@ module.exports.Split = class Split extends Expression
     @separator = build json.separator
 
   exec: (ctx) ->
-    stringToSplit = @stringToSplit.exec(ctx)
-    separator = @separator.exec(ctx)
+    stringToSplit = @stringToSplit.execute(ctx)
+    separator = @separator.execute(ctx)
     if not (stringToSplit? and separator?) then null else stringToSplit.split(separator)
 
 # Length is completely handled by overloaded#Length
@@ -58,8 +58,8 @@ module.exports.PositionOf = class PositionOf extends Expression
     @string = build json.string
 
   exec: (ctx) ->
-    pattern = @pattern.exec(ctx)
-    string = @string.exec(ctx)
+    pattern = @pattern.execute(ctx)
+    string = @string.execute(ctx)
     if not (pattern? and string?) then null else string.indexOf(pattern)
 
 module.exports.Substring = class Substring extends Expression
@@ -70,9 +70,9 @@ module.exports.Substring = class Substring extends Expression
     @length = build json['length']
 
   exec: (ctx) ->
-    stringToSub = @stringToSub.exec(ctx)
-    startIndex = @startIndex.exec(ctx)
-    length = if @length? then @length.exec(ctx) else null
+    stringToSub = @stringToSub.execute(ctx)
+    startIndex = @startIndex.execute(ctx)
+    length = if @length? then @length.execute(ctx) else null
     # According to spec: If stringToSub or startIndex is null, or startIndex is out of range, the result is null.
     if not stringToSub? || not startIndex? || startIndex < 0 || startIndex >= stringToSub.length
       null

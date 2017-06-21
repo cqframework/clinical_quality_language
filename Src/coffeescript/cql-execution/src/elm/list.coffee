@@ -11,7 +11,7 @@ module.exports.List = class List extends Expression
     @elements = (build json.element) ? []
 
   exec: (ctx) ->
-    (item.exec(ctx) for item in @elements)
+    (item.execute(ctx) for item in @elements)
 
 module.exports.Exists = class Exists extends Expression
   constructor: (json) ->

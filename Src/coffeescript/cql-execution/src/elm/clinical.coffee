@@ -24,7 +24,7 @@ module.exports.ValueSetRef = class ValueSetRef extends Expression
     # TODO: This calls the code service every time-- should be optimized
     valueset = ctx.getValueSet(@name)
     if valueset instanceof Expression
-      valueset = valueset.exec(ctx)
+      valueset = valueset.execute(ctx)
     valueset
 
 module.exports.InValueSet = class InValueSet extends Expression
@@ -34,8 +34,10 @@ module.exports.InValueSet = class InValueSet extends Expression
     @valueset = new ValueSetRef json.valueset
 
   exec: (ctx) ->
-    code = @code.exec(ctx)
-    valueset = @valueset.exec(ctx)
+    # Bonnie-633 Added null check
+    return false unless @code? and @valueset?
+    code = @code.execute(ctx)
+    valueset = @valueset.execute(ctx)
     if code? and valueset? then valueset.hasCode code else false
 
 module.exports.CodeSystemDef = class CodeSystemDef extends Expression
@@ -57,7 +59,7 @@ module.exports.CodeDef = class CodeDef extends Expression
     @display = json.display
 
   exec: (ctx) ->
-    system = ctx.getCodeSystem(@systemName)?.exec(ctx)
+    system = ctx.getCodeSystem(@systemName)?.execute(ctx)
     new dt.Code(@id, system.id, system.version, @display)
 
 module.exports.CodeRef = class CodeRef extends Expression
@@ -66,7 +68,7 @@ module.exports.CodeRef = class CodeRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.getCode(@name)?.exec(ctx)
+    ctx.getCode(@name)?.execute(ctx)
 
 module.exports.ConceptDef = class ConceptDef extends Expression
   constructor: (json) ->
@@ -76,7 +78,7 @@ module.exports.ConceptDef = class ConceptDef extends Expression
     @codes = json.code
 
   exec: (ctx) ->
-    codes = (ctx.getCode(code.name)?.exec(ctx) for code in @codes)
+    codes = (ctx.getCode(code.name)?.execute(ctx) for code in @codes)
     new dt.Concept(codes, @display)
 
 module.exports.ConceptRef = class ConceptRef extends Expression
@@ -85,7 +87,7 @@ module.exports.ConceptRef = class ConceptRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.getConcept(@name)?.exec(ctx)
+    ctx.getConcept(@name)?.execute(ctx)
 
 module.exports.Concept = class Concept extends Expression
   constructor: (json) ->
@@ -155,6 +157,18 @@ module.exports.CalculateAgeAt = class CalculateAgeAt extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx)
-    date1 = args[0].toJSDate()
-    date2 = args[1].toJSDate()
-    calculateAge date1, date2, @precision
+    # Add null check
+    if args[0]? && args[1]?
+      date1 = args[0]
+      date2 = args[1]
+      # Ignore time, only focus on dates.
+      date1.hour = 0
+      date1.minute = 0
+      date1.second = 0
+      date1.millisecond = 0
+      
+      date1 = date1.toJSDate(true)
+      date2 = date2.toJSDate(true)
+      calculateAge date1, date2, @precision
+    else
+      null

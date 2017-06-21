@@ -13,6 +13,7 @@ class CodeService
     (valueSet for version, valueSet of @valueSets[oid])
 
   findValueSet: (oid, version) ->
+    oid = oid.replace "urn:oid:", ""
     if version?
       @valueSets[oid]?[version]
     else

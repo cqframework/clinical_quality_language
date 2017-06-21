@@ -35,7 +35,7 @@ module.exports.Executor = class Executor
     while p = patientSource.currentPatient()
       patient_ctx = new PatientContext(@library,p,@codeService,@parameters)
       for key,expr of @library.expressions when expr.context is "Patient"
-        r.recordPatientResult(patient_ctx.patient.id(), key, expr.exec(patient_ctx))
+        r.recordPatientResult(patient_ctx.patient.id(), key, patient_ctx.localId_context, expr.execute(patient_ctx))
       patientSource.nextPatient()
     r
 

@@ -157,17 +157,21 @@ module.exports.Interval = class Interval
 
   after: (other) ->
     closed = @toClosed()
-    otherClosed = other.toClosed()
     # Meets spec, but not 100% correct (e.g., (null, 5] after [6, 10] --> null)
     # Simple way to fix it: and w/ not overlaps
-    cmp.greaterThan closed.low, otherClosed.high
+    if !!other.toClosed
+      cmp.greaterThan closed.low, other.toClosed().high
+    else
+      cmp.greaterThan closed.low, other
 
   before: (other) ->
     closed = @toClosed()
-    otherClosed = other.toClosed()
     # Meets spec, but not 100% correct (e.g., (null, 5] after [6, 10] --> null)
     # Simple way to fix it: and w/ not overlaps
-    cmp.lessThan closed.high, otherClosed.low
+    if !!other.toClosed
+      cmp.lessThan closed.high, other.toClosed().low
+    else
+      cmp.lessThan closed.high, other
 
   meets: (other) ->
     ThreeValuedLogic.or(

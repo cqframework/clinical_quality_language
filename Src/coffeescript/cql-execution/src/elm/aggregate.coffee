@@ -33,7 +33,7 @@ module.exports.Count = class Count extends AggregateExpression
     super
 
   exec: (ctx) ->
-    arg = @source.exec(ctx)
+    arg = @source.execute(ctx)
     if typeIsArray(arg)
       compact(arg).length
 
@@ -42,7 +42,7 @@ module.exports.Sum = class Sum extends AggregateExpression
     super
 
   exec: (ctx) ->
-    arg = @source.exec(ctx)
+    arg = @source.execute(ctx)
     if typeIsArray(arg)
       arg = compact(arg)
       filtered =  quantitiesOrArg(arg)
@@ -54,7 +54,7 @@ module.exports.Min = class Min extends AggregateExpression
     super
 
   exec: (ctx) ->
-    arg = @source.exec(ctx)
+    arg = @source.execute(ctx)
     if typeIsArray(arg)
       arg = compact(arg)
       filtered =  numerical_sort(quantitiesOrArg(arg),"asc")
@@ -65,7 +65,7 @@ module.exports.Max = class Max extends AggregateExpression
     super
 
   exec: (ctx) ->
-    arg = @source.exec(ctx)
+    arg = @source.execute(ctx)
     if typeIsArray(arg)
       arg = compact(arg)
       filtered =  numerical_sort(quantitiesOrArg(arg),"desc")
@@ -76,7 +76,7 @@ module.exports.Avg = class Avg extends  AggregateExpression
     super
 
   exec: (ctx) ->
-    arg = @source.exec(ctx)
+    arg = @source.execute(ctx)
     if typeIsArray(arg)
       arg = compact(arg)
       filtered = quantitiesOrArg(arg)
@@ -89,7 +89,7 @@ module.exports.Median = class Median extends AggregateExpression
     super
 
   exec: (ctx) ->
-    arg = @source.exec(ctx)
+    arg = @source.execute(ctx)
     if typeIsArray(arg)
       arg = compact(arg)
       filtered =  numerical_sort(quantitiesOrArg(arg,"asc"))
@@ -107,7 +107,7 @@ module.exports.Mode = class Mode extends AggregateExpression
     super
 
   exec: (ctx) ->
-    arg = @source.exec(ctx)
+    arg = @source.execute(ctx)
     if typeIsArray(arg)
       filtered = compact(arg)
       mode = @mode(filtered)
@@ -133,7 +133,7 @@ module.exports.StdDev = class StdDev extends AggregateExpression
     @type = "standard_deviation"
 
   exec: (ctx) ->
-    args = @source.exec(ctx)
+    args = @source.execute(ctx)
     if typeIsArray(args)
       args = compact(args)
       val = quantitiesOrArg(args)
@@ -177,7 +177,7 @@ module.exports.AllTrue = class AllTrue extends AggregateExpression
     super
 
   exec: (ctx) ->
-    args =@source.exec(ctx)
+    args =@source.execute(ctx)
     allTrue(args)
 
 module.exports.AnyTrue = class AnyTrue extends AggregateExpression
@@ -185,5 +185,5 @@ module.exports.AnyTrue = class AnyTrue extends AggregateExpression
     super
 
   exec: (ctx) ->
-    args = @source.exec(ctx)
+    args = @source.execute(ctx)
     anyTrue(args)

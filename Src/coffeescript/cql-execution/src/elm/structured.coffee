@@ -10,7 +10,7 @@ module.exports.Property = class Property extends Expression
 
   exec: (ctx) ->
     obj = if @scope? then ctx.get(@scope) else @source
-    if obj instanceof Expression then obj = obj.exec(ctx)
+    if obj instanceof Expression then obj = obj.execute(ctx)
     val = obj?[@path] ? obj?.get?(@path)
 
     if !val
@@ -33,7 +33,7 @@ module.exports.Tuple = class Tuple extends Expression
   exec: (ctx) ->
     val = {}
     for el in @elements
-      val[el.name] = el.value?.exec(ctx)
+      val[el.name] = el.value?.execute(ctx)
     val
 
 module.exports.TupleElement = class TupleElement extends UnimplementedExpression

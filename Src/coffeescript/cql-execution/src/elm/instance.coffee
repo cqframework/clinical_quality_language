@@ -7,7 +7,7 @@ class Element
     @name = json.name
     @value = build json.value
   exec: (ctx) ->
-    @value?.exec(ctx)
+    @value?.execute(ctx)
 
 
 module.exports.Instance = class Instance extends Expression
@@ -19,7 +19,7 @@ module.exports.Instance = class Instance extends Expression
   exec: (ctx) ->
     obj = {}
     for el in @element
-      obj[el.name] = el.exec(ctx)
+      obj[el.name] = el.execute(ctx)
     # TODO: Support for other classes like Concept
     switch @classType
       when "{urn:hl7-org:elm-types:r1}Quantity" then new Quantity(obj)

@@ -13,11 +13,12 @@ module.exports.Retrieve = class Retrieve extends Expression
 
   exec: (ctx) ->
     records = ctx.findRecords(@templateId ? @datatype)
-    if @codes
-      valueset = @codes.exec(ctx)
-      records = (r for r in records when valueset.hasCode(r.getCode(@codeProperty)))
-    if @dateRange
-      range = @dateRange.exec(ctx)
+    if @codes && 'exec' of @codes
+      valueset = @codes.execute(ctx)
+      records = (r for r in records when valueset.hasCode(r.getCode()))
+    # TODO: Added @dateProperty check due to previous fix in cql4browsers in cql_qdm_patient_api hash: ddbc57
+    if @dateRange && @dateProperty
+      range = @dateRange.execute(ctx)
       records = (r for r in records when range.includes(r.getDateOrInterval(@dateProperty)))
 
     records

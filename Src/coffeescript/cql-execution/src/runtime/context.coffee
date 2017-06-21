@@ -10,11 +10,20 @@ module.exports.Context = class Context
   constructor: (@parent, @_codeService = null, _parameters = {}) ->
     @context_values = {}
     @library_context = {}
+    @localId_context = {}
+    # TODO: If there is an issue with number of parameters look into cql4browsers fix: 387ea77538182833283af65e6341e7a05192304c
     @checkParameters(_parameters) # not crazy about possibly throwing an error in a constructor, but...
     @_parameters = _parameters
 
   @property "parameters" ,
-    get: -> @_parameters || @parent?.parameters
+    get: -> 
+      p = @parent?.parameters
+      for k, v of p
+        # If key (of parent) is not found in current parameters, add it 
+        if !(k of @_parameters)
+          @_parameters[k] = v
+      @_parameters
+    
     set: (params) ->
       @checkParameters(params)
       @_parameters = params
@@ -45,6 +54,9 @@ module.exports.Context = class Context
 
   getLibraryContext: (library) ->
     @parent?.getLibraryContext(library)
+
+  getLocalIdContext: (localId) ->
+    @parent?.getLocalIdContext(localId)
 
   getParameter: (name) ->
     @parent?.getParameter(name)
@@ -155,6 +167,9 @@ module.exports.PatientContext = class PatientContext extends Context
 
   getLibraryContext: (library) ->
     @library_context[library] ||= new PatientContext(@get(library),@patient,@codeService,@parameters)
+    
+  getLocalIdContext: (localId) ->
+    @localId_context[localId] ||= new PatientContext(@get(library),@patient,@codeService,@parameters)
 
   findRecords: ( profile) ->
     @patient?.findRecords(profile)

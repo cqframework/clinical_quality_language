@@ -146,7 +146,7 @@ module.exports.Round = class Round extends  Expression
     if (not arg?)
       null
     else
-      dec = if @precision? then @precision.exec(ctx) else 0
+      dec = if @precision? then @precision.execute(ctx) else 0
       Math.round(arg * Math.pow(10, dec)) / Math.pow(10, dec)
 
 module.exports.Ln = class Ln extends  Expression

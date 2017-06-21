@@ -20,6 +20,6 @@ module.exports.Coalesce = class Coalesce extends Expression
 
   exec: (ctx) ->
     for arg in @args
-      result = arg.exec(ctx)
+      result = arg.execute(ctx)
       if result? then return result
     null

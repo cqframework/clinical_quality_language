@@ -1,5 +1,6 @@
 { DateTime } = require '../datatypes/datetime'
 { Uncertainty } = require '../datatypes/uncertainty'
+{ Quantity } = require '../elm/quantity'
 
 areNumbers = (a, b) ->
   typeof a is 'number' and typeof b is 'number'
@@ -46,6 +47,9 @@ module.exports.equals = equals = (a, b) ->
   # Handle null cases first
   return a is b if not a? or not b?
 
+  # If one is a Quantity, use the Quantity equals function
+  return a.equals b if a instanceof Quantity
+  
   # If one is an Uncertainty, convert the other to an Uncertainty
   if a instanceof Uncertainty then b = Uncertainty.from(b)
   else if b instanceof Uncertainty then a = Uncertainty.from(a)

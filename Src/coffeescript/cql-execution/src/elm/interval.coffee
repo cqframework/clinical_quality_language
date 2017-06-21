@@ -14,7 +14,7 @@ module.exports.Interval = class Interval extends Expression
     @high = build(json.high)
 
   exec: (ctx) ->
-    new dtivl.Interval(@low.exec(ctx), @high.exec(ctx), @lowClosed, @highClosed)
+    new dtivl.Interval(@low.execute(ctx), @high.execute(ctx), @lowClosed, @highClosed)
 
 # Equal is completely handled by overloaded#Equal
 
@@ -105,7 +105,7 @@ module.exports.Width = class Width extends Expression
     super
 
   exec: (ctx) ->
-    @arg.exec(ctx)?.width()
+    @arg.execute(ctx)?.width()
 
 # TODO: Spec has "Begin" defined, but shouldn't it be "Start"?
 module.exports.Start = class Start extends Expression
@@ -113,14 +113,14 @@ module.exports.Start = class Start extends Expression
     super
 
   exec: (ctx) ->
-    @arg.exec(ctx)?.low
+    @arg.execute(ctx)?.low
 
 module.exports.End = class End  extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    @arg.exec(ctx)?.high
+    @arg.execute(ctx)?.high
 
 # TODO: Spec has "Begins" defined, but shouldn't it be "Starts"?
 module.exports.Starts = class Starts extends UnimplementedExpression

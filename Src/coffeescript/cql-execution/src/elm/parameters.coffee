@@ -10,7 +10,7 @@ module.exports.ParameterDef = class ParameterDef extends Expression
 
   exec: (ctx) ->
     if (ctx?.parameters[@name]?) then ctx.parameters[@name]
-    else @default?.exec(ctx)
+    else @default?.execute(ctx)
 
 module.exports.ParameterRef = class ParameterRef extends Expression
   constructor: (json) ->
@@ -18,4 +18,4 @@ module.exports.ParameterRef = class ParameterRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.getParameter(@name)?.exec(ctx)
+    ctx.getParameter(@name)?.execute(ctx)
