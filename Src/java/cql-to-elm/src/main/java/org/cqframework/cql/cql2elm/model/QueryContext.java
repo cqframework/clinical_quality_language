@@ -33,6 +33,12 @@ public class QueryContext {
         sources.remove(source.getAlias());
     }
 
+    public void removeQuerySources(Collection<AliasedQuerySource> sources) {
+        for (AliasedQuerySource source : sources) {
+            removeQuerySource(source);
+        }
+    }
+
     public void addLetClauses(Collection<LetClause> lets) {
         for (LetClause let : lets) {
             addLetClause(let);
@@ -41,6 +47,16 @@ public class QueryContext {
 
     public void addLetClause(LetClause let) {
         lets.put(let.getIdentifier(), let);
+    }
+
+    public void removeLetClause(LetClause let) {
+        lets.remove(let.getIdentifier());
+    }
+
+    public void removeLetClauses(Collection<LetClause> lets) {
+        for (LetClause let : lets) {
+            removeLetClause(let);
+        }
     }
 
     public AliasedQuerySource resolveAlias(String identifier) {

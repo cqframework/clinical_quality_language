@@ -2846,6 +2846,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     ret.setResultType(returnExpression.getResultType());
                 }
 
+                queryContext.removeQuerySources(sources);
+                if (dfcx != null) {
+                    queryContext.removeLetClauses(dfcx);
+                }
+
                 DataType queryResultType = ret == null ? sources.get(0).getResultType() : ret.getResultType();
                 queryContext.setResultElementType(queryContext.isSingular() ? null : ((ListType)queryResultType).getElementType());
                 SortClause sort = null;

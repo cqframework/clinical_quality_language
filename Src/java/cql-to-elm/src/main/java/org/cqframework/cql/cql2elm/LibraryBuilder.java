@@ -1395,6 +1395,12 @@ public class LibraryBuilder {
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
+                if (identifier.equals("$this")) {
+                    IdentifierRef result = new IdentifierRef().withName(identifier);
+                    result.setResultType(query.getResultElementType());
+                    return result;
+                }
+
                 DataType sortColumnType = resolveProperty(query.getResultElementType(), identifier, false);
                 if (sortColumnType != null) {
                     IdentifierRef result = new IdentifierRef().withName(identifier);
