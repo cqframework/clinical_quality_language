@@ -28,15 +28,30 @@ module.exports.Quantity = class Quantity extends Expression
     if other instanceof Quantity and other.unit == @unit then @value > parseFloat other.value else null
 
   before: (other) ->
-    if other instanceof Quantity and other.unit == @unit then @value < parseFloat other.value else null
+    if other instanceof Quantity and other.unit == @unit 
+      @value < parseFloat other.value 
+    else if other instanceof Quantity and other.unit of time_units and @unit of time_units
+      thisSmallestDuration = smallestDuration(@)
+      otherSmallestDuration = smallestDuration(other)
+      thisSmallestDuration < otherSmallestDuration
+    else null
     
   equals: (other) ->
     if other.unit? && other.value? then @unit == other.unit && @value == parseFloat other.value else null
 
-time_units = {'years':'year',  'months': 'month',  'days' :'day', 'minutes': 'minute', 'seconds':'seconds', 'milliseconds' : 'millisecond' }
+time_units = {'years': 'year', 'yr': 'year', 'y': 'year', 'months': 'month', 'weeks': 'week', 'wk': 'week', 'wks': 'week', 'days': 'day', 'd': 'day', 'minutes': 'minute', 'min': 'minute', 'seconds':'second', 'sec':'second', 'second':'second', 'milliseconds' : 'millisecond' }
 
 clean_unit = (units) ->
   if time_units[units] then time_units[units] else units
+
+smallestDuration = (qty) ->
+  millivalue = switch
+    when clean_unit(qty.unit) == 'minute' then qty.value * 60000
+    when clean_unit(qty.unit) == 'hour' then qty.value * 3600000
+    when clean_unit(qty.unit) == 'day' then qty.value * 86400000
+    when clean_unit(qty.unit) == 'week' then qty.value * 604800000
+    else qty.value
+  millivalue
 
 module.exports.createQuantity = (value,unit) ->
   new Quantity({value: value, unit: unit})
