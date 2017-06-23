@@ -1,5 +1,5 @@
 // NOTE: This library must be DUPLICATED in the data.cql file as well!
-library COM
+library Common
 using QUICK
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 
