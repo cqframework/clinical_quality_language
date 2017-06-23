@@ -157,7 +157,7 @@ module.exports['In Age Demographic'] = {
 }
 
 ### CommonLib
-library COM
+library Common
 using QUICK
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 
@@ -173,7 +173,7 @@ define function foo (a Integer, b Integer) :
 module.exports['CommonLib'] = {
    "library" : {
       "identifier" : {
-         "id" : "COM"
+         "id" : "Common"
       },
       "schemaIdentifier" : {
          "id" : "urn:hl7-org:elm",
@@ -339,7 +339,7 @@ module.exports['CommonLib'] = {
 ### Using CommonLib
 library TestSnippet version '1'
 using QUICK
-include COM called common
+include Common called common
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 
 context Patient
@@ -372,7 +372,7 @@ module.exports['Using CommonLib'] = {
       "includes" : {
          "def" : [ {
             "localIdentifier" : "common",
-            "path" : "COM"
+            "path" : "Common"
          } ]
       },
       "parameters" : {
@@ -500,7 +500,7 @@ module.exports['Using CommonLib'] = {
 }
 
 ### CommonLib2
-library COM2
+library Common2
 using QUICK
 parameter SomeNumber default 17
 
@@ -537,7 +537,7 @@ define SortUsingFunction:
 module.exports['CommonLib2'] = {
    "library" : {
       "identifier" : {
-         "id" : "COM2"
+         "id" : "Common2"
       },
       "schemaIdentifier" : {
          "id" : "urn:hl7-org:elm",
@@ -788,7 +788,7 @@ module.exports['CommonLib2'] = {
 ### Using CommonLib2
 library TestSnippet version '1'
 using QUICK
-include COM2 called common2
+include Common2 called common2
 
 context Patient
 
@@ -823,7 +823,7 @@ module.exports['Using CommonLib2'] = {
       "includes" : {
          "def" : [ {
             "localIdentifier" : "common2",
-            "path" : "COM2"
+            "path" : "Common2"
          } ]
       },
       "statements" : {

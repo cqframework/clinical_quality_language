@@ -7,7 +7,7 @@ define InDemographic:
 AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
 
 // @Test: CommonLib
-library COM
+library Common
 using QUICK
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 
@@ -22,7 +22,7 @@ define function foo (a Integer, b Integer) :
 
 // @Test: Using CommonLib
 using QUICK
-include COM called common
+include Common called common
 parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1), DateTime(2014, 1, 1))
 
 context Patient
@@ -33,7 +33,7 @@ define L : Length(Patient.name[0].given[0])
 define FuncTest : common.foo(2, 5)
 
 // @Test: CommonLib2
-library COM2
+library Common2
 using QUICK
 parameter SomeNumber default 17
 
@@ -68,7 +68,7 @@ define SortUsingFunction:
 
 // @Test: Using CommonLib2
 using QUICK
-include COM2 called common2
+include Common2 called common2
 
 context Patient
 

@@ -1,5 +1,5 @@
 // NOTE: This library must be DUPLICATED in the data.cql file as well!
-library COM2
+library Common2
 using QUICK
 parameter SomeNumber default 17
 
