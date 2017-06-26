@@ -130,6 +130,7 @@
                "type" : "Union",
                "operand" : [ {
                   "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Diagnosis",
+                  "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
                      "name" : "Acute Pharyngitis",
@@ -137,6 +138,7 @@
                   }
                }, {
                   "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Diagnosis",
+                  "codeProperty" : "code",
                   "type" : "Retrieve",
                   "codes" : {
                      "name" : "Acute Tonsillitis",
@@ -153,7 +155,7 @@
                "source" : [ {
                   "alias" : "M",
                   "expression" : {
-                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}MedicationOrder",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PositiveMedicationOrder",
                      "templateId" : "PositiveMedicationOrder",
                      "codeProperty" : "code",
                      "type" : "Retrieve",
@@ -233,7 +235,7 @@
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}EncounterPerformed",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PositiveEncounterPerformed",
                      "templateId" : "PositiveEncounterPerformed",
                      "codeProperty" : "code",
                      "type" : "Retrieve",
@@ -444,7 +446,7 @@
                   "alias" : "T",
                   "type" : "With",
                   "expression" : {
-                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}LaboratoryTestPerformed",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PositiveLaboratoryTestPerformed",
                      "templateId" : "PositiveLaboratoryTestPerformed",
                      "codeProperty" : "code",
                      "type" : "Retrieve",

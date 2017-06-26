@@ -54,10 +54,10 @@
       </def>
       <def name="Pharyngitis" context="Patient" accessLevel="Public">
          <expression xsi:type="Union">
-            <operand xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" xsi:type="Retrieve">
+            <operand xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" codeProperty="code" xsi:type="Retrieve">
                <codes name="Acute Pharyngitis" xsi:type="ValueSetRef"/>
             </operand>
-            <operand xmlns:ns2="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns2:Diagnosis" xsi:type="Retrieve">
+            <operand xmlns:ns2="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns2:Diagnosis" codeProperty="code" xsi:type="Retrieve">
                <codes name="Acute Tonsillitis" xsi:type="ValueSetRef"/>
             </operand>
          </expression>
@@ -65,7 +65,7 @@
       <def name="Antibiotics" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="M">
-               <expression xmlns:ns3="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns3:MedicationOrder" templateId="PositiveMedicationOrder" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns3="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns3:PositiveMedicationOrder" templateId="PositiveMedicationOrder" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Antibiotic Medications" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -102,7 +102,7 @@
       <def name="MeasurementPeriodEncounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression xmlns:ns6="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns6:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns6="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns6:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Ambulatory/ED Visit" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -190,7 +190,7 @@
                <expression name="PharyngitisEncounters" xsi:type="ExpressionRef"/>
             </source>
             <relationship alias="T" xsi:type="With">
-               <expression xmlns:ns7="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns7:LaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns7="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns7:PositiveLaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Group A Streptococcus Test" xsi:type="ValueSetRef"/>
                </expression>
                <suchThat xsi:type="And">

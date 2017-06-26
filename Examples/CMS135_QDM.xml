@@ -38,12 +38,12 @@
       <def name="Long-Term Residential Facility Encounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression xmlns:ns0="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns0:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns0="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns0:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Care Services in Long-Term Residential Facility" xsi:type="ValueSetRef"/>
                </expression>
             </source>
             <relationship alias="D" xsi:type="With">
-               <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" xsi:type="Retrieve">
+               <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Heart Failure" xsi:type="ValueSetRef"/>
                </expression>
                <suchThat xsi:type="OverlapsBefore">

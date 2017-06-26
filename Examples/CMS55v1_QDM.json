@@ -14,8 +14,8 @@
             "uri" : "urn:hl7-org:elm-types:r1"
          }, {
             "localIdentifier" : "QDM",
-            "uri" : "urn:healthit-gov:qdm:v5_0_1_draft",
-            "version" : "5.0.2"
+            "uri" : "urn:healthit-gov:qdm:v5_0_draft",
+            "version" : "5.0"
          } ]
       },
       "parameters" : {
@@ -49,7 +49,7 @@
             "expression" : {
                "type" : "SingletonFrom",
                "operand" : {
-                  "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Patient",
+                  "dataType" : "{urn:healthit-gov:qdm:v5_0_draft}Patient",
                   "templateId" : "Patient",
                   "type" : "Retrieve"
                }
@@ -63,7 +63,7 @@
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}EncounterPerformed",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_0_draft}PositiveEncounterPerformed",
                      "templateId" : "PositiveEncounterPerformed",
                      "codeProperty" : "code",
                      "type" : "Retrieve",
@@ -112,7 +112,7 @@
                "source" : [ {
                   "alias" : "ED",
                   "expression" : {
-                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}EncounterPerformed",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_0_draft}PositiveEncounterPerformed",
                      "templateId" : "PositiveEncounterPerformed",
                      "codeProperty" : "code",
                      "type" : "Retrieve",

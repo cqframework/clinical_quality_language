@@ -1,5 +1,34 @@
 {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 19,
+         "startChar" : 31,
+         "endLine" : 19,
+         "endChar" : 81,
+         "message" : "Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationAdministration.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "startLine" : 19,
+         "startChar" : 31,
+         "endLine" : 19,
+         "endChar" : 81,
+         "message" : "Could not resolve membership operator for terminology target of the retrieve.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "CMS179",
          "version" : "2"
@@ -711,12 +740,8 @@
                               "sort" : {
                                  "by" : [ {
                                     "direction" : "asc",
-                                    "type" : "ByExpression",
-                                    "expression" : {
-                                       "path" : "distanceFromMidpoint",
-                                       "scope" : "R",
-                                       "type" : "Property"
-                                    }
+                                    "path" : "distanceFromMidpoint",
+                                    "type" : "ByColumn"
                                  } ]
                               }
                            }
@@ -728,12 +753,8 @@
                "sort" : {
                   "by" : [ {
                      "direction" : "asc",
-                     "type" : "ByExpression",
-                     "expression" : {
-                        "path" : "resultDate",
-                        "scope" : "X",
-                        "type" : "Property"
-                     }
+                     "path" : "resultDate",
+                     "type" : "ByColumn"
                   } ]
                }
             }

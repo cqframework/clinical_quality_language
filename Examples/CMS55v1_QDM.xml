@@ -4,7 +4,7 @@
    <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
    <usings>
       <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
-      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_0_1_draft" version="5.0.2"/>
+      <def localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_0_draft" version="5.0"/>
    </usings>
    <parameters>
       <def name="Measurement Period" accessLevel="Public">
@@ -20,13 +20,13 @@
    <statements>
       <def name="Patient" context="Patient">
          <expression xsi:type="SingletonFrom">
-            <operand xmlns:ns0="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+            <operand xmlns:ns0="urn:healthit-gov:qdm:v5_0_draft" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
          </expression>
       </def>
       <def name="Inpatient Encounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="E">
-               <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_draft" dataType="ns1:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Inpatient" xsi:type="ValueSetRef"/>
                </expression>
             </source>
@@ -47,7 +47,7 @@
       <def name="Emergency Department Encounters" context="Patient" accessLevel="Public">
          <expression xsi:type="Query">
             <source alias="ED">
-               <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns2:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+               <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_draft" dataType="ns2:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
                   <codes name="Emergency Department Visit" xsi:type="ValueSetRef"/>
                </expression>
             </source>
