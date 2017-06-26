@@ -19,18 +19,36 @@ module.exports.Quantity = class Quantity extends Expression
     "#{@value} '#{@unit}'"
 
   sameOrBefore: (other) ->
-    if other instanceof Quantity and other.unit == @unit then @value <= parseFloat other.value  else null
+    if other instanceof Quantity and other.unit == @unit
+      @value <= parseFloat other.value
+    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+      thisSmallestDuration = smallestDuration(@)
+      otherSmallestDuration = smallestDuration(other)
+      thisSmallestDuration <= otherSmallestDuration
+    else null
 
   sameOrAfter: (other) ->
-    if other instanceof Quantity and other.unit == @unit then @value >= parseFloat other.value else null
+    if other instanceof Quantity and other.unit == @unit
+      @value >= parseFloat other.value
+    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+      thisSmallestDuration = smallestDuration(@)
+      otherSmallestDuration = smallestDuration(other)
+      thisSmallestDuration >= otherSmallestDuration
+    else null
 
   after: (other) ->
-    if other instanceof Quantity and other.unit == @unit then @value > parseFloat other.value else null
+    if other instanceof Quantity and other.unit == @unit
+      @value > parseFloat other.value
+    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+      thisSmallestDuration = smallestDuration(@)
+      otherSmallestDuration = smallestDuration(other)
+      thisSmallestDuration > otherSmallestDuration
+    else null
 
   before: (other) ->
-    if other instanceof Quantity and other.unit == @unit 
-      @value < parseFloat other.value 
-    else if other instanceof Quantity and other.unit of time_units and @unit of time_units
+    if other instanceof Quantity and other.unit == @unit
+      @value < parseFloat other.value
+    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
       thisSmallestDuration = smallestDuration(@)
       otherSmallestDuration = smallestDuration(other)
       thisSmallestDuration < otherSmallestDuration
@@ -39,19 +57,47 @@ module.exports.Quantity = class Quantity extends Expression
   equals: (other) ->
     if other.unit? && other.value? then @unit == other.unit && @value == parseFloat other.value else null
 
-time_units = {'years': 'year', 'yr': 'year', 'y': 'year', 'months': 'month', 'weeks': 'week', 'wk': 'week', 'wks': 'week', 'days': 'day', 'd': 'day', 'minutes': 'minute', 'min': 'minute', 'seconds':'second', 'sec':'second', 'second':'second', 'milliseconds' : 'millisecond' }
+# Hash of time units and their UCUM equivalents
+# This listing is case-sensitive.  This is needed to support the difference between Megasecond (Ms) and MilliSecond (ms).
+# KilosSecond and MegaSecond are supported UCUM time units
+time_units = {'years': 'year', 'year': 'year', 'a': 'year'
+  , 'months': 'month', 'month':'month', 'mo': 'month'
+  , 'weeks': 'week', 'week': 'week', 'wk', 'week'
+  , 'days': 'day', 'day':'day', 'd': 'day'
+  , 'hours': 'hour', 'hour': 'hour', 'h': 'hour'
+  , 'minutes': 'minute', 'minute': 'minute', 'min': 'minute'
+  , 'seconds':'second', 'second':'second', 's': 'second'
+  , 'milliseconds' : 'millisecond', 'millisecond' : 'millisecond', 'ms': 'millisecond'
+  , 'Ms': 'megasecond'
+  , 'ks': 'kilosecond' }
 
+# Handles case-insensitivity except for Mega/Milli seconds
 clean_unit = (units) ->
-  if time_units[units] then time_units[units] else units
+  if units == 'Ms'
+    'megasecond'
+  else if units == 'ms'
+    'millisecond'
+  else if time_units[units.toLowerCase()]
+    time_units[units.toLowerCase()]
+  else units
 
+# The smallest common duration is the millisecond
 smallestDuration = (qty) ->
-  millivalue = switch
-    when clean_unit(qty.unit) == 'minute' then qty.value * 60000
-    when clean_unit(qty.unit) == 'hour' then qty.value * 3600000
-    when clean_unit(qty.unit) == 'day' then qty.value * 86400000
-    when clean_unit(qty.unit) == 'week' then qty.value * 604800000
-    else qty.value
-  millivalue
+  if parseFloat qty.value
+    millivalue = switch
+      when clean_unit(qty.unit) == 'second' then qty.value * 1000
+      when clean_unit(qty.unit) == 'kilosecond' then qty.value * 1000 * 1000
+      when clean_unit(qty.unit) == 'megasecond' then qty.value * 1000 * 1000 * 1000
+      when clean_unit(qty.unit) == 'minute' then qty.value * 60 * 1000
+      when clean_unit(qty.unit) == 'hour' then qty.value * 60 * 60 * 1000
+      when clean_unit(qty.unit) == 'day' then qty.value * 24 * 60 * 60 * 1000
+      when clean_unit(qty.unit) == 'week' then qty.value * 7 * 24 * 60 * 60 * 1000
+      when clean_unit(qty.unit) == 'month' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a mean month length of 30.436875 days
+      when clean_unit(qty.unit) == 'year' then qty.value * 365 * 24 * 60 * 60 * 1000  # Based on a "common" year of 365 days
+      else qty.value
+    millivalue
+  else
+    null
 
 module.exports.createQuantity = (value,unit) ->
   new Quantity({value: value, unit: unit})
