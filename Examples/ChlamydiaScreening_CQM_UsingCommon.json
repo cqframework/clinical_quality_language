@@ -283,12 +283,8 @@
                                  "sort" : {
                                     "by" : [ {
                                        "direction" : "asc",
-                                       "type" : "ByExpression",
-                                       "expression" : {
-                                          "path" : "dateTime",
-                                          "scope" : "E",
-                                          "type" : "Property"
-                                       }
+                                       "path" : "dateTime",
+                                       "type" : "ByColumn"
                                     } ]
                                  }
                               }

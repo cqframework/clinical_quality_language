@@ -158,6 +158,7 @@
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Diagnosis",
+               "codeProperty" : "code",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Atrial Fibrillation/Flutter",
@@ -170,6 +171,7 @@
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}MedicationActive",
+               "codeProperty" : "code",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Warfarin",
@@ -181,7 +183,7 @@
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}EncounterPerformed",
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PositiveEncounterPerformed",
                "templateId" : "PositiveEncounterPerformed",
                "codeProperty" : "code",
                "type" : "Retrieve",
@@ -195,7 +197,7 @@
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}EncounterPerformed",
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PositiveEncounterPerformed",
                "templateId" : "PositiveEncounterPerformed",
                "codeProperty" : "code",
                "type" : "Retrieve",
@@ -210,6 +212,7 @@
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Diagnosis",
+               "codeProperty" : "code",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "Valvular Heart Disease",
@@ -221,7 +224,7 @@
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}LaboratoryTestPerformed",
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PositiveLaboratoryTestPerformed",
                "templateId" : "PositiveLaboratoryTestPerformed",
                "codeProperty" : "code",
                "type" : "Retrieve",
@@ -236,6 +239,7 @@
             "accessLevel" : "Public",
             "expression" : {
                "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PatientCharacteristicBirthdate",
+               "codeProperty" : "code",
                "type" : "Retrieve",
                "codes" : {
                   "name" : "birth date",
@@ -247,7 +251,7 @@
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}LaboratoryTestPerformed",
+               "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PositiveLaboratoryTestPerformed",
                "templateId" : "PositiveLaboratoryTestPerformed",
                "codeProperty" : "code",
                "type" : "Retrieve",
@@ -736,12 +740,8 @@
                               "sort" : {
                                  "by" : [ {
                                     "direction" : "asc",
-                                    "type" : "ByExpression",
-                                    "expression" : {
-                                       "path" : "distanceFromMidpoint",
-                                       "scope" : "R",
-                                       "type" : "Property"
-                                    }
+                                    "path" : "distanceFromMidpoint",
+                                    "type" : "ByColumn"
                                  } ]
                               }
                            }
@@ -753,12 +753,8 @@
                "sort" : {
                   "by" : [ {
                      "direction" : "asc",
-                     "type" : "ByExpression",
-                     "expression" : {
-                        "path" : "resultDate",
-                        "scope" : "X",
-                        "type" : "Property"
-                     }
+                     "path" : "resultDate",
+                     "type" : "ByColumn"
                   } ]
                }
             }
