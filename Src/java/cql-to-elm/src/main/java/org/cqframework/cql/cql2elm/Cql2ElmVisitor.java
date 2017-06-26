@@ -2695,8 +2695,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         ClassType classType = (ClassType)dataType;
-        ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
-        NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
+        // BTR -> The original intent of this code was to have the retrieve return the base type, and use the "templateId"
+        // element of the retrieve to communicate the "positive" or "negative" profile to the data access layer.
+        // However, because this notion of carrying the "profile" through a type is not general, it causes inconsistencies
+        // when using retrieve results with functions defined in terms of the same type (see GitHub Issue #131).
+        // Based on the discussion there, the retrieve will now return the declared type, whether it is a profile or not.
+        //ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
+        //NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
+        NamedType namedType = classType;
 
         Retrieve retrieve = of.createRetrieve()
                 .withDataType(libraryBuilder.dataTypeToQName((DataType)namedType))
