@@ -53,27 +53,49 @@ public class CqlTranslator {
     private List<CqlTranslatorException> messages = null;
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
+    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Error;
 
     public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager, Options... options) {
-        return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, options);
+        return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
+    }
+
+    public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager,
+                                         CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
+        return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, errorLevel, options);
     }
 
     public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(cqlStream), modelManager, libraryManager, options);
+        return new CqlTranslator(new ANTLRInputStream(cqlStream), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
+    }
+
+    public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager, LibraryManager libraryManager,
+                                           CqlTranslatorException.ErrorSeverity errorLevel, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(cqlStream), modelManager, libraryManager, errorLevel, options);
     }
 
     public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, options);
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
+    }
+
+    public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager,
+                                         CqlTranslatorException.ErrorSeverity errorLevel, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, errorLevel, options);
     }
 
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
-        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, options);
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
     }
 
-    private CqlTranslator(ANTLRInputStream is, ModelManager modelManager, LibraryManager libraryManager, Options... options) {
+    public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager,
+                                         CqlTranslatorException.ErrorSeverity errorLevel, Options... options) throws IOException {
+        return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, errorLevel, options);
+    }
+
+    private CqlTranslator(ANTLRInputStream is, ModelManager modelManager, LibraryManager libraryManager,
+                          CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
-        translateToELM(is, options);
+        translateToELM(is, errorLevel, options);
     }
 
     public String toXml() {
@@ -148,7 +170,7 @@ public class CqlTranslator {
         }
     }
 
-    private void translateToELM(ANTLRInputStream is, Options... options) {
+    private void translateToELM(ANTLRInputStream is, CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
         cqlLexer lexer = new cqlLexer(is);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
@@ -159,6 +181,7 @@ public class CqlTranslator {
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
         LibraryBuilder builder = new LibraryBuilder(modelManager, libraryManager);
+        builder.setErrorLevel(errorLevel);
         List<Options> optionList = Arrays.asList(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         if (optionList.contains(Options.EnableDateRangeOptimization)) {
@@ -248,8 +271,9 @@ public class CqlTranslator {
 
     private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations,
                                  boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                                 boolean detailedErrors, boolean disableListTraversal, boolean disableDemotion,
-                                 boolean disablePromotion, boolean disableMethodInvocation) throws IOException {
+                                 boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
+                                 boolean disableListTraversal, boolean disableDemotion, boolean disablePromotion,
+                                 boolean disableMethodInvocation) throws IOException {
         ArrayList<Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
             options.add(Options.EnableDateRangeOptimization);
@@ -286,7 +310,7 @@ public class CqlTranslator {
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, options.toArray(new Options[options.size()]));
+        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, errorLevel, options.toArray(new Options[options.size()]));
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {
@@ -333,6 +357,7 @@ public class CqlTranslator {
         OptionSpec locators = parser.accepts("locators");
         OptionSpec resultTypes = parser.accepts("result-types");
         OptionSpec detailedErrors = parser.accepts("detailed-errors");
+        OptionSpec errorLevel = parser.accepts("error-level").withRequiredArg().ofType(CqlTranslatorException.ErrorSeverity.class).defaultsTo(CqlTranslatorException.ErrorSeverity.Info);
         OptionSpec disableListTraversal = parser.accepts("disable-list-traversal");
         OptionSpec disableDemotion = parser.accepts("disable-demotion");
         OptionSpec disablePromotion = parser.accepts("disable-promotion");
@@ -415,6 +440,9 @@ public class CqlTranslator {
                     options.has(debug) || options.has(resultTypes),
                     options.has(verify),
                     options.has(detailedErrors), // Didn't include in debug, maybe should...
+                    options.has(errorLevel)
+                        ? (CqlTranslatorException.ErrorSeverity)options.valueOf(errorLevel)
+                        : CqlTranslatorException.ErrorSeverity.Info,
                     options.has(strict) || options.has(disableListTraversal),
                     options.has(strict) || options.has(disableDemotion),
                     options.has(strict) || options.has(disablePromotion),
