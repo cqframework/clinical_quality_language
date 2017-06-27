@@ -89,7 +89,10 @@ public class ListOperatorsTest {
         Slice slice = (Slice)def.getExpression();
         assertThat(slice.getSource(), listOfLiterals(1, 2, 3));
         assertThat(slice.getStartIndex(), literalFor(0));
-        assertThat(slice.getEndIndex(), literalFor(1));
+        Coalesce coalesce = (Coalesce)slice.getEndIndex();
+        assertThat(coalesce.getOperand().size(), is(2));
+        assertThat(coalesce.getOperand().get(0), literalFor(1));
+        assertThat(coalesce.getOperand().get(1), literalFor(0));
     }
 
     @Test
