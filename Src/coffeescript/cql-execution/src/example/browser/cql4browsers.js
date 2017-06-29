@@ -42,23 +42,25 @@
     };
 
     CodeService.prototype.findValueSet = function(oid, version) {
-      var ref1, results;
+      var ref1, result, results;
       oid = oid.replace("urn:oid:", "");
       if (version != null) {
-        return (ref1 = this.valueSets[oid]) != null ? ref1[version] : void 0;
-      } else {
-        results = this.findValueSetsByOid(oid);
-        if (results.length === 0) {
-          return null;
-        } else {
-          return results.reduce(function(a, b) {
-            if (a.version > b.version) {
-              return a;
-            } else {
-              return b;
-            }
-          });
+        result = (ref1 = this.valueSets[oid]) != null ? ref1[version] : void 0;
+        if (result) {
+          return result;
         }
+      }
+      results = this.findValueSetsByOid(oid);
+      if (results.length === 0) {
+        return null;
+      } else {
+        return results.reduce(function(a, b) {
+          if (a.version > b.version) {
+            return a;
+          } else {
+            return b;
+          }
+        });
       }
     };
 
@@ -3626,7 +3628,7 @@
       ref = this.element;
       for (i = 0, len = ref.length; i < len; i++) {
         el = ref[i];
-        obj[el.name] = el.execute(ctx);
+        obj[el.name] = el.exec(ctx);
       }
       switch (this.classType) {
         case "{urn:hl7-org:elm-types:r1}Quantity":
