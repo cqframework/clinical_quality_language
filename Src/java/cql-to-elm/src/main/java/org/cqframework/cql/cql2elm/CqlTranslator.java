@@ -53,7 +53,7 @@ public class CqlTranslator {
     private List<CqlTranslatorException> messages = null;
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
-    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Error;
+    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
 
     public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager, Options... options) {
         return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
