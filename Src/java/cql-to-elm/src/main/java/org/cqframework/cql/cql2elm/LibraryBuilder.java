@@ -740,6 +740,10 @@ public class LibraryBuilder {
             expression = convertExpression(expression, conversion.getConversion());
         }
 
+        if (expression.getResultType().equals(resolveTypeName("System", "Boolean"))) {
+            reportWarning("Boolean-valued expression was promoted to a list.", expression);
+        }
+
         // Use a ToList operator here to avoid duplicate evaluation of the operand.
         ToList toList = of.createToList().withOperand(expression);
         toList.setResultType(new ListType(expression.getResultType()));
