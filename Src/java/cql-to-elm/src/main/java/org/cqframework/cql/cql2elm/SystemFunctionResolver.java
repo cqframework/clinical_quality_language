@@ -411,7 +411,9 @@ public class SystemFunctionResolver {
         Slice slice = of.createSlice();
         slice.setSource(fun.getOperand().get(0));
         slice.setStartIndex(builder.createLiteral(0));
-        slice.setEndIndex(fun.getOperand().get(1));
+        Coalesce coalesce = of.createCoalesce().withOperand(fun.getOperand().get(1), builder.createLiteral(0));
+        builder.resolveCall("System", "Coalesce", new NaryExpressionInvocation(coalesce));
+        slice.setEndIndex(coalesce);
         builder.resolveCall("System", "Take", new TakeInvocation(slice));
         return slice;
     }
