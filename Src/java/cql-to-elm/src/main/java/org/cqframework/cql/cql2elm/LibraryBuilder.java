@@ -96,6 +96,14 @@ public class LibraryBuilder {
         listTraversal = false;
     }
 
+    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
+    public CqlTranslatorException.ErrorSeverity getErrorLevel() {
+        return errorLevel;
+    }
+    public void setErrorLevel(CqlTranslatorException.ErrorSeverity severity) {
+        errorLevel = severity;
+    }
+
     private Model loadModel(VersionedIdentifier modelIdentifier) {
         Model model = modelManager.resolveModel(modelIdentifier);
         loadConversionMap(model);
@@ -326,6 +334,24 @@ public class LibraryBuilder {
         }
     }
 
+    private boolean shouldReport(CqlTranslatorException.ErrorSeverity errorSeverity) {
+        switch (errorLevel) {
+            case Info:
+                return
+                        errorSeverity == CqlTranslatorException.ErrorSeverity.Info
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+            case Warning:
+                return
+                        errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+            case Error:
+                return errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+            default:
+                throw new IllegalArgumentException(String.format("Unknown error severity %s", errorSeverity.toString()));
+        }
+    }
+
     /**
      * Record any errors while parsing in both the list of errors but also in the library
      * itself so they can be processed easily by a remote client
@@ -333,24 +359,26 @@ public class LibraryBuilder {
      */
     public void recordParsingException(CqlTranslatorException e) {
         addException(e);
-        CqlToElmError err = af.createCqlToElmError();
-        err.setMessage(e.getMessage());
-        err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : (e instanceof CqlSemanticException ? ErrorType.SEMANTIC : ErrorType.INTERNAL));
-        err.setErrorSeverity(toErrorSeverity(e.getSeverity()));
-        if (e.getLocator() != null) {
-            err.setStartLine(e.getLocator().getStartLine());
-            err.setEndLine(e.getLocator().getEndLine());
-            err.setStartChar(e.getLocator().getStartChar());
-            err.setEndChar(e.getLocator().getEndChar());
-        }
+        if (shouldReport(e.getSeverity())) {
+            CqlToElmError err = af.createCqlToElmError();
+            err.setMessage(e.getMessage());
+            err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : (e instanceof CqlSemanticException ? ErrorType.SEMANTIC : ErrorType.INTERNAL));
+            err.setErrorSeverity(toErrorSeverity(e.getSeverity()));
+            if (e.getLocator() != null) {
+                err.setStartLine(e.getLocator().getStartLine());
+                err.setEndLine(e.getLocator().getEndLine());
+                err.setStartChar(e.getLocator().getStartChar());
+                err.setEndChar(e.getLocator().getEndChar());
+            }
 
-        if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
-            CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException)e.getCause();
-            err.setTargetIncludeLibraryId(incEx.getLibraryId());
-            err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
-            err.setErrorType(ErrorType.INCLUDE);
+            if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
+                CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException) e.getCause();
+                err.setTargetIncludeLibraryId(incEx.getLibraryId());
+                err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
+                err.setErrorType(ErrorType.INCLUDE);
+            }
+            library.getAnnotation().add(err);
         }
-        library.getAnnotation().add(err);
     }
 
     private String getLibraryName() {
