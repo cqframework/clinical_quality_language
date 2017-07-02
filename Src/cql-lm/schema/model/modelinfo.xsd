@@ -59,6 +59,11 @@
 				<xs:documentation>The isCaseSensitive attribute indicates whether the identifiers used by this model should be resolved case-sensitively. If the attribute is true, references to identifiers in this model must match by case.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="strictRetrieveTyping" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>The strictRetrieveTyping attribute indicates whether or not retrieve expressions against the model should be semantically validated. If this attribute is not present or false, code and date range filters within the retrieve are not type validated, allowing the data access layer to perform late binding of content within the retrieve. If the attribute is true, code and date range filters within the retrieve are type validated.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ClassInfoElement">
 		<xs:sequence>

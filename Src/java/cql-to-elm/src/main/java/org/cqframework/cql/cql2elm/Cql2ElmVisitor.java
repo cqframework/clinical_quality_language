@@ -2704,6 +2704,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         //NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
         NamedType namedType = classType;
 
+        ModelInfo modelInfo = libraryBuilder.getModel(namedType.getNamespace()).getModelInfo();
+        boolean useStrictRetrieveTyping = modelInfo.isStrictRetrieveTyping() != null && modelInfo.isStrictRetrieveTyping();
+
         Retrieve retrieve = of.createRetrieve()
                 .withDataType(libraryBuilder.dataTypeToQName((DataType)namedType))
                 .withTemplateId(classType.getIdentifier());
@@ -2718,7 +2721,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Property property = null;
             if (retrieve.getCodeProperty() == null) {
                 libraryBuilder.recordParsingException(new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
-                        CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                        useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                        getTrackBack(ctx)));
             }
             else {
                 try {
@@ -2728,7 +2732,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 catch (Exception e) {
                     libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            retrieve.getCodeProperty(), namedType.getName()), CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx), e));
+                            retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                            getTrackBack(ctx), e));
                 }
             }
 
@@ -2752,14 +2757,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     retrieve.setCodes(((InCodeSystem) in).getCodesystem());
                 } else {
                     libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
-                            CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                            useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                            getTrackBack(ctx)));
                 }
             }
             catch (Exception e) {
-                // If something goes wrong attempting to resolve, just set to the expression and report it as a warning, it shouldn't prevent translation
+                // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
+                // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
                 retrieve.setCodes(terminology);
                 libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
-                        CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx), e));
+                        useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                        getTrackBack(ctx), e));
             }
         }
 
