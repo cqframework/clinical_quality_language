@@ -167,7 +167,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Element element = (Element)o;
             if (element.getLocalId() == null) {
                 element.setLocalId(Integer.toString(getNextLocalId()));
-        }
+            }
             chunk.setElement(element);
 
             if (element instanceof ExpressionDef && !(tree instanceof cqlParser.LibraryContext)) {
@@ -180,20 +180,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (!chunks.isEmpty()) {
             chunks.peek().addChunk(chunk);
-    }
+        }
     }
 
     private Annotation buildAnnotation(Chunk chunk) {
         Annotation annotation = af.createAnnotation();
         annotation.setS(buildNarrative(chunk));
         return annotation;
-        }
+    }
 
     private Narrative buildNarrative(Chunk chunk) {
         Narrative narrative = af.createNarrative();
         if (chunk.getElement() != null) {
             narrative.setR(chunk.getElement().getLocalId());
-                }
+        }
 
         if (chunk.hasChunks()) {
             Narrative currentNarrative = null;
@@ -203,17 +203,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (currentNarrative != null) {
                         narrative.getContent().add(wrapNarrative(currentNarrative));
                         currentNarrative = null;
-                }
+                    }
                     narrative.getContent().add(wrapNarrative(chunkNarrative));
                 }
                 else {
                     if (currentNarrative == null) {
                         currentNarrative = chunkNarrative;
-            }
+                    }
                     else {
                         currentNarrative.getContent().addAll(chunkNarrative.getContent());
-            }
-        }
+                    }
+                }
             }
             if (currentNarrative != null) {
                 narrative.getContent().add(wrapNarrative(currentNarrative));
@@ -289,7 +289,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         } finally {
             if (annotate) {
                 popChunk(tree, o);
-    }
+            }
         }
     }
 
