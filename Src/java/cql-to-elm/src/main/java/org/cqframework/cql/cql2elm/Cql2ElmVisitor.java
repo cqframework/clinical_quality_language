@@ -56,7 +56,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     //Put them here for now, but eventually somewhere else?
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
+    private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
     private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
+    private final Stack<FunctionDefinitionInfo> forwardFunctions = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private Stack<Chunk> chunks = new Stack<>();
     private String currentContext = "Patient"; // default context to patient
@@ -165,31 +167,33 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Element element = (Element)o;
             if (element.getLocalId() == null) {
                 element.setLocalId(Integer.toString(getNextLocalId()));
-        }
+            }
             chunk.setElement(element);
 
             if (element instanceof ExpressionDef && !(tree instanceof cqlParser.LibraryContext)) {
                 ExpressionDef expressionDef = (ExpressionDef)element;
-                expressionDef.getAnnotation().add(buildAnnotation(chunk));
+                if (expressionDef.getAnnotation().size() == 0) {
+                    expressionDef.getAnnotation().add(buildAnnotation(chunk));
+                }
             }
         }
 
         if (!chunks.isEmpty()) {
             chunks.peek().addChunk(chunk);
-    }
+        }
     }
 
     private Annotation buildAnnotation(Chunk chunk) {
         Annotation annotation = af.createAnnotation();
         annotation.setS(buildNarrative(chunk));
         return annotation;
-        }
+    }
 
     private Narrative buildNarrative(Chunk chunk) {
         Narrative narrative = af.createNarrative();
         if (chunk.getElement() != null) {
             narrative.setR(chunk.getElement().getLocalId());
-                }
+        }
 
         if (chunk.hasChunks()) {
             Narrative currentNarrative = null;
@@ -199,17 +203,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (currentNarrative != null) {
                         narrative.getContent().add(wrapNarrative(currentNarrative));
                         currentNarrative = null;
-                }
+                    }
                     narrative.getContent().add(wrapNarrative(chunkNarrative));
                 }
                 else {
                     if (currentNarrative == null) {
                         currentNarrative = chunkNarrative;
-            }
+                    }
                     else {
                         currentNarrative.getContent().addAll(chunkNarrative.getContent());
-            }
-        }
+                    }
+                }
             }
             if (currentNarrative != null) {
                 narrative.getContent().add(wrapNarrative(currentNarrative));
@@ -285,7 +289,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         } finally {
             if (annotate) {
                 popChunk(tree, o);
-    }
+            }
         }
     }
 
@@ -673,13 +677,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public ExpressionDef visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         ExpressionDef expressionDef = internalVisitExpressionDefinition(ctx);
-        if (definedExpressionDefinitions.contains(expressionDef.getName())) {
-            throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
-        }
+        if (forwards.isEmpty() || !forwards.peek().getName().equals(expressionDef.getName())) {
+            if (definedExpressionDefinitions.contains(expressionDef.getName())) {
+                throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
+            }
 
-        // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed because they are
-        // overwritten by name when they are encountered by the preprocessor.
-        definedExpressionDefinitions.add(expressionDef.getName());
+            // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed because they are
+            // overwritten by name when they are encountered by the preprocessor.
+            definedExpressionDefinitions.add(expressionDef.getName());
+        }
         return expressionDef;
     }
 
@@ -3335,11 +3341,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 try {
                     Stack<Chunk> saveChunks = chunks;
                     chunks = new Stack<Chunk>();
+                    forwards.push(expressionInfo);
                     try {
-                    internalVisitExpressionDefinition(expressionInfo.getDefinition());
+                        // Have to call the visit to get the outer processing to occur
+                        visit(expressionInfo.getDefinition());
                     }
                     finally {
                         chunks = saveChunks;
+                        forwards.pop();
                     }
                 } finally {
                     currentContext = saveContext;
@@ -3383,23 +3392,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (result == null) {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             if (functionInfos != null) {
-                    Stack<Chunk> saveChunks = chunks;
-                    chunks = new Stack<Chunk>();
+                for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                    String saveContext = currentContext;
+                    currentContext = functionInfo.getContext();
                     try {
-                        for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                            String saveContext = currentContext;
-                            currentContext = functionInfo.getContext();
-                            try {
-                                internalVisitFunctionDefinition(functionInfo.getDefinition());
-                            } finally {
-                                currentContext = saveContext;
-                            }
+                        Stack<Chunk> saveChunks = chunks;
+                        chunks = new Stack<Chunk>();
+                        forwardFunctions.push(functionInfo);
+                        try {
+                            // Have to call the visit to allow the outer processing to occur
+                            visit(functionInfo.getDefinition());
                         }
-                    }
-                    finally {
-                        chunks = saveChunks;
+                        finally {
+                            forwardFunctions.pop();
+                            chunks = saveChunks;
+                        }
+                    } finally {
+                        currentContext = saveContext;
                     }
                 }
+            }
             result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
         }
 
@@ -3517,17 +3529,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef result = (FunctionDef)internalVisitFunctionDefinition(ctx);
         Operator operator = Operator.fromFunctionDef(result);
-        Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
-        if (definedSignatures == null) {
-            definedSignatures = new HashSet<>();
-            definedFunctionDefinitions.put(operator.getName(), definedSignatures);
-        }
+        if (forwardFunctions.isEmpty() || !forwardFunctions.peek().getName().equals(operator.getName())) {
+            Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
+            if (definedSignatures == null) {
+                definedSignatures = new HashSet<>();
+                definedFunctionDefinitions.put(operator.getName(), definedSignatures);
+            }
 
-        if (definedSignatures.contains(operator.getSignature())) {
-            throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
-        }
+            if (definedSignatures.contains(operator.getSignature())) {
+                throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
+            }
 
-        definedSignatures.add(operator.getSignature());
+            definedSignatures.add(operator.getSignature());
+        }
 
         return result;
     }
