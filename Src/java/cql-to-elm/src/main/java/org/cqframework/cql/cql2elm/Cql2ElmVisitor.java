@@ -172,7 +172,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             if (element instanceof ExpressionDef && !(tree instanceof cqlParser.LibraryContext)) {
                 ExpressionDef expressionDef = (ExpressionDef)element;
-                expressionDef.getAnnotation().add(buildAnnotation(chunk));
+                if (expressionDef.getAnnotation().size() == 0) {
+                    expressionDef.getAnnotation().add(buildAnnotation(chunk));
+                }
             }
         }
 
