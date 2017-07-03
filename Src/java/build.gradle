@@ -74,7 +74,7 @@ subprojects {
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
     }
-    
+
     task javadocJar(type: Jar) {
         classifier = 'javadoc'
         from javadoc
@@ -84,13 +84,13 @@ subprojects {
         classifier = 'sources'
         from sourceSets.main.allSource
     }
-    
+
     artifacts {
         archives javadocJar, sourcesJar
     }
 }
 
-configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-execution']}) {
+configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm']}) {
     configurations {
         xjc
     }
@@ -156,7 +156,7 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-
 configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-to-elm', 'qdm']}) {
     apply plugin: 'maven'
     apply plugin: 'signing'
-    
+
     signing {
         required { gradle.taskGraph.hasTask(uploadArchives) }
         sign configurations.archives
@@ -166,7 +166,7 @@ configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                
+
                 /* Use these to test locally (but don't forget to comment out others!)
                 repository(url: "file://${buildDir}/repo")
                 snapshotRepository(url: "file://${buildDir}/ssRepo")

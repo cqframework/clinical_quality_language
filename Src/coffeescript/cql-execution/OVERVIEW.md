@@ -10,7 +10,7 @@ Technologies
 
 The CQL execution framework is written in [CoffeeScript](http://coffeescript.org/). CoffeeScript is an elegant, yet powerful, scripting language that compiles down to JavaScript. The CoffeeScript source code allows the reference implementation to be easily read and understood by developers of most any language (due to its simplicity). The JavaScript execution code allows the reference implementation to be integrated into a variety of environments, including servers, other languages’ runtime environments, and standard web browsers.
 
-The CQL execution framework tests and examples are configured to run using [Node.js](http://nodejs.org/), but can be easily integrated into other JavaScript runtime environments. Initial efforts to run the CQL execution framework in Java’s embedded [Rhino](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino) engine have been successful and will be integrated into the clinical_quality_language project in the near future. This will allow the reference implementation to run in pure Java environments.
+The CQL execution framework tests and examples are configured to run using [Node.js](http://nodejs.org/), but can be easily integrated into other JavaScript runtime environments.
 
 The CQL execution framework does not currently rely on any backend database for storing patient records. All records are stored as flat files or passed to the execution framework as in-memory instances of `Patient` classes. While this is not the most efficient approach, it is the simplest approach to understand and implement across a variety of use cases.
 
