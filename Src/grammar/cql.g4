@@ -438,8 +438,8 @@ conceptSelector
     ;
 
 identifier
-    : IDENTIFIER | QUOTEDIDENTIFIER
-    // Include here any keyword that should not be a reserved word
+    : IDENTIFIER
+    | QUOTEDIDENTIFIER
     | 'all'
     | 'Code'
     | 'code'
@@ -450,7 +450,7 @@ identifier
     | 'display'
     | 'distinct'
     | 'end'
-    | 'exists'
+    // | 'exists'
     | 'not'
     | 'start'
     | 'time'
