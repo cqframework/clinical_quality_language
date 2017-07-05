@@ -58,27 +58,20 @@ module.exports.Quantity = class Quantity extends Expression
     if other.unit? && other.value? then @unit == other.unit && @value == parseFloat other.value else null
 
 # Hash of time units and their UCUM equivalents
-# This listing is case-sensitive.  This is needed to support the difference between Megasecond (Ms) and MilliSecond (ms).
-# KilosSecond and MegaSecond are supported UCUM time units
-time_units = {'years': 'year', 'year': 'year', 'a': 'year'
-  , 'months': 'month', 'month':'month', 'mo': 'month'
+# See http://unitsofmeasure.org/ucum.html#para-31
+time_units = {'years': 'year', 'year': 'year', 'a': 'year', 'ANN': 'year', 'ann': 'year'
+  , 'months': 'month', 'month':'month', 'mo': 'month', 'MO': 'month'
   , 'weeks': 'week', 'week': 'week', 'wk', 'week'
-  , 'days': 'day', 'day':'day', 'd': 'day'
-  , 'hours': 'hour', 'hour': 'hour', 'h': 'hour'
-  , 'minutes': 'minute', 'minute': 'minute', 'min': 'minute'
+  , 'days': 'day', 'day':'day', 'd': 'day', 'D': 'day'
+  , 'hours': 'hour', 'hour': 'hour', 'h': 'hour', 'H': 'hour'
+  , 'minutes': 'minute', 'minute': 'minute', 'min': 'minute', 'MIN': 'minute'
   , 'seconds':'second', 'second':'second', 's': 'second'
   , 'milliseconds' : 'millisecond', 'millisecond' : 'millisecond', 'ms': 'millisecond'
-  , 'Ms': 'megasecond'
-  , 'ks': 'kilosecond' }
+  }
 
-# Handles case-insensitivity except for Mega/Milli seconds
 clean_unit = (units) ->
-  if units == 'Ms'
-    'megasecond'
-  else if units == 'ms'
-    'millisecond'
-  else if time_units[units.toLowerCase()]
-    time_units[units.toLowerCase()]
+  if time_units[units]
+    time_units[units]
   else units
 
 # The smallest common duration is the millisecond
@@ -86,14 +79,14 @@ smallestDuration = (qty) ->
   if parseFloat qty.value
     millivalue = switch
       when clean_unit(qty.unit) == 'second' then qty.value * 1000
-      when clean_unit(qty.unit) == 'kilosecond' then qty.value * 1000 * 1000
-      when clean_unit(qty.unit) == 'megasecond' then qty.value * 1000 * 1000 * 1000
       when clean_unit(qty.unit) == 'minute' then qty.value * 60 * 1000
       when clean_unit(qty.unit) == 'hour' then qty.value * 60 * 60 * 1000
       when clean_unit(qty.unit) == 'day' then qty.value * 24 * 60 * 60 * 1000
       when clean_unit(qty.unit) == 'week' then qty.value * 7 * 24 * 60 * 60 * 1000
-      when clean_unit(qty.unit) == 'month' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a mean month length of 30.436875 days
-      when clean_unit(qty.unit) == 'year' then qty.value * 365 * 24 * 60 * 60 * 1000  # Based on a "common" year of 365 days
+      # Only supporting year durations based on a Julian year
+      # See http://unitsofmeasure.org/ucum.html#para-31
+      when clean_unit(qty.unit) == 'month' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a Julian mean month length of 30.4375 days
+      when clean_unit(qty.unit) == 'year' then qty.value * 365.25 * 24 * 60 * 60 * 1000  # Based on a Julian year of 365.25 days
       else qty.value
     millivalue
   else
