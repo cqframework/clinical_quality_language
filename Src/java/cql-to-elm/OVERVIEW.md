@@ -1,4 +1,5 @@
-﻿# CQL-to-ELM Translator Reference Implementation
+
+# CQL-to-ELM Translator Reference Implementation
 
 The HL7 CQL specification defines both a high-level, author friendly syntax for expressing clinical knowledge, as well as a machine friendly, syntax-independent canonical representation of clinical knowledge called Expression Logical Model (ELM). The high level syntax is designed to support measure and decision support authors, while the canonical representation is designed to support point-to-point sharing and machine processing applications.
 
