@@ -4,9 +4,14 @@ This is a multi-module project for CQL java libraries and proof-of-concept appli
 It contains the following sub-projects:
 
 * **cql:** generates and builds Java lexers, parsers, listeners, and visitors using the CQL ANTLR4 grammar
-* **quick:** generates and builds Java classes based on the QUICK XML schema
+* **model:** generates and builds Java classes based on the ELM Model Info schema and CQL base type system
 * **elm:** generates and builds Java classes based on the ELM XML schema
-* **cql-to-elm:** generates Expression Logical Model (ELM) XML from CQL source
+* **qdm:** contains schema and model info resources for QDM (4.2, 5.0, 5.0.1, 5.0.2, 5.3)
+* **quick:** contains schema and model info resources for QUICK and FHIR, DSTU2 (1.0.2), and STU3 (1.4, 1.6, 1.8, and 3.0.1)
+* **cql-to-elm:** generates Expression Logical Model (ELM) XML and JSON from CQL source
+* **tools:cql-formatter:** formats input CQL based on standard formatting conventions as suggested by the CQL specification
+* **tools:cql-parsetree:** provides simple command-line access to the debug information for a CQL parse tree
+* **tools:xsd-to-modelinfo:** generates model info given an XML Schema (XSD) as input
 
 # Building the Project
 
@@ -30,7 +35,7 @@ You can generate an IDE project for IntelliJ IDEa:
 
     ./gradlew idea
 
-In addition to creating project modules for cql, quick, elm, and cql-to-elm, this will also import project
+In addition to creating project modules for cql, model, quick, elm, cql-to-elm, and the tools projects, this will also import project
 modules for the CQL grammar and examples.
 
 # Executing the Sample Code
@@ -63,7 +68,7 @@ To generate an ELM representation of CQL logic, build and execute the cql-to-elm
 
     ./gradlew :cql-to-elm:installApp
     ./cql-to-elm/build/install/cql-to-elm/bin/cql-to-elm --input ../../Examples/ChlamydiaScreening_CQM.cql
-
+    
 The following options are supported:
 
 * `--input` or `-i`: Specify the input CQL file (REQUIRED).
@@ -71,6 +76,8 @@ The following options are supported:
   same base name and location as the input file.  If only a directory is specified, the output
   file will have the same base name as the input file and be written to the requested directory.
 * `--format` or `-f`: Output as `XML` (default), `JSON`, or `COFFEE`.
-* `--date-range-optimization` or `-d`: Refactor simple during clauses into the ClinicalRequest.
-* `--annotations` or `-a`: Include annotations in the output (work in progress).
+* `--date-range-optimization` or `-d`: Refactor simple during clauses into the Retrieve.
+* `--annotations` or `-a`: Include CQL source annotations in the output.
 * `--stdout` or `-s`: Write output to the console instead of a file.
+
+For more information on the CQL-to-ELM translator, refer to the [Overview](cql-to-elm/OVERVIEW.md) for that project.
