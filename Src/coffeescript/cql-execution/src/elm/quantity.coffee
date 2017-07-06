@@ -2,6 +2,8 @@
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
 
+# Unit conversation is currently implemented on for time duration comparison operations
+# TODO: Implement unit conversation for time duration mathematical operations
 # TODO: Quantity should probably be available as a datatype (not just ELM expression)
 module.exports.Quantity = class Quantity extends Expression
   constructor: (json) ->
@@ -55,18 +57,27 @@ module.exports.Quantity = class Quantity extends Expression
     else null
     
   equals: (other) ->
-    if other.unit? && other.value? then @unit == other.unit && @value == parseFloat other.value else null
+    if other instanceof Quantity and @unit == other.unit
+      @value == parseFloat other.value
+    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+      thisSmallestDuration = smallestDuration(@)
+      otherSmallestDuration = smallestDuration(other)
+      thisSmallestDuration == otherSmallestDuration
+    else null
 
-# Hash of time units and their UCUM equivalents
+# Hash of time units and their UCUM equivalents, both case-sensitive and case-insensitive
 # See http://unitsofmeasure.org/ucum.html#para-31
-time_units = {'years': 'year', 'year': 'year', 'a': 'year', 'ANN': 'year', 'ann': 'year'
-  , 'months': 'month', 'month':'month', 'mo': 'month', 'MO': 'month'
-  , 'weeks': 'week', 'week': 'week', 'wk', 'week'
+# The CQL specification says that dates are based on the Gregorian calendar
+time_units = {'years': 'a_g', 'year': 'a_g', 'YEARS': 'a_g', 'YEAR': 'a_g'
+  , 'a': 'a_j', 'ANN': 'a_j', 'ann': 'a_j', 'A': 'a_j'
+  , 'months': 'mo_g', 'month':'mo_g'
+  , 'mo': 'mo_j', 'MO': 'mo_j'
+  , 'weeks': 'week', 'week': 'week', 'wk', 'week', 'WK', 'week'
   , 'days': 'day', 'day':'day', 'd': 'day', 'D': 'day'
   , 'hours': 'hour', 'hour': 'hour', 'h': 'hour', 'H': 'hour'
   , 'minutes': 'minute', 'minute': 'minute', 'min': 'minute', 'MIN': 'minute'
-  , 'seconds':'second', 'second':'second', 's': 'second'
-  , 'milliseconds' : 'millisecond', 'millisecond' : 'millisecond', 'ms': 'millisecond'
+  , 'seconds':'second', 'second':'second', 's': 'second', 'S': 'second'
+  , 'milliseconds' : 'millisecond', 'millisecond' : 'millisecond', 'ms': 'millisecond', 'MS': 'millisecond'
   }
 
 clean_unit = (units) ->
@@ -83,10 +94,12 @@ smallestDuration = (qty) ->
       when clean_unit(qty.unit) == 'hour' then qty.value * 60 * 60 * 1000
       when clean_unit(qty.unit) == 'day' then qty.value * 24 * 60 * 60 * 1000
       when clean_unit(qty.unit) == 'week' then qty.value * 7 * 24 * 60 * 60 * 1000
-      # Only supporting year durations based on a Julian year
-      # See http://unitsofmeasure.org/ucum.html#para-31
-      when clean_unit(qty.unit) == 'month' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a Julian mean month length of 30.4375 days
-      when clean_unit(qty.unit) == 'year' then qty.value * 365.25 * 24 * 60 * 60 * 1000  # Based on a Julian year of 365.25 days
+      # Support for the UCUM units based on the Gregorian calendar
+      when clean_unit(qty.unit) == 'mo_g' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a Gregorian mean month length of 30.436875 days
+      when clean_unit(qty.unit) == 'a_g' then qty.value * 365.2425 * 24 * 60 * 60 * 1000  # Based on a Gregorian year of 365.2425 days
+      # Support for the UCUM units based on the Julian calendar
+      when clean_unit(qty.unit) == 'mo_j' then qty.value * 30.4375 * 24 * 60 * 60 * 1000  # Based on a Julian mean month length of 30.4375 days
+      when clean_unit(qty.unit) == 'a_j' then qty.value * 365.25 * 24 * 60 * 60 * 1000  # Based on a Julian year of 365.25 days
       else qty.value
     millivalue
   else
