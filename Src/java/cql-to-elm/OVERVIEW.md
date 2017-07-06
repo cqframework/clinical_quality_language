@@ -1,4 +1,3 @@
-
 # CQL-to-ELM Translator Reference Implementation
 
 The HL7 CQL specification defines both a high-level, author friendly syntax for expressing clinical knowledge, as well as a machine friendly, syntax-independent canonical representation of clinical knowledge called Expression Logical Model (ELM). The high level syntax is designed to support measure and decision support authors, while the canonical representation is designed to support point-to-point sharing and machine processing applications.
@@ -13,6 +12,8 @@ The CQL-to-ELM Translator is licensed under the open source [Apache Version 2.0]
       <url>https://oss.sonatype.org/content/groups/public/</url>
     </repository>
 
+The `cql`, `model`, `elm`, and `cql-to-elm` packages are required to use the translator:
+
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql</artifactId>
@@ -25,14 +26,17 @@ The CQL-to-ELM Translator is licensed under the open source [Apache Version 2.0]
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
-      <artifactId>cql-to-elm</artifactId>
+      <artifactId>elm</artifactId>
       <version>1.2.5-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
-      <artifactId>elm</artifactId>
+      <artifactId>cql-to-elm</artifactId>
       <version>1.2.5-SNAPSHOT</version>
     </dependency>
+    
+In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
+    
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>quick</artifactId>
