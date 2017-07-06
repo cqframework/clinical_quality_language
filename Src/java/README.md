@@ -1,6 +1,6 @@
 # Overview
 
-This is a multi-module project for CQL java libraries and proof-of-concept applications.
+This is a multi-module project for CQL java libraries and tooling applications.
 It contains the following sub-projects:
 
 * **cql:** generates and builds Java lexers, parsers, listeners, and visitors using the CQL ANTLR4 grammar
