@@ -25,6 +25,7 @@ Changes to the tooling maintained within this repository are managed using as li
 * [Java Quickstart](Src/java-quickstart/README.md)
 
 # License
+All code in this repository is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). All documentation is licensed under the [Creative Common Attribution 4.0 International license (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
 Copyright 2014 The MITRE Corporation
 
