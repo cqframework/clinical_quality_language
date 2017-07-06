@@ -6,6 +6,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlParser;
 
+import java.util.Stack;
+
 /**
  * Created by Bryn on 7/5/2017.
  */
@@ -16,6 +18,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
     private final char tab = '\t';
     private final String newLine = "\r\n";
 
+    private int currentLine = 0;
     private boolean onNewLine;
     private boolean needsWhitespace;
     private int indentLevel = 0;
@@ -120,10 +123,26 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         decreaseIndentLevel();
     }
 
+    private Stack<Integer> groups;
+
+    private void enterGroup() {
+        increaseIndentLevel();
+        groups.push(currentLine);
+    }
+
+    private void exitGroup() {
+        Integer groupStartLine = groups.pop();
+        decreaseIndentLevel();
+        if (currentLine != groupStartLine) {
+            newLine();
+        }
+    }
+
     private boolean needsWhitespaceBefore(String terminal) {
         switch (terminal) {
             case ":": return false;
             case ".": return false;
+            case ",": return false;
             case "<": return !inTypeSpecifier();
             case ">": return !inTypeSpecifier();
             case "(": return !inFunctionDefinition() && !inFunctionInvocation();
@@ -170,6 +189,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     private void newLine() {
         output.append(newLine);
+        currentLine++;
         for (int i = 0; i < indentLevel; i++) {
             output.append(tab);
         }
@@ -190,8 +210,10 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     private void reset() {
         resetIndentLevel();
+        currentLine = 1;
         onNewLine = true;
         output = new StringBuilder();
+        groups = new Stack<Integer>();
     }
 
     @Override
@@ -545,14 +567,59 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitMultipleSourceClause(cqlParser.MultipleSourceClauseContext ctx) {
-        return super.visitMultipleSourceClause(ctx);
+        Object result = defaultResult();
+        int n = ctx.getChildCount();
+        boolean clauseEntered = false;
+        try {
+            for (int i = 0; i < n; i++) {
+                if (!shouldVisitNextChild(ctx, result)) {
+                    break;
+                }
+
+                ParseTree c = ctx.getChild(i);
+
+                if (i == 1) {
+                    enterClause();
+                    clauseEntered = true;
+                }
+
+                if (i > 1 && !c.getText().equals(",")) {
+                    newLine();
+                }
+
+                Object childResult = c.accept(this);
+                result = aggregateResult(result, childResult);
+            }
+            return result;
+        }
+        finally {
+            if (clauseEntered) {
+                exitClause();
+            }
+        }
     }
 
     @Override
     public Object visitLetClause(cqlParser.LetClauseContext ctx) {
         enterClause();
         try {
-            return super.visitLetClause(ctx);
+            Object result = defaultResult();
+            int n = ctx.getChildCount();
+            for (int i = 0; i < n; i++) {
+                if (!shouldVisitNextChild(ctx, result)) {
+                    break;
+                }
+
+                ParseTree c = ctx.getChild(i);
+
+                if (i > 1 && !c.getText().equals(",")) {
+                    newLine();
+                }
+
+                Object childResult = c.accept(this);
+                result = aggregateResult(result, childResult);
+            }
+            return result;
         }
         finally {
             exitClause();
@@ -619,7 +686,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitInFixSetExpression(cqlParser.InFixSetExpressionContext ctx) {
-        return super.visitInFixSetExpression(ctx);
+        return visitBinaryClausedExpression(ctx);
     }
 
     @Override
@@ -649,7 +716,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitOrExpression(cqlParser.OrExpressionContext ctx) {
-        return super.visitOrExpression(ctx);
+        return visitBinaryClausedExpression(ctx);
     }
 
     @Override
@@ -657,9 +724,38 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         return super.visitCastExpression(ctx);
     }
 
+    private Object visitBinaryClausedExpression(ParserRuleContext ctx) {
+        Object result = defaultResult();
+        int n = ctx.getChildCount();
+        boolean clauseEntered = false;
+        try {
+            for (int i = 0; i < n; i++) {
+                if (!shouldVisitNextChild(ctx, result)) {
+                    break;
+                }
+
+                ParseTree c = ctx.getChild(i);
+
+                if (i == 1) {
+                    enterClause();
+                    clauseEntered = true;
+                }
+
+                Object childResult = c.accept(this);
+                result = aggregateResult(result, childResult);
+            }
+            return result;
+        }
+        finally {
+            if (clauseEntered) {
+                exitClause();
+            }
+        }
+    }
+
     @Override
     public Object visitAndExpression(cqlParser.AndExpressionContext ctx) {
-        return super.visitAndExpression(ctx);
+        return visitBinaryClausedExpression(ctx);
     }
 
     @Override
@@ -949,7 +1045,29 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitParenthesizedTerm(cqlParser.ParenthesizedTermContext ctx) {
-        return super.visitParenthesizedTerm(ctx);
+        Object result = defaultResult();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            if (!shouldVisitNextChild(ctx, result)) {
+                break;
+            }
+
+            ParseTree c = ctx.getChild(i);
+
+            if (c == ctx.expression()) {
+                enterGroup();
+            }
+            try {
+                Object childResult = c.accept(this);
+                result = aggregateResult(result, childResult);
+            }
+            finally {
+                if (c == ctx.expression()) {
+                    exitGroup();
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -1065,7 +1183,29 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitFunction(cqlParser.FunctionContext ctx) {
-        return super.visitFunction(ctx);
+        Object result = defaultResult();
+        int n = ctx.getChildCount();
+        for (int i = 0; i < n; i++) {
+            if (!shouldVisitNextChild(ctx, result)) {
+                break;
+            }
+
+            ParseTree c = ctx.getChild(i);
+
+            if (c == ctx.paramList()) {
+                enterGroup();
+            }
+            try {
+                Object childResult = c.accept(this);
+                result = aggregateResult(result, childResult);
+            }
+            finally {
+                if (c == ctx.paramList()) {
+                    exitGroup();
+                }
+            }
+        }
+        return result;
     }
 
     @Override
