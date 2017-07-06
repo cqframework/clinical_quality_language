@@ -5521,7 +5521,7 @@
             ref2 = _this.by;
             for (i = 0, len = ref2.length; i < len; i++) {
               item = ref2[i];
-              order = item.execute(a, b);
+              order = item.exec(a, b);
               if (order !== 0) {
                 break;
               }

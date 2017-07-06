@@ -96,7 +96,8 @@ module.exports.SortClause = SortClause = class SortClause
       values.sort (a,b) =>
         order = 0
         for item in @by
-          order = item.execute(a,b)
+          # Do not use execute here because the value of the sort order is not important.
+          order = item.exec(a,b)
           if order != 0 then break
         order
 
