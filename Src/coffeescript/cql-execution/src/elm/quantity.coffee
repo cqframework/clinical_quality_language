@@ -65,7 +65,6 @@ module.exports.Quantity = class Quantity extends Expression
       thisSmallestDuration == otherSmallestDuration
     else null
 
-time_units = {'years':'year',  'months': 'month',  'days' :'day', 'minutes': 'minute', 'seconds':'seconds', 'milliseconds' : 'millisecond' }
 
 clean_unit = (units) ->
   if ucum_time_units[units] then ucum_to_cql_units[ucum_time_units[units]] else units
@@ -94,6 +93,7 @@ ucum_to_cql_units = {
   , 'd':    'day'
   , 'h':    'hour'
   , 's':    'second'
+  , 'min':  'minute'
   , 'ms':   'millisecond'
 }
 
@@ -106,11 +106,11 @@ get_ucum_units = (units) ->
 smallestDuration = (qty) ->
   if parseFloat qty.value
     millivalue = switch
-      when get_ucum_unit(qty.unit) == 'second' then qty.value * 1000
-      when get_ucum_unit(qty.unit) == 'minute' then qty.value * 60 * 1000
-      when get_ucum_unit(qty.unit) == 'hour' then qty.value * 60 * 60 * 1000
-      when get_ucum_unit(qty.unit) == 'day' then qty.value * 24 * 60 * 60 * 1000
-      when get_ucum_unit(qty.unit) == 'week' then qty.value * 7 * 24 * 60 * 60 * 1000
+      when get_ucum_unit(qty.unit) == 's' then qty.value * 1000
+      when get_ucum_unit(qty.unit) == 'min' then qty.value * 60 * 1000
+      when get_ucum_unit(qty.unit) == 'h' then qty.value * 60 * 60 * 1000
+      when get_ucum_unit(qty.unit) == 'd' then qty.value * 24 * 60 * 60 * 1000
+      when get_ucum_unit(qty.unit) == 'wk' then qty.value * 7 * 24 * 60 * 60 * 1000
       # Support for the UCUM units based on the Gregorian calendar
       when get_ucum_unit(qty.unit) == 'mo_g' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a Gregorian mean month length of 30.436875 days
       when get_ucum_unit(qty.unit) == 'a_g' then qty.value * 365.2425 * 24 * 60 * 60 * 1000  # Based on a Gregorian year of 365.2425 days
