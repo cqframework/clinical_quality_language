@@ -4,12 +4,12 @@ module.exports.Results = class Results
     @populationResults = {}
     @localIdPatientResultsMap = {}
 
-  recordPatientResult: (patientId, resultName, localId_hash, result) ->
+  recordPatientResult: (patient_ctx, resultName, result) ->
+    patientId = patient_ctx.patient.id()
     @patientResults[patientId] ?= {}
-    @localIdPatientResultsMap[patientId] ?= {}
     @patientResults[patientId][resultName] = result
-    for localId, value of localId_hash
-      @localIdPatientResultsMap[patientId][localId] = value
+    @localIdPatientResultsMap[patientId] ?= {}
+    @localIdPatientResultsMap[patientId] = patient_ctx.getAllLocalIds()
 
   recordPopulationResult: (resultName, result) ->
     @populationResults[resultName] = result
