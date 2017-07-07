@@ -23,7 +23,7 @@ module.exports.Quantity = class Quantity extends Expression
   sameOrBefore: (other) ->
     if other instanceof Quantity and other.unit == @unit
       @value <= parseFloat other.value
-    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
       thisSmallestDuration = smallestDuration(@)
       otherSmallestDuration = smallestDuration(other)
       thisSmallestDuration <= otherSmallestDuration
@@ -32,7 +32,7 @@ module.exports.Quantity = class Quantity extends Expression
   sameOrAfter: (other) ->
     if other instanceof Quantity and other.unit == @unit
       @value >= parseFloat other.value
-    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
       thisSmallestDuration = smallestDuration(@)
       otherSmallestDuration = smallestDuration(other)
       thisSmallestDuration >= otherSmallestDuration
@@ -41,7 +41,7 @@ module.exports.Quantity = class Quantity extends Expression
   after: (other) ->
     if other instanceof Quantity and other.unit == @unit
       @value > parseFloat other.value
-    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
       thisSmallestDuration = smallestDuration(@)
       otherSmallestDuration = smallestDuration(other)
       thisSmallestDuration > otherSmallestDuration
@@ -50,7 +50,7 @@ module.exports.Quantity = class Quantity extends Expression
   before: (other) ->
     if other instanceof Quantity and other.unit == @unit
       @value < parseFloat other.value
-    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
       thisSmallestDuration = smallestDuration(@)
       otherSmallestDuration = smallestDuration(other)
       thisSmallestDuration < otherSmallestDuration
@@ -59,47 +59,64 @@ module.exports.Quantity = class Quantity extends Expression
   equals: (other) ->
     if other instanceof Quantity and @unit == other.unit
       @value == parseFloat other.value
-    else if other instanceof Quantity and time_units[other.unit]? and time_units[@unit]?
+    else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
       thisSmallestDuration = smallestDuration(@)
       otherSmallestDuration = smallestDuration(other)
       thisSmallestDuration == otherSmallestDuration
     else null
 
+time_units = {'years':'year',  'months': 'month',  'days' :'day', 'minutes': 'minute', 'seconds':'seconds', 'milliseconds' : 'millisecond' }
+
+clean_unit = (units) ->
+  if ucum_time_units[units] then ucum_to_cql_units[ucum_time_units[units]] else units
+
 # Hash of time units and their UCUM equivalents, both case-sensitive and case-insensitive
 # See http://unitsofmeasure.org/ucum.html#para-31
 # The CQL specification says that dates are based on the Gregorian calendar
-time_units = {'years': 'a_g', 'year': 'a_g', 'YEARS': 'a_g', 'YEAR': 'a_g'
-  , 'a': 'a_j', 'ANN': 'a_j', 'ann': 'a_j', 'A': 'a_j'
-  , 'months': 'mo_g', 'month':'mo_g'
-  , 'mo': 'mo_j', 'MO': 'mo_j'
-  , 'weeks': 'week', 'week': 'week', 'wk': 'week', 'WK': 'week'
-  , 'days': 'day', 'day':'day', 'd': 'day', 'D': 'day'
-  , 'hours': 'hour', 'hour': 'hour', 'h': 'hour', 'H': 'hour'
-  , 'minutes': 'minute', 'minute': 'minute', 'min': 'minute', 'MIN': 'minute'
-  , 'seconds':'second', 'second':'second', 's': 'second', 'S': 'second'
-  , 'milliseconds' : 'millisecond', 'millisecond' : 'millisecond', 'ms': 'millisecond', 'MS': 'millisecond'
+ucum_time_units = {'years': 'a_g', 'year': 'a_g', 'YEARS': 'a_g', 'YEAR': 'a_g', 'a_g': 'a_g'
+  , 'a': 'a_j', 'ANN': 'a_j', 'ann': 'a_j', 'A': 'a_j', 'a_j': 'a_j'
+  , 'months': 'mo_g', 'month':'mo_g', 'mo_g': 'mo_g'
+  , 'mo': 'mo_j', 'MO': 'mo_j', 'mo_j', 'mo_j'
+  , 'weeks': 'wk', 'week': 'wk', 'wk': 'wk', 'WK': 'wk'
+  , 'days': 'd', 'day':'d', 'd': 'd', 'D': 'd'
+  , 'hours': 'h', 'hour': 'h', 'h': 'h', 'H': 'h'
+  , 'minutes': 'min', 'minute': 'min', 'min': 'min', 'MIN': 'min'
+  , 'seconds':'s', 'second':'s', 's': 's', 'S': 's'
+  , 'milliseconds' : 'ms', 'millisecond' : 'ms', 'ms': 'ms', 'MS': 'ms'
   }
 
-clean_unit = (units) ->
-  if time_units[units]
-    time_units[units]
+ucum_to_cql_units = {
+    'a_j':  'year'
+  , 'a_g':  'year'
+  , 'mo_j': 'month'
+  , 'mo_g': 'month'
+  , 'wk':   'week'
+  , 'd':    'day'
+  , 'h':    'hour'
+  , 's':    'second'
+  , 'ms':   'millisecond'
+}
+
+get_ucum_units = (units) ->
+  if ucum_time_units[units]
+    ucum_time_units[units]
   else units
 
 # The smallest common duration is the millisecond
 smallestDuration = (qty) ->
   if parseFloat qty.value
     millivalue = switch
-      when clean_unit(qty.unit) == 'second' then qty.value * 1000
-      when clean_unit(qty.unit) == 'minute' then qty.value * 60 * 1000
-      when clean_unit(qty.unit) == 'hour' then qty.value * 60 * 60 * 1000
-      when clean_unit(qty.unit) == 'day' then qty.value * 24 * 60 * 60 * 1000
-      when clean_unit(qty.unit) == 'week' then qty.value * 7 * 24 * 60 * 60 * 1000
+      when get_ucum_unit(qty.unit) == 'second' then qty.value * 1000
+      when get_ucum_unit(qty.unit) == 'minute' then qty.value * 60 * 1000
+      when get_ucum_unit(qty.unit) == 'hour' then qty.value * 60 * 60 * 1000
+      when get_ucum_unit(qty.unit) == 'day' then qty.value * 24 * 60 * 60 * 1000
+      when get_ucum_unit(qty.unit) == 'week' then qty.value * 7 * 24 * 60 * 60 * 1000
       # Support for the UCUM units based on the Gregorian calendar
-      when clean_unit(qty.unit) == 'mo_g' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a Gregorian mean month length of 30.436875 days
-      when clean_unit(qty.unit) == 'a_g' then qty.value * 365.2425 * 24 * 60 * 60 * 1000  # Based on a Gregorian year of 365.2425 days
+      when get_ucum_unit(qty.unit) == 'mo_g' then qty.value * 30.436875 * 24 * 60 * 60 * 1000  # Based on a Gregorian mean month length of 30.436875 days
+      when get_ucum_unit(qty.unit) == 'a_g' then qty.value * 365.2425 * 24 * 60 * 60 * 1000  # Based on a Gregorian year of 365.2425 days
       # Support for the UCUM units based on the Julian calendar
-      when clean_unit(qty.unit) == 'mo_j' then qty.value * 30.4375 * 24 * 60 * 60 * 1000  # Based on a Julian mean month length of 30.4375 days
-      when clean_unit(qty.unit) == 'a_j' then qty.value * 365.25 * 24 * 60 * 60 * 1000  # Based on a Julian year of 365.25 days
+      when get_ucum_unit(qty.unit) == 'mo_j' then qty.value * 30.4375 * 24 * 60 * 60 * 1000  # Based on a Julian mean month length of 30.4375 days
+      when get_ucum_unit(qty.unit) == 'a_j' then qty.value * 365.25 * 24 * 60 * 60 * 1000  # Based on a Julian year of 365.25 days
       else qty.value
     millivalue
   else
