@@ -78,7 +78,7 @@ clean_unit = (units) ->
 ucum_time_units = {'years': 'a_g', 'year': 'a_g', 'YEARS': 'a_g', 'YEAR': 'a_g', 'a_g': 'a_g'
   , 'a': 'a_j', 'ANN': 'a_j', 'ann': 'a_j', 'A': 'a_j', 'a_j': 'a_j'
   , 'months': 'mo_g', 'month':'mo_g', 'mo_g': 'mo_g'
-  , 'mo': 'mo_j', 'MO': 'mo_j', 'mo_j', 'mo_j'
+  , 'mo': 'mo_j', 'MO': 'mo_j', 'mo_j': 'mo_j'
   , 'weeks': 'wk', 'week': 'wk', 'wk': 'wk', 'WK': 'wk'
   , 'days': 'd', 'day':'d', 'd': 'd', 'D': 'd'
   , 'hours': 'h', 'hour': 'h', 'h': 'h', 'H': 'h'
