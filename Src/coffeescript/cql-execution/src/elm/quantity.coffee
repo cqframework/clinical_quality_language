@@ -24,45 +24,45 @@ module.exports.Quantity = class Quantity extends Expression
     if other instanceof Quantity and other.unit == @unit
       @value <= parseFloat other.value
     else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisSmallestDuration = smallestDuration(@)
-      otherSmallestDuration = smallestDuration(other)
-      thisSmallestDuration <= otherSmallestDuration
+      thisDurationInMilliseconds = durationInMilliseconds(@)
+      otherDurationInMilliseconds = durationInMilliseconds(other)
+      thisDurationInMilliseconds <= otherDurationInMilliseconds
     else null
 
   sameOrAfter: (other) ->
     if other instanceof Quantity and other.unit == @unit
       @value >= parseFloat other.value
     else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisSmallestDuration = smallestDuration(@)
-      otherSmallestDuration = smallestDuration(other)
-      thisSmallestDuration >= otherSmallestDuration
+      thisDurationInMilliseconds = durationInMilliseconds(@)
+      otherDurationInMilliseconds = durationInMilliseconds(other)
+      thisDurationInMilliseconds >= otherDurationInMilliseconds
     else null
 
   after: (other) ->
     if other instanceof Quantity and other.unit == @unit
       @value > parseFloat other.value
     else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisSmallestDuration = smallestDuration(@)
-      otherSmallestDuration = smallestDuration(other)
-      thisSmallestDuration > otherSmallestDuration
+      thisDurationInMilliseconds = durationInMilliseconds(@)
+      otherDurationInMilliseconds = durationInMilliseconds(other)
+      thisDurationInMilliseconds > otherDurationInMilliseconds
     else null
 
   before: (other) ->
     if other instanceof Quantity and other.unit == @unit
       @value < parseFloat other.value
     else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisSmallestDuration = smallestDuration(@)
-      otherSmallestDuration = smallestDuration(other)
-      thisSmallestDuration < otherSmallestDuration
+      thisDurationInMilliseconds = durationInMilliseconds(@)
+      otherDurationInMilliseconds = durationInMilliseconds(other)
+      thisDurationInMilliseconds < otherDurationInMilliseconds
     else null
     
   equals: (other) ->
     if other instanceof Quantity and @unit == other.unit
       @value == parseFloat other.value
     else if other instanceof Quantity and ucum_time_units[other.unit]? and ucum_time_units[@unit]?
-      thisSmallestDuration = smallestDuration(@)
-      otherSmallestDuration = smallestDuration(other)
-      thisSmallestDuration == otherSmallestDuration
+      thisDurationInMilliseconds = durationInMilliseconds(@)
+      otherDurationInMilliseconds = durationInMilliseconds(other)
+      thisDurationInMilliseconds == otherDurationInMilliseconds
     else null
 
 
@@ -72,6 +72,9 @@ clean_unit = (units) ->
 # Hash of time units and their UCUM equivalents, both case-sensitive and case-insensitive
 # See http://unitsofmeasure.org/ucum.html#para-31
 # The CQL specification says that dates are based on the Gregorian calendar
+# UCUM says that years should be Julian. As a result, CQL-based year and month identifiers will
+# be matched to the UCUM gregorian units. UCUM-based year and month identifiers will be matched 
+# to the UCUM julian units.
 ucum_time_units = {'years': 'a_g', 'year': 'a_g', 'YEARS': 'a_g', 'YEAR': 'a_g', 'a_g': 'a_g'
   , 'a': 'a_j', 'ANN': 'a_j', 'ann': 'a_j', 'A': 'a_j', 'a_j': 'a_j'
   , 'months': 'mo_g', 'month':'mo_g', 'mo_g': 'mo_g'
@@ -92,8 +95,8 @@ ucum_to_cql_units = {
   , 'wk':   'week'
   , 'd':    'day'
   , 'h':    'hour'
-  , 's':    'second'
   , 'min':  'minute'
+  , 's':    'second'
   , 'ms':   'millisecond'
 }
 
@@ -103,7 +106,7 @@ get_ucum_units = (units) ->
   else units
 
 # The smallest common duration is the millisecond
-smallestDuration = (qty) ->
+durationInMilliseconds = (qty) ->
   if parseFloat qty.value
     millivalue = switch
       when get_ucum_unit(qty.unit) == 's' then qty.value * 1000
