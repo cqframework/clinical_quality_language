@@ -100,7 +100,7 @@ ucum_to_cql_units = {
   , 'ms':   'millisecond'
 }
 
-get_ucum_units = (units) ->
+get_ucum_unit = (units) ->
   if ucum_time_units[units]
     ucum_time_units[units]
   else units
