@@ -106,6 +106,7 @@ get_ucum_units = (units) ->
   else units
 
 # The smallest common duration is the millisecond
+# Returns the VALUE of a time duration-based quantity in milliseconds
 durationInMilliseconds = (qty) ->
   if parseFloat qty.value
     millivalue = switch
