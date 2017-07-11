@@ -11,7 +11,6 @@ Stakeholder participation is on a voluntary basis, but the project asks its stak
 * Evangelism of the project (e.g. a link on a website and word-of-mouth awareness)
 * Informing developers of strengths and weaknesses from a new stakeholder perspective
 * Providing moral support (a ‘thank you’ goes a long way)
-* Providing financial support (the project is open source, but capacity is a constant struggle)
 * Stakeholders who continue to engage with the project and its community will often become more and more involved. Such stakeholders may find themselves becoming contributors, as described in the next section.
 
 ### Contributors
@@ -33,6 +32,7 @@ Contributors engage with the project through the issue tracker and mailing list,
 As contributors gain experience and familiarity with the project, their profile within, and commitment to, the community will increase. At some stage, they may find themselves being nominated for committership.
 
 ### Committers
+
 Committers are community members who have shown that they are committed to the continued development of the project through ongoing engagement with the community. New committers can be nominated by any existing committer. Once they have been nominated, there will be a vote by the project management committee (PMC; see below). Committer voting is one of the few activities that takes place on the project’s private management list. This is to allow PMC members to freely express their opinions about a nominee without causing embarrassment. Once the vote has been held, the aggregated voting results are published on the public mailing list. The nominee is entitled to request an explanation of any ‘no’ votes against them, regardless of the outcome of the vote. This explanation will be provided by the PMC Chair (see below) and will be anonymous and constructive in nature.
 
 It is important to recognize that commitership is a privilege, not a right. That privilege must be earned and once earned it can be removed by the PMC (see next section) in extreme circumstances. However, under normal circumstances committership exists for as long as the committer wishes to continue engaging with the project.
@@ -67,7 +67,7 @@ Any community member can make a proposal for consideration by the community. In 
 
 In general, as long as nobody explicitly opposes a proposal or change, and the functionality is aligned with the CQL specification, it is recognized as having the support of the community. This is called lazy consensus - that is, those who have not stated their opinion explicitly have implicitly agreed to the implementation of the proposal.
 
-For lazy consensus to be effective, it is necessary to allow at least 1 week before assuming that there are no objections to the proposal. This requirement ensures that everyone is given enough time to read, digest and respond to the proposal. This time period is chosen so as to be as inclusive as possible of all participants, regardless of their location and time commitments.
+For lazy consensus to be effective, it is necessary to allow sufficient time for stakeholders to review before assuming that there are no objections to the proposal. The more significant the issue, the more time is required for review, with the intent that everyone is given enough time to read, digest, and respond to the proposal. The time given for review will be chosen so as to be as inclusive as possible of all participants, regardless of their location and time commitments.
 
 ### Voting
 Not all decisions can be made using the process of lazy consensus. Issues such as those affecting the strategic direction, project releases, or legal standing of the project must gain explicit approval in the form of a vote. Every member of the community is encouraged to express their opinions in all discussion and all votes. However, only project committers and/or PMC members (as defined above) have binding votes for the purposes of decision making.
@@ -82,6 +82,15 @@ Small changes must be reviewed by at least one committer that is not the author 
 In general, when a new version of the CQL specification is created, a new branch of the repository is created to implement support for that version. Changes to this branch can be committed directly. Once the new version of the specification is published, the version branch is merged to the master branch.
 
 Note that changes must always align with the CQL specification. Any changes to the CQL specification itself are governed by HL7 and must be done through the HL7 process, either by submitting an STU comment, or balloting a new version of the specification.
+
+# Communication Channels
+Communication should be done in an open and public manner. The project uses many different channels for open communication, including:
+
+* Mailing List: [cql-tooling@googlegroups.com](https://groups.google.com/forum/?hl=en#!forum/cql-tooling)
+* [Chat](https://chat.fhir.org/#narrow/stream/cql)
+* [Github Issues](https://github.com/cqframework/clinical_quality_language/issues)
+
+Sometimes, communication occurs outside of these public channels, and that is okay; however, committers must summarize any private discussions that impact the tooling project in a public channel.
 
 # Code of Conduct
 In support of a healthy and inclusive community, we use and enforce a code of conduct for all members of our community, including committers and PMC members. Our code of conduct is adapted from the Contributor Covenant.
