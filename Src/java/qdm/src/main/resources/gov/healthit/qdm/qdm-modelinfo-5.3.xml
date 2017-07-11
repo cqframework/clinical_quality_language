@@ -166,6 +166,8 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="DateTime"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Time"/>
             </ns4:typeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
