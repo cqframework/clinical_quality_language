@@ -1064,6 +1064,7 @@
 					<xs:element name="result" type="dt:Any" minOccurs="0"/>
 					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1141,6 +1142,7 @@
 					<xs:element name="ordinality" type="dt:Code" minOccurs="0"/>
 					<xs:element name="incisionDatetime" type="dt:DateTime" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
