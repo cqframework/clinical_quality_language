@@ -47,7 +47,7 @@ module.exports.equals = equals = (a, b) ->
   return a is b if not a? or not b?
 
   # If one is a Quantity, use the Quantity equals function
-  return a.equals b if a.constructor?.name == 'Quantity'
+  return a.equals b if a?.constructor?.name == 'Quantity'
   
   # If one is an Uncertainty, convert the other to an Uncertainty
   if a instanceof Uncertainty then b = Uncertainty.from(b)
