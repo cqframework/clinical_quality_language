@@ -26,7 +26,7 @@ module.exports.Exists = class Exists extends Expression
 
 # Delegated to by overloaded#Union
 module.exports.doUnion = (a, b) ->
-  a.concat b
+  doDistinct(a.concat b)
 
 # Delegated to by overloaded#Except
 module.exports.doExcept = (a, b) ->
@@ -99,12 +99,14 @@ module.exports.Distinct = class Distinct extends Expression
     super
 
   exec: (ctx) ->
-    arg = @execArgs ctx
-    seen = []
-    arg.filter (item) ->
-      isNew = seen.every (seenItem) -> !equals(item, seenItem)
-      seen.push item if isNew
-      isNew
+    doDistinct(@execArgs ctx)
+
+doDistinct = (list) ->
+  seen = []
+  list.filter (item) ->
+    isNew = seen.every (seenItem) -> !equals(item, seenItem)
+    seen.push item if isNew
+    isNew
 
 # ELM-only, not a product of CQL
 module.exports.Current = class Current extends UnimplementedExpression

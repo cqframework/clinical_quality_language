@@ -86,8 +86,8 @@ describe 'Union', ->
   it 'should union two lists to a single list', ->
     @oneToTen.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-  it 'should maintain duplicate elements (according to CQL spec)', ->
-    @oneToFiveOverlapped.exec(@ctx).should.eql [1, 2, 3, 4, 3, 4, 5]
+  it 'should remove duplicate elements (according to CQL 1.2 spec)', ->
+    @oneToFiveOverlapped.exec(@ctx).should.eql [1, 2, 3, 4, 5]
 
   it 'should not fill in values in a disjoint union', ->
     @disjoint.exec(@ctx).should.eql [1, 2, 4, 5]
