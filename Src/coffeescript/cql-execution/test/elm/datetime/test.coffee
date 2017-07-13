@@ -610,7 +610,7 @@ describe 'Before', ->
     should(@nullRight.exec(@ctx)).be.null
     should(@nullBoth.exec(@ctx)).be.null
 
-describe 'DurationBetween', ->
+describe 'DifferenceBetween', ->
   @beforeEach ->
     setup @, data
 
@@ -662,7 +662,7 @@ describe 'DurationBetween', ->
   it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
     @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new Uncertainty(-2678399999, 0)
 
-describe 'DurationBetween Comparisons', ->
+describe 'DifferenceBetween Comparisons', ->
   @beforeEach ->
     setup @, data
 

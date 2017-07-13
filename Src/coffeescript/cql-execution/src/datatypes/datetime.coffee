@@ -90,7 +90,7 @@ module.exports.DateTime = class DateTime
   sameAs: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then null
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low == 0 and diff.high == 0) then true
       when (diff.low <= 0 and diff.high >= 0) then null
@@ -102,7 +102,7 @@ module.exports.DateTime = class DateTime
   sameOrBefore: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low >= 0 and diff.high >= 0) then true
       when (diff.low < 0 and diff.high < 0) then false
@@ -111,7 +111,7 @@ module.exports.DateTime = class DateTime
   sameOrAfter: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low <= 0 and diff.high <= 0) then true
       when (diff.low > 0 and diff.high > 0) then false
@@ -120,7 +120,7 @@ module.exports.DateTime = class DateTime
   before: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low > 0 and diff.high > 0) then true
       when (diff.low <= 0 and diff.high <= 0) then false
@@ -129,7 +129,7 @@ module.exports.DateTime = class DateTime
   after: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low < 0 and diff.high < 0) then true
       when (diff.low >= 0 and diff.high >= 0) then false
@@ -148,7 +148,7 @@ module.exports.DateTime = class DateTime
 
     result
 
-  durationBetween: (other, unitField) ->
+  differenceBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
 
     if @timezoneOffset isnt other.timezoneOffset
@@ -156,9 +156,9 @@ module.exports.DateTime = class DateTime
 
     a = @toUncertainty(true)
     b = other.toUncertainty(true)
-    new Uncertainty(@_durationBetweenDates(a.high, b.low, unitField), @_durationBetweenDates(a.low, b.high, unitField))
+    new Uncertainty(@_differenceBetweenDates(a.high, b.low, unitField), @_differenceBetweenDates(a.low, b.high, unitField))
 
-  _durationBetweenDates: (a, b, unitField) ->
+  _differenceBetweenDates: (a, b, unitField) ->
     # To count boundaries below month, we need to floor units at lower precisions
     [a, b] = [a, b].map (x) ->
       switch unitField

@@ -263,130 +263,141 @@ describe 'DateTime.add', ->
     date1.should.eql date2
     date1.should.not.equal date2
 
-describe 'DateTime.durationBetween', ->
+describe 'DateTime.differenceBetween', ->
   it 'should calculate time between two full specified dates', ->
     a = DateTime.parse '2009-06-15T12:37:45.0'
     b = DateTime.parse '2009-06-15T12:37:45.0'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(0)
 
     a = DateTime.parse '2009-06-15T12:37:45.123'
     b = DateTime.parse '2009-06-15T12:37:45.456'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(333)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(333)
 
     a = DateTime.parse '2009-06-15T12:37:45.100'
     b = DateTime.parse '2009-06-15T12:37:52.499'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(7)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(7399)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(7)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(7399)
 
     a = DateTime.parse '2009-06-15T12:37:45.750'
     b = DateTime.parse '2009-06-15T12:56:17.875'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(19)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(1112)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(1112125)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(19)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(1112)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(1112125)
 
     a = DateTime.parse '2009-06-15T12:37:45.0'
     b = DateTime.parse '2009-06-15T14:56:50.500'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(2)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(139)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(8345)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(8345500)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(2)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(139)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(8345)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(8345500)
 
     a = DateTime.parse '2009-06-15T12:37:45.0'
     b = DateTime.parse '2009-06-20T17:56:50.500'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(5)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(125)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(7519)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(451145)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(451145500)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(5)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(125)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(7519)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(451145)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(451145500)
 
     a = DateTime.parse '2009-06-15T12:37:45.0'
     b = DateTime.parse '2009-07-04T12:56:50.500'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(1)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(19)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(456)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(27379)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(1642745)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(1642745500)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(19)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(456)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(27379)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(1642745)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(1642745500)
 
     a = DateTime.parse '2000-06-15T12:37:45.0'
     b = DateTime.parse '2009-07-04T12:56:50.500'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(9)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(109)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(3306)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(79344)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(4760659)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(285639545)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(285639545500)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(9)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(109)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(3306)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(79344)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(4760659)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(285639545)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(285639545500)
 
     a = DateTime.parse '2001-01-01T00:00:00.0'
     b = DateTime.parse '2001-12-31T23:59:59.999'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(11)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(364)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8759)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(525599)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31535999)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31535999999)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(11)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(364)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8759)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(525599)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31535999)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31535999999)
+
+  it 'should count the boundaries', ->
+    a = DateTime.parse '1999-12-31T23:59:59.999'
+    b = DateTime.parse '2000-01-01T00:00:00.00'
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(1)
 
   it 'should handle leap year', ->
     a = DateTime.parse '1999-02-01T00:00:00.00'
     b = DateTime.parse '2000-02-01T00:00:00.00'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(1)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(12)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(365)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8760)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(525600)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31536000)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31536000000)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(12)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(365)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8760)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(525600)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31536000)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31536000000)
 
     a = DateTime.parse '2000-02-01T00:00:00.0'
     b = DateTime.parse '2001-02-01T00:00:00.0'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(1)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(12)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(366)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8784)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(527040)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31622400)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31622400000)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(12)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(366)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8784)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(527040)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31622400)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31622400000)
 
   it 'should handle different timezones', ->
 
     a = DateTime.parse '2001-01-01T00:00:00.0+00:00'
     b = DateTime.parse '2000-12-31T19:00:00.0-05:00'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(0)
 
     # TODO: When a and b are different timezones, which do we use to count boundaries?
     # 1) a's timezone
@@ -397,74 +408,74 @@ describe 'DateTime.durationBetween', ->
   it 'should handle imprecision', ->
     a = DateTime.parse '2009-06-15T12:37:45.250'
     b = DateTime.parse '2009-06-15T12:37:45'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-250,749)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-250,749)
 
     a = DateTime.parse '2009-06-15T12:37:45.250'
     b = DateTime.parse '2009-06-15T12:37'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(-45,14)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-45250,14749)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(-45,14)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-45250,14749)
 
     a = DateTime.parse '2009-06-15T12:37:45.250'
     b = DateTime.parse '2009-06-15T14'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(2)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(83, 142)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(4935, 8534)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(4934750,8534749)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(2)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(83, 142)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(4935, 8534)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(4934750,8534749)
 
     a = DateTime.parse '2000-06-15T12:37:45.250'
     b = DateTime.parse '2009'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(9)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(103, 114)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(3122, 3486)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(74917, 83676)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(4494983, 5020582)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(269698935, 301234934)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(269698934750, 301234934749)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(9)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(103, 114)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(3122, 3486)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(74917, 83676)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(4494983, 5020582)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(269698935, 301234934)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(269698934750, 301234934749)
 
     a = DateTime.parse '2009-06-15T12:37:45'
     b = DateTime.parse '2009-06-15T12:37:45'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-999,999)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-999,999)
 
   it 'should return negative values for going backwards', ->
     a = DateTime.parse '2009-07-04T12:56:50.150'
     b = DateTime.parse '2000-06-15T12:37:45.350'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(-9)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(-109)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(-3306)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(-79344)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(-4760659)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(-285639545)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-285639544800)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(-9)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(-109)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(-3306)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(-79344)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(-4760659)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(-285639545)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-285639544800)
 
     a = DateTime.parse '2009-06-15T12:37:45'
     b = DateTime.parse '2009-06-15T12:37:44.123'
-    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
-    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(-1)
-    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-1876, -877)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(-1)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-1876, -877)
 
 
 describe 'DateTime.sameAs', ->
