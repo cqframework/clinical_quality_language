@@ -163,3 +163,7 @@ define Lists: Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
 define Tuples: Length({ Tuple{a: 1, b: 2, c: 3}, Tuple{a: 24, b: 25, c: 26} })
 define Empty: Length(List<Integer>{})
 define NullValue: Length(null as List<Integer>)
+
+// @Test: ToList
+define FiveInFive: 5 in 5 // CQL-to-ELM will promote the second 5 to a list via ToList
+define FourInFive: 4 in 5 // CQL-to-ELM will promote the 5 to a list via ToList
