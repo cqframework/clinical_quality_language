@@ -271,6 +271,7 @@
         <ns4:element name="ordinality" type="System.Code"/>
         <ns4:element name="incisionDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
+        <ns4:element name="component" type="list&lt;QDM.Component&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AllergyIntolerance" retrievable="true" baseType="QDM.QDMBaseType" label="Allergy/Intolerance" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -435,6 +436,7 @@
         </ns4:element>
         <ns4:element name="anatomicalLocationSite" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
+        <ns4:element name="component" type="list&lt;QDM.Component&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.PositiveAssessmentRecommended" retrievable="true" baseType="QDM.AssessmentRecommended" identifier="PositiveAssessmentRecommended" label="Assessment, Recommended" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.NegativeAssessmentRecommended" retrievable="true" baseType="QDM.AssessmentRecommended" identifier="NegativeAssessmentRecommended" label="Assessment, Not Recommended" primaryCodePath="code"/>
