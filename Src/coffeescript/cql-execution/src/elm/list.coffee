@@ -100,9 +100,11 @@ module.exports.Distinct = class Distinct extends Expression
 
   exec: (ctx) ->
     arg = @execArgs ctx
-    container = {}
-    container[itm] = itm for itm in arg
-    value for key, value of container
+    seen = []
+    arg.filter (item) ->
+      isNew = seen.every (seenItem) -> !equals(item, seenItem)
+      seen.push item if isNew
+      isNew
 
 # ELM-only, not a product of CQL
 module.exports.Current = class Current extends UnimplementedExpression

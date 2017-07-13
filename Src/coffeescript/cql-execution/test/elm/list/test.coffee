@@ -359,6 +359,12 @@ describe 'Distinct', ->
   it 'should do nothing to an already distinct array', ->
     @noDups.exec(@ctx).should.eql [2, 4, 6, 8, 10]
 
+  it 'should remove duplicate tuples', ->
+    @dupsTuples.exec(@ctx).should.eql [{ hello: 'world' }, { hello: 'cleveland' }, { hello: 'dolly'}]
+
+  it 'should do nothing to an array of distinct tuples', ->
+    @noDupsTuples.exec(@ctx).should.eql [{ hello: 'world' }, { hello: 'cleveland' }]
+
 describe 'First', ->
   @beforeEach ->
     setup @, data
