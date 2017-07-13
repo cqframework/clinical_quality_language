@@ -444,4 +444,5 @@ describe 'ToList', ->
   it 'should return false that 4 is in 5', ->
     @fourInFive.exec(@ctx).should.be.false()
 
-  # Unfortunately, there isn't an easy way to test that ToList(null) returns null, so that test is omitted
+  it 'should make null into an empty list', ->
+    @lengthOfNull.exec(@ctx).should.equal 0

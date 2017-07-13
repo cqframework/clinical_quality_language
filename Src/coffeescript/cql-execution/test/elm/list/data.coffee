@@ -6832,6 +6832,7 @@ using QUICK
 context Patient
 define FiveInFive: 5 in 5 // CQL-to-ELM will promote the second 5 to a list via ToList
 define FourInFive: 4 in 5 // CQL-to-ELM will promote the 5 to a list via ToList
+define LengthOfNull: Length(null as Integer) // CQL-to-ELM will promote the null to a list via ToList
 ###
 
 module.exports['ToList'] = {
@@ -6902,6 +6903,27 @@ module.exports['ToList'] = {
                      "type" : "Literal"
                   }
                } ]
+            }
+         }, {
+            "name" : "LengthOfNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Length",
+               "operand" : {
+                  "type" : "ToList",
+                  "operand" : {
+                     "strict" : false,
+                     "type" : "As",
+                     "operand" : {
+                        "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  }
+               }
             }
          } ]
       }

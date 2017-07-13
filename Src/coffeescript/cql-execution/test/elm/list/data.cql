@@ -167,3 +167,4 @@ define NullValue: Length(null as List<Integer>)
 // @Test: ToList
 define FiveInFive: 5 in 5 // CQL-to-ELM will promote the second 5 to a list via ToList
 define FourInFive: 4 in 5 // CQL-to-ELM will promote the 5 to a list via ToList
+define LengthOfNull: Length(null as Integer) // CQL-to-ELM will promote the null to a list via ToList
