@@ -5833,6 +5833,8 @@ using QUICK
 context Patient
 define LotsOfDups: distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
 define NoDups: distinct {2, 4, 6, 8, 10}
+define DupsTuples: distinct { Tuple{ hello: 'world' }, Tuple{ hello: 'cleveland' }, Tuple{ hello: 'world' }, Tuple{ hello: 'dolly' } }
+define NoDupsTuples: distinct { Tuple{ hello: 'world' }, Tuple{ hello: 'cleveland' } }
 ###
 
 module.exports['Distinct'] = {
@@ -5981,6 +5983,88 @@ module.exports['Distinct'] = {
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "10",
                      "type" : "Literal"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "DupsTuples",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Distinct",
+               "operand" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "hello",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                           "value" : "world",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "hello",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                           "value" : "cleveland",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "hello",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                           "value" : "world",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "hello",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                           "value" : "dolly",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  } ]
+               }
+            }
+         }, {
+            "name" : "NoDupsTuples",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Distinct",
+               "operand" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "hello",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                           "value" : "world",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  }, {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "hello",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                           "value" : "cleveland",
+                           "type" : "Literal"
+                        }
+                     } ]
                   } ]
                }
             }

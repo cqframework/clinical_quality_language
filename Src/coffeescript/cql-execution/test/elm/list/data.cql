@@ -136,6 +136,8 @@ define NullValue: flatten null
 // @Test: Distinct
 define LotsOfDups: distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
 define NoDups: distinct {2, 4, 6, 8, 10}
+define DupsTuples: distinct { Tuple{ hello: 'world' }, Tuple{ hello: 'cleveland' }, Tuple{ hello: 'world' }, Tuple{ hello: 'dolly' } }
+define NoDupsTuples: distinct { Tuple{ hello: 'world' }, Tuple{ hello: 'cleveland' } }
 
 // @Test: First
 define Numbers: First({1, 2, 3, 4})
