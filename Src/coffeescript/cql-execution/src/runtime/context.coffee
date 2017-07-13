@@ -96,8 +96,8 @@ module.exports.Context = class Context
     localIdResults = {}
     # Add the localIds and result values from the main library
     localIdResults[@parent.source.library.identifier.id] = {}
-    for localId, value of @localId_context
-      localIdResults[@parent.source.library.identifier.id][localId] = value
+    localIdResults[@parent.source.library.identifier.id] = @localId_context
+
     # Iterate over support libraries and store localIds
     for libName, lib of @library_context
       @supportLibraryLocalIds lib, localIdResults

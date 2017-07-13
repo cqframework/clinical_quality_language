@@ -8,7 +8,6 @@ module.exports.Results = class Results
     patientId = patient_ctx.patient.id()
     @patientResults[patientId] ?= {}
     @patientResults[patientId][resultName] = result
-    @localIdPatientResultsMap[patientId] ?= {}
     @localIdPatientResultsMap[patientId] = patient_ctx.getAllLocalIds()
 
   recordPopulationResult: (resultName, result) ->

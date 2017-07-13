@@ -42904,17 +42904,13 @@
     };
 
     Context.prototype.getAllLocalIds = function() {
-      var lib, libName, localId, localIdResults, ref, ref1, value;
+      var lib, libName, localIdResults, ref;
       localIdResults = {};
       localIdResults[this.parent.source.library.identifier.id] = {};
-      ref = this.localId_context;
-      for (localId in ref) {
-        value = ref[localId];
-        localIdResults[this.parent.source.library.identifier.id][localId] = value;
-      }
-      ref1 = this.library_context;
-      for (libName in ref1) {
-        lib = ref1[libName];
+      localIdResults[this.parent.source.library.identifier.id] = this.localId_context;
+      ref = this.library_context;
+      for (libName in ref) {
+        lib = ref[libName];
         this.supportLibraryLocalIds(lib, localIdResults);
       }
       return localIdResults;
@@ -43282,15 +43278,12 @@
     }
 
     Results.prototype.recordPatientResult = function(patient_ctx, resultName, result) {
-      var base, base1, patientId;
+      var base, patientId;
       patientId = patient_ctx.patient.id();
       if ((base = this.patientResults)[patientId] == null) {
         base[patientId] = {};
       }
       this.patientResults[patientId][resultName] = result;
-      if ((base1 = this.localIdPatientResultsMap)[patientId] == null) {
-        base1[patientId] = {};
-      }
       return this.localIdPatientResultsMap[patientId] = patient_ctx.getAllLocalIds();
     };
 
