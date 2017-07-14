@@ -146,7 +146,7 @@ module.exports.Query = class Query extends Expression
     if distinct then returnedValues = toDistinctList(returnedValues)
 
     @sortClause?.sort(returnedValues)
-    returnedValues
+    return if @sources.returnsList() then returnedValues else returnedValues[0]
 
 module.exports.AliasRef = class AliasRef extends Expression
   constructor: (json) ->
@@ -166,7 +166,7 @@ class MultiSource
   constructor: (@sources) ->
     @alias = @sources[0].alias
     @expression = @sources[0].expression
-
+    @isList = true
     if @sources.length > 1
       @rest = new MultiSource(@sources.slice(1))
 
@@ -176,8 +176,13 @@ class MultiSource
       a = a.concat @rest.aliases()
     a
 
+  returnsList: ->
+    if @rest then @isList || @rest.returnsList() else @isList
+
   forEach: (ctx, func) ->
     records = @expression.execute(ctx) || []
+    @isList = typeIsArray(records)
+    records = if @isList then records else [records]
     for rec in records
       rctx = new Context(ctx)
       rctx.set(@alias,rec)

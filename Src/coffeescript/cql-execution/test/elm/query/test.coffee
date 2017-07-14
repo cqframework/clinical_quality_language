@@ -172,3 +172,39 @@ describe 'Distinct', ->
     @allNumbers.exec(@ctx).should.eql [1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1]
     @allStrings.exec(@ctx).should.eql ['foo', 'bar', 'baz', 'bar']
     @allTuples.exec(@ctx).should.eql [{a: 1, b:2}, {a: 2, b:3}, {a: 1, b:2}]
+
+describe 'SingleObjectAlias', ->
+  @beforeEach ->
+    setup @, data, [ p1 ]
+
+  it 'should return object for single object alias' , ->
+    firstEncounter = @firstEncounter.exec(@ctx)
+    @singleAlias.exec(@ctx).should.eql firstEncounter
+
+  it 'should return object for single object alias with a where clause' , ->
+    firstEncounter = @firstEncounter.exec(@ctx)
+    debugger
+    @singleAliasWhere.exec(@ctx).should.eql firstEncounter
+
+  it 'should return single object when multisource query is based on single alias queries' , ->
+    firstEncounter = @firstEncounter.exec(@ctx)
+    firstConditon = @firstCondition.exec(@ctx)
+    @singleAliases.exec(@ctx).should.eql {E: firstEncounter, C: firstConditon}
+
+  it 'should return list for multisource query that contains and single alias and list sources' , ->
+    conditions = @conditions.exec(@ctx)
+    firstEncounter = @firstEncounter.exec(@ctx)
+    firstCondition = @firstCondition.exec(@ctx)
+    expt = for con in conditions
+             {Con: con, E: firstEncounter, C: firstCondition}
+    q = @singleAliasesAndList.exec(@ctx)
+    q.should.have.length(conditions.length)
+    q.should.eql expt
+  it 'should be able to filter to null with where clause ' , ->
+    should.not.exist @singleAliasWhereToNull.exec(@ctx)
+
+  it 'should be able to return different object ' , ->
+    @singleAliasReturnTuple.exec(@ctx).should.eql {a:1}
+
+  it 'should be able to return different object that is a list' , ->
+    @singleAliasReturnList.exec(@ctx).should.eql ['foo', 'bar', 'baz', 'bar']

@@ -71,3 +71,20 @@ define distinctTuples: ({Tuple{a: 1, b:2}, Tuple{a: 2, b: 3}, Tuple{a: 1, b: 2}}
 define allNumbers: ({1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 2, 2, 1}) N return all N
 define allStrings: ({'foo', 'bar', 'baz', 'bar'}) S return all S
 define allTuples: ({Tuple{a: 1, b:2}, Tuple{a: 2, b: 3}, Tuple{a: 1, b: 2}}) T return all T
+
+// @Test: SingleObjectAlias
+define encounters: [Encounter] E
+define conditions: [Condition] C
+define firstEncounter: First([Encounter] E )
+define firstCondition: First([Condition] C)
+define singleAlias: firstEncounter E
+define singleAliasWhere: firstEncounter E where E is not null
+define singleAliasWhereToNull: firstEncounter  E where E.period is null
+define singleAliases: from firstEncounter E, firstCondition C
+define singleAliasesAndList: from firstEncounter E, firstCondition C , conditions Con
+//define singleAliasWith: firstEncounter E with [Condition] C
+//                         such that C.id = 'http://cqframework.org/3/2'
+//define singleAliasWithNull: firstEncounter E with conditions C
+//                        such that C.id is null
+define singleAliasReturnTuple: firstEncounter E return Tuple{a:1}
+define singleAliasReturnList: firstEncounter E return {'foo', 'bar', 'baz', 'bar'}
