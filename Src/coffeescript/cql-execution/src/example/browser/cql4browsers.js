@@ -5495,7 +5495,9 @@
 
     With.prototype.exec = function(ctx) {
       var childCtx, rec, records, returns;
-      records = this.expression.execute(ctx) || [];
+      records = this.expression.execute(ctx);
+      this.isList = typeIsArray(records);
+      records = this.isList ? records : [records];
       returns = (function() {
         var i, len, results;
         results = [];
@@ -5749,7 +5751,11 @@
       if ((ref2 = this.sortClause) != null) {
         ref2.sort(returnedValues);
       }
-      return returnedValues;
+      if (this.sources.returnsList()) {
+        return returnedValues;
+      } else {
+        return returnedValues[0];
+      }
     };
 
     return Query;
@@ -5788,6 +5794,7 @@
       this.sources = sources;
       this.alias = this.sources[0].alias;
       this.expression = this.sources[0].expression;
+      this.isList = true;
       if (this.sources.length > 1) {
         this.rest = new MultiSource(this.sources.slice(1));
       }
@@ -5802,9 +5809,15 @@
       return a;
     };
 
+    MultiSource.prototype.returnsList = function() {
+      return this.isList || (this.rest && this.rest.returnsList());
+    };
+
     MultiSource.prototype.forEach = function(ctx, func) {
       var i, len, rctx, rec, records, results;
-      records = this.expression.execute(ctx) || [];
+      records = this.expression.execute(ctx);
+      this.isList = typeIsArray(records);
+      records = this.isList ? records : [records];
       results = [];
       for (i = 0, len = records.length; i < len; i++) {
         rec = records[i];

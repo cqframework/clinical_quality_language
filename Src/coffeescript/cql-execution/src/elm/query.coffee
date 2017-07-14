@@ -21,7 +21,9 @@ module.exports.With = class With extends Expression
     @expression = build json.expression
     @suchThat = build json.suchThat
   exec: (ctx) ->
-    records = @expression.execute(ctx) || []
+    records = @expression.execute(ctx)
+    @isList = typeIsArray(records)
+    records = if @isList then records else [records]
     returns = for rec in records
       childCtx = ctx.childContext()
       childCtx.set @alias, rec
@@ -146,7 +148,7 @@ module.exports.Query = class Query extends Expression
     if distinct then returnedValues = toDistinctList(returnedValues)
 
     @sortClause?.sort(returnedValues)
-    returnedValues
+    return if @sources.returnsList() then returnedValues else returnedValues[0]
 
 module.exports.AliasRef = class AliasRef extends Expression
   constructor: (json) ->
@@ -166,7 +168,7 @@ class MultiSource
   constructor: (@sources) ->
     @alias = @sources[0].alias
     @expression = @sources[0].expression
-
+    @isList = true
     if @sources.length > 1
       @rest = new MultiSource(@sources.slice(1))
 
@@ -176,8 +178,13 @@ class MultiSource
       a = a.concat @rest.aliases()
     a
 
+  returnsList: ->
+    @isList || (@rest && @rest.returnsList())
+
   forEach: (ctx, func) ->
-    records = @expression.execute(ctx) || []
+    records = @expression.execute(ctx)
+    @isList = typeIsArray(records)
+    records = if @isList then records else [records]
     for rec in records
       rctx = new Context(ctx)
       rctx.set(@alias,rec)

@@ -2308,3 +2308,531 @@ module.exports['Distinct'] = {
    }
 }
 
+### SingleObjectAlias
+library TestSnippet version '1'
+using QUICK
+context Patient
+define encounters: [Encounter] E
+define conditions: [Condition] C
+define firstEncounter: First([Encounter] E )
+define firstCondition: First([Condition] C where C.id = 'http://cqframework.org/3/2')
+define singleAlias: firstEncounter E
+define singleAliasWhere: firstEncounter E where E is not null
+define singleAliasWhereToNull: firstEncounter  E where E.period is null
+define singleAliases: from firstEncounter E, firstCondition C
+define singleAliasesAndList: from firstEncounter E, firstCondition C , conditions Con
+define singleAliasWith:  [Encounter] E with firstCondition C such that C.id = 'http://cqframework.org/3/2'
+define singleAliasWithOut:  [Encounter] E without firstCondition C such that C.id = 'http://cqframework.org/3'
+define singleAliasWithEmpty:  [Encounter] E with firstCondition C such that C.id = 'http://cqframework.org/3'
+define singleAliasWithOutEmpty:  [Encounter] E without firstCondition C such that C.id = 'http://cqframework.org/3/2'
+define asNull: null
+define nullQuery: asNull N
+
+//define singleAliasWith: firstEncounter E with [Condition] C
+//                         such that C.id = 'http://cqframework.org/3/2'
+//define singleAliasWithNull: firstEncounter E with conditions C
+//                        such that C.id is null
+define singleAliasReturnTuple: firstEncounter E return Tuple{a:1}
+define singleAliasReturnList: firstEncounter E return {'foo', 'bar', 'baz', 'bar'}
+###
+
+module.exports['SingleObjectAlias'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "encounters",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ]
+            }
+         }, {
+            "name" : "conditions",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "C",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Condition",
+                     "templateId" : "condition-qicore-qicore-condition",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ ]
+            }
+         }, {
+            "name" : "firstEncounter",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "First",
+               "source" : {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "E",
+                     "expression" : {
+                        "dataType" : "{http://hl7.org/fhir}Encounter",
+                        "templateId" : "encounter-qicore-qicore-encounter",
+                        "type" : "Retrieve"
+                     }
+                  } ],
+                  "relationship" : [ ]
+               }
+            }
+         }, {
+            "name" : "firstCondition",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "First",
+               "source" : {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "C",
+                     "expression" : {
+                        "dataType" : "{http://hl7.org/fhir}Condition",
+                        "templateId" : "condition-qicore-qicore-condition",
+                        "type" : "Retrieve"
+                     }
+                  } ],
+                  "relationship" : [ ],
+                  "where" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "http://cqframework.org/3/2",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "singleAlias",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "firstEncounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ]
+            }
+         }, {
+            "name" : "singleAliasWhere",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "firstEncounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "Not",
+                  "operand" : {
+                     "type" : "IsNull",
+                     "operand" : {
+                        "name" : "E",
+                        "type" : "AliasRef"
+                     }
+                  }
+               }
+            }
+         }, {
+            "name" : "singleAliasWhereToNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "firstEncounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "type" : "IsNull",
+                  "operand" : {
+                     "path" : "period",
+                     "scope" : "E",
+                     "type" : "Property"
+                  }
+               }
+            }
+         }, {
+            "name" : "singleAliases",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "firstEncounter",
+                     "type" : "ExpressionRef"
+                  }
+               }, {
+                  "alias" : "C",
+                  "expression" : {
+                     "name" : "firstCondition",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "C",
+                        "value" : {
+                           "name" : "C",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "singleAliasesAndList",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "firstEncounter",
+                     "type" : "ExpressionRef"
+                  }
+               }, {
+                  "alias" : "C",
+                  "expression" : {
+                     "name" : "firstCondition",
+                     "type" : "ExpressionRef"
+                  }
+               }, {
+                  "alias" : "Con",
+                  "expression" : {
+                     "name" : "conditions",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "distinct" : true,
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "E",
+                        "value" : {
+                           "name" : "E",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "C",
+                        "value" : {
+                           "name" : "C",
+                           "type" : "AliasRef"
+                        }
+                     }, {
+                        "name" : "Con",
+                        "value" : {
+                           "name" : "Con",
+                           "type" : "AliasRef"
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "singleAliasWith",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "firstCondition",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "http://cqframework.org/3/2",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "singleAliasWithOut",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "Without",
+                  "expression" : {
+                     "name" : "firstCondition",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "http://cqframework.org/3",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "singleAliasWithEmpty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "With",
+                  "expression" : {
+                     "name" : "firstCondition",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "http://cqframework.org/3",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "singleAliasWithOutEmpty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "dataType" : "{http://hl7.org/fhir}Encounter",
+                     "templateId" : "encounter-qicore-qicore-encounter",
+                     "type" : "Retrieve"
+                  }
+               } ],
+               "relationship" : [ {
+                  "alias" : "C",
+                  "type" : "Without",
+                  "expression" : {
+                     "name" : "firstCondition",
+                     "type" : "ExpressionRef"
+                  },
+                  "suchThat" : {
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "path" : "id",
+                        "scope" : "C",
+                        "type" : "Property"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "http://cqframework.org/3/2",
+                        "type" : "Literal"
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "name" : "asNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "nullQuery",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "name" : "asNull",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ]
+            }
+         }, {
+            "name" : "singleAliasReturnTuple",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "firstEncounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "Tuple",
+                     "element" : [ {
+                        "name" : "a",
+                        "value" : {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }
+                     } ]
+                  }
+               }
+            }
+         }, {
+            "name" : "singleAliasReturnList",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "E",
+                  "expression" : {
+                     "name" : "firstEncounter",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ],
+               "return" : {
+                  "expression" : {
+                     "type" : "List",
+                     "element" : [ {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "foo",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "baz",
+                        "type" : "Literal"
+                     }, {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "bar",
+                        "type" : "Literal"
+                     } ]
+                  }
+               }
+            }
+         } ]
+      }
+   }
+}
+
