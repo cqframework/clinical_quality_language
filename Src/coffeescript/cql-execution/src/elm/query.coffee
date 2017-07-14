@@ -21,7 +21,9 @@ module.exports.With = class With extends Expression
     @expression = build json.expression
     @suchThat = build json.suchThat
   exec: (ctx) ->
-    records = @expression.execute(ctx) || []
+    records = @expression.execute(ctx)
+    @isList = typeIsArray(records)
+    records = if @isList then records else [records]
     returns = for rec in records
       childCtx = ctx.childContext()
       childCtx.set @alias, rec
@@ -180,7 +182,7 @@ class MultiSource
     @isList || (@rest && @rest.returnsList())
 
   forEach: (ctx, func) ->
-    records = @expression.execute(ctx) || []
+    records = @expression.execute(ctx)
     @isList = typeIsArray(records)
     records = if @isList then records else [records]
     for rec in records

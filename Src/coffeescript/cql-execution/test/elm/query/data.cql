@@ -76,12 +76,16 @@ define allTuples: ({Tuple{a: 1, b:2}, Tuple{a: 2, b: 3}, Tuple{a: 1, b: 2}}) T r
 define encounters: [Encounter] E
 define conditions: [Condition] C
 define firstEncounter: First([Encounter] E )
-define firstCondition: First([Condition] C)
+define firstCondition: First([Condition] C where C.id = 'http://cqframework.org/3/2')
 define singleAlias: firstEncounter E
 define singleAliasWhere: firstEncounter E where E is not null
 define singleAliasWhereToNull: firstEncounter  E where E.period is null
 define singleAliases: from firstEncounter E, firstCondition C
 define singleAliasesAndList: from firstEncounter E, firstCondition C , conditions Con
+define singleAliasWith:  [Encounter] E with firstCondition C such that C.id = 'http://cqframework.org/3/2'
+define singleAliasWithOut:  [Encounter] E without firstCondition C such that C.id = 'http://cqframework.org/3'
+define singleAliasWithEmpty:  [Encounter] E with firstCondition C such that C.id = 'http://cqframework.org/3'
+define singleAliasWithOutEmpty:  [Encounter] E without firstCondition C such that C.id = 'http://cqframework.org/3/2'
 //define singleAliasWith: firstEncounter E with [Condition] C
 //                         such that C.id = 'http://cqframework.org/3/2'
 //define singleAliasWithNull: firstEncounter E with conditions C
