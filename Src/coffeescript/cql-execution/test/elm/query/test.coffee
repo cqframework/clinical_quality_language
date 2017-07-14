@@ -221,3 +221,6 @@ describe 'SingleObjectAlias', ->
      encounters = @encounters.exec(@ctx)
      @singleAliasWithOut.exec(@ctx).should.eql encounters
      @singleAliasWithOutEmpty.exec(@ctx).should.have.length(0)
+
+  it 'should allow single source queries to be null and return null' , ->
+     should.not.exist  @nullQuery.exec(@ctx)

@@ -2325,6 +2325,9 @@ define singleAliasWith:  [Encounter] E with firstCondition C such that C.id = 'h
 define singleAliasWithOut:  [Encounter] E without firstCondition C such that C.id = 'http://cqframework.org/3'
 define singleAliasWithEmpty:  [Encounter] E with firstCondition C such that C.id = 'http://cqframework.org/3'
 define singleAliasWithOutEmpty:  [Encounter] E without firstCondition C such that C.id = 'http://cqframework.org/3/2'
+define asNull: null
+define nullQuery: asNull N
+
 //define singleAliasWith: firstEncounter E with [Condition] C
 //                         such that C.id = 'http://cqframework.org/3/2'
 //define singleAliasWithNull: firstEncounter E with conditions C
@@ -2740,6 +2743,28 @@ module.exports['SingleObjectAlias'] = {
                      } ]
                   }
                } ]
+            }
+         }, {
+            "name" : "asNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Null"
+            }
+         }, {
+            "name" : "nullQuery",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Query",
+               "source" : [ {
+                  "alias" : "N",
+                  "expression" : {
+                     "name" : "asNull",
+                     "type" : "ExpressionRef"
+                  }
+               } ],
+               "relationship" : [ ]
             }
          }, {
             "name" : "singleAliasReturnTuple",

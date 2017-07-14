@@ -5495,7 +5495,9 @@
 
     With.prototype.exec = function(ctx) {
       var childCtx, rec, records, returns;
-      records = this.expression.execute(ctx) || [];
+      records = this.expression.execute(ctx);
+      this.isList = typeIsArray(records);
+      records = this.isList ? records : [records];
       returns = (function() {
         var i, len, results;
         results = [];
@@ -5813,7 +5815,7 @@
 
     MultiSource.prototype.forEach = function(ctx, func) {
       var i, len, rctx, rec, records, results;
-      records = this.expression.execute(ctx) || [];
+      records = this.expression.execute(ctx);
       this.isList = typeIsArray(records);
       records = this.isList ? records : [records];
       results = [];
