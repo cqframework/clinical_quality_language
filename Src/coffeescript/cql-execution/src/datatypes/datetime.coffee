@@ -218,8 +218,14 @@ module.exports.DateTime = class DateTime
       # When b is before a, then if a's smaller units are less than b's, a whole month hasn't elaspsed backwards, so adjust
       else if msDiff < 0 and aCmp < bCmp then months = months + 1
       # If this is months, just return them, but if it's years, we need to convert
-      if unitField == DateTime.Unit.MONTH then months else Math.floor(months/12)
-    else null
+      # In addition, we need to use Math floor or ceiling depending on if the result is positive or negative.
+      # Either way, we have to use the function that brings the number toward 0.
+      if unitField == DateTime.Unit.MONTH
+        months
+      else
+        if msDiff > 0 then Math.floor(months/12) else Math.ceil(months/12)
+    else
+      null
 
   isPrecise: () ->
     DateTime.FIELDS.every (field) => @[field]?
