@@ -177,7 +177,7 @@ class MultiSource
     a
 
   returnsList: ->
-    if @rest then @isList || @rest.returnsList() else @isList
+    @isList || (@rest && @rest.returnsList())
 
   forEach: (ctx, func) ->
     records = @expression.execute(ctx) || []

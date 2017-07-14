@@ -183,7 +183,6 @@ describe 'SingleObjectAlias', ->
 
   it 'should return object for single object alias with a where clause' , ->
     firstEncounter = @firstEncounter.exec(@ctx)
-    debugger
     @singleAliasWhere.exec(@ctx).should.eql firstEncounter
 
   it 'should return single object when multisource query is based on single alias queries' , ->
@@ -200,6 +199,7 @@ describe 'SingleObjectAlias', ->
     q = @singleAliasesAndList.exec(@ctx)
     q.should.have.length(conditions.length)
     q.should.eql expt
+
   it 'should be able to filter to null with where clause ' , ->
     should.not.exist @singleAliasWhereToNull.exec(@ctx)
 
