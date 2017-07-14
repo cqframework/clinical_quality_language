@@ -128,3 +128,16 @@ module.exports.DifferenceBetween = class DifferenceBetween extends Expression
       return null
     result = args[0].differenceBetween(args[1], @precision?.toLowerCase())
     if result? && result.isPoint() then result.low else result
+
+module.exports.DurationBetween = class DurationBetween extends Expression
+  constructor: (json) ->
+    super
+    @precision = json.precision
+
+  exec: (ctx) ->
+    args = @execArgs(ctx)
+    # Check to make sure args exist and that they have durationBetween functions so that they can be compared to one another
+    if !args[0]? || !args[1]? || typeof args[0].durationBetween != 'function' || typeof args[1].durationBetween != 'function'
+      return null
+    result = args[0].durationBetween(args[1], @precision?.toLowerCase())
+    if result? && result.isPoint() then result.low else result

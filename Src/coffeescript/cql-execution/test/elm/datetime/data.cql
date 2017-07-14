@@ -280,3 +280,24 @@ define LessThan80DaysAfter: difference in days between NewYear2014 and February2
 define TwentyFiveDaysLessThanDaysBetween: 25 < difference in days between NewYear2014 and February2014
 define FortyDaysEqualToDaysBetween: 40 = difference in days between NewYear2014 and February2014
 define TwentyFiveDaysGreaterThanDaysBetween: 25 > difference in days between NewYear2014 and February2014
+
+// @Test: DurationBetween
+define DecTen2013: DateTime(2013, 12, 10, 12, 30, 30, 500)
+define JanOne2015: DateTime(2015, 1, 1, 0, 0, 0, 0)
+define January2015: DateTime(2015, 1)
+define YearsBetween: years between DecTen2013 and JanOne2015
+define MonthsBetween: months between DecTen2013 and JanOne2015
+define DaysBetween: days between DecTen2013 and JanOne2015
+define HoursBetween: hours between DecTen2013 and JanOne2015
+define MinutesBetween: minutes between DecTen2013 and JanOne2015
+define SecondsBetween: seconds between DecTen2013 and JanOne2015
+define MillisecondsBetween: milliseconds between DecTen2013 and JanOne2015
+define MillisecondsBetweenReversed: milliseconds between JanOne2015 and DecTen2013
+define YearsBetweenUncertainty: years between JanOne2015 and January2015
+define MonthsBetweenUncertainty: months between JanOne2015 and January2015
+define DaysBetweenUncertainty: days between JanOne2015 and January2015
+define HoursBetweenUncertainty: hours between JanOne2015 and January2015
+define MinutesBetweenUncertainty: minutes between JanOne2015 and January2015
+define SecondsBetweenUncertainty: seconds between JanOne2015 and January2015
+define MillisecondsBetweenUncertainty: milliseconds between JanOne2015 and January2015
+define MillisecondsBetweenReversedUncertainty: milliseconds between January2015 and JanOne2015

@@ -17113,3 +17113,405 @@ module.exports['DifferenceBetween Comparisons'] = {
    }
 }
 
+### DurationBetween
+library TestSnippet version '1'
+using QUICK
+context Patient
+define DecTen2013: DateTime(2013, 12, 10, 12, 30, 30, 500)
+define JanOne2015: DateTime(2015, 1, 1, 0, 0, 0, 0)
+define January2015: DateTime(2015, 1)
+define YearsBetween: years between DecTen2013 and JanOne2015
+define MonthsBetween: months between DecTen2013 and JanOne2015
+define DaysBetween: days between DecTen2013 and JanOne2015
+define HoursBetween: hours between DecTen2013 and JanOne2015
+define MinutesBetween: minutes between DecTen2013 and JanOne2015
+define SecondsBetween: seconds between DecTen2013 and JanOne2015
+define MillisecondsBetween: milliseconds between DecTen2013 and JanOne2015
+define MillisecondsBetweenReversed: milliseconds between JanOne2015 and DecTen2013
+define YearsBetweenUncertainty: years between JanOne2015 and January2015
+define MonthsBetweenUncertainty: months between JanOne2015 and January2015
+define DaysBetweenUncertainty: days between JanOne2015 and January2015
+define HoursBetweenUncertainty: hours between JanOne2015 and January2015
+define MinutesBetweenUncertainty: minutes between JanOne2015 and January2015
+define SecondsBetweenUncertainty: seconds between JanOne2015 and January2015
+define MillisecondsBetweenUncertainty: milliseconds between JanOne2015 and January2015
+define MillisecondsBetweenReversedUncertainty: milliseconds between January2015 and JanOne2015
+###
+
+module.exports['DurationBetween'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "DecTen2013",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "DateTime",
+               "year" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2013",
+                  "type" : "Literal"
+               },
+               "month" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "12",
+                  "type" : "Literal"
+               },
+               "day" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "10",
+                  "type" : "Literal"
+               },
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "12",
+                  "type" : "Literal"
+               },
+               "minute" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "30",
+                  "type" : "Literal"
+               },
+               "second" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "30",
+                  "type" : "Literal"
+               },
+               "millisecond" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "500",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "JanOne2015",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "DateTime",
+               "year" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2015",
+                  "type" : "Literal"
+               },
+               "month" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               },
+               "day" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               },
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               },
+               "minute" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               },
+               "second" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               },
+               "millisecond" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "January2015",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "DateTime",
+               "year" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2015",
+                  "type" : "Literal"
+               },
+               "month" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "1",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "YearsBetween",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Year",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "DecTen2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MonthsBetween",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Month",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "DecTen2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "DaysBetween",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "DecTen2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "HoursBetween",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Hour",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "DecTen2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MinutesBetween",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Minute",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "DecTen2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetween",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Second",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "DecTen2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MillisecondsBetween",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Millisecond",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "DecTen2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MillisecondsBetweenReversed",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Millisecond",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "DecTen2013",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "YearsBetweenUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Year",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MonthsBetweenUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Month",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "DaysBetweenUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "HoursBetweenUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Hour",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MinutesBetweenUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Minute",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "SecondsBetweenUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Second",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MillisecondsBetweenUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Millisecond",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "January2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MillisecondsBetweenReversedUncertainty",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Millisecond",
+               "type" : "DurationBetween",
+               "operand" : [ {
+                  "name" : "January2015",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "JanOne2015",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

@@ -158,6 +158,7 @@ module.exports.DateTime = class DateTime
     b = other.toUncertainty(true)
     new Uncertainty(@_differenceBetweenDates(a.high, b.low, unitField), @_differenceBetweenDates(a.low, b.high, unitField))
 
+  # NOTE: a and b are real JS dates -- not DateTimes
   _differenceBetweenDates: (a, b, unitField) ->
     # To count boundaries below month, we need to floor units at lower precisions
     [a, b] = [a, b].map (x) ->
@@ -179,6 +180,46 @@ module.exports.DateTime = class DateTime
       when DateTime.Unit.SECOND then Math.floor(msDiff / 1000)
       when DateTime.Unit.MILLISECOND then msDiff
       else null
+
+  durationBetween: (other, unitField) ->
+    if not(other instanceof DateTime) then return null
+
+    if @timezoneOffset isnt other.timezoneOffset
+      other = other.convertToTimezoneOffset(@timezoneOffset)
+
+    a = @toUncertainty(true)
+    b = other.toUncertainty(true)
+    new Uncertainty(@_durationBetweenDates(a.high, b.low, unitField), @_durationBetweenDates(a.low, b.high, unitField))
+
+  # NOTE: a and b are real JS dates -- not DateTimes
+  _durationBetweenDates: (a, b, unitField) ->
+    # DurationBetween is different than DifferenceBetween in that DurationBetween counts whole elapsed time periods, but
+    # DifferenceBetween counts boundaries.  For example:
+    # difference in days between @2012-01-01T23:59:59.999 and @2012-01-02T00:00:00.0 calculates to 1 (since it crosses day boundary)
+    # days between @2012-01-01T23:59:59.999 and @2012-01-02T00:00:00.0 calculates to 0 (since there are no full days between them)
+    msDiff = b.getTime() - a.getTime()
+    if msDiff == 0 then return 0
+    # For ms, s, min, hr, and day, this is trivial
+    if unitField == DateTime.Unit.MILLISECOND then msDiff
+    else if unitField == DateTime.Unit.SECOND then Math.floor(msDiff / 1000)
+    else if unitField == DateTime.Unit.MINUTE then Math.floor(msDiff / (60 * 1000))
+    else if unitField == DateTime.Unit.HOUR then Math.floor(msDiff / (60 * 60 * 1000))
+    else if unitField == DateTime.Unit.DAY then Math.floor(msDiff / (24 * 60 * 60 * 1000))
+    # Months and years are trickier since months are variable length
+    else if unitField == DateTime.Unit.MONTH or unitField == DateTime.Unit.YEAR
+      # First get the rough months, essentially counting month "boundaries"
+      months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth())
+      # Now we need to look at the smaller units to see how they compare.  Since we only care about comparing
+      # days and below at this point, it's much easier to normalize the month and year and then do the comparison.
+      aCmp = new Date(2012, 0, a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds(), a.getMilliseconds())
+      bCmp = new Date(2012, 0, b.getDate(), b.getHours(), b.getMinutes(), b.getSeconds(), b.getMilliseconds())
+      # When a is before b, then if a's smaller units are greater than b's, a whole month hasn't elapsed, so adjust
+      if msDiff > 0 and aCmp > bCmp then months = months - 1
+      # When b is before a, then if a's smaller units are less than b's, a whole month hasn't elaspsed backwards, so adjust
+      else if msDiff < 0 and aCmp < bCmp then months = months + 1
+      # If this is months, just return them, but if it's years, we need to convert
+      if unitField == DateTime.Unit.MONTH then months else Math.floor(months/12)
+    else null
 
   isPrecise: () ->
     DateTime.FIELDS.every (field) => @[field]?
@@ -236,7 +277,7 @@ module.exports.DateTime = class DateTime
     @toString()
 
   _pad: (num) ->
-    String("0" + num).slice(-2);
+    String("0" + num).slice(-2)
 
   # TODO: Needs unit tests!
   toString: () ->
