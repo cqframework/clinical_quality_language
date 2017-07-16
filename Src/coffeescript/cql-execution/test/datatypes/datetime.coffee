@@ -401,8 +401,6 @@ describe 'DateTime.differenceBetween', ->
     b = DateTime.parse '2012-02-12T00:00:00.0' # Sunday
     a.differenceBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(1)
 
-
-
   it 'should handle different timezones', ->
 
     a = DateTime.parse '2001-01-01T00:00:00.0+00:00'
@@ -672,6 +670,7 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.123'), DateTime.Unit.MINUTE).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.123'), DateTime.Unit.HOUR).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.123'), DateTime.Unit.DAY).should.be.true()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.123'), DateTime.Unit.WEEK).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.123'), DateTime.Unit.MONTH).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.123'), DateTime.Unit.YEAR).should.be.true()
 
@@ -682,6 +681,7 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.124'), DateTime.Unit.MINUTE).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.124'), DateTime.Unit.HOUR).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.124'), DateTime.Unit.DAY).should.be.true()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.124'), DateTime.Unit.WEEK).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.124'), DateTime.Unit.MONTH).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:45.124'), DateTime.Unit.YEAR).should.be.true()
 
@@ -692,6 +692,7 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:46.123'), DateTime.Unit.MINUTE).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:46.123'), DateTime.Unit.HOUR).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:46.123'), DateTime.Unit.DAY).should.be.true()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:46.123'), DateTime.Unit.WEEK).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:46.123'), DateTime.Unit.MONTH).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:35:46.123'), DateTime.Unit.YEAR).should.be.true()
 
@@ -702,6 +703,7 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:36:45.123'), DateTime.Unit.MINUTE).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:36:45.123'), DateTime.Unit.HOUR).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:36:45.123'), DateTime.Unit.DAY).should.be.true()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:36:45.123'), DateTime.Unit.WEEK).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:36:45.123'), DateTime.Unit.MONTH).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T12:36:45.123'), DateTime.Unit.YEAR).should.be.true()
 
@@ -712,6 +714,7 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T13:35:45.123'), DateTime.Unit.MINUTE).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T13:35:45.123'), DateTime.Unit.HOUR).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T13:35:45.123'), DateTime.Unit.DAY).should.be.true()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T13:35:45.123'), DateTime.Unit.WEEK).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T13:35:45.123'), DateTime.Unit.MONTH).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-15T13:35:45.123'), DateTime.Unit.YEAR).should.be.true()
 
@@ -722,8 +725,20 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-16T12:35:45.123'), DateTime.Unit.MINUTE).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-16T12:35:45.123'), DateTime.Unit.HOUR).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-16T12:35:45.123'), DateTime.Unit.DAY).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-16T12:35:45.123'), DateTime.Unit.WEEK).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-16T12:35:45.123'), DateTime.Unit.MONTH).should.be.true()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-16T12:35:45.123'), DateTime.Unit.YEAR).should.be.true()
+
+  it 'should properly calculate cases where the week is different', ->
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123')).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123'), DateTime.Unit.MILLISECOND).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123'), DateTime.Unit.SECOND).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123'), DateTime.Unit.MINUTE).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123'), DateTime.Unit.HOUR).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123'), DateTime.Unit.DAY).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123'), DateTime.Unit.WEEK).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123'), DateTime.Unit.MONTH).should.be.true()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-05-21T12:35:45.123'), DateTime.Unit.YEAR).should.be.true()
 
   it 'should properly calculate cases where the month is different', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-06-15T12:35:45.123')).should.be.false()
@@ -732,6 +747,7 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-06-15T12:35:45.123'), DateTime.Unit.MINUTE).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-06-15T12:35:45.123'), DateTime.Unit.HOUR).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-06-15T12:35:45.123'), DateTime.Unit.DAY).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-06-15T12:35:45.123'), DateTime.Unit.WEEK).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-06-15T12:35:45.123'), DateTime.Unit.MONTH).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2000-06-15T12:35:45.123'), DateTime.Unit.YEAR).should.be.true()
 
@@ -742,6 +758,7 @@ describe 'DateTime.sameAs', ->
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2001-05-15T12:35:45.123'), DateTime.Unit.MINUTE).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2001-05-15T12:35:45.123'), DateTime.Unit.HOUR).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2001-05-15T12:35:45.123'), DateTime.Unit.DAY).should.be.false()
+    DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2001-05-15T12:35:45.123'), DateTime.Unit.WEEK).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2001-05-15T12:35:45.123'), DateTime.Unit.MONTH).should.be.false()
     DateTime.parse('2000-05-15T12:35:45.123').sameAs(DateTime.parse('2001-05-15T12:35:45.123'), DateTime.Unit.YEAR).should.be.false()
 

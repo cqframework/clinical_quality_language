@@ -173,6 +173,11 @@ describe 'CalculateAge', ->
     # made it to the 17th day of the month as declared in the birthday
     [@full_months, @full_months-1].indexOf(@months.exec(@ctx)).should.not.equal -1
 
+  # Skipping because cql-to-elm in this branch does not properly translate AgeInWeeks
+  it.skip 'should execute age in weeks', ->
+    # this is an uncertainty since birthdate is only specfied to days
+    @weeks.exec(@ctx).should.eql Math.floor(@timediff // 1000 // 60 // 60 // 24 // 7)
+
   it 'should execute age in days', ->
     # this is an uncertainty since birthdate is only specfied to days
     days = @timediff // 1000 // 60 // 60 // 24

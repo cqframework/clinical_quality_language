@@ -51,6 +51,8 @@ define Foo: "Tobacco smoking status"
 // @Test: CalculateAge
 define Years: AgeInYears()
 define Months: AgeInMonths()
+// Commented out until cql-to-elm supports it
+// define Weeks: AgeInWeeks()
 define Days: AgeInDays()
 define Hours: AgeInHours()
 define Minutes: AgeInMinutes()
