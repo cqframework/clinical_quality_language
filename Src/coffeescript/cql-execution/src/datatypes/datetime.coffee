@@ -182,14 +182,16 @@ module.exports.DateTime = class DateTime
         else x
 
     msDiff = b.getTime() - a.getTime()
+    # If it's a negative delta, we need to use ceiling instead of floor when truncating
+    truncFunc = if msDiff > 0 then Math.floor else Math.ceil
     switch unitField
       when DateTime.Unit.YEAR then b.getFullYear() - a.getFullYear()
       when DateTime.Unit.MONTH then b.getMonth() - a.getMonth() + (12 * (b.getFullYear() - a.getFullYear()))
-      when DateTime.Unit.WEEK then Math.floor(msDiff / (7 * 24 * 60 * 60 * 1000))
-      when DateTime.Unit.DAY then Math.floor(msDiff / (24 * 60 * 60 * 1000))
-      when DateTime.Unit.HOUR then Math.floor(msDiff / (60 * 60 * 1000))
-      when DateTime.Unit.MINUTE then Math.floor(msDiff / (60 * 1000))
-      when DateTime.Unit.SECOND then Math.floor(msDiff / 1000)
+      when DateTime.Unit.WEEK then truncFunc(msDiff / (7 * 24 * 60 * 60 * 1000))
+      when DateTime.Unit.DAY then truncFunc(msDiff / (24 * 60 * 60 * 1000))
+      when DateTime.Unit.HOUR then truncFunc(msDiff / (60 * 60 * 1000))
+      when DateTime.Unit.MINUTE then truncFunc(msDiff / (60 * 1000))
+      when DateTime.Unit.SECOND then truncFunc(msDiff / 1000)
       when DateTime.Unit.MILLISECOND then msDiff
       else null
 
@@ -208,15 +210,17 @@ module.exports.DateTime = class DateTime
     msDiff = b.getTime() - a.getTime()
 
     if msDiff == 0 then return 0
+    # If it's a negative delta, we need to use ceiling instead of floor when truncating
+    truncFunc = if msDiff > 0 then Math.floor else Math.ceil
     # For ms, s, min, hr, day, and week this is trivial
     if unitField == DateTime.Unit.MILLISECOND then msDiff
-    else if unitField == DateTime.Unit.SECOND then Math.floor(msDiff / 1000)
-    else if unitField == DateTime.Unit.MINUTE then Math.floor(msDiff / (60 * 1000))
-    else if unitField == DateTime.Unit.HOUR then Math.floor(msDiff / (60 * 60 * 1000))
+    else if unitField == DateTime.Unit.SECOND then truncFunc(msDiff / 1000)
+    else if unitField == DateTime.Unit.MINUTE then truncFunc(msDiff / (60 * 1000))
+    else if unitField == DateTime.Unit.HOUR then truncFunc(msDiff / (60 * 60 * 1000))
     else if unitField == DateTime.Unit.DAY
-      if msDiff > 0 then Math.floor(msDiff / (24 * 60 * 60 * 1000)) else Math.ceil(msDiff / (24 * 60 * 60 * 1000))
+      truncFunc(msDiff / (24 * 60 * 60 * 1000))
     else if unitField == DateTime.Unit.WEEK
-      if msDiff > 0 then Math.floor(msDiff / (7 * 24 * 60 * 60 * 1000)) else Math.ceil(msDiff / (7 * 24 * 60 * 60 * 1000))
+      truncFunc(msDiff / (7 * 24 * 60 * 60 * 1000))
     # Months and years are trickier since months are variable length
     else if unitField == DateTime.Unit.MONTH or unitField == DateTime.Unit.YEAR
       # First get the rough months, essentially counting month "boundaries"
@@ -235,7 +239,7 @@ module.exports.DateTime = class DateTime
       if unitField == DateTime.Unit.MONTH
         months
       else
-        if msDiff > 0 then Math.floor(months/12) else Math.ceil(months/12)
+        truncFunc(months/12)
     else
       null
 

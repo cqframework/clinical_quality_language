@@ -861,7 +861,7 @@
     };
 
     DateTime.prototype._differenceBetweenDates = function(a, b, unitField) {
-      var msDiff, ref;
+      var msDiff, ref, truncFunc;
       ref = [a, b].map(function(x) {
         var d;
         switch (unitField) {
@@ -886,21 +886,22 @@
         }
       }), a = ref[0], b = ref[1];
       msDiff = b.getTime() - a.getTime();
+      truncFunc = msDiff > 0 ? Math.floor : Math.ceil;
       switch (unitField) {
         case DateTime.Unit.YEAR:
           return b.getFullYear() - a.getFullYear();
         case DateTime.Unit.MONTH:
           return b.getMonth() - a.getMonth() + (12 * (b.getFullYear() - a.getFullYear()));
         case DateTime.Unit.WEEK:
-          return Math.floor(msDiff / (7 * 24 * 60 * 60 * 1000));
+          return truncFunc(msDiff / (7 * 24 * 60 * 60 * 1000));
         case DateTime.Unit.DAY:
-          return Math.floor(msDiff / (24 * 60 * 60 * 1000));
+          return truncFunc(msDiff / (24 * 60 * 60 * 1000));
         case DateTime.Unit.HOUR:
-          return Math.floor(msDiff / (60 * 60 * 1000));
+          return truncFunc(msDiff / (60 * 60 * 1000));
         case DateTime.Unit.MINUTE:
-          return Math.floor(msDiff / (60 * 1000));
+          return truncFunc(msDiff / (60 * 1000));
         case DateTime.Unit.SECOND:
-          return Math.floor(msDiff / 1000);
+          return truncFunc(msDiff / 1000);
         case DateTime.Unit.MILLISECOND:
           return msDiff;
         default:
@@ -919,31 +920,24 @@
     };
 
     DateTime.prototype._durationBetweenDates = function(a, b, unitField) {
-      var aCmp, bCmp, months, msDiff;
+      var aCmp, bCmp, months, msDiff, truncFunc;
       msDiff = b.getTime() - a.getTime();
       if (msDiff === 0) {
         return 0;
       }
+      truncFunc = msDiff > 0 ? Math.floor : Math.ceil;
       if (unitField === DateTime.Unit.MILLISECOND) {
         return msDiff;
       } else if (unitField === DateTime.Unit.SECOND) {
-        return Math.floor(msDiff / 1000);
+        return truncFunc(msDiff / 1000);
       } else if (unitField === DateTime.Unit.MINUTE) {
-        return Math.floor(msDiff / (60 * 1000));
+        return truncFunc(msDiff / (60 * 1000));
       } else if (unitField === DateTime.Unit.HOUR) {
-        return Math.floor(msDiff / (60 * 60 * 1000));
+        return truncFunc(msDiff / (60 * 60 * 1000));
       } else if (unitField === DateTime.Unit.DAY) {
-        if (msDiff > 0) {
-          return Math.floor(msDiff / (24 * 60 * 60 * 1000));
-        } else {
-          return Math.ceil(msDiff / (24 * 60 * 60 * 1000));
-        }
+        return truncFunc(msDiff / (24 * 60 * 60 * 1000));
       } else if (unitField === DateTime.Unit.WEEK) {
-        if (msDiff > 0) {
-          return Math.floor(msDiff / (7 * 24 * 60 * 60 * 1000));
-        } else {
-          return Math.ceil(msDiff / (7 * 24 * 60 * 60 * 1000));
-        }
+        return truncFunc(msDiff / (7 * 24 * 60 * 60 * 1000));
       } else if (unitField === DateTime.Unit.MONTH || unitField === DateTime.Unit.YEAR) {
         months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
         aCmp = new Date(2012, 0, a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds(), a.getMilliseconds());
@@ -956,11 +950,7 @@
         if (unitField === DateTime.Unit.MONTH) {
           return months;
         } else {
-          if (msDiff > 0) {
-            return Math.floor(months / 12);
-          } else {
-            return Math.ceil(months / 12);
-          }
+          return truncFunc(months / 12);
         }
       } else {
         return null;

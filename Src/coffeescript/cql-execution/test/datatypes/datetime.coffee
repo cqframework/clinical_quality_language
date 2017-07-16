@@ -401,6 +401,18 @@ describe 'DateTime.differenceBetween', ->
     b = DateTime.parse '2012-02-12T00:00:00.0' # Sunday
     a.differenceBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(1)
 
+    a = DateTime.parse '2012-02-05T00:00:00.0' # Sunday
+    b = DateTime.parse '2012-02-04T23:59:59.999' # Saturday
+    a.differenceBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(-1)
+
+    a = DateTime.parse '2012-02-11T23:59:59.999' # Saturday
+    b = DateTime.parse '2012-02-05T00:00:00.0' # Sunday
+    a.differenceBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
+
+    a = DateTime.parse '2012-02-12T00:00:00.0' # Sunday
+    b = DateTime.parse '2012-02-05T00:00:00.0' # Sunday
+    a.differenceBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(-1)
+
   it 'should handle different timezones', ->
 
     a = DateTime.parse '2001-01-01T00:00:00.0+00:00'
