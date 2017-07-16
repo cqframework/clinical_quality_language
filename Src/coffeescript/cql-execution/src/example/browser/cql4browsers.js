@@ -899,16 +899,13 @@
       if (!(other instanceof DateTime)) {
         return null;
       }
-      if (this.timezoneOffset !== other.timezoneOffset) {
-        other = other.convertToTimezoneOffset(this.timezoneOffset);
-      }
-      a = this.toUncertainty(true);
-      b = other.toUncertainty(true);
+      a = this.toUncertainty();
+      b = other.toUncertainty();
       return new Uncertainty(this._durationBetweenDates(a.high, b.low, unitField), this._durationBetweenDates(a.low, b.high, unitField));
     };
 
     DateTime.prototype._durationBetweenDates = function(a, b, unitField) {
-      var aCmp, bCmp, months, msDiff;
+      var aCmp, bCmp, dayDiff, months, msDiff, tzDiff;
       msDiff = b.getTime() - a.getTime();
       if (msDiff === 0) {
         return 0;
@@ -922,7 +919,9 @@
       } else if (unitField === DateTime.Unit.HOUR) {
         return Math.floor(msDiff / (60 * 60 * 1000));
       } else if (unitField === DateTime.Unit.DAY) {
-        return Math.floor(msDiff / (24 * 60 * 60 * 1000));
+        tzDiff = (a.getTimezoneOffset() - b.getTimezoneOffset()) * 60 * 1000;
+        dayDiff = msDiff < 0 ? tzDiff < 0 ? msDiff + tzDiff : msDiff - tzDiff : tzDiff < 0 ? msDiff - tzDiff : msDiff + tzDiff;
+        return Math.floor(dayDiff / (24 * 60 * 60 * 1000));
       } else if (unitField === DateTime.Unit.MONTH || unitField === DateTime.Unit.YEAR) {
         months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
         aCmp = new Date(2012, 0, a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds(), a.getMilliseconds());
@@ -944,6 +943,10 @@
       } else {
         return null;
       }
+    };
+
+    DateTime.prototype._calculateTimeZoneDifference = function(a, b) {
+      return (a.getTimezoneOffset() - b.getTimezoneOffset()) * 60 * 1000;
     };
 
     DateTime.prototype.isPrecise = function() {

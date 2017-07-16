@@ -492,6 +492,19 @@ describe 'DateTime.durationBetween', ->
     a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31535999)
     a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31535999999)
 
+    a = DateTime.parse '2011-01-02T11:00:00.0-05:00'
+    b = DateTime.parse '2011-09-29T11:01:00.0-04:00'
+    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(8)
+    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(270)
+
+    a = DateTime.parse '2011-01-02T11:00:00.0-05:00'
+    b = DateTime.parse '2011-09-28T12:01:00.0-04:00'
+    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(8)
+    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(269)
+
+
   it 'should handle leap year', ->
     a = DateTime.parse '1999-02-01T00:00:00.00'
     b = DateTime.parse '2000-02-01T00:00:00.00'
