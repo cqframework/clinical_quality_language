@@ -715,6 +715,9 @@ describe 'DurationBetween', ->
   it 'should properly execute days between', ->
     @daysBetween.exec(@ctx).should.equal 365 + 21
 
+  it 'should properly execute weeks between', ->
+    @weeksBetween.exec(@ctx).should.equal 55
+
   it 'should properly execute hours between', ->
     @hoursBetween.exec(@ctx).should.equal 24 * (365 + 21) + 11
 
@@ -735,6 +738,9 @@ describe 'DurationBetween', ->
 
   it 'should properly execute months between with an uncertainty', ->
     @monthsBetweenUncertainty.exec(@ctx).should.equal 0
+
+  it 'should properly execute weeks between with an uncertainty', ->
+    @weeksBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 4)
 
   it 'should properly execute days between with an uncertainty', ->
     @daysBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 30)

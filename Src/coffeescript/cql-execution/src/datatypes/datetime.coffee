@@ -204,13 +204,15 @@ module.exports.DateTime = class DateTime
     msDiff = b.getTime() - a.getTime()
 
     if msDiff == 0 then return 0
-    # For ms, s, min, hr, and day, this is trivial
+    # For ms, s, min, hr, day, and week this is trivial
     if unitField == DateTime.Unit.MILLISECOND then msDiff
     else if unitField == DateTime.Unit.SECOND then Math.floor(msDiff / 1000)
     else if unitField == DateTime.Unit.MINUTE then Math.floor(msDiff / (60 * 1000))
     else if unitField == DateTime.Unit.HOUR then Math.floor(msDiff / (60 * 60 * 1000))
     else if unitField == DateTime.Unit.DAY
-       if msDiff > 0 then Math.floor(msDiff / (24 * 60 * 60 * 1000)) else Math.ceil(msDiff / (24 * 60 * 60 * 1000))
+      if msDiff > 0 then Math.floor(msDiff / (24 * 60 * 60 * 1000)) else Math.ceil(msDiff / (24 * 60 * 60 * 1000))
+    else if unitField == DateTime.Unit.WEEK
+      if msDiff > 0 then Math.floor(msDiff / (7 * 24 * 60 * 60 * 1000)) else Math.ceil(msDiff / (7 * 24 * 60 * 60 * 1000))
     # Months and years are trickier since months are variable length
     else if unitField == DateTime.Unit.MONTH or unitField == DateTime.Unit.YEAR
       # First get the rough months, essentially counting month "boundaries"

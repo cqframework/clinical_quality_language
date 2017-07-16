@@ -406,6 +406,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2009-06-15T12:37:45.0'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
@@ -416,6 +417,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2009-06-15T12:37:47.000'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
@@ -426,6 +428,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2009-06-15T12:37:52.0'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
@@ -436,6 +439,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2009-06-15T12:56:00.0'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(18)
@@ -446,6 +450,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2009-06-15T14:00:00.0'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(1)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(61)
@@ -456,6 +461,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2009-06-20T00:00:00.000'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(4)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(4*24+1)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty((4*24+1)*60)
@@ -466,6 +472,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2009-08-04T00:00:00.0'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(1)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(5)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(35)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(35*24)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(35*24*60)
@@ -476,6 +483,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2009-02-01T00:00:00.0'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(8)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(8*12+1)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(Math.floor(((365*8)+2+32)/7))
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty((365*8)+2+32)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(((365*8)+2+32)*24)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(((365*8)+2+32)*24*60)
@@ -486,6 +494,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2001-12-31T23:59:59.999'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(11)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(52) # 52 weeks is actual 364 days
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(364)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8759)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(525599)
@@ -529,6 +538,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2000-02-01T00:00:00.00'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(1)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(12)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(52)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(365)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8760)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(525600)
@@ -539,6 +549,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2001-02-01T00:00:00.0'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(1)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(12)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(52)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(366)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(8784)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(527040)
@@ -551,6 +562,7 @@ describe 'DateTime.durationBetween', ->
     b = DateTime.parse '2000-12-31T19:00:00.0-05:00'
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
