@@ -1,7 +1,7 @@
 { Uncertainty } = require './uncertainty'
 
 module.exports.DateTime = class DateTime
-  @Unit: { YEAR: 'year', MONTH: 'month', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second', MILLISECOND: 'millisecond' }
+  @Unit: { YEAR: 'year', MONTH: 'month', WEEK: 'week', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second', MILLISECOND: 'millisecond' }
   @FIELDS: [@Unit.YEAR, @Unit.MONTH, @Unit.DAY, @Unit.HOUR, @Unit.MINUTE, @Unit.SECOND, @Unit.MILLISECOND]
 
   @parse: (string) ->
@@ -90,7 +90,7 @@ module.exports.DateTime = class DateTime
   sameAs: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then null
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low == 0 and diff.high == 0) then true
       when (diff.low <= 0 and diff.high >= 0) then null
@@ -102,7 +102,7 @@ module.exports.DateTime = class DateTime
   sameOrBefore: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low >= 0 and diff.high >= 0) then true
       when (diff.low < 0 and diff.high < 0) then false
@@ -111,7 +111,7 @@ module.exports.DateTime = class DateTime
   sameOrAfter: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low <= 0 and diff.high <= 0) then true
       when (diff.low > 0 and diff.high > 0) then false
@@ -120,7 +120,7 @@ module.exports.DateTime = class DateTime
   before: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low > 0 and diff.high > 0) then true
       when (diff.low <= 0 and diff.high <= 0) then false
@@ -129,7 +129,7 @@ module.exports.DateTime = class DateTime
   after: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low < 0 and diff.high < 0) then true
       when (diff.low >= 0 and diff.high >= 0) then false
@@ -139,6 +139,12 @@ module.exports.DateTime = class DateTime
     # TODO: According to spec, 2/29/2000 + 1 year is 2/28/2001
     # Currently, it evaluates to 3/1/2001.  Doh.
     result = @copy()
+
+    # If weeks, convert to days
+    if field == DateTime.Unit.WEEK
+      offset = offset * 7
+      field = DateTime.Unit.DAY
+
     if result[field]?
       # Increment the field, then round-trip to JS date and back for calendar math
       result[field] = result[field] + offset
@@ -148,7 +154,7 @@ module.exports.DateTime = class DateTime
 
     result
 
-  durationBetween: (other, unitField) ->
+  differenceBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
 
     if @timezoneOffset isnt other.timezoneOffset
@@ -156,12 +162,18 @@ module.exports.DateTime = class DateTime
 
     a = @toUncertainty(true)
     b = other.toUncertainty(true)
-    new Uncertainty(@_durationBetweenDates(a.high, b.low, unitField), @_durationBetweenDates(a.low, b.high, unitField))
+    new Uncertainty(@_differenceBetweenDates(a.high, b.low, unitField), @_differenceBetweenDates(a.low, b.high, unitField))
 
-  _durationBetweenDates: (a, b, unitField) ->
+  # NOTE: a and b are real JS dates -- not DateTimes
+  _differenceBetweenDates: (a, b, unitField) ->
     # To count boundaries below month, we need to floor units at lower precisions
     [a, b] = [a, b].map (x) ->
       switch unitField
+        when DateTime.Unit.WEEK
+          # To "floor" a week, we need to go back to the last Sunday (that's when getDay() == 0 in javascript)
+          d = new Date(x.getFullYear(), x.getMonth(), x.getDate())
+          d.setDate(d.getDate() - 1) while d.getDay() > 0
+          d
         when DateTime.Unit.DAY then new Date(x.getFullYear(), x.getMonth(), x.getDate())
         when DateTime.Unit.HOUR then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours())
         when DateTime.Unit.MINUTE then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes())
@@ -170,15 +182,67 @@ module.exports.DateTime = class DateTime
         else x
 
     msDiff = b.getTime() - a.getTime()
+    # If it's a negative delta, we need to use ceiling instead of floor when truncating
+    truncFunc = if msDiff > 0 then Math.floor else Math.ceil
     switch unitField
       when DateTime.Unit.YEAR then b.getFullYear() - a.getFullYear()
       when DateTime.Unit.MONTH then b.getMonth() - a.getMonth() + (12 * (b.getFullYear() - a.getFullYear()))
-      when DateTime.Unit.DAY then Math.floor(msDiff / (24 * 60 * 60 * 1000))
-      when DateTime.Unit.HOUR then Math.floor(msDiff / (60 * 60 * 1000))
-      when DateTime.Unit.MINUTE then Math.floor(msDiff / (60 * 1000))
-      when DateTime.Unit.SECOND then Math.floor(msDiff / 1000)
+      when DateTime.Unit.WEEK then truncFunc(msDiff / (7 * 24 * 60 * 60 * 1000))
+      when DateTime.Unit.DAY then truncFunc(msDiff / (24 * 60 * 60 * 1000))
+      when DateTime.Unit.HOUR then truncFunc(msDiff / (60 * 60 * 1000))
+      when DateTime.Unit.MINUTE then truncFunc(msDiff / (60 * 1000))
+      when DateTime.Unit.SECOND then truncFunc(msDiff / 1000)
       when DateTime.Unit.MILLISECOND then msDiff
       else null
+
+  durationBetween: (other, unitField) ->
+    if not(other instanceof DateTime) then return null
+    a = @toUncertainty()
+    b = other.toUncertainty()
+    new Uncertainty(@_durationBetweenDates(a.high, b.low, unitField), @_durationBetweenDates(a.low, b.high, unitField))
+
+  # NOTE: a and b are real JS dates -- not DateTimes
+  _durationBetweenDates: (a, b, unitField) ->
+    # DurationBetween is different than DifferenceBetween in that DurationBetween counts whole elapsed time periods, but
+    # DifferenceBetween counts boundaries.  For example:
+    # difference in days between @2012-01-01T23:59:59.999 and @2012-01-02T00:00:00.0 calculates to 1 (since it crosses day boundary)
+    # days between @2012-01-01T23:59:59.999 and @2012-01-02T00:00:00.0 calculates to 0 (since there are no full days between them)
+    msDiff = b.getTime() - a.getTime()
+
+    if msDiff == 0 then return 0
+    # If it's a negative delta, we need to use ceiling instead of floor when truncating
+    truncFunc = if msDiff > 0 then Math.floor else Math.ceil
+    # For ms, s, min, hr, day, and week this is trivial
+    if unitField == DateTime.Unit.MILLISECOND then msDiff
+    else if unitField == DateTime.Unit.SECOND then truncFunc(msDiff / 1000)
+    else if unitField == DateTime.Unit.MINUTE then truncFunc(msDiff / (60 * 1000))
+    else if unitField == DateTime.Unit.HOUR then truncFunc(msDiff / (60 * 60 * 1000))
+    else if unitField == DateTime.Unit.DAY
+      truncFunc(msDiff / (24 * 60 * 60 * 1000))
+    else if unitField == DateTime.Unit.WEEK
+      truncFunc(msDiff / (7 * 24 * 60 * 60 * 1000))
+    # Months and years are trickier since months are variable length
+    else if unitField == DateTime.Unit.MONTH or unitField == DateTime.Unit.YEAR
+      # First get the rough months, essentially counting month "boundaries"
+      months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth())
+      # Now we need to look at the smaller units to see how they compare.  Since we only care about comparing
+      # days and below at this point, it's much easier to normalize the month and year and then do the comparison.
+      aCmp = new Date(2012, 0, a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds(), a.getMilliseconds())
+      bCmp = new Date(2012, 0, b.getDate(), b.getHours(), b.getMinutes(), b.getSeconds(), b.getMilliseconds())
+      # When a is before b, then if a's smaller units are greater than b's, a whole month hasn't elapsed, so adjust
+      if msDiff > 0 and aCmp > bCmp then months = months - 1
+      # When b is before a, then if a's smaller units are less than b's, a whole month hasn't elaspsed backwards, so adjust
+      else if msDiff < 0 and aCmp < bCmp then months = months + 1
+      # If this is months, just return them, but if it's years, we need to convert
+      # In addition, we need to use Math floor or ceiling depending on if the result is positive or negative.
+      # Either way, we have to use the function that brings the number toward 0.
+      if unitField == DateTime.Unit.MONTH
+        months
+      else
+        truncFunc(months/12)
+    else
+      null
+
 
   isPrecise: () ->
     DateTime.FIELDS.every (field) => @[field]?
@@ -236,7 +300,7 @@ module.exports.DateTime = class DateTime
     @toString()
 
   _pad: (num) ->
-    String("0" + num).slice(-2);
+    String("0" + num).slice(-2)
 
   # TODO: Needs unit tests!
   toString: () ->

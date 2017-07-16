@@ -116,6 +116,19 @@ module.exports.doAfter = (a, b, precision) ->
 module.exports.doBefore = (a, b, precision) ->
   a.before b, precision
 
+module.exports.DifferenceBetween = class DifferenceBetween extends Expression
+  constructor: (json) ->
+    super
+    @precision = json.precision
+
+  exec: (ctx) ->
+    args = @execArgs(ctx)
+    # Check to make sure args exist and that they have differenceBetween functions so that they can be compared to one another
+    if !args[0]? || !args[1]? || typeof args[0].differenceBetween != 'function' || typeof args[1].differenceBetween != 'function'
+      return null
+    result = args[0].differenceBetween(args[1], @precision?.toLowerCase())
+    if result? && result.isPoint() then result.low else result
+
 module.exports.DurationBetween = class DurationBetween extends Expression
   constructor: (json) ->
     super

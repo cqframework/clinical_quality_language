@@ -610,7 +610,7 @@ describe 'Before', ->
     should(@nullRight.exec(@ctx)).be.null
     should(@nullBoth.exec(@ctx)).be.null
 
-describe 'DurationBetween', ->
+describe 'DifferenceBetween', ->
   @beforeEach ->
     setup @, data
 
@@ -619,6 +619,9 @@ describe 'DurationBetween', ->
 
   it 'should properly execute months between', ->
     @monthsBetween.exec(@ctx).should.equal 12
+
+  it 'should properly execute weeks between', ->
+    @weeksBetween.exec(@ctx).should.equal 52
 
   it 'should properly execute days between', ->
     @daysBetween.exec(@ctx).should.equal 365
@@ -644,6 +647,9 @@ describe 'DurationBetween', ->
   it 'should properly execute months between with an uncertainty', ->
     @monthsBetweenUncertainty.exec(@ctx).should.equal 0
 
+  it 'should properly execute weeks between with an uncertainty', ->
+    @weeksBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 4)
+
   it 'should properly execute days between with an uncertainty', ->
     @daysBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 30)
 
@@ -662,7 +668,7 @@ describe 'DurationBetween', ->
   it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
     @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new Uncertainty(-2678399999, 0)
 
-describe 'DurationBetween Comparisons', ->
+describe 'DifferenceBetween Comparisons', ->
   @beforeEach ->
     setup @, data
 
@@ -695,3 +701,122 @@ describe 'DurationBetween Comparisons', ->
     @twentyFiveDaysLessThanDaysBetween.exec(@ctx).should.be.true()
     should(@fortyDaysEqualToDaysBetween.exec(@ctx)).be.null
     @twentyFiveDaysGreaterThanDaysBetween.exec(@ctx).should.be.false()
+
+describe 'DurationBetween', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should properly execute years between', ->
+    @yearsBetween.exec(@ctx).should.equal 1
+
+  it 'should properly execute months between', ->
+    @monthsBetween.exec(@ctx).should.equal 12
+
+  it 'should properly execute days between', ->
+    @daysBetween.exec(@ctx).should.equal 365 + 21
+
+  it 'should properly execute weeks between', ->
+    @weeksBetween.exec(@ctx).should.equal 55
+
+  it 'should properly execute hours between', ->
+    @hoursBetween.exec(@ctx).should.equal 24 * (365 + 21) + 11
+
+  it 'should properly execute minutes between', ->
+    @minutesBetween.exec(@ctx).should.equal 60 * (24 * (365 + 21) + 11) + 29
+
+  it 'should properly execute seconds between', ->
+    @secondsBetween.exec(@ctx).should.equal 60 * (60 * (24 * (365 + 21) + 11) + 29) + 29
+
+  it 'should properly execute milliseconds between', ->
+    @millisecondsBetween.exec(@ctx).should.equal 1000 * (60 * (60 * (24 * (365 + 21) + 11) + 29) + 29) + 500
+
+  it 'should properly execute milliseconds between when date 1 is after date 2', ->
+    @millisecondsBetweenReversed.exec(@ctx).should.equal -1 * 1000 * (60 * (60 * (24 * (365 + 21) + 11) + 29) + 29) - 500
+
+  it 'should properly execute years between with an uncertainty', ->
+    @yearsBetweenUncertainty.exec(@ctx).should.equal 0
+
+  it 'should properly execute months between with an uncertainty', ->
+    @monthsBetweenUncertainty.exec(@ctx).should.equal 0
+
+  it 'should properly execute weeks between with an uncertainty', ->
+    @weeksBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 4)
+
+  it 'should properly execute days between with an uncertainty', ->
+    @daysBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 30)
+
+  it 'should properly execute hours between with an uncertainty', ->
+    @hoursBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 743)
+
+  it 'should properly execute minutes between with an uncertainty', ->
+    @minutesBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 44639)
+
+  it 'should properly execute seconds between with an uncertainty', ->
+    @secondsBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 2678399)
+
+  it 'should properly execute milliseconds between with an uncertainty', ->
+    @millisecondsBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 2678399999)
+
+  it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
+    @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new Uncertainty(-2678399999, 0)
+
+describe 'DateMath', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should properly add and subtract years', ->
+    d = @plusThreeYears.exec(@ctx)
+    dateCheck(d, 2016, 6, 15, 0, 0, 0, 0)
+    d = @minusThreeYears.exec(@ctx)
+    dateCheck(d, 2010, 6, 15, 0, 0, 0, 0)
+
+  it 'should properly add and subtract months', ->
+    d = @plusEightMonths.exec(@ctx)
+    dateCheck(d, 2014, 2, 15, 0, 0, 0, 0)
+    d = @minusEightMonths.exec(@ctx)
+    dateCheck(d, 2012, 10, 15, 0, 0, 0, 0)
+
+  it 'should properly add and subtract weeks', ->
+    d = @plusThreeWeeks.exec(@ctx)
+    dateCheck(d, 2013, 7, 6, 0, 0, 0, 0)
+    d = @minusThreeWeeks.exec(@ctx)
+    dateCheck(d, 2013, 5, 25, 0, 0, 0, 0)
+
+  it 'should properly add and subtract days', ->
+    d = @plusTwentyDays.exec(@ctx)
+    dateCheck(d, 2013, 7, 5, 0, 0, 0, 0)
+    d = @minusTwentyDays.exec(@ctx)
+    dateCheck(d, 2013, 5, 26, 0, 0, 0, 0)
+
+  it 'should properly add and subtract hours', ->
+    d = @plusThreeHours.exec(@ctx)
+    dateCheck(d, 2013, 6, 15, 3, 0, 0, 0)
+    d = @minusThreeHours.exec(@ctx)
+    dateCheck(d, 2013, 6, 14, 21, 0, 0, 0)
+
+  it 'should properly add and subtract minutes', ->
+    d = @plusThreeMinutes.exec(@ctx)
+    dateCheck(d, 2013, 6, 15, 0, 3, 0, 0)
+    d = @minusThreeMinutes.exec(@ctx)
+    dateCheck(d, 2013, 6, 14, 23, 57, 0, 0)
+
+  it 'should properly add and subtract seconds', ->
+    d = @plusThreeSeconds.exec(@ctx)
+    dateCheck(d, 2013, 6, 15, 0, 0, 3, 0)
+    d = @minusThreeSeconds.exec(@ctx)
+    dateCheck(d, 2013, 6, 14, 23, 59, 57, 0)
+
+  it 'should properly add and subtract milliseconds', ->
+    d = @plusThreeMilliseconds.exec(@ctx)
+    dateCheck(d, 2013, 6, 15, 0, 0, 0, 3)
+    d = @minusThreeMilliseconds.exec(@ctx)
+    dateCheck(d, 2013, 6, 14, 23, 59, 59, 997)
+
+dateCheck = (date, year, month, day, hour, minute, second, millisecond) ->
+  date.year.should.equal year
+  date.month.should.equal month
+  date.day.should.equal day
+  date.hour.should.equal hour
+  date.minute.should.equal minute
+  date.second.should.equal second
+  date.millisecond.should.equal millisecond

@@ -15,7 +15,8 @@
             "--timeout",
             "999999",
             "--colors",
-            "${workspaceRoot}/lib-test/elm/interval"
+            "--recursive",
+            "${workspaceRoot}/lib-test/"
         ],
         "internalConsoleOptions": "openOnSessionStart"
     },

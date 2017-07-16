@@ -17,7 +17,6 @@ describe 'In Age Demographic', ->
   it 'should have empty population results', ->
     @results.populationResults.should.be.empty
 
-
 describe 'Using CommonLib', ->
   @beforeEach ->
     setup @, data, [ p1, p2 ], {}, {}, new Repository(data)
@@ -36,3 +35,28 @@ describe 'Using CommonLib', ->
     @results.patientResults['2'].ID.should.equal true
     @results.patientResults['2'].FuncTest.should.equal 7
     @results.patientResults['1'].FuncTest.should.equal 7
+
+describe 'Using CommonLib2', ->
+  @beforeEach ->
+    setup @, data, [], {}, {}, new Repository(data)
+
+  it "should execute expression from included library that uses parameter", ->
+    @exprUsesParam.exec(@ctx).should.equal 17
+
+  it "should execute function from included library that uses parameter", ->
+    @funcUsesParam.exec(@ctx).should.equal 22
+
+  it "should execute expression from included library that calls function", ->
+    @exprCallsFunc.exec(@ctx).should.equal 6
+
+  it "should execute function from included library that calls function", ->
+    @funcCallsFunc.exec(@ctx).should.equal 25
+
+  it "should execute expression from included library that uses expression", ->
+    @exprUsesExpr.exec(@ctx).should.equal 3
+
+  it "should execute function from included library that uses expression", ->
+    @funcUsesExpr.exec(@ctx).should.equal 7
+
+  it "should execute function from included library that uses expression", ->
+    @exprSortsOnFunc.exec(@ctx).should.eql [{N: 1}, {N: 2}, {N: 3}, {N: 4}, {N: 5}]

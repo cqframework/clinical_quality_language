@@ -2,6 +2,7 @@ should = require 'should'
 setup = require '../../setup'
 data = require './data'
 vsets = require './valuesets'
+{ Uncertainty } = require '../../../lib/datatypes/uncertainty'
 { p1, p2 } = require './patients'
 { PatientSource} = require '../../../lib/cql-patient'
 
@@ -172,30 +173,40 @@ describe 'CalculateAge', ->
     # made it to the 17th day of the month as declared in the birthday
     [@full_months, @full_months-1].indexOf(@months.exec(@ctx)).should.not.equal -1
 
+  # Skipping because cql-to-elm in this branch does not properly translate AgeInWeeks
+  it.skip 'should execute age in weeks', ->
+    # this is an uncertainty since birthdate is only specfied to days
+    @weeks.exec(@ctx).should.eql Math.floor(@timediff // 1000 // 60 // 60 // 24 // 7)
+
   it 'should execute age in days', ->
-    @days.exec(@ctx).should.equal @timediff // 1000 // 60 // 60 // 24
+    # this is an uncertainty since birthdate is only specfied to days
+    days = @timediff // 1000 // 60 // 60 // 24
+    @days.exec(@ctx).should.eql new Uncertainty(days-1, days)
 
   it 'should execute age in hours', ->
-    # a little strange since the qicore data model specified birthDate as a date (no time)
-    @hours.exec(@ctx).should.equal @timediff // 1000 // 60 // 60
+    # this is an uncertainty since birthdate is only specfied to days
+    hours = @timediff // 1000 // 60 // 60
+    @hours.exec(@ctx).should.eql new Uncertainty(hours-24, hours)
 
   it 'should execute age in minutes', ->
-    # a little strange since the qicore data model specified birthDate as a date (no time)
-    @minutes.exec(@ctx).should.equal @timediff // 1000 // 60
+    # this is an uncertainty since birthdate is only specfied to days
+    minutes = @timediff // 1000 // 60
+    @minutes.exec(@ctx).should.eql new Uncertainty(minutes-(24*60), minutes)
 
   it 'should execute age in seconds', ->
-    # a little strange since the qicore data model specified birthDate as a date (no time)
-    @seconds.exec(@ctx).should.equal @timediff // 1000
+    # this is an uncertainty since birthdate is only specfied to days
+    seconds = @timediff // 1000
+    @seconds.exec(@ctx).should.eql new Uncertainty(seconds-(24*60*60), seconds)
 
 describe 'CalculateAgeAt', ->
   @beforeEach ->
     setup @, data, [ p1 ]
 
-  it 'should execute age at 2012 as 31', ->
-    @ageAt2012.exec(@ctx).should.equal 31
+  it 'should execute age at 2012 as 31 - 32 (since 2012 is not precise to days)', ->
+    @ageAt2012.exec(@ctx).should.eql new Uncertainty(31, 32)
 
   it 'should execute age at 19810216 as 0', ->
     @ageAt19810216.exec(@ctx).should.equal 0
 
-  it 'should execute age at 1975 as -5', ->
-    @ageAt19810216.exec(@ctx).should.equal 0
+  it 'should execute age at 1975 as -5 to -4 (since 1975 is not precise to days)', ->
+    @ageAt1975.exec(@ctx).should.eql new Uncertainty(-5, -4)
