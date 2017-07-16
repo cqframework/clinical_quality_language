@@ -1,6 +1,7 @@
 { Expression, UnimplementedExpression } = require './expression'
 { FunctionRef } = require './reusable'
-{ Concept, DateTime } = require '../datatypes/datetime'
+{ DateTime } = require '../datatypes/datetime'
+{ Concept } = require '../datatypes/clinical'
 { parseQuantity } = require './quantity'
 
 # TODO: Casting and Conversion needs unit tests!
