@@ -433,3 +433,16 @@ describe 'Length', ->
 
   it 'should return null for an empty list', ->
     should(@nullValue.exec(@ctx)).be.null
+
+describe 'ToList', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should return true that 5 is in 5', ->
+    @fiveInFive.exec(@ctx).should.be.true()
+
+  it 'should return false that 4 is in 5', ->
+    @fourInFive.exec(@ctx).should.be.false()
+
+  it 'should make null into an empty list', ->
+    @lengthOfNull.exec(@ctx).should.equal 0

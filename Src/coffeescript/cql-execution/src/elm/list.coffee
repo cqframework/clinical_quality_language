@@ -52,6 +52,17 @@ module.exports.SingletonFrom = class SingletonFrom extends Expression
     else if arg.length is 1 then return arg[0]
     else return null
 
+module.exports.ToList = class ToList extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs ctx
+    if arg? 
+      [arg]
+    else
+      []
+      
 module.exports.IndexOf = class IndexOf extends Expression
   constructor: (json) ->
     super
