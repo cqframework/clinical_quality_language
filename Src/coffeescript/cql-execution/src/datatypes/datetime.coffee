@@ -183,10 +183,6 @@ module.exports.DateTime = class DateTime
 
   durationBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
-
-    # if @timezoneOffset isnt other.timezoneOffset
-    #   other = other.convertToTimezoneOffset(@timezoneOffset)
-
     a = @toUncertainty()
     b = other.toUncertainty()
     new Uncertainty(@_durationBetweenDates(a.high, b.low, unitField), @_durationBetweenDates(a.low, b.high, unitField))
@@ -206,15 +202,7 @@ module.exports.DateTime = class DateTime
     else if unitField == DateTime.Unit.MINUTE then Math.floor(msDiff / (60 * 1000))
     else if unitField == DateTime.Unit.HOUR then Math.floor(msDiff / (60 * 60 * 1000))
     else if unitField == DateTime.Unit.DAY
-       # need to take possible differnces between timezones into account wo we add the difference
-       # between the timezone offset of the 2.
-       tzDiff = ((a.getTimezoneOffset() - b.getTimezoneOffset() ) * 60 * 1000)
-       dayDiff = if msDiff < 0
-         if tzDiff < 0 then msDiff + tzDiff else msDiff - tzDiff
-       else
-         if tzDiff < 0 then msDiff - tzDiff else  msDiff + tzDiff
-
-       Math.floor(dayDiff / (24 * 60 * 60 * 1000))
+       if msDiff > 0 then Math.floor(msDiff / (24 * 60 * 60 * 1000)) else Math.ceil(msDiff / (24 * 60 * 60 * 1000))
     # Months and years are trickier since months are variable length
     else if unitField == DateTime.Unit.MONTH or unitField == DateTime.Unit.YEAR
       # First get the rough months, essentially counting month "boundaries"
@@ -237,8 +225,6 @@ module.exports.DateTime = class DateTime
     else
       null
 
-  _calculateTimeZoneDifference: (a, b) ->
-     ((a.getTimezoneOffset() - b.getTimezoneOffset() ) * 60 * 1000)
 
   isPrecise: () ->
     DateTime.FIELDS.every (field) => @[field]?

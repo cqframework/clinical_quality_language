@@ -905,7 +905,7 @@
     };
 
     DateTime.prototype._durationBetweenDates = function(a, b, unitField) {
-      var aCmp, bCmp, dayDiff, months, msDiff, tzDiff;
+      var aCmp, bCmp, months, msDiff;
       msDiff = b.getTime() - a.getTime();
       if (msDiff === 0) {
         return 0;
@@ -919,9 +919,11 @@
       } else if (unitField === DateTime.Unit.HOUR) {
         return Math.floor(msDiff / (60 * 60 * 1000));
       } else if (unitField === DateTime.Unit.DAY) {
-        tzDiff = (a.getTimezoneOffset() - b.getTimezoneOffset()) * 60 * 1000;
-        dayDiff = msDiff < 0 ? tzDiff < 0 ? msDiff + tzDiff : msDiff - tzDiff : tzDiff < 0 ? msDiff - tzDiff : msDiff + tzDiff;
-        return Math.floor(dayDiff / (24 * 60 * 60 * 1000));
+        if (msDiff > 0) {
+          return Math.floor(msDiff / (24 * 60 * 60 * 1000));
+        } else {
+          return Math.ceil(msDiff / (24 * 60 * 60 * 1000));
+        }
       } else if (unitField === DateTime.Unit.MONTH || unitField === DateTime.Unit.YEAR) {
         months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
         aCmp = new Date(2012, 0, a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds(), a.getMilliseconds());
@@ -943,10 +945,6 @@
       } else {
         return null;
       }
-    };
-
-    DateTime.prototype._calculateTimeZoneDifference = function(a, b) {
-      return (a.getTimezoneOffset() - b.getTimezoneOffset()) * 60 * 1000;
     };
 
     DateTime.prototype.isPrecise = function() {
