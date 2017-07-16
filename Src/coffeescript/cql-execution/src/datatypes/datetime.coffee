@@ -169,7 +169,11 @@ module.exports.DateTime = class DateTime
     # To count boundaries below month, we need to floor units at lower precisions
     [a, b] = [a, b].map (x) ->
       switch unitField
-        when DateTime.Unit.WEEK then new Date(x.getFullYear(), x.getMonth(), x.getDate())
+        when DateTime.Unit.WEEK
+          # To "floor" a week, we need to go back to the last Sunday (that's when getDay() == 0 in javascript)
+          d = new Date(x.getFullYear(), x.getMonth(), x.getDate())
+          d.setDate(d.getDate() - 1) while d.getDay() > 0
+          d
         when DateTime.Unit.DAY then new Date(x.getFullYear(), x.getMonth(), x.getDate())
         when DateTime.Unit.HOUR then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours())
         when DateTime.Unit.MINUTE then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes())
