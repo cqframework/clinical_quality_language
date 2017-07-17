@@ -9,9 +9,12 @@
 ### Retrieve
 library TestSnippet version '1'
 using QUICK
+codesystem "SNOMED": '2.16.840.1.113883.6.96'
 valueset "Acute Pharyngitis": '2.16.840.1.113883.3.464.1003.102.12.1011'
 valueset "Ambulatory/ED Visit": '2.16.840.1.113883.3.464.1003.101.12.1061'
 valueset "Annual Wellness Visit": '2.16.840.1.113883.3.526.3.1240'
+code "Viral pharyngitis code": '1532007' from "SNOMED" display 'Viral pharyngitis (disorder)'
+concept "Viral pharyngitis": { "Viral pharyngitis code" } display 'Viral pharyngitis (disorder)'
 context Patient
 define Conditions: [Condition]
 define Encounters: [Encounter]
@@ -20,6 +23,8 @@ define AmbulatoryEncounters: [Encounter: "Ambulatory/ED Visit"]
 define EncountersByServiceType: [Encounter: type in "Ambulatory/ED Visit"]
 define WrongValueSet: [Condition: "Ambulatory/ED Visit"]
 define WrongCodeProperty: [Encounter: class in "Ambulatory/ED Visit"]
+define ConditionsByCode: [Condition: "Viral pharyngitis code"]
+define ConditionsByConcept: [Condition: "Viral pharyngitis"]
 ###
 
 module.exports['Retrieve'] = {
@@ -52,6 +57,13 @@ module.exports['Retrieve'] = {
             "uri" : "http://hl7.org/fhir"
          } ]
       },
+      "codeSystems" : {
+         "def" : [ {
+            "name" : "SNOMED",
+            "id" : "2.16.840.1.113883.6.96",
+            "accessLevel" : "Public"
+         } ]
+      },
       "valueSets" : {
          "def" : [ {
             "name" : "Acute Pharyngitis",
@@ -65,6 +77,27 @@ module.exports['Retrieve'] = {
             "name" : "Annual Wellness Visit",
             "id" : "2.16.840.1.113883.3.526.3.1240",
             "accessLevel" : "Public"
+         } ]
+      },
+      "codes" : {
+         "def" : [ {
+            "name" : "Viral pharyngitis code",
+            "id" : "1532007",
+            "display" : "Viral pharyngitis (disorder)",
+            "accessLevel" : "Public",
+            "codeSystem" : {
+               "name" : "SNOMED"
+            }
+         } ]
+      },
+      "concepts" : {
+         "def" : [ {
+            "name" : "Viral pharyngitis",
+            "display" : "Viral pharyngitis (disorder)",
+            "accessLevel" : "Public",
+            "code" : [ {
+               "name" : "Viral pharyngitis code"
+            } ]
          } ]
       },
       "statements" : {
@@ -165,6 +198,43 @@ module.exports['Retrieve'] = {
                "codes" : {
                   "name" : "Ambulatory/ED Visit",
                   "type" : "ValueSetRef"
+               }
+            }
+         }, {
+            "name" : "ConditionsByCode",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{http://hl7.org/fhir}Condition",
+               "templateId" : "condition-qicore-qicore-condition",
+               "codeProperty" : "code",
+               "type" : "Retrieve",
+               "codes" : {
+                  "type" : "ToList",
+                  "operand" : {
+                     "type" : "ToConcept",
+                     "operand" : {
+                        "name" : "Viral pharyngitis code",
+                        "type" : "CodeRef"
+                     }
+                  }
+               }
+            }
+         }, {
+            "name" : "ConditionsByConcept",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "dataType" : "{http://hl7.org/fhir}Condition",
+               "templateId" : "condition-qicore-qicore-condition",
+               "codeProperty" : "code",
+               "type" : "Retrieve",
+               "codes" : {
+                  "type" : "ToList",
+                  "operand" : {
+                     "name" : "Viral pharyngitis",
+                     "type" : "ConceptRef"
+                  }
                }
             }
          } ]

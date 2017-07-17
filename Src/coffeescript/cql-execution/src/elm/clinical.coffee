@@ -38,7 +38,7 @@ module.exports.InValueSet = class InValueSet extends Expression
     return false unless @code? and @valueset?
     code = @code.execute(ctx)
     valueset = @valueset.execute(ctx)
-    if code? and valueset? then valueset.hasCode code else false
+    if code? and valueset? then valueset.hasMatch code else false
 
 module.exports.CodeSystemDef = class CodeSystemDef extends Expression
   constructor: (json) ->
