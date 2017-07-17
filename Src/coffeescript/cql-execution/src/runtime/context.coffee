@@ -84,6 +84,33 @@ module.exports.Context = class Context
   set: (identifier, value) ->
     @context_values[identifier] = value
 
+  setLocalIdWithResult: (localId, value) ->
+    @localId_context[localId] = value
+
+  getLocalIdResult: (localId) ->
+    @localId_context[localId]
+
+  # Returns an object of objects containing each library name
+  # with the localIds and result values
+  getAllLocalIds: ->
+    localIdResults = {}
+    # Add the localIds and result values from the main library
+    localIdResults[@parent.source.library.identifier.id] = {}
+    localIdResults[@parent.source.library.identifier.id] = @localId_context
+
+    # Iterate over support libraries and store localIds
+    for libName, lib of @library_context
+      @supportLibraryLocalIds lib, localIdResults
+    localIdResults
+
+  # Recursive function that will grab nested support library localId results
+  supportLibraryLocalIds: (lib, localIdResults) ->
+    # Set library identifier name as the key and the object of localIds with their results as the value
+    localIdResults[lib.library.source.library.identifier.id] = lib.localId_context
+    # Iterate over any support libraries in the current support library
+    for supportLibName, supportLib of lib.library_context
+      @supportLibraryLocalIds supportLib, localIdResults
+
   checkParameters: (params) ->
     for pName, pVal of params
       pDef = @getParameter(pName)

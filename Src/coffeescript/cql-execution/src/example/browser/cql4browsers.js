@@ -3426,8 +3426,8 @@
 
     Expression.prototype.execute = function(ctx) {
       if (this.localId != null) {
-        ctx.localId_context[this.localId] = this.exec(ctx);
-        return ctx.localId_context[this.localId];
+        ctx.rootContext().setLocalIdWithResult(this.localId, this.exec(ctx));
+        return ctx.rootContext().getLocalIdResult(this.localId);
       } else {
         return this.exec(ctx);
       }
@@ -42895,6 +42895,39 @@
       return this.context_values[identifier] = value;
     };
 
+    Context.prototype.setLocalIdWithResult = function(localId, value) {
+      return this.localId_context[localId] = value;
+    };
+
+    Context.prototype.getLocalIdResult = function(localId) {
+      return this.localId_context[localId];
+    };
+
+    Context.prototype.getAllLocalIds = function() {
+      var lib, libName, localIdResults, ref;
+      localIdResults = {};
+      localIdResults[this.parent.source.library.identifier.id] = {};
+      localIdResults[this.parent.source.library.identifier.id] = this.localId_context;
+      ref = this.library_context;
+      for (libName in ref) {
+        lib = ref[libName];
+        this.supportLibraryLocalIds(lib, localIdResults);
+      }
+      return localIdResults;
+    };
+
+    Context.prototype.supportLibraryLocalIds = function(lib, localIdResults) {
+      var ref, results, supportLib, supportLibName;
+      localIdResults[lib.library.source.library.identifier.id] = lib.localId_context;
+      ref = lib.library_context;
+      results = [];
+      for (supportLibName in ref) {
+        supportLib = ref[supportLibName];
+        results.push(this.supportLibraryLocalIds(supportLib, localIdResults));
+      }
+      return results;
+    };
+
     Context.prototype.checkParameters = function(params) {
       var pDef, pName, pVal;
       for (pName in params) {
@@ -43141,7 +43174,7 @@
       expr = this.library.expressions[expression];
       while (expr && (p = patientSource.currentPatient())) {
         patient_ctx = new PatientContext(this.library, p, this.codeService, this.parameters);
-        r.recordPatientResult(patient_ctx.patient.id(), expression, expr.exec(patient_ctx));
+        r.recordPatientResult(patient_ctx, expression, expr.execute(patient_ctx));
         patientSource.nextPatient();
       }
       return r;
@@ -43170,7 +43203,7 @@
         for (key in ref) {
           expr = ref[key];
           if (expr.context === "Patient") {
-            r.recordPatientResult(patient_ctx.patient.id(), key, patient_ctx.localId_context, expr.execute(patient_ctx));
+            r.recordPatientResult(patient_ctx, key, expr.execute(patient_ctx));
           }
         }
         patientSource.nextPatient();
@@ -43244,21 +43277,14 @@
       this.localIdPatientResultsMap = {};
     }
 
-    Results.prototype.recordPatientResult = function(patientId, resultName, localId_hash, result) {
-      var base, base1, localId, results, value;
+    Results.prototype.recordPatientResult = function(patient_ctx, resultName, result) {
+      var base, patientId;
+      patientId = patient_ctx.patient.id();
       if ((base = this.patientResults)[patientId] == null) {
         base[patientId] = {};
       }
-      if ((base1 = this.localIdPatientResultsMap)[patientId] == null) {
-        base1[patientId] = {};
-      }
       this.patientResults[patientId][resultName] = result;
-      results = [];
-      for (localId in localId_hash) {
-        value = localId_hash[localId];
-        results.push(this.localIdPatientResultsMap[patientId][localId] = value);
-      }
-      return results;
+      return this.localIdPatientResultsMap[patientId] = patient_ctx.getAllLocalIds();
     };
 
     Results.prototype.recordPopulationResult = function(resultName, result) {
