@@ -86,10 +86,11 @@ module.exports.Context = class Context
 
   setLocalIdWithResult: (localId, value) ->
     # Temporary fix. Real fix will be to return a list of all result values for a given localId.
-    if value == true || (value != null && value.length != 0)
+    ctx = @localId_context[localId]
+    if (ctx == false || ctx == null || ctx == undefined || ctx.length == 0)
       @localId_context[localId] = value
     else
-      @localId_context[localId]
+      ctx
 
   getLocalIdResult: (localId) ->
     @localId_context[localId]

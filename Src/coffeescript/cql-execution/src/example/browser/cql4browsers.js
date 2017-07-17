@@ -42896,10 +42896,12 @@
     };
 
     Context.prototype.setLocalIdWithResult = function(localId, value) {
-      if (value === true || (value !== null && value.length !== 0)) {
+      var ctx;
+      ctx = this.localId_context[localId];
+      if (ctx === false || ctx === null || ctx === void 0 || ctx.length === 0) {
         return this.localId_context[localId] = value;
       } else {
-        return this.localId_context[localId];
+        return ctx;
       }
     };
 
