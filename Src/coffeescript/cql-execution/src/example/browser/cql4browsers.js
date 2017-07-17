@@ -42896,16 +42896,10 @@
     };
 
     Context.prototype.setLocalIdWithResult = function(localId, value) {
-      if (this.localId_context[localId] != null) {
-        if (typeof value === 'boolean') {
-          return this.localId_context[localId] = this.localId_context[localId] || value;
-        } else if (Array.isArray(value) && Array.isArray(this.localId_context[localId])) {
-          return this.localId_context[localId] = this.localId_context[localId].length > value.length ? this.localId_context[localId] : value;
-        } else if (value != null) {
-          return this.localId_context[localId] = value;
-        }
-      } else {
+      if (value === true || (value !== null && value.length !== 0)) {
         return this.localId_context[localId] = value;
+      } else {
+        return this.localId_context[localId];
       }
     };
 
