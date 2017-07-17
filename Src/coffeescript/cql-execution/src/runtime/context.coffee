@@ -86,18 +86,11 @@ module.exports.Context = class Context
 
   setLocalIdWithResult: (localId, value) ->
     # Temporary fix. Real fix will be to return a list of all result values for a given localId.
-    if @localId_context[localId]?
-      # If boolean values, store the result of an OR on the preexisting value and the new value
-      if typeof value is 'boolean'
-        @localId_context[localId] = @localId_context[localId] || value
-      # Knowing that the value is an array. Check the length of each, store the larger array.
-      else if Array.isArray(value) && Array.isArray(@localId_context[localId])
-        @localId_context[localId] = if @localId_context[localId].length > value.length then @localId_context[localId] else value
-      # Check if value is null or undefined. Ignore if either.
-      else if value?
-        @localId_context[localId] = value
-    else
+    ctx = @localId_context[localId]
+    if (ctx == false || ctx == null || ctx == undefined || ctx.length == 0)
       @localId_context[localId] = value
+    else
+      ctx
 
   getLocalIdResult: (localId) ->
     @localId_context[localId]
