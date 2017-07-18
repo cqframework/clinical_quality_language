@@ -3425,9 +3425,11 @@
     }
 
     Expression.prototype.execute = function(ctx) {
+      var execValue;
       if (this.localId != null) {
-        ctx.rootContext().setLocalIdWithResult(this.localId, this.exec(ctx));
-        return ctx.rootContext().getLocalIdResult(this.localId);
+        execValue = this.exec(ctx);
+        ctx.rootContext().setLocalIdWithResult(this.localId, execValue);
+        return execValue;
       } else {
         return this.exec(ctx);
       }
