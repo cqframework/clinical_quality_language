@@ -75,7 +75,7 @@ module.exports.Quantity = class Quantity extends Expression
 time_unit_to_ucum = {'year' : 'a', 'month' : 'mo',  'day' : 'd' , 'hour' : 'h', 'minute' : 'min' , 'second': 's' , 'millisecond' :  'ms', 'week' : 'wk', 'weeks' : 'wk' }
 
 
-time_unit_dateTime_mapping = {'years':'year',  'months': 'month',  'days' :'day', 'hours': 'hour' , 'minutes': 'minute', 'seconds':'seconds', 'milliseconds' : 'millisecond' }
+time_unit_dateTime_mapping = {'years':'year',  'months': 'month',  'days' :'day', 'hours': 'hour' ,'weeks' :'week', 'minutes': 'minute', 'seconds':'second', 'milliseconds' : 'millisecond' }
 
 # this is used to drop the pluralization of unit fields to pass into DateTime objects for addition and subtraction operations
 clean_unit = (units) ->
