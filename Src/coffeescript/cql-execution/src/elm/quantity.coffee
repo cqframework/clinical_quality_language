@@ -43,6 +43,11 @@ module.exports.Quantity = class Quantity extends Expression
       other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
       @value < other_v
 
+  equals: (other) ->
+    if other instanceof Quantity
+      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      @value == other_v
+
   dividedBy: (other) ->
     @multiplyDivied(other,"/")
 

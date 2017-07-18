@@ -35,13 +35,13 @@
     "mocha": "^3.4.2",
     "should": "^11.2.1"
   },
-  "dependencies" : {
-    "ucum.js" : ""
-    },
-  "main" : "lib/cql",
-  "directories" : {
-      "lib" : "lib"
-    },
+  "dependencies": {
+    "ucum": "0.0.7"
+  },
+  "main": "lib/cql",
+  "directories": {
+    "lib": "lib"
+  },
   "scripts": {
     "prepublish": "./node_modules/.bin/cake build",
     "test": "./node_modules/.bin/cake test"
