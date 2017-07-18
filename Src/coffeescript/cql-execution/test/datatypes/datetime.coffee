@@ -387,6 +387,16 @@ describe 'DateTime.differenceBetween', ->
     a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31622400)
     a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31622400000)
 
+  it 'should properly calculate duration and difference for Bonnie test case', ->
+    a = DateTime.parse '2012-02-08T00:00:00.0+00:00'
+    b = DateTime.parse '2012-06-08T23:59:00.0+00:00'
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(121)
+    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(121)
+    a = DateTime.parse '2012-03-15T00:00:00.0+00:00'
+    b = DateTime.parse '2012-07-14T23:59:00.0+00:00'
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(121)
+    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(121)
+
   it 'should handle difference in weeks using Sunday as a boundary', ->
 
     a = DateTime.parse '2012-02-04T23:59:59.999' # Saturday
