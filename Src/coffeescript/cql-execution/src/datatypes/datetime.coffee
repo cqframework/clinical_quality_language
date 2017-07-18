@@ -157,43 +157,58 @@ module.exports.DateTime = class DateTime
   differenceBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
 
-    if @timezoneOffset isnt other.timezoneOffset
-      other = other.convertToTimezoneOffset(@timezoneOffset)
+    # According to CQL spec, to calculate difference, you can just floor lesser precisions and do a duration
+    # Make copies since we'll be flooring values and mucking with timezones
+    a = @copy()
+    b = other.copy()
+    # The dates need to agree on where the boundaries are, so we must normalize to the same time zone
+    if a.timezoneOffset isnt b.timezoneOffset
+      b = b.convertToTimezoneOffset(a.timezoneOffset)
 
-    a = @toUncertainty(true)
-    b = other.toUncertainty(true)
-    new Uncertainty(@_differenceBetweenDates(a.high, b.low, unitField), @_differenceBetweenDates(a.low, b.high, unitField))
+    # JS always represents dates in the current locale, but in locales with DST, we want to account for the
+    # potential difference in offset from one date to the other.  We try to simulate them being in the same
+    # timezone, because we don't want midnight to roll back to 11:00pm since that will mess up day boundaries.
+    aJS = a.toJSDate(true)
+    bJS = b.toJSDate(true)
+    tzDiff = aJS.getTimezoneOffset() - bJS.getTimezoneOffset()
+    if (tzDiff != 0)
+      # Since we'll be doing duration later, account for timezone offset by adding to the time (if possible)
+      if b.year? and b.month? and b.day? and b.hour? and b.minute? then b.add(tzDiff, DateTime.Unit.MINUTE)
+      else if b.year? and b.month? and b.day? and b.hour? then b.add(tzDiff/60, DateTime.Unit.HOUR)
+      else b.timezoneOffset = b.timezoneOffset + (tzDiff/60)
 
-  # NOTE: a and b are real JS dates -- not DateTimes
-  _differenceBetweenDates: (a, b, unitField) ->
-    # To count boundaries below month, we need to floor units at lower precisions
-    [a, b] = [a, b].map (x) ->
-      switch unitField
-        when DateTime.Unit.WEEK
-          # To "floor" a week, we need to go back to the last Sunday (that's when getDay() == 0 in javascript)
-          d = new Date(x.getFullYear(), x.getMonth(), x.getDate())
-          d.setDate(d.getDate() - 1) while d.getDay() > 0
-          d
-        when DateTime.Unit.DAY then new Date(x.getFullYear(), x.getMonth(), x.getDate())
-        when DateTime.Unit.HOUR then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours())
-        when DateTime.Unit.MINUTE then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes())
-        when DateTime.Unit.SECOND then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes(), x.getSeconds())
-        when DateTime.Unit.MILLISECOND then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes(), x.getSeconds(), x.getMilliseconds())
-        else x
+    # Now floor lesser precisions before we go on to calculate duration
+    if unitField == DateTime.Unit.YEAR
+      a = new DateTime(a.year, 1, 1, 12, 0, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, 1, 1, 12, 0, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.MONTH
+      a = new DateTime(a.year, a.month, 1, 12, 0, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, 1, 12, 0, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.WEEK
+      a = @_floorWeek(a)
+      b = @_floorWeek(b)
+    else if unitField == DateTime.Unit.DAY
+      a = new DateTime(a.year, a.month, a.day, 12, 0, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, b.day, 12, 0, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.HOUR
+      a = new DateTime(a.year, a.month, a.day, a.hour, 30, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, b.day, b.hour, 30, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.MINUTE
+      a = new DateTime(a.year, a.month, a.day, a.hour, a.minute, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, b.day, b.hour, b.minute, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.SECOND
+      a = new DateTime(a.year, a.month, a.day, a.hour, a.minute, a.second, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, b.day, b.hour, b.minute, b.second, 0, b.timezoneOffset)
 
-    msDiff = b.getTime() - a.getTime()
-    # If it's a negative delta, we need to use ceiling instead of floor when truncating
-    truncFunc = if msDiff > 0 then Math.floor else Math.ceil
-    switch unitField
-      when DateTime.Unit.YEAR then b.getFullYear() - a.getFullYear()
-      when DateTime.Unit.MONTH then b.getMonth() - a.getMonth() + (12 * (b.getFullYear() - a.getFullYear()))
-      when DateTime.Unit.WEEK then truncFunc(msDiff / (7 * 24 * 60 * 60 * 1000))
-      when DateTime.Unit.DAY then truncFunc(msDiff / (24 * 60 * 60 * 1000))
-      when DateTime.Unit.HOUR then truncFunc(msDiff / (60 * 60 * 1000))
-      when DateTime.Unit.MINUTE then truncFunc(msDiff / (60 * 1000))
-      when DateTime.Unit.SECOND then truncFunc(msDiff / 1000)
-      when DateTime.Unit.MILLISECOND then msDiff
-      else null
+    a.durationBetween(b, unitField)
+
+  _floorWeek: (d) ->
+    # To "floor" a week, we need to go back to the last Sunday (that's when getDay() == 0 in javascript)
+    # But if we don't know the day, then just return it as-is
+    if (not d.day?) then return d
+    floored = new Date(d.year, d.month-1, d.day)
+    floored.setDate(floored.getDate() - 1) while floored.getDay() > 0
+    new DateTime(floored.getFullYear(), floored.getMonth()+1, floored.getDate(), 12, 0, 0, 0, d.timezoneOffset)
 
   durationBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
@@ -226,16 +241,15 @@ module.exports.DateTime = class DateTime
       # First get the rough months, essentially counting month "boundaries"
       months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth())
       # Now we need to look at the smaller units to see how they compare.  Since we only care about comparing
-      # days and below at this point, it's much easier to normalize the month and year and then do the comparison.
-      aCmp = new Date(2012, 0, a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds(), a.getMilliseconds())
-      bCmp = new Date(2012, 0, b.getDate(), b.getHours(), b.getMinutes(), b.getSeconds(), b.getMilliseconds())
+      # days and below at this point, it's much easier to bring a up to b so it's in the same month, then
+      # we can compare on just the remaining units.
+      aInMonth = new Date(a.getTime())
+      aInMonth.setMonth(a.getMonth() + months);
       # When a is before b, then if a's smaller units are greater than b's, a whole month hasn't elapsed, so adjust
-      if msDiff > 0 and aCmp > bCmp then months = months - 1
+      if msDiff > 0 and aInMonth > b then months = months - 1
       # When b is before a, then if a's smaller units are less than b's, a whole month hasn't elaspsed backwards, so adjust
-      else if msDiff < 0 and aCmp < bCmp then months = months + 1
+      else if msDiff < 0 and aInMonth < b then months = months + 1
       # If this is months, just return them, but if it's years, we need to convert
-      # In addition, we need to use Math floor or ceiling depending on if the result is positive or negative.
-      # Either way, we have to use the function that brings the number toward 0.
       if unitField == DateTime.Unit.MONTH
         months
       else

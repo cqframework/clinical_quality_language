@@ -20,6 +20,22 @@
         ],
         "internalConsoleOptions": "openOnSessionStart"
     },
+    {
+        "type": "node",
+        "request": "launch",
+        "name": "Mocha Coffee Tests",
+        "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+        "args": [
+            "--compilers",
+            "coffee:coffee-script/register",
+            "--require",
+            "coffee-script",
+            "--recursive",
+            "--colors",
+            "${workspaceRoot}/test"
+        ],
+        "internalConsoleOptions": "openOnSessionStart"
+    },
         {
             "type": "node",
             "request": "launch",
@@ -31,3 +47,6 @@
         }
     ]
 }
+
+
+// NODE_ENV=test ./node_modules/.bin/mocha --compilers coffee:coffee-script/register --require coffee-script --recursive --colors test/datatypes/datetime.coffee
