@@ -2317,7 +2317,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
                             timingOperator.setRight(subtract);
 
-                            if (isOffsetInclusive) {
+                            if (!isOffsetInclusive) {
                                 Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     before.setPrecision(parseDateTimePrecision(dateTimePrecision));
@@ -2340,7 +2340,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             libraryBuilder.resolveBinaryCall("System", "Add", add);
                             timingOperator.setRight(add);
 
-                            if (isOffsetInclusive) {
+                            if (!isOffsetInclusive) {
                                 After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     after.setPrecision(parseDateTimePrecision(dateTimePrecision));
