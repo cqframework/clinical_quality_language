@@ -135,7 +135,7 @@ module.exports.Negate = class Negate extends Expression
     else if arg.constructor.name == 'Quantity'
       Quantity.createQuantity(arg.value * -1, arg.unit)
     else
-      args * -1
+      arg * -1
 
 
 module.exports.Round = class Round extends  Expression

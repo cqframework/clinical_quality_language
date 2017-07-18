@@ -3,7 +3,7 @@
 
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
-ucum = require  'ucum.js'
+ucum = require  'ucum'
 
 # Unit conversation is currently implemented on for time duration comparison operations
 # TODO: Implement unit conversation for time duration mathematical operations
