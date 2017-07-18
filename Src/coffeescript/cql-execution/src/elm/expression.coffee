@@ -12,8 +12,9 @@ module.exports.Expression = class Expression
   execute: (ctx) ->
     if @localId?
       # Store the localId and result on the root context of this library
-      ctx.rootContext().setLocalIdWithResult @localId, @exec(ctx)
-      ctx.rootContext().getLocalIdResult @localId
+      execValue = @exec(ctx)
+      ctx.rootContext().setLocalIdWithResult @localId, execValue
+      execValue
     else 
       @exec(ctx)
 
