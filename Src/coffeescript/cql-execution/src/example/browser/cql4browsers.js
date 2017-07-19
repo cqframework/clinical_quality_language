@@ -5277,10 +5277,12 @@
     function ParameterRef(json) {
       ParameterRef.__super__.constructor.apply(this, arguments);
       this.name = json.name;
+      this.library = json.libraryName;
     }
 
     ParameterRef.prototype.exec = function(ctx) {
       var ref;
+      ctx = this.library ? ctx.getLibraryContext(this.library) : ctx;
       return (ref = ctx.getParameter(this.name)) != null ? ref.execute(ctx) : void 0;
     };
 
@@ -42958,15 +42960,8 @@
 
     Context.property("parameters", {
       get: function() {
-        var k, p, ref, v;
-        p = (ref = this.parent) != null ? ref.parameters : void 0;
-        for (k in p) {
-          v = p[k];
-          if (!(k in this._parameters)) {
-            this._parameters[k] = v;
-          }
-        }
-        return this._parameters;
+        var ref;
+        return this._parameters || ((ref = this.parent) != null ? ref.parameters : void 0);
       },
       set: function(params) {
         this.checkParameters(params);

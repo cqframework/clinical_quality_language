@@ -75,3 +75,9 @@ parameter FooP Tuple { Hello String, MeaningOfLife Integer }
 parameter FooDP default Tuple { Hello: 'Universe', MeaningOfLife: 24 }
 define Foo: FooP
 define Foo2: FooDP
+
+// @Test: DefaultAndNoDefault
+parameter FooWithNoDefault Integer
+parameter FooWithDefault default 5
+define Foo: FooWithNoDefault
+define Foo2: FooWithDefault

@@ -301,3 +301,11 @@ describe 'TupleParameterTypes', ->
 
   it 'should throw when overriding tuple contains a wrong property type', ->
     should(() => @foo2.exec(@ctx.withParameters { FooP: { Hello: "World", MeaningOfLife: "Forty-Two" } })).throw(/.*wrong type.*/)
+
+describe 'DefaultAndNoDefault', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should be able to retrieve a provided value and a default value', ->
+    @foo.exec(@ctx.withParameters { FooWithNoDefault: 1 }).should.eql 1
+    @foo2.exec(@ctx.withParameters { FooWithNoDefault: 1 }).should.eql 5

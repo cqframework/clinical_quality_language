@@ -73,6 +73,7 @@ include Common2 called common2
 context Patient
 
 define ExprUsesParam: common2.TheParameter
+define ExprUsesParamDirectly: common2.SomeNumber
 define FuncUsesParam: common2.addToParameter(5)
 define ExprCallsFunc: common2.TwoTimesThree
 define FuncCallsFunc: common2.square(5)

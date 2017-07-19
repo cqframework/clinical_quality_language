@@ -16,6 +16,8 @@ module.exports.ParameterRef = class ParameterRef extends Expression
   constructor: (json) ->
     super
     @name = json.name
+    @library = json.libraryName
 
   exec: (ctx) ->
+    ctx = if @library then ctx.getLibraryContext(@library) else ctx
     ctx.getParameter(@name)?.execute(ctx)
