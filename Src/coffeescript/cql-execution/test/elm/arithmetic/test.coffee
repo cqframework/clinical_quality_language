@@ -1,17 +1,38 @@
 should = require 'should'
 setup = require '../../setup'
 data = require './data'
+Q = require '../../../lib/elm/quantity'
 
 validateQuantity = (object,expectedValue,expectedUnit) ->
   object.constructor.name.should.equal "Quantity"
-  if object.value
-    object.value.should.equal expectedValue
-  else
-    (object.value == expectedValue).should.equal true
-  if object.unit
-    object.unit.should.equal expectedUnit
-  else
-    (object.unit == expectedUnit).should.equal true, "Expected "+ (object.unit) + " to equal " + (expectedUnit)
+  q = Q.createQuantity(expectedValue,expectedUnit)
+  q.equals(object).should.be.true("Expected "+ object + " to equal " + q)
+  # if object.value
+  #   object.value.should.equal expectedValue
+  # else
+  #   (object.value == expectedValue).should.equal true
+  # if object.unit
+  #   object.unit.should.equal expectedUnit
+  # else
+  #   (object.unit == expectedUnit).should.equal true, "Expected "+ (object.unit) + " to equal " + (expectedUnit)
+
+doQuantityMathTests = (tests, operator) ->
+  func = switch operator
+           when "*" then Q.doMultiplication
+           when "/" then Q.doDivision
+           when "+" then Q.doAddition
+           when "-" then Q.doSubtraction
+
+  for x in tests
+    a = Q.parseQuantity(x[0])
+    b = Q.parseQuantity(x[1])
+    # try to parse the expected value but if it comes back null
+    # which it will if there are no units create a new Quantity
+    # with just the exepected as the value with null units
+    e = Q.parseQuantity(x[2]) || new Q.Quantity({value: x[2]})
+
+    res = func(a,b)
+    e.equals(res).should.be.true(a + " " + operator + " " + b + " should eq " + e + " but was " + res )
 
 
 describe 'Add', ->
@@ -380,3 +401,47 @@ describe 'Quantity', ->
     q = @neg.exec(@ctx)
     q.value.should.equal -10
     q.unit.should.equal 'days'
+
+  it "should be able to perform ucum multiplication in cql", ->
+    @multiplyUcum.exec(@ctx).should.be.true()
+
+  it "should be able to perform ucum division in cql", ->
+    @divideUcum.exec(@ctx).should.be.true()
+
+  it "should be able to perform ucum addition in cql", ->
+    @addUcum.exec(@ctx).should.be.true()
+
+  it "should be able to perform ucum subtraction in cql", ->
+    @subtractUcum.exec(@ctx).should.be.true()
+
+  it "should be able to perform ucum multiplication", ->
+    tests = [
+      ["10 'm'", "20 'm'", "200 'm2'"],
+      ["25 'km'", "5 'm'", "125000 'm2'"],
+      ["10 'ml'", "20 'dl'", "0.02 'l2'"],
+    ]
+    doQuantityMathTests(tests, "*")
+
+  it "should be able to perform ucum division", ->
+    tests = [
+      ["10 'm2'", "5 'm'", "2 'm'"],
+      ["25 'km'", "5 'm'", "5000"],
+      ["100 'm'", "2 'h'", "0.01388889 'm/s' "],
+    ]
+    doQuantityMathTests(tests, "/")
+  it "should be able to perform ucum addition", ->
+    tests = [
+      ["10 'm'", "20 'm'", "30 'm'"],
+      ["25 'km'", "5 'm'", "25005 'm'"],
+      ["10 'ml'", "20 'dl'", "2.01 'l'"],
+    ]
+    doQuantityMathTests(tests, "+")
+
+  it "should be able to perform ucum subtraction", ->
+    tests = [
+      ["10 'd'", "20 'd'", "-10 'd'"],
+      ["25 'km'", "5 'm'", "24995 'm'"],
+      ["10 'ml'", "20 'dl'", "-1.99 'l'"],
+    ]
+    debugger
+    doQuantityMathTests(tests, "-")
