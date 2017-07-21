@@ -1,6 +1,6 @@
 { Expression } = require './expression'
 { FunctionRef } = require './reusable'
-
+{ decimalAdjust } = require '../util/math'
 { ValueSet, Code } = require '../datatypes/datatypes'
 { build } = require './builder'
 ucum = require  'ucum'
@@ -45,8 +45,14 @@ module.exports.Quantity = class Quantity extends Expression
 
   equals: (other) ->
     if other instanceof Quantity
-      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
-      @value == other_v
+
+      if (!@unit && other.unit )|| (@unit && !other.unit)
+        false
+      else if !@unit && !other.unit
+        @value == other.value
+      else
+        other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+        decimalAdjust("round", @value, -8)  == decimalAdjust("round", other_v, -8)
 
   dividedBy: (other) ->
     @multiplyDivied(other,"/")
@@ -57,19 +63,22 @@ module.exports.Quantity = class Quantity extends Expression
   multiplyDivied: (other, operator) ->
     if other instanceof Quantity
       if @unit and other.unit
-        can_val = ucum.parse(ucum_unit(@unit)) # ucum.canonicalize(@value,ucum_unit(@unit))
-        can_val.value = @value
-        other_can_value = ucum.parse(ucum_unit(other.unit)) #ucum.canonicalize(other.value,ucum_unit(other.unit))
-        other_can_value.value = other.value
+        can_val = @to_ucum() # ucum.canonicalize(@value,ucum_unit(@unit))
+        other_can_value = other.to_ucum()#ucum.canonicalize(other.value,ucum_unit(other.unit))
         ucum_value = ucum_multiply(can_val,[[operator,other_can_value]])
         createQuantity(ucum_value.value, units_to_string(ucum_value.units))
       else
         value = if operator == "/" then @value / other.value  else @value * other.value
         unit = @unit || other.unit
-        createQuantity(value, unit)
+        createQuantity(decimalAdjust("round",value,-8), unit)
     else
       value = if operator == "/" then @value / other  else @value * other
-      createQuantity( value, @unit)
+      createQuantity( decimalAdjust("round",value,-8), @unit)
+
+  to_ucum: ->
+    u = ucum.parse(ucum_unit(@unit)) # ucum.canonicalize(@value,ucum_unit(@unit))
+    u.value *= @value
+    u
 
 
 time_unit_to_ucum = {'year' : 'a', 'month' : 'mo',  'day' : 'd' , 'hour' : 'h', 'minute' : 'min' , 'second': 's' , 'millisecond' :  'ms', 'week' : 'wk', 'weeks' : 'wk' }
@@ -86,7 +95,7 @@ ucum_unit = (unit) ->
   # first strip off any pluraizations then attempt to perform a time unit to ucum unit mapping
   # otherwise send back the original value
   u = time_unit_dateTime_mapping[unit] || unit
-  time_unit_to_ucum[u] ||  u
+  time_unit_to_ucum[u] ||  u || ''
 
 
 
@@ -99,9 +108,7 @@ module.exports.canonicalize = (value,unit) ->
 
 #just a wrapper function to deal with possible exceptions being thrown
 convert_value = (value, from ,to ) ->
-  try
-    ucum.convert(value,ucum_unit(from),ucum_unit(to))
-  catch e
+  ucum.convert(value,ucum_unit(from),ucum_unit(to))
 
 module.exports.convert_value = convert_value
 # This method will take a ucum.js representation of untis and converth them to a string
@@ -147,6 +154,17 @@ ucum_multiply = (t, ms=[]) ->
         delete ret.units[k]
   ret
 
+ucum_comformant = (a, b) ->
+  ret = true;
+  Object.keys(a.units)
+  .concat(Object.keys(b.units))
+  .forEach( (k) ->
+    if (a.units[k] != b.units[k])
+      ret = false
+  )
+  ret
+
+
 module.exports.createQuantity = createQuantity = (value,unit) ->
   new Quantity({value: value, unit: unit})
 
@@ -163,17 +181,22 @@ module.exports.doAddition = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
     # we will choose the unit of a to be the unit we return
     val = convert_value(b.value, b.unit, a.unit)
+    val = decimalAdjust("round",val, -8)
     if val
       new Quantity({unit: a.unit, value: a.value + val})
+    else
+      throw "Incompatible Types " + a.units + " " + b.units
   else
     a.copy?().add?(b.value, clean_unit(b.unit))
 
 module.exports.doSubtraction = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
-    # we will choose the unit of a to be the unit we return
     val = convert_value(b.value, b.unit, a.unit)
+    val = decimalAdjust("round",val, -8)
     if val
       new Quantity({unit: a.unit, value: a.value - val})
+    else
+      throw "Incompatible Types " + a.units + " " + b.units
   else
     a.copy?().add?(b.value * -1 , clean_unit(b.unit))
 
