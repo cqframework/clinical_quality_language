@@ -1,6 +1,7 @@
 { Expression } = require './expression'
 { typeIsArray , allTrue, anyTrue, compact, numerical_sort} = require '../util/util'
 { build } = require './builder'
+{ Exception } = require '../datatypes/exception'
 Quantity = require './quantity'
 
 quantitiesOrArg = (arr) ->
@@ -18,7 +19,7 @@ quantitiesOrArg = (arr) ->
       values.push i.convertUnits(unit)
     return compact(values) # need to make sure that there are not any null values from the quntities
   else if someQs
-    throw "" # need and expection cannot do calcs of qunatities and non quantities
+    throw new Exception("Cannot perform aggregate operations on mixed values of Quantities and non Quantities") 
   else
     arr
 
