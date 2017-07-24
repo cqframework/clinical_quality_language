@@ -123,7 +123,6 @@ module.exports.Abs = class Abs extends  Expression
     else
       Math.abs arg
 
-
 module.exports.Negate = class Negate extends Expression
   constructor: (json) ->
     super
@@ -136,7 +135,6 @@ module.exports.Negate = class Negate extends Expression
       Quantity.createQuantity(arg.value * -1, arg.unit)
     else
       arg * -1
-
 
 module.exports.Round = class Round extends  Expression
   constructor: (json) ->
@@ -194,7 +192,6 @@ module.exports.Power = class Power extends Expression
       null
     else
       args.reduce (x,y) -> Math.pow(x , y)
-
 
 module.exports.MinValue = class MinValue extends Expression
   MIN_VALUES: "Integer" : MathUtil.MIN_INT_VALUE, "Real" : MathUtil.MIN_FLOAT_VALUE, "DateTime" : MathUtil.MIN_DATE_VALUE

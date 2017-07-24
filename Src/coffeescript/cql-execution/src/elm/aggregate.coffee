@@ -9,8 +9,8 @@ quantitiesOrArg = (arr) ->
   if arr.length == 0
     return arr
 
-  allQs = arr.every (x) -> x.unit
-  someQs = arr.some (x) -> x.unit
+  allQs = arr.every (x) -> x.constructor.name == "Quantity"
+  someQs = arr.some (x) -> x.constructor.name == "Quantity"
   if allQs
     unit = arr[0].unit
     values = []
@@ -21,7 +21,6 @@ quantitiesOrArg = (arr) ->
     throw "" # need and expection cannot do calcs of qunatities and non quantities
   else
     arr
-
 
 quantityOrValue = (value, arr) ->
   # we used the first unit in the list to convert to so that is what
@@ -67,7 +66,6 @@ module.exports.Min = class Min extends AggregateExpression
       filtered =  numerical_sort(quantitiesOrArg(arg),"asc")
       quantityOrValue(filtered[0],arg)
 
-
 module.exports.Max = class Max extends AggregateExpression
   constructor:(json) ->
     super
@@ -77,7 +75,6 @@ module.exports.Max = class Max extends AggregateExpression
     if typeIsArray(arg)
       filtered =  numerical_sort(quantitiesOrArg(arg),"desc")
       quantityOrValue(filtered[0],arg)
-
 
 module.exports.Avg = class Avg extends  AggregateExpression
   constructor:(json) ->
@@ -90,7 +87,6 @@ module.exports.Avg = class Avg extends  AggregateExpression
       return null if filtered.length == 0
       sum = filtered.reduce (x,y) -> x+y
       quantityOrValue((sum / filtered.length),arg)
-
 
 module.exports.Median = class Median extends AggregateExpression
   constructor:(json) ->
@@ -108,7 +104,6 @@ module.exports.Median = class Median extends AggregateExpression
         v = (filtered[(filtered.length / 2) - 1] +
          filtered[(filtered.length / 2)]) / 2
         quantityOrValue(v,arg)
-
 
 module.exports.Mode = class Mode extends AggregateExpression
   constructor:(json) ->

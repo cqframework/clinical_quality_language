@@ -176,17 +176,6 @@ ucum_multiply = (t, ms=[]) ->
         delete ret.units[k]
   ret
 
-ucum_comformant = (a, b) ->
-  ret = true;
-  Object.keys(a.units)
-  .concat(Object.keys(b.units))
-  .forEach( (k) ->
-    if (a.units[k] != b.units[k])
-      ret = false
-  )
-  ret
-
-
 module.exports.createQuantity = createQuantity = (value,unit) ->
   new Quantity({value: value, unit: unit})
 

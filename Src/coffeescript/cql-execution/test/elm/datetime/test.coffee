@@ -801,7 +801,6 @@ describe 'DateMath', ->
     dateCheck(d, 2013, 6, 14, 23, 57, 0, 0)
 
   it 'should properly add and subtract seconds', ->
-    debugger
     d = @plusThreeSeconds.exec(@ctx)
     dateCheck(d, 2013, 6, 15, 0, 0, 3, 0)
     d = @minusThreeSeconds.exec(@ctx)

@@ -442,5 +442,4 @@ describe 'Quantity', ->
       ["25 'km'", "5 'm'", "24995 'm'"],
       ["10 'ml'", "20 'dl'", "-1.99 'l'"],
     ]
-    debugger
     doQuantityMathTests(tests, "-")
