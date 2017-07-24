@@ -151,6 +151,7 @@ define not_null_q: Sum({1 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
 define has_null_q: Sum({1 'ml',null,null,null,2 'ml'})
 define unmatched_units_q: Min({1 'ml',2 'L',3 'ml',4 'ml',5 'ml',0 'ml'})
 define empty: Sum(List<Integer>{})
+define q_diff_units: Sum({1 'ml',0.002 'l',0.03 'dl',4 'ml',0.005 'l'})
 ###
 
 module.exports['Sum'] = {
@@ -389,6 +390,37 @@ module.exports['Sum'] = {
                   "type" : "List"
                }
             }
+         }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Sum",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.002,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.03,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.005,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
          } ]
       }
    }
@@ -403,6 +435,9 @@ define has_null: Min({1,null,-1,null,2})
 define empty: Min(List<Integer>{})
 define not_null_q: Min({1 'ml',2 'ml',3 'ml',4 'ml',5 'ml',0 'ml'})
 define has_null_q: Min({1 'ml',null,-1 'ml',null,2 'ml'})
+define q_diff_units: Min({1 'ml',2 'dl',3 'l',4 'l',5 'l',0 'ml'})
+define q_throw1: Min({1 'ml',2 'm',3 'ml',4 'ml',5 'ml',0 'ml'})
+define q_throw2: Min({1 ,2 'ml',3 'ml',4 'ml',5 'ml',0 'ml'})
 ###
 
 module.exports['Min'] = {
@@ -608,6 +643,111 @@ module.exports['Min'] = {
                   } ]
                }
             }
+         }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Min",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Min",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Min",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "value" : 2,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
          } ]
       }
    }
@@ -621,6 +761,9 @@ define not_null: Max({10,1,2,3,4,5})
 define has_null: Max({1,null,null,2})
 define not_null_q: Max({10 'ml',1 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
 define has_null_q: Max({1 'ml',null,null,2 'ml'})
+define q_diff_units: Max({10 'ml',1 'ml',2 'ml',3 'ml',4 'ml',5 'l'})
+define q_throw1: Max({10 'ml',1 'm',2 'ml',3 'ml',4 'ml',5 'ml'})
+define q_throw2: Max({10 ,1 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
 
 define empty: Max(List<Integer>{})
 ###
@@ -805,6 +948,111 @@ module.exports['Max'] = {
                }
             }
          }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Max",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 10,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Max",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 10,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 1,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Max",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }, {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
             "name" : "empty",
             "context" : "Patient",
             "accessLevel" : "Public",
@@ -828,10 +1076,29 @@ define has_null: Avg({1,null,null,2})
 define not_null_q: Avg({1 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
 define has_null_q: Avg({1 'ml',null,null,2 'ml'})
 define empty: Avg(List<Integer>{})
+define q_diff_units: Avg({1 'ml',0.002 'l',0.03 'dl',4 'ml',5 'ml'})
+define q_throw1: Avg({1 'ml',0.002 'm',0.03 'dl',4 'ml',5 'ml'})
+define q_throw2: Avg({1 ,2 ,3 'ml',4 ,5 'ml'})
 ###
 
+###
+Translation Error(s):
+[11:18, 11:46] Call to operator Avg(list<System.Any>) is ambiguous with: 
+  - Avg(list<System.Decimal>)
+  - Avg(list<System.Quantity>)
+###
 module.exports['Avg'] = {
    "library" : {
+      "annotation" : [ {
+         "startLine" : 11,
+         "startChar" : 18,
+         "endLine" : 11,
+         "endChar" : 46,
+         "message" : "Call to operator Avg(list<System.Any>) is ambiguous with: \n  - Avg(list<System.Decimal>)\n  - Avg(list<System.Quantity>)",
+         "errorType" : "semantic",
+         "errorSeverity" : "error",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -1059,6 +1326,75 @@ module.exports['Avg'] = {
                   }
                }
             }
+         }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Avg",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.002,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.03,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Avg",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.002,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.03,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Null"
+            }
          } ]
       }
    }
@@ -1072,6 +1408,9 @@ define odd: Median({5,1,2,3,4})
 define even: Median({5,1,2,3,4,6})
 define odd_q: Median({5 'ml',1 'ml',2 'ml',3 'ml',4 'ml'})
 define even_q: Median({5 'ml',1 'ml',2 'ml',3 'ml',4 'ml',6 'ml'})
+define q_diff_units: Median({5 'ml',0.001 'l',0.02 'dl',3 'ml',4 'ml',6 'ml'})
+define q_throw1: Median({5 'ml',0.001 'l',0.22 'dl',3 'm',4 'h',6 'ml'})
+define q_throw2: Median({5 ,1 ,2 ,3 ,4 'ml',6 'ml'})
 
 define empty: Median(List<Integer>{})
 define has_null: Median({1,null,null,2})
@@ -1266,6 +1605,111 @@ module.exports['Median'] = {
                      "value" : 3,
                      "unit" : "ml",
                      "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 6,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Median",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 5,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.001,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.02,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 6,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Median",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 5,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.001,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.22,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "h",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 6,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Median",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "5",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
                   }, {
                      "value" : 4,
                      "unit" : "ml",
@@ -1806,6 +2250,9 @@ using QUICK
 context Patient
 define v: Variance({1,2,3,4,5})
 define v_q: Variance({1 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
+define q_diff_units: Variance({1.0 'ml',0.002 'l',0.003 'l',0.04 'dl',5.0 'ml'})
+define q_throw1: Variance({1.0 'm',2.0 'l',3.0 'h',4.0 'ml',5.0 'ml'})
+define q_throw2: Variance({1.0 ,2.0 ,3.0 ,4.0 'ml',5.0 'ml'})
 ###
 
 module.exports['Variance'] = {
@@ -1917,6 +2364,99 @@ module.exports['Variance'] = {
                   } ]
                }
             }
+         }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Variance",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.002,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.003,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.04,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Variance",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1.0,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2.0,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3.0,
+                     "unit" : "h",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Variance",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "value" : "2.0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "value" : "3.0",
+                     "type" : "Literal"
+                  }, {
+                     "value" : 4.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
          } ]
       }
    }
@@ -1928,6 +2468,9 @@ using QUICK
 context Patient
 define v: PopulationVariance({1.0,2.0,3.0,4.0,5.0})
 define v_q: PopulationVariance({1.0 'ml',2.0 'ml',3.0 'ml',4.0 'ml',5.0 'ml'})
+define q_diff_units: PopulationVariance({1.0 'ml',0.002 'l',0.003 'l',0.04 'dl',5.0 'ml'})
+define q_throw1: PopulationVariance({1.0 'm',2.0 'l',3.0 'h',4.0 'ml',5.0 'ml'})
+define q_throw2: PopulationVariance({1.0 ,2.0 ,3.0 ,4.0 'ml',5.0 'ml'})
 ###
 
 module.exports['PopulationVariance'] = {
@@ -2023,6 +2566,99 @@ module.exports['PopulationVariance'] = {
                   } ]
                }
             }
+         }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "PopulationVariance",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.002,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.003,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.04,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "PopulationVariance",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1.0,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2.0,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3.0,
+                     "unit" : "h",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "PopulationVariance",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "value" : "1.0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "value" : "2.0",
+                     "type" : "Literal"
+                  }, {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
+                     "value" : "3.0",
+                     "type" : "Literal"
+                  }, {
+                     "value" : 4.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5.0,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
          } ]
       }
    }
@@ -2034,6 +2670,9 @@ using QUICK
 context Patient
 define std: StdDev({1,2,3,4,5})
 define std_q: StdDev({1 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
+define q_diff_units: StdDev({1 'ml', 0.002 'l',3 'ml',4 'ml', 0.05 'dl'})
+define sq_throw1: StdDev({1 'ml',2 'ml',3 'ml',4 'ml',5 'm'})
+define q_throw2: StdDev({1 ,2 ,3 ,4 'ml',5 })
 ###
 
 module.exports['StdDev'] = {
@@ -2145,6 +2784,115 @@ module.exports['StdDev'] = {
                   } ]
                }
             }
+         }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "StdDev",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.002,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.05,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "sq_throw1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "StdDev",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "StdDev",
+               "source" : {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "value" : 4,
+                           "unit" : "ml",
+                           "type" : "Quantity"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "distinct" : false,
+                     "expression" : {
+                        "type" : "ToDecimal",
+                        "operand" : {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        }
+                     }
+                  }
+               }
+            }
          } ]
       }
    }
@@ -2156,6 +2904,9 @@ using QUICK
 context Patient
 define dev: PopulationStdDev({1,2,3,4,5})
 define dev_q: PopulationStdDev({1 'ml',2 'ml',3 'ml',4 'ml',5 'ml'})
+define q_diff_units: PopulationStdDev({1 'ml', 0.002 'l',3 'ml',4 'ml', 0.05 'dl'})
+define q_throw1: PopulationStdDev({1 'ml',2 'ml',3 'ml',4 'ml',5 'm'})
+define q_throw2: PopulationStdDev({1 ,2 ,3 ,4 'ml',5 })
 ###
 
 module.exports['PopulationStdDev'] = {
@@ -2265,6 +3016,115 @@ module.exports['PopulationStdDev'] = {
                      "unit" : "ml",
                      "type" : "Quantity"
                   } ]
+               }
+            }
+         }, {
+            "name" : "q_diff_units",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "PopulationStdDev",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.002,
+                     "unit" : "l",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 0.05,
+                     "unit" : "dl",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw1",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "PopulationStdDev",
+               "source" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "value" : 1,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 3,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "ml",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "q_throw2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "PopulationStdDev",
+               "source" : {
+                  "type" : "Query",
+                  "source" : [ {
+                     "alias" : "X",
+                     "expression" : {
+                        "type" : "List",
+                        "element" : [ {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "1",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "2",
+                           "type" : "Literal"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "3",
+                           "type" : "Literal"
+                        }, {
+                           "value" : 4,
+                           "unit" : "ml",
+                           "type" : "Quantity"
+                        }, {
+                           "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                           "value" : "5",
+                           "type" : "Literal"
+                        } ]
+                     }
+                  } ],
+                  "return" : {
+                     "distinct" : false,
+                     "expression" : {
+                        "type" : "ToDecimal",
+                        "operand" : {
+                           "name" : "X",
+                           "type" : "AliasRef"
+                        }
+                     }
+                  }
                }
             }
          } ]

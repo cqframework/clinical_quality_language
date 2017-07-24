@@ -382,7 +382,6 @@ describe 'Quantity', ->
 
   it "should be able to perform Quantity Division", ->
     validateQuantity @div_q_d.exec(@ctx), 5, 'days'
-    console.error(@div_q_q.exec(@ctx))
     validateQuantity @div_q_q.exec(@ctx), 1 , null
 
   it "should be able to perform Quantity Multiplication", ->

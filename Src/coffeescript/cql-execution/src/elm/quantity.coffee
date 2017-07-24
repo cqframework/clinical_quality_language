@@ -2,9 +2,13 @@
 { FunctionRef } = require './reusable'
 { decimalAdjust } = require '../util/math'
 { ValueSet, Code } = require '../datatypes/datatypes'
+{ Exception } = require '../datatypes/exception'
 { build } = require './builder'
 ucum = require  'ucum'
 
+module.exports.IncompatibleTypesException = IncompatibleTypesException = class IncompatibleTypesException extends Exception
+  constructor: (@a , @b , e) ->
+    super("Incompatible Types " + @a + " " + @b, e)
 # Unit conversation is currently implemented on for time duration comparison operations
 # TODO: Implement unit conversation for time duration mathematical operations
 # TODO: Quantity should probably be available as a datatype (not just ELM expression)
@@ -52,6 +56,9 @@ module.exports.Quantity = class Quantity extends Expression
       else
         other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
         decimalAdjust("round", @value, -8)  == decimalAdjust("round", other_v, -8)
+
+  convertUnits: (to_units) ->
+    convert_value(@value,@unit,to_units)
 
   dividedBy: (other) ->
     @multiplyDivied(other,"/")
@@ -116,12 +123,14 @@ ucum_to_cql_units = {
 }
 # this is used to perform any convertions of CQL date time fileds to their ucum equivalents
 ucum_unit = (unit) ->
-  u = ucum_time_units[unit] || unit
-  ucum_time_units[u] ||  u || ''
+  ucum_time_units[unit] || unit || ''
 
 #just a wrapper function to deal with possible exceptions being thrown
 convert_value = (value, from ,to ) ->
-  ucum.convert(value,ucum_unit(from),ucum_unit(to))
+  try
+    decimalAdjust("round", ucum.convert(value,ucum_unit(from),ucum_unit(to)), -8)
+  catch e
+    throw new IncompatibleTypesException(from, to, e)
 
 module.exports.convert_value = convert_value
 # This method will take a ucum.js representation of untis and converth them to a string
@@ -194,22 +203,14 @@ module.exports.doAddition = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
     # we will choose the unit of a to be the unit we return
     val = convert_value(b.value, b.unit, a.unit)
-    val = decimalAdjust("round",val, -8)
-    if val
-      new Quantity({unit: a.unit, value: a.value + val})
-    else
-      throw "Incompatible Types " + a.units + " " + b.units
+    new Quantity({unit: a.unit, value: a.value + val})
   else
     a.copy?().add?(b.value, clean_unit(b.unit))
 
 module.exports.doSubtraction = (a,b) ->
   if a instanceof Quantity and b instanceof Quantity
     val = convert_value(b.value, b.unit, a.unit)
-    val = decimalAdjust("round",val, -8)
-    if val
-      new Quantity({unit: a.unit, value: a.value - val})
-    else
-      throw "Incompatible Types " + a.units + " " + b.units
+    new Quantity({unit: a.unit, value: a.value - val})
   else
     a.copy?().add?(b.value * -1 , clean_unit(b.unit))
 

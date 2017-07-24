@@ -5,20 +5,27 @@ Quantity = require './quantity'
 
 quantitiesOrArg = (arr) ->
   arr = compact(arr)
-  if arr[0]?.unit
+  # short curcuit empty arrays and return
+  if arr.length == 0
+    return arr
+
+  allQs = arr.every (x) -> x.unit
+  someQs = arr.some (x) -> x.unit
+  if allQs
     unit = arr[0].unit
     values = []
     for i in arr
-      if i.unit == unit 
-        values.push i.value
-      else
-        return []
+      values.push i.convertUnits(unit)
     return compact(values) # need to make sure that there are not any null values from the quntities
+  else if someQs
+    throw "" # need and expection cannot do calcs of qunatities and non quantities
   else
     arr
 
 
 quantityOrValue = (value, arr) ->
+  # we used the first unit in the list to convert to so that is what
+  # we will use as a unit for quantities
   if arr?[0]?.unit
     Quantity.createQuantity(value, arr[0].unit)
   else

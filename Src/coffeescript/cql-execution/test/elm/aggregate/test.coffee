@@ -6,6 +6,7 @@ validateQuantity = (object,expectedValue,expectedUnit) ->
   object.value.should.equal expectedValue
   object.unit.should.equal expectedUnit
 
+
 describe 'Count', ->
   @beforeEach ->
     setup @, data
@@ -33,6 +34,8 @@ describe 'Sum', ->
     validateQuantity @has_null_q.exec(@ctx), 3, 'ml'
   it 'should return null for unmatched units in a list of quantiies', ->
     @unmatched_units_q.exec(@ctx) == null
+  it 'should be able to sum quantity lists with related units', ->
+    validateQuantity @q_diff_units.exec(@ctx), 15, 'ml'
 
 describe 'Min', ->
   @beforeEach ->
@@ -45,9 +48,11 @@ describe 'Min', ->
   it 'should be return null for empty list', ->
     @empty.exec(@ctx) == null
   it 'should be able to find min in lists of quantiies without nulls', ->
-    validateQuantity @not_null_q.exec(@ctx), 0, 'ml' 
+    validateQuantity @not_null_q.exec(@ctx), 0, 'ml'
   it 'should be able to find min in lists of quantiies with nulls', ->
     validateQuantity @has_null_q.exec(@ctx), -1 , 'ml'
+  it 'should be able to find min in lists of quantiies with related units', ->
+    validateQuantity @q_diff_units.exec(@ctx), 0, 'ml'
 
 describe 'Max', ->
   @beforeEach ->
@@ -63,6 +68,8 @@ describe 'Max', ->
     validateQuantity @not_null_q.exec(@ctx),  10, 'ml'
   it 'should be able to find max in lists of quantiies with nulls', ->
     validateQuantity @has_null_q.exec(@ctx), 2, 'ml'
+  it 'should be able to find max in lists of quantiies with related units', ->
+    validateQuantity @q_diff_units.exec(@ctx),  5000, 'ml'
 
 describe 'Avg', ->
   @beforeEach ->
@@ -77,6 +84,9 @@ describe 'Avg', ->
     validateQuantity @not_null_q.exec(@ctx), 3, 'ml'
   it 'should be able to find average for lists of quantiies with nulls', ->
     validateQuantity @has_null_q.exec(@ctx), 1.5 , 'ml'
+  it 'should be able to find average for lists of quantiies with related units', ->
+    validateQuantity @q_diff_units.exec(@ctx), 3, 'ml'
+
 
 describe 'Median', ->
   @beforeEach ->
@@ -100,6 +110,8 @@ describe 'Median', ->
     validateQuantity @dup_vals_odd_q.exec(@ctx),3, 'ml'
   it 'should be able to find median of even numbered list that contians duplicates', ->
     validateQuantity @dup_vals_even_q.exec(@ctx), 2.5, 'ml'
+  it 'should be able to find median of even numbered list of quantities with related units', ->
+    validateQuantity @q_diff_units.exec(@ctx), 3.5, 'ml'
 
 describe 'Mode', ->
   @beforeEach ->
@@ -118,32 +130,81 @@ describe 'PopulationVariance', ->
     setup @, data
   it 'should be able to find PopulationVariance of a list ', ->
     @v.exec(@ctx).should.equal 2.5
-  it 'should be able to find PopulationVariance of a list ', ->
+  it 'should be able to find PopulationVariance of a list of like quantities', ->
     validateQuantity @v_q.exec(@ctx), 2.5, 'ml'
+  it 'should be able to find PopulationVariance of a list of related quantities', ->
+    validateQuantity @q_diff_units.exec(@ctx), 2.5, 'ml'
+  it 'should throw an exception when quantities are not compatible ', ->
+    try
+      @q_throw1.exec(@ctx)
+      false.should.be.true("Incompatible Quantities should throw an error")
+    catch
+  it 'should throw an exception when quanties exist in a list but not all are quantities', ->
+    try
+      @q_throw2.exec(@ctx)
+      false.should.be.true("Incompatible Quantities should throw an error")
+    catch
 
 describe 'Variance', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Variance of a list ', ->
     @v.exec(@ctx).should.equal 2
-  it 'should be able to find Variance of a list ', ->
+  it 'should be able to find Variance of a list of matched quantities', ->
     validateQuantity @v_q.exec(@ctx), 2, 'ml'
+  it 'should be able to find Variance of a list of related quantities', ->
+    validateQuantity @q_diff_units.exec(@ctx), 2, 'ml'
+  it 'should throw an exception when quantities are not compatible ', ->
+    try
+      @q_throw1.exec(@ctx)
+      false.should.be.true("Incompatible Quantities should throw an error")
+    catch
+  it 'should throw an exception when quanties exist in a list but not all are quantities', ->
+    try
+      @q_throw2.exec(@ctx)
+      false.should.be.true("Incompatible Quantities should throw an error")
+    catch
 
 describe 'StdDev', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Standard Dev of a list ', ->
     @std.exec(@ctx).should.equal 1.4142135623730951
-  it 'should be able to find Standard Dev of a list ', ->
+  it 'should be able to find Standard Dev of a list of like qauntities', ->
     validateQuantity @std_q.exec(@ctx), 1.4142135623730951, 'ml'
+  it 'should be able to find Standard Dev of a list of related quantities', ->
+    validateQuantity @q_diff_units.exec(@ctx), 1.4142135623730951, 'ml'
+  it 'should throw an exception when quantities are not compatible ', ->
+    try
+      @q_throw1.exec(@ctx)
+      false.should.be.true("Incompatible Quantities should throw an error")
+    catch
+  it 'should throw an exception when quanties exist in a list but not all are quantities', ->
+    try
+      @q_throw2.exec(@ctx)
+      false.should.be.true("Incompatible Quantities should throw an error")
+    catch
 
 describe 'PopulationStdDev', ->
   @beforeEach ->
     setup @, data
   it 'should be able to find Population Standard Dev of a list ', ->
     @dev.exec(@ctx).should.equal 1.5811388300841898
-  it 'should be able to find Population Standard Dev of a list ', ->
+  it 'should be able to find Population Standard Dev of a list of quantities', ->
     validateQuantity @dev_q.exec(@ctx), 1.5811388300841898, 'ml'
+  it 'should be able to find Population Standard Dev of a list of related quantities', ->
+    validateQuantity @q_diff_units.exec(@ctx), 1.5811388300841898, 'ml'
+  it 'should throw an exception when quantities are not compatible ', ->
+    try
+      @q_throw1.exec(@ctx)
+      false.should.be.true("Incompatible Quantities should throw an error")
+    catch
+  it 'should throw an exception when quanties exist in a list but not all are quantities', ->
+    try
+      @q_throw2.exec(@ctx)
+      false.should.be.true("Incompatible Quantities should throw an error")
+    catch
+
 
 describe 'AllTrue', ->
   @beforeEach ->
