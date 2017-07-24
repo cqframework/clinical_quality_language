@@ -45,8 +45,7 @@ module.exports.Quantity = class Quantity extends Expression
 
   equals: (other) ->
     if other instanceof Quantity
-
-      if (!@unit && other.unit )|| (@unit && !other.unit)
+      if (!@unit && other.unit ) || (@unit && !other.unit)
         false
       else if !@unit && !other.unit
         @value == other.value
@@ -63,8 +62,8 @@ module.exports.Quantity = class Quantity extends Expression
   multiplyDivied: (other, operator) ->
     if other instanceof Quantity
       if @unit and other.unit
-        can_val = @to_ucum() # ucum.canonicalize(@value,ucum_unit(@unit))
-        other_can_value = other.to_ucum()#ucum.canonicalize(other.value,ucum_unit(other.unit))
+        can_val = @to_ucum()
+        other_can_value = other.to_ucum()
         ucum_value = ucum_multiply(can_val,[[operator,other_can_value]])
         createQuantity(ucum_value.value, units_to_string(ucum_value.units))
       else
@@ -76,35 +75,49 @@ module.exports.Quantity = class Quantity extends Expression
       createQuantity( decimalAdjust("round",value,-8), @unit)
 
   to_ucum: ->
-    u = ucum.parse(ucum_unit(@unit)) # ucum.canonicalize(@value,ucum_unit(@unit))
+    u = ucum.parse(ucum_unit(@unit))
     u.value *= @value
     u
 
 
-time_unit_to_ucum = {'year' : 'a', 'month' : 'mo',  'day' : 'd' , 'hour' : 'h', 'minute' : 'min' , 'second': 's' , 'millisecond' :  'ms', 'week' : 'wk', 'weeks' : 'wk' }
 
-
-time_unit_dateTime_mapping = {'years':'year',  'months': 'month',  'days' :'day', 'hours': 'hour' ,'weeks' :'week', 'minutes': 'minute', 'seconds':'second', 'milliseconds' : 'millisecond' }
-
-# this is used to drop the pluralization of unit fields to pass into DateTime objects for addition and subtraction operations
 clean_unit = (units) ->
-  if time_unit_dateTime_mapping[units] then time_unit_dateTime_mapping[units] else units
+  if ucum_time_units[units] then ucum_to_cql_units[ucum_time_units[units]] else units
 
+# Hash of time units and their UCUM equivalents, both case-sensitive and case-insensitive
+# See http://unitsofmeasure.org/ucum.html#para-31
+# The CQL specification says that dates are based on the Gregorian calendar
+# UCUM says that years should be Julian. As a result, CQL-based year and month identifiers will
+# be matched to the UCUM gregorian units. UCUM-based year and month identifiers will be matched
+# to the UCUM julian units.
+ucum_time_units = {'years': 'a_g', 'year': 'a_g', 'YEARS': 'a_g', 'YEAR': 'a_g', 'a_g': 'a_g'
+  , 'a': 'a_j', 'ANN': 'a_j', 'ann': 'a_j', 'A': 'a_j', 'a_j': 'a_j'
+  , 'months': 'mo_g', 'month':'mo_g', 'mo_g': 'mo_g'
+  , 'mo': 'mo_j', 'MO': 'mo_j', 'mo_j': 'mo_j'
+  , 'weeks': 'wk', 'week': 'wk', 'wk': 'wk', 'WK': 'wk'
+  , 'days': 'd', 'day':'d', 'd': 'd', 'D': 'd'
+  , 'hours': 'h', 'hour': 'h', 'h': 'h', 'H': 'h'
+  , 'minutes': 'min', 'minute': 'min', 'min': 'min', 'MIN': 'min'
+  , 'seconds':'s', 'second':'s', 's': 's', 'S': 's'
+  , 'milliseconds' : 'ms', 'millisecond' : 'ms', 'ms': 'ms', 'MS': 'ms'
+  }
+
+ucum_to_cql_units = {
+    'a_j':  'year'
+  , 'a_g':  'year'
+  , 'mo_j': 'month'
+  , 'mo_g': 'month'
+  , 'wk':   'week'
+  , 'd':    'day'
+  , 'h':    'hour'
+  , 'min':  'minute'
+  , 's':    'second'
+  , 'ms':   'millisecond'
+}
 # this is used to perform any convertions of CQL date time fileds to their ucum equivalents
 ucum_unit = (unit) ->
-  # first strip off any pluraizations then attempt to perform a time unit to ucum unit mapping
-  # otherwise send back the original value
-  u = time_unit_dateTime_mapping[unit] || unit
-  time_unit_to_ucum[u] ||  u || ''
-
-
-
-module.exports.canonicalize = (value,unit) ->
-  return {value: value} if unit == null
-  ucv = ucum.canonicalize(value, ucum_unit(unit))
-  {value: ucv.value, unit: units_to_string(ucv.units)}
-
-
+  u = ucum_time_units[unit] || unit
+  ucum_time_units[u] ||  u || ''
 
 #just a wrapper function to deal with possible exceptions being thrown
 convert_value = (value, from ,to ) ->
