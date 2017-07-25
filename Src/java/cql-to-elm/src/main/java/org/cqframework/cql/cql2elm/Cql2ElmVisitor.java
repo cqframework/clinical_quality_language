@@ -2534,7 +2534,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
                 : null;
 
-        if (ctx.getChildCount() == (1 + dateTimePrecision == null ? 0 : 1)) {
+        if (ctx.getChildCount() == (1 + (dateTimePrecision == null ? 0 : 1))) {
             operator = dateTimePrecision != null
                     ? of.createOverlaps().withPrecision(parseDateTimePrecision(dateTimePrecision))
                     : of.createOverlaps();
