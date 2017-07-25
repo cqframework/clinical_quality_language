@@ -1,8 +1,7 @@
 package org.cqframework.cql.tools.formatter;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.*;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlParser;
 
@@ -22,6 +21,8 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
     private boolean onNewLine;
     private boolean needsWhitespace;
     private int indentLevel = 0;
+
+    private boolean isFirstTupleElement = false;
 
     private String currentSection;
     private int sectionCount = 0;
@@ -213,7 +214,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         currentLine = 1;
         onNewLine = true;
         output = new StringBuilder();
-        groups = new Stack<Integer>();
+        groups = new Stack<>();
     }
 
     @Override
@@ -223,6 +224,37 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         resetIndentLevel();
         newLine();
         return output.toString();
+    }
+
+    @Override
+    public Object visitChildren(RuleNode node) {
+        Object result = defaultResult();
+        int n = node.getChildCount();
+        for (int i=0; i<n; i++) {
+            if (!shouldVisitNextChild(node, result)) {
+                break;
+            }
+
+            ParseTree c = node.getChild(i);
+            if (c instanceof ErrorNodeImpl) {
+                c = new TerminalNodeImpl(((ErrorNodeImpl) c).getSymbol());
+            }
+
+            if ((node instanceof cqlParser.TupleSelectorContext
+                    || node instanceof cqlParser.TupleTypeSpecifierContext)
+                    && c instanceof TerminalNodeImpl)
+            {
+                if (((TerminalNodeImpl) c).getSymbol().getText().equals("}")) {
+                    decreaseIndentLevel();
+                    newLine();
+                }
+            }
+
+            Object childResult = c.accept(this);
+            result = aggregateResult(result, childResult);
+        }
+
+        return result;
     }
 
     @Override
@@ -356,11 +388,17 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTupleTypeSpecifier(cqlParser.TupleTypeSpecifierContext ctx) {
+        isFirstTupleElement = true;
         return super.visitTupleTypeSpecifier(ctx);
     }
 
     @Override
     public Object visitTupleElementDefinition(cqlParser.TupleElementDefinitionContext ctx) {
+        if (isFirstTupleElement) {
+            increaseIndentLevel();
+            isFirstTupleElement = false;
+        }
+        newLine();
         return super.visitTupleElementDefinition(ctx);
     }
 
@@ -1112,11 +1150,17 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTupleSelector(cqlParser.TupleSelectorContext ctx) {
+        isFirstTupleElement = true;
         return super.visitTupleSelector(ctx);
     }
 
     @Override
     public Object visitTupleElementSelector(cqlParser.TupleElementSelectorContext ctx) {
+        if (isFirstTupleElement) {
+            increaseIndentLevel();
+            isFirstTupleElement = false;
+        }
+        newLine();
         return super.visitTupleElementSelector(ctx);
     }
 
