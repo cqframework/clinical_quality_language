@@ -2302,6 +2302,19 @@ define NotContainsDate: DateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
 define ContainsImpreciseDate: DateIvl contains DateTime(2012, 4)
 define NotContainsImpreciseDate: DateIvl contains DateTime(2012, 9)
 define MayContainImpreciseDate: DateIvl contains DateTime(2012)
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define ContainsDayOfDateLowEdge: PrecisionDateIvl contains day of DateTime(2012, 3, 2, 0, 0, 0, 0)
+define ContainsDayOfDateHighEdge: PrecisionDateIvl contains day of DateTime(2012, 9, 2, 23, 59, 59, 999)
+define NotContainsDayOfDateLowEdge: PrecisionDateIvl contains day of DateTime(2012, 3, 1, 23, 59, 59, 999)
+define NotContainsDayOfDateHighEdge: PrecisionDateIvl contains day of DateTime(2012, 9, 3, 0, 0, 0, 0)
+define ContainsDayOfDateImpreciseLowEdge: PrecisionDateIvl contains day of DateTime(2012, 3, 2)
+define ContainsDayOfDateImpreciseHighEdge: PrecisionDateIvl contains day of DateTime(2012, 9, 2)
+define ContainsDayOfDateVeryImpreciseMiddle: PrecisionDateIvl contains day of DateTime(2012, 6)
+define NotContainsDayOfDateVeryImpreciseLow: PrecisionDateIvl contains day of DateTime(2012, 2)
+define NotContainsDayOfDateVeryImpreciseHigh: PrecisionDateIvl contains day of DateTime(2012, 10)
+define MayContainDayOfDateVeryImpreciseLow: PrecisionDateIvl contains day of DateTime(2012, 3)
+define MayContainDayOfDateVeryImpreciseHigh: PrecisionDateIvl contains day of DateTime(2012, 9)
+define MayContainDayOfDateVeryImpreciseSurrounding: PrecisionDateIvl contains day of DateTime(2012)
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseContainsDate: ImpDateIvl contains DateTime(2012, 6, 1, 0, 0, 0, 0)
 define ImpreciseNotContainsDate: ImpDateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
@@ -2802,6 +2815,484 @@ module.exports['Contains'] = {
                "type" : "Contains",
                "operand" : [ {
                   "name" : "DateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "ContainsDayOfDateLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ContainsDayOfDateHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "999",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotContainsDayOfDateLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "999",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotContainsDayOfDateHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ContainsDayOfDateImpreciseLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ContainsDayOfDateImpreciseHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ContainsDayOfDateVeryImpreciseMiddle",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotContainsDayOfDateVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotContainsDayOfDateVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayContainDayOfDateVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayContainDayOfDateVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayContainDayOfDateVeryImpreciseSurrounding",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Contains",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
                }, {
                   "type" : "DateTime",
@@ -4326,6 +4817,19 @@ define NotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in DateIvl
 define ContainsImpreciseDate: DateTime(2012, 4) in DateIvl
 define NotContainsImpreciseDate: DateTime(2012, 9) in DateIvl
 define MayContainImpreciseDate: DateTime(2012) in DateIvl
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define ContainsDayOfDateLowEdge: DateTime(2012, 3, 2, 0, 0, 0, 0) in day of PrecisionDateIvl
+define ContainsDayOfDateHighEdge: DateTime(2012, 9, 2, 23, 59, 59, 999) in day of PrecisionDateIvl
+define NotContainsDayOfDateLowEdge: DateTime(2012, 3, 1, 23, 59, 59, 999) in day of PrecisionDateIvl
+define NotContainsDayOfDateHighEdge: DateTime(2012, 9, 3, 0, 0, 0, 0) in day of PrecisionDateIvl
+define ContainsDayOfDateImpreciseLowEdge: DateTime(2012, 3, 2) in day of PrecisionDateIvl
+define ContainsDayOfDateImpreciseHighEdge: DateTime(2012, 9, 2) in day of PrecisionDateIvl
+define ContainsDayOfDateVeryImpreciseMiddle: DateTime(2012, 6) in day of PrecisionDateIvl
+define NotContainsDayOfDateVeryImpreciseLow: DateTime(2012, 2) in day of PrecisionDateIvl
+define NotContainsDayOfDateVeryImpreciseHigh: DateTime(2012, 10) in day of PrecisionDateIvl
+define MayContainDayOfDateVeryImpreciseLow: DateTime(2012, 3) in day of PrecisionDateIvl
+define MayContainDayOfDateVeryImpreciseHigh: DateTime(2012, 9) in day of PrecisionDateIvl
+define MayContainDayOfDateVeryImpreciseSurrounding: DateTime(2012) in day of PrecisionDateIvl
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseContainsDate: DateTime(2012, 6, 1, 0, 0, 0, 0) in ImpDateIvl
 define ImpreciseNotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in ImpDateIvl
@@ -4833,6 +5337,484 @@ module.exports['In'] = {
                   }
                }, {
                   "name" : "DateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "ContainsDayOfDateLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "ContainsDayOfDateHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "999",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotContainsDayOfDateLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "59",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "999",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotContainsDayOfDateHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "ContainsDayOfDateImpreciseLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "ContainsDayOfDateImpreciseHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "ContainsDayOfDateVeryImpreciseMiddle",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "6",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotContainsDayOfDateVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotContainsDayOfDateVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "10",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayContainDayOfDateVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayContainDayOfDateVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayContainDayOfDateVeryImpreciseSurrounding",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "In",
+               "operand" : [ {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
                } ]
             }
@@ -6346,6 +7328,19 @@ define NotIncludesDateIvl: DateIvl includes Interval[DateTime(2012, 6, 1, 0, 0, 
 define IncludesImpreciseDateIvl: DateIvl includes Interval[DateTime(2012, 4), DateTime(2012, 6)]
 define NotIncludesImpreciseDateIvl: DateIvl includes Interval[DateTime(2012, 4), DateTime(2012, 9)]
 define MayIncludeImpreciseDateIvl: DateIvl includes Interval[DateTime(2012), DateTime(2012)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define IncludesDayOfIvlLowEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define IncludesDayOfIvlHighEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 2, 23, 59, 59, 999))
+define NotIncludesDayOfIvlLowEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define NotIncludesDayOfIvlHighEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 3, 0, 0, 0, 0)]
+define IncludesDayOfIvlImpreciseLowEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 3, 2), DateTime(2012, 6, 1)]
+define IncludesDayOfIvlImpreciseHighEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 6, 1), DateTime(2012, 9, 2)]
+define IncludesDayOfIvlVeryImpreciseMiddle: PrecisionDateIvl includes day of Interval[DateTime(2012, 5), DateTime(2012, 6)]
+define NotIncludesDayOfIvlVeryImpreciseLow: PrecisionDateIvl includes day of Interval[DateTime(2012, 2), DateTime(2012, 6)]
+define NotIncludesDayOfIvlVeryImpreciseHigh: PrecisionDateIvl includes day of Interval[DateTime(2012, 6), DateTime(2012, 10)]
+define MayIncludeDayOfIvlVeryImpreciseLow: PrecisionDateIvl includes day of Interval[DateTime(2012, 3), DateTime(2012, 6)]
+define MayIncludeDayOfIvlVeryImpreciseHigh: PrecisionDateIvl includes day of Interval[DateTime(2012, 6), DateTime(2012, 9)]
+define MayIncludeDayOfIvlVeryImpreciseSurrounding: PrecisionDateIvl includes day of Interval[DateTime(2012), DateTime(2012)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseIncludesDateIvl: ImpDateIvl includes Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
 define ImpreciseNotIncludesDateIvl: ImpDateIvl includes Interval[DateTime(2012, 2, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
@@ -6904,6 +7899,805 @@ module.exports['Includes'] = {
                "type" : "Includes",
                "operand" : [ {
                   "name" : "DateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "IncludesDayOfIvlLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IncludesDayOfIvlHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotIncludesDayOfIvlLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotIncludesDayOfIvlHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IncludesDayOfIvlImpreciseLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IncludesDayOfIvlImpreciseHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "IncludesDayOfIvlVeryImpreciseMiddle",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotIncludesDayOfIvlVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotIncludesDayOfIvlVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayIncludeDayOfIvlVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayIncludeDayOfIvlVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayIncludeDayOfIvlVeryImpreciseSurrounding",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Includes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
                }, {
                   "lowClosed" : true,
@@ -9098,6 +10892,15 @@ define NotProperlyIncludesDateIvl: DateIvl properly includes Interval[DateTime(2
 define PosInfEndProperlyIncludesIntIvl: Interval[0, null] properly includes Interval[1234, 5678]
 define PosInfEndNotProperlyIncludesIntIvl: Interval[0, null] properly includes Interval[0, null]
 define UnknownEndMayProperlyIncludeIntIvl: Interval[0, null) properly includes Interval[0, 0]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define ProperlyIncludesDayOfIvlLowEdge: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define ProperlyIncludesDayOfIvlHighEdge: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 2, 23, 59, 59, 999))
+define ProperlyIncludesDayOfIvlNearEdges: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3, 3, 0, 0, 0, 0), DateTime(2012, 9, 1, 23, 59, 59, 999))
+define NotProperlyIncludesDayOfIvlSameEdges: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 9, 2, 0, 0, 0, 0)]
+define MayProperlyIncludeDayOfIvlVeryImpreciseLow: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3), DateTime(2012, 6)]
+define MayProperlyIncludeDayOfIvlVeryImpreciseHigh: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 6), DateTime(2012, 9)]
+define MayProperlyIncludeDayOfIvlVeryImpreciseLowAndHigh: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3), DateTime(2012, 9)]
+define MayProperlyIncludeDayOfIvlVeryImpreciseSurrounding: PrecisionDateIvl properly includes day of Interval[DateTime(2012), DateTime(2012)]
 ###
 
 module.exports['ProperlyIncludes'] = {
@@ -9746,6 +11549,617 @@ module.exports['ProperlyIncludes'] = {
                   }
                } ]
             }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "ProperlyIncludesDayOfIvlLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ProperlyIncludesDayOfIvlHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "ProperlyIncludesDayOfIvlNearEdges",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotProperlyIncludesDayOfIvlSameEdges",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayProperlyIncludeDayOfIvlVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayProperlyIncludeDayOfIvlVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayProperlyIncludeDayOfIvlVeryImpreciseLowAndHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayProperlyIncludeDayOfIvlVeryImpreciseSurrounding",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludes",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
          } ]
       }
    }
@@ -9765,6 +12179,19 @@ define NotIncludesDateIvl: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2
 define IncludesImpreciseDateIvl: Interval[DateTime(2012, 4), DateTime(2012, 6)] included in DateIvl
 define NotIncludesImpreciseDateIvl: Interval[DateTime(2012, 4), DateTime(2012, 9)] included in DateIvl
 define MayIncludeImpreciseDateIvl: Interval[DateTime(2012), DateTime(2012)] included in DateIvl
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define IncludesDayOfIvlLowEdge: Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in day of PrecisionDateIvl
+define IncludesDayOfIvlHighEdge: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 2, 23, 59, 59, 999)) included in day of PrecisionDateIvl
+define NotIncludesDayOfIvlLowEdge: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] included in day of PrecisionDateIvl
+define NotIncludesDayOfIvlHighEdge: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 3, 0, 0, 0, 0)] included in day of PrecisionDateIvl
+define IncludesDayOfIvlImpreciseLowEdge: Interval[DateTime(2012, 3, 2), DateTime(2012, 6, 1)] included in day of PrecisionDateIvl
+define IncludesDayOfIvlImpreciseHighEdge: Interval[DateTime(2012, 6, 1), DateTime(2012, 9, 2)] included in day of PrecisionDateIvl
+define IncludesDayOfIvlVeryImpreciseMiddle: Interval[DateTime(2012, 5), DateTime(2012, 6)] included in day of PrecisionDateIvl
+define NotIncludesDayOfIvlVeryImpreciseLow: Interval[DateTime(2012, 2), DateTime(2012, 6)] included in day of PrecisionDateIvl
+define NotIncludesDayOfIvlVeryImpreciseHigh: Interval[DateTime(2012, 6), DateTime(2012, 10)] included in day of PrecisionDateIvl
+define MayIncludeDayOfIvlVeryImpreciseLow: Interval[DateTime(2012, 3), DateTime(2012, 6)] included in day of PrecisionDateIvl
+define MayIncludeDayOfIvlVeryImpreciseHigh: Interval[DateTime(2012, 6), DateTime(2012, 9)] included in day of PrecisionDateIvl
+define MayIncludeDayOfIvlVeryImpreciseSurrounding: Interval[DateTime(2012), DateTime(2012)] included in day of PrecisionDateIvl
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseIncludesDateIvl: Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
 define ImpreciseNotIncludesDateIvl: Interval[DateTime(2012, 2, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
@@ -10343,6 +12770,805 @@ module.exports['IncludedIn'] = {
                   }
                }, {
                   "name" : "DateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "IncludesDayOfIvlLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "IncludesDayOfIvlHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotIncludesDayOfIvlLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotIncludesDayOfIvlHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "IncludesDayOfIvlImpreciseLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "IncludesDayOfIvlImpreciseHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "IncludesDayOfIvlVeryImpreciseMiddle",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotIncludesDayOfIvlVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotIncludesDayOfIvlVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayIncludeDayOfIvlVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayIncludeDayOfIvlVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayIncludeDayOfIvlVeryImpreciseSurrounding",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "IncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
                } ]
             }
@@ -12442,6 +15668,15 @@ define NotProperlyIncludesDateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), Da
 define PosInfEndProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
 define PosInfEndNotProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
 define UnknownEndMayBeProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define ProperlyIncludesDayOfIvlLowEdge: Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) properly included in day of PrecisionDateIvl
+define ProperlyIncludesDayOfIvlHighEdge: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 2, 23, 59, 59, 999)) properly included in day of PrecisionDateIvl
+define ProperlyIncludesDayOfIvlNearEdges: Interval[DateTime(2012, 3, 3, 0, 0, 0, 0), DateTime(2012, 9, 1, 23, 59, 59, 999)) properly included in day of PrecisionDateIvl
+define NotProperlyIncludesDayOfIvlSameEdges: Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 9, 2, 0, 0, 0, 0)] properly included in day of PrecisionDateIvl
+define MayProperlyIncludeDayOfIvlVeryImpreciseLow: Interval[DateTime(2012, 3), DateTime(2012, 6)] properly included in day of PrecisionDateIvl
+define MayProperlyIncludeDayOfIvlVeryImpreciseHigh: Interval[DateTime(2012, 6), DateTime(2012, 9)] properly included in day of PrecisionDateIvl
+define MayProperlyIncludeDayOfIvlVeryImpreciseLowAndHigh: Interval[DateTime(2012, 3), DateTime(2012, 9)] properly included in day of PrecisionDateIvl
+define MayProperlyIncludeDayOfIvlVeryImpreciseSurrounding: Interval[DateTime(2012), DateTime(2012)] properly included in day of PrecisionDateIvl
 ###
 
 module.exports['ProperlyIncludedIn'] = {
@@ -13354,6 +16589,617 @@ module.exports['ProperlyIncludedIn'] = {
                   }
                } ]
             }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "ProperlyIncludesDayOfIvlLowEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "ProperlyIncludesDayOfIvlHighEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "ProperlyIncludesDayOfIvlNearEdges",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : false,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "NotProperlyIncludesDayOfIvlSameEdges",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayProperlyIncludeDayOfIvlVeryImpreciseLow",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayProperlyIncludeDayOfIvlVeryImpreciseHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayProperlyIncludeDayOfIvlVeryImpreciseLowAndHigh",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "MayProperlyIncludeDayOfIvlVeryImpreciseSurrounding",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "ProperIncludedIn",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               } ]
+            }
          } ]
       }
    }
@@ -13373,6 +17219,13 @@ define NotAfterDateIvl: DateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0),
 define AfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012, 1), DateTime(2012, 2)]
 define NotAfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012, 1), DateTime(2012, 3)]
 define MayBeAfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012), DateTime(2012)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define AfterDayOfIvl: PrecisionDateIvl after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define BeforeDayOfIvl: PrecisionDateIvl after day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define StartsSameDayOfIvlEnd: PrecisionDateIvl after day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 2, 0, 0, 0, 0)]
+define EndsSameDayOfIvlStart: PrecisionDateIvl after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define MayBeAfterDayOfImpreciseIvl: PrecisionDateIvl after day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayBeBeforeDayOfImpreciseIvl: PrecisionDateIvl after day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseAfterDateIvl: ImpDateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0))
 define ImpreciseNotAfterDateIvl: ImpDateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0))
@@ -13943,6 +17796,543 @@ module.exports['After'] = {
                      "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "AfterDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "After",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "BeforeDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "After",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "StartsSameDayOfIvlEnd",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "After",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "EndsSameDayOfIvlStart",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "After",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayBeAfterDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "After",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayBeBeforeDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "After",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
                         "type" : "Literal"
                      }
                   }
@@ -15580,6 +19970,13 @@ define NotBeforeDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(201
 define BeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define NotBeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012, 8), DateTime(2012, 12)]
 define MayBeBeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012), DateTime(2012)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define AfterDayOfIvl: PrecisionDateIvl before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define BeforeDayOfIvl: PrecisionDateIvl before day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define StartsSameDayOfIvlEnd: PrecisionDateIvl before day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 2, 0, 0, 0, 0)]
+define EndsSameDayOfIvlStart: PrecisionDateIvl before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define MayBeAfterDayOfImpreciseIvl: PrecisionDateIvl before day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayBeBeforeDayOfImpreciseIvl: PrecisionDateIvl before day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseBeforeDateIvl: ImpDateIvl before Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0))
 define ImpreciseNotBeforeDateIvl: ImpDateIvl before Interval[DateTime(2012, 8, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0))
@@ -16150,6 +20547,543 @@ module.exports['Before'] = {
                      "year" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "2012",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "AfterDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Before",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "BeforeDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Before",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "StartsSameDayOfIvlEnd",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Before",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "EndsSameDayOfIvlStart",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Before",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayBeAfterDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Before",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayBeBeforeDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Before",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
                         "type" : "Literal"
                      }
                   }
@@ -17769,6 +22703,13 @@ define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012
 define MayMeetAfterImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 1), DateTime(2012, 2)]
 define MayMeetBeforeImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define NotMeetsImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define MeetsAfterDayOfIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define MeetsBeforeDayOfIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotMeetsDayOfIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define NotMeetsDayOfImpreciseIVL: PrecisionDateIvl meets day of Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetAfterDayOfImpreciseIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayMeetBeforeDayOfImpreciseIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
 define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
@@ -18513,6 +23454,493 @@ module.exports['Meets'] = {
                      "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "MeetsAfterDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Meets",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MeetsBeforeDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Meets",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotMeetsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Meets",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotMeetsDayOfImpreciseIVL",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Meets",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayMeetAfterDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Meets",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayMeetBeforeDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "Meets",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
                         "type" : "Literal"
                      }
                   },
@@ -21426,6 +26854,13 @@ define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012
 define MayMeetAfterImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 1), DateTime(2012, 2)]
 define MayMeetBeforeImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define NotMeetsImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define MeetsAfterDayOfIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define MeetsBeforeDayOfIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotMeetsDayOfIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define NotMeetsDayOfImpreciseIVL: PrecisionDateIvl meets after day of Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetAfterDayOfImpreciseIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayMeetBeforeDayOfImpreciseIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
 define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets after Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
@@ -22170,6 +27605,493 @@ module.exports['MeetsAfter'] = {
                      "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "MeetsAfterDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MeetsBeforeDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotMeetsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotMeetsDayOfImpreciseIVL",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayMeetAfterDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayMeetBeforeDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
                         "type" : "Literal"
                      }
                   },
@@ -25083,6 +31005,13 @@ define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012
 define MayMeetAfterImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 1), DateTime(2012, 2)]
 define MayMeetBeforeImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define NotMeetsImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define MeetsAfterDayOfIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define MeetsBeforeDayOfIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotMeetsDayOfIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define NotMeetsDayOfImpreciseIVL: PrecisionDateIvl meets before day of Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetAfterDayOfImpreciseIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayMeetBeforeDayOfImpreciseIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets before Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
 define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets before Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
@@ -25827,6 +31756,493 @@ module.exports['MeetsBefore'] = {
                      "month" : {
                         "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                         "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "MeetsAfterDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MeetsBeforeDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotMeetsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotMeetsDayOfImpreciseIVL",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayMeetAfterDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayMeetBeforeDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "MeetsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
                         "type" : "Literal"
                      }
                   },
@@ -29080,6 +35496,16 @@ define ImpreciseOverlap: ivlD overlaps ivlE
 define NoOverlap: ivlC overlaps ivlD
 define NoImpreciseOverlap: ivlE overlaps ivlG
 define UnknownOverlap: ivlF overlaps ivlG
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+// NOTE: There appears to be a bug in cql-to-elm that translates these 'overlaps' to 'OverlapsAfter'!
+define OverlapsBeforeDayOfIvlEdge: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfIvlEdge: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define OverlapsContainsDayOfIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 5, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define OverlapsContainedByDayOfIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotOverlapsDayOfIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfImpreciseInterval: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1), DateTime(2012, 4)]
+define MayOverlapBeforeDayOfImpreciseIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 9), DateTime(2012, 10)]
+define MayOverlapAfterDayOfImpreciseIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
 ###
 
 module.exports['OverlapsDateTime'] = {
@@ -29640,6 +36066,677 @@ module.exports['OverlapsDateTime'] = {
                   "type" : "ExpressionRef"
                } ]
             }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "OverlapsBeforeDayOfIvlEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterDayOfIvlEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsContainsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsContainedByDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotOverlapsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterDayOfImpreciseInterval",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayOverlapBeforeDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayOverlapAfterDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
          } ]
       }
    }
@@ -30003,6 +37100,15 @@ define ImpreciseOverlapAfter: ivlF overlaps after ivlE
 define NoOverlap: ivlC overlaps after ivlD
 define NoImpreciseOverlap: ivlE overlaps after ivlG
 define UnknownOverlap: ivlG overlaps after ivlF
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define OverlapsBeforeDayOfIvlEdge: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfIvlEdge: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define OverlapsContainsDayOfIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 5, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define OverlapsContainedByDayOfIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotOverlapsDayOfIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfImpreciseInterval: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1), DateTime(2012, 4)]
+define MayOverlapBeforeDayOfImpreciseIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 9), DateTime(2012, 10)]
+define MayOverlapAfterDayOfImpreciseIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
 ###
 
 module.exports['OverlapsAfterDateTime'] = {
@@ -30577,6 +37683,677 @@ module.exports['OverlapsAfterDateTime'] = {
                   "type" : "ExpressionRef"
                } ]
             }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "OverlapsBeforeDayOfIvlEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterDayOfIvlEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsContainsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsContainedByDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotOverlapsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterDayOfImpreciseInterval",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayOverlapBeforeDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayOverlapAfterDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsAfter",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
          } ]
       }
    }
@@ -30940,6 +38717,15 @@ define ImpreciseOverlapAfter: ivlF overlaps before ivlE
 define NoOverlap: ivlC overlaps before ivlD
 define NoImpreciseOverlap: ivlE overlaps before ivlG
 define UnknownOverlap: ivlF overlaps before ivlG
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define OverlapsBeforeDayOfIvlEdge: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfIvlEdge: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define OverlapsContainsDayOfIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 5, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define OverlapsContainedByDayOfIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotOverlapsDayOfIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfImpreciseInterval: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1), DateTime(2012, 4)]
+define MayOverlapBeforeDayOfImpreciseIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 9), DateTime(2012, 10)]
+define MayOverlapAfterDayOfImpreciseIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
 ###
 
 module.exports['OverlapsBeforeDateTime'] = {
@@ -31512,6 +39298,677 @@ module.exports['OverlapsBeforeDateTime'] = {
                }, {
                   "name" : "ivlG",
                   "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "PrecisionDateIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : false,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "12",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "34",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "56",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "789",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "9",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "23",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "45",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "678",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
+            "name" : "OverlapsBeforeDayOfIvlEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "23",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "59",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "999",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterDayOfIvlEdge",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsContainsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "5",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "6",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsContainedByDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "12",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "NotOverlapsDayOfIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "hour" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "minute" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "second" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     },
+                     "millisecond" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "0",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "OverlapsAfterDayOfImpreciseInterval",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "4",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayOverlapBeforeDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "9",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "name" : "MayOverlapAfterDayOfImpreciseIvl",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "precision" : "Day",
+               "type" : "OverlapsBefore",
+               "operand" : [ {
+                  "name" : "PrecisionDateIvl",
+                  "type" : "ExpressionRef"
+               }, {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2012",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "3",
+                        "type" : "Literal"
+                     }
+                  }
                } ]
             }
          } ]

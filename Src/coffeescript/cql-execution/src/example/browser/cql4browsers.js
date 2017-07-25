@@ -1122,30 +1122,30 @@
       this.highClosed = highClosed != null ? highClosed : true;
     }
 
-    Interval.prototype.contains = function(item) {
+    Interval.prototype.contains = function(item, precision) {
       var closed;
       if (item instanceof Interval) {
         throw new Error("Argument to contains must be a point");
       }
       closed = this.toClosed();
-      return ThreeValuedLogic.and(cmp.lessThanOrEquals(closed.low, item), cmp.greaterThanOrEquals(closed.high, item));
+      return ThreeValuedLogic.and(cmp.lessThanOrEquals(closed.low, item, precision), cmp.greaterThanOrEquals(closed.high, item, precision));
     };
 
-    Interval.prototype.properlyIncludes = function(other) {
+    Interval.prototype.properlyIncludes = function(other, precision) {
       if (!(other instanceof Interval)) {
         throw new Error("Argument to properlyIncludes must be an interval");
       }
-      return ThreeValuedLogic.and(this.includes(other), ThreeValuedLogic.not(cmp.equals(this, other)));
+      return ThreeValuedLogic.and(this.includes(other, precision), ThreeValuedLogic.not(other.includes(this, precision)));
     };
 
-    Interval.prototype.includes = function(other) {
+    Interval.prototype.includes = function(other, precision) {
       var a, b;
       if (!(other instanceof Interval)) {
         throw new Error("Argument to includes must be an interval");
       }
       a = this.toClosed();
       b = other.toClosed();
-      return ThreeValuedLogic.and(cmp.lessThanOrEquals(a.low, b.low), cmp.greaterThanOrEquals(a.high, b.high));
+      return ThreeValuedLogic.and(cmp.lessThanOrEquals(a.low, b.low, precision), cmp.greaterThanOrEquals(a.high, b.high, precision));
     };
 
     Interval.prototype.includedIn = function(other) {
@@ -1155,25 +1155,25 @@
       return other.includes(this);
     };
 
-    Interval.prototype.overlaps = function(item) {
+    Interval.prototype.overlaps = function(item, precision) {
       var closed, high, itemClosed, low, ref1;
       closed = this.toClosed();
       ref1 = item instanceof Interval ? (itemClosed = item.toClosed(), [itemClosed.low, itemClosed.high]) : [item, item], low = ref1[0], high = ref1[1];
-      return ThreeValuedLogic.and(cmp.lessThanOrEquals(closed.low, high), cmp.greaterThanOrEquals(closed.high, low));
+      return ThreeValuedLogic.and(cmp.lessThanOrEquals(closed.low, high, precision), cmp.greaterThanOrEquals(closed.high, low, precision));
     };
 
-    Interval.prototype.overlapsAfter = function(item) {
+    Interval.prototype.overlapsAfter = function(item, precision) {
       var closed, high;
       closed = this.toClosed();
       high = item instanceof Interval ? item.toClosed().high : item;
-      return ThreeValuedLogic.and(cmp.lessThanOrEquals(closed.low, high), cmp.greaterThan(closed.high, high));
+      return ThreeValuedLogic.and(cmp.lessThanOrEquals(closed.low, high, precision), cmp.greaterThan(closed.high, high, precision));
     };
 
-    Interval.prototype.overlapsBefore = function(item) {
+    Interval.prototype.overlapsBefore = function(item, precision) {
       var closed, low;
       closed = this.toClosed();
       low = item instanceof Interval ? item.toClosed().low : item;
-      return ThreeValuedLogic.and(cmp.lessThan(closed.low, low), cmp.greaterThanOrEquals(closed.high, low));
+      return ThreeValuedLogic.and(cmp.lessThan(closed.low, low, precision), cmp.greaterThanOrEquals(closed.high, low, precision));
     };
 
     areDateTimes = function(x, y) {
@@ -1340,41 +1340,51 @@
       }
     };
 
-    Interval.prototype.after = function(other) {
+    Interval.prototype.after = function(other, precision) {
       var closed;
       closed = this.toClosed();
       if (!!other.toClosed) {
-        return cmp.greaterThan(closed.low, other.toClosed().high);
+        return cmp.greaterThan(closed.low, other.toClosed().high, precision);
       } else {
-        return cmp.greaterThan(closed.low, other);
+        return cmp.greaterThan(closed.low, other, precision);
       }
     };
 
-    Interval.prototype.before = function(other) {
+    Interval.prototype.before = function(other, precision) {
       var closed;
       closed = this.toClosed();
       if (!!other.toClosed) {
-        return cmp.lessThan(closed.high, other.toClosed().low);
+        return cmp.lessThan(closed.high, other.toClosed().low, precision);
       } else {
-        return cmp.lessThan(closed.high, other);
+        return cmp.lessThan(closed.high, other, precision);
       }
     };
 
-    Interval.prototype.meets = function(other) {
-      return ThreeValuedLogic.or(this.meetsBefore(other), this.meetsAfter(other));
+    Interval.prototype.meets = function(other, precision) {
+      return ThreeValuedLogic.or(this.meetsBefore(other, precision), this.meetsAfter(other, precision));
     };
 
-    Interval.prototype.meetsAfter = function(other) {
+    Interval.prototype.meetsAfter = function(other, precision) {
+      var ref1;
       try {
-        return cmp.equals(this.toClosed().low, successor(other.toClosed().high));
+        if ((precision != null) && this.low instanceof DateTime) {
+          return this.toClosed().low.sameAs((ref1 = other.toClosed().high) != null ? ref1.add(1, precision) : void 0, precision);
+        } else {
+          return cmp.equals(this.toClosed().low, successor(other.toClosed().high));
+        }
       } catch (error) {
         return false;
       }
     };
 
-    Interval.prototype.meetsBefore = function(other) {
+    Interval.prototype.meetsBefore = function(other, precision) {
+      var ref1;
       try {
-        return cmp.equals(this.toClosed().high, predecessor(other.toClosed().low));
+        if ((precision != null) && this.high instanceof DateTime) {
+          return this.toClosed().high.sameAs((ref1 = other.toClosed().low) != null ? ref1.add(-1, precision) : void 0, precision);
+        } else {
+          return cmp.equals(this.toClosed().high, predecessor(other.toClosed().low));
+        }
       } catch (error) {
         return false;
       }
@@ -1521,6 +1531,9 @@
       this.low = low != null ? low : null;
       this.high = high;
       gt = function(a, b) {
+        if (typeof a !== typeof b) {
+          return null;
+        }
         if (typeof a.after === 'function') {
           return a.after(b);
         } else {
@@ -1538,6 +1551,9 @@
     Uncertainty.prototype.isPoint = function() {
       var gte, lte;
       lte = function(a, b) {
+        if (typeof a !== typeof b) {
+          return null;
+        }
         if (typeof a.sameOrBefore === 'function') {
           return a.sameOrBefore(b);
         } else {
@@ -1545,6 +1561,9 @@
         }
       };
       gte = function(a, b) {
+        if (typeof a !== typeof b) {
+          return null;
+        }
         if (typeof a.sameOrBefore === 'function') {
           return a.sameOrAfter(b);
         } else {
@@ -1562,6 +1581,9 @@
     Uncertainty.prototype.lessThan = function(other) {
       var bestCase, lt, worstCase;
       lt = function(a, b) {
+        if (typeof a !== typeof b) {
+          return null;
+        }
         if (typeof a.before === 'function') {
           return a.before(b);
         } else {
@@ -3688,16 +3710,16 @@
 
   })(Expression);
 
-  module.exports.doContains = function(interval, item) {
-    return interval.contains(item);
+  module.exports.doContains = function(interval, item, precision) {
+    return interval.contains(item, precision);
   };
 
-  module.exports.doIncludes = doIncludes = function(interval, subinterval) {
-    return interval.includes(subinterval);
+  module.exports.doIncludes = doIncludes = function(interval, subinterval, precision) {
+    return interval.includes(subinterval, precision);
   };
 
-  module.exports.doProperIncludes = function(interval, subinterval) {
-    return interval.properlyIncludes(subinterval);
+  module.exports.doProperIncludes = function(interval, subinterval, precision) {
+    return interval.properlyIncludes(subinterval, precision);
   };
 
   module.exports.doAfter = function(a, b, precision) {
@@ -3712,14 +3734,16 @@
     extend(Meets, superClass);
 
     function Meets(json) {
+      var ref1;
       Meets.__super__.constructor.apply(this, arguments);
+      this.precision = (ref1 = json.precision) != null ? ref1.toLowerCase() : void 0;
     }
 
     Meets.prototype.exec = function(ctx) {
       var a, b, ref1;
       ref1 = this.execArgs(ctx), a = ref1[0], b = ref1[1];
       if ((a != null) && (b != null)) {
-        return a.meets(b);
+        return a.meets(b, this.precision);
       } else {
         return null;
       }
@@ -3733,14 +3757,16 @@
     extend(MeetsAfter, superClass);
 
     function MeetsAfter(json) {
+      var ref1;
       MeetsAfter.__super__.constructor.apply(this, arguments);
+      this.precision = (ref1 = json.precision) != null ? ref1.toLowerCase() : void 0;
     }
 
     MeetsAfter.prototype.exec = function(ctx) {
       var a, b, ref1;
       ref1 = this.execArgs(ctx), a = ref1[0], b = ref1[1];
       if ((a != null) && (b != null)) {
-        return a.meetsAfter(b);
+        return a.meetsAfter(b, this.precision);
       } else {
         return null;
       }
@@ -3754,14 +3780,16 @@
     extend(MeetsBefore, superClass);
 
     function MeetsBefore(json) {
+      var ref1;
       MeetsBefore.__super__.constructor.apply(this, arguments);
+      this.precision = (ref1 = json.precision) != null ? ref1.toLowerCase() : void 0;
     }
 
     MeetsBefore.prototype.exec = function(ctx) {
       var a, b, ref1;
       ref1 = this.execArgs(ctx), a = ref1[0], b = ref1[1];
       if ((a != null) && (b != null)) {
-        return a.meetsBefore(b);
+        return a.meetsBefore(b, this.precision);
       } else {
         return null;
       }
@@ -3775,14 +3803,16 @@
     extend(Overlaps, superClass);
 
     function Overlaps(json) {
+      var ref1;
       Overlaps.__super__.constructor.apply(this, arguments);
+      this.precision = (ref1 = json.precision) != null ? ref1.toLowerCase() : void 0;
     }
 
     Overlaps.prototype.exec = function(ctx) {
       var a, b, ref1;
       ref1 = this.execArgs(ctx), a = ref1[0], b = ref1[1];
       if ((a != null) && (b != null)) {
-        return a.overlaps(b);
+        return a.overlaps(b, this.precision);
       } else {
         return null;
       }
@@ -3796,14 +3826,16 @@
     extend(OverlapsAfter, superClass);
 
     function OverlapsAfter(json) {
+      var ref1;
       OverlapsAfter.__super__.constructor.apply(this, arguments);
+      this.precision = (ref1 = json.precision) != null ? ref1.toLowerCase() : void 0;
     }
 
     OverlapsAfter.prototype.exec = function(ctx) {
       var a, b, ref1;
       ref1 = this.execArgs(ctx), a = ref1[0], b = ref1[1];
       if ((a != null) && (b != null)) {
-        return a.overlapsAfter(b);
+        return a.overlapsAfter(b, this.precision);
       } else {
         return null;
       }
@@ -3817,14 +3849,16 @@
     extend(OverlapsBefore, superClass);
 
     function OverlapsBefore(json) {
+      var ref1;
       OverlapsBefore.__super__.constructor.apply(this, arguments);
+      this.precision = (ref1 = json.precision) != null ? ref1.toLowerCase() : void 0;
     }
 
     OverlapsBefore.prototype.exec = function(ctx) {
       var a, b, ref1;
       ref1 = this.execArgs(ctx), a = ref1[0], b = ref1[1];
       if ((a != null) && (b != null)) {
-        return a.overlapsBefore(b);
+        return a.overlapsBefore(b, this.precision);
       } else {
         return null;
       }
@@ -4878,7 +4912,9 @@
     extend(In, superClass);
 
     function In(json) {
+      var ref;
       In.__super__.constructor.apply(this, arguments);
+      this.precision = (ref = json.precision) != null ? ref.toLowerCase() : void 0;
     }
 
     In.prototype.exec = function(ctx) {
@@ -4895,7 +4931,7 @@
             return IVL;
         }
       })();
-      return lib.doContains(container, item);
+      return lib.doContains(container, item, this.precision);
     };
 
     return In;
@@ -4906,7 +4942,9 @@
     extend(Contains, superClass);
 
     function Contains(json) {
+      var ref;
       Contains.__super__.constructor.apply(this, arguments);
+      this.precision = (ref = json.precision) != null ? ref.toLowerCase() : void 0;
     }
 
     Contains.prototype.exec = function(ctx) {
@@ -4923,7 +4961,7 @@
             return IVL;
         }
       })();
-      return lib.doContains(container, item);
+      return lib.doContains(container, item, this.precision);
     };
 
     return Contains;
@@ -4934,7 +4972,9 @@
     extend(Includes, superClass);
 
     function Includes(json) {
+      var ref;
       Includes.__super__.constructor.apply(this, arguments);
+      this.precision = (ref = json.precision) != null ? ref.toLowerCase() : void 0;
     }
 
     Includes.prototype.exec = function(ctx) {
@@ -4951,7 +4991,7 @@
             return IVL;
         }
       })();
-      return lib.doIncludes(container, contained);
+      return lib.doIncludes(container, contained, this.precision);
     };
 
     return Includes;
@@ -4962,7 +5002,9 @@
     extend(IncludedIn, superClass);
 
     function IncludedIn(json) {
+      var ref;
       IncludedIn.__super__.constructor.apply(this, arguments);
+      this.precision = (ref = json.precision) != null ? ref.toLowerCase() : void 0;
     }
 
     IncludedIn.prototype.exec = function(ctx) {
@@ -4979,7 +5021,7 @@
             return IVL;
         }
       })();
-      return lib.doIncludes(container, contained);
+      return lib.doIncludes(container, contained, this.precision);
     };
 
     return IncludedIn;
@@ -4990,7 +5032,9 @@
     extend(ProperIncludes, superClass);
 
     function ProperIncludes(json) {
+      var ref;
       ProperIncludes.__super__.constructor.apply(this, arguments);
+      this.precision = (ref = json.precision) != null ? ref.toLowerCase() : void 0;
     }
 
     ProperIncludes.prototype.exec = function(ctx) {
@@ -5007,7 +5051,7 @@
             return IVL;
         }
       })();
-      return lib.doProperIncludes(container, contained);
+      return lib.doProperIncludes(container, contained, this.precision);
     };
 
     return ProperIncludes;
@@ -5018,7 +5062,9 @@
     extend(ProperIncludedIn, superClass);
 
     function ProperIncludedIn(json) {
+      var ref;
       ProperIncludedIn.__super__.constructor.apply(this, arguments);
+      this.precision = (ref = json.precision) != null ? ref.toLowerCase() : void 0;
     }
 
     ProperIncludedIn.prototype.exec = function(ctx) {
@@ -5035,7 +5081,7 @@
             return IVL;
         }
       })();
-      return lib.doProperIncludes(container, contained);
+      return lib.doProperIncludes(container, contained, this.precision);
     };
 
     return ProperIncludedIn;

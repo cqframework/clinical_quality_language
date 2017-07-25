@@ -21,16 +21,16 @@ module.exports.Interval = class Interval extends Expression
 # NotEqual is completely handled by overloaded#Equal
 
 # Delegated to by overloaded#Contains and overloaded#In
-module.exports.doContains = (interval, item) ->
-  interval.contains item
+module.exports.doContains = (interval, item, precision) ->
+  interval.contains item, precision
 
 # Delegated to by overloaded#Includes and overloaded#IncludedIn
-module.exports.doIncludes = doIncludes = (interval, subinterval) ->
-  interval.includes subinterval
+module.exports.doIncludes = doIncludes = (interval, subinterval, precision) ->
+  interval.includes subinterval, precision
 
 # Delegated to by overloaded#ProperIncludes and overloaded@ProperIncludedIn
-module.exports.doProperIncludes = (interval, subinterval) ->
-  interval.properlyIncludes subinterval
+module.exports.doProperIncludes = (interval, subinterval, precision) ->
+  interval.properlyIncludes subinterval, precision
 
 # Delegated to by overloaded#After
 module.exports.doAfter = (a, b, precision) ->
@@ -43,50 +43,56 @@ module.exports.doBefore = (a, b, precision) ->
 module.exports.Meets = class Meets extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.meets b else null
+    if a? and b? then a.meets(b, @precision) else null
 
 module.exports.MeetsAfter = class MeetsAfter extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.meetsAfter b else null
+    if a? and b? then a.meetsAfter(b, @precision) else null
 
 module.exports.MeetsBefore = class MeetsBefore extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.meetsBefore b else null
+    if a? and b? then a.meetsBefore(b, @precision) else null
 
 module.exports.Overlaps = class Overlaps extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.overlaps b else null
+    if a? and b? then a.overlaps(b, @precision) else null
 
 module.exports.OverlapsAfter = class OverlapsAfter extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.overlapsAfter b else null
+    if a? and b? then a.overlapsAfter(b, @precision) else null
 
 module.exports.OverlapsBefore = class OverlapsBefore extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.overlapsBefore b else null
+    if a? and b? then a.overlapsBefore(b, @precision) else null
 
 # Delegated to by overloaded#Union
 module.exports.doUnion = (a, b) ->

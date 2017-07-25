@@ -7,35 +7,35 @@ cmp = require '../util/comparison'
 module.exports.Interval = class Interval
   constructor: (@low, @high, @lowClosed = true, @highClosed = true) ->
 
-  contains: (item) ->
+  contains: (item, precision) ->
     if item instanceof Interval then throw new Error("Argument to contains must be a point")
     closed = @toClosed()
     ThreeValuedLogic.and(
-      cmp.lessThanOrEquals(closed.low, item),
-      cmp.greaterThanOrEquals(closed.high, item)
+      cmp.lessThanOrEquals(closed.low, item, precision),
+      cmp.greaterThanOrEquals(closed.high, item, precision)
     )
 
-  properlyIncludes: (other) ->
+  properlyIncludes: (other, precision) ->
     if not (other instanceof Interval) then throw new Error("Argument to properlyIncludes must be an interval")
     ThreeValuedLogic.and(
-      @includes(other),
-      ThreeValuedLogic.not(cmp.equals(@, other))
+      @includes(other, precision),
+      ThreeValuedLogic.not(other.includes(@, precision))
     )
 
-  includes: (other) ->
+  includes: (other, precision) ->
     if not (other instanceof Interval) then throw new Error("Argument to includes must be an interval")
     a = @toClosed()
     b = other.toClosed()
     ThreeValuedLogic.and(
-      cmp.lessThanOrEquals(a.low, b.low),
-      cmp.greaterThanOrEquals(a.high, b.high)
+      cmp.lessThanOrEquals(a.low, b.low, precision),
+      cmp.greaterThanOrEquals(a.high, b.high, precision)
     )
 
   includedIn: (other) ->
     if not (other instanceof Interval) then throw new Error("Argument to includedIn must be an interval")
     other.includes @
 
-  overlaps: (item) ->
+  overlaps: (item, precision) ->
     closed = @toClosed()
     [low, high] = if item instanceof Interval
       itemClosed = item.toClosed()
@@ -43,24 +43,24 @@ module.exports.Interval = class Interval
     else
       [item, item]
     ThreeValuedLogic.and(
-      cmp.lessThanOrEquals(closed.low, high),
-      cmp.greaterThanOrEquals(closed.high, low)
+      cmp.lessThanOrEquals(closed.low, high, precision),
+      cmp.greaterThanOrEquals(closed.high, low, precision)
     )
 
-  overlapsAfter: (item) ->
+  overlapsAfter: (item, precision) ->
     closed = @toClosed()
     high = if item instanceof Interval then item.toClosed().high else item
     ThreeValuedLogic.and(
-      cmp.lessThanOrEquals(closed.low, high),
-      cmp.greaterThan(closed.high, high)
+      cmp.lessThanOrEquals(closed.low, high, precision),
+      cmp.greaterThan(closed.high, high, precision)
     )
 
-  overlapsBefore: (item) ->
+  overlapsBefore: (item, precision) ->
     closed = @toClosed()
     low = if item instanceof Interval then item.toClosed().low else item
     ThreeValuedLogic.and(
-      cmp.lessThan(closed.low, low),
-      cmp.greaterThanOrEquals(closed.high, low)
+      cmp.lessThan(closed.low, low, precision),
+      cmp.greaterThanOrEquals(closed.high, low, precision)
     )
 
   areDateTimes = (x, y) ->
@@ -155,39 +155,45 @@ module.exports.Interval = class Interval
     else
       false
 
-  after: (other) ->
+  after: (other, precision) ->
     closed = @toClosed()
     # Meets spec, but not 100% correct (e.g., (null, 5] after [6, 10] --> null)
     # Simple way to fix it: and w/ not overlaps
     if !!other.toClosed
-      cmp.greaterThan closed.low, other.toClosed().high
+      cmp.greaterThan closed.low, other.toClosed().high, precision
     else
-      cmp.greaterThan closed.low, other
+      cmp.greaterThan closed.low, other, precision
 
-  before: (other) ->
+  before: (other, precision) ->
     closed = @toClosed()
     # Meets spec, but not 100% correct (e.g., (null, 5] after [6, 10] --> null)
     # Simple way to fix it: and w/ not overlaps
     if !!other.toClosed
-      cmp.lessThan closed.high, other.toClosed().low
+      cmp.lessThan closed.high, other.toClosed().low, precision
     else
-      cmp.lessThan closed.high, other
+      cmp.lessThan closed.high, other, precision
 
-  meets: (other) ->
+  meets: (other, precision) ->
     ThreeValuedLogic.or(
-      @meetsBefore(other),
-      @meetsAfter(other)
+      @meetsBefore(other, precision),
+      @meetsAfter(other, precision)
     )
 
-  meetsAfter: (other) ->
+  meetsAfter: (other, precision) ->
     try
-      cmp.equals @toClosed().low, successor(other.toClosed().high)
+      if precision? and @low instanceof DateTime
+        @toClosed().low.sameAs(other.toClosed().high?.add(1, precision), precision)
+      else
+        cmp.equals @toClosed().low, successor(other.toClosed().high)
     catch
       false
 
-  meetsBefore: (other) ->
+  meetsBefore: (other, precision) ->
     try
-      cmp.equals @toClosed().high, predecessor(other.toClosed().low)
+      if precision? and @high instanceof DateTime
+        @toClosed().high.sameAs(other.toClosed().low?.add(-1, precision), precision)
+      else
+        cmp.equals @toClosed().high, predecessor(other.toClosed().low)
     catch
       false
 
