@@ -248,6 +248,7 @@ define DateTimeOverlapsTrue: Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25
 define DateTimeOverlapsFalse: Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] overlaps Interval[DateTime(2012, 1, 26), DateTime(2012, 1, 28)]
 define TimeOverlapsTrue: Interval[@T10:00:00.000, @T19:59:59.999] overlaps Interval[@T12:00:00.000, @T21:59:59.999]
 define TimeOverlapsFalse: Interval[@T10:00:00.000, @T19:59:59.999] overlaps Interval[@T20:00:00.000, @T21:59:59.999]
+define TestOverlapsDay: Interval[@2012-01-05, @2012-01-25] overlaps day of Interval[@2012-01-15, @2012-01-28]
 
 //OverlapsBefore
 define TestOverlapsBeforeNull: NullInterval overlaps before IntegerIntervalTest
@@ -261,6 +262,7 @@ define DateTimeOverlapsBeforeTrue: Interval[DateTime(2012, 1, 5), DateTime(2012,
 define DateTimeOverlapsBeforeFalse: Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)] overlaps Interval[DateTime(2012, 1, 26), DateTime(2012, 1, 28)]
 define TimeOverlapsBeforeTrue: Interval[@T10:00:00.000, @T19:59:59.999] overlaps Interval[@T12:00:00.000, @T21:59:59.999]
 define TimeOverlapsBeforeFalse: Interval[@T10:00:00.000, @T19:59:59.999] overlaps Interval[@T20:00:00.000, @T21:59:59.999]
+define TestOverlapsDayBefore: Interval[@2012-01-05, @2012-01-25] overlaps before day of Interval[@2012-01-15, @2012-01-28]
 
 //OverlapsAfter
 define TestOverlapsAfterNull: NullInterval overlaps after IntegerIntervalTest
@@ -274,6 +276,7 @@ define DateTimeOverlapsAfterTrue: Interval[DateTime(2012, 1, 15), DateTime(2012,
 define DateTimeOverlapsAfterFalse: Interval[DateTime(2012, 1, 26), DateTime(2012, 1, 28)] overlaps Interval[DateTime(2012, 1, 5), DateTime(2012, 1, 25)]
 define TimeOverlapsAfterTrue: Interval[@T12:00:00.000, @T21:59:59.999] overlaps Interval[@T10:00:00.000, @T19:59:59.999]
 define TimeOverlapsAfterFalse: Interval[@T20:00:00.000, @T21:59:59.999] overlaps Interval[@T10:00:00.000, @T19:59:59.999]
+define TestOverlapsDayAfter: Interval[@2012-01-15, @2012-01-28] overlaps after day of Interval[@2012-01-05, @2012-01-25]
 
 //ProperlyIncludes
 define TestProperlyIncludesNull: NullInterval properly includes IntegerIntervalTest
