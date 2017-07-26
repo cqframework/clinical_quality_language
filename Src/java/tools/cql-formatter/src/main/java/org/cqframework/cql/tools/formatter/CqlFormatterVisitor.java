@@ -140,6 +140,10 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
     }
 
     private boolean needsWhitespaceBefore(String terminal) {
+        if (terminal.trim().isEmpty() || terminal.startsWith("//") || terminal.startsWith("/*")) {
+            return false;
+        }
+
         switch (terminal) {
             case ":": return false;
             case ".": return false;

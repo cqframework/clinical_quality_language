@@ -28,6 +28,7 @@ public class CqlFormatterVisitorTest {
 
     @Test
     public void TestFormatterSpecific() throws IOException {
+        runTest("comments.cql");
         runTest("invalid-syntax.cql");
     }
 
@@ -36,9 +37,8 @@ public class CqlFormatterVisitorTest {
         runTest("CMS146v2_Test_CQM.cql");
         runTest("CodeAndConceptTest.cql");
         runTest("DateTimeLiteralTest.cql");
-        // TODO: uncomment once comments aren't stripped
-        // runTest("EscapeSequenceTests.cql");
-        // runTest("InTest.cql");
+        runTest("EscapeSequenceTests.cql");
+        runTest("InTest.cql");
         runTest("ParameterTest.cql");
         runTest("PropertyTest.cql");
         runTest("SignatureResolutionTest.cql");
@@ -52,40 +52,34 @@ public class CqlFormatterVisitorTest {
         runTest("LibraryTests/ReferencingLibrary.cql");
         runTest("ModelTests/ModelTest.cql");
         runTest("OperatorTests/AggregateOperators.cql");
-        // TODO: uncomment once comments aren't stripped
-        // runTest("OperatorTests/ArithmeticOperators.cql");
+        runTest("OperatorTests/ArithmeticOperators.cql");
         runTest("OperatorTests/ComparisonOperators.cql");
-        // TODO: uncomment once comments aren't stripped
-        // runTest("OperatorTests/CqlComparisonOperators.cql");
-        // runTest("OperatorTests/CqlIntervalOperators.cql");
-        // runTest("OperatorTests/CqlListOperators.cql");
+        runTest("OperatorTests/CqlComparisonOperators.cql");
+        runTest("OperatorTests/CqlIntervalOperators.cql");
+        runTest("OperatorTests/CqlListOperators.cql");
         runTest("OperatorTests/DateTimeOperators.cql");
-        // TODO: uncomment once comments aren't stripped
-        // runTest("OperatorTests/ForwardReferences.cql");
+        runTest("OperatorTests/ForwardReferences.cql");
         runTest("OperatorTests/Functions.cql");
-        // TODO: uncomment once comments aren't stripped
-        // runTest("OperatorTests/ImplicitConversions.cql");
-        // runTest("OperatorTests/IntervalOperatorPhrases.cql");
+        runTest("OperatorTests/ImplicitConversions.cql");
+        runTest("OperatorTests/IntervalOperatorPhrases.cql");
         runTest("OperatorTests/IntervalOperators.cql");
         runTest("OperatorTests/InvalidCastExpression.cql");
         runTest("OperatorTests/InvalidSortClauses.cql");
         runTest("OperatorTests/ListOperators.cql");
         runTest("OperatorTests/LogicalOperators.cql");
         runTest("OperatorTests/MessageOperators.cql");
-        // TODO: uncomment once comments aren't stripped
-        // runTest("OperatorTests/MultiSourceQuery.cql");
-        // runTest("OperatorTests/NameHiding.cql");
+        runTest("OperatorTests/MultiSourceQuery.cql");
+        runTest("OperatorTests/NameHiding.cql");
         runTest("OperatorTests/NullologicalOperators.cql");
         runTest("OperatorTests/RecursiveFunctions.cql");
         runTest("OperatorTests/Sorting.cql");
         runTest("OperatorTests/StringOperators.cql");
         runTest("OperatorTests/TimeOperators.cql");
         runTest("OperatorTests/TupleAndClassConversions.cql");
-        // TODO: uncomment once comments aren't stripped
-        // runTest("OperatorTests/TypeOperators.cql");
-        // runTest("OperatorTests/UndeclaredForward.cql");
-        // runTest("OperatorTests/UndeclaredSignature.cql");
-        // runTest("PathTests/PathTests.cql");
+        runTest("OperatorTests/TypeOperators.cql");
+        runTest("OperatorTests/UndeclaredForward.cql");
+        runTest("OperatorTests/UndeclaredSignature.cql");
+        runTest("PathTests/PathTests.cql");
     }
 
     private String format(InputStream is) throws IOException {
@@ -94,6 +88,8 @@ public class CqlFormatterVisitorTest {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();
         cqlParser parser = new cqlParser(tokens);
+        CommentListener listener = new CommentListener(tokens);
+        parser.addParseListener(listener);
         parser.setBuildParseTree(true);
         ParserRuleContext tree = parser.library();
         CqlFormatterVisitor formatter = new CqlFormatterVisitor();
