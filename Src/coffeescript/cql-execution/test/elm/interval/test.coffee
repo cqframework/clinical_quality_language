@@ -154,6 +154,20 @@ describe 'Contains', ->
     @impreciseNotContainsDate.exec(@ctx).should.be.false()
     should(@impreciseMayContainDate.exec(@ctx)).be.null
 
+  it 'should correctly compare using the requested precision', ->
+    @containsDayOfDateLowEdge.exec(@ctx).should.be.true()
+    @containsDayOfDateHighEdge.exec(@ctx).should.be.true()
+    @notContainsDayOfDateLowEdge.exec(@ctx).should.be.false()
+    @notContainsDayOfDateHighEdge.exec(@ctx).should.be.false()
+    @containsDayOfDateImpreciseLowEdge.exec(@ctx).should.be.true()
+    @containsDayOfDateImpreciseHighEdge.exec(@ctx).should.be.true()
+    @containsDayOfDateVeryImpreciseMiddle.exec(@ctx).should.be.true()
+    @notContainsDayOfDateVeryImpreciseLow.exec(@ctx).should.be.false()
+    @notContainsDayOfDateVeryImpreciseHigh.exec(@ctx).should.be.false()
+    should(@mayContainDayOfDateVeryImpreciseLow.exec(@ctx)).be.null()
+    should(@mayContainDayOfDateVeryImpreciseHigh.exec(@ctx)).be.null()
+    should(@mayContainDayOfDateVeryImpreciseSurrounding.exec(@ctx)).be.null()
+
 describe 'In', ->
   @beforeEach ->
     setup @, data
@@ -204,6 +218,20 @@ describe 'In', ->
     @impreciseNotContainsDate.exec(@ctx).should.be.false()
     should(@impreciseMayContainDate.exec(@ctx)).be.null
 
+  it 'should correctly compare using the requested precision', ->
+    @containsDayOfDateLowEdge.exec(@ctx).should.be.true()
+    @containsDayOfDateHighEdge.exec(@ctx).should.be.true()
+    @notContainsDayOfDateLowEdge.exec(@ctx).should.be.false()
+    @notContainsDayOfDateHighEdge.exec(@ctx).should.be.false()
+    @containsDayOfDateImpreciseLowEdge.exec(@ctx).should.be.true()
+    @containsDayOfDateImpreciseHighEdge.exec(@ctx).should.be.true()
+    @containsDayOfDateVeryImpreciseMiddle.exec(@ctx).should.be.true()
+    @notContainsDayOfDateVeryImpreciseLow.exec(@ctx).should.be.false()
+    @notContainsDayOfDateVeryImpreciseHigh.exec(@ctx).should.be.false()
+    should(@mayContainDayOfDateVeryImpreciseLow.exec(@ctx)).be.null()
+    should(@mayContainDayOfDateVeryImpreciseHigh.exec(@ctx)).be.null()
+    should(@mayContainDayOfDateVeryImpreciseSurrounding.exec(@ctx)).be.null()
+
 describe 'Includes', ->
   @beforeEach ->
     setup @, data
@@ -250,6 +278,20 @@ describe 'Includes', ->
     @impreciseNotIncludesDateIvl.exec(@ctx).should.be.false()
     should(@impreciseMayIncludeDateIvl.exec(@ctx)).be.null
 
+  it 'should correctly compare using the requested precision', ->
+    @includesDayOfIvlLowEdge.exec(@ctx).should.be.true()
+    @includesDayOfIvlHighEdge.exec(@ctx).should.be.true()
+    @notIncludesDayOfIvlLowEdge.exec(@ctx).should.be.false()
+    @notIncludesDayOfIvlHighEdge.exec(@ctx).should.be.false()
+    @includesDayOfIvlImpreciseLowEdge.exec(@ctx).should.be.true()
+    @includesDayOfIvlImpreciseHighEdge.exec(@ctx).should.be.true()
+    @includesDayOfIvlVeryImpreciseMiddle.exec(@ctx).should.be.true()
+    @notIncludesDayOfIvlVeryImpreciseLow.exec(@ctx).should.be.false()
+    @notIncludesDayOfIvlVeryImpreciseHigh.exec(@ctx).should.be.false()
+    should(@mayIncludeDayOfIvlVeryImpreciseLow.exec(@ctx)).be.null()
+    should(@mayIncludeDayOfIvlVeryImpreciseHigh.exec(@ctx)).be.null()
+    should(@mayIncludeDayOfIvlVeryImpreciseSurrounding.exec(@ctx)).be.null()
+
 describe 'ProperlyIncludes', ->
   @beforeEach ->
     setup @, data
@@ -270,6 +312,16 @@ describe 'ProperlyIncludes', ->
     @posInfEndProperlyIncludesIntIvl.exec(@ctx).should.be.true()
     @posInfEndNotProperlyIncludesIntIvl.exec(@ctx).should.be.false()
     should(@unknownEndMayProperlyIncludeIntIvl.exec(@ctx)).be.null
+
+  it 'should correctly compare using the requested precision', ->
+    @properlyIncludesDayOfIvlLowEdge.exec(@ctx).should.be.true()
+    @properlyIncludesDayOfIvlHighEdge.exec(@ctx).should.be.true()
+    @properlyIncludesDayOfIvlNearEdges.exec(@ctx).should.be.true()
+    @notProperlyIncludesDayOfIvlSameEdges.exec(@ctx).should.be.false()
+    should(@mayProperlyIncludeDayOfIvlVeryImpreciseLow.exec(@ctx)).be.null()
+    should(@mayProperlyIncludeDayOfIvlVeryImpreciseHigh.exec(@ctx)).be.null()
+    should(@mayProperlyIncludeDayOfIvlVeryImpreciseLowAndHigh.exec(@ctx)).be.null()
+    should(@mayProperlyIncludeDayOfIvlVeryImpreciseSurrounding.exec(@ctx)).be.null()
 
 describe 'IncludedIn', ->
   @beforeEach ->
@@ -317,6 +369,20 @@ describe 'IncludedIn', ->
     @impreciseNotIncludesDateIvl.exec(@ctx).should.be.false()
     should(@impreciseMayIncludeDateIvl.exec(@ctx)).be.null
 
+  it 'should correctly compare using the requested precision', ->
+    @includesDayOfIvlLowEdge.exec(@ctx).should.be.true()
+    @includesDayOfIvlHighEdge.exec(@ctx).should.be.true()
+    @notIncludesDayOfIvlLowEdge.exec(@ctx).should.be.false()
+    @notIncludesDayOfIvlHighEdge.exec(@ctx).should.be.false()
+    @includesDayOfIvlImpreciseLowEdge.exec(@ctx).should.be.true()
+    @includesDayOfIvlImpreciseHighEdge.exec(@ctx).should.be.true()
+    @includesDayOfIvlVeryImpreciseMiddle.exec(@ctx).should.be.true()
+    @notIncludesDayOfIvlVeryImpreciseLow.exec(@ctx).should.be.false()
+    @notIncludesDayOfIvlVeryImpreciseHigh.exec(@ctx).should.be.false()
+    should(@mayIncludeDayOfIvlVeryImpreciseLow.exec(@ctx)).be.null()
+    should(@mayIncludeDayOfIvlVeryImpreciseHigh.exec(@ctx)).be.null()
+    should(@mayIncludeDayOfIvlVeryImpreciseSurrounding.exec(@ctx)).be.null()
+
 describe 'ProperlyIncludedIn', ->
   @beforeEach ->
     setup @, data
@@ -337,6 +403,16 @@ describe 'ProperlyIncludedIn', ->
     @posInfEndProperlyIncludedInDateIvl.exec(@ctx).should.be.true()
     @posInfEndNotProperlyIncludedInDateIvl.exec(@ctx).should.be.false()
     should(@unknownEndMayBeProperlyIncludedInDateIvl.exec(@ctx)).be.null
+
+  it 'should correctly compare using the requested precision', ->
+    @properlyIncludesDayOfIvlLowEdge.exec(@ctx).should.be.true()
+    @properlyIncludesDayOfIvlHighEdge.exec(@ctx).should.be.true()
+    @properlyIncludesDayOfIvlNearEdges.exec(@ctx).should.be.true()
+    @notProperlyIncludesDayOfIvlSameEdges.exec(@ctx).should.be.false()
+    should(@mayProperlyIncludeDayOfIvlVeryImpreciseLow.exec(@ctx)).be.null()
+    should(@mayProperlyIncludeDayOfIvlVeryImpreciseHigh.exec(@ctx)).be.null()
+    should(@mayProperlyIncludeDayOfIvlVeryImpreciseLowAndHigh.exec(@ctx)).be.null()
+    should(@mayProperlyIncludeDayOfIvlVeryImpreciseSurrounding.exec(@ctx)).be.null()
 
 describe 'After', ->
   @beforeEach ->
@@ -378,6 +454,14 @@ describe 'After', ->
     @impreciseNotAfterDateIvl.exec(@ctx).should.be.false()
     should(@impreciseMayBeAfterDateIvl.exec(@ctx)).be.null
 
+  it 'should correctly compare using the requested precision', ->
+    @afterDayOfIvl.exec(@ctx).should.be.true()
+    @beforeDayOfIvl.exec(@ctx).should.be.false()
+    @startsSameDayOfIvlEnd.exec(@ctx).should.be.false()
+    @endsSameDayOfIvlStart.exec(@ctx).should.be.false()
+    should(@mayBeAfterDayOfImpreciseIvl.exec(@ctx)).be.null()
+    @mayBeBeforeDayOfImpreciseIvl.exec(@ctx).should.be.false()
+
 describe 'Before', ->
   @beforeEach ->
     setup @, data
@@ -417,6 +501,14 @@ describe 'Before', ->
     @impreciseBeforeDateIvl.exec(@ctx).should.be.true()
     @impreciseNotBeforeDateIvl.exec(@ctx).should.be.false()
     should(@impreciseMayBeBeforeDateIvl.exec(@ctx)).be.null
+
+  it 'should correctly compare using the requested precision', ->
+    @afterDayOfIvl.exec(@ctx).should.be.false()
+    @beforeDayOfIvl.exec(@ctx).should.be.true()
+    @startsSameDayOfIvlEnd.exec(@ctx).should.be.false()
+    @endsSameDayOfIvlStart.exec(@ctx).should.be.false()
+    @mayBeAfterDayOfImpreciseIvl.exec(@ctx).should.be.false()
+    should(@mayBeBeforeDayOfImpreciseIvl.exec(@ctx)).be.null()
 
 describe 'Meets', ->
   @beforeEach ->
@@ -477,6 +569,14 @@ describe 'Meets', ->
     should(@impreciseMayMeetBeforeDateIvl.exec(@ctx)).be.null
     @impreciseNotMeetsDateIvl.exec(@ctx).should.be.false()
 
+  it 'should correctly compare using the requested precision', ->
+    @meetsAfterDayOfIvl.exec(@ctx).should.be.true()
+    @meetsBeforeDayOfIvl.exec(@ctx).should.be.true()
+    @notMeetsDayOfIvl.exec(@ctx).should.be.false()
+    @notMeetsDayOfImpreciseIVL.exec(@ctx).should.be.false()
+    should(@mayMeetAfterDayOfImpreciseIvl.exec(@ctx)).be.null()
+    should(@mayMeetBeforeDayOfImpreciseIvl.exec(@ctx)).be.null()
+
 describe 'MeetsAfter', ->
   @beforeEach ->
     setup @, data
@@ -535,6 +635,14 @@ describe 'MeetsAfter', ->
     should(@impreciseMayMeetAfterDateIvl.exec(@ctx)).be.null
     @impreciseMayMeetBeforeDateIvl.exec(@ctx).should.be.false()
     @impreciseNotMeetsDateIvl.exec(@ctx).should.be.false()
+
+  it 'should correctly compare using the requested precision', ->
+    @meetsAfterDayOfIvl.exec(@ctx).should.be.true()
+    @meetsBeforeDayOfIvl.exec(@ctx).should.be.false()
+    @notMeetsDayOfIvl.exec(@ctx).should.be.false()
+    @notMeetsDayOfImpreciseIVL.exec(@ctx).should.be.false()
+    should(@mayMeetAfterDayOfImpreciseIvl.exec(@ctx)).be.null()
+    @mayMeetBeforeDayOfImpreciseIvl.exec(@ctx).should.be.false()
 
 describe 'MeetsBefore', ->
   @beforeEach ->
@@ -595,6 +703,14 @@ describe 'MeetsBefore', ->
     should(@impreciseMayMeetBeforeDateIvl.exec(@ctx)).be.null
     @impreciseNotMeetsDateIvl.exec(@ctx).should.be.false()
 
+  it 'should correctly compare using the requested precision', ->
+    @meetsAfterDayOfIvl.exec(@ctx).should.be.false()
+    @meetsBeforeDayOfIvl.exec(@ctx).should.be.true()
+    @notMeetsDayOfIvl.exec(@ctx).should.be.false()
+    @notMeetsDayOfImpreciseIVL.exec(@ctx).should.be.false()
+    @mayMeetAfterDayOfImpreciseIvl.exec(@ctx).should.be.false()
+    should(@mayMeetBeforeDayOfImpreciseIvl.exec(@ctx)).be.null()
+
 describe 'Overlaps', ->
   @beforeEach ->
     setup @, data
@@ -636,6 +752,17 @@ describe 'OverlapsDateTime', ->
 
   it 'should return null for imprecise overlaps that are unknown', ->
     should(@unknownOverlap.exec(@ctx)).be.null
+
+  it 'should correctly compare using the requested precision', ->
+    # NOTE: Some assertions commented out because cql-to-elm is WRONGLY translating 'overlaps' to 'OverlapsAfter'!
+    #@overlapsBeforeDayOfIvlEdge.exec(@ctx).should.be.true()
+    @overlapsAfterDayOfIvlEdge.exec(@ctx).should.be.true()
+    @overlapsContainsDayOfIvl.exec(@ctx).should.be.true()
+    #@overlapsContainedByDayOfIvl.exec(@ctx).should.be.true()
+    @notOverlapsDayOfIvl.exec(@ctx).should.be.false()
+    @overlapsAfterDayOfImpreciseInterval.exec(@ctx).should.be.true()
+    #should(@mayOverlapBeforeDayOfImpreciseIvl.exec(@ctx)).be.null()
+    should(@mayOverlapAfterDayOfImpreciseIvl.exec(@ctx)).be.null()
 
 describe 'OverlapsAfter', ->
   @beforeEach ->
@@ -688,6 +815,16 @@ describe 'OverlapsAfterDateTime', ->
   it 'should return null for imprecise overlaps that are unknown', ->
     should(@unknownOverlap.exec(@ctx)).be.null
 
+  it 'should correctly compare using the requested precision', ->
+    @overlapsBeforeDayOfIvlEdge.exec(@ctx).should.be.false()
+    @overlapsAfterDayOfIvlEdge.exec(@ctx).should.be.true()
+    @overlapsContainsDayOfIvl.exec(@ctx).should.be.true()
+    @overlapsContainedByDayOfIvl.exec(@ctx).should.be.false()
+    @notOverlapsDayOfIvl.exec(@ctx).should.be.false()
+    @overlapsAfterDayOfImpreciseInterval.exec(@ctx).should.be.true()
+    @mayOverlapBeforeDayOfImpreciseIvl.exec(@ctx).should.be.false()
+    should(@mayOverlapAfterDayOfImpreciseIvl.exec(@ctx)).be.null()
+
 describe 'OverlapsBefore', ->
   @beforeEach ->
     setup @, data
@@ -738,6 +875,16 @@ describe 'OverlapsBeforeDateTime', ->
 
   it 'should return null for imprecise overlaps that are unknown', ->
     should(@unknownOverlap.exec(@ctx)).be.null
+
+  it 'should correctly compare using the requested precision', ->
+    @overlapsBeforeDayOfIvlEdge.exec(@ctx).should.be.true()
+    @overlapsAfterDayOfIvlEdge.exec(@ctx).should.be.false()
+    @overlapsContainsDayOfIvl.exec(@ctx).should.be.true()
+    @overlapsContainedByDayOfIvl.exec(@ctx).should.be.false()
+    @notOverlapsDayOfIvl.exec(@ctx).should.be.false()
+    @overlapsAfterDayOfImpreciseInterval.exec(@ctx).should.be.false()
+    should(@mayOverlapBeforeDayOfImpreciseIvl.exec(@ctx)).be.null()
+    @mayOverlapAfterDayOfImpreciseIvl.exec(@ctx).should.be.false()
 
 describe 'Width', ->
   @beforeEach ->

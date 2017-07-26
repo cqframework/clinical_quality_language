@@ -98,6 +98,7 @@ module.exports.Indexer = class Indexer extends Expression
 module.exports.In = class In extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [item, container] = @execArgs ctx
@@ -105,11 +106,12 @@ module.exports.In = class In extends Expression
     lib = switch
       when typeIsArray(container) then LIST
       else IVL
-    lib.doContains(container, item)
+    lib.doContains(container, item, @precision)
 
 module.exports.Contains = class Contains extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [container, item] = @execArgs ctx
@@ -117,11 +119,12 @@ module.exports.Contains = class Contains extends Expression
     lib = switch
       when typeIsArray(container) then LIST
       else IVL
-    lib.doContains(container, item)
+    lib.doContains(container, item, @precision)
 
 module.exports.Includes = class Includes extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [container, contained] = @execArgs ctx
@@ -129,11 +132,12 @@ module.exports.Includes = class Includes extends Expression
     lib = switch
       when typeIsArray(container) then LIST
       else IVL
-    lib.doIncludes(container, contained)
+    lib.doIncludes(container, contained, @precision)
 
 module.exports.IncludedIn = class IncludedIn extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [contained, container] = @execArgs ctx
@@ -141,11 +145,12 @@ module.exports.IncludedIn = class IncludedIn extends Expression
     lib = switch
       when typeIsArray(container) then LIST
       else IVL
-    lib.doIncludes(container, contained)
+    lib.doIncludes(container, contained, @precision)
 
 module.exports.ProperIncludes = class ProperIncludes extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [container, contained] = @execArgs ctx
@@ -153,11 +158,12 @@ module.exports.ProperIncludes = class ProperIncludes extends Expression
     lib = switch
       when typeIsArray(container) then LIST
       else IVL
-    lib.doProperIncludes(container, contained)
+    lib.doProperIncludes(container, contained, @precision)
 
 module.exports.ProperIncludedIn = class ProperIncludedIn extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [contained, container] = @execArgs ctx
@@ -165,7 +171,7 @@ module.exports.ProperIncludedIn = class ProperIncludedIn extends Expression
     lib = switch
       when typeIsArray(container) then LIST
       else IVL
-    lib.doProperIncludes(container, contained)
+    lib.doProperIncludes(container, contained, @precision)
 
 module.exports.Length = class Length extends Expression
   constructor: (json) ->
