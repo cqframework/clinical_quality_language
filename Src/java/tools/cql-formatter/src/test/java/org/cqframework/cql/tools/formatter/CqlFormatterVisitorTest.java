@@ -87,13 +87,14 @@ public class CqlFormatterVisitorTest {
         cqlLexer lexer = new cqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();
-        cqlParser parser = new cqlParser(tokens);
         CommentListener listener = new CommentListener(tokens);
-        parser.addParseListener(listener);
+        listener.rewriteTokens();
+        cqlParser parser = new cqlParser(listener.tokens);
         parser.setBuildParseTree(true);
         ParserRuleContext tree = parser.library();
         CqlFormatterVisitor formatter = new CqlFormatterVisitor();
-        return (String)formatter.visit(tree);
+        String output = (String)formatter.visit(tree);
+        return listener.refineOutput(output);
     }
 
     private boolean inputMatchesOutput(String input, String output) {

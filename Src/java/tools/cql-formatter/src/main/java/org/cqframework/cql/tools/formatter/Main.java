@@ -27,11 +27,13 @@ public class Main {
         cqlLexer lexer = new cqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();
-        cqlParser parser = new cqlParser(tokens);
+        CommentListener listener = new CommentListener(tokens);
+        listener.rewriteTokens();
+        cqlParser parser = new cqlParser(listener.tokens);
         parser.setBuildParseTree(true);
         ParserRuleContext tree = parser.library();
         CqlFormatterVisitor formatter = new CqlFormatterVisitor();
         String output = (String)formatter.visit(tree);
-        System.out.print(output);
+        System.out.print(listener.refineOutput(output));
     }
 }
