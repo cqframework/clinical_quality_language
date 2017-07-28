@@ -1,11 +1,6 @@
 package org.cqframework.cql.tools.formatter;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.ParserRuleContext;
 import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
-import org.cqframework.cql.gen.cqlLexer;
-import org.cqframework.cql.gen.cqlParser;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -22,7 +17,7 @@ public class CqlFormatterVisitorTest {
 
     private void runTest(String fileName) throws IOException {
         String input = getInputStreamAsString(getInput(fileName));
-        String output = format(getInput(fileName));
+        String output = Main.getFormattedOutput(getInput(fileName));
         Assert.assertTrue(inputMatchesOutput(input, output));
     }
 
@@ -80,21 +75,6 @@ public class CqlFormatterVisitorTest {
         runTest("OperatorTests/UndeclaredForward.cql");
         runTest("OperatorTests/UndeclaredSignature.cql");
         runTest("PathTests/PathTests.cql");
-    }
-
-    private String format(InputStream is) throws IOException {
-        ANTLRInputStream input = new ANTLRInputStream(is);
-        cqlLexer lexer = new cqlLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        tokens.fill();
-        CommentListener listener = new CommentListener(tokens);
-        listener.rewriteTokens();
-        cqlParser parser = new cqlParser(listener.tokens);
-        parser.setBuildParseTree(true);
-        ParserRuleContext tree = parser.library();
-        CqlFormatterVisitor formatter = new CqlFormatterVisitor();
-        String output = (String)formatter.visit(tree);
-        return listener.refineOutput(output);
     }
 
     private boolean inputMatchesOutput(String input, String output) {

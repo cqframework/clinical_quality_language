@@ -3,7 +3,7 @@ apply plugin: 'application'
 mainClassName = 'org.cqframework.cql.tools.formatter.Main'
 
 dependencies {
-    compile project(":cql-to-elm")
+    testCompile project(":cql-to-elm")
     compile project(":cql")
 }
 

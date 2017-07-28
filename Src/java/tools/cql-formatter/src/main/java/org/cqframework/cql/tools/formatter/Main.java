@@ -14,15 +14,8 @@ import java.io.InputStream;
  * A simple wrapper around the ANTLR4 testrig.
  */
 public class Main {
-    public static void main(String[] args) throws IOException {
-        String inputFile = null;
-        if (args.length > 0) {
-            inputFile = args[0];
-        }
-        InputStream is = System.in;
-        if (inputFile != null) {
-            is = new FileInputStream(inputFile);
-        }
+
+    public static String getFormattedOutput(InputStream is) throws IOException {
         ANTLRInputStream input = new ANTLRInputStream(is);
         cqlLexer lexer = new cqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -34,6 +27,19 @@ public class Main {
         ParserRuleContext tree = parser.library();
         CqlFormatterVisitor formatter = new CqlFormatterVisitor();
         String output = (String)formatter.visit(tree);
-        System.out.print(listener.refineOutput(output));
+        return listener.refineOutput(output);
+    }
+
+    public static void main(String[] args) throws IOException {
+        String inputFile = null;
+        if (args.length > 0) {
+            inputFile = args[0];
+        }
+        InputStream is = System.in;
+        if (inputFile != null) {
+            is = new FileInputStream(inputFile);
+        }
+
+        System.out.print(getFormattedOutput(is));
     }
 }
