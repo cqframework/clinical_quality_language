@@ -14,6 +14,22 @@ import java.io.InputStream;
  * A simple wrapper around the ANTLR4 testrig.
  */
 public class Main {
+
+    public static String getFormattedOutput(InputStream is) throws IOException {
+        ANTLRInputStream input = new ANTLRInputStream(is);
+        cqlLexer lexer = new cqlLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        tokens.fill();
+        CommentListener listener = new CommentListener(tokens);
+        listener.rewriteTokens();
+        cqlParser parser = new cqlParser(listener.tokens);
+        parser.setBuildParseTree(true);
+        ParserRuleContext tree = parser.library();
+        CqlFormatterVisitor formatter = new CqlFormatterVisitor();
+        String output = (String)formatter.visit(tree);
+        return listener.refineOutput(output);
+    }
+
     public static void main(String[] args) throws IOException {
         String inputFile = null;
         if (args.length > 0) {
@@ -23,15 +39,7 @@ public class Main {
         if (inputFile != null) {
             is = new FileInputStream(inputFile);
         }
-        ANTLRInputStream input = new ANTLRInputStream(is);
-        cqlLexer lexer = new cqlLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        tokens.fill();
-        cqlParser parser = new cqlParser(tokens);
-        parser.setBuildParseTree(true);
-        ParserRuleContext tree = parser.library();
-        CqlFormatterVisitor formatter = new CqlFormatterVisitor();
-        String output = (String)formatter.visit(tree);
-        System.out.print(output);
+
+        System.out.print(getFormattedOutput(is));
     }
 }
