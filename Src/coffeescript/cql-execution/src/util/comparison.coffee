@@ -42,6 +42,10 @@ module.exports.greaterThanOrEquals = (a, b, precision = DateTime.Unit.MILLISECON
     when isUncertainty b then Uncertainty.from(a).greaterThanOrEquals b
     else null
 
+module.exports.equivalent = equivalent = (a, b) ->
+  return a.hasMatch b if typeof a.hasMatch is 'function'
+  return equals a, b
+
 module.exports.equals = equals = (a, b) ->
   # Handle null cases first
   return a is b if not a? or not b?

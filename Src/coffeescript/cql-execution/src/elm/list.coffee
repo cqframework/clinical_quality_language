@@ -2,8 +2,7 @@
 { ValueSet } = require '../datatypes/datatypes'
 { build } = require './builder'
 { typeIsArray } = require '../util/util'
-{ equals } = require '../util/comparison'
-
+{ equals, equivalent } = require '../util/comparison'
 
 module.exports.List = class List extends Expression
   constructor: (json) ->
@@ -80,7 +79,7 @@ module.exports.IndexOf = class IndexOf extends Expression
 
 # Delegated to by overloaded#Contains and overloaded#In
 module.exports.doContains = doContains = (container, item) ->
-  return true for element in container when equals element, item
+  return true for element in container when equivalent element, item
   return false
 
 # Delegated to by overloaded#Includes and overloaded@IncludedIn
