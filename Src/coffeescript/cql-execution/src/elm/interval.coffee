@@ -133,4 +133,31 @@ module.exports.Starts = class Starts extends UnimplementedExpression
 
 module.exports.Ends = class Ends extends UnimplementedExpression
 
-module.exports.Collapse = class Collapse extends UnimplementedExpression
+module.exports.Collapse = class Collapse extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    result = @execArgs ctx
+    if result?.length > 1
+      # sort intervals by start
+      result.sort (a,b)->
+        return -1 if a.low < b.low
+        return 1 if a.low > b.low
+        0
+
+      # collapse intervals as necessary
+      intervals = []
+      a = result.shift()
+      b = result.shift()
+      while b
+        if b.low <= a.high
+          a.high = b.high if b.high > a.high
+        else
+          intervals.push a
+          a = b
+        b = result.shift()
+      intervals.push a
+      result = intervals
+
+    result

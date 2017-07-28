@@ -733,3 +733,53 @@ define DateTimeOverlapsIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), Dat
 define DateTimeBeginsIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 define DateTimeDuringIntersect: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 define DateTimeEndsIntersect: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+
+// @Test: IntegerIntervalCollapse
+define IntEmptyIntervalList: List<Interval<Integer>>{}
+define Int1_6Interval: Interval[1, 6]
+define Int1_10Interval: Interval[1, 10]
+define Int5_10Interval: Interval[5, 10]
+define Int5_12Interval: Interval[5, 12]
+define Int10_15Interval: Interval[10, 15]
+define Int15_20Interval: Interval[15, 20]
+define Int1_12Interval: Interval[1, 12]
+define Int1_15Interval: Interval[1, 15]
+define Int1_10IntervalList: { Int1_10Interval }
+define Int1_12IntervalList: { Int1_12Interval }
+define Int1_15IntervalList: { Int1_15Interval }
+define IntTwoItemDisjointList: { Int1_10Interval, Int15_20Interval }
+define IntCollapseEmpty: collapse IntEmptyIntervalList
+define IntCollapseSingleInterval: collapse Int1_10IntervalList
+define IntCollapseDisjoint: collapse IntTwoItemDisjointList
+define IntCollapseDisjointReversed: collapse { Int15_20Interval, Int1_10Interval }
+define IntCollapseAdjacent: collapse { Int1_10Interval, Int10_15Interval }
+define IntCollapseOverlap: collapse { Int1_10Interval, Int5_12Interval }
+define IntCollapseOverlapContained: collapse { Int1_15Interval, Int5_12Interval }
+define IntCollapseOverlapContainedEdge: collapse { Int1_10Interval, Int5_10Interval }
+define IntCollapseOverlapContainedEdge2: collapse { Int1_15Interval, Int1_10Interval }
+define IntCollapseOverlapMultipleCombine: collapse { Int1_6Interval, Int5_12Interval, Int10_15Interval }
+
+// @Test: DateTimeIntervalCollapse
+define DateTimeEmptyIntervalList: List<Interval<DateTime>>{}
+define DateTime1_6Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 6, 0, 0, 0, 0)]
+define DateTime1_10Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 10, 0, 0, 0, 0)]
+define DateTime5_10Interval: Interval[DateTime(2012, 1, 5, 0, 0, 0, 0), DateTime(2012, 1, 10, 0, 0, 0, 0)]
+define DateTime5_12Interval: Interval[DateTime(2012, 1, 5, 0, 0, 0, 0), DateTime(2012, 1, 12, 0, 0, 0, 0)]
+define DateTime10_15Interval: Interval[DateTime(2012, 1, 10, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)]
+define DateTime15_20Interval: Interval[DateTime(2012, 1, 15, 0, 0, 0, 0), DateTime(2012, 1, 20, 0, 0, 0, 0)]
+define DateTime1_12Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 12, 0, 0, 0, 0)]
+define DateTime1_15Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)]
+define DateTime1_10IntervalList: { DateTime1_10Interval }
+define DateTime1_12IntervalList: { DateTime1_12Interval }
+define DateTime1_15IntervalList: { DateTime1_15Interval }
+define DateTimeTwoItemDisjointList: { DateTime1_10Interval, DateTime15_20Interval }
+define DateTimeCollapseEmpty: collapse DateTimeEmptyIntervalList
+define DateTimeCollapseSingleInterval: collapse DateTime1_10IntervalList
+define DateTimeCollapseDisjoint: collapse DateTimeTwoItemDisjointList
+define DateTimeCollapseDisjointReversed: collapse { DateTime15_20Interval, DateTime1_10Interval }
+define DateTimeCollapseAdjacent: collapse { DateTime1_10Interval, DateTime10_15Interval }
+define DateTimeCollapseOverlap: collapse { DateTime1_10Interval, DateTime5_12Interval }
+define DateTimeCollapseOverlapContained: collapse { DateTime1_15Interval, DateTime5_12Interval }
+define DateTimeCollapseOverlapContainedEdge: collapse { DateTime1_10Interval, DateTime5_10Interval }
+define DateTimeCollapseOverlapContainedEdge2: collapse { DateTime1_15Interval, DateTime1_10Interval }
+define DateTimeCollapseOverlapMultipleCombine: collapse { DateTime1_6Interval, DateTime5_12Interval, DateTime10_15Interval }

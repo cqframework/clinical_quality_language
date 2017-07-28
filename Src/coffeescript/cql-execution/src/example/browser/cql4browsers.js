@@ -3961,13 +3961,46 @@
   module.exports.Collapse = Collapse = (function(superClass) {
     extend(Collapse, superClass);
 
-    function Collapse() {
-      return Collapse.__super__.constructor.apply(this, arguments);
+    function Collapse(json) {
+      Collapse.__super__.constructor.apply(this, arguments);
     }
+
+    Collapse.prototype.exec = function(ctx) {
+      var a, b, intervals, result;
+      result = this.execArgs(ctx);
+      if ((result != null ? result.length : void 0) > 1) {
+        result.sort(function(a, b) {
+          if (a.low < b.low) {
+            return -1;
+          }
+          if (a.low > b.low) {
+            return 1;
+          }
+          return 0;
+        });
+        intervals = [];
+        a = result.shift();
+        b = result.shift();
+        while (b) {
+          if (b.low <= a.high) {
+            if (b.high > a.high) {
+              a.high = b.high;
+            }
+          } else {
+            intervals.push(a);
+            a = b;
+          }
+          b = result.shift();
+        }
+        intervals.push(a);
+        result = intervals;
+      }
+      return result;
+    };
 
     return Collapse;
 
-  })(UnimplementedExpression);
+  })(Expression);
 
 }).call(this);
 
