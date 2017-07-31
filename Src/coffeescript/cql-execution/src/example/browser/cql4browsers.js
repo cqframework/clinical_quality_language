@@ -3966,16 +3966,18 @@
     }
 
     Collapse.prototype.exec = function(ctx) {
-      var a, b, base, base1, collapsedIntervals, i, len, result;
-      result = this.execArgs(ctx);
-      if ((result != null ? result.length : void 0) > 1) {
-        for (i = 0, len = result.length; i < len; i++) {
-          a = result[i];
+      var a, b, base, base1, collapsedIntervals, i, intervals, len;
+      intervals = this.execArgs(ctx);
+      if ((intervals != null ? intervals.length : void 0) <= 1) {
+        return intervals;
+      } else {
+        for (i = 0, len = intervals.length; i < len; i++) {
+          a = intervals[i];
           if ((typeof (base = a.low).isImprecise === "function" ? base.isImprecise() : void 0) || (typeof (base1 = a.high).isImprecise === "function" ? base1.isImprecise() : void 0)) {
             throw new Error("Collapse does not support imprecise dates at this time.");
           }
         }
-        result.sort(function(a, b) {
+        intervals.sort(function(a, b) {
           if (typeof a.low.before === 'function') {
             if (a.low.before(b.low)) {
               return -1;
@@ -3993,10 +3995,9 @@
           }
           return 0;
         });
-        collapsedIntervals = result;
-        result = [];
-        a = collapsedIntervals.shift();
-        b = collapsedIntervals.shift();
+        collapsedIntervals = [];
+        a = intervals.shift();
+        b = intervals.shift();
         while (b) {
           if (typeof b.low.sameOrBefore === 'function') {
             if (b.low.sameOrBefore(a.high)) {
@@ -4004,7 +4005,7 @@
                 a.high = b.high;
               }
             } else {
-              result.push(a);
+              collapsedIntervals.push(a);
               a = b;
             }
           } else {
@@ -4013,15 +4014,15 @@
                 a.high = b.high;
               }
             } else {
-              result.push(a);
+              collapsedIntervals.push(a);
               a = b;
             }
           }
-          b = collapsedIntervals.shift();
+          b = intervals.shift();
         }
-        result.push(a);
+        collapsedIntervals.push(a);
+        return collapsedIntervals;
       }
-      return result;
     };
 
     return Collapse;
