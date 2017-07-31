@@ -214,7 +214,6 @@ describe 'SingleObjectAlias', ->
 
   it 'should be able to use a single object alias in a with clause', ->
      encounters = @encounters.exec(@ctx)
-     debugger
      aw = @singleAliasWith.exec(@ctx)
      aw.should.eql encounters
      awe = @singleAliasWithEmpty.exec(@ctx)

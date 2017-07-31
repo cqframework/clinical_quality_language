@@ -1,5 +1,6 @@
 should = require 'should'
-{equals} = require '../../lib/util/comparison'
+{equals, equivalent} = require '../../lib/util/comparison'
+{Code} = require '../../lib/datatypes/clinical'
 
 describe 'equals', ->
   it 'should detect equality/inequality for numbers', ->
@@ -97,3 +98,18 @@ describe 'equals', ->
     equals([null], null).should.be.false()
     equals(null, {}.undef).should.be.false()
     equals({}.undef, null).should.be.false()
+
+describe 'equivalent', ->
+  it 'should detect equivalent and non-equivalent codes', ->
+    equivalent(new Code('12345', 'Code System', '2016', 'Display Name'), new Code('12345', 'Code System', undefined, undefined)).should.be.true()
+    equivalent(new Code('1234', 'First Code System', '2016', 'Display Name'), new Code('1234', 'Different Code System', undefined, undefined)).should.be.false()
+    equivalent(new Code('123', 'test', '2016'), new Code('12', 'test', '2016')).should.be.false()
+    equivalent(new Code('123', undefined, undefined, undefined), new Code('123', undefined, undefined, undefined)).should.be.true()
+
+  it 'should detect if second parameter is not a code and still result to true', ->
+    equivalent(new Code('123', 'test', '2016'), '123').should.be.true()
+
+  it 'should detect if parameters are not codes and return using equals', ->
+    equivalent('123', '123').should.be.true()
+    equivalent(123, 123).should.be.true()
+    equivalent('123', new Code('123', 'test', '2016')).should.be.false()
