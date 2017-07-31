@@ -769,6 +769,7 @@ define DateTime10_15Interval: Interval[DateTime(2012, 1, 10, 0, 0, 0, 0), DateTi
 define DateTime15_20Interval: Interval[DateTime(2012, 1, 15, 0, 0, 0, 0), DateTime(2012, 1, 20, 0, 0, 0, 0)]
 define DateTime1_12Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 12, 0, 0, 0, 0)]
 define DateTime1_15Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)]
+define DateTime1_3ImpreciseInterval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 3)]
 define DateTime1_10IntervalList: { DateTime1_10Interval }
 define DateTime1_12IntervalList: { DateTime1_12Interval }
 define DateTime1_15IntervalList: { DateTime1_15Interval }
@@ -783,3 +784,4 @@ define DateTimeCollapseOverlapContained: collapse { DateTime1_15Interval, DateTi
 define DateTimeCollapseOverlapContainedEdge: collapse { DateTime1_10Interval, DateTime5_10Interval }
 define DateTimeCollapseOverlapContainedEdge2: collapse { DateTime1_15Interval, DateTime1_10Interval }
 define DateTimeCollapseOverlapMultipleCombine: collapse { DateTime1_6Interval, DateTime5_12Interval, DateTime10_15Interval }
+define DateTimeCollapseImpreciseBoundary: collapse { DateTime1_3ImpreciseInterval, DateTime1_10Interval }

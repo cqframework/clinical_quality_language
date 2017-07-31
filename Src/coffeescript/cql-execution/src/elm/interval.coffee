@@ -140,6 +140,11 @@ module.exports.Collapse = class Collapse extends Expression
   exec: (ctx) ->
     result = @execArgs ctx
     if result?.length > 1
+      # we don't handle imprecise intervals at this time
+      for a in result
+        if a.low.isImprecise?() || a.high.isImprecise?()
+          throw new Error("Collapse does not support imprecise dates at this time.")
+
       # sort intervals by start
       result.sort (a,b)->
         return -1 if a.low < b.low
@@ -147,17 +152,17 @@ module.exports.Collapse = class Collapse extends Expression
         0
 
       # collapse intervals as necessary
-      intervals = []
-      a = result.shift()
-      b = result.shift()
+      collapsedIntervals = result
+      result = []
+      a = collapsedIntervals.shift()
+      b = collapsedIntervals.shift()
       while b
         if b.low <= a.high
           a.high = b.high if b.high > a.high
         else
-          intervals.push a
+          result.push a
           a = b
-        b = result.shift()
-      intervals.push a
-      result = intervals
+        b = collapsedIntervals.shift()
+      result.push a
 
     result

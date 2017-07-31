@@ -1225,3 +1225,6 @@ describe 'DateTimeIntervalCollapse', ->
     @dateTimeCollapseOverlapContainedEdge.exec(@ctx).should.eql @dateTime1_10IntervalList.exec(@ctx)
     @dateTimeCollapseOverlapContainedEdge2.exec(@ctx).should.eql @dateTime1_15IntervalList.exec(@ctx)
     @dateTimeCollapseOverlapMultipleCombine.exec(@ctx).should.eql @dateTime1_15IntervalList.exec(@ctx)
+
+  it 'throws collapsing imprecise interval', ->
+    should(() => @dateTimeCollapseImpreciseBoundary.exec(@ctx)).throw("Collapse does not support imprecise dates at this time.")

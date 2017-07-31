@@ -47209,6 +47209,7 @@ define DateTime10_15Interval: Interval[DateTime(2012, 1, 10, 0, 0, 0, 0), DateTi
 define DateTime15_20Interval: Interval[DateTime(2012, 1, 15, 0, 0, 0, 0), DateTime(2012, 1, 20, 0, 0, 0, 0)]
 define DateTime1_12Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 12, 0, 0, 0, 0)]
 define DateTime1_15Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)]
+define DateTime1_3ImpreciseInterval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 3)]
 define DateTime1_10IntervalList: { DateTime1_10Interval }
 define DateTime1_12IntervalList: { DateTime1_12Interval }
 define DateTime1_15IntervalList: { DateTime1_15Interval }
@@ -47223,6 +47224,7 @@ define DateTimeCollapseOverlapContained: collapse { DateTime1_15Interval, DateTi
 define DateTimeCollapseOverlapContainedEdge: collapse { DateTime1_10Interval, DateTime5_10Interval }
 define DateTimeCollapseOverlapContainedEdge2: collapse { DateTime1_15Interval, DateTime1_10Interval }
 define DateTimeCollapseOverlapMultipleCombine: collapse { DateTime1_6Interval, DateTime5_12Interval, DateTime10_15Interval }
+define DateTimeCollapseImpreciseBoundary: collapse { DateTime1_3ImpreciseInterval, DateTime1_10Interval }
 ###
 
 module.exports['DateTimeIntervalCollapse'] = {
@@ -47944,6 +47946,71 @@ module.exports['DateTimeIntervalCollapse'] = {
                }
             }
          }, {
+            "name" : "DateTime1_3ImpreciseInterval",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "lowClosed" : true,
+               "highClosed" : true,
+               "type" : "Interval",
+               "low" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "hour" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "minute" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "second" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  },
+                  "millisecond" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "0",
+                     "type" : "Literal"
+                  }
+               },
+               "high" : {
+                  "type" : "DateTime",
+                  "year" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "2012",
+                     "type" : "Literal"
+                  },
+                  "month" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "1",
+                     "type" : "Literal"
+                  },
+                  "day" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "value" : "3",
+                     "type" : "Literal"
+                  }
+               }
+            }
+         }, {
             "name" : "DateTime1_10IntervalList",
             "context" : "Patient",
             "accessLevel" : "Public",
@@ -48141,6 +48208,23 @@ module.exports['DateTimeIntervalCollapse'] = {
                      "type" : "ExpressionRef"
                   }, {
                      "name" : "DateTime10_15Interval",
+                     "type" : "ExpressionRef"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "DateTimeCollapseImpreciseBoundary",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Collapse",
+               "operand" : {
+                  "type" : "List",
+                  "element" : [ {
+                     "name" : "DateTime1_3ImpreciseInterval",
+                     "type" : "ExpressionRef"
+                  }, {
+                     "name" : "DateTime1_10Interval",
                      "type" : "ExpressionRef"
                   } ]
                }
