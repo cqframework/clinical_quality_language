@@ -3966,9 +3966,15 @@
     }
 
     Collapse.prototype.exec = function(ctx) {
-      var a, b, intervals, result;
+      var a, b, base, base1, collapsedIntervals, i, len, result;
       result = this.execArgs(ctx);
       if ((result != null ? result.length : void 0) > 1) {
+        for (i = 0, len = result.length; i < len; i++) {
+          a = result[i];
+          if ((typeof (base = a.low).isImprecise === "function" ? base.isImprecise() : void 0) || (typeof (base1 = a.high).isImprecise === "function" ? base1.isImprecise() : void 0)) {
+            throw new Error("Collapse does not support imprecise dates at this time.");
+          }
+        }
         result.sort(function(a, b) {
           if (a.low < b.low) {
             return -1;
@@ -3978,22 +3984,22 @@
           }
           return 0;
         });
-        intervals = [];
-        a = result.shift();
-        b = result.shift();
+        collapsedIntervals = result;
+        result = [];
+        a = collapsedIntervals.shift();
+        b = collapsedIntervals.shift();
         while (b) {
           if (b.low <= a.high) {
             if (b.high > a.high) {
               a.high = b.high;
             }
           } else {
-            intervals.push(a);
+            result.push(a);
             a = b;
           }
-          b = result.shift();
+          b = collapsedIntervals.shift();
         }
-        intervals.push(a);
-        result = intervals;
+        result.push(a);
       }
       return result;
     };
