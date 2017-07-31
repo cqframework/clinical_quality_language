@@ -147,8 +147,12 @@ module.exports.Collapse = class Collapse extends Expression
 
       # sort intervals by start
       result.sort (a,b)->
-        return -1 if a.low < b.low
-        return 1 if a.low > b.low
+        if typeof a.low.before == 'function'
+          return -1 if a.low.before b.low
+          return 1 if a.low.after b.low
+        else
+          return -1 if a.low < b.low
+          return 1 if a.low > b.low
         0
 
       # collapse intervals as necessary
@@ -157,11 +161,18 @@ module.exports.Collapse = class Collapse extends Expression
       a = collapsedIntervals.shift()
       b = collapsedIntervals.shift()
       while b
-        if b.low <= a.high
-          a.high = b.high if b.high > a.high
+        if typeof b.low.sameOrBefore == 'function'
+          if b.low.sameOrBefore a.high
+            a.high = b.high if b.high.after a.high
+          else
+            result.push a
+            a = b
         else
-          result.push a
-          a = b
+          if b.low <= a.high
+            a.high = b.high if b.high > a.high
+          else
+            result.push a
+            a = b
         b = collapsedIntervals.shift()
       result.push a
 

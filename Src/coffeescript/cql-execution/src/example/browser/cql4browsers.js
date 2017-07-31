@@ -3976,11 +3976,20 @@
           }
         }
         result.sort(function(a, b) {
-          if (a.low < b.low) {
-            return -1;
-          }
-          if (a.low > b.low) {
-            return 1;
+          if (typeof a.low.before === 'function') {
+            if (a.low.before(b.low)) {
+              return -1;
+            }
+            if (a.low.after(b.low)) {
+              return 1;
+            }
+          } else {
+            if (a.low < b.low) {
+              return -1;
+            }
+            if (a.low > b.low) {
+              return 1;
+            }
           }
           return 0;
         });
@@ -3989,13 +3998,24 @@
         a = collapsedIntervals.shift();
         b = collapsedIntervals.shift();
         while (b) {
-          if (b.low <= a.high) {
-            if (b.high > a.high) {
-              a.high = b.high;
+          if (typeof b.low.sameOrBefore === 'function') {
+            if (b.low.sameOrBefore(a.high)) {
+              if (b.high.after(a.high)) {
+                a.high = b.high;
+              }
+            } else {
+              result.push(a);
+              a = b;
             }
           } else {
-            result.push(a);
-            a = b;
+            if (b.low <= a.high) {
+              if (b.high > a.high) {
+                a.high = b.high;
+              }
+            } else {
+              result.push(a);
+              a = b;
+            }
           }
           b = collapsedIntervals.shift();
         }
