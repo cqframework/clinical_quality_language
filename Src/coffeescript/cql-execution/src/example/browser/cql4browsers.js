@@ -5433,7 +5433,7 @@
             return qty.value;
         }
       })();
-      return millivalue;
+      return Math.round(millivalue);
     } else {
       return null;
     }
@@ -6948,7 +6948,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class AllergyIntoleranceEventComponent
   @exports  AllergyIntoleranceEventComponent as AllergyIntoleranceEventComponent
@@ -7306,7 +7306,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class AppointmentParticipantComponent
   @exports  AppointmentParticipantComponent as AppointmentParticipantComponent
@@ -8297,7 +8297,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class BundleLinkComponent
   @exports  BundleLinkComponent as BundleLinkComponent
@@ -8336,7 +8336,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class BundleEntryDeletedComponent
   @exports  BundleEntryDeletedComponent as BundleEntryDeletedComponent
@@ -8397,7 +8397,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class BundleEntryComponent
   @exports  BundleEntryComponent as BundleEntryComponent
@@ -8645,7 +8645,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class CarePlanParticipantComponent
   @exports  CarePlanParticipantComponent as CarePlanParticipantComponent
@@ -8688,7 +8688,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class CarePlanGoalComponent
   @exports  CarePlanGoalComponent as CarePlanGoalComponent
@@ -8756,7 +8756,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class CarePlanActivitySimpleComponent
   @exports  CarePlanActivitySimpleComponent as CarePlanActivitySimpleComponent
@@ -8908,7 +8908,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class CarePlanActivityComponent
   @exports  CarePlanActivityComponent as CarePlanActivityComponent
@@ -9245,7 +9245,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ItemAdjudicationComponent
   @exports  ItemAdjudicationComponent as ItemAdjudicationComponent
@@ -9298,7 +9298,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class DetailAdjudicationComponent
   @exports  DetailAdjudicationComponent as DetailAdjudicationComponent
@@ -9351,7 +9351,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SubdetailAdjudicationComponent
   @exports  SubdetailAdjudicationComponent as SubdetailAdjudicationComponent
@@ -9404,7 +9404,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ItemSubdetailComponent
   @exports  ItemSubdetailComponent as ItemSubdetailComponent
@@ -9452,7 +9452,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ItemDetailComponent
   @exports  ItemDetailComponent as ItemDetailComponent
@@ -9519,7 +9519,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ItemsComponent
   @exports  ItemsComponent as ItemsComponent
@@ -9596,7 +9596,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class AddedItemAdjudicationComponent
   @exports  AddedItemAdjudicationComponent as AddedItemAdjudicationComponent
@@ -9649,7 +9649,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class AddedItemDetailAdjudicationComponent
   @exports  AddedItemDetailAdjudicationComponent as AddedItemDetailAdjudicationComponent
@@ -9702,7 +9702,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class AddedItemsDetailComponent
   @exports  AddedItemsDetailComponent as AddedItemsDetailComponent
@@ -9764,7 +9764,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class AddedItemComponent
   @exports  AddedItemComponent as AddedItemComponent
@@ -9865,7 +9865,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ErrorsComponent
   @exports  ErrorsComponent as ErrorsComponent
@@ -9926,7 +9926,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class NotesComponent
   @exports  NotesComponent as NotesComponent
@@ -10392,7 +10392,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class CommunicationRequestMessagePartComponent
   @exports  CommunicationRequestMessagePartComponent as CommunicationRequestMessagePartComponent
@@ -10740,7 +10740,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class CompositionAttesterComponent
   @exports  CompositionAttesterComponent as CompositionAttesterComponent
@@ -10793,7 +10793,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class CompositionEventComponent
   @exports  CompositionEventComponent as CompositionEventComponent
@@ -10862,7 +10862,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SectionComponent
   @exports  SectionComponent as SectionComponent
@@ -11210,7 +11210,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class OtherElementComponent
   @exports  OtherElementComponent as OtherElementComponent
@@ -11259,7 +11259,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConceptMapElementMapComponent
   @exports  ConceptMapElementMapComponent as ConceptMapElementMapComponent
@@ -11337,7 +11337,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConceptMapElementComponent
   @exports  ConceptMapElementComponent as ConceptMapElementComponent
@@ -11672,7 +11672,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ConditionStageComponent
   @exports  ConditionStageComponent as ConditionStageComponent
@@ -11722,7 +11722,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConditionEvidenceComponent
   @exports  ConditionEvidenceComponent as ConditionEvidenceComponent
@@ -11772,7 +11772,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConditionLocationComponent
   @exports  ConditionLocationComponent as ConditionLocationComponent
@@ -11813,7 +11813,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConditionDueToComponent
   @exports  ConditionDueToComponent as ConditionDueToComponent
@@ -11856,7 +11856,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConditionOccurredFollowingComponent
   @exports  ConditionOccurredFollowingComponent as ConditionOccurredFollowingComponent
@@ -12248,7 +12248,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceSoftwareComponent
   @exports  ConformanceSoftwareComponent as ConformanceSoftwareComponent
@@ -12299,7 +12299,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceImplementationComponent
   @exports  ConformanceImplementationComponent as ConformanceImplementationComponent
@@ -12338,7 +12338,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceRestSecurityCertificateComponent
   @exports  ConformanceRestSecurityCertificateComponent as ConformanceRestSecurityCertificateComponent
@@ -12377,7 +12377,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceRestSecurityComponent
   @exports  ConformanceRestSecurityComponent as ConformanceRestSecurityComponent
@@ -12454,7 +12454,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ResourceInteractionComponent
   @exports  ResourceInteractionComponent as ResourceInteractionComponent
@@ -12493,7 +12493,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceRestResourceSearchParamComponent
   @exports  ConformanceRestResourceSearchParamComponent as ConformanceRestResourceSearchParamComponent
@@ -12572,7 +12572,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceRestResourceComponent
   @exports  ConformanceRestResourceComponent as ConformanceRestResourceComponent
@@ -12691,7 +12691,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SystemInteractionComponent
   @exports  SystemInteractionComponent as SystemInteractionComponent
@@ -12730,7 +12730,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceRestOperationComponent
   @exports  ConformanceRestOperationComponent as ConformanceRestOperationComponent
@@ -12771,7 +12771,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceRestComponent
   @exports  ConformanceRestComponent as ConformanceRestComponent
@@ -12889,7 +12889,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceMessagingEventComponent
   @exports  ConformanceMessagingEventComponent as ConformanceMessagingEventComponent
@@ -13003,7 +13003,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceMessagingComponent
   @exports  ConformanceMessagingComponent as ConformanceMessagingComponent
@@ -13071,7 +13071,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConformanceDocumentComponent
   @exports  ConformanceDocumentComponent as ConformanceDocumentComponent
@@ -13437,7 +13437,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ContractSignerComponent
   @exports  ContractSignerComponent as ContractSignerComponent
@@ -13478,7 +13478,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ContractTermComponent
   @exports  ContractTermComponent as ContractTermComponent
@@ -13976,7 +13976,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ContraindicationMitigationComponent
   @exports  ContraindicationMitigationComponent as ContraindicationMitigationComponent
@@ -15027,7 +15027,7 @@
   module.exports.Identifier = Identifier;
 
 
-  /**
+  /** 
   Embedded class
   @class ElementDefinitionSlicingComponent
   @exports  ElementDefinitionSlicingComponent as ElementDefinitionSlicingComponent
@@ -15086,7 +15086,7 @@
   })(Element);
 
 
-  /**
+  /** 
   Embedded class
   @class TypeRefComponent
   @exports  TypeRefComponent as TypeRefComponent
@@ -15135,7 +15135,7 @@
   })(Element);
 
 
-  /**
+  /** 
   Embedded class
   @class ElementDefinitionConstraintComponent
   @exports  ElementDefinitionConstraintComponent as ElementDefinitionConstraintComponent
@@ -15204,7 +15204,7 @@
   })(Element);
 
 
-  /**
+  /** 
   Embedded class
   @class ElementDefinitionBindingComponent
   @exports  ElementDefinitionBindingComponent as ElementDefinitionBindingComponent
@@ -15285,7 +15285,7 @@
   })(Element);
 
 
-  /**
+  /** 
   Embedded class
   @class ElementDefinitionMappingComponent
   @exports  ElementDefinitionMappingComponent as ElementDefinitionMappingComponent
@@ -15636,7 +15636,7 @@
   module.exports.ElementDefinition = ElementDefinition;
 
 
-  /**
+  /** 
   Embedded class
   @class TimingRepeatComponent
   @exports  TimingRepeatComponent as TimingRepeatComponent
@@ -15805,7 +15805,7 @@
 
 
     /**
-    This component contains the house number, apartment number, street name, street direction,
+    This component contains the house number, apartment number, street name, street direction, 
     P.O. Box number, delivery hints, and similar address information.
     @returns {Array} an array of {@link String} objects
      */
@@ -16029,7 +16029,7 @@
   module.exports.ContactPoint = ContactPoint;
 
 
-  /**
+  /** 
   Embedded class
   @class ResourceMetaComponent
   @exports  ResourceMetaComponent as ResourceMetaComponent
@@ -16182,7 +16182,7 @@
 
 
   /**
-
+  
   @class DomainResource
   @exports DomainResource as DomainResource
    */
@@ -16273,7 +16273,7 @@
   module.exports.DomainResource = DomainResource;
 
 
-  /**
+  /** 
   Embedded class
   @class ParametersParameterComponent
   @exports  ParametersParameterComponent as ParametersParameterComponent
@@ -16662,7 +16662,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class DataElementBindingComponent
   @exports  DataElementBindingComponent as DataElementBindingComponent
@@ -16723,7 +16723,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class DataElementMappingComponent
   @exports  DataElementMappingComponent as DataElementMappingComponent
@@ -17362,7 +17362,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class DeviceComponentProductionSpecificationComponent
   @exports  DeviceComponentProductionSpecificationComponent as DeviceComponentProductionSpecificationComponent
@@ -18162,7 +18162,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class DiagnosticOrderEventComponent
   @exports  DiagnosticOrderEventComponent as DiagnosticOrderEventComponent
@@ -18227,7 +18227,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class DiagnosticOrderItemComponent
   @exports  DiagnosticOrderItemComponent as DiagnosticOrderItemComponent
@@ -18563,7 +18563,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class DiagnosticReportImageComponent
   @exports  DiagnosticReportImageComponent as DiagnosticReportImageComponent
@@ -19206,7 +19206,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class DocumentReferenceRelatesToComponent
   @exports  DocumentReferenceRelatesToComponent as DocumentReferenceRelatesToComponent
@@ -19247,7 +19247,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class DocumentReferenceServiceParameterComponent
   @exports  DocumentReferenceServiceParameterComponent as DocumentReferenceServiceParameterComponent
@@ -19286,7 +19286,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class DocumentReferenceServiceComponent
   @exports  DocumentReferenceServiceComponent as DocumentReferenceServiceComponent
@@ -19346,7 +19346,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class DocumentReferenceContextComponent
   @exports  DocumentReferenceContextComponent as DocumentReferenceContextComponent
@@ -20172,7 +20172,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class EncounterParticipantComponent
   @exports  EncounterParticipantComponent as EncounterParticipantComponent
@@ -20222,7 +20222,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class EncounterHospitalizationAccomodationComponent
   @exports  EncounterHospitalizationAccomodationComponent as EncounterHospitalizationAccomodationComponent
@@ -20265,7 +20265,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class EncounterHospitalizationComponent
   @exports  EncounterHospitalizationComponent as EncounterHospitalizationComponent
@@ -20447,7 +20447,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class EncounterLocationComponent
   @exports  EncounterLocationComponent as EncounterLocationComponent
@@ -21415,7 +21415,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ExtensionDefinitionMappingComponent
   @exports  ExtensionDefinitionMappingComponent as ExtensionDefinitionMappingComponent
@@ -21765,7 +21765,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class FamilyHistoryRelationConditionComponent
   @exports  FamilyHistoryRelationConditionComponent as FamilyHistoryRelationConditionComponent
@@ -21844,7 +21844,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class FamilyHistoryRelationComponent
   @exports  FamilyHistoryRelationComponent as FamilyHistoryRelationComponent
@@ -22178,7 +22178,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class GroupCharacteristicComponent
   @exports  GroupCharacteristicComponent as GroupCharacteristicComponent
@@ -22451,7 +22451,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ServiceTypeComponent
   @exports  ServiceTypeComponent as ServiceTypeComponent
@@ -22501,7 +22501,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class HealthcareServiceAvailableTimeComponent
   @exports  HealthcareServiceAvailableTimeComponent as HealthcareServiceAvailableTimeComponent
@@ -22573,7 +22573,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class HealthcareServiceNotAvailableTimeComponent
   @exports  HealthcareServiceNotAvailableTimeComponent as HealthcareServiceNotAvailableTimeComponent
@@ -23078,7 +23078,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class InstanceComponent
   @exports  InstanceComponent as InstanceComponent
@@ -23141,7 +23141,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SeriesComponent
   @exports  SeriesComponent as SeriesComponent
@@ -23212,7 +23212,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class StudyComponent
   @exports  StudyComponent as StudyComponent
@@ -23456,7 +23456,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ImagingStudySeriesInstanceComponent
   @exports  ImagingStudySeriesInstanceComponent as ImagingStudySeriesInstanceComponent
@@ -23551,7 +23551,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ImagingStudySeriesComponent
   @exports  ImagingStudySeriesComponent as ImagingStudySeriesComponent
@@ -23987,7 +23987,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ImmunizationExplanationComponent
   @exports  ImmunizationExplanationComponent as ImmunizationExplanationComponent
@@ -24044,7 +24044,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ImmunizationReactionComponent
   @exports  ImmunizationReactionComponent as ImmunizationReactionComponent
@@ -24097,7 +24097,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ImmunizationVaccinationProtocolComponent
   @exports  ImmunizationVaccinationProtocolComponent as ImmunizationVaccinationProtocolComponent
@@ -24519,7 +24519,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ImmunizationRecommendationRecommendationDateCriterionComponent
   @exports  ImmunizationRecommendationRecommendationDateCriterionComponent as ImmunizationRecommendationRecommendationDateCriterionComponent
@@ -24562,7 +24562,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ImmunizationRecommendationRecommendationProtocolComponent
   @exports  ImmunizationRecommendationRecommendationProtocolComponent as ImmunizationRecommendationRecommendationProtocolComponent
@@ -24623,7 +24623,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ImmunizationRecommendationRecommendationComponent
   @exports  ImmunizationRecommendationRecommendationComponent as ImmunizationRecommendationRecommendationComponent
@@ -24891,7 +24891,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ListEntryComponent
   @exports  ListEntryComponent as ListEntryComponent
@@ -25165,7 +25165,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class LocationPositionComponent
   @exports  LocationPositionComponent as LocationPositionComponent
@@ -25683,7 +25683,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationProductIngredientComponent
   @exports  MedicationProductIngredientComponent as MedicationProductIngredientComponent
@@ -25726,7 +25726,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationProductComponent
   @exports  MedicationProductComponent as MedicationProductComponent
@@ -25776,7 +25776,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationPackageContentComponent
   @exports  MedicationPackageContentComponent as MedicationPackageContentComponent
@@ -25819,7 +25819,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationPackageComponent
   @exports  MedicationPackageComponent as MedicationPackageComponent
@@ -26031,7 +26031,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationAdministrationDosageComponent
   @exports  MedicationAdministrationDosageComponent as MedicationAdministrationDosageComponent
@@ -26118,7 +26118,7 @@
 
     /**
     A coded value indicating the method by which the medication was introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.
-
+    
     Terminologies used often pre-coordinate this term with the route and or form of administration.
     @returns {CodeableConcept}
      */
@@ -26172,7 +26172,7 @@
 
   /**
   Describes the event of a patient being given a dose of a medication.  This may be as simple as swallowing a tablet or it may be a long running infusion.
-
+  
   Related resources tie this event to the authorizing prescription, and the specific encounter between patient and health care practitioner.
   @class MedicationAdministration
   @exports MedicationAdministration as MedicationAdministration
@@ -26436,7 +26436,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationDispenseDispenseDosageComponent
   @exports  MedicationDispenseDispenseDosageComponent as MedicationDispenseDispenseDosageComponent
@@ -26547,7 +26547,7 @@
 
     /**
     A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.
-
+    
     Terminologies used often pre-coordinate this term with the route and or form of administration.
     @returns {CodeableConcept}
      */
@@ -26599,7 +26599,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationDispenseDispenseComponent
   @exports  MedicationDispenseDispenseComponent as MedicationDispenseDispenseComponent
@@ -26750,7 +26750,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationDispenseSubstitutionComponent
   @exports  MedicationDispenseSubstitutionComponent as MedicationDispenseSubstitutionComponent
@@ -26999,7 +26999,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationPrescriptionDosageInstructionComponent
   @exports  MedicationPrescriptionDosageInstructionComponent as MedicationPrescriptionDosageInstructionComponent
@@ -27120,7 +27120,7 @@
 
     /**
     A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.
-
+    
     Terminologies used often pre-coordinate this term with the route and or form of administration.
     @returns {CodeableConcept}
      */
@@ -27172,7 +27172,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationPrescriptionDispenseComponent
   @exports  MedicationPrescriptionDispenseComponent as MedicationPrescriptionDispenseComponent
@@ -27200,8 +27200,8 @@
 
 
     /**
-    Design Comments: This indicates the validity period of a prescription (stale dating the Prescription)
-    It reflects the prescriber perspective for the validity of the prescription. Dispenses must not be made against the prescription outside of this period. The lower-bound of the Dispensing Window signifies the earliest date that the prescription can be filled for the first time. If an upper-bound is not specified then the Prescription is open-ended or will default to a stale-date based on regulations.
+    Design Comments: This indicates the validity period of a prescription (stale dating the Prescription) 
+    It reflects the prescriber perspective for the validity of the prescription. Dispenses must not be made against the prescription outside of this period. The lower-bound of the Dispensing Window signifies the earliest date that the prescription can be filled for the first time. If an upper-bound is not specified then the Prescription is open-ended or will default to a stale-date based on regulations. 
     Rationale: Indicates when the Prescription becomes valid, and when it ceases to be a dispensable Prescription.
     @returns {Period}
      */
@@ -27214,7 +27214,7 @@
 
 
     /**
-    An integer indicating the number of repeats of the Dispense.
+    An integer indicating the number of repeats of the Dispense. 
     UsageNotes: For example, the number of times the prescribed quantity is to be supplied including the initial standard fill.
     @returns {Array} an array of {@link Number} objects
      */
@@ -27237,7 +27237,7 @@
 
 
     /**
-    Identifies the period time over which the supplied product is expected to be used, or the length of time the dispense is expected to last.
+    Identifies the period time over which the supplied product is expected to be used, or the length of time the dispense is expected to last. 
     In some situations, this attribute may be used instead of quantity to identify the amount supplied by how long it is expected to last, rather than the physical quantity issued, e.g. 90 days supply of medication (based on an ordered dosage) When possible, it is always better to specify quantity, as this tends to be more precise. expectedSupplyDuration will always be an estimate that can be influenced by external factors.
     @returns {Duration}
      */
@@ -27253,7 +27253,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationPrescriptionSubstitutionComponent
   @exports  MedicationPrescriptionSubstitutionComponent as MedicationPrescriptionSubstitutionComponent
@@ -27536,7 +27536,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class MedicationStatementDosageComponent
   @exports  MedicationStatementDosageComponent as MedicationStatementDosageComponent
@@ -27611,7 +27611,7 @@
 
     /**
     A coded value indicating the method by which the medication is introduced into or onto the body. Most commonly used for injections.  Examples:  Slow Push; Deep IV.
-
+    
     Terminologies used often pre-coordinate this term with the route and or form of administration.
     @returns {CodeableConcept}
      */
@@ -27869,7 +27869,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class MessageHeaderResponseComponent
   @exports  MessageHeaderResponseComponent as MessageHeaderResponseComponent
@@ -27920,7 +27920,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MessageSourceComponent
   @exports  MessageSourceComponent as MessageSourceComponent
@@ -27991,7 +27991,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MessageDestinationComponent
   @exports  MessageDestinationComponent as MessageDestinationComponent
@@ -28467,7 +28467,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class NamingSystemUniqueIdComponent
   @exports  NamingSystemUniqueIdComponent as NamingSystemUniqueIdComponent
@@ -28528,7 +28528,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class NamingSystemContactComponent
   @exports  NamingSystemContactComponent as NamingSystemContactComponent
@@ -28787,7 +28787,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class NutritionOrderItemOralDietNutrientsComponent
   @exports  NutritionOrderItemOralDietNutrientsComponent as NutritionOrderItemOralDietNutrientsComponent
@@ -28842,7 +28842,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class NutritionOrderItemOralDietTextureComponent
   @exports  NutritionOrderItemOralDietTextureComponent as NutritionOrderItemOralDietTextureComponent
@@ -28885,7 +28885,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class NutritionOrderItemOralDietComponent
   @exports  NutritionOrderItemOralDietComponent as NutritionOrderItemOralDietComponent
@@ -28990,7 +28990,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class NutritionOrderItemSupplementComponent
   @exports  NutritionOrderItemSupplementComponent as NutritionOrderItemSupplementComponent
@@ -29050,7 +29050,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class NutritionOrderItemEnteralFormulaComponent
   @exports  NutritionOrderItemEnteralFormulaComponent as NutritionOrderItemEnteralFormulaComponent
@@ -29167,7 +29167,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class NutritionOrderItemComponent
   @exports  NutritionOrderItemComponent as NutritionOrderItemComponent
@@ -29493,7 +29493,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ObservationReferenceRangeComponent
   @exports  ObservationReferenceRangeComponent as ObservationReferenceRangeComponent
@@ -29570,7 +29570,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ObservationRelatedComponent
   @exports  ObservationRelatedComponent as ObservationRelatedComponent
@@ -30030,7 +30030,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class OperationDefinitionParameterComponent
   @exports  OperationDefinitionParameterComponent as OperationDefinitionParameterComponent
@@ -30418,7 +30418,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class OperationOutcomeIssueComponent
   @exports  OperationOutcomeIssueComponent as OperationOutcomeIssueComponent
@@ -30582,7 +30582,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class PayeeComponent
   @exports  PayeeComponent as PayeeComponent
@@ -30649,7 +30649,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class DiagnosisComponent
   @exports  DiagnosisComponent as DiagnosisComponent
@@ -30690,7 +30690,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class CoverageComponent
   @exports  CoverageComponent as CoverageComponent
@@ -30797,7 +30797,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class MissingTeethComponent
   @exports  MissingTeethComponent as MissingTeethComponent
@@ -30852,7 +30852,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class OrthodonticPlanComponent
   @exports  OrthodonticPlanComponent as OrthodonticPlanComponent
@@ -30951,7 +30951,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SubDetailComponent
   @exports  SubDetailComponent as SubDetailComponent
@@ -31072,7 +31072,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class DetailComponent
   @exports  DetailComponent as DetailComponent
@@ -31212,7 +31212,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ProsthesisComponent
   @exports  ProsthesisComponent as ProsthesisComponent
@@ -31265,7 +31265,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ItemsComponent
   @exports  ItemsComponent as ItemsComponent
@@ -31958,7 +31958,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class OrderWhenComponent
   @exports  OrderWhenComponent as OrderWhenComponent
@@ -32421,7 +32421,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class OrganizationContactComponent
   @exports  OrganizationContactComponent as OrganizationContactComponent
@@ -32879,7 +32879,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ContactComponent
   @exports  ContactComponent as ContactComponent
@@ -32994,7 +32994,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class AnimalComponent
   @exports  AnimalComponent as AnimalComponent
@@ -33049,7 +33049,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class PatientLinkComponent
   @exports  PatientLinkComponent as PatientLinkComponent
@@ -33666,7 +33666,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class DetailsComponent
   @exports  DetailsComponent as DetailsComponent
@@ -33769,7 +33769,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class NotesComponent
   @exports  NotesComponent as NotesComponent
@@ -34317,7 +34317,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class PractitionerQualificationComponent
   @exports  PractitionerQualificationComponent as PractitionerQualificationComponent
@@ -34704,7 +34704,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ProcedurePerformerComponent
   @exports  ProcedurePerformerComponent as ProcedurePerformerComponent
@@ -34747,7 +34747,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ProcedureRelatedItemComponent
   @exports  ProcedureRelatedItemComponent as ProcedureRelatedItemComponent
@@ -35394,7 +35394,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ProfileMappingComponent
   @exports  ProfileMappingComponent as ProfileMappingComponent
@@ -35453,7 +35453,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConstraintComponent
   @exports  ConstraintComponent as ConstraintComponent
@@ -35797,7 +35797,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ProvenanceAgentComponent
   @exports  ProvenanceAgentComponent as ProvenanceAgentComponent
@@ -35860,7 +35860,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ProvenanceEntityComponent
   @exports  ProvenanceEntityComponent as ProvenanceEntityComponent
@@ -36142,7 +36142,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class QueryResponseComponent
   @exports  QueryResponseComponent as QueryResponseComponent
@@ -36430,7 +36430,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class QuestionComponent
   @exports  QuestionComponent as QuestionComponent
@@ -36549,7 +36549,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class GroupComponent
   @exports  GroupComponent as GroupComponent
@@ -36832,7 +36832,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class QuestionAnswerComponent
   @exports  QuestionAnswerComponent as QuestionAnswerComponent
@@ -36987,7 +36987,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class QuestionComponent
   @exports  QuestionComponent as QuestionComponent
@@ -37064,7 +37064,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class GroupComponent
   @exports  GroupComponent as GroupComponent
@@ -37353,7 +37353,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ItemsComponent
   @exports  ItemsComponent as ItemsComponent
@@ -38097,7 +38097,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class PayeeComponent
   @exports  PayeeComponent as PayeeComponent
@@ -38164,7 +38164,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ReversalCoverageComponent
   @exports  ReversalCoverageComponent as ReversalCoverageComponent
@@ -38470,7 +38470,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class RiskAssessmentPredictionComponent
   @exports  RiskAssessmentPredictionComponent as RiskAssessmentPredictionComponent
@@ -38976,7 +38976,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class SecurityEventEventComponent
   @exports  SecurityEventEventComponent as SecurityEventEventComponent
@@ -39068,7 +39068,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SecurityEventParticipantNetworkComponent
   @exports  SecurityEventParticipantNetworkComponent as SecurityEventParticipantNetworkComponent
@@ -39107,7 +39107,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SecurityEventParticipantComponent
   @exports  SecurityEventParticipantComponent as SecurityEventParticipantComponent
@@ -39221,7 +39221,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SecurityEventSourceComponent
   @exports  SecurityEventSourceComponent as SecurityEventSourceComponent
@@ -39279,7 +39279,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SecurityEventObjectDetailComponent
   @exports  SecurityEventObjectDetailComponent as SecurityEventObjectDetailComponent
@@ -39318,7 +39318,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SecurityEventObjectComponent
   @exports  SecurityEventObjectComponent as SecurityEventObjectComponent
@@ -39791,7 +39791,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class SpecimenSourceComponent
   @exports  SpecimenSourceComponent as SpecimenSourceComponent
@@ -39839,7 +39839,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SpecimenCollectionComponent
   @exports  SpecimenCollectionComponent as SpecimenCollectionComponent
@@ -39940,7 +39940,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SpecimenTreatmentComponent
   @exports  SpecimenTreatmentComponent as SpecimenTreatmentComponent
@@ -40000,7 +40000,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SpecimenContainerComponent
   @exports  SpecimenContainerComponent as SpecimenContainerComponent
@@ -40527,7 +40527,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class StatusResponseNotesComponent
   @exports  StatusResponseNotesComponent as StatusResponseNotesComponent
@@ -40827,7 +40827,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class SubscriptionChannelComponent
   @exports  SubscriptionChannelComponent as SubscriptionChannelComponent
@@ -40886,7 +40886,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SubscriptionTagComponent
   @exports  SubscriptionTagComponent as SubscriptionTagComponent
@@ -41121,7 +41121,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class SubstanceInstanceComponent
   @exports  SubstanceInstanceComponent as SubstanceInstanceComponent
@@ -41176,7 +41176,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class SubstanceIngredientComponent
   @exports  SubstanceIngredientComponent as SubstanceIngredientComponent
@@ -41356,7 +41356,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class SupplyDispenseComponent
   @exports  SupplyDispenseComponent as SupplyDispenseComponent
@@ -41661,7 +41661,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class SupportingDocumentationDetailComponent
   @exports  SupportingDocumentationDetailComponent as SupportingDocumentationDetailComponent
@@ -41968,7 +41968,7 @@
   Element = CORE.Element;
 
 
-  /**
+  /** 
   Embedded class
   @class ConceptDefinitionDesignationComponent
   @exports  ConceptDefinitionDesignationComponent as ConceptDefinitionDesignationComponent
@@ -42019,7 +42019,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConceptDefinitionComponent
   @exports  ConceptDefinitionComponent as ConceptDefinitionComponent
@@ -42116,7 +42116,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ValueSetDefineComponent
   @exports  ValueSetDefineComponent as ValueSetDefineComponent
@@ -42184,7 +42184,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConceptReferenceComponent
   @exports  ConceptReferenceComponent as ConceptReferenceComponent
@@ -42242,7 +42242,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConceptSetFilterComponent
   @exports  ConceptSetFilterComponent as ConceptSetFilterComponent
@@ -42291,7 +42291,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ConceptSetComponent
   @exports  ConceptSetComponent as ConceptSetComponent
@@ -42368,7 +42368,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ValueSetComposeComponent
   @exports  ValueSetComposeComponent as ValueSetComposeComponent
@@ -42435,7 +42435,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ValueSetExpansionContainsComponent
   @exports  ValueSetExpansionContainsComponent as ValueSetExpansionContainsComponent
@@ -42523,7 +42523,7 @@
   })(BackboneElement);
 
 
-  /**
+  /** 
   Embedded class
   @class ValueSetExpansionComponent
   @exports  ValueSetExpansionComponent as ValueSetExpansionComponent
