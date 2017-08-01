@@ -81,3 +81,7 @@ parameter FooWithNoDefault Integer
 parameter FooWithDefault default 5
 define Foo: FooWithNoDefault
 define Foo2: FooWithDefault
+
+// @Test: MeasurementPeriodParameter
+parameter "Measurement Period" Interval<DateTime>
+define MeasurementPeriod: Interval[DateTime(2011, 1, 1), DateTime(2013, 1, 1)] overlaps "Measurement Period"

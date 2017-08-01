@@ -15,9 +15,9 @@ class CodeService
   findValueSet: (oid, version) ->
     oid = oid.replace "urn:oid:", ""
     if version?
-      result = @valueSets[oid]?[version]
-      return result if result
-    results = @findValueSetsByOid(oid)
-    if results.length is 0 then null else results.reduce (a, b) -> if a.version > b.version then a else b
+      @valueSets[oid]?[version]
+    else
+      results = @findValueSetsByOid(oid)
+      if results.length is 0 then null else results.reduce (a, b) -> if a.version > b.version then a else b
 
 module.exports.CodeService = CodeService

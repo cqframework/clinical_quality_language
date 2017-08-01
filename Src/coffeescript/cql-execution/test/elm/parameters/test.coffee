@@ -309,3 +309,12 @@ describe 'DefaultAndNoDefault', ->
   it 'should be able to retrieve a provided value and a default value', ->
     @foo.exec(@ctx.withParameters { FooWithNoDefault: 1 }).should.eql 1
     @foo2.exec(@ctx.withParameters { FooWithNoDefault: 1 }).should.eql 5
+
+describe 'MeasurementPeriodParameter', ->
+  @beforeEach ->
+    setup @, data
+
+  it "should execute expression from library that uses passed in measurement period in a child context", ->
+    @ctx = @ctx.withParameters({"Measurement Period": new Interval(new DateTime(2012, 1, 1, 0, 0, 0, 0), new DateTime(2013, 1, 1, 0, 0, 0, 0))})
+    rctx = @ctx.childContext()
+    @measurementPeriod.exec(rctx).should.equal true

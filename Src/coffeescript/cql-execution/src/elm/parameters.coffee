@@ -9,8 +9,15 @@ module.exports.ParameterDef = class ParameterDef extends Expression
     @parameterTypeSpecifier = json.parameterTypeSpecifier
 
   exec: (ctx) ->
-    if (ctx?.parameters[@name]?) then ctx.parameters[@name]
-    else @default?.execute(ctx)
+    # If context parameters contains the name, return value.
+    if (ctx?.parameters[@name]?)
+      ctx.parameters[@name]
+    # If default type exists, execute the default type
+    else if @default?
+      @default?.execute(ctx)
+    # Else, if context and context's parent exist return the value of the parent's parameters with the given name.
+    else
+      ctx?.parent?.parameters[@name]
 
 module.exports.ParameterRef = class ParameterRef extends Expression
   constructor: (json) ->
