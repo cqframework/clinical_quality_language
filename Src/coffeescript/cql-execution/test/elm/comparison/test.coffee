@@ -188,3 +188,6 @@ describe 'GreaterOrEqual', ->
 
   it 'should be false for 5 m  >=5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.false()
+
+  it 'should be true for 100 mg / 2 [lb_av]  > 49 mg/[lb_av]', ->
+    @divideUcum.exec(@ctx).should.be.true()

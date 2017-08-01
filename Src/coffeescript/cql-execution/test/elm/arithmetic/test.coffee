@@ -426,6 +426,7 @@ describe 'Quantity', ->
       ["10 'm2'", "5 'm'", "2 'm'"],
       ["25 'km'", "5 'm'", "5000"],
       ["100 'm'", "2 'h'", "0.01388889 'm/s' "],
+      ["100 'mg'", "2 '[lb_av]'", "50 'mg/[lb_av]' "]
     ]
     doQuantityMathTests(tests, "/")
   it "should be able to perform ucum addition", ->

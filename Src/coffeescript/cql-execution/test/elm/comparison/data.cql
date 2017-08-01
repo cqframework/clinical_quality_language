@@ -41,7 +41,7 @@ define AEqB_Int: 5 <= 5
 define ALtB_Int: 5 <= 6
 define AGtB_Quantity: 5 'm' <= 4 'm'
 define AEqB_Quantity: 5 'm' <= 5 'm'
-define ALtB_Quantity: 5 'm' <= 6 'm' 
+define ALtB_Quantity: 5 'm' <= 6 'm'
 define AGtB_Quantity_diff: 5 'm' <= 4 'm'
 define AEqB_Quantity_diff: 5 'm' <= 500 'cm'
 define ALtB_Quantity_diff: 5 'm' <= 5 'km'
@@ -68,3 +68,4 @@ define ALtB_Quantity: 5 'm' >= 6 'm'
 define AGtB_Quantity_diff: 5 'm' >= 5 'cm'
 define AEqB_Quantity_diff: 5 'm' >= 500 'cm'
 define ALtB_Quantity_diff: 5 'm' >= 5 'km'
+define DivideUcum: (100 'mg' / 2 '[lb_av]') > 49 'mg/[lb_av]'
