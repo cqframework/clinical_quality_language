@@ -5493,7 +5493,7 @@
             return qty.value;
         }
       })();
-      return millivalue;
+      return Math.round(millivalue);
     } else {
       return null;
     }

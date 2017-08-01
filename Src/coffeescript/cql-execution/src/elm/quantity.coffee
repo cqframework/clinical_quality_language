@@ -122,7 +122,8 @@ durationInMilliseconds = (qty) ->
       when get_ucum_unit(qty.unit) == 'mo_j' then qty.value * 30.4375 * 24 * 60 * 60 * 1000  # Based on a Julian mean month length of 30.4375 days
       when get_ucum_unit(qty.unit) == 'a_j' then qty.value * 365.25 * 24 * 60 * 60 * 1000  # Based on a Julian year of 365.25 days
       else qty.value
-    millivalue
+    # Rounding the final value here to deal with floating point math and CQL's minimum time unit is millisecond
+    Math.round(millivalue)
   else
     null
 
