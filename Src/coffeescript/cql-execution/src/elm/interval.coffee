@@ -133,4 +133,48 @@ module.exports.Starts = class Starts extends UnimplementedExpression
 
 module.exports.Ends = class Ends extends UnimplementedExpression
 
-module.exports.Collapse = class Collapse extends UnimplementedExpression
+module.exports.Collapse = class Collapse extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    intervals = @execArgs ctx
+    if intervals?.length <= 1
+      intervals
+    else
+      # we don't handle imprecise intervals at this time
+      for a in intervals
+        if a.low.isImprecise?() || a.high.isImprecise?()
+          throw new Error("Collapse does not support imprecise dates at this time.")
+
+      # sort intervals by start
+      intervals.sort (a,b)->
+        if typeof a.low.before == 'function'
+          return -1 if a.low.before b.low
+          return 1 if a.low.after b.low
+        else
+          return -1 if a.low < b.low
+          return 1 if a.low > b.low
+        0
+
+      # collapse intervals as necessary
+      collapsedIntervals = []
+      a = intervals.shift()
+      b = intervals.shift()
+      while b
+        if typeof b.low.sameOrBefore == 'function'
+          if b.low.sameOrBefore a.high
+            a.high = b.high if b.high.after a.high
+          else
+            collapsedIntervals.push a
+            a = b
+        else
+          if b.low <= a.high
+            a.high = b.high if b.high > a.high
+          else
+            collapsedIntervals.push a
+            a = b
+        b = intervals.shift()
+      collapsedIntervals.push a
+      collapsedIntervals
+

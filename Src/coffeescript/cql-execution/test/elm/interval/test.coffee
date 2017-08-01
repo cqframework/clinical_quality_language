@@ -1174,3 +1174,57 @@ describe 'DateTimeIntervalIntersect', ->
     x = @dateTimeEndsInterval.exec(@ctx)
     y = @dateTimeEndsIntersect.exec(@ctx)
     y.equals(x).should.be.true()
+
+# TODO: 2 tests I don't know how to write:
+#   - If the argument is null, the result is null.
+#   - If the list of intervals contains nulls, they will be excluded from the resulting list.
+describe 'IntegerIntervalCollapse', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'empty interval collapses to empty', ->
+    @intCollapseEmpty.exec(@ctx).should.eql @intEmptyIntervalList.exec(@ctx)
+
+  it 'single interval list collapse to self', ->
+    @intCollapseSingleInterval.exec(@ctx).should.eql @int1_10IntervalList.exec(@ctx)
+
+  it 'disjoint intervals list collapses to ordered self', ->
+    @intCollapseDisjoint.exec(@ctx).should.eql @intTwoItemDisjointList.exec(@ctx)
+    @intCollapseDisjointReversed.exec(@ctx).should.eql @intTwoItemDisjointList.exec(@ctx)
+
+  it 'adjacent intervals list combines', ->
+    @intCollapseAdjacent.exec(@ctx).should.eql @int1_15IntervalList.exec(@ctx)
+
+  it 'overlapping intervals list combine', ->
+    @intCollapseOverlap.exec(@ctx).should.eql @int1_12IntervalList.exec(@ctx)
+    @intCollapseOverlapContained.exec(@ctx).should.eql @int1_15IntervalList.exec(@ctx)
+    @intCollapseOverlapContainedEdge.exec(@ctx).should.eql @int1_10IntervalList.exec(@ctx)
+    @intCollapseOverlapContainedEdge2.exec(@ctx).should.eql @int1_15IntervalList.exec(@ctx)
+    @intCollapseOverlapMultipleCombine.exec(@ctx).should.eql @int1_15IntervalList.exec(@ctx)
+
+describe 'DateTimeIntervalCollapse', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'empty interval collapses to empty', ->
+    @dateTimeCollapseEmpty.exec(@ctx).should.eql @dateTimeEmptyIntervalList.exec(@ctx)
+
+  it 'single interval list collapse to self', ->
+    @dateTimeCollapseSingleInterval.exec(@ctx).should.eql @dateTime1_10IntervalList.exec(@ctx)
+
+  it 'disjoint intervals list collapses to ordered self', ->
+    @dateTimeCollapseDisjoint.exec(@ctx).should.eql @dateTimeTwoItemDisjointList.exec(@ctx)
+    @dateTimeCollapseDisjointReversed.exec(@ctx).should.eql @dateTimeTwoItemDisjointList.exec(@ctx)
+
+  it 'adjacent intervals list combines', ->
+    @dateTimeCollapseAdjacent.exec(@ctx).should.eql @dateTime1_15IntervalList.exec(@ctx)
+
+  it 'overlapping intervals list combine', ->
+    @dateTimeCollapseOverlap.exec(@ctx).should.eql @dateTime1_12IntervalList.exec(@ctx)
+    @dateTimeCollapseOverlapContained.exec(@ctx).should.eql @dateTime1_15IntervalList.exec(@ctx)
+    @dateTimeCollapseOverlapContainedEdge.exec(@ctx).should.eql @dateTime1_10IntervalList.exec(@ctx)
+    @dateTimeCollapseOverlapContainedEdge2.exec(@ctx).should.eql @dateTime1_15IntervalList.exec(@ctx)
+    @dateTimeCollapseOverlapMultipleCombine.exec(@ctx).should.eql @dateTime1_15IntervalList.exec(@ctx)
+
+  it 'throws collapsing imprecise interval', ->
+    should(() => @dateTimeCollapseImpreciseBoundary.exec(@ctx)).throw("Collapse does not support imprecise dates at this time.")
