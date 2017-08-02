@@ -7,15 +7,7 @@ validateQuantity = (object,expectedValue,expectedUnit) ->
   object.constructor.name.should.equal "Quantity"
   q = Q.createQuantity(expectedValue,expectedUnit)
   q.equals(object).should.be.true("Expected "+ object + " to equal " + q)
-  # if object.value
-  #   object.value.should.equal expectedValue
-  # else
-  #   (object.value == expectedValue).should.equal true
-  # if object.unit
-  #   object.unit.should.equal expectedUnit
-  # else
-  #   (object.unit == expectedUnit).should.equal true, "Expected "+ (object.unit) + " to equal " + (expectedUnit)
-
+  
 doQuantityMathTests = (tests, operator) ->
   func = switch operator
            when "*" then Q.doMultiplication

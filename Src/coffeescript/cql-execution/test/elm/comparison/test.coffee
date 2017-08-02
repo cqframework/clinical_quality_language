@@ -75,7 +75,7 @@ describe 'Less', ->
   it 'should be true for 5 < 6', ->
     @aLtB_Int.exec(@ctx).should.be.true()
 
-  it 'should be true for 5 m < 4 m', ->
+  it 'should be false for 5 m < 4 m', ->
     @aGtB_Quantity.exec(@ctx).should.be.false()
 
   it 'should be false for 5 m < 5 m', ->

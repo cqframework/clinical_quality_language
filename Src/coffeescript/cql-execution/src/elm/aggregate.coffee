@@ -17,9 +17,9 @@ quantitiesOrArg = (arr) ->
     values = []
     for i in arr
       values.push i.convertUnits(unit)
-    return compact(values) # need to make sure that there are not any null values from the quntities
+    return values
   else if someQs
-    throw new Exception("Cannot perform aggregate operations on mixed values of Quantities and non Quantities") 
+    throw new Exception("Cannot perform aggregate operations on mixed values of Quantities and non Quantities")
   else
     arr
 

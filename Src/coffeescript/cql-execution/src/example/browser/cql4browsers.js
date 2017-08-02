@@ -1660,7 +1660,7 @@
         i = arr[j];
         values.push(i.convertUnits(unit));
       }
-      return compact(values);
+      return values;
     } else if (someQs) {
       throw new Exception("Cannot perform aggregate operations on mixed values of Quantities and non Quantities");
     } else {
@@ -5353,7 +5353,7 @@
     Quantity.prototype.sameOrBefore = function(other) {
       var other_v;
       if (other instanceof Quantity) {
-        other_v = ucum.convert(other.value, ucum_unit(other.unit), ucum_unit(this.unit));
+        other_v = convert_value(other.value, ucum_unit(other.unit), ucum_unit(this.unit));
         return this.value <= other_v;
       }
     };
@@ -5361,7 +5361,7 @@
     Quantity.prototype.sameOrAfter = function(other) {
       var other_v;
       if (other instanceof Quantity) {
-        other_v = ucum.convert(other.value, ucum_unit(other.unit), ucum_unit(this.unit));
+        other_v = convert_value(other.value, ucum_unit(other.unit), ucum_unit(this.unit));
         return this.value >= other_v;
       }
     };
@@ -5369,7 +5369,7 @@
     Quantity.prototype.after = function(other) {
       var other_v;
       if (other instanceof Quantity) {
-        other_v = ucum.convert(other.value, ucum_unit(other.unit), ucum_unit(this.unit));
+        other_v = convert_value(other.value, ucum_unit(other.unit), ucum_unit(this.unit));
         return this.value > other_v;
       }
     };
@@ -5377,7 +5377,7 @@
     Quantity.prototype.before = function(other) {
       var other_v;
       if (other instanceof Quantity) {
-        other_v = ucum.convert(other.value, ucum_unit(other.unit), ucum_unit(this.unit));
+        other_v = convert_value(other.value, ucum_unit(other.unit), ucum_unit(this.unit));
         return this.value < other_v;
       }
     };
@@ -5401,14 +5401,14 @@
     };
 
     Quantity.prototype.dividedBy = function(other) {
-      return this.multiplyDivied(other, "/");
+      return this.multiplyDivide(other, "/");
     };
 
     Quantity.prototype.multiplyBy = function(other) {
-      return this.multiplyDivied(other, ".");
+      return this.multiplyDivide(other, ".");
     };
 
-    Quantity.prototype.multiplyDivied = function(other, operator) {
+    Quantity.prototype.multiplyDivide = function(other, operator) {
       var can_val, other_can_value, ucum_value, unit, value;
       if (other instanceof Quantity) {
         if (this.unit && other.unit) {
@@ -5631,12 +5631,10 @@
   };
 
   module.exports.doMultiplication = function(a, b) {
-    var d, q, ref1;
-    if (a instanceof Quantity && b instanceof Quantity) {
+    if (a instanceof Quantity) {
       return a.multiplyBy(b);
     } else {
-      ref1 = a instanceof Quantity ? [a, b] : [b, a], q = ref1[0], d = ref1[1];
-      return createQuantity(q.value * d, q.unit);
+      return b.multiplyBy(a);
     }
   };
 

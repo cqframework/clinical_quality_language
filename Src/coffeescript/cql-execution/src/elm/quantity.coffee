@@ -29,22 +29,22 @@ module.exports.Quantity = class Quantity extends Expression
 
   sameOrBefore: (other) ->
     if other instanceof Quantity
-      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      other_v = convert_value(other.value,ucum_unit(other.unit),ucum_unit(@unit))
       @value <= other_v
 
   sameOrAfter: (other) ->
     if other instanceof Quantity
-      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      other_v = convert_value(other.value,ucum_unit(other.unit),ucum_unit(@unit))
       @value >= other_v
 
   after: (other) ->
     if other instanceof Quantity
-      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      other_v = convert_value(other.value,ucum_unit(other.unit),ucum_unit(@unit))
       @value > other_v
 
   before: (other) ->
     if other instanceof Quantity
-      other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+      other_v = convert_value(other.value,ucum_unit(other.unit),ucum_unit(@unit))
       @value < other_v
 
   equals: (other) ->
@@ -61,19 +61,19 @@ module.exports.Quantity = class Quantity extends Expression
     convert_value(@value,@unit,to_units)
 
   dividedBy: (other) ->
-    @multiplyDivied(other,"/")
+    @multiplyDivide(other,"/")
 
   multiplyBy: (other) ->
-    @multiplyDivied(other,".") # in ucum . represents multiplication
+    @multiplyDivide(other,".") # in ucum . represents multiplication
 
-  multiplyDivied: (other, operator) ->
+  multiplyDivide: (other, operator) ->
     if other instanceof Quantity
       if @unit and other.unit
         can_val = @to_ucum()
         other_can_value = other.to_ucum()
         ucum_value = ucum_multiply(can_val,[[operator,other_can_value]])
         createQuantity(ucum_value.value, units_to_string(ucum_value.units))
-      else
+      else 
         value = if operator == "/" then @value / other.value  else @value * other.value
         unit = @unit || other.unit
         createQuantity(decimalAdjust("round",value,-8), unit)
@@ -121,7 +121,7 @@ ucum_to_cql_units = {
   , 's':    'second'
   , 'ms':   'millisecond'
 }
-# this is used to perform any convertions of CQL date time fileds to their ucum equivalents
+# this is used to perform any conversions of CQL date time fields to their ucum equivalents
 ucum_unit = (unit) ->
   ucum_time_units[unit] || unit || ''
 
@@ -133,7 +133,7 @@ convert_value = (value, from ,to ) ->
     throw new IncompatibleTypesException(from, to, e)
 
 module.exports.convert_value = convert_value
-# This method will take a ucum.js representation of untis and converth them to a string
+# This method will take a ucum.js representation of units and convert them to a string
 # ucum.js units are a has of unit => power values.  For instance m/h (meters per hour) in
 # ucum.js will be reprsented by the json object {m: 1, h:-1}  negative values are inverted and
 # are akin to denominator values in a fraction.  Positive values are somewhat a kin to numerator
@@ -209,8 +209,4 @@ module.exports.doDivision = (a,b) ->
     a.dividedBy(b)
 
 module.exports.doMultiplication = (a,b) ->
-  if a instanceof Quantity and b instanceof Quantity
-    a.multiplyBy(b)
-  else
-    [q,d]  = if a instanceof Quantity then [a,b] else [b,a]
-    createQuantity(q.value * d, q.unit)
+  if a instanceof Quantity then a.multiplyBy(b) else b.multiplyBy(a)
