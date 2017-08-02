@@ -41,7 +41,6 @@ define has_null_q: Avg({1 'ml',null,null,2 'ml'})
 define empty: Avg(List<Integer>{})
 define q_diff_units: Avg({1 'ml',0.002 'l',0.03 'dl',4 'ml',5 'ml'})
 define q_throw1: Avg({1 'ml',0.002 'm',0.03 'dl',4 'ml',5 'ml'})
-define q_throw2: Avg({1 ,2 ,3 'ml',4 ,5 'ml'})
 
 // @Test: Median
 define odd: Median({5,1,2,3,4})

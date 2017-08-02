@@ -1078,27 +1078,10 @@ define has_null_q: Avg({1 'ml',null,null,2 'ml'})
 define empty: Avg(List<Integer>{})
 define q_diff_units: Avg({1 'ml',0.002 'l',0.03 'dl',4 'ml',5 'ml'})
 define q_throw1: Avg({1 'ml',0.002 'm',0.03 'dl',4 'ml',5 'ml'})
-define q_throw2: Avg({1 ,2 ,3 'ml',4 ,5 'ml'})
 ###
 
-###
-Translation Error(s):
-[11:18, 11:46] Call to operator Avg(list<System.Any>) is ambiguous with: 
-  - Avg(list<System.Decimal>)
-  - Avg(list<System.Quantity>)
-###
 module.exports['Avg'] = {
    "library" : {
-      "annotation" : [ {
-         "startLine" : 11,
-         "startChar" : 18,
-         "endLine" : 11,
-         "endChar" : 46,
-         "message" : "Call to operator Avg(list<System.Any>) is ambiguous with: \n  - Avg(list<System.Decimal>)\n  - Avg(list<System.Quantity>)",
-         "errorType" : "semantic",
-         "errorSeverity" : "error",
-         "type" : "CqlToElmError"
-      } ],
       "identifier" : {
          "id" : "TestSnippet",
          "version" : "1"
@@ -1387,13 +1370,6 @@ module.exports['Avg'] = {
                      "type" : "Quantity"
                   } ]
                }
-            }
-         }, {
-            "name" : "q_throw2",
-            "context" : "Patient",
-            "accessLevel" : "Public",
-            "expression" : {
-               "type" : "Null"
             }
          } ]
       }
