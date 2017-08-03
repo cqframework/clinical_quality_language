@@ -17,7 +17,7 @@ module.exports.ParameterDef = class ParameterDef extends Expression
       @default?.execute(ctx)
     # Else, if context and context's parent exist return the value of the parent's parameters with the given name.
     else
-      ctx?.parent?.parameters[@name]
+      ctx.getParentParameter @name
 
 module.exports.ParameterRef = class ParameterRef extends Expression
   constructor: (json) ->

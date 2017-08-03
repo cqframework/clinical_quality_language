@@ -56,6 +56,12 @@ module.exports.Context = class Context
   getParameter: (name) ->
     @parent?.getParameter(name)
 
+  getParentParameter: (name) ->
+    if @parent?.parameters[name]?
+      @parent.parameters[name]
+    else if @parent?
+      @parent.getParentParameter name
+
   getValueSet: (name) ->
     @parent?.getValueSet(name)
 
