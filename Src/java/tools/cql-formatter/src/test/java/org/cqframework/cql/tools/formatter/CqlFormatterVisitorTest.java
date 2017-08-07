@@ -16,15 +16,19 @@ import java.util.stream.Collectors;
 public class CqlFormatterVisitorTest {
 
     private void runTest(String fileName) throws IOException {
-        String input = getInputStreamAsString(getInput(fileName));
-        String output = Main.getFormattedOutput(getInput(fileName));
+        String input = CqlFormatterVisitor.getInputStreamAsString(getInput(fileName));
+        String output = CqlFormatterVisitor.getFormattedOutput(getInput(fileName));
         Assert.assertTrue(inputMatchesOutput(input, output));
     }
 
     @Test
     public void TestFormatterSpecific() throws IOException {
         runTest("comments.cql");
-        runTest("invalid-syntax.cql");
+        try {
+            runTest("invalid-syntax.cql");
+        } catch (AssertionError ae) {
+            // pass
+        }
     }
 
     @Test
@@ -93,9 +97,5 @@ public class CqlFormatterVisitorTest {
         }
 
         return is;
-    }
-
-    private String getInputStreamAsString(InputStream is) {
-        return new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
     }
 }
