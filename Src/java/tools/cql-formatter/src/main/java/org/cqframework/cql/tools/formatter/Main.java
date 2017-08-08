@@ -15,21 +15,6 @@ import java.io.InputStream;
  */
 public class Main {
 
-    public static String getFormattedOutput(InputStream is) throws IOException {
-        ANTLRInputStream input = new ANTLRInputStream(is);
-        cqlLexer lexer = new cqlLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        tokens.fill();
-        CommentListener listener = new CommentListener(tokens);
-        listener.rewriteTokens();
-        cqlParser parser = new cqlParser(listener.tokens);
-        parser.setBuildParseTree(true);
-        ParserRuleContext tree = parser.library();
-        CqlFormatterVisitor formatter = new CqlFormatterVisitor();
-        String output = (String)formatter.visit(tree);
-        return listener.refineOutput(output);
-    }
-
     public static void main(String[] args) throws IOException {
         String inputFile = null;
         if (args.length > 0) {
@@ -40,6 +25,6 @@ public class Main {
             is = new FileInputStream(inputFile);
         }
 
-        System.out.print(getFormattedOutput(is));
+        System.out.print(CqlFormatterVisitor.getFormattedOutput(is));
     }
 }

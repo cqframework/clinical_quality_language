@@ -1,16 +1,56 @@
 package org.cqframework.cql.tools.formatter;
 
-import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import org.cqframework.cql.gen.cqlBaseVisitor;
+import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
+import java.util.stream.Collectors;
 
 /**
  * Created by Bryn on 7/5/2017.
  */
 public class CqlFormatterVisitor extends cqlBaseVisitor {
+
+    private static FormatResult endResult = new FormatResult();
+    private static String input = null;
+
+    public static String getFormattedOutput(InputStream is) throws IOException {
+        ANTLRInputStream in = new ANTLRInputStream(is);
+        cqlLexer lexer = new cqlLexer(in);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        tokens.fill();
+        CommentListener listener = new CommentListener(tokens);
+        listener.rewriteTokens();
+        cqlParser parser = new cqlParser(listener.tokens);
+        parser.addErrorListener(new SyntaxErrorListener());
+        parser.setBuildParseTree(true);
+        ParserRuleContext tree = parser.library();
+        CqlFormatterVisitor formatter = new CqlFormatterVisitor();
+        String output = (String)formatter.visit(tree);
+
+        if (!((SyntaxErrorListener) parser.getErrorListeners().get(1)).result.errors.isEmpty()) {
+            CqlFormatterVisitor.endResult.setCql(input);
+            CqlFormatterVisitor.endResult.setErrors(((SyntaxErrorListener) parser.getErrorListeners().get(1)).result.errors);
+            return CqlFormatterVisitor.endResult.inputInError();
+        }
+
+        return listener.refineOutput(output);
+    }
+
+    public static String getInputStreamAsString(InputStream is) {
+        input = new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
+        return input;
+    }
+
     private StringBuilder output;
 
     private final char space = '\u0020';
@@ -1275,5 +1315,54 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
     public Object visitTerminal(TerminalNode node) {
         appendTerminal(node.getText());
         return super.visitTerminal(node);
+    }
+
+    private static class FormatResult {
+        private String cql = "";
+        private List<Exception> errors = new ArrayList<>();
+
+        public String getCql() {
+            return this.cql;
+        }
+
+        public List<Exception> getErrors() {
+            return this.errors;
+        }
+
+        public void setCql(String cql) {
+            this.cql = cql;
+        }
+
+        public void setErrors(List<Exception> errors) {
+            this.errors = errors;
+        }
+
+        public void addError(Exception e) {
+            this.errors.add(e);
+        }
+
+        public String inputInError() {
+            StringBuilder ret = new StringBuilder().append("Encountered syntax errors:").append("\n");
+            for (Exception e : errors) {
+                ret.append(e.getMessage()).append("\n");
+            }
+            return ret.append("\n").append("Input CQL:").append("\n").append(cql).toString();
+        }
+    }
+
+    private static class SyntaxErrorListener extends BaseErrorListener {
+
+        private FormatResult result = new FormatResult();
+
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer,
+                                Object offendingSymbol,
+                                int line, int charPositionInLine,
+                                String msg, RecognitionException e)
+        {
+            if (!((Token) offendingSymbol).getText().trim().isEmpty()) {
+                result.addError(new Exception(String.format("[%d:%d]: %s", line, charPositionInLine, msg)));
+            }
+        }
     }
 }
