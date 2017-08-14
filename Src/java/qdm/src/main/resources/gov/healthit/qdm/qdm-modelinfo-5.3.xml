@@ -85,7 +85,7 @@
         <ns4:element name="admissionSource" type="System.Code"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="dischargeDisposition" type="System.Code"/>
-        <ns4:element name="facilityLocations" type="QDM.FacilityLocation"/>
+        <ns4:element name="facilityLocations" type="list&lt;QDM.FacilityLocation&gt;"/>
         <ns4:element name="diagnoses" type="list&lt;System.Code&gt;"/>
         <ns4:element name="principalDiagnosis" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
