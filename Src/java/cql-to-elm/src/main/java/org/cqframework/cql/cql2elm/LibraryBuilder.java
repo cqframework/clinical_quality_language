@@ -744,6 +744,10 @@ public class LibraryBuilder {
             reportWarning("Boolean-valued expression was promoted to a list.", expression);
         }
 
+        return resolveToList(expression);
+    }
+
+    public Expression resolveToList(Expression expression) {
         // Use a ToList operator here to avoid duplicate evaluation of the operand.
         ToList toList = of.createToList().withOperand(expression);
         toList.setResultType(new ListType(expression.getResultType()));
