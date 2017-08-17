@@ -23,7 +23,27 @@ public class CqlFormatterVisitorTest {
 
     @Test
     public void TestFormatterSpecific() throws IOException {
+        try {
+            // this test has an extra "`", which is ignored - causing the input to differ from the output.
+            runTest("git-issue-206-a.cql");
+        } catch (AssertionError ae) {
+            // pass
+        }
+        try {
+            // this test has an extra """, which is not ignored - causing a syntax error.
+            runTest("git-issue-206-b.cql");
+        } catch (AssertionError ae) {
+            // pass
+        }
+        runTest("git-issue-210-a.cql");
+        runTest("git-issue-210-b.cql");
+        runTest("git-issue-210-c.cql");
         runTest("comments.cql");
+        runTest("comment-after.cql");
+        runTest("comment-before.cql");
+        runTest("comment-first.cql");
+        runTest("comment-in-clause.cql");
+        runTest("comment-last.cql");
         try {
             runTest("invalid-syntax.cql");
         } catch (AssertionError ae) {

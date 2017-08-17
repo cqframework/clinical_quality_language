@@ -35,9 +35,10 @@ define "Prostate Cancer Diagnosis":
 
 define "Active Medications for Androgen deprivation therapy for Urology Care":
   ["Medication, Active": "Androgen deprivation therapy for Urology Care"] ADT
-    with "Prostate Cancer Diagnosis" ProstateCancerDx
-      such that ADT.relevantPeriod starts on or after start ProstateCancerDx.prevalencePeriod
-    with ["Procedure, Order": "Injection Leuprolide Acetate"] ADTOrder
+    with "Prostate Cancer Diagnosis" ProstateCancerDx // comments within a clause
+      such that /* mulit-line within a line */ ADT.relevantPeriod starts on or after start ProstateCancerDx.prevalencePeriod
+    with ["Procedure, Order": "Injection Leuprolide Acetate"] ADTOrder /* multi-line comments
+        within a clause */ // followed by a comment
       such that ADT.relevantPeriod includes ADTOrder.authorDatetime
 
 // NOTE: The latest version of the MAT now correctly identifies some invalid syntax that was previously missed
