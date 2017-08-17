@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class CqlFormatterVisitor extends cqlBaseVisitor {
 
-    private static List<Token> comments = new ArrayList<>();
+    private static List<CommentToken> comments = new ArrayList<>();
 
     public static String getFormattedOutput(InputStream is) throws IOException {
         ANTLRInputStream in = new ANTLRInputStream(is);
@@ -42,9 +42,9 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         String output = (String)formatter.visit(tree);
 
         if (comments.size() > 0) {
-            StringBuilder eofComments = new StringBuilder().append("\r\n");
-            for (Token comment : comments) {
-                eofComments.append(comment.getText()).append("\r\n");
+            StringBuilder eofComments = new StringBuilder();
+            for (CommentToken comment : comments) {
+                eofComments.append(comment.whitespaceBefore).append(comment.token.getText());
             }
             comments.clear();
             output += eofComments.toString();
@@ -60,7 +60,8 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
     public static void populateComments(CommonTokenStream tokens) {
         for (Token token : tokens.getTokens()) {
             if (token.getText().startsWith("//") || token.getText().startsWith("/*")) {
-                comments.add(token);
+                String whitespace = token.getTokenIndex() < 1 ? "" : tokens.get(token.getTokenIndex() - 1).getText();
+                comments.add(new CommentToken(token, whitespace));
             }
         }
     }
@@ -225,11 +226,17 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         }
     }
 
-    private void appendComment(Token token) {
+    private void appendComment(CommentToken token) {
         // get the whitespace at the end of output
         String out = output.toString();
         String whitespace = out.substring(out.replaceAll("\\s+$", "").length());
-        output.append(token.getText()).append(whitespace);
+        if (!whitespace.equals(token.whitespaceBefore)) {
+            String whitespaceBefore = token.whitespaceBefore;
+            output = new StringBuilder()
+                    .append(out.substring(0, out.length() - whitespace.length()))
+                    .append(whitespaceBefore);
+        }
+        output.append(token.token.getText()).append(whitespace);
     }
 
     private void appendTerminal(String terminal) {
@@ -1338,14 +1345,24 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     private void checkForComment(TerminalNode node) {
         int numComments = 0;
-        for (Token token : comments) {
-            if (token.getTokenIndex() < node.getSymbol().getTokenIndex()) {
+        for (CommentToken token : comments) {
+            if (token.token.getTokenIndex() < node.getSymbol().getTokenIndex()) {
                 appendComment(token);
                 ++numComments;
             }
         }
         while (numComments > 0) {
             comments.remove(--numComments);
+        }
+    }
+
+    private static class CommentToken {
+        private Token token;
+        private String whitespaceBefore;
+
+        public CommentToken(Token token, String whitespaceBefore) {
+            this.token = token;
+            this.whitespaceBefore = whitespaceBefore;
         }
     }
 

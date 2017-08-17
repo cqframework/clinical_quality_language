@@ -23,6 +23,7 @@ public class CqlFormatterVisitorTest {
 
     @Test
     public void TestFormatterSpecific() throws IOException {
+        runTest("comments.cql");
         try {
             // this test has an extra "`", which is ignored - causing the input to differ from the output.
             runTest("git-issue-206-a.cql");
@@ -38,7 +39,6 @@ public class CqlFormatterVisitorTest {
         runTest("git-issue-210-a.cql");
         runTest("git-issue-210-b.cql");
         runTest("git-issue-210-c.cql");
-        runTest("comments.cql");
         runTest("comment-after.cql");
         runTest("comment-before.cql");
         runTest("comment-first.cql");
