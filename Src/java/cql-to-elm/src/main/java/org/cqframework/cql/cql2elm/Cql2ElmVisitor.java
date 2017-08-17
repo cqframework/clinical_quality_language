@@ -2752,19 +2752,29 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 terminology = parseExpression(ctx.terminology().expression());
             }
 
-            // Resolve the terminology target using an in operator
+            // Resolve the terminology target using an in or = operator
             try {
-                Expression in = libraryBuilder.resolveIn(property, terminology);
-                if (in instanceof In) {
-                    retrieve.setCodes(((In) in).getOperand().get(1));
-                } else if (in instanceof InValueSet) {
-                    retrieve.setCodes(((InValueSet) in).getValueset());
-                } else if (in instanceof InCodeSystem) {
-                    retrieve.setCodes(((InCodeSystem) in).getCodesystem());
-                } else {
-                    libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
-                            useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
-                            getTrackBack(ctx)));
+                if (terminology.getResultType() instanceof ListType) {
+                    Expression in = libraryBuilder.resolveIn(property, terminology);
+                    if (in instanceof In) {
+                        retrieve.setCodes(((In) in).getOperand().get(1));
+                    } else if (in instanceof InValueSet) {
+                        retrieve.setCodes(((InValueSet) in).getValueset());
+                    } else if (in instanceof InCodeSystem) {
+                        retrieve.setCodes(((InCodeSystem) in).getCodesystem());
+                    } else {
+                        libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
+                                useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                getTrackBack(ctx)));
+                    }
+                }
+                else {
+                    // Resolve with equality to verify the type of the target
+                    BinaryExpression equal = of.createEqual().withOperand(property, terminology);
+                    libraryBuilder.resolveBinaryCall("System", "Equal", equal);
+
+                    // Automatically promote to a list for use in the retrieve target
+                    retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
                 }
             }
             catch (Exception e) {
