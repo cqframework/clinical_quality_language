@@ -20,35 +20,50 @@ import java.util.stream.Collectors;
  */
 public class CqlFormatterVisitor extends cqlBaseVisitor {
 
-    private static FormatResult endResult = new FormatResult();
-    private static String input = null;
+    private static List<CommentToken> comments = new ArrayList<>();
 
     public static String getFormattedOutput(InputStream is) throws IOException {
         ANTLRInputStream in = new ANTLRInputStream(is);
         cqlLexer lexer = new cqlLexer(in);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();
-        CommentListener listener = new CommentListener(tokens);
-        listener.rewriteTokens();
-        cqlParser parser = new cqlParser(listener.tokens);
+        populateComments(tokens);
+        cqlParser parser = new cqlParser(tokens);
         parser.addErrorListener(new SyntaxErrorListener());
         parser.setBuildParseTree(true);
         ParserRuleContext tree = parser.library();
+
+        if (((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors.size() > 0) {
+            return ((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors.toString()
+                    + "\r\n\r\n" + in.toString();
+        }
+
         CqlFormatterVisitor formatter = new CqlFormatterVisitor();
         String output = (String)formatter.visit(tree);
 
-        if (!((SyntaxErrorListener) parser.getErrorListeners().get(1)).result.errors.isEmpty()) {
-            CqlFormatterVisitor.endResult.setCql(input);
-            CqlFormatterVisitor.endResult.setErrors(((SyntaxErrorListener) parser.getErrorListeners().get(1)).result.errors);
-            return CqlFormatterVisitor.endResult.inputInError();
+        if (comments.size() > 0) {
+            StringBuilder eofComments = new StringBuilder();
+            for (CommentToken comment : comments) {
+                eofComments.append(comment.whitespaceBefore).append(comment.token.getText());
+            }
+            comments.clear();
+            output += eofComments.toString();
         }
 
-        return listener.refineOutput(output);
+        return output;
     }
 
     public static String getInputStreamAsString(InputStream is) {
-        input = new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
-        return input;
+        return new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
+    }
+
+    public static void populateComments(CommonTokenStream tokens) {
+        for (Token token : tokens.getTokens()) {
+            if (token.getText().startsWith("//") || token.getText().startsWith("/*")) {
+                String whitespace = token.getTokenIndex() < 1 ? "" : tokens.get(token.getTokenIndex() - 1).getText();
+                comments.add(new CommentToken(token, whitespace));
+            }
+        }
     }
 
     private StringBuilder output;
@@ -211,6 +226,19 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         }
     }
 
+    private void appendComment(CommentToken token) {
+        // get the whitespace at the end of output
+        String out = output.toString();
+        String whitespace = out.substring(out.replaceAll("\\s+$", "").length());
+        if (!whitespace.equals(token.whitespaceBefore)) {
+            String whitespaceBefore = token.whitespaceBefore;
+            output = new StringBuilder()
+                    .append(out.substring(0, out.length() - whitespace.length()))
+                    .append(whitespaceBefore);
+        }
+        output.append(token.token.getText()).append(whitespace);
+    }
+
     private void appendTerminal(String terminal) {
         if (needsWhitespaceBefore(terminal)) {
             ensureWhitespace();
@@ -280,9 +308,6 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
             }
 
             ParseTree c = node.getChild(i);
-            if (c instanceof ErrorNodeImpl) {
-                c = new TerminalNodeImpl(((ErrorNodeImpl) c).getSymbol());
-            }
 
             if ((node instanceof cqlParser.TupleSelectorContext
                     || node instanceof cqlParser.TupleTypeSpecifierContext)
@@ -1313,46 +1338,37 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTerminal(TerminalNode node) {
+        checkForComment(node);
         appendTerminal(node.getText());
         return super.visitTerminal(node);
     }
 
-    private static class FormatResult {
-        private String cql = "";
-        private List<Exception> errors = new ArrayList<>();
-
-        public String getCql() {
-            return this.cql;
-        }
-
-        public List<Exception> getErrors() {
-            return this.errors;
-        }
-
-        public void setCql(String cql) {
-            this.cql = cql;
-        }
-
-        public void setErrors(List<Exception> errors) {
-            this.errors = errors;
-        }
-
-        public void addError(Exception e) {
-            this.errors.add(e);
-        }
-
-        public String inputInError() {
-            StringBuilder ret = new StringBuilder().append("Encountered syntax errors:").append("\n");
-            for (Exception e : errors) {
-                ret.append(e.getMessage()).append("\n");
+    private void checkForComment(TerminalNode node) {
+        int numComments = 0;
+        for (CommentToken token : comments) {
+            if (token.token.getTokenIndex() < node.getSymbol().getTokenIndex()) {
+                appendComment(token);
+                ++numComments;
             }
-            return ret.append("\n").append("Input CQL:").append("\n").append(cql).toString();
+        }
+        while (numComments > 0) {
+            comments.remove(--numComments);
         }
     }
 
-    private static class SyntaxErrorListener extends BaseErrorListener {
+    private static class CommentToken {
+        private Token token;
+        private String whitespaceBefore;
 
-        private FormatResult result = new FormatResult();
+        public CommentToken(Token token, String whitespaceBefore) {
+            this.token = token;
+            this.whitespaceBefore = whitespaceBefore;
+        }
+    }
+
+   private static class SyntaxErrorListener extends BaseErrorListener {
+
+        private List<Exception> errors = new ArrayList<>();
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer,
@@ -1361,7 +1377,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
                                 String msg, RecognitionException e)
         {
             if (!((Token) offendingSymbol).getText().trim().isEmpty()) {
-                result.addError(new Exception(String.format("[%d:%d]: %s", line, charPositionInLine, msg)));
+                errors.add(new Exception(String.format("[%d:%d]: %s", line, charPositionInLine, msg)));
             }
         }
     }
