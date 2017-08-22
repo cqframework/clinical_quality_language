@@ -8,7 +8,7 @@ ucum = require  'ucum'
 
 module.exports.IncompatibleTypesException = IncompatibleTypesException = class IncompatibleTypesException extends Exception
   constructor: (@a , @b , e) ->
-    super("Incompatible Types ‘#{@a}’ and ‘#{@b}’”, e)
+    super("Incompatible Types '#{@a}' and '#{@b}'", e)
 
 # Unit conversation is currently implemented on for time duration comparison operations
 # TODO: Implement unit conversation for time duration mathematical operations

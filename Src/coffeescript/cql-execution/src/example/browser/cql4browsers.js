@@ -5319,7 +5319,7 @@
     function IncompatibleTypesException(a1, b1, e) {
       this.a = a1;
       this.b = b1;
-      IncompatibleTypesException.__super__.constructor.call(this, "Incompatible Types '" + this.a + "' and '" + this.b(+"'", e));
+      IncompatibleTypesException.__super__.constructor.call(this, "Incompatible Types '" + this.a + "' and '" + this.b + "'", e);
     }
 
     return IncompatibleTypesException;
