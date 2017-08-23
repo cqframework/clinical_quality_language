@@ -15,7 +15,7 @@
         <ns4:element name="anatomicalLocationSite" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Participation" retrievable="true" baseType="QDM.QDMBaseType" primaryCodePath="code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Participation" retrievable="true" baseType="QDM.QDMBaseType" label="Participation" primaryCodePath="code">
         <ns4:element name="participationPeriod" type="interval&lt;System.DateTime&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicSex" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Sex" primaryCodePath="code"/>
