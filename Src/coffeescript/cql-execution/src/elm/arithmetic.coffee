@@ -193,7 +193,6 @@ module.exports.Power = class Power extends Expression
     else
       args.reduce (x,y) -> Math.pow(x , y)
 
-
 module.exports.MinValue = class MinValue extends Expression
   MIN_VALUES: "Integer" : MathUtil.MIN_INT_VALUE, "Real" : MathUtil.MIN_FLOAT_VALUE, "DateTime" : MathUtil.MIN_DATE_VALUE
   constructor: (json) ->

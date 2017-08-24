@@ -230,7 +230,7 @@ public class CqlTranslator {
         return writer.getBuffer().toString();
     }
 
-    private static void loadModelInfo(File modelInfoXML) {
+    public static void loadModelInfo(File modelInfoXML) {
         final ModelInfo modelInfo = JAXB.unmarshal(modelInfoXML, ModelInfo.class);
         final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
         final ModelInfoProvider modelProvider = () -> modelInfo;

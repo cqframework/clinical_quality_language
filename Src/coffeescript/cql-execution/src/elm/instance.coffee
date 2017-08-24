@@ -15,7 +15,7 @@ module.exports.Instance = class Instance extends Expression
     super
     @classType = json.classType
     @element = ( new Element(child) for child in json.element)
-
+ 
   exec: (ctx) ->
     obj = {}
     for el in @element

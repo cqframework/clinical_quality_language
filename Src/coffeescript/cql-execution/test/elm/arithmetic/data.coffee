@@ -2203,19 +2203,29 @@ module.exports['Predecessor'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
+
 define days_10: 10 days
 define QL10Days: Quantity{value: 10, unit: 'days'}
+define QL10Min : Quantity{value: 10, unit: 'min' }
 define Jan1_2000: DateTime(2000, 1, 1)
 define add_q_q : days_10 + QL10Days
 define add_d_q : Jan1_2000 + days_10
 define sub_q_q : days_10 - QL10Days
 define sub_d_q : Jan1_2000 - days_10
+define add_q_q_diff : QL10Days + QL10Min
+define sub_q_q_diff : QL10Days - QL10Min
 define div_q_d : days_10 / 2
 define div_q_q : days_10 / QL10Days
 define mul_q_d : days_10 * 2
 define mul_d_q : 2 * QL10Days
+define mul_q_q : 2 'm' * 10 'm'
+define mul_q_q_diff : 2 'm' * 10 '/d'
 define neg : - days_10
 define abs : Abs(neg)
+define MultiplyUcum: (5 'm' * 25 'km') = 125000 'm2'
+define DivideUcum: (20 'm2' / 5 'm') = 4 'm'
+define AddUcum: (5 'm' + 5 'km') = 5005 'm'
+define SubtractUcum: (25 'km' - 5 'm') = 24995 'm'
 ###
 
 module.exports['Quantity'] = {
@@ -2280,6 +2290,32 @@ module.exports['Quantity'] = {
                   "value" : {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "days",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "name" : "QL10Min",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "classType" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "type" : "Instance",
+               "element" : [ {
+                  "name" : "value",
+                  "value" : {
+                     "type" : "ToDecimal",
+                     "operand" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "10",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "unit",
+                  "value" : {
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "min",
                      "type" : "Literal"
                   }
                } ]
@@ -2363,6 +2399,34 @@ module.exports['Quantity'] = {
                } ]
             }
          }, {
+            "name" : "add_q_q_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "QL10Days",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "QL10Min",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "name" : "sub_q_q_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "QL10Days",
+                  "type" : "ExpressionRef"
+               }, {
+                  "name" : "QL10Min",
+                  "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
             "name" : "div_q_d",
             "context" : "Patient",
             "accessLevel" : "Public",
@@ -2431,6 +2495,38 @@ module.exports['Quantity'] = {
                } ]
             }
          }, {
+            "name" : "mul_q_q",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "value" : 2,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 10,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "mul_q_q_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Multiply",
+               "operand" : [ {
+                  "value" : 2,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 10,
+                  "unit" : "/d",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
             "name" : "neg",
             "context" : "Patient",
             "accessLevel" : "Public",
@@ -2451,6 +2547,98 @@ module.exports['Quantity'] = {
                   "name" : "neg",
                   "type" : "ExpressionRef"
                }
+            }
+         }, {
+            "name" : "MultiplyUcum",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "Multiply",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 25,
+                     "unit" : "km",
+                     "type" : "Quantity"
+                  } ]
+               }, {
+                  "value" : 125000,
+                  "unit" : "m2",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "DivideUcum",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "Divide",
+                  "operand" : [ {
+                     "value" : 20,
+                     "unit" : "m2",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AddUcum",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "Add",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "km",
+                     "type" : "Quantity"
+                  } ]
+               }, {
+                  "value" : 5005,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "SubtractUcum",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "type" : "Subtract",
+                  "operand" : [ {
+                     "value" : 25,
+                     "unit" : "km",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }, {
+                  "value" : 24995,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
             }
          } ]
       }
