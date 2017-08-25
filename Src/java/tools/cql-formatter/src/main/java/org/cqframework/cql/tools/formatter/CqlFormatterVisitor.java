@@ -1381,7 +1381,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         }
     }
 
-    static class FormatResult {
+    public static class FormatResult {
         List<Exception> errors;
         String output;
 
