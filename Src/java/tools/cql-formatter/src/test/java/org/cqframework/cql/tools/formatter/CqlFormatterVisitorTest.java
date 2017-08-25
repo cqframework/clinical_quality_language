@@ -4,21 +4,23 @@ import org.cqframework.cql.cql2elm.Cql2ElmVisitor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
+
+import static org.cqframework.cql.tools.formatter.CqlFormatterVisitor.*;
 
 /**
  * Created by Christopher on 7/20/2017.
  */
 public class CqlFormatterVisitorTest {
 
+    boolean inError = false;
+
     private void runTest(String fileName) throws IOException {
-        String input = CqlFormatterVisitor.getInputStreamAsString(getInput(fileName));
-        String output = CqlFormatterVisitor.getFormattedOutput(getInput(fileName));
-        Assert.assertTrue(inputMatchesOutput(input, output));
+        String input = getInputStreamAsString(getInput(fileName));
+        FormatResult result = getFormattedOutput(getInput(fileName));
+        inError = result.errors.size() > 0 ? true : false;
+        Assert.assertTrue(inputMatchesOutput(input, result.output));
     }
 
     @Test
@@ -28,26 +30,34 @@ public class CqlFormatterVisitorTest {
             // this test has an extra "`", which is ignored - causing the input to differ from the output.
             runTest("git-issue-206-a.cql");
         } catch (AssertionError ae) {
-            // pass
+            Assert.assertFalse(inError);
         }
         try {
             // this test has an extra """, which is not ignored - causing a syntax error.
             runTest("git-issue-206-b.cql");
         } catch (AssertionError ae) {
-            // pass
+            Assert.assertTrue(inError);
         }
         runTest("git-issue-210-a.cql");
+        Assert.assertFalse(inError);
         runTest("git-issue-210-b.cql");
+        Assert.assertFalse(inError);
         runTest("git-issue-210-c.cql");
+        Assert.assertFalse(inError);
         runTest("comment-after.cql");
+        Assert.assertFalse(inError);
         runTest("comment-before.cql");
+        Assert.assertFalse(inError);
         runTest("comment-first.cql");
+        Assert.assertFalse(inError);
         runTest("comment-in-clause.cql");
+        Assert.assertFalse(inError);
         runTest("comment-last.cql");
+        Assert.assertFalse(inError);
         try {
             runTest("invalid-syntax.cql");
         } catch (AssertionError ae) {
-            // pass
+            Assert.assertTrue(inError);
         }
     }
 
