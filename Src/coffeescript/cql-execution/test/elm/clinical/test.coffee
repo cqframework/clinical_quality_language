@@ -171,7 +171,7 @@ describe 'CalculateAge', ->
   it 'should execute age in months', ->
     # what is returned will depend on whether the day in the current month has
     # made it to the 17th day of the month as declared in the birthday
-    [@full_months, @full_months-1].indexOf(@months.exec(@ctx)).should.not.equal -1
+    [@full_months, @full_months+1].indexOf(@months.exec(@ctx)).should.not.equal -1
 
   # Skipping because cql-to-elm in this branch does not properly translate AgeInWeeks
   it.skip 'should execute age in weeks', ->

@@ -1176,3 +1176,191 @@ module.exports['TupleParameterTypes'] = {
    }
 }
 
+### DefaultAndNoDefault
+library TestSnippet version '1'
+using QUICK
+parameter FooWithNoDefault Integer
+parameter FooWithDefault default 5
+context Patient
+define Foo: FooWithNoDefault
+define Foo2: FooWithDefault
+###
+
+module.exports['DefaultAndNoDefault'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "FooWithNoDefault",
+            "accessLevel" : "Public",
+            "parameterTypeSpecifier" : {
+               "name" : "{urn:hl7-org:elm-types:r1}Integer",
+               "type" : "NamedTypeSpecifier"
+            }
+         }, {
+            "name" : "FooWithDefault",
+            "accessLevel" : "Public",
+            "default" : {
+               "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+               "value" : "5",
+               "type" : "Literal"
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "Foo",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "FooWithNoDefault",
+               "type" : "ParameterRef"
+            }
+         }, {
+            "name" : "Foo2",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "name" : "FooWithDefault",
+               "type" : "ParameterRef"
+            }
+         } ]
+      }
+   }
+}
+
+### MeasurementPeriodParameter
+library TestSnippet version '1'
+using QUICK
+parameter "Measurement Period" Interval<DateTime>
+context Patient
+define MeasurementPeriod: Interval[DateTime(2011, 1, 1), DateTime(2013, 1, 1)] overlaps "Measurement Period"
+###
+
+module.exports['MeasurementPeriodParameter'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "parameters" : {
+         "def" : [ {
+            "name" : "Measurement Period",
+            "accessLevel" : "Public",
+            "parameterTypeSpecifier" : {
+               "type" : "IntervalTypeSpecifier",
+               "pointType" : {
+                  "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                  "type" : "NamedTypeSpecifier"
+               }
+            }
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "MeasurementPeriod",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Overlaps",
+               "operand" : [ {
+                  "lowClosed" : true,
+                  "highClosed" : true,
+                  "type" : "Interval",
+                  "low" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2011",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  },
+                  "high" : {
+                     "type" : "DateTime",
+                     "year" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "2013",
+                        "type" : "Literal"
+                     },
+                     "month" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     },
+                     "day" : {
+                        "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "value" : "1",
+                        "type" : "Literal"
+                     }
+                  }
+               }, {
+                  "name" : "Measurement Period",
+                  "type" : "ParameterRef"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

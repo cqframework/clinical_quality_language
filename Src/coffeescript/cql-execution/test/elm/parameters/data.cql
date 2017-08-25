@@ -75,3 +75,13 @@ parameter FooP Tuple { Hello String, MeaningOfLife Integer }
 parameter FooDP default Tuple { Hello: 'Universe', MeaningOfLife: 24 }
 define Foo: FooP
 define Foo2: FooDP
+
+// @Test: DefaultAndNoDefault
+parameter FooWithNoDefault Integer
+parameter FooWithDefault default 5
+define Foo: FooWithNoDefault
+define Foo2: FooWithDefault
+
+// @Test: MeasurementPeriodParameter
+parameter "Measurement Period" Interval<DateTime>
+define MeasurementPeriod: Interval[DateTime(2011, 1, 1), DateTime(2013, 1, 1)] overlaps "Measurement Period"

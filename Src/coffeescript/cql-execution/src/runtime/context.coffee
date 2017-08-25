@@ -16,14 +16,9 @@ module.exports.Context = class Context
     @_parameters = _parameters
 
   @property "parameters" ,
-    get: -> 
-      p = @parent?.parameters
-      for k, v of p
-        # If key (of parent) is not found in current parameters, add it 
-        if !(k of @_parameters)
-          @_parameters[k] = v
-      @_parameters
-    
+    get: ->
+      @_parameters || @parent?.parameters
+
     set: (params) ->
       @checkParameters(params)
       @_parameters = params
@@ -60,6 +55,12 @@ module.exports.Context = class Context
 
   getParameter: (name) ->
     @parent?.getParameter(name)
+
+  getParentParameter: (name) ->
+    if @parent?.parameters[name]?
+      @parent.parameters[name]
+    else if @parent?
+      @parent.getParentParameter name
 
   getValueSet: (name) ->
     @parent?.getValueSet(name)
@@ -199,7 +200,7 @@ module.exports.PatientContext = class PatientContext extends Context
 
   getLibraryContext: (library) ->
     @library_context[library] ||= new PatientContext(@get(library),@patient,@codeService,@parameters)
-    
+
   getLocalIdContext: (localId) ->
     @localId_context[localId] ||= new PatientContext(@get(library),@patient,@codeService,@parameters)
 

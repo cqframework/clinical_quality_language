@@ -42,25 +42,22 @@
     };
 
     CodeService.prototype.findValueSet = function(oid, version) {
-      var ref1, result, results;
-      oid = oid.replace("urn:oid:", "");
+      var ref1, results;
       if (version != null) {
-        result = (ref1 = this.valueSets[oid]) != null ? ref1[version] : void 0;
-        if (result) {
-          return result;
-        }
-      }
-      results = this.findValueSetsByOid(oid);
-      if (results.length === 0) {
-        return null;
+        return (ref1 = this.valueSets[oid]) != null ? ref1[version] : void 0;
       } else {
-        return results.reduce(function(a, b) {
-          if (a.version > b.version) {
-            return a;
-          } else {
-            return b;
-          }
-        });
+        results = this.findValueSetsByOid(oid);
+        if (results.length === 0) {
+          return null;
+        } else {
+          return results.reduce(function(a, b) {
+            if (a.version > b.version) {
+              return a;
+            } else {
+              return b;
+            }
+          });
+        }
       }
     };
 
@@ -5262,8 +5259,10 @@
       var ref;
       if (((ctx != null ? ctx.parameters[this.name] : void 0) != null)) {
         return ctx.parameters[this.name];
-      } else {
+      } else if (this["default"] != null) {
         return (ref = this["default"]) != null ? ref.execute(ctx) : void 0;
+      } else {
+        return ctx.getParentParameter(this.name);
       }
     };
 
@@ -5277,10 +5276,12 @@
     function ParameterRef(json) {
       ParameterRef.__super__.constructor.apply(this, arguments);
       this.name = json.name;
+      this.library = json.libraryName;
     }
 
     ParameterRef.prototype.exec = function(ctx) {
       var ref;
+      ctx = this.library ? ctx.getLibraryContext(this.library) : ctx;
       return (ref = ctx.getParameter(this.name)) != null ? ref.execute(ctx) : void 0;
     };
 
@@ -42958,15 +42959,8 @@
 
     Context.property("parameters", {
       get: function() {
-        var k, p, ref, v;
-        p = (ref = this.parent) != null ? ref.parameters : void 0;
-        for (k in p) {
-          v = p[k];
-          if (!(k in this._parameters)) {
-            this._parameters[k] = v;
-          }
-        }
-        return this._parameters;
+        var ref;
+        return this._parameters || ((ref = this.parent) != null ? ref.parameters : void 0);
       },
       set: function(params) {
         this.checkParameters(params);
@@ -43030,6 +43024,15 @@
     Context.prototype.getParameter = function(name) {
       var ref;
       return (ref = this.parent) != null ? ref.getParameter(name) : void 0;
+    };
+
+    Context.prototype.getParentParameter = function(name) {
+      var ref;
+      if (((ref = this.parent) != null ? ref.parameters[name] : void 0) != null) {
+        return this.parent.parameters[name];
+      } else if (this.parent != null) {
+        return this.parent.getParentParameter(name);
+      }
     };
 
     Context.prototype.getValueSet = function(name) {
