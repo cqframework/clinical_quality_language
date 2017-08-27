@@ -22,7 +22,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     private static List<CommentToken> comments = new ArrayList<>();
 
-    public static String getFormattedOutput(InputStream is) throws IOException {
+    public static FormatResult getFormattedOutput(InputStream is) throws IOException {
         ANTLRInputStream in = new ANTLRInputStream(is);
         cqlLexer lexer = new cqlLexer(in);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -34,8 +34,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         ParserRuleContext tree = parser.library();
 
         if (((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors.size() > 0) {
-            return ((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors.toString()
-                    + "\r\n\r\n" + in.toString();
+            return new FormatResult(((SyntaxErrorListener) parser.getErrorListeners().get(1)).errors, in.toString());
         }
 
         CqlFormatterVisitor formatter = new CqlFormatterVisitor();
@@ -50,7 +49,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
             output += eofComments.toString();
         }
 
-        return output;
+        return new FormatResult(new ArrayList<>(), output);
     }
 
     public static String getInputStreamAsString(InputStream is) {
@@ -1366,7 +1365,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         }
     }
 
-   private static class SyntaxErrorListener extends BaseErrorListener {
+    private static class SyntaxErrorListener extends BaseErrorListener {
 
         private List<Exception> errors = new ArrayList<>();
 
@@ -1379,6 +1378,16 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
             if (!((Token) offendingSymbol).getText().trim().isEmpty()) {
                 errors.add(new Exception(String.format("[%d:%d]: %s", line, charPositionInLine, msg)));
             }
+        }
+    }
+
+    public static class FormatResult {
+        List<Exception> errors;
+        String output;
+
+        public FormatResult(List<Exception> errors, String output) {
+            this.errors = errors;
+            this.output = output;
         }
     }
 }
