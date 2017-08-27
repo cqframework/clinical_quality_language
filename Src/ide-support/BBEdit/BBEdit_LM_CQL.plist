@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>BBEditDocumentType</key>
+  <string>CodelessLanguageModule</string>
+  <key>BBLMLanguageDisplayName</key>
+  <string>HL7 Clinical Quality Language (CQL)</string>
+  <key>BBLMLanguageCode</key>
+  <string>HL7C</string>
+  <key>BBLMSuffixMap</key>
+  <array>
+    <dict>
+      <key>BBLMLanguageSuffix</key>
+      <string>.cql</string>
+    </dict>
+  </array>
+  <key>BBLMColorsSyntax</key>
+  <true/>
+  <key>BBLMScansFunctions</key>
+  <true/>
+  <key>BBLMIsCaseSensitive</key>
+  <true/>
+  <key>BBLMKeywordList</key>
+  <array>
+    <string>after</string>
+    <string>all</string>
+    <string>and</string>
+    <string>as</string>
+    <string>asc</string>
+    <string>ascending</string>
+    <string>before</string>
+    <string>between</string>
+    <string>by</string>
+    <string>called</string>
+    <string>case</string>
+    <string>cast</string>
+    <string>Code</string>
+    <string>codesystem</string>
+    <string>codesystems</string>
+    <string>collapse</string>
+    <string>Concept</string>
+    <string>contains</string>
+    <string>context</string>
+    <string>convert</string>
+    <string>date</string>
+    <string>day</string>
+    <string>days</string>
+    <string>default</string>
+    <string>define</string>
+    <string>desc</string>
+    <string>descending</string>
+    <string>difference</string>
+    <string>display</string>
+    <string>distinct</string>
+    <string>div</string>
+    <string>duration</string>
+    <string>during</string>
+    <string>else</string>
+    <string>end</string>
+    <string>ends</string>
+    <string>except</string>
+    <string>exists</string>
+    <string>false</string>
+    <string>flatten</string>
+    <string>from</string>
+    <string>function</string>
+    <string>hour</string>
+    <string>hours</string>
+    <string>if</string>
+    <string>implies</string>
+    <string>in</string>
+    <string>include</string>
+    <string>included in</string>
+    <string>includes</string>
+    <string>intersect</string>
+    <string>Interval</string>
+    <string>Is</string>
+    <string>less</string>
+    <string>let</string>
+    <string>library</string>
+    <string>List</string>
+    <string>maximum</string>
+    <string>meets</string>
+    <string>millisecond</string>
+    <string>milliseconds</string>
+    <string>minimum</string>
+    <string>minute</string>
+    <string>minutes</string>
+    <string>mod</string>
+    <string>month</string>
+    <string>months</string>
+    <string>more</string>
+    <string>not</string>
+    <string>null</string>
+    <string>occurs</string>
+    <string>of</string>
+    <string>or</string>
+    <string>overlaps</string>
+    <string>parameter</string>
+    <string>predecessor</string>
+    <string>private</string>
+    <string>properly</string>
+    <string>public</string>
+    <string>return</string>
+    <string>same</string>
+    <string>second</string>
+    <string>seconds</string>
+    <string>singleton</string>
+    <string>sort</string>
+    <string>start</string>
+    <string>starts</string>
+    <string>successor</string>
+    <string>such</string>
+    <string>that</string>
+    <string>then</string>
+    <string>time</string>
+    <string>timezone</string>
+    <string>to</string>
+    <string>true</string>
+    <string>Tuple</string>
+    <string>union</string>
+    <string>using</string>
+    <string>valueset</string>
+    <string>version</string>
+    <string>week</string>
+    <string>weeks</string>
+    <string>when</string>
+    <string>where</string>
+    <string>width</string>
+    <string>with</string>
+    <string>within</string>
+    <string>without</string>
+    <string>xor</string>
+    <string>year</string>
+    <string>years</string>
+  </array>
+  <key>Language Features</key>
+  <dict>
+    <key>Identifier and Keyword Character Class</key>
+    <string><![CDATA[a-zA-Z0-9_]]></string>
+
+    <key>Comment Pattern</key>
+    <string><![CDATA[(?xs:
+      (/\*.*?\*/|//[^\n]*\n)
+    )]]></string>
+
+    <key>String Pattern</key>
+    <string><![CDATA[(?xs:
+      (
+        null
+      | false | true
+      | (?<!\w) [0-9]+ ([\.] [0-9]+)? (?<!\w)
+      | (' ([^'\\] | \\.)* ' | " ([^"\\] | \\.)* ")
+      )
+    )]]></string><!-- TODO: DateTime/Time/Quantity value literals -->
+
+    <key>Function Pattern</key>
+    <string><![CDATA[(?xs:
+      (?<!\w)
+      (?P<function_name>
+        (
+            define \s+ function \s+
+              ([a-zA-Z_][a-zA-Z0-9_]* | " ([^"\\] | \\.)* ")
+              \s* [(] [^)]* [)]
+          | (library|context|define|valueset|parameter) \s+
+              ([a-zA-Z_][a-zA-Z0-9_]* | " ([^"\\] | \\.)* ")
+        )
+      )
+      [^a-zA-Z0-9_]
+    )]]></string>
+  </dict>
+</dict>
+</plist>
