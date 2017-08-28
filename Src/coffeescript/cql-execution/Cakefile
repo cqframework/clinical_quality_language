@@ -1,4 +1,6 @@
 fs = require 'fs'
+browserify = require 'browserify'
+babelify = require 'babelify'
 
 {spawn, exec} = require 'child_process'
 
@@ -34,6 +36,16 @@ task 'build-test-data', 'Build test/data/cql-test-data.coffee from test/data/cql
 task "build-all", "Build src/, test/ and test/data/cql-test-data.txt", ->
   invoke 'build'
   invoke 'build-test-data'
+
+task "build-cql4browsers", "Builds the cql4browsers.js file", ->
+  invoke 'build'
+  b = browserify()
+  b.transform(babelify.configure({
+    #only: /node_modules\/ucum\/dist/
+    plugins: ["transform-es2015-arrow-functions"]
+  }))
+  b.add('./lib/example/browser/simple-browser-support.js')
+  b.bundle().pipe(fs.createWriteStream('./src/example/browser/cql4browsers.js'))
 
 task 'watch', 'Watch src/ and test/ for changes', ->
   build('src', 'lib', true)
