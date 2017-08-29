@@ -36,9 +36,7 @@ task 'build-test-data', 'Build test/data/cql-test-data.coffee from test/data/cql
 task "build-all", "Build src/, test/ and test/data/cql-test-data.txt", ->
   invoke 'build'
   invoke 'build-test-data'
-#.configure({
-#  only: /node_modules\/ucum\//
-#})
+
 task "build-cql4browsers", "Builds the cql4browsers.js file", ->
   console.log 'Browserifing cql4browsers...'
   outputJsFile = fs.createWriteStream('./src/example/browser/cql4browsers.js')
