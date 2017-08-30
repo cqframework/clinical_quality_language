@@ -59,7 +59,7 @@
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="referenceRange" type="interval&lt;System.Quantity&gt;"/>
         <ns4:element name="negationRationale" type="System.Code"/>
-        <ns4:element name="components" type="list&lt;QDM.Component&gt;"/>
+        <ns4:element name="components" type="list&lt;QDM.ResultComponent&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Symptom" retrievable="true" baseType="QDM.QDMBaseType" label="Symptom" primaryCodePath="code">
         <ns4:element name="prevalencePeriod" type="interval&lt;System.DateTime&gt;"/>
@@ -176,6 +176,9 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Time"/>
             </ns4:typeSpecifier>
         </ns4:element>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ResultComponent" retrievable="false" baseType="QDM.Component">
+        <ns4:element name="referenceRange" type="interval&lt;System.Quantity&gt;"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FacilityLocation" retrievable="false" baseType="System.Any">
         <ns4:element name="code" type="System.Code"/>
