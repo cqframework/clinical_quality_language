@@ -19,6 +19,10 @@ module.exports.Quantity = class Quantity extends Expression
     @unit = json.unit
     @value = parseFloat json.value
 
+    # Attempt to parse the unit with UCUM. If it fails, throw a friendly error.
+    if !is_valid_ucum_unit(@unit)
+      throw new Error("\'#{@unit}\' is not a valid UCUM unit.")
+
   clone: () ->
     new Quantity({value: @value, unit: @unit})
 
@@ -55,7 +59,7 @@ module.exports.Quantity = class Quantity extends Expression
       else if !@unit && !other.unit
         @value == other.value
       else
-        other_v = ucum.convert(other.value,ucum_unit(other.unit),ucum_unit(@unit))
+        other_v = convert_value(other.value,ucum_unit(other.unit),ucum_unit(@unit))
         decimalAdjust("round", @value, -8)  == decimalAdjust("round", other_v, -8)
 
   convertUnits: (to_units) ->
@@ -127,11 +131,31 @@ ucum_unit = (unit) ->
   ucum_time_units[unit] || unit || ''
 
 #just a wrapper function to deal with possible exceptions being thrown
-convert_value = (value, from ,to ) ->
+convert_value = (value, from, to) ->
   try
-    decimalAdjust("round", ucum.convert(value,ucum_unit(from),ucum_unit(to)), -8)
+    if from == to
+      value
+    else
+      decimalAdjust("round", ucum.convert(value,ucum_unit(from),ucum_unit(to)), -8)
   catch e
     throw new IncompatibleTypesException(from, to, e)
+
+# Cache for unit validity results so we dont have to go to ucum.js for every check.
+# Is a map of unit string to boolean validity
+unitValidityCache = {}
+
+# Helper for checking if a unit is valid. Checks the cache first, checks with ucum.js otherwise.
+is_valid_ucum_unit = (unit) ->
+  if unitValidityCache.hasOwnProperty(unit)
+    return unitValidityCache[unit]
+  else
+    try
+      ucum.parse(ucum_unit(unit))
+      unitValidityCache[unit] = true
+      return true
+    catch
+      unitValidityCache[unit] = false
+      return false
 
 module.exports.convert_value = convert_value
 # This method will take a ucum.js representation of units and convert them to a string
