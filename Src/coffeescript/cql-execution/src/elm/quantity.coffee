@@ -138,7 +138,7 @@ convert_value = (value, from, to) ->
     else
       decimalAdjust("round", ucum.convert(value,ucum_unit(from),ucum_unit(to)), -8)
   catch e
-    throw new IncompatibleTypesException(from, to, e)
+    return
 
 # Cache for unit validity results so we dont have to go to ucum.js for every check.
 # Is a map of unit string to boolean validity
