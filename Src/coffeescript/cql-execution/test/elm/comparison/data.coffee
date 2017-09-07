@@ -1350,6 +1350,9 @@ define ALtB_Quantity: 5 'm' < 6 'm'
 define AGtB_Quantity_diff: 5 'm' < 5 'cm'
 define AEqB_Quantity_diff: 5 'm' < 500 'cm'
 define ALtB_Quantity_diff: 5 'm' < 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' < 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' < 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' < 40 'm'
 ###
 
 module.exports['Less'] = {
@@ -1527,6 +1530,54 @@ module.exports['Less'] = {
                   "type" : "Quantity"
                } ]
             }
+         }, {
+            "name" : "AGtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Less",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 40,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
          } ]
       }
    }
@@ -1545,6 +1596,9 @@ define ALtB_Quantity: 5 'm' <= 6 'm'
 define AGtB_Quantity_diff: 5 'm' <= 4 'm'
 define AEqB_Quantity_diff: 5 'm' <= 500 'cm'
 define ALtB_Quantity_diff: 5 'm' <= 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' <= 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' <= 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' <= 40 'm'
 ###
 
 module.exports['LessOrEqual'] = {
@@ -1722,6 +1776,54 @@ module.exports['LessOrEqual'] = {
                   "type" : "Quantity"
                } ]
             }
+         }, {
+            "name" : "AGtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "LessOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 40,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
          } ]
       }
    }
@@ -1740,6 +1842,9 @@ define ALtB_Quantity: 5 'm' > 6 'm'
 define AGtB_Quantity_diff: 5 'm' > 5 'cm'
 define AEqB_Quantity_diff: 5 'm' > 500 'cm'
 define ALtB_Quantity_diff: 5 'm' > 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' > 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' > 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' > 40 'm'
 ###
 
 module.exports['Greater'] = {
@@ -1917,6 +2022,54 @@ module.exports['Greater'] = {
                   "type" : "Quantity"
                } ]
             }
+         }, {
+            "name" : "AGtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 40,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
          } ]
       }
    }
@@ -1935,6 +2088,10 @@ define ALtB_Quantity: 5 'm' >= 6 'm'
 define AGtB_Quantity_diff: 5 'm' >= 5 'cm'
 define AEqB_Quantity_diff: 5 'm' >= 500 'cm'
 define ALtB_Quantity_diff: 5 'm' >= 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' >= 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' >= 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' >= 40 'm'
+define DivideUcum_incompatible: (100 '[nmi_i]' / 2 'h') > 49 'mg/[lb_av]'
 define DivideUcum: (100 'mg' / 2 '[lb_av]') > 49 'mg/[lb_av]'
 ###
 
@@ -2110,6 +2267,77 @@ module.exports['GreaterOrEqual'] = {
                }, {
                   "value" : 5,
                   "unit" : "km",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AGtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "GreaterOrEqual",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 40,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "DivideUcum_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Greater",
+               "operand" : [ {
+                  "type" : "Divide",
+                  "operand" : [ {
+                     "value" : 100,
+                     "unit" : "[nmi_i]",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 2,
+                     "unit" : "h",
+                     "type" : "Quantity"
+                  } ]
+               }, {
+                  "value" : 49,
+                  "unit" : "mg/[lb_av]",
                   "type" : "Quantity"
                } ]
             }

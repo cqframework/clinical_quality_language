@@ -34,6 +34,9 @@ define ALtB_Quantity: 5 'm' < 6 'm'
 define AGtB_Quantity_diff: 5 'm' < 5 'cm'
 define AEqB_Quantity_diff: 5 'm' < 500 'cm'
 define ALtB_Quantity_diff: 5 'm' < 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' < 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' < 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' < 40 'm'
 
 // @Test: LessOrEqual
 define AGtB_Int: 5 <= 4
@@ -45,6 +48,9 @@ define ALtB_Quantity: 5 'm' <= 6 'm'
 define AGtB_Quantity_diff: 5 'm' <= 4 'm'
 define AEqB_Quantity_diff: 5 'm' <= 500 'cm'
 define ALtB_Quantity_diff: 5 'm' <= 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' <= 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' <= 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' <= 40 'm'
 
 
 // @Test: Greater
@@ -57,6 +63,9 @@ define ALtB_Quantity: 5 'm' > 6 'm'
 define AGtB_Quantity_diff: 5 'm' > 5 'cm'
 define AEqB_Quantity_diff: 5 'm' > 500 'cm'
 define ALtB_Quantity_diff: 5 'm' > 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' > 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' > 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' > 40 'm'
 
 // @Test: GreaterOrEqual
 define AGtB_Int: 5 >= 4
@@ -68,4 +77,8 @@ define ALtB_Quantity: 5 'm' >= 6 'm'
 define AGtB_Quantity_diff: 5 'm' >= 5 'cm'
 define AEqB_Quantity_diff: 5 'm' >= 500 'cm'
 define ALtB_Quantity_diff: 5 'm' >= 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' >= 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' >= 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' >= 40 'm'
+define DivideUcum_incompatible: (100 '[nmi_i]' / 2 'h') > 49 'mg/[lb_av]'
 define DivideUcum: (100 'mg' / 2 '[lb_av]') > 49 'mg/[lb_av]'
