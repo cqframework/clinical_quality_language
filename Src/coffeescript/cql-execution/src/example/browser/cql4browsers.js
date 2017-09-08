@@ -2850,7 +2850,7 @@
       } catch (error1) {
         error = error1;
         if (error instanceof IncompatibleTypesException) {
-          return false;
+          return null;
         } else {
           throw error;
         }
@@ -2878,7 +2878,7 @@
       } catch (error1) {
         error = error1;
         if (error instanceof IncompatibleTypesException) {
-          return false;
+          return null;
         } else {
           throw error;
         }
@@ -2906,7 +2906,7 @@
       } catch (error1) {
         error = error1;
         if (error instanceof IncompatibleTypesException) {
-          return false;
+          return null;
         } else {
           throw error;
         }
@@ -2934,7 +2934,7 @@
       } catch (error1) {
         error = error1;
         if (error instanceof IncompatibleTypesException) {
-          return false;
+          return null;
         } else {
           throw error;
         }

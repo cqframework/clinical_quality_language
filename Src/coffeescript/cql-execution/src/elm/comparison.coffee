@@ -16,7 +16,7 @@ module.exports.Less = class Less extends Expression
       args[0].lessThan args[1]
     catch error
       if error instanceof IncompatibleTypesException
-        return false
+        return null
       else
         throw error
 
@@ -30,7 +30,7 @@ module.exports.LessOrEqual = class LessOrEqual extends Expression
       args[0].lessThanOrEquals args[1]
     catch error
       if error instanceof IncompatibleTypesException
-        return false
+        return null
       else
         throw error
 
@@ -44,7 +44,7 @@ module.exports.Greater = class Greater extends Expression
       args[0].greaterThan args[1]
     catch error
       if error instanceof IncompatibleTypesException
-        return false
+        return null
       else
         throw error
 
@@ -58,6 +58,6 @@ module.exports.GreaterOrEqual = class GreaterOrEqual extends Expression
       args[0].greaterThanOrEquals args[1]
     catch error
       if error instanceof IncompatibleTypesException
-        return false
+        return null
       else
         throw error
