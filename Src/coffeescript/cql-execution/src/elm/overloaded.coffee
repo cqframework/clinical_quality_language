@@ -1,4 +1,5 @@
 { Expression } = require './expression'
+{ IncompatibleTypesException } = require './quantity'
 { ThreeValuedLogic } = require '../datatypes/logic'
 { DateTime } = require '../datatypes/datetime'
 { Exception } = require '../datatypes/exception'
@@ -15,7 +16,13 @@ module.exports.Equal = class Equal extends Expression
     super
 
   exec: (ctx) ->
-    equals @execArgs(ctx)...
+    try
+      equals @execArgs(ctx)...
+    catch error
+      if error instanceof IncompatibleTypesException
+        return null
+      else
+        throw error
 
 module.exports.Equivalent = class Equivalent extends Expression
   constructor: (json) ->
@@ -45,7 +52,13 @@ module.exports.NotEqual = class NotEqual extends Expression
     super
 
   exec: (ctx) ->
-    ThreeValuedLogic.not equals @execArgs(ctx)...
+    try
+      ThreeValuedLogic.not equals @execArgs(ctx)...
+    catch error
+      if error instanceof IncompatibleTypesException
+        return null
+      else
+        throw error
 
 module.exports.Union = class Union extends Expression
   constructor: (json) ->

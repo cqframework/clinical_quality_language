@@ -10,6 +10,15 @@ define EqDateTimesTZ: DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) = DateTime(20
 define UneqDateTimesTZ: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
 define PossiblyEqualDateTimes: DateTime(2000, 3, 15) = DateTime(2000)
 define ImpossiblyEqualDateTimes: DateTime(2000, 3, 15) = DateTime(2000, 4)
+define AGtB_Quantity: 5 'm' = 4 'm'
+define AEqB_Quantity: 5 'm' = 5 'm'
+define ALtB_Quantity: 5 'm' = 6 'm'
+define AGtB_Quantity_diff: 5 'm' = 5 'cm'
+define AEqB_Quantity_diff: 5 'm' = 500 'cm'
+define ALtB_Quantity_diff: 5 'm' = 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' = 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' = 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' = 40 'm'
 
 // @Test: NotEqual
 define AGtB_Int: 5 != 4
@@ -23,6 +32,15 @@ define EqDateTimesTZ: DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) != DateTime(2
 define UneqDateTimesTZ: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) != DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
 define PossiblyEqualDateTimes: DateTime(2000, 3, 15) != DateTime(2000)
 define ImpossiblyEqualDateTimes: DateTime(2000, 3, 15) != DateTime(2000, 4)
+define AGtB_Quantity: 5 'm' != 4 'm'
+define AEqB_Quantity: 5 'm' != 5 'm'
+define ALtB_Quantity: 5 'm' != 6 'm'
+define AGtB_Quantity_diff: 5 'm' != 5 'cm'
+define AEqB_Quantity_diff: 5 'm' != 500 'cm'
+define ALtB_Quantity_diff: 5 'm' != 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' != 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' != 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' != 40 'm'
 
 // @Test: Less
 define AGtB_Int: 5 < 4

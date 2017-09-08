@@ -21,6 +21,15 @@ define EqDateTimesTZ: DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) = DateTime(20
 define UneqDateTimesTZ: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) = DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
 define PossiblyEqualDateTimes: DateTime(2000, 3, 15) = DateTime(2000)
 define ImpossiblyEqualDateTimes: DateTime(2000, 3, 15) = DateTime(2000, 4)
+define AGtB_Quantity: 5 'm' = 4 'm'
+define AEqB_Quantity: 5 'm' = 5 'm'
+define ALtB_Quantity: 5 'm' = 6 'm'
+define AGtB_Quantity_diff: 5 'm' = 5 'cm'
+define AEqB_Quantity_diff: 5 'm' = 500 'cm'
+define ALtB_Quantity_diff: 5 'm' = 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' = 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' = 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' = 40 'm'
 ###
 
 module.exports['Equal'] = {
@@ -650,6 +659,150 @@ module.exports['Equal'] = {
                   }
                } ]
             }
+         }, {
+            "name" : "AGtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 6,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AGtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 500,
+                  "unit" : "cm",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "km",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AGtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 4,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "AEqB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 5,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "ALtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equal",
+               "operand" : [ {
+                  "value" : 5,
+                  "unit" : "Cel",
+                  "type" : "Quantity"
+               }, {
+                  "value" : 40,
+                  "unit" : "m",
+                  "type" : "Quantity"
+               } ]
+            }
          } ]
       }
    }
@@ -670,6 +823,15 @@ define EqDateTimesTZ: DateTime(2000, 3, 15, 23, 30, 25, 200, +1.0) != DateTime(2
 define UneqDateTimesTZ: DateTime(2000, 3, 15, 13, 30, 25, 200, +1.0) != DateTime(2000, 3, 15, 13, 30, 25, 200, +2.0)
 define PossiblyEqualDateTimes: DateTime(2000, 3, 15) != DateTime(2000)
 define ImpossiblyEqualDateTimes: DateTime(2000, 3, 15) != DateTime(2000, 4)
+define AGtB_Quantity: 5 'm' != 4 'm'
+define AEqB_Quantity: 5 'm' != 5 'm'
+define ALtB_Quantity: 5 'm' != 6 'm'
+define AGtB_Quantity_diff: 5 'm' != 5 'cm'
+define AEqB_Quantity_diff: 5 'm' != 500 'cm'
+define ALtB_Quantity_diff: 5 'm' != 5 'km'
+define AGtB_Quantity_incompatible: 5 'Cel' != 4 'm'
+define AEqB_Quantity_incompatible: 5 'Cel' != 5 'm'
+define ALtB_Quantity_incompatible: 5 'Cel' != 40 'm'
 ###
 
 module.exports['NotEqual'] = {
@@ -1329,6 +1491,177 @@ module.exports['NotEqual'] = {
                         "value" : "4",
                         "type" : "Literal"
                      }
+                  } ]
+               }
+            }
+         }, {
+            "name" : "AGtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "AEqB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "ALtB_Quantity",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 6,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "AGtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "cm",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "AEqB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 500,
+                     "unit" : "cm",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "ALtB_Quantity_diff",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "km",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "AGtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "Cel",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 4,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "AEqB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "Cel",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 5,
+                     "unit" : "m",
+                     "type" : "Quantity"
+                  } ]
+               }
+            }
+         }, {
+            "name" : "ALtB_Quantity_incompatible",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Not",
+               "operand" : {
+                  "type" : "Equal",
+                  "operand" : [ {
+                     "value" : 5,
+                     "unit" : "Cel",
+                     "type" : "Quantity"
+                  }, {
+                     "value" : 40,
+                     "unit" : "m",
+                     "type" : "Quantity"
                   } ]
                }
             }
