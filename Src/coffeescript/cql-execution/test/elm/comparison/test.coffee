@@ -30,7 +30,7 @@ describe 'Equal', ->
     @uneqDateTimesTZ.exec(@ctx).should.be.false()
 
   it 'should identify uncertain/unequal DateTimes when there is imprecision', ->
-    should(@possiblyEqualDateTimes.exec(@ctx)).be.null
+    should(@possiblyEqualDateTimes.exec(@ctx)).be.null()
     @impossiblyEqualDateTimes.exec(@ctx).should.be.false()
 
 describe 'NotEqual', ->
@@ -59,7 +59,7 @@ describe 'NotEqual', ->
     @uneqDateTimesTZ.exec(@ctx).should.be.true()
 
   it 'should identify uncertain/unequal DateTimes when there is imprecision', ->
-    should(@possiblyEqualDateTimes.exec(@ctx)).be.null
+    should(@possiblyEqualDateTimes.exec(@ctx)).be.null()
     @impossiblyEqualDateTimes.exec(@ctx).should.be.true()
 
 describe 'Less', ->
@@ -94,13 +94,13 @@ describe 'Less', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.true()
 
   it 'should be null for 5 Cel < 4 m', ->
-    should.not.exist(@aGtB_Quantity_incompatible.exec(@ctx))
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 5 Cel < 5 m', ->
-    should.not.exist(@aEqB_Quantity_incompatible.exec(@ctx))
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 5 Cel < 40 m', ->
-    should.not.exist(@aLtB_Quantity_incompatible.exec(@ctx))
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
 describe 'LessOrEqual', ->
   @beforeEach ->
@@ -134,13 +134,13 @@ describe 'LessOrEqual', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.true()
 
   it 'should be null for 5 Cel <= 4 m', ->
-    should.not.exist(@aGtB_Quantity_incompatible.exec(@ctx))
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 5 Cel <= 5 m', ->
-    should.not.exist(@aEqB_Quantity_incompatible.exec(@ctx))
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 5 Cel <= 40 m', ->
-    should.not.exist(@aLtB_Quantity_incompatible.exec(@ctx))
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
 
 describe 'Greater', ->
@@ -175,13 +175,13 @@ describe 'Greater', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.false()
 
   it 'should be null for 5 Cel > 4 m', ->
-    should.not.exist(@aGtB_Quantity_incompatible.exec(@ctx))
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 5 Cel > 5 m', ->
-    should.not.exist(@aEqB_Quantity_incompatible.exec(@ctx))
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 5 Cel > 40 m', ->
-    should.not.exist(@aLtB_Quantity_incompatible.exec(@ctx))
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
 
 describe 'GreaterOrEqual', ->
@@ -216,16 +216,16 @@ describe 'GreaterOrEqual', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.false()
 
   it 'should be null for 5 Cel >= 4 m', ->
-    should.not.exist(@aGtB_Quantity_incompatible.exec(@ctx))
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 5 Cel >= 5 m', ->
-    should.not.exist(@aEqB_Quantity_incompatible.exec(@ctx))
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 5 Cel >= 40 m', ->
-    should.not.exist(@aLtB_Quantity_incompatible.exec(@ctx))
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
   it 'should be null for 100 [nmi_i] / 2 h > 49 mg/[lb_av]', ->
-    should.not.exist(@divideUcum_incompatible.exec(@ctx))
+    should(@divideUcum_incompatible.exec(@ctx)).be.null()
 
   it 'should be true for 100 mg / 2 [lb_av]  > 49 mg/[lb_av]', ->
     @divideUcum.exec(@ctx).should.be.true()
