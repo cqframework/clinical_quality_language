@@ -30,8 +30,35 @@ describe 'Equal', ->
     @uneqDateTimesTZ.exec(@ctx).should.be.false()
 
   it 'should identify uncertain/unequal DateTimes when there is imprecision', ->
-    should(@possiblyEqualDateTimes.exec(@ctx)).be.null
+    should(@possiblyEqualDateTimes.exec(@ctx)).be.null()
     @impossiblyEqualDateTimes.exec(@ctx).should.be.false()
+
+  it 'should be false for 5 m = 4 m', ->
+    @aGtB_Quantity.exec(@ctx).should.be.false()
+
+  it 'should be true for 5 m = 5 m', ->
+    @aEqB_Quantity.exec(@ctx).should.be.true()
+
+  it 'should be false for 5 m = 6 m', ->
+    @aLtB_Quantity.exec(@ctx).should.be.false()
+
+  it 'should be false for 5 m = 5 cm', ->
+    @aGtB_Quantity_diff.exec(@ctx).should.be.false()
+
+  it 'should be true for 5 m = 500 cm ', ->
+    @aEqB_Quantity_diff.exec(@ctx).should.be.true()
+
+  it 'should be false for 5 m = 5 km', ->
+    @aLtB_Quantity_diff.exec(@ctx).should.be.false()
+
+  it 'should be null for 5 Cel = 4 m', ->
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel = 5 m', ->
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel = 40 m', ->
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
 describe 'NotEqual', ->
   @beforeEach ->
@@ -59,8 +86,35 @@ describe 'NotEqual', ->
     @uneqDateTimesTZ.exec(@ctx).should.be.true()
 
   it 'should identify uncertain/unequal DateTimes when there is imprecision', ->
-    should(@possiblyEqualDateTimes.exec(@ctx)).be.null
+    should(@possiblyEqualDateTimes.exec(@ctx)).be.null()
     @impossiblyEqualDateTimes.exec(@ctx).should.be.true()
+
+  it 'should be true for 5 m != 4 m', ->
+    @aGtB_Quantity.exec(@ctx).should.be.true()
+
+  it 'should be false for 5 m != 5 m', ->
+    @aEqB_Quantity.exec(@ctx).should.be.false()
+
+  it 'should be true for 5 m != 6 m', ->
+    @aLtB_Quantity.exec(@ctx).should.be.true()
+
+  it 'should be true for 5 m != 5 cm', ->
+    @aGtB_Quantity_diff.exec(@ctx).should.be.true()
+
+  it 'should be false for 5 m != 500 cm ', ->
+    @aEqB_Quantity_diff.exec(@ctx).should.be.false()
+
+  it 'should be true for 5 m != 5 km', ->
+    @aLtB_Quantity_diff.exec(@ctx).should.be.true()
+
+  it 'should be null for 5 Cel != 4 m', ->
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel != 5 m', ->
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel != 40 m', ->
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
 describe 'Less', ->
   @beforeEach ->
@@ -93,6 +147,14 @@ describe 'Less', ->
   it 'should be false for 5 m < 5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.true()
 
+  it 'should be null for 5 Cel < 4 m', ->
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel < 5 m', ->
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel < 40 m', ->
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
 describe 'LessOrEqual', ->
   @beforeEach ->
@@ -124,6 +186,15 @@ describe 'LessOrEqual', ->
 
   it 'should be false for 5 m <= 5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.true()
+
+  it 'should be null for 5 Cel <= 4 m', ->
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel <= 5 m', ->
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel <= 40 m', ->
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
 
 describe 'Greater', ->
@@ -157,6 +228,15 @@ describe 'Greater', ->
   it 'should be false for 5 m > 5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.false()
 
+  it 'should be null for 5 Cel > 4 m', ->
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel > 5 m', ->
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel > 40 m', ->
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
+
 
 describe 'GreaterOrEqual', ->
   @beforeEach ->
@@ -188,6 +268,18 @@ describe 'GreaterOrEqual', ->
 
   it 'should be false for 5 m  >=5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.false()
+
+  it 'should be null for 5 Cel >= 4 m', ->
+    should(@aGtB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel >= 5 m', ->
+    should(@aEqB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 5 Cel >= 40 m', ->
+    should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
+
+  it 'should be null for 100 [nmi_i] / 2 h > 49 mg/[lb_av]', ->
+    should(@divideUcum_incompatible.exec(@ctx)).be.null()
 
   it 'should be true for 100 mg / 2 [lb_av]  > 49 mg/[lb_av]', ->
     @divideUcum.exec(@ctx).should.be.true()
