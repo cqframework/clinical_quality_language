@@ -93,13 +93,13 @@ describe 'Less', ->
   it 'should be false for 5 m < 5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.true()
 
-  it 'should be false for 5 Cel < 4 m', ->
+  it 'should be null for 5 Cel < 4 m', ->
     should.not.exist(@aGtB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 5 Cel < 5 m', ->
+  it 'should be null for 5 Cel < 5 m', ->
     should.not.exist(@aEqB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 5 Cel < 40 m', ->
+  it 'should be null for 5 Cel < 40 m', ->
     should.not.exist(@aLtB_Quantity_incompatible.exec(@ctx))
 
 describe 'LessOrEqual', ->
@@ -133,13 +133,13 @@ describe 'LessOrEqual', ->
   it 'should be false for 5 m <= 5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.true()
 
-  it 'should be false for 5 Cel <= 4 m', ->
+  it 'should be null for 5 Cel <= 4 m', ->
     should.not.exist(@aGtB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 5 Cel <= 5 m', ->
+  it 'should be null for 5 Cel <= 5 m', ->
     should.not.exist(@aEqB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 5 Cel <= 40 m', ->
+  it 'should be null for 5 Cel <= 40 m', ->
     should.not.exist(@aLtB_Quantity_incompatible.exec(@ctx))
 
 
@@ -174,13 +174,13 @@ describe 'Greater', ->
   it 'should be false for 5 m > 5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.false()
 
-  it 'should be false for 5 Cel > 4 m', ->
+  it 'should be null for 5 Cel > 4 m', ->
     should.not.exist(@aGtB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 5 Cel > 5 m', ->
+  it 'should be null for 5 Cel > 5 m', ->
     should.not.exist(@aEqB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 5 Cel > 40 m', ->
+  it 'should be null for 5 Cel > 40 m', ->
     should.not.exist(@aLtB_Quantity_incompatible.exec(@ctx))
 
 
@@ -215,16 +215,16 @@ describe 'GreaterOrEqual', ->
   it 'should be false for 5 m  >=5 km', ->
     @aLtB_Quantity_diff.exec(@ctx).should.be.false()
 
-  it 'should be false for 5 Cel >= 4 m', ->
+  it 'should be null for 5 Cel >= 4 m', ->
     should.not.exist(@aGtB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 5 Cel >= 5 m', ->
+  it 'should be null for 5 Cel >= 5 m', ->
     should.not.exist(@aEqB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 5 Cel >= 40 m', ->
+  it 'should be null for 5 Cel >= 40 m', ->
     should.not.exist(@aLtB_Quantity_incompatible.exec(@ctx))
 
-  it 'should be false for 100 [nmi_i] / 2 h > 49 mg/[lb_av]', ->
+  it 'should be null for 100 [nmi_i] / 2 h > 49 mg/[lb_av]', ->
     should.not.exist(@divideUcum_incompatible.exec(@ctx))
 
   it 'should be true for 100 mg / 2 [lb_av]  > 49 mg/[lb_av]', ->
