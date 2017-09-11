@@ -1389,5 +1389,13 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
             this.errors = errors;
             this.output = output;
         }
+
+        public List<Exception> getErrors() {
+            return this.errors;
+        }
+
+        public String getOutput() {
+            return this.output;
+        }
     }
 }
