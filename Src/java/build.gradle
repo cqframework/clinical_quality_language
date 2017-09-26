@@ -225,7 +225,7 @@ configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '4.1'
 }
 
 idea {
