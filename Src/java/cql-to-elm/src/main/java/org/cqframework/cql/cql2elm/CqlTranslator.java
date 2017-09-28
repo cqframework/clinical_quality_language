@@ -254,27 +254,6 @@ public class CqlTranslator {
         return writer.getBuffer().toString();
     }
 
-    public static String convertToXML(Library library) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class);
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-        StringWriter writer = new StringWriter();
-        marshaller.marshal(new ObjectFactory().createLibrary(library), writer);
-        return writer.getBuffer().toString();
-    }
-
-    public static String convertToJSON(Library library) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class);
-        Marshaller marshaller = jc.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty("eclipselink.media-type", "application/json");
-
-        StringWriter writer = new StringWriter();
-        marshaller.marshal(new ObjectFactory().createLibrary(library), writer);
-        return writer.getBuffer().toString();
-    }
-
     private static void loadModelInfo(File modelInfoXML) {
         final ModelInfo modelInfo = JAXB.unmarshal(modelInfoXML, ModelInfo.class);
         final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
