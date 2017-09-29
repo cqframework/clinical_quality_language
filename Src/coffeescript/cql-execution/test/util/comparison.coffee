@@ -113,3 +113,6 @@ describe 'equivalent', ->
     equivalent('123', '123').should.be.true()
     equivalent(123, 123).should.be.true()
     equivalent('123', new Code('123', 'test', '2016')).should.be.false()
+
+  it 'should consider codes with different versions to be equivalent', ->
+    equivalent(new Code('1234', 'First Code System', '2016', 'Display Name'), new Code('1234', 'First Code System', '2017', undefined)).should.be.true()

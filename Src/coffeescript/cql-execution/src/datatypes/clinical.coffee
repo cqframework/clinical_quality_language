@@ -40,7 +40,6 @@ codesInList = (cl1, cl2) ->
 codesMatch = (code1, code2) ->
   return false if code1.code != code2.code
   return false if code1.system? and code2.system? and code1.system != code2.system
-  return false if code1.version? and code2.version? and code1.version != code2.version
   return true
 
 module.exports.CodeSystem = class CodeSystem

@@ -22,11 +22,11 @@ describe 'Code', ->
   it 'should match code by array of Concept objects', ->
     @code.hasMatch([new Concept([new Code('ABC', '5.4.3.2.1', '2'), new Code('ABC', '5.4.3.2.1', '1')])]).should.be.true()
 
-  it 'should not match code with wrong Code object', ->
-    @code.hasMatch(new Code('ABC', '5.4.3.2.1', '3')).should.be.false()
+  it 'should match code with different version', ->
+    @code.hasMatch(new Code('ABC', '5.4.3.2.1', '3')).should.be.true()
 
-  it 'should not match code by wrong Concept object', ->
-    @code.hasMatch(new Concept([new Code('ABC', '5.4.3.2.1', '9'), new Code('ABC', '5.4.3.2.1', '8')])).should.be.false()
+  it 'should match code with Concept object with different versions', ->
+    @code.hasMatch(new Concept([new Code('ABC', '5.4.3.2.1', '9'), new Code('ABC', '5.4.3.2.1', '8')])).should.be.true()
 
 describe 'Concept', ->
   @beforeEach ->
@@ -44,11 +44,11 @@ describe 'Concept', ->
   it 'should match concept by array of Concept objects', ->
     @concept.hasMatch([new Concept([new Code('ABC', '5.4.3.2.1', '2'), new Code('DEF', '5.4.3.2.1', '3')])]).should.be.true()
 
-  it 'should not match concept with wrong Code object', ->
-    @concept.hasMatch(new Code('ABC', '5.4.3.2.1', '3')).should.be.false()
+  it 'should match concept with Code object with different version', ->
+    @concept.hasMatch(new Code('ABC', '5.4.3.2.1', '3')).should.be.true()
 
-  it 'should not match concept by wrong Concept object', ->
-    @concept.hasMatch(new Concept([new Code('ABC', '5.4.3.2.1', '9'), new Code('ABC', '5.4.3.2.1', '8')])).should.be.false()
+  it 'should match Concept object with different versions', ->
+    @concept.hasMatch(new Concept([new Code('ABC', '5.4.3.2.1', '9'), new Code('ABC', '5.4.3.2.1', '8')])).should.be.true()
 
 describe 'ValueSet', ->
   @beforeEach ->
@@ -78,8 +78,8 @@ describe 'ValueSet', ->
   it 'should match code by array of Concept objects', ->
     @valueSet.hasMatch([new Concept([new Code('DEF', '5.4.3.2.1', '1'), new Code('DEF', '5.4.3.2.1', '2')])]).should.be.true()
 
-  it 'should not match code with wrong Code object', ->
-    @valueSet.hasMatch(new Code('DEF', '5.4.3.2.1', '3')).should.be.false()
+  it 'should match code with different version', ->
+    @valueSet.hasMatch(new Code('DEF', '5.4.3.2.1', '3')).should.be.true()
 
-  it 'should not match code by wrong Concept object', ->
-    @valueSet.hasMatch(new Concept([new Code('DEF', '5.4.3.2.1', '9'), new Code('DEF', '5.4.3.2.1', '9')])).should.be.false()
+  it 'should match Concept with different code versions', ->
+    @valueSet.hasMatch(new Concept([new Code('DEF', '5.4.3.2.1', '9'), new Code('DEF', '5.4.3.2.1', '9')])).should.be.true()

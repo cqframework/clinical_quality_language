@@ -68,8 +68,8 @@ describe 'InValueSet', ->
   it 'should not find medium code in value set', ->
     @wrongMediumCode.exec(@ctx).should.be.false()
 
-  it 'should not find long code in value set', ->
-    @wrongLongCode.exec(@ctx).should.be.false()
+  it 'should find long code with different version in value set', ->
+    @longCodeDifferentVersion.exec(@ctx).should.be.true()
 
 describe 'Patient Property In ValueSet', ->
   @beforeEach ->
