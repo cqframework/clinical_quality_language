@@ -19,10 +19,7 @@ import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.*;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -54,6 +51,7 @@ public class CqlTranslator {
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
     private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
+    private JAXBContext jaxbContext;
 
     public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager, Options... options) {
         return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
@@ -95,12 +93,18 @@ public class CqlTranslator {
                           CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
+        try {
+            this.jaxbContext = JAXBContext.newInstance(Library.class, Annotation.class);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error creating JAXBContext - " + e.getMessage());
+        }
         translateToELM(is, errorLevel, options);
     }
 
     public String toXml() {
         try {
-            return convertToXML(library);
+            return convertToXml(library);
         }
         catch (JAXBException e) {
             throw new IllegalArgumentException("Could not convert library to XML.", e);
@@ -109,7 +113,7 @@ public class CqlTranslator {
 
     public String toJson() {
         try {
-            return convertToJSON(library);
+            return convertToJson(library);
         }
         catch (JAXBException e) {
             throw new IllegalArgumentException("Could not convert library to JSON.", e);
@@ -232,19 +236,16 @@ public class CqlTranslator {
         messages.addAll(builder.getMessages());
     }
 
-    public static String convertToXML(Library library) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class);
-        Marshaller marshaller = jc.createMarshaller();
+    public String convertToXml(Library library) throws JAXBException {
+        Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
         StringWriter writer = new StringWriter();
         marshaller.marshal(new ObjectFactory().createLibrary(library), writer);
         return writer.getBuffer().toString();
     }
 
-    public static String convertToJSON(Library library) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Library.class, Annotation.class);
-        Marshaller marshaller = jc.createMarshaller();
+    public String convertToJson(Library library) throws JAXBException {
+        Marshaller marshaller = jaxbContext.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty("eclipselink.media-type", "application/json");
 
