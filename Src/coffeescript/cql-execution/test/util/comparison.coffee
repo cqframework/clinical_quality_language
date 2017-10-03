@@ -1,6 +1,6 @@
 should = require 'should'
 {equals, equivalent} = require '../../lib/util/comparison'
-{Code} = require '../../lib/datatypes/clinical'
+{Code, Concept} = require '../../lib/datatypes/clinical'
 
 describe 'equals', ->
   it 'should detect equality/inequality for numbers', ->
@@ -115,4 +115,16 @@ describe 'equivalent', ->
     equivalent('123', new Code('123', 'test', '2016')).should.be.false()
 
   it 'should consider codes with different versions to be equivalent', ->
-    equivalent(new Code('1234', 'First Code System', '2016', 'Display Name'), new Code('1234', 'First Code System', '2017', undefined)).should.be.true()
+    equivalent(new Code('1234', 'System', '2016', 'Display Name'), new Code('1234', 'First Code System', '2017', undefined)).should.be.true()
+
+  it 'should detect equivalency between code and list of codes', ->
+    equivalent(new Code('1234', 'System', 'version2017', 'Display Name'), [new Code('1234', 'System', 'version2017', undefined), new Code('1', '2', '3', undefined)]).should.be.true()
+    equivalent(new Code('1234', 'System', 'version2017', 'Display Name'), [new Code('1111', 'System', 'version2017', undefined), new Code('1', '2', '3', undefined)]).should.be.false()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), [new Code('1234', 'System', 'version2017', undefined), new Code('1', '2', '3', undefined)]).should.be.true()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), [new Code('1111', 'System', 'version2017', undefined), new Code('1', '2', '3', undefined)]).should.be.false()
+
+  it 'should detect equivalency between code and concept of codes', ->
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), new Concept([new Code('1234', 'System', 'version2016', undefined), new Code('1','2','3', undefined)])).should.be.true()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), new Concept([new Code('1111', 'System', 'version2016', undefined), new Code('1','2','3', undefined)])).should.be.false()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), new Concept([new Code('1234', 'System', 'version2017', undefined), new Code('1','2','3', undefined)])).should.be.true()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), new Concept([new Code('1111', 'System', 'version2017', undefined), new Code('1','2','3', undefined)])).should.be.false()
