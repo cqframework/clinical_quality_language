@@ -4,7 +4,7 @@
 { DateTime } = require '../datatypes/datetime'
 { Exception } = require '../datatypes/exception'
 { typeIsArray } = require '../util/util'
-{ equals } = require '../util/comparison'
+{ equals, equivalent } = require '../util/comparison'
 { build } = require './builder'
 DT = require './datetime'
 LIST = require './list'
@@ -29,23 +29,10 @@ module.exports.Equivalent = class Equivalent extends Expression
     super
 
   exec: (ctx) ->
-    # TODO: This is a quick and dirty implementation to get *something* in here.
-    # This needs to be done right (including equivalence for codes/concepts)
     [a, b] = @execArgs(ctx)
     if not a? or not b?
       false
-    else if (a.code or a.codes) and (b.code or b.codes)
-      @matchCodes(a, b)
-    else
-      equals(a,b)
-
-  matchCodes: (code1,code2) ->
-    matches = []
-    if (code1.codes)
-      return (c for c in code1.codes when @matchCodes(c, code2)).length > 0
-    else if (code2.codes)
-      return @matchCodes(code2, code1)
-    return code1.code is code2.code and code1.system is code2.system and code1.version is code2.version
+    equivalent(a, b)
 
 module.exports.NotEqual = class NotEqual extends Expression
   constructor: (json) ->
