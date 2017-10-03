@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'eclipse'
 
     group = 'info.cqframework'
-    version = '1.2.14-SNAPSHOT'
+    version = '1.2.15'
 }
 
 subprojects {
@@ -149,7 +149,7 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm']}) {
        signing.password=secret
        signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
    - If the library version ends with '-SNAPSHOT', it will be deployed to the snapshot repository, else it will be
-     deployed to the staging repository (which you then must manually release).
+     deployed to the staging repository (which you then must manually release http://central.sonatype.org/pages/releasing-the-deployment.html).
    - Repo for snapshots and releases: https://oss.sonatype.org/content/groups/public/info/cqframework/
    - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
  */
