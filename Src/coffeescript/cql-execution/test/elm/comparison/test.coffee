@@ -116,6 +116,22 @@ describe 'NotEqual', ->
   it 'should be null for 5 Cel != 40 m', ->
     should(@aLtB_Quantity_incompatible.exec(@ctx)).be.null()
 
+describe 'Equivalent', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should be false for null ~ 4', ->
+    @aNull_BDefined.exec(@ctx).should.be.false()
+
+  it 'should be false for 5 ~ null', ->
+    @aDefined_BNull.exec(@ctx).should.be.false()
+
+  it 'should be true for null ~ null', ->
+    @aNull_BNull.exec(@ctx).should.be.true()
+
+  it 'should be true for 3 ~ 3', ->
+    @aDefined_BDefined.exec(@ctx).should.be.true()
+
 describe 'Less', ->
   @beforeEach ->
     setup @, data

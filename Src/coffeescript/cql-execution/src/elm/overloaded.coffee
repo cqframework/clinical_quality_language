@@ -30,7 +30,9 @@ module.exports.Equivalent = class Equivalent extends Expression
 
   exec: (ctx) ->
     [a, b] = @execArgs(ctx)
-    if not a? or not b?
+    if not a? and not b?
+      true
+    else if not a? or not b?
       false
     else
       equivalent(a, b)
