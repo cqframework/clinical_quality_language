@@ -4849,9 +4849,10 @@
       var a, b, ref1;
       ref1 = this.execArgs(ctx), a = ref1[0], b = ref1[1];
       if ((a == null) || (b == null)) {
-        false;
+        return false;
+      } else {
+        return equivalent(a, b);
       }
-      return equivalent(a, b);
     };
 
     return Equivalent;
