@@ -42,6 +42,12 @@ define AGtB_Quantity_incompatible: 5 'Cel' != 4 'm'
 define AEqB_Quantity_incompatible: 5 'Cel' != 5 'm'
 define ALtB_Quantity_incompatible: 5 'Cel' != 40 'm'
 
+// @Test: Equivalent
+define ANull_BDefined: null ~ 4
+define ADefined_BNull: 5 ~ null
+define ANull_BNull: null ~ null
+define ADefined_BDefined: 3 ~ 3
+
 // @Test: Less
 define AGtB_Int: 5 < 4
 define AEqB_Int: 5 < 5

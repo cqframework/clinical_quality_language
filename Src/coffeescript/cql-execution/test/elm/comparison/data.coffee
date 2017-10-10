@@ -1670,6 +1670,108 @@ module.exports['NotEqual'] = {
    }
 }
 
+### Equivalent
+library TestSnippet version '1'
+using QUICK
+context Patient
+define ANull_BDefined: null ~ 4
+define ADefined_BNull: 5 ~ null
+define ANull_BNull: null ~ null
+define ADefined_BDefined: 3 ~ 3
+###
+
+module.exports['Equivalent'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "ANull_BDefined",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equivalent",
+               "operand" : [ {
+                  "type" : "Null"
+               }, {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "4",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "name" : "ADefined_BNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equivalent",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "5",
+                  "type" : "Literal"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "ANull_BNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equivalent",
+               "operand" : [ {
+                  "type" : "Null"
+               }, {
+                  "type" : "Null"
+               } ]
+            }
+         }, {
+            "name" : "ADefined_BDefined",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Equivalent",
+               "operand" : [ {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "3",
+                  "type" : "Literal"
+               }, {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "3",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+
 ### Less
 library TestSnippet version '1'
 using QUICK
