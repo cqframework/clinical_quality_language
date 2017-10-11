@@ -63,7 +63,7 @@ public class SystemMethodResolver {
         AliasedQuerySource source = of.createAliasedQuerySource().withExpression(target).withAlias("$this");
         source.setResultType(target.getResultType());
         sources.add(source);
-        queryContext.addQuerySources(sources);
+        queryContext.addPrimaryQuerySources(sources);
         builder.pushQueryContext(queryContext);
         return source;
     }

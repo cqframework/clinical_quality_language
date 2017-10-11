@@ -2825,7 +2825,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 queryContext.exitSourceClause();
             }
 
-            queryContext.addQuerySources(sources);
+            queryContext.addPrimaryQuerySources(sources);
 
             // If we are evaluating a population-level query whose source ranges over any patient-context expressions,
             // then references to patient context expressions within the iteration clauses of the query can be accessed
@@ -3156,7 +3156,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitWithClause(@NotNull cqlParser.WithClauseContext ctx) {
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        libraryBuilder.peekQueryContext().addQuerySource(aqs);
+        libraryBuilder.peekQueryContext().addRelatedQuerySource(aqs);
         try {
             Expression expression = (Expression) visit(ctx.expression());
             DataTypes.verifyType(expression.getResultType(), libraryBuilder.resolveTypeName("System", "Boolean"));
@@ -3172,7 +3172,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitWithoutClause(@NotNull cqlParser.WithoutClauseContext ctx) {
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        libraryBuilder.peekQueryContext().addQuerySource(aqs);
+        libraryBuilder.peekQueryContext().addRelatedQuerySource(aqs);
         try {
             Expression expression = (Expression) visit(ctx.expression());
             DataTypes.verifyType(expression.getResultType(), libraryBuilder.resolveTypeName("System", "Boolean"));

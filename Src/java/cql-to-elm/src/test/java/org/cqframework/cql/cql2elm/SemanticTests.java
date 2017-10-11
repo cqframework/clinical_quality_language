@@ -175,6 +175,11 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/MultiSourceQuery.cql", 0);
     }
 
+    @Test
+    public void testQuery() throws IOException {
+        runSemanticTest("OperatorTests/Query.cql", 0);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }
