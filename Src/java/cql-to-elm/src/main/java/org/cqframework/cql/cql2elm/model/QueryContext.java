@@ -12,21 +12,27 @@ public class QueryContext {
     private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
     private final HashMap<String, LetClause> lets = new HashMap<>();
 
-    public void addQuerySources(Collection<AliasedQuerySource> sources) {
+    private void internalAddQuerySource(AliasedQuerySource source) {
+        sources.put(source.getAlias(), source);
+    }
+
+    // Adds a related (i.e. with or without) source, which does not change cardinality of the query
+    public void addRelatedQuerySource(AliasedQuerySource source) {
+        internalAddQuerySource(source);
+    }
+
+    // Adds primary sources, which affect cardinality (any primary plural source results in a plural query)
+    public void addPrimaryQuerySources(Collection<AliasedQuerySource> sources) {
         for (AliasedQuerySource source : sources) {
-            addQuerySource(source);
+            internalAddQuerySource(source);
+            if (source.getResultType() instanceof ListType) {
+                isSingularValue = false;
+            }
         }
     }
 
     public Collection<AliasedQuerySource> getQuerySources() {
         return sources.values();
-    }
-
-    public void addQuerySource(AliasedQuerySource source) {
-        sources.put(source.getAlias(), source);
-        if (source.getResultType() instanceof ListType) {
-            isSingularValue = false;
-        }
     }
 
     public void removeQuerySource(AliasedQuerySource source) {
