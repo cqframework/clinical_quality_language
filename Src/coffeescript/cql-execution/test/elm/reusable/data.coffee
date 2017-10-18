@@ -123,10 +123,10 @@ module.exports['ExpressionRef'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define function foo (a Integer, b Integer) :
+define function "foo bar"(a Integer, b Integer) :
   a + b
 
-define testValue: foo(1,2)
+define testValue: "foo bar" (1,2)
 ###
 
 module.exports['FunctionDefinitions'] = {
@@ -161,7 +161,7 @@ module.exports['FunctionDefinitions'] = {
                }
             }
          }, {
-            "name" : "foo",
+            "name" : "foo bar",
             "context" : "Patient",
             "accessLevel" : "Public",
             "type" : "FunctionDef",
@@ -193,7 +193,7 @@ module.exports['FunctionDefinitions'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "foo",
+               "name" : "foo bar",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -214,14 +214,14 @@ module.exports['FunctionDefinitions'] = {
 library TestSnippet version '1'
 using QUICK
 context Patient
-define function foo (a System.Integer) :
+define function "foo bar" (a System.Integer) :
   a + 1
 
-define function foo (a System.String) :
+define function "foo bar" (a System.String) :
   'Hello ' + a
 
-define testValue1: foo(1)
-define testValue2: foo('World')
+define testValue1: "foo bar"(1)
+define testValue2: "foo bar"('World')
 ###
 
 module.exports['FunctionOverloads'] = {
@@ -256,7 +256,7 @@ module.exports['FunctionOverloads'] = {
                }
             }
          }, {
-            "name" : "foo",
+            "name" : "foo bar",
             "context" : "Patient",
             "accessLevel" : "Public",
             "type" : "FunctionDef",
@@ -279,7 +279,7 @@ module.exports['FunctionOverloads'] = {
                }
             } ]
          }, {
-            "name" : "foo",
+            "name" : "foo bar",
             "context" : "Patient",
             "accessLevel" : "Public",
             "type" : "FunctionDef",
@@ -306,7 +306,7 @@ module.exports['FunctionOverloads'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "foo",
+               "name" : "foo bar",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -319,7 +319,7 @@ module.exports['FunctionOverloads'] = {
             "context" : "Patient",
             "accessLevel" : "Public",
             "expression" : {
-               "name" : "foo",
+               "name" : "foo bar",
                "type" : "FunctionRef",
                "operand" : [ {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",

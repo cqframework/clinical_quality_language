@@ -7,17 +7,17 @@ define Life: 42
 define Foo: Life
 
 // @Test: FunctionDefinitions
-define function foo (a Integer, b Integer) :
+define function "foo bar"(a Integer, b Integer) :
   a + b
 
-define testValue: foo(1,2)
+define testValue: "foo bar" (1,2)
 
 // @Test: FunctionOverloads
-define function foo (a System.Integer) :
+define function "foo bar" (a System.Integer) :
   a + 1
 
-define function foo (a System.String) :
+define function "foo bar" (a System.String) :
   'Hello ' + a
 
-define testValue1: foo(1)
-define testValue2: foo('World')
+define testValue1: "foo bar"(1)
+define testValue2: "foo bar"('World')
