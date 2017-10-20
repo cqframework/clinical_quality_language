@@ -387,7 +387,7 @@ describe 'DateTime.differenceBetween', ->
     a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(31622400)
     a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(31622400000)
 
-  it 'should properly calculate duration and difference for Bonnie test case', ->
+  it 'should properly calculate duration and difference for Bonnie test cases that have come up', ->
     a = DateTime.parse '2012-02-08T00:00:00.0+00:00'
     b = DateTime.parse '2012-06-08T23:59:00.0+00:00'
     a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(121)
@@ -396,6 +396,15 @@ describe 'DateTime.differenceBetween', ->
     b = DateTime.parse '2012-07-14T23:59:00.0+00:00'
     a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(121)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(121)
+    a = DateTime.parse '2012-09-13T14:50:00.0-04:00'
+    b = DateTime.parse '2012-12-31T23:59:59.999-05:00'
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(3)
+    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(3)
+    # The following test, for some reason, is BROKEN!
+    a = DateTime.parse '2012-09-13T14:50:00.0+00:00'
+    b = DateTime.parse '2012-12-31T23:59:59.999+00:00'
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(3)
+    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(3)
 
   it 'should handle difference in weeks using Sunday as a boundary', ->
 
@@ -435,6 +444,31 @@ describe 'DateTime.differenceBetween', ->
     a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
     a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(0)
 
+  it 'should handle crossing DST in the spring', ->
+    # NOTE: Since we "spring ahead" the 2nd Sunday of March at 2:00am,
+    # the difference between 1:00am EST and 3:00am EDT is only 1 hour!
+    a = DateTime.parse '2017-03-12T01:00:00.0-05:00'
+    b = DateTime.parse '2017-03-12T03:00:00.0-04:00'
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(1)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(60)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(60*60)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(60*60*1000)
+
+ it 'should handle crossing DST in the fall', ->
+    # NOTE: Since we "fall back" the 1st Sunday of November at 2:00am,
+    # the difference between 1:00am EDT and 3:00am EST is actually 3 hours!
+    a = DateTime.parse '2017-11-05T01:00:00.0-04:00'
+    b = DateTime.parse '2017-11-05T03:00:00.0-05:00'
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(3)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(3*60)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(3*60*60)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(3*60*60*1000)
 
 describe 'DateTime.durationBetween', ->
   it 'should calculate time between two full specified dates', ->
@@ -553,6 +587,32 @@ describe 'DateTime.durationBetween', ->
     a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(8)
     a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(269)
+
+  it 'should handle crossing DST in the spring', ->
+    # NOTE: Since we "spring ahead" the 2nd Sunday of March at 2:00am,
+    # the duration between 1:00am EST and 3:00am EDT is only 1 hour!
+    a = DateTime.parse '2017-03-12T01:00:00.0-05:00'
+    b = DateTime.parse '2017-03-12T03:00:00.0-04:00'
+    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(1)
+    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(60)
+    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(60*60)
+    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(60*60*1000)
+
+ it 'should handle crossing DST in the fall', ->
+    # NOTE: Since we "fall back" the 1st Sunday of November at 2:00am,
+    # the duration between 1:00am EDT and 3:00am EST is actually 3 hours!
+    a = DateTime.parse '2017-11-05T01:00:00.0-04:00'
+    b = DateTime.parse '2017-11-05T03:00:00.0-05:00'
+    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(3)
+    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(3*60)
+    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(3*60*60)
+    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(3*60*60*1000)
 
   it "should handle durations ", ->
 

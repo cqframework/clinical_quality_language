@@ -260,6 +260,8 @@ define MinutesBetweenUncertainty: difference in minutes between NewYear2014 and 
 define SecondsBetweenUncertainty: difference in seconds between NewYear2014 and January2014
 define MillisecondsBetweenUncertainty: difference in milliseconds between NewYear2014 and January2014
 define MillisecondsBetweenReversedUncertainty: difference in milliseconds between January2014 and NewYear2014
+define HoursBetween1and3CrossingSpringDST: difference in hours between DateTime(2017, 3, 12, 1, 0, 0, 0, -5.0) and DateTime(2017, 3, 12, 3, 0, 0, 0, -4.0)
+define HoursBetween1and3CrossingFallDST: difference in hours between DateTime(2017, 11, 5, 1, 0, 0, 0, -4.0) and DateTime(2017, 11, 5, 3, 0, 0, 0, -5.0)
 
 // @Test: DifferenceBetween Comparisons
 define NewYear2014: DateTime(2014, 1, 1, 0, 0, 0, 0)
@@ -282,6 +284,8 @@ define LessThan80DaysAfter: difference in days between NewYear2014 and February2
 define TwentyFiveDaysLessThanDaysBetween: 25 < difference in days between NewYear2014 and February2014
 define FortyDaysEqualToDaysBetween: 40 = difference in days between NewYear2014 and February2014
 define TwentyFiveDaysGreaterThanDaysBetween: 25 > difference in days between NewYear2014 and February2014
+define BonnieTestCase: difference in months between DateTime(2012, 9, 13, 14, 50, 0, 0, -4.0) and DateTime(2012, 12, 31, 23, 59, 59, 999, -5.0) <= 2
+define BonnieTestCaseZulu: difference in months between DateTime(2012, 9, 13, 14, 50, 0, 0, 0.0) and DateTime(2012, 12, 31, 23, 59, 59, 999, 0.0) <= 2
 
 // @Test: DurationBetween
 define DecTen2013: DateTime(2013, 12, 10, 12, 30, 30, 500)
@@ -305,6 +309,8 @@ define MinutesBetweenUncertainty: minutes between JanOne2015 and January2015
 define SecondsBetweenUncertainty: seconds between JanOne2015 and January2015
 define MillisecondsBetweenUncertainty: milliseconds between JanOne2015 and January2015
 define MillisecondsBetweenReversedUncertainty: milliseconds between January2015 and JanOne2015
+define HoursBetween1and3CrossingSpringDST: hours between DateTime(2017, 3, 12, 1, 0, 0, 0, -5.0) and DateTime(2017, 3, 12, 3, 0, 0, 0, -4.0)
+define HoursBetween1and3CrossingFallDST: hours between DateTime(2017, 11, 5, 1, 0, 0, 0, -4.0) and DateTime(2017, 11, 5, 3, 0, 0, 0, -5.0)
 
 // @Test: DateMath
 define June15th2013: DateTime(2013, 6, 15, 0, 0, 0, 0)

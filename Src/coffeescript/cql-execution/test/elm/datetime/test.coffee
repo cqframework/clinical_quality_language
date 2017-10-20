@@ -668,6 +668,12 @@ describe 'DifferenceBetween', ->
   it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
     @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new Uncertainty(-2678399999, 0)
 
+  it 'should properly execute hours between when springing ahead for DST', ->
+    @hoursBetween1and3CrossingSpringDST.exec(@ctx).should.equal 1
+
+  it 'should properly execute hours between when falling back for DST', ->
+    @hoursBetween1and3CrossingFallDST.exec(@ctx).should.equal 3
+
 describe 'DifferenceBetween Comparisons', ->
   @beforeEach ->
     setup @, data
@@ -701,6 +707,13 @@ describe 'DifferenceBetween Comparisons', ->
     @twentyFiveDaysLessThanDaysBetween.exec(@ctx).should.be.true()
     should(@fortyDaysEqualToDaysBetween.exec(@ctx)).be.null
     @twentyFiveDaysGreaterThanDaysBetween.exec(@ctx).should.be.false()
+
+  it 'should properly determine that Sep to Dec is NOT <= 2 months', ->
+    @bonnieTestCase.exec(@ctx).should.be.false()
+
+  it 'should properly determine that Sep to Dec is NOT <= 2 months with 0 timezone offset (Zulu)', ->
+    # THIS for some reason is BROKEN!
+    @bonnieTestCaseZulu.exec(@ctx).should.be.false()
 
 describe 'DurationBetween', ->
   @beforeEach ->
@@ -759,6 +772,12 @@ describe 'DurationBetween', ->
 
   it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
     @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new Uncertainty(-2678399999, 0)
+
+  it 'should properly execute hours between when falling back for DST', ->
+    @hoursBetween1and3CrossingSpringDST.exec(@ctx).should.equal 1
+
+  it 'should properly execute hours between when springing ahead for DST', ->
+    @hoursBetween1and3CrossingFallDST.exec(@ctx).should.equal 3
 
 describe 'DateMath', ->
   @beforeEach ->
