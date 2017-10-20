@@ -173,8 +173,8 @@ module.exports.DateTime = class DateTime
     tzDiff = aJS.getTimezoneOffset() - bJS.getTimezoneOffset()
     if (tzDiff != 0)
       # Since we'll be doing duration later, account for timezone offset by adding to the time (if possible)
-      if b.year? and b.month? and b.day? and b.hour? and b.minute? then b.add(tzDiff, DateTime.Unit.MINUTE)
-      else if b.year? and b.month? and b.day? and b.hour? then b.add(tzDiff/60, DateTime.Unit.HOUR)
+      if b.year? and b.month? and b.day? and b.hour? and b.minute? then b = b.add(tzDiff, DateTime.Unit.MINUTE)
+      else if b.year? and b.month? and b.day? and b.hour? then b = b.add(tzDiff/60, DateTime.Unit.HOUR)
       else b.timezoneOffset = b.timezoneOffset + (tzDiff/60)
 
     # Now floor lesser precisions before we go on to calculate duration
@@ -244,7 +244,11 @@ module.exports.DateTime = class DateTime
       # days and below at this point, it's much easier to bring a up to b so it's in the same month, then
       # we can compare on just the remaining units.
       aInMonth = new Date(a.getTime())
-      aInMonth.setMonth(a.getMonth() + months);
+      # Remember the original timezone offset because if it changes when we bring it up a month, we need to fix it
+      aInMonthOriginalOffset = aInMonth.getTimezoneOffset()
+      aInMonth.setMonth(a.getMonth() + months)
+      if aInMonthOriginalOffset != aInMonth.getTimezoneOffset()
+        aInMonth.setMinutes(aInMonth.getMinutes() + (aInMonthOriginalOffset - aInMonth.getTimezoneOffset()))
       # When a is before b, then if a's smaller units are greater than b's, a whole month hasn't elapsed, so adjust
       if msDiff > 0 and aInMonth > b then months = months - 1
       # When b is before a, then if a's smaller units are less than b's, a whole month hasn't elaspsed backwards, so adjust
