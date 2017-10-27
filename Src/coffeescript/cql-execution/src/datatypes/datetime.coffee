@@ -170,7 +170,8 @@ module.exports.DateTime = class DateTime
     # timezone, because we don't want midnight to roll back to 11:00pm since that will mess up day boundaries.
     aJS = a.toJSDate(true)
     bJS = b.toJSDate(true)
-    tzDiff = aJS.getTimezoneOffset() - bJS.getTimezoneOffset()
+    # Set tzDiff to zero if a and b are both UTC (UTC is not subject to DST)
+    tzDiff = if !a.timezoneOffset && !b.timezoneOffset then 0 else aJS.getTimezoneOffset() - bJS.getTimezoneOffset() 
     if (tzDiff != 0)
       # Since we'll be doing duration later, account for timezone offset by adding to the time (if possible)
       if b.year? and b.month? and b.day? and b.hour? and b.minute? then b = b.add(tzDiff, DateTime.Unit.MINUTE)

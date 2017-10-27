@@ -470,6 +470,30 @@ describe 'DateTime.differenceBetween', ->
     a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(3*60*60)
     a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(3*60*60*1000)
 
+ it 'should handle crossing DST in the spring when UTC', ->
+    # NOTE: UTC does not have DST
+    a = DateTime.parse '2017-03-12T01:00:00.0+00:00'
+    b = DateTime.parse '2017-03-12T03:00:00.0+00:00'
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(2)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(2*60)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(2*60*60)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(2*60*60*1000)
+
+ it 'should handle crossing DST in the fall when UTC', ->
+    # NOTE: UTC does not have DST
+    a = DateTime.parse '2017-11-05T01:00:00.0+00:00'
+    b = DateTime.parse '2017-11-05T03:00:00.0+00:00'
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(2)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(2*60)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(2*60*60)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(2*60*60*1000)
+
 describe 'DateTime.durationBetween', ->
   it 'should calculate time between two full specified dates', ->
     a = DateTime.parse '2009-06-15T12:37:45.0'
