@@ -793,12 +793,12 @@
       }
       aJS = a.toJSDate(true);
       bJS = b.toJSDate(true);
-      tzDiff = aJS.getTimezoneOffset() - bJS.getTimezoneOffset();
+      tzDiff = !a.timezoneOffset && !b.timezoneOffset ? 0 : aJS.getTimezoneOffset() - bJS.getTimezoneOffset();
       if (tzDiff !== 0) {
         if ((b.year != null) && (b.month != null) && (b.day != null) && (b.hour != null) && (b.minute != null)) {
-          b.add(tzDiff, DateTime.Unit.MINUTE);
+          b = b.add(tzDiff, DateTime.Unit.MINUTE);
         } else if ((b.year != null) && (b.month != null) && (b.day != null) && (b.hour != null)) {
-          b.add(tzDiff / 60, DateTime.Unit.HOUR);
+          b = b.add(tzDiff / 60, DateTime.Unit.HOUR);
         } else {
           b.timezoneOffset = b.timezoneOffset + (tzDiff / 60);
         }
@@ -851,7 +851,7 @@
     };
 
     DateTime.prototype._durationBetweenDates = function(a, b, unitField) {
-      var aInMonth, months, msDiff, truncFunc;
+      var aInMonth, aInMonthOriginalOffset, months, msDiff, truncFunc;
       msDiff = b.getTime() - a.getTime();
       if (msDiff === 0) {
         return 0;
@@ -872,7 +872,11 @@
       } else if (unitField === DateTime.Unit.MONTH || unitField === DateTime.Unit.YEAR) {
         months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth());
         aInMonth = new Date(a.getTime());
+        aInMonthOriginalOffset = aInMonth.getTimezoneOffset();
         aInMonth.setMonth(a.getMonth() + months);
+        if (aInMonthOriginalOffset !== aInMonth.getTimezoneOffset()) {
+          aInMonth.setMinutes(aInMonth.getMinutes() + (aInMonthOriginalOffset - aInMonth.getTimezoneOffset()));
+        }
         if (msDiff > 0 && aInMonth > b) {
           months = months - 1;
         } else if (msDiff < 0 && aInMonth < b) {
