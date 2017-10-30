@@ -793,7 +793,7 @@
       }
       aJS = a.toJSDate(true);
       bJS = b.toJSDate(true);
-      tzDiff = !a.timezoneOffset && !b.timezoneOffset ? 0 : aJS.getTimezoneOffset() - bJS.getTimezoneOffset();
+      tzDiff = a.isUTC() && b.isUTC() ? 0 : aJS.getTimezoneOffset() - bJS.getTimezoneOffset();
       if (tzDiff !== 0) {
         if ((b.year != null) && (b.month != null) && (b.day != null) && (b.hour != null) && (b.minute != null)) {
           b = b.add(tzDiff, DateTime.Unit.MINUTE);
@@ -933,6 +933,10 @@
         }
       }
       return true;
+    };
+
+    DateTime.prototype.isUTC = function() {
+      return !this.timezoneOffset;
     };
 
     DateTime.prototype.getPrecision = function() {

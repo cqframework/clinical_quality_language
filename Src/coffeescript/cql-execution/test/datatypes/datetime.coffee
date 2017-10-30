@@ -400,7 +400,6 @@ describe 'DateTime.differenceBetween', ->
     b = DateTime.parse '2012-12-31T23:59:59.999-05:00'
     a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(3)
     a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(3)
-    # The following test, for some reason, is BROKEN!
     a = DateTime.parse '2012-09-13T14:50:00.0+00:00'
     b = DateTime.parse '2012-12-31T23:59:59.999+00:00'
     a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(3)

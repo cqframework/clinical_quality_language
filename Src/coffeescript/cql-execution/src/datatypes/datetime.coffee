@@ -171,7 +171,7 @@ module.exports.DateTime = class DateTime
     aJS = a.toJSDate(true)
     bJS = b.toJSDate(true)
     # Set tzDiff to zero if a and b are both UTC (UTC is not subject to DST)
-    tzDiff = if !a.timezoneOffset && !b.timezoneOffset then 0 else aJS.getTimezoneOffset() - bJS.getTimezoneOffset() 
+    tzDiff = if a.isUTC() && b.isUTC() then 0 else aJS.getTimezoneOffset() - bJS.getTimezoneOffset()
     if (tzDiff != 0)
       # Since we'll be doing duration later, account for timezone offset by adding to the time (if possible)
       if b.year? and b.month? and b.day? and b.hour? and b.minute? then b = b.add(tzDiff, DateTime.Unit.MINUTE)
@@ -282,6 +282,10 @@ module.exports.DateTime = class DateTime
       if (@[field]? and not other[field]?) then return false
       if (not @[field]? and other[field]?) then return false
     true
+
+  isUTC: () ->
+    # A timezoneOffset of 0 indicates UTC time.
+    !@timezoneOffset
 
   getPrecision: () ->
     result = null
