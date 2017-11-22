@@ -9,11 +9,16 @@ import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.hl7.elm.r1.Library;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class TestUtils {
 
@@ -85,5 +90,17 @@ public class TestUtils {
     private static TokenStream parseANTLRInputStream(ANTLRInputStream is) {
         cqlLexer lexer = new cqlLexer(is);
         return new CommonTokenStream(lexer);
+    }
+
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors) throws IOException {
+        File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, new LibraryManager(modelManager));
+        for (CqlTranslatorException error : translator.getErrors()) {
+            System.err.println(String.format("(%d,%d): %s",
+                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
+        }
+        assertThat(translator.getErrors().size(), is(expectedErrors));
+        return translator;
     }
 }

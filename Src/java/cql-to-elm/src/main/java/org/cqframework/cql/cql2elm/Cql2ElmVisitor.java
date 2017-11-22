@@ -902,7 +902,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
 
                 if (matcher.group(12) != null) {
-                    int offsetPolarity = matcher.group(12).equals("+") ? 1 : 0;
+                    int offsetPolarity = matcher.group(12).equals("+") ? 1 : -1;
 
                     if (matcher.group(15) != null) {
                         int hourOffset = Integer.parseInt(matcher.group(13));
@@ -1032,7 +1032,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
 
                 if (matcher.group(20) != null) {
-                    int offsetPolarity = matcher.group(20).equals("+") ? 1 : 0;
+                    int offsetPolarity = matcher.group(20).equals("+") ? 1 : -1;
 
                     if (matcher.group(23) != null) {
                         int hourOffset = Integer.parseInt(matcher.group(21));
