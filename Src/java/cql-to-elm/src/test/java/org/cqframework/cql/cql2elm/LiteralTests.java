@@ -42,9 +42,19 @@ public class LiteralTests {
         DateTime dateTime = (DateTime)def.getExpression();
         assertThat(dateTime.getTimezoneOffset(), literalFor(-7.0));
 
+        def = defs.get("TimeZonePositiveDateTimeLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+        dateTime = (DateTime)def.getExpression();
+        assertThat(dateTime.getTimezoneOffset(), literalFor(7.0));
+
         def = defs.get("TimeZoneTimeLiteral");
         assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
         Time time = (Time)def.getExpression();
         assertThat(time.getTimezoneOffset(), literalFor(-7.0));
+
+        def = defs.get("TimeZonePositiveTimeLiteral");
+        assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
+        time = (Time)def.getExpression();
+        assertThat(time.getTimezoneOffset(), literalFor(7.0));
     }
 }
