@@ -7,27 +7,35 @@ define UTCDateLiteral: @2014-01-31Z
 define HourLiteral: @T23
 define UTCHourLiteral: @T23Z
 define TimeZoneHourLiteral: @T23-07:00
+define TimeZonePositiveHourLiteral: @T23+07:00
 define HourMinuteLiteral: @T10:30
 define UTCHourMinuteLiteral: @T10:30Z
 define TimeZoneHourMinuteLiteral: @T10:30-07:00
+define TimeZonePositiveHourMinuteLiteral: @T10:30+07:00
 define HourMinuteSecondLiteral: @T10:30:15
 define UTCHourMinuteSecondLiteral: @T10:30:15Z
 define TimeZoneHourMinuteSecondLiteral: @T10:30:15-07:00
+define TimeZonePositiveHourMinuteSecondLiteral: @T10:30:15+07:00
 define TimeLiteral: @T10:30:15.0000
 define UTCTimeLiteral: @T10:30:15.0000Z
 define TimeZoneTimeLiteral: @T10:30:15.0000-07:00
+define TimeZonePositiveTimeLiteral: @T10:30:15.0000+07:00
 define DateHourLiteral: @2014-02-12T23
 define UTCDateHourLiteral: @2014-02-12T23Z
 define TimeZoneDateHourLiteral: @2014-02-12T23-07:00
+define TimeZonePositiveDateHourLiteral: @2014-02-12T23+07:00
 define DateHourMinuteLiteral: @2014-02-12T10:30
 define UTCDateHourMinuteLiteral: @2014-02-12T10:30Z
 define TimeZoneDateHourMinuteLiteral: @2014-02-12T10:30-07:00
+define TimeZonePositiveDateHourMinuteLiteral:@2014-02-12T10:30+07:00
 define DateHourMinuteSecondLiteral: @2014-02-12T10:30:15
 define UTCDateHourMinuteSecondLiteral: @2014-02-12T10:30:15Z
 define TimeZoneDateHourMinuteSecondLiteral: @2014-02-12T10:30:15-07:00
+define TimeZonePositiveDateHourMinuteSecondLiteral: @2014-02-12T10:30:15+07:00
 define DateTimeLiteral: @2014-02-12T10:30:15.0000
 define UTCDateTimeLiteral: @2014-02-12T10:30:15.0000Z
 define TimeZoneDateTimeLiteral: @2014-02-12T10:30:15.0000-07:00
+define TimeZonePositiveDateTimeLiteral: @2014-02-12T10:30:15.0000+07:00
 
 define YearExpression: 1 year
 define YearsExpression: 10 years
