@@ -52,7 +52,7 @@ module.exports.equals = equals = (a, b) ->
 
   # If one is a Quantity, use the Quantity equals function
   return a.equals b if a?.constructor?.name == 'Quantity'
-  
+
   # If one is an Uncertainty, convert the other to an Uncertainty
   if a instanceof Uncertainty then b = Uncertainty.from(b)
   else if b instanceof Uncertainty then a = Uncertainty.from(a)
@@ -79,7 +79,7 @@ module.exports.equals = equals = (a, b) ->
       return a.length is b.length and a.every (item, i) -> equals(item, b[i])
     when '[object Object]'
       # Return false if they are instances of different classes
-      return false unless b instanceof a.constructor
+      return false unless b instanceof a.constructor and a instanceof b.constructor
       # Do deep comparison of keys and values
       aKeys = (key for key of a unless typeof(key) is 'function')
       bKeys = (key for key of b unless typeof(key) is 'function')
