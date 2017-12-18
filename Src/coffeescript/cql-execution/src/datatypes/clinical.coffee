@@ -7,7 +7,7 @@ module.exports.Code = class Code
     codesInList(toCodeList(code), [@])
 
 module.exports.Concept = class Concept
-  constructor: (@codes = [], @text) ->
+  constructor: (@codes = [], @display) ->
 
   hasMatch: (code) ->
     codesInList(toCodeList(code), @codes)
