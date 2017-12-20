@@ -40,6 +40,8 @@ public class CqlTranslator {
         DisableMethodInvocation
     }
     public static enum Format { XML, JSON, COFFEE }
+    private static JAXBContext jaxbContext;
+
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
     private Object visitResult = null;
@@ -51,7 +53,6 @@ public class CqlTranslator {
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
     private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
-    private JAXBContext jaxbContext;
 
     public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) {
         return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
@@ -138,16 +139,16 @@ public class CqlTranslator {
 
     public List<CqlTranslatorException> getMessages() { return messages; }
 
-    public JAXBContext getJaxbContext() {
-        if (this.jaxbContext == null) {
+    public static JAXBContext getJaxbContext() {
+        if (jaxbContext == null) {
             try {
-                this.jaxbContext = JAXBContext.newInstance(Library.class, Annotation.class);
+                jaxbContext = JAXBContext.newInstance(Library.class, Annotation.class);
             } catch (JAXBException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Error creating JAXBContext - " + e.getMessage());
             }
         }
-        return this.jaxbContext;
+        return jaxbContext;
     }
 
     private class CqlErrorListener extends BaseErrorListener {
