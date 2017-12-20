@@ -11,11 +11,11 @@ generateSources {
 
     doLast {
         ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/library.xsd") {
-            arg(line: "${xjc.args} -npa -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable")
+            arg(line: "${xjc.args} -npa -episode elm.episode -XautoInheritance -XautoInheritance-xmlTypesExtend=org.cqframework.cql.elm.tracking.Trackable")
         }
 
         ant.xjc(destdir: xjc.destDir, schema: "${projectDir}/../../cql-lm/schema/elm/cqlannotations.xsd") {
-            arg(line: "${xjc.args} -npa")
+            arg(line: "${xjc.args} -npa -episode anno.episode ")
         }
     }
 }
