@@ -400,7 +400,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public NamedTypeSpecifier visitNamedTypeSpecifier(@NotNull cqlParser.NamedTypeSpecifierContext ctx) {
-        DataType resultType = libraryBuilder.resolveTypeName(parseString(ctx.modelIdentifier()), parseString(ctx.identifier()));
+        DataType resultType = libraryBuilder.resolveTypeName(parseString(ctx.modelIdentifier()), parseQualifiedString(ctx.identifier()));
         NamedTypeSpecifier result = of.createNamedTypeSpecifier()
                 .withName(libraryBuilder.dataTypeToQName(resultType));
 
@@ -2690,7 +2690,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Retrieve visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
         String model = parseString(ctx.namedTypeSpecifier().modelIdentifier());
-        String label = parseString(ctx.namedTypeSpecifier().identifier());
+        String label = parseQualifiedString(ctx.namedTypeSpecifier().identifier());
         DataType dataType = libraryBuilder.resolveTypeName(model, label);
         if (dataType == null) {
             throw new IllegalArgumentException(String.format("Could not resolve type name %s.", label));
@@ -3562,6 +3562,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public String parseString(ParseTree pt) {
         return StringEscapeUtils.unescapeCql(pt == null ? null : (String) visit(pt));
+    }
+
+    public String parseQualifiedString( List<cqlParser.IdentifierContext> ids) {
+    	StringBuilder sb = new StringBuilder();
+    	for( cqlParser.IdentifierContext idctx : ids ) {
+    		String id = parseString( idctx );
+    		if ( id != null ) {
+    			if ( sb.length() > 0 ) {
+    				sb.append( "." );
+			    }
+    			sb.append( id );
+		    } else {
+    			return null;
+		    }
+	    }
+	    return sb.toString();
     }
 
     private Expression parseExpression(ParseTree pt) {

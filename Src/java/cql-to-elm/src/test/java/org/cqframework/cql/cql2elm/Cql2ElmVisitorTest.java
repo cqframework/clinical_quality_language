@@ -986,6 +986,31 @@ public class Cql2ElmVisitorTest {
 	    assertThat( ((Instance)el.getValue()).getClassType().getLocalPart(), is( "CodeableConcept" ) );
     }
 
+    @Test
+    public void testInnerTypes() {
+    	String cql =
+			    "using FHIR \n" +
+					    "define \"Alert\":\n" +
+					    "  CommunicationRequest {\n" +
+					    "    payload: FHIR.CommunicationRequest.Payload {\n" +
+					    "                      content: string{ value: 'aaa' }\n" +
+					    "                      } \n" +
+					    "  }";
+	    ExpressionDef def = (ExpressionDef) visitData(cql);
+
+	    assertThat( def.getExpression(), instanceOf( Instance.class ) );
+	    Instance inst = ( Instance ) def.getExpression();
+	    assertThat( inst.getElement().size(), is( 1 ) );
+	    InstanceElement el = inst.getElement().get( 0 );
+	    assertNotNull( el );
+
+	    assertThat( el.getName(), is( "payload" ) );
+	    assertThat( el.getValue(), instanceOf( ToList.class ) );
+	    Expression op = ((ToList) el.getValue()).getOperand();
+	    assertThat( op, instanceOf( Instance.class ) );
+	    assertThat( ((Instance)op).getClassType().getLocalPart(), is( "CommunicationRequest.Payload" ) );
+    }
+
     // TODO: This test needs to be repurposed, it won't work with the query as is.
     @Test(enabled = false)
     public void testSameAs() {

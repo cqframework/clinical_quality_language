@@ -114,7 +114,8 @@ typeSpecifier
     ;
 
 namedTypeSpecifier
-    : (modelIdentifier '.')? identifier
+    : identifier
+    | modelIdentifier ('.' identifier)+
     ;
 
 modelIdentifier
