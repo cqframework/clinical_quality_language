@@ -14,6 +14,7 @@ import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 public class Cql2ElmVisitorTest {
@@ -960,6 +961,29 @@ public class Cql2ElmVisitorTest {
         assertThat(query.getRelationship(), is(empty()));
         assertThat(query.getWhere(), is(nullValue()));
         assertThat(query.getSort(), is(nullValue()));
+    }
+
+    @Test
+    public void testChoiceDatatype() {
+	    String cql =
+			    "using FHIR \n" +
+					    "define \"Med\": \n" +
+					    "    MedicationRequest {\n" +
+					    "        medication : CodeableConcept { \n" +
+					    "            coding: Coding{ code: code{ value: 'test' } } \n" +
+					    "        } \n" +
+					    "  }";
+	    ExpressionDef def = (ExpressionDef) visitData(cql);
+
+	    assertThat( def.getExpression(), instanceOf( Instance.class ) );
+	    Instance inst = ( Instance ) def.getExpression();
+	    assertThat( inst.getElement().size(), is( 1 ) );
+	    InstanceElement el = inst.getElement().get( 0 );
+	    assertNotNull( el );
+
+	    assertThat( el.getName(), is( "medication" ) );
+	    assertThat( el.getValue(), instanceOf( Instance.class ) );
+	    assertThat( ((Instance)el.getValue()).getClassType().getLocalPart(), is( "CodeableConcept" ) );
     }
 
     // TODO: This test needs to be repurposed, it won't work with the query as is.

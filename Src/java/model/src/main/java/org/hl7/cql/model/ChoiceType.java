@@ -1,7 +1,6 @@
 package org.hl7.cql.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -66,16 +65,43 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isSubTypeOf(DataType other) {
-        // TODO: Determine isSubTypeOf semantics for choice types
-        // A choice type A is a subtype of a choice type B if each component type is a subtype of some copmonent type of B // Holding off on this more complex case for now
-        return super.isSubTypeOf(other);
+        if (other instanceof ChoiceType) {
+	        // TODO: Determine isSubTypeOf semantics for choice types
+	        // A choice type A is a subtype of a choice type B if each component type is a subtype of some copmonent type of B // Holding off on this more complex case for now
+	        for (DataType alternative: this.types) {
+	            if (! alternative.isSubTypeOf( other )) {
+	            	return false;
+	            }
+	        }
+	        return true;
+        } else {
+	        // 'Other' is a single (non choice) type.
+	        // This is a sub-type if all the alternatives are sub-types
+	        for (DataType alternative: this.types) {
+		        if ( ! alternative.isSubTypeOf( other ) ) {
+			        return false;
+		        }
+	        }
+	        return true;
+        }
     }
 
     @Override
     public boolean isSuperTypeOf(DataType other) {
-        // TODO: Determine isSuperTypeOf semantics for choice types
-        // A choice type A is a supertype of a choice type B if B is a subtype of A
-        return super.isSuperTypeOf(other);
+        if (other instanceof ChoiceType) {
+	        // TODO: Determine isSuperTypeOf semantics for choice types
+	        // A choice type A is a supertype of a choice type B if B is a subtype of A
+	        return other.isSubTypeOf( this );
+        } else {
+        	// 'Other' is a single (non choice) type.
+	        // This is a super-type if at least one of the alternatives is a super-type
+        	for (DataType alternative: this.types) {
+        		if ( alternative.isSuperTypeOf( other ) ) {
+        			return true;
+		        }
+	        }
+	        return false;
+        }
     }
 
     @Override

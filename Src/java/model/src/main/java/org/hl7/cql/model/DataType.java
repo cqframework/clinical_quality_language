@@ -18,6 +18,14 @@ public abstract class DataType {
     }
 
     public boolean isSubTypeOf(DataType other) {
+        if ( other instanceof ChoiceType ) {
+        	return other.isSuperTypeOf( this );
+        } else {
+	        return subTypeOf( other );
+        }
+    }
+
+    private boolean subTypeOf(DataType other) {
         DataType currentType = this;
         while (currentType != null) {
             if (currentType.equals(other)) {
@@ -30,6 +38,14 @@ public abstract class DataType {
     }
 
     public boolean isSuperTypeOf(DataType other) {
+	    if ( other instanceof ChoiceType ) {
+		    return other.isSubTypeOf( this );
+	    } else {
+		    return superTypeOf( other );
+	    }
+    }
+
+    private boolean superTypeOf(DataType other) {
         while (other != null) {
             if (equals(other)) {
                 return true;
