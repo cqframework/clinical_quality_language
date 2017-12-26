@@ -40,6 +40,8 @@ public class CqlTranslator {
         DisableMethodInvocation
     }
     public static enum Format { XML, JSON, COFFEE }
+    private static JAXBContext jaxbContext;
+
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
     private Object visitResult = null;
@@ -51,54 +53,47 @@ public class CqlTranslator {
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
     private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
-    private JAXBContext jaxbContext;
 
-    public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager, Options... options) {
+    public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) {
         return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
     }
 
     public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager,
-                                         CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
+                                         CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) {
         return new CqlTranslator(new ANTLRInputStream(cqlText), modelManager, libraryManager, errorLevel, options);
     }
 
-    public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
+    public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) throws IOException {
         return new CqlTranslator(new ANTLRInputStream(cqlStream), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
     }
 
     public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager, LibraryManager libraryManager,
-                                           CqlTranslatorException.ErrorSeverity errorLevel, Options... options) throws IOException {
+                                           CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
         return new CqlTranslator(new ANTLRInputStream(cqlStream), modelManager, libraryManager, errorLevel, options);
     }
 
-    public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
+    public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) throws IOException {
         return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
     }
 
     public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager,
-                                         CqlTranslatorException.ErrorSeverity errorLevel, Options... options) throws IOException {
+                                         CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
         return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, errorLevel, options);
     }
 
-    public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager, Options... options) throws IOException {
+    public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) throws IOException {
         return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info, options);
     }
 
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager,
-                                         CqlTranslatorException.ErrorSeverity errorLevel, Options... options) throws IOException {
+                                         CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
         return new CqlTranslator(new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, errorLevel, options);
     }
 
     private CqlTranslator(ANTLRInputStream is, ModelManager modelManager, LibraryManager libraryManager,
-                          CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
+                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) {
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
-        try {
-            this.jaxbContext = JAXBContext.newInstance(Library.class, Annotation.class);
-        } catch (JAXBException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error creating JAXBContext - " + e.getMessage());
-        }
         translateToELM(is, errorLevel, options);
     }
 
@@ -144,16 +139,28 @@ public class CqlTranslator {
 
     public List<CqlTranslatorException> getMessages() { return messages; }
 
+    public static JAXBContext getJaxbContext() {
+        if (jaxbContext == null) {
+            try {
+                jaxbContext = JAXBContext.newInstance(Library.class, Annotation.class);
+            } catch (JAXBException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Error creating JAXBContext - " + e.getMessage());
+            }
+        }
+        return jaxbContext;
+    }
+
     private class CqlErrorListener extends BaseErrorListener {
-        
+
         private LibraryBuilder builder;
         private boolean detailedErrors;
-      
+
         public CqlErrorListener(LibraryBuilder builder, boolean detailedErrors) {
             this.builder = builder;
             this.detailedErrors = detailedErrors;
         }
-      
+
         @Override
         public void syntaxError(@NotNull Recognizer<?, ?> recognizer, @Nullable Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, @Nullable RecognitionException e) {
             TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
@@ -161,20 +168,20 @@ public class CqlTranslator {
 
             if (detailedErrors) {
                 builder.recordParsingException(new CqlSyntaxException(msg, trackback, e));
-            builder.recordParsingException(new CqlTranslatorException(msg, trackback, e));
-        }
+                builder.recordParsingException(new CqlTranslatorException(msg, trackback, e));
+            }
             else {
                 if (offendingSymbol instanceof CommonToken) {
                     CommonToken token = (CommonToken) offendingSymbol;
                     builder.recordParsingException(new CqlSyntaxException(String.format("Syntax error at %s", token.getText()), trackback, e));
                 } else {
                     builder.recordParsingException(new CqlSyntaxException("Syntax error", trackback, e));
-    }
+                }
             }
         }
     }
 
-    private void translateToELM(ANTLRInputStream is, CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
+    private void translateToELM(ANTLRInputStream is, CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) {
         cqlLexer lexer = new cqlLexer(is);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
@@ -186,38 +193,38 @@ public class CqlTranslator {
         messages = new ArrayList<>();
         LibraryBuilder builder = new LibraryBuilder(modelManager, libraryManager);
         builder.setErrorLevel(errorLevel);
-        List<Options> optionList = Arrays.asList(options);
+        List<CqlTranslator.Options> optionList = Arrays.asList(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
-        if (optionList.contains(Options.EnableDateRangeOptimization)) {
+        if (optionList.contains(CqlTranslator.Options.EnableDateRangeOptimization)) {
             visitor.enableDateRangeOptimization();
         }
-        if (optionList.contains(Options.EnableAnnotations)) {
+        if (optionList.contains(CqlTranslator.Options.EnableAnnotations)) {
             visitor.enableAnnotations();
         }
-        if (optionList.contains(Options.EnableLocators)) {
+        if (optionList.contains(CqlTranslator.Options.EnableLocators)) {
             visitor.enableLocators();
         }
-        if (optionList.contains(Options.EnableResultTypes)) {
+        if (optionList.contains(CqlTranslator.Options.EnableResultTypes)) {
             visitor.enableResultTypes();
         }
-        if (optionList.contains(Options.EnableDetailedErrors)) {
+        if (optionList.contains(CqlTranslator.Options.EnableDetailedErrors)) {
             visitor.enableDetailedErrors();
         }
-        if (optionList.contains(Options.DisableListTraversal)) {
+        if (optionList.contains(CqlTranslator.Options.DisableListTraversal)) {
             builder.disableListTraversal();
         }
-        if (optionList.contains(Options.DisableDemotion)) {
+        if (optionList.contains(CqlTranslator.Options.DisableDemotion)) {
             builder.getConversionMap().disableDemotion();
         }
-        if (optionList.contains(Options.DisablePromotion)) {
+        if (optionList.contains(CqlTranslator.Options.DisablePromotion)) {
             builder.getConversionMap().disablePromotion();
         }
-        if (optionList.contains(Options.DisableMethodInvocation)) {
+        if (optionList.contains(CqlTranslator.Options.DisableMethodInvocation)) {
             visitor.disableMethodInvocation();
         }
 
         parser.removeErrorListeners(); // Clear the default console listener
-        parser.addErrorListener(new CqlErrorListener(builder, visitor.isDetailedErrorsEnabled()));
+        parser.addErrorListener(new CqlTranslator.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled()));
         ParseTree tree = parser.library();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
@@ -237,7 +244,7 @@ public class CqlTranslator {
     }
 
     public String convertToXml(Library library) throws JAXBException {
-        Marshaller marshaller = jaxbContext.createMarshaller();
+        Marshaller marshaller = getJaxbContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         StringWriter writer = new StringWriter();
         marshaller.marshal(new ObjectFactory().createLibrary(library), writer);
@@ -245,7 +252,7 @@ public class CqlTranslator {
     }
 
     public String convertToJson(Library library) throws JAXBException {
-        Marshaller marshaller = jaxbContext.createMarshaller();
+        Marshaller marshaller = getJaxbContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty("eclipselink.media-type", "application/json");
 
@@ -270,38 +277,38 @@ public class CqlTranslator {
         }
     }
 
-    private static void writeELM(Path inPath, Path outPath, Format format, boolean dateRangeOptimizations,
+    private static void writeELM(Path inPath, Path outPath, CqlTranslator.Format format, boolean dateRangeOptimizations,
                                  boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
                                  boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
                                  boolean disableListTraversal, boolean disableDemotion, boolean disablePromotion,
                                  boolean disableMethodInvocation) throws IOException {
-        ArrayList<Options> options = new ArrayList<>();
+        ArrayList<CqlTranslator.Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
-            options.add(Options.EnableDateRangeOptimization);
+            options.add(CqlTranslator.Options.EnableDateRangeOptimization);
         }
         if (annotations) {
-            options.add(Options.EnableAnnotations);
+            options.add(CqlTranslator.Options.EnableAnnotations);
         }
         if (locators) {
-            options.add(Options.EnableLocators);
+            options.add(CqlTranslator.Options.EnableLocators);
         }
         if (resultTypes) {
-            options.add(Options.EnableResultTypes);
+            options.add(CqlTranslator.Options.EnableResultTypes);
         }
         if (detailedErrors) {
-            options.add(Options.EnableDetailedErrors);
+            options.add(CqlTranslator.Options.EnableDetailedErrors);
         }
         if (disableListTraversal) {
-            options.add(Options.DisableListTraversal);
+            options.add(CqlTranslator.Options.DisableListTraversal);
         }
         if (disableDemotion) {
-            options.add(Options.DisableDemotion);
+            options.add(CqlTranslator.Options.DisableDemotion);
         }
         if (disablePromotion) {
-            options.add(Options.DisablePromotion);
+            options.add(CqlTranslator.Options.DisablePromotion);
         }
         if (disableMethodInvocation) {
-            options.add(Options.DisableMethodInvocation);
+            options.add(CqlTranslator.Options.DisableMethodInvocation);
         }
 
         System.err.println("================================================================================");
@@ -311,7 +318,7 @@ public class CqlTranslator {
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, errorLevel, options.toArray(new Options[options.size()]));
+        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, errorLevel, options.toArray(new CqlTranslator.Options[options.size()]));
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {
@@ -351,7 +358,7 @@ public class CqlTranslator {
         OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required();
         OptionSpec<File> model = parser.accepts("model").withRequiredArg().ofType(File.class);
         OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class);
-        OptionSpec<Format> format = parser.accepts("format").withRequiredArg().ofType(Format.class).defaultsTo(Format.XML);
+        OptionSpec<CqlTranslator.Format> format = parser.accepts("format").withRequiredArg().ofType(CqlTranslator.Format.class).defaultsTo(CqlTranslator.Format.XML);
         OptionSpec verify = parser.accepts("verify");
         OptionSpec optimization = parser.accepts("date-range-optimization");
         OptionSpec annotations = parser.accepts("annotations");
@@ -373,7 +380,7 @@ public class CqlTranslator {
                 output.value(options) != null
                         ? output.value(options).toPath()
                         : source.toFile().isDirectory() ? source : source.getParent();
-        final Format outputFormat = format.value(options);
+        final CqlTranslator.Format outputFormat = format.value(options);
 
         Map<Path, Path> inOutMap = new HashMap<>();
         if (source.toFile().isDirectory()) {
@@ -442,8 +449,8 @@ public class CqlTranslator {
                     options.has(verify),
                     options.has(detailedErrors), // Didn't include in debug, maybe should...
                     options.has(errorLevel)
-                        ? (CqlTranslatorException.ErrorSeverity)options.valueOf(errorLevel)
-                        : CqlTranslatorException.ErrorSeverity.Info,
+                            ? (CqlTranslatorException.ErrorSeverity)options.valueOf(errorLevel)
+                            : CqlTranslatorException.ErrorSeverity.Info,
                     options.has(strict) || options.has(disableListTraversal),
                     options.has(strict) || options.has(disableDemotion),
                     options.has(strict) || options.has(disablePromotion),
