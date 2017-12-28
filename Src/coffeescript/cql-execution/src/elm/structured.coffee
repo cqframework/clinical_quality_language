@@ -20,7 +20,7 @@ module.exports.Property = class Property extends Expression
       for part in parts
         _obj = curr_obj?[part] ? curr_obj?.get?(part)
         curr_obj = if _obj instanceof Function then _obj.call(curr_obj) else _obj
-      val = curr_obj
+      val = curr_obj ? null # convert undefined to null
     if val instanceof Function then val.call(obj) else val
 
 module.exports.Tuple = class Tuple extends Expression

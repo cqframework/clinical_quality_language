@@ -47,8 +47,8 @@ module.exports.equivalent = equivalent = (a, b) ->
   return equals a, b
 
 module.exports.equals = equals = (a, b) ->
-  # Handle null cases first
-  return a is b if not a? or not b?
+  # Handle null cases first: spec says if either is null, return null
+  return null unless a? and b?
 
   # If one is a Quantity, use the Quantity equals function
   return a.equals b if a?.constructor?.name == 'Quantity'
