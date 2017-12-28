@@ -1786,6 +1786,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTypeExpression(@NotNull cqlParser.TypeExpressionContext ctx) {
+        // NOTE: These don't use the buildIs or buildAs because those start with a DataType, rather than a TypeSpecifier
         if (ctx.getChild(1).getText().equals("is")) {
             Is is = of.createIs()
                     .withOperand(parseExpression(ctx.expression()))
@@ -1806,6 +1807,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitCastExpression(@NotNull cqlParser.CastExpressionContext ctx) {
+        // NOTE: This doesn't use buildAs because it starts with a DataType, rather than a TypeSpecifier
         As as = of.createAs()
                 .withOperand(parseExpression(ctx.expression()))
                 .withAsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()))

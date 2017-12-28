@@ -780,34 +780,77 @@ public class LibraryBuilder {
         return interval;
     }
 
+    public As buildAs(Expression expression, DataType asType) {
+        As result = (As)of.createAs().withOperand(expression).withResultType(asType);
+        if (result.getResultType() instanceof NamedType) {
+            result.setAsType(dataTypeToQName(result.getResultType()));
+        }
+        else {
+            result.setAsTypeSpecifier(dataTypeToTypeSpecifier(result.getResultType()));
+        }
+
+        return result;
+    }
+
+    public Is buildIs(Expression expression, DataType isType) {
+        Is result = (Is)of.createIs().withOperand(expression).withResultType(resolveTypeName("System", "Boolean"));
+        if (isType instanceof NamedType) {
+            result.setIsType(dataTypeToQName(isType));
+        }
+        else {
+            result.setIsTypeSpecifier(dataTypeToTypeSpecifier(isType));
+        }
+
+        return result;
+    }
+
+    public Null buildNull(DataType nullType) {
+        Null result = (Null)of.createNull().withResultType(nullType);
+        if (nullType instanceof NamedType) {
+            result.setResultTypeName(dataTypeToQName(nullType));
+        }
+        else {
+            result.setResultTypeSpecifier(dataTypeToTypeSpecifier(nullType));
+        }
+        return result;
+    }
+
     public Expression convertExpression(Expression expression, Conversion conversion) {
         if (conversion.isCast()
                 && (conversion.getFromType().isSuperTypeOf(conversion.getToType())
                 || conversion.getFromType().isCompatibleWith(conversion.getToType()))) {
-            As castedOperand = (As)of.createAs()
-                    .withOperand(expression)
-                    .withResultType(conversion.getToType());
-
-            castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
-            if (castedOperand.getResultType() instanceof NamedType) {
-                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
-            }
-
+            As castedOperand = buildAs(expression, conversion.getToType());
             return castedOperand;
         }
         else if (conversion.isCast() && conversion.getConversion() != null
                 && (conversion.getFromType().isSuperTypeOf(conversion.getConversion().getFromType())
                 || conversion.getFromType().isCompatibleWith(conversion.getConversion().getFromType()))) {
-            As castedOperand = (As)of.createAs()
-                    .withOperand(expression)
-                    .withResultType(conversion.getConversion().getFromType());
+            As castedOperand = buildAs(expression, conversion.getConversion().getFromType());
 
-            castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
-            if (castedOperand.getResultType() instanceof NamedType) {
-                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
+            Expression result = convertExpression(castedOperand, conversion.getConversion());
+
+            if (conversion.hasAlternativeConversions()) {
+                Case caseResult = of.createCase();
+                caseResult.setResultType(result.getResultType());
+                caseResult.withCaseItem(
+                        of.createCaseItem()
+                                .withWhen(buildIs(expression, conversion.getConversion().getFromType()))
+                                .withThen(result)
+                );
+
+                for (Conversion alternative : conversion.getAlternativeConversions()) {
+                    caseResult.withCaseItem(
+                            of.createCaseItem()
+                                .withWhen(buildIs(expression, alternative.getFromType()))
+                                .withThen(convertExpression(buildAs(expression, alternative.getFromType()), alternative))
+                    );
+                }
+
+                caseResult.withElse(buildNull(result.getResultType()));
+                result = caseResult;
             }
 
-            return convertExpression(castedOperand, conversion.getConversion());
+            return result;
         }
         else if (conversion.isListConversion()) {
             return convertListExpression(expression, conversion);

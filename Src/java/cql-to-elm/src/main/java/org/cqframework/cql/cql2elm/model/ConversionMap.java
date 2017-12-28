@@ -85,19 +85,15 @@ public class ConversionMap {
     }
 
     public Conversion findChoiceConversion(ChoiceType fromType, DataType toType, OperatorMap operatorMap) {
-        DataType selectedChoice = null;
         Conversion result = null;
         for (DataType choice : fromType.getTypes()) {
             Conversion choiceConversion = findConversion(choice, toType, true, operatorMap);
             if (choiceConversion != null) {
-                if (selectedChoice != null) {
-                    throw new IllegalArgumentException(String.format("Ambiguous choice conversion from %s of %s to %s.",
-                            selectedChoice.toString(), fromType.toString(), toType.toString()));
-                }
-
-                else {
-                    selectedChoice = choice;
+                if (result == null) {
                     result = new Conversion(fromType, toType, choiceConversion);
+                }
+                else {
+                    result.addAlternativeConversion(choiceConversion);
                 }
             }
         }
