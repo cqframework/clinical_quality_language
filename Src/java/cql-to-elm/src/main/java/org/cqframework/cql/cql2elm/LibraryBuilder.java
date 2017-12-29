@@ -426,7 +426,11 @@ public class LibraryBuilder {
                 .withId(includeDef.getPath())
                 .withVersion(includeDef.getVersion());
 
+        ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
         TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, errors);
+        for (CqlTranslatorException error : errors) {
+            this.addException(error);
+        }
         libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
         loadConversionMap(referencedLibrary);
     }

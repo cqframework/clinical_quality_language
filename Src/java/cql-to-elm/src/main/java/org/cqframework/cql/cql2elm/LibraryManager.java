@@ -76,7 +76,7 @@ public class LibraryManager {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(librarySource, modelManager, this);
             if (errors != null) {
-                errors.addAll(translator.getErrors());
+                errors.addAll(translator.getExceptions());
             }
 
             TranslatedLibrary result = translator.getTranslatedLibrary();
