@@ -18,6 +18,7 @@ public class ModelInfoLoader {
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.0.2"), new QdmModelInfoProvider().withVersion("5.0.2"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.0.1"), new QdmModelInfoProvider().withVersion("5.0.1"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.0"), new QdmModelInfoProvider().withVersion("5.0"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.3"), new QdmModelInfoProvider().withVersion("4.3"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.2"), new QdmModelInfoProvider().withVersion("4.2"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("4.1.2"), new QdmModelInfoProvider().withVersion("4.1.2"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"), new FhirModelInfoProvider().withVersion("1.8"));

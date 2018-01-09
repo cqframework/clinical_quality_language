@@ -29,8 +29,10 @@ public class QdmModelInfoProvider implements ModelInfoProvider {
             case "4.2":
                 return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml"),
                         ModelInfo.class);
+            case "4.3":
+                return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.3.xml"),
+                        ModelInfo.class);
             case "5.0":
-            case "":
                 return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.xml"),
                         ModelInfo.class);
             case "5.0.1":
@@ -40,6 +42,7 @@ public class QdmModelInfoProvider implements ModelInfoProvider {
                 return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.2.xml"),
                         ModelInfo.class);
             case "5.3":
+            case "":
                 return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.3.xml"),
                         ModelInfo.class);
             default:
