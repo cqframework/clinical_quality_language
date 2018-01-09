@@ -22,6 +22,31 @@ import static org.hamcrest.Matchers.is;
 
 public class TestUtils {
 
+    private static ModelManager modelManager;
+    private static LibraryManager libraryManager;
+
+    private static void setup() {
+        modelManager = new ModelManager();
+        libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+    }
+
+    private static ModelManager getModelManager() {
+        if (modelManager == null) {
+            setup();
+        }
+
+        return modelManager;
+    }
+
+    private static LibraryManager getLibraryManager() {
+        if (libraryManager == null) {
+            setup();
+        }
+
+        return libraryManager;
+    }
+
     public static Cql2ElmVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
         InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
         TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(is));
@@ -31,16 +56,21 @@ public class TestUtils {
         return visitor;
     }
 
+    public static Object visitFile(String fileName) throws IOException {
+        File file = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(fileName).getFile(), "UTF-8"));
+        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager());
+        ensureValid(translator);
+        return translator.toObject();
+    }
+
     public static Object visitData(String cqlData) {
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager());
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, getModelManager(), getLibraryManager());
         ensureValid(translator);
         return translator.toELM();
     }
@@ -53,8 +83,7 @@ public class TestUtils {
         if (enableDateRangeOptimization) {
             options.add(CqlTranslator.Options.EnableDateRangeOptimization);
         }
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, modelManager, new LibraryManager(modelManager), options.toArray(new CqlTranslator.Options[options.size()]));
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(), options.toArray(new CqlTranslator.Options[options.size()]));
         ensureValid(translator);
         return translator.toObject();
     }

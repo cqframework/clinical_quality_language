@@ -5,6 +5,9 @@ import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Conversion {
     public Conversion(Operator operator, boolean isImplicit) {
         setIsImplicit(isImplicit);
@@ -157,6 +160,30 @@ public class Conversion {
     private Conversion conversionField;
     public Conversion getConversion() {
         return conversionField;
+    }
+
+    private List<Conversion> alternativeConversions;
+    public List<Conversion> getAlternativeConversions() {
+        if (alternativeConversions == null) {
+            alternativeConversions = new ArrayList<Conversion>();
+        }
+
+        return alternativeConversions;
+    }
+
+    public boolean hasAlternativeConversions() {
+        return alternativeConversions != null;
+    }
+
+    public void addAlternativeConversion(Conversion alternativeConversion) {
+        if (!(fromType instanceof ChoiceType)) {
+            throw new IllegalArgumentException("Alternative conversions can only be used with choice types");
+        }
+
+        // TODO: Should also guard against adding an alternative that is not one of the component types of the fromType
+        // This should never happen though with current usage
+
+        getAlternativeConversions().add(alternativeConversion);
     }
 
     public boolean isGeneric() {
