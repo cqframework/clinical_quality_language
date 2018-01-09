@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import static org.cqframework.cql.cql2elm.CqlTranslatorException.HasErrors;
+
 /**
  * Manages a set of CQL libraries. As new library references are encountered
  * during translation, the corresponding source is obtained via
@@ -53,7 +55,9 @@ public class LibraryManager {
                     libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         } else {
             library = translateLibrary(libraryIdentifier, errors);
-            libraries.put(libraryIdentifier.getId(), library);
+            if (!HasErrors(errors)) {
+                libraries.put(libraryIdentifier.getId(), library);
+            }
         }
 
         return library;
@@ -76,7 +80,7 @@ public class LibraryManager {
         try {
             CqlTranslator translator = CqlTranslator.fromStream(librarySource, modelManager, this);
             if (errors != null) {
-                errors.addAll(translator.getErrors());
+                errors.addAll(translator.getExceptions());
             }
 
             TranslatedLibrary result = translator.getTranslatedLibrary();
