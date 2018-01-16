@@ -53,7 +53,13 @@ public class LibraryManager {
                 && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
             throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
                     libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
-        } else {
+        }
+
+        else if (library != null) {
+            return library;
+        }
+
+        else {
             library = translateLibrary(libraryIdentifier, errors);
             if (!HasErrors(errors)) {
                 libraries.put(libraryIdentifier.getId(), library);
