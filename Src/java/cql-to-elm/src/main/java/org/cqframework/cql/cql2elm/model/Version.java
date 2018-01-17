@@ -37,6 +37,40 @@ public class Version implements Comparable<Version> {
         return 0;
     }
 
+    public boolean compatibleWith(Version that) {
+        if (that == null)
+            return false;
+
+        // this version is compatible with that version if:
+            // this.major = that.major
+            // this.minor >= that.minor
+        String[] thisParts = this.version.split("\\.");
+        String[] thatParts = that.version.split("\\.");
+        int length = Math.max(thisParts.length, thatParts.length);
+        for (int i = 0; i < length; i++) {
+            int thisPart = i < thisParts.length ? Integer.parseInt(thisParts[i]) : 0;
+            int thatPart = i < thatParts.length ? Integer.parseInt(thatParts[i]) : 0;
+            switch (i) {
+                case 0: {
+                    // Major version
+                    if (thisPart != thatPart)
+                        return false;
+                }
+
+                case 1: {
+                    if (thisPart < thatPart)
+                        return false;
+                }
+
+                case 2: {
+                    // ignore patch version....
+                }
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public boolean equals(Object that) {
         if(this == that)
