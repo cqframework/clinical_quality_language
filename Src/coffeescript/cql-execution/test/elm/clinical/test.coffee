@@ -171,7 +171,12 @@ describe 'CalculateAge', ->
   it 'should execute age in months', ->
     # what is returned will depend on whether the day in the current month has
     # made it to the 17th day of the month as declared in the birthday
-    [@full_months, @full_months+1].indexOf(@months.exec(@ctx)).should.not.equal -1
+    dayOfMonth = @today
+    for i in [1 .. 28]
+      dayOfMonth.setDate(i)
+      month_offset = if dayOfMonth.getMonth() == 5 && dayOfMonth.getDate() < 17 then 6 else 5
+      full_months = ((dayOfMonth.getFullYear() - 1980) * 12) + (dayOfMonth.getMonth() - month_offset)
+      [full_months, full_months+1].indexOf(@months.exec(@ctx)).should.not.equal -1
 
   # Skipping because cql-to-elm in this branch does not properly translate AgeInWeeks
   it.skip 'should execute age in weeks', ->
