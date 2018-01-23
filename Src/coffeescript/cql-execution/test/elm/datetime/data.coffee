@@ -1170,10 +1170,6 @@ module.exports['TimeFrom'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -3832,10 +3828,6 @@ module.exports['SameAs'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -3962,10 +3954,6 @@ module.exports['SameAs'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -7028,10 +7016,6 @@ module.exports['SameOrAfter'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -7130,10 +7114,6 @@ module.exports['SameOrAfter'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -7158,10 +7138,6 @@ module.exports['SameOrAfter'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -10224,10 +10200,6 @@ module.exports['SameOrBefore'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -10326,10 +10298,6 @@ module.exports['SameOrBefore'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -10354,10 +10322,6 @@ module.exports['SameOrBefore'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -13138,10 +13102,6 @@ module.exports['After'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -13240,10 +13200,6 @@ module.exports['After'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -13268,10 +13224,6 @@ module.exports['After'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -16052,10 +16004,6 @@ module.exports['Before'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "type" : "DateTime",
@@ -16154,10 +16102,6 @@ module.exports['Before'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -16182,10 +16126,6 @@ module.exports['Before'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}DateTime",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }

@@ -99,10 +99,6 @@ module.exports['And'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -153,10 +149,6 @@ module.exports['And'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -171,20 +163,12 @@ module.exports['And'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -199,10 +183,6 @@ module.exports['And'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -221,10 +201,6 @@ module.exports['And'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -330,10 +306,6 @@ module.exports['Or'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -384,10 +356,6 @@ module.exports['Or'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -402,20 +370,12 @@ module.exports['Or'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -430,10 +390,6 @@ module.exports['Or'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -452,10 +408,6 @@ module.exports['Or'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -561,10 +513,6 @@ module.exports['XOr'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -615,10 +563,6 @@ module.exports['XOr'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -633,20 +577,12 @@ module.exports['XOr'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -661,10 +597,6 @@ module.exports['XOr'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -683,10 +615,6 @@ module.exports['XOr'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -774,10 +702,6 @@ module.exports['Not'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -861,10 +785,6 @@ module.exports['IsTrue'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -948,10 +868,6 @@ module.exports['IsFalse'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }

@@ -75,10 +75,6 @@ module.exports['FromString'] = {
                "type" : "As",
                "operand" : {
                   "type" : "Null"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -304,10 +300,6 @@ module.exports['FromInteger'] = {
                "type" : "As",
                "operand" : {
                   "type" : "Null"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {

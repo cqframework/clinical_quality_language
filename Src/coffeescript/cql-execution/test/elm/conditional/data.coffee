@@ -67,10 +67,6 @@ module.exports['If'] = {
                   "operand" : {
                      "name" : "var",
                      "type" : "ParameterRef"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                },
                "then" : {
