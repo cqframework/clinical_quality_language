@@ -64,6 +64,7 @@ task "watch-all", "Watch src/, test/, and test/data/cql-test-data.txt for change
 task "test", "run tests", ->
   invoke 'build'
   exec "NODE_ENV=test
+    ./node_modules/.bin/nyc --reporter=html
     ./node_modules/.bin/mocha
     --compilers coffee:coffee-script/register
     --require coffee-script
