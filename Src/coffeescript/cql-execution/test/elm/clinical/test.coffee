@@ -71,6 +71,9 @@ describe 'InValueSet', ->
   it 'should find long code with different version in value set', ->
     @longCodeDifferentVersion.exec(@ctx).should.be.true()
 
+  it 'should not find code if it is null', ->
+    @nullCode.exec(@ctx).should.be.false()
+
 describe 'Patient Property In ValueSet', ->
   @beforeEach ->
     setup @, data, [], vsets
