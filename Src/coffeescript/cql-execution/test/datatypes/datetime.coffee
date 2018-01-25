@@ -264,6 +264,11 @@ describe 'DateTime.add', ->
     date1.should.not.equal date2
 
 describe 'DateTime.differenceBetween', ->
+  it 'should return null if passed a non-DateTime object', ->
+    a = DateTime.parse '2018-01-23T01:41:00'
+    b = '2018-01-23T01:41:00'
+    should.not.exist a.differenceBetween(b, DateTime.Unit.YEAR)
+
   it 'should calculate time between two full specified dates', ->
     a = DateTime.parse '2009-06-15T12:37:45.0'
     b = DateTime.parse '2009-06-15T12:37:45.0'
@@ -497,6 +502,31 @@ describe 'DateTime.differenceBetween', ->
     a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(2*60*60)
     a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(2*60*60*1000)
 
+ it 'should handle dates without minutes specified', ->
+    a = DateTime.parse '2017-01-01T05'
+    b = DateTime.parse '2017-01-01T07'
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(2)
+    # Because minute, second, and millisecond are null, the expects change
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(60 + 1, 3*60 - 1)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(60*60 + 1, 3*60*60 - 1)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(60*60*1000 + 1, 3*60*60*1000 - 1)
+
+ it 'should handle dates without minutes specified with different time zones', ->
+    a = new DateTime(2017, 1, 1, 7, null, null, null, 3)
+    b = new DateTime(2017, 1, 1, 7, null, null, null, 1)
+    a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(2)
+    # Because minute, second, and millisecond are null, the expects change
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(60 + 1, 3*60 - 1)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(60*60 + 1, 3*60*60 - 1)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(60*60*1000 + 1, 3*60*60*1000 - 1)
+
+
 describe 'DateTime.durationBetween', ->
   it 'should calculate time between two full specified dates', ->
     a = DateTime.parse '2009-06-15T12:37:45.0'
@@ -691,6 +721,19 @@ describe 'DateTime.durationBetween', ->
     a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
     a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(0)
+
+  it 'should handle different timezones with no minutes specified', ->
+
+    a = new DateTime(2001,1,1,0,null,null,null,0)
+    b = new DateTime(2000,12,31,19,null,null,null,-5)
+    a.durationBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.WEEK).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(0)
+    a.durationBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(-1*(60-1), 60-1)
+    a.durationBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(-1*(60*60-1), 60*60-1)
+    a.durationBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(-1*(60*60*1000-1), 60*60*1000-1)
 
     # TODO: When a and b are different timezones, which do we use to count boundaries?
     # 1) a's timezone
