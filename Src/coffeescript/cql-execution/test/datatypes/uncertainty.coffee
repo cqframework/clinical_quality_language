@@ -24,6 +24,10 @@ describe 'Uncertainty', ->
     should(everything.low).be.null
     should(everything.high).be.null
 
+    differentTypes = new Uncertainty(1, "1")
+    differentTypes.low.should.eql 1
+    differentTypes.high.should.eql "1"
+
   it 'should swap low and high when constructed in wrong order', ->
     fiveToOne = new Uncertainty(5, 1)
     fiveToOne.low.should.equal 1
@@ -42,6 +46,7 @@ describe 'Uncertainty', ->
     new Uncertainty(null, 2).isPoint().should.be.false()
     new Uncertainty(1, 2).isPoint().should.be.false()
     new Uncertainty().isPoint().should.be.false()
+    new Uncertainty(1, "1").isPoint().should.be.false()
 
   it 'should properly calculate equality', ->
 
@@ -125,6 +130,7 @@ describe 'Uncertainty', ->
     new Uncertainty(1, 1).lessThan(new Uncertainty(2, 2)).should.be.true()
     new Uncertainty(1, 1).lessThan(new Uncertainty(2, 3)).should.be.true()
     new Uncertainty(1, 1).lessThan(new Uncertainty(2, null)).should.be.true()
+    should.not.exist new Uncertainty(1, "1").lessThan(new Uncertainty(2, null))
 
     # <=
     should.not.exist new Uncertainty(null, 1).lessThan(new Uncertainty(1, 1))
