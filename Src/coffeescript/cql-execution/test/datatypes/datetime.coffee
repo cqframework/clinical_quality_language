@@ -448,9 +448,7 @@ describe 'DateTime.differenceBetween', ->
     a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(0)
     a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(0)
 
-  # NOTE: Skipped for the purposes of Bonnie 11/1 release. Needs to be addressed
-  # afterwards.
-  it.skip 'should handle crossing DST in the spring', ->
+  it 'should handle crossing DST in the spring', ->
     # NOTE: Since we "spring ahead" the 2nd Sunday of March at 2:00am,
     # the difference between 1:00am EST and 3:00am EDT is only 1 hour!
     a = DateTime.parse '2017-03-12T01:00:00.0-05:00'
@@ -463,9 +461,7 @@ describe 'DateTime.differenceBetween', ->
     a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(60*60)
     a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(60*60*1000)
 
- # NOTE: Skipped for the purposes of Bonnie 11/1 release. Needs to be addressed
- # afterwards.
- it.skip 'should handle crossing DST in the fall', ->
+ it 'should handle crossing DST in the fall', ->
     # NOTE: Since we "fall back" the 1st Sunday of November at 2:00am,
     # the difference between 1:00am EDT and 3:00am EST is actually 3 hours!
     a = DateTime.parse '2017-11-05T01:00:00.0-04:00'
@@ -772,15 +768,17 @@ describe 'DateTime.durationBetween', ->
     a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(4935, 8534)
     a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(4934750,8534749)
 
+    # Because no timezone offset is passed in here, it uses the timezone offset of the local environment.
+    # It cannot be assumed that this date should have been on daylight savings time just by the month/day.
     a = DateTime.parse '2000-06-15T12:37:45.250'
     b = DateTime.parse '2009'
     a.differenceBetween(b, DateTime.Unit.YEAR).should.eql new Uncertainty(9)
     a.differenceBetween(b, DateTime.Unit.MONTH).should.eql new Uncertainty(103, 114)
     a.differenceBetween(b, DateTime.Unit.DAY).should.eql new Uncertainty(3122, 3486)
-    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(74917, 83676)
-    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(4494983, 5020582)
-    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(269698935, 301234934)
-    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(269698934750, 301234934749)
+    a.differenceBetween(b, DateTime.Unit.HOUR).should.eql new Uncertainty(74916, 83675)
+    a.differenceBetween(b, DateTime.Unit.MINUTE).should.eql new Uncertainty(4494923, 5020522)
+    a.differenceBetween(b, DateTime.Unit.SECOND).should.eql new Uncertainty(269695335, 301231334)
+    a.differenceBetween(b, DateTime.Unit.MILLISECOND).should.eql new Uncertainty(269695334750, 301231334749)
 
     a = DateTime.parse '2009-06-15T12:37:45'
     b = DateTime.parse '2009-06-15T12:37:45'

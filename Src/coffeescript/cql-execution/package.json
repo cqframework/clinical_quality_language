@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "istanbul": "^0.4.5",
+    "moment": "^2.20.1",
     "ucum": "0.0.7"
   },
   "main": "lib/cql",

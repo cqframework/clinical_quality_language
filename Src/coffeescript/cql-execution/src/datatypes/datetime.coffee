@@ -1,4 +1,5 @@
 { Uncertainty } = require './uncertainty'
+moment = require 'moment'
 
 module.exports.DateTime = class DateTime
   @Unit: { YEAR: 'year', MONTH: 'month', WEEK: 'week', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second', MILLISECOND: 'millisecond' }
@@ -161,22 +162,24 @@ module.exports.DateTime = class DateTime
     # Make copies since we'll be flooring values and mucking with timezones
     a = @copy()
     b = other.copy()
-    # The dates need to agree on where the boundaries are, so we must normalize to the same time zone
-    if a.timezoneOffset isnt b.timezoneOffset
-      b = b.convertToTimezoneOffset(a.timezoneOffset)
+    # Use moment.js for day or finer granularity due to the daylight savings time fall back/spring forward
+    if unitField == DateTime.Unit.MONTH || unitField == DateTime.Unit.YEAR
+      # The dates need to agree on where the boundaries are, so we must normalize to the same time zone
+      if a.timezoneOffset isnt b.timezoneOffset
+        b = b.convertToTimezoneOffset(a.timezoneOffset)
 
-    # JS always represents dates in the current locale, but in locales with DST, we want to account for the
-    # potential difference in offset from one date to the other.  We try to simulate them being in the same
-    # timezone, because we don't want midnight to roll back to 11:00pm since that will mess up day boundaries.
-    aJS = a.toJSDate(true)
-    bJS = b.toJSDate(true)
-    # Set tzDiff to zero if a and b are both UTC (UTC is not subject to DST)
-    tzDiff = if a.isUTC() && b.isUTC() then 0 else aJS.getTimezoneOffset() - bJS.getTimezoneOffset()
-    if (tzDiff != 0)
-      # Since we'll be doing duration later, account for timezone offset by adding to the time (if possible)
-      if b.year? and b.month? and b.day? and b.hour? and b.minute? then b = b.add(tzDiff, DateTime.Unit.MINUTE)
-      else if b.year? and b.month? and b.day? and b.hour? then b = b.add(tzDiff/60, DateTime.Unit.HOUR)
-      else b.timezoneOffset = b.timezoneOffset + (tzDiff/60)
+      # JS always represents dates in the current locale, but in locales with DST, we want to account for the
+      # potential difference in offset from one date to the other.  We try to simulate them being in the same
+      # timezone, because we don't want midnight to roll back to 11:00pm since that will mess up day boundaries.
+      aJS = a.toJSDate(true)
+      bJS = b.toJSDate(true)
+      # Set tzDiff to zero if a and b are both UTC (UTC is not subject to DST)
+      tzDiff = if a.isUTC() && b.isUTC() then 0 else aJS.getTimezoneOffset() - bJS.getTimezoneOffset()
+      if (tzDiff != 0)
+        # Since we'll be doing duration later, account for timezone offset by adding to the time (if possible)
+        if b.year? and b.month? and b.day? and b.hour? and b.minute? then b = b.add(tzDiff, DateTime.Unit.MINUTE)
+        else if b.year? and b.month? and b.day? and b.hour? then b = b.add(tzDiff/60, DateTime.Unit.HOUR)
+        else b.timezoneOffset = b.timezoneOffset + (tzDiff/60)
 
     # Now floor lesser precisions before we go on to calculate duration
     if unitField == DateTime.Unit.YEAR
@@ -201,7 +204,17 @@ module.exports.DateTime = class DateTime
       a = new DateTime(a.year, a.month, a.day, a.hour, a.minute, a.second, 0, a.timezoneOffset)
       b = new DateTime(b.year, b.month, b.day, b.hour, b.minute, b.second, 0, b.timezoneOffset)
 
-    a.durationBetween(b, unitField)
+    if unitField == DateTime.Unit.YEAR || unitField == DateTime.Unit.MONTH
+      a.durationBetween(b, unitField)
+    else
+      a = a.toUncertainty()
+      b = b.toUncertainty()
+      aLowMoment = moment(a.low).utc()
+      aHighMoment = moment(a.high).utc()
+      bLowMoment = moment(b.low).utc()
+      bHighMoment = moment(b.high).utc()
+      # moment uses the plural form of the unitField
+      new Uncertainty(bLowMoment.diff(aHighMoment, unitField + 's'), bHighMoment.diff(aLowMoment, unitField + 's'))
 
   _floorWeek: (d) ->
     # To "floor" a week, we need to go back to the last Sunday (that's when getDay() == 0 in javascript)
