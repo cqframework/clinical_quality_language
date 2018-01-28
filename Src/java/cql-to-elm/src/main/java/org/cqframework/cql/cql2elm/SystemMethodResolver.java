@@ -359,6 +359,13 @@ public class SystemMethodResolver {
                 }
             }
             case "first": return builder.resolveFunction(null, "First", getParams(target, ctx));
+            case "hasValue": {
+                List<Expression> params = getParams(target, ctx);
+                Expression isNull = builder.resolveFunction(null, "IsNull", params);
+                params = new ArrayList<>();
+                params.add(isNull);
+                return builder.resolveFunction(null, "Not", params);
+            }
             case "iif": {
                 Expression result = target;
                 List<Expression> params = null;
