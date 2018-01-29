@@ -202,6 +202,10 @@ module.exports['Concat'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -388,6 +392,10 @@ module.exports['Combine'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -492,6 +500,10 @@ module.exports['Split'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                },
                "separator" : {
@@ -516,6 +528,10 @@ module.exports['Split'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -686,6 +702,10 @@ module.exports['Upper'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -782,6 +802,10 @@ module.exports['Lower'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -917,6 +941,10 @@ module.exports['Indexer'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -1011,6 +1039,10 @@ module.exports['PositionOf'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                },
                "string" : {
@@ -1035,6 +1067,10 @@ module.exports['PositionOf'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1245,6 +1281,10 @@ module.exports['Substring'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                },
                "startIndex" : {
@@ -1269,6 +1309,10 @@ module.exports['Substring'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "type" : "NamedTypeSpecifier"
                   }
                }
             }

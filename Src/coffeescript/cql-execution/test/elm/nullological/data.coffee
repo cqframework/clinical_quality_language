@@ -242,12 +242,20 @@ module.exports['Coalesce'] = {
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
                   "type" : "As",
                   "operand" : {
                      "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -282,12 +290,20 @@ module.exports['Coalesce'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}String",
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
@@ -298,6 +314,10 @@ module.exports['Coalesce'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}String",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",

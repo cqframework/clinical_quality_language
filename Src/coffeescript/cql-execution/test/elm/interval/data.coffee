@@ -3497,6 +3497,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -3528,6 +3532,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -3556,6 +3564,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -3584,6 +3596,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -3615,6 +3631,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -3648,6 +3668,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -3676,6 +3700,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -3707,6 +3735,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -3735,6 +3767,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -3763,6 +3799,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -3789,6 +3829,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -3883,6 +3927,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -3977,6 +4025,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -4071,6 +4123,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -4165,6 +4221,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -4297,6 +4357,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -4391,6 +4455,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -4485,6 +4553,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -4579,6 +4651,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -4673,6 +4749,10 @@ module.exports['Contains'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -5939,6 +6019,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -5967,6 +6051,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -5995,6 +6083,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -6026,6 +6118,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -6054,6 +6150,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -6087,6 +6187,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -6118,6 +6222,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -6146,6 +6254,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -6174,6 +6286,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -6205,6 +6321,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -6261,6 +6381,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -6355,6 +6479,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -6449,6 +6577,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -6543,6 +6675,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -6637,6 +6773,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -6769,6 +6909,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -6863,6 +7007,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -6957,6 +7105,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -7051,6 +7203,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -7145,6 +7301,10 @@ module.exports['In'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -8884,6 +9044,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -8925,6 +9089,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -8963,6 +9131,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -9001,6 +9173,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -9042,6 +9218,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -9085,6 +9265,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -9123,6 +9307,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -9164,6 +9352,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -9202,6 +9394,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -9240,6 +9436,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -9276,6 +9476,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -9413,6 +9617,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -9550,6 +9758,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -9687,6 +9899,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -9824,6 +10040,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -9999,6 +10219,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -10136,6 +10360,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -10273,6 +10501,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -10410,6 +10642,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -10547,6 +10783,10 @@ module.exports['Includes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -11197,6 +11437,10 @@ module.exports['ProperlyIncludes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -11235,6 +11479,10 @@ module.exports['ProperlyIncludes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -11251,6 +11499,10 @@ module.exports['ProperlyIncludes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -11275,6 +11527,10 @@ module.exports['ProperlyIncludes'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -13639,6 +13895,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -13655,6 +13915,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -13679,6 +13943,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -13720,6 +13988,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -13736,6 +14008,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -13760,6 +14036,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -13801,6 +14081,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -13847,6 +14131,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -13866,6 +14154,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -13890,6 +14182,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -13931,6 +14227,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -13950,6 +14250,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -13974,6 +14278,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -14015,6 +14323,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -14048,6 +14360,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -14097,6 +14413,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -14154,6 +14474,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -14291,6 +14615,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -14340,6 +14668,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -14397,6 +14729,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -14534,6 +14870,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -14709,6 +15049,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -14758,6 +15102,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -14815,6 +15163,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -14952,6 +15304,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -15001,6 +15357,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -15058,6 +15418,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -15195,6 +15559,10 @@ module.exports['IncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -15878,6 +16246,10 @@ module.exports['ProperlyIncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -15927,6 +16299,10 @@ module.exports['ProperlyIncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -15984,6 +16360,10 @@ module.exports['ProperlyIncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -16121,6 +16501,10 @@ module.exports['ProperlyIncludedIn'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -18277,6 +18661,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -18318,6 +18706,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -18359,6 +18751,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -18402,6 +18798,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -18446,6 +18846,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -18487,6 +18891,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -18531,6 +18939,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -18567,6 +18979,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -18704,6 +19120,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -18841,6 +19261,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -19016,6 +19440,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -19153,6 +19581,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -19290,6 +19722,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -19427,6 +19863,10 @@ module.exports['After'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -20972,6 +21412,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -21010,6 +21454,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -21048,6 +21496,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -21086,6 +21538,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -21129,6 +21585,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -21167,6 +21627,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -21205,6 +21669,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -21241,6 +21709,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -21378,6 +21850,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -21515,6 +21991,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -21652,6 +22132,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -21827,6 +22311,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -21964,6 +22452,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -22101,6 +22593,10 @@ module.exports['Before'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -23786,6 +24282,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -23824,6 +24324,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -23876,6 +24380,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -23900,6 +24408,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -23938,6 +24450,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -23976,6 +24492,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -24028,6 +24548,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -24057,6 +24581,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -24095,6 +24623,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -24147,6 +24679,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -24171,6 +24707,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -24209,6 +24749,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -24247,6 +24791,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -24302,6 +24850,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -24321,6 +24873,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -24458,6 +25014,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -24675,6 +25235,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -24732,6 +25296,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -24869,6 +25437,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -25006,6 +25578,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -25223,6 +25799,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -25318,6 +25898,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -25455,6 +26039,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -25672,6 +26260,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -25729,6 +26321,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -25866,6 +26462,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -26003,6 +26603,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -26220,6 +26824,10 @@ module.exports['Meets'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -27825,6 +28433,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -27863,6 +28475,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -27915,6 +28531,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -27939,6 +28559,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -27977,6 +28601,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -28015,6 +28643,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -28067,6 +28699,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -28096,6 +28732,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -28134,6 +28774,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -28186,6 +28830,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -28210,6 +28858,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -28248,6 +28900,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -28286,6 +28942,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -28341,6 +29001,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -28360,6 +29024,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -28497,6 +29165,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -28714,6 +29386,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -28771,6 +29447,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -28908,6 +29588,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -29045,6 +29729,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -29262,6 +29950,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -29357,6 +30049,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -29494,6 +30190,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -29711,6 +30411,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -29768,6 +30472,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -29905,6 +30613,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -30042,6 +30754,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -30259,6 +30975,10 @@ module.exports['MeetsAfter'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -31864,6 +32584,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -31902,6 +32626,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -31954,6 +32682,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -31978,6 +32710,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -32016,6 +32752,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -32054,6 +32794,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -32106,6 +32850,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -32135,6 +32883,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -32173,6 +32925,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -32225,6 +32981,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -32249,6 +33009,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -32287,6 +33051,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -32325,6 +33093,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -32380,6 +33152,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -32399,6 +33175,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -32536,6 +33316,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -32753,6 +33537,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -32810,6 +33598,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -32947,6 +33739,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -33084,6 +33880,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -33301,6 +34101,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -33396,6 +34200,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -33533,6 +34341,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -33750,6 +34562,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -33807,6 +34623,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -33944,6 +34764,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -34081,6 +34905,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }, {
@@ -34298,6 +35126,10 @@ module.exports['MeetsBefore'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                } ]
@@ -35325,7 +36157,7 @@ module.exports['OverlapsDateTime'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
-               "type" : "Overlaps",
+               "type" : "OverlapsAfter",
                "operand" : [ {
                   "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
@@ -35417,7 +36249,7 @@ module.exports['OverlapsDateTime'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
-               "type" : "Overlaps",
+               "type" : "OverlapsAfter",
                "operand" : [ {
                   "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
@@ -35509,7 +36341,7 @@ module.exports['OverlapsDateTime'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
-               "type" : "Overlaps",
+               "type" : "OverlapsAfter",
                "operand" : [ {
                   "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
@@ -35601,7 +36433,7 @@ module.exports['OverlapsDateTime'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
-               "type" : "Overlaps",
+               "type" : "OverlapsAfter",
                "operand" : [ {
                   "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
@@ -35693,7 +36525,7 @@ module.exports['OverlapsDateTime'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
-               "type" : "Overlaps",
+               "type" : "OverlapsAfter",
                "operand" : [ {
                   "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
@@ -35785,7 +36617,7 @@ module.exports['OverlapsDateTime'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
-               "type" : "Overlaps",
+               "type" : "OverlapsAfter",
                "operand" : [ {
                   "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
@@ -35827,7 +36659,7 @@ module.exports['OverlapsDateTime'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
-               "type" : "Overlaps",
+               "type" : "OverlapsAfter",
                "operand" : [ {
                   "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
@@ -35869,7 +36701,7 @@ module.exports['OverlapsDateTime'] = {
             "accessLevel" : "Public",
             "expression" : {
                "precision" : "Day",
-               "type" : "Overlaps",
+               "type" : "OverlapsAfter",
                "operand" : [ {
                   "name" : "PrecisionDateIvl",
                   "type" : "ExpressionRef"
@@ -39259,6 +40091,10 @@ module.exports['Width'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }
@@ -39278,6 +40114,10 @@ module.exports['Width'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
@@ -39307,6 +40147,10 @@ module.exports['Width'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   }
                }
@@ -39326,6 +40170,10 @@ module.exports['Width'] = {
                      "type" : "As",
                      "operand" : {
                         "type" : "Null"
+                     },
+                     "asTypeSpecifier" : {
+                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                        "type" : "NamedTypeSpecifier"
                      }
                   },
                   "high" : {
