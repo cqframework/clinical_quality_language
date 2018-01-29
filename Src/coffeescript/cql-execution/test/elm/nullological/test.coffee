@@ -25,7 +25,7 @@ describe 'IsNull', ->
   it 'should detect that non-null variable is not null', ->
     @nonNullVarIsNull.exec(@ctx).should.be.false()
 
-describe.skip 'Coalesce', ->
+describe 'Coalesce', ->
   @beforeEach ->
     setup @, data
 
