@@ -184,7 +184,7 @@ describe 'QuantityParameterTypes', ->
     should(() => @foo.exec(@ctx.withParameters { FooP: q })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
-    @foo2.exec(@ctx).should.eql new Quantity({value: 10, unit: "dL"})
+    @foo2.exec(@ctx).should.eql new Quantity({localId: '4', value: 10, unit: "dL"})
 
   it 'should execute to overriding valid value', ->
     q = new Quantity({value: 5, unit: "mg"})
