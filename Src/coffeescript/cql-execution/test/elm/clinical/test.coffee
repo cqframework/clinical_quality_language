@@ -175,6 +175,7 @@ describe 'CalculateAge', ->
     # what is returned will depend on whether the day in the current month has
     # made it to the 17th day of the month as declared in the birthday
     dayOfMonth = @today
+    # Test executing on each day of the month (up to 28 for simplicity).
     for i in [1 .. 28]
       dayOfMonth.setDate(i)
       month_offset = if dayOfMonth.getMonth() == 5 && dayOfMonth.getDate() < 17 then 6 else 5

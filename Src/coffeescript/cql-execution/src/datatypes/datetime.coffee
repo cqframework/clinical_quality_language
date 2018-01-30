@@ -204,15 +204,17 @@ module.exports.DateTime = class DateTime
       a = new DateTime(a.year, a.month, a.day, a.hour, a.minute, a.second, 0, a.timezoneOffset)
       b = new DateTime(b.year, b.month, b.day, b.hour, b.minute, b.second, 0, b.timezoneOffset)
 
+    # Because moment.js handles years and months differently, use the existing durationBetween for those
+    # Finer granularity times can be handled by the DST-aware moment.js library.
     if unitField == DateTime.Unit.YEAR || unitField == DateTime.Unit.MONTH
       a.durationBetween(b, unitField)
     else
-      a = a.toUncertainty()
-      b = b.toUncertainty()
-      aLowMoment = moment(a.low).utc()
-      aHighMoment = moment(a.high).utc()
-      bLowMoment = moment(b.low).utc()
-      bHighMoment = moment(b.high).utc()
+      aUncertainty = a.toUncertainty()
+      bUncertainty = b.toUncertainty()
+      aLowMoment = moment(aUncertainty.low).utc()
+      aHighMoment = moment(aUncertainty.high).utc()
+      bLowMoment = moment(bUncertainty.low).utc()
+      bHighMoment = moment(bUncertainty.high).utc()
       # moment uses the plural form of the unitField
       new Uncertainty(bLowMoment.diff(aHighMoment, unitField + 's'), bHighMoment.diff(aLowMoment, unitField + 's'))
 
