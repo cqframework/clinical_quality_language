@@ -4776,22 +4776,19 @@
     }
 
     Coalesce.prototype.exec = function(ctx) {
-      var arg, i, item, j, len, len1, list, ref, ref1, result;
+      var arg, i, item, j, len, len1, ref, result;
       ref = this.args;
       for (i = 0, len = ref.length; i < len; i++) {
         arg = ref[i];
-        if (this.args.length === 1 && ((ref1 = this.args[0].constructor.name) === 'List' || ref1 === 'ExpressionRef')) {
-          list = arg.execute(ctx);
-          if (list != null) {
-            for (j = 0, len1 = list.length; j < len1; j++) {
-              item = list[j];
-              if (item != null) {
-                return item;
-              }
+        result = arg.execute(ctx);
+        if (this.args.length === 1 && Array.isArray(result)) {
+          for (j = 0, len1 = result.length; j < len1; j++) {
+            item = result[j];
+            if (item != null) {
+              return item;
             }
           }
         } else {
-          result = arg.execute(ctx);
           if (result != null) {
             return result;
           }
