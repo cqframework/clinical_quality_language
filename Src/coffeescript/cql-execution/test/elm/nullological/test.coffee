@@ -42,7 +42,13 @@ describe 'Coalesce', ->
     @listArgStartsWithNull.exec(@ctx).should.equal 'One'
 
   it 'should return null for all-null array', ->
-    should.not.exist(@listArgAllNull.exec(@ctx))
+    should(@listArgAllNull.exec(@ctx)).be.null
 
   it 'should be able to handle ExpressionRef with list', ->
     @listExpressionRef.exec(@ctx).should.equal 'One'
+
+  it 'should be able to handle Retrieve as list', ->
+    should(@retrieveAsList.exec(@ctx)).be.null
+
+  it 'should be able to handle Union as list', ->
+    @unionAsList.exec(@ctx).should.equal 3

@@ -294,6 +294,9 @@ define ListArgStartsWithNull: Coalesce(List{null, null, 'One', null, 'Two'})
 define ListArgAllNull: Coalesce(List{null, null, null, null})
 define ListWithNull: List{null, null, 'One', null, 'Two'}
 define ListExpressionRef: Coalesce(ListWithNull)
+define RetrieveAsList: Coalesce([Encounter])
+define ListA: List{null, null, 3}
+define UnionAsList: Coalesce(ListA union ListWithNull)
 ###
 
 module.exports['Coalesce'] = {
@@ -741,6 +744,178 @@ module.exports['Coalesce'] = {
                   "localId" : "42",
                   "name" : "ListWithNull",
                   "type" : "ExpressionRef"
+               } ]
+            }
+         }, {
+            "localId" : "47",
+            "name" : "RetrieveAsList",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "47",
+                  "s" : [ {
+                     "value" : [ "define ","RetrieveAsList",": " ]
+                  }, {
+                     "r" : "46",
+                     "s" : [ {
+                        "value" : [ "Coalesce","(" ]
+                     }, {
+                        "r" : "45",
+                        "s" : [ {
+                           "value" : [ "[","Encounter","]" ]
+                        } ]
+                     }, {
+                        "value" : [ ")" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "46",
+               "type" : "Coalesce",
+               "operand" : [ {
+                  "localId" : "45",
+                  "dataType" : "{http://hl7.org/fhir}Encounter",
+                  "templateId" : "encounter-qicore-qicore-encounter",
+                  "type" : "Retrieve"
+               } ]
+            }
+         }, {
+            "localId" : "52",
+            "name" : "ListA",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "52",
+                  "s" : [ {
+                     "value" : [ "define ","ListA",": " ]
+                  }, {
+                     "r" : "51",
+                     "s" : [ {
+                        "value" : [ "List{","null",", ","null",", ","3","}" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "51",
+               "type" : "List",
+               "element" : [ {
+                  "asType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "localId" : "48",
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "type" : "As",
+                  "operand" : {
+                     "localId" : "49",
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "localId" : "50",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "3",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "localId" : "57",
+            "name" : "UnionAsList",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "57",
+                  "s" : [ {
+                     "value" : [ "define ","UnionAsList",": " ]
+                  }, {
+                     "r" : "56",
+                     "s" : [ {
+                        "value" : [ "Coalesce","(" ]
+                     }, {
+                        "r" : "55",
+                        "s" : [ {
+                           "r" : "53",
+                           "s" : [ {
+                              "value" : [ "ListA" ]
+                           } ]
+                        }, {
+                           "value" : [ " union " ]
+                        }, {
+                           "r" : "54",
+                           "s" : [ {
+                              "value" : [ "ListWithNull" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ ")" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "56",
+               "type" : "Coalesce",
+               "operand" : [ {
+                  "localId" : "55",
+                  "type" : "Union",
+                  "operand" : [ {
+                     "type" : "As",
+                     "operand" : {
+                        "localId" : "53",
+                        "name" : "ListA",
+                        "type" : "ExpressionRef"
+                     },
+                     "asTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "type" : "ChoiceTypeSpecifier",
+                           "type" : [ {
+                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:hl7-org:elm-types:r1}String",
+                              "type" : "NamedTypeSpecifier"
+                           } ]
+                        }
+                     }
+                  }, {
+                     "type" : "As",
+                     "operand" : {
+                        "localId" : "54",
+                        "name" : "ListWithNull",
+                        "type" : "ExpressionRef"
+                     },
+                     "asTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "type" : "ChoiceTypeSpecifier",
+                           "type" : [ {
+                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:hl7-org:elm-types:r1}String",
+                              "type" : "NamedTypeSpecifier"
+                           } ]
+                        }
+                     }
+                  } ]
                } ]
             }
          } ]
