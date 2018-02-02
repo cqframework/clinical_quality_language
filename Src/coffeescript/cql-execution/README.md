@@ -14,46 +14,90 @@ To use this project, you should perform the following steps:
 2. Install [CoffeeScript](http://coffeescript.org/)
 3. Execute the following from the _cql-execution_ directory: `npm install`
 
-# To Execute a Measure
+# To Execute Your CQL
 
-Please note that the CQL Execution Framework has very limited support right now.  It will not
-execute most measures.  You should check to see what is implemented before expecting it to work!
+Please note that while the CQL Execution Framework supports many aspects of CQL, it does not support
+everything in the CQL specification.  You should check to see what is implemented before expecting it to work!
 For a working example, see `src/example`.
 
-Once the project is complete, it will be packaged in a way that makes execution easier.  For now,
-there are some manual steps involved.  First, you must create a JSON representation of the ELM.
+There are several steps involved to execture CQL.  First, you must create a JSON representation of the ELM.
 For easiest integration, we will generate a coffee file using cql-to-elm:
 
-1. Install the [Java 7 SDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
+1. Install the [Java 8 SDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 2. `cd ${branch}/Src/java` (replacing `${branch}` with the path to your git branch)
 3. `./gradlew :cql-to-elm:installDist`
-4. `./cql-to-elm/build/install/cql-to-elm/bin/cql-to-elm --format=coffee --input ${path_to_cql} --output ${branch}/Src/coffeescript/cql-execution/src/`
+4. `./cql-to-elm/build/install/cql-to-elm/bin/cql-to-elm --format=COFFEE --input ${path_to_cql} --output ${branch}/Src/coffeescript/cql-execution/src/`
 
-The above example put the measure into the coffeescript src directory to make things easy, but it
+The above example put the example CQL into the coffeescript src directory to make things easy, but it
 doesn't _have_ to go there.  If you put it elsewhere, you'll need to compile it to javascript and
 modify the examples below with the new path (where applicable).
 
+In the rest of the examples, we'll assume an `age.cql` file with the following contents (but of course you can use
+your own CQL):
+
+```
+library AgeAtMP version '1'
+
+using QUICK
+
+parameter MeasurementPeriod default Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), DateTime(2014, 1, 1, 0, 0, 0, 0))
+
+context Patient
+
+define InDemographic:
+    AgeInYearsAt(start of MeasurementPeriod) >= 2 and AgeInYearsAt(start of MeasurementPeriod) < 18
+```
+
 Next, create a coffeescript file to execute the measure.  This file will need to contain (or
-`require`) JSON patient representations for testing as well.  For ease of use, let's put the file
+`require`) JSON patient representations for testing as well.  Since our example CQL uses the QUICK
+data model, each patient is represented using a FHIR bundle.  For ease of use, let's put the file
 in the `coffeescript/cql-execution/src` directory:
 
 ```coffee
-cql = require './cql/cql'
+cql = require './cql'
 measure = require './age'
 
 lib = new cql.Library(measure)
 executor = new cql.Executor(lib)
 psource = new cql.PatientSource [ {
-  "identifier": { "value": "1" },
-  "name": "John Smith",
-  "gender": "M",
-  "birthDate" : "1980-02-17T06:15",
-}, {
-  "identifier": { "value": "2" },
-  "name": "Sally Smith",
-  "gender": "F",
-  "birthDate" : "2007-08-02T11:47",
-} ]
+    "resourceType": "Bundle",
+    "id": "example1",
+    "meta": {
+      "versionId": "1",
+      "lastUpdated": "2014-08-18T01:43:30Z"
+    },
+    "base": "http://example.com/base",
+    "entry" : [{
+        "resource": {
+        "id" : "1",
+        "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
+        "resourceType" : "Patient",
+        "identifier": [{ "value": "1" }],
+        "name": {"given":["John"], "family": ["Smith"]},
+        "gender": "M",
+        "birthDate" : "1980-02-17T06:15"}
+        }
+    ]
+  }, {
+    "resourceType": "Bundle",
+    "id": "example1",
+    "meta": {
+      "versionId": "1",
+      "lastUpdated": "2014-08-18T01:43:30Z"
+    },
+    "base": "http://example.com/base",
+    "entry" : [{
+        "resource": {
+        "id" : "2",
+        "meta" :{ "profile" : ["patient-qicore-qicore-patient"]},
+        "resourceType" : "Patient",
+        "identifier": [{ "value": "2" }],
+        "name": {"given":["Sally"], "family": ["Smith"]},
+        "gender": "F",
+        "birthDate" : "2007-08-02T11:47"}
+        }
+    ]
+  } ]
 
 
 result = executor.exec(psource)
@@ -61,9 +105,9 @@ console.log JSON.stringify(result, undefined, 2)
 ```
 
 In the above file, we've assumed the JSON ELM coffeescript file for the measure is called
-`my-measure.coffeescript` and is in the same directory as the file (and `cql` library).  We've
+`age.coffee` and is in the same directory as the file (and `cql` library).  We've
 also assumed a couple of very simple patients.  Let's call the file we just created
-`my-measure-exec.coffeescript`.
+`age-exec.coffee`.
 
 Now we must compile it to javascript in the `${branch}/Src/coffeescript/cql-execution/lib`
 directory.  There is a simple Cakefile build script for this (cake is installed with coffeescript):
@@ -74,7 +118,7 @@ directory.  There is a simple Cakefile build script for this (cake is installed 
 Now we can execute the measure using Node.js:
 
 1. `cd ${build}/Src/coffeescript/cql-execution/lib`
-2. `node my-measure-exec`
+2. `node age-exec`
 
 If all is well, it should print the result object to standard out.
 
