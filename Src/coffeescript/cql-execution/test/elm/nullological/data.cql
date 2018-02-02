@@ -14,3 +14,6 @@ define NullNullHelloNullWorld: Coalesce(null, null, 'Hello', null, 'World')
 define FooNullNullBar: Coalesce('Foo', null, null, 'Bar')
 define AllNull: Coalesce(null, null, null)
 define ListArgStartsWithNull: Coalesce(List{null, null, 'One', null, 'Two'})
+define ListArgAllNull: Coalesce(List{null, null, null, null})
+define ListWithNull: List{null, null, 'One', null, 'Two'}
+define ListExpressionRef: Coalesce(ListWithNull)

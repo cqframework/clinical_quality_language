@@ -291,6 +291,9 @@ define NullNullHelloNullWorld: Coalesce(null, null, 'Hello', null, 'World')
 define FooNullNullBar: Coalesce('Foo', null, null, 'Bar')
 define AllNull: Coalesce(null, null, null)
 define ListArgStartsWithNull: Coalesce(List{null, null, 'One', null, 'Two'})
+define ListArgAllNull: Coalesce(List{null, null, null, null})
+define ListWithNull: List{null, null, 'One', null, 'Two'}
+define ListExpressionRef: Coalesce(ListWithNull)
 ###
 
 module.exports['Coalesce'] = {
@@ -575,6 +578,169 @@ module.exports['Coalesce'] = {
                      "value" : "Two",
                      "type" : "Literal"
                   } ]
+               } ]
+            }
+         }, {
+            "localId" : "34",
+            "name" : "ListArgAllNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "34",
+                  "s" : [ {
+                     "value" : [ "define ","ListArgAllNull",": " ]
+                  }, {
+                     "r" : "33",
+                     "s" : [ {
+                        "value" : [ "Coalesce","(" ]
+                     }, {
+                        "r" : "32",
+                        "s" : [ {
+                           "value" : [ "List{","null",", ","null",", ","null",", ","null","}" ]
+                        } ]
+                     }, {
+                        "value" : [ ")" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "33",
+               "type" : "Coalesce",
+               "operand" : [ {
+                  "localId" : "32",
+                  "type" : "List",
+                  "element" : [ {
+                     "localId" : "28",
+                     "type" : "Null"
+                  }, {
+                     "localId" : "29",
+                     "type" : "Null"
+                  }, {
+                     "localId" : "30",
+                     "type" : "Null"
+                  }, {
+                     "localId" : "31",
+                     "type" : "Null"
+                  } ]
+               } ]
+            }
+         }, {
+            "localId" : "41",
+            "name" : "ListWithNull",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "41",
+                  "s" : [ {
+                     "value" : [ "define ","ListWithNull",": " ]
+                  }, {
+                     "r" : "40",
+                     "s" : [ {
+                        "value" : [ "List{","null",", ","null",", " ]
+                     }, {
+                        "r" : "37",
+                        "s" : [ {
+                           "value" : [ "'One'" ]
+                        } ]
+                     }, {
+                        "value" : [ ", ","null",", " ]
+                     }, {
+                        "r" : "39",
+                        "s" : [ {
+                           "value" : [ "'Two'" ]
+                        } ]
+                     }, {
+                        "value" : [ "}" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "40",
+               "type" : "List",
+               "element" : [ {
+                  "asType" : "{urn:hl7-org:elm-types:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "localId" : "35",
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "asType" : "{urn:hl7-org:elm-types:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "localId" : "36",
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "localId" : "37",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                  "value" : "One",
+                  "type" : "Literal"
+               }, {
+                  "asType" : "{urn:hl7-org:elm-types:r1}String",
+                  "type" : "As",
+                  "operand" : {
+                     "localId" : "38",
+                     "type" : "Null"
+                  },
+                  "asTypeSpecifier" : {
+                     "name" : "{urn:hl7-org:elm-types:r1}String",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }, {
+                  "localId" : "39",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                  "value" : "Two",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "localId" : "44",
+            "name" : "ListExpressionRef",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "44",
+                  "s" : [ {
+                     "value" : [ "define ","ListExpressionRef",": " ]
+                  }, {
+                     "r" : "43",
+                     "s" : [ {
+                        "value" : [ "Coalesce","(" ]
+                     }, {
+                        "r" : "42",
+                        "s" : [ {
+                           "value" : [ "ListWithNull" ]
+                        } ]
+                     }, {
+                        "value" : [ ")" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "43",
+               "type" : "Coalesce",
+               "operand" : [ {
+                  "localId" : "42",
+                  "name" : "ListWithNull",
+                  "type" : "ExpressionRef"
                } ]
             }
          } ]

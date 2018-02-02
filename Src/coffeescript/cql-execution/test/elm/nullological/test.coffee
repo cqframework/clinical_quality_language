@@ -40,3 +40,9 @@ describe 'Coalesce', ->
 
   it 'should return first non-null in array', ->
     @listArgStartsWithNull.exec(@ctx).should.equal 'One'
+
+  it 'should return null for all-null array', ->
+    should.not.exist(@listArgAllNull.exec(@ctx))
+
+  it 'should be able to handle ExpressionRef with list', ->
+    @listExpressionRef.exec(@ctx).should.equal 'One'
