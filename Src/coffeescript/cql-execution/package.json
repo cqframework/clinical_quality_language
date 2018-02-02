@@ -40,7 +40,6 @@
     "should": "^11.2.1"
   },
   "dependencies": {
-    "istanbul": "^0.4.5",
     "moment": "^2.20.1",
     "ucum": "0.0.7"
   },
