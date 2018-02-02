@@ -7,6 +7,8 @@ module.exports.Uncertainty = class Uncertainty
   constructor: (@low = null, @high) ->
     gt = (a, b) -> 
       if typeof a != typeof b
+        # TODO: This should probably throw rather than return false.
+        # Uncertainties with different types probably shouldn't be supported.
         return false
       if typeof a.after is 'function' then a.after b else a > b
     if typeof @high is 'undefined' then @high = @low
