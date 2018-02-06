@@ -21,5 +21,10 @@ module.exports.Coalesce = class Coalesce extends Expression
   exec: (ctx) ->
     for arg in @args
       result = arg.execute(ctx)
-      if result? then return result
+      # if a single arg that's a list, coalesce over the list
+      if @args.length == 1 && Array.isArray(result)
+        for item in result
+          if item? then return item
+      else
+        if result? then return result
     null

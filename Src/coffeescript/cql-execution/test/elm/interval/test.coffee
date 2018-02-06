@@ -33,7 +33,7 @@ describe 'Interval', ->
     @closed.high.exec(@ctx).should.eql new DateTime(2013, 1, 1)
 
   it 'should exec to native Interval datatype', ->
-    ivl = @open.exec(@cql)
+    ivl = @open.exec(@ctx)
     ivl.should.be.instanceOf Interval
     ivl.lowClosed.should.equal @open.lowClosed
     ivl.highClosed.should.equal @open.highClosed

@@ -34,6 +34,7 @@ module.exports['Literal'] = {
             "localIdentifier" : "System",
             "uri" : "urn:hl7-org:elm-types:r1"
          }, {
+            "localId" : "1",
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
          } ]
@@ -51,55 +52,126 @@ module.exports['Literal'] = {
                }
             }
          }, {
+            "localId" : "3",
             "name" : "BoolTrue",
             "context" : "Patient",
             "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "3",
+                  "s" : [ {
+                     "value" : [ "define ","BoolTrue",": ","true" ]
+                  } ]
+               }
+            } ],
             "expression" : {
+               "localId" : "2",
                "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                "value" : "true",
                "type" : "Literal"
             }
          }, {
+            "localId" : "5",
             "name" : "BoolFalse",
             "context" : "Patient",
             "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "5",
+                  "s" : [ {
+                     "value" : [ "define ","BoolFalse",": ","false" ]
+                  } ]
+               }
+            } ],
             "expression" : {
+               "localId" : "4",
                "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                "value" : "false",
                "type" : "Literal"
             }
          }, {
+            "localId" : "7",
             "name" : "IntOne",
             "context" : "Patient",
             "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "7",
+                  "s" : [ {
+                     "value" : [ "define ","IntOne",": ","1" ]
+                  } ]
+               }
+            } ],
             "expression" : {
+               "localId" : "6",
                "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                "value" : "1",
                "type" : "Literal"
             }
          }, {
+            "localId" : "9",
             "name" : "DecimalTenth",
             "context" : "Patient",
             "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "9",
+                  "s" : [ {
+                     "value" : [ "define ","DecimalTenth",": ","0.1" ]
+                  } ]
+               }
+            } ],
             "expression" : {
+               "localId" : "8",
                "valueType" : "{urn:hl7-org:elm-types:r1}Decimal",
                "value" : "0.1",
                "type" : "Literal"
             }
          }, {
+            "localId" : "11",
             "name" : "StringTrue",
             "context" : "Patient",
             "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "11",
+                  "s" : [ {
+                     "value" : [ "define ","StringTrue",": " ]
+                  }, {
+                     "r" : "10",
+                     "s" : [ {
+                        "value" : [ "'true'" ]
+                     } ]
+                  } ]
+               }
+            } ],
             "expression" : {
+               "localId" : "10",
                "valueType" : "{urn:hl7-org:elm-types:r1}String",
                "value" : "true",
                "type" : "Literal"
             }
          }, {
+            "localId" : "13",
             "name" : "DateTimeX",
             "context" : "Patient",
             "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "13",
+                  "s" : [ {
+                     "value" : [ "define ","DateTimeX",": ","@2012-02-15T12:10:59.456Z" ]
+                  } ]
+               }
+            } ],
             "expression" : {
+               "localId" : "12",
                "type" : "DateTime",
                "year" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -143,10 +215,21 @@ module.exports['Literal'] = {
                }
             }
          }, {
+            "localId" : "15",
             "name" : "TimeX",
             "context" : "Patient",
             "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "15",
+                  "s" : [ {
+                     "value" : [ "define ","TimeX",": ","@T12:10:59.456Z" ]
+                  } ]
+               }
+            } ],
             "expression" : {
+               "localId" : "14",
                "type" : "Time",
                "hour" : {
                   "valueType" : "{urn:hl7-org:elm-types:r1}Integer",

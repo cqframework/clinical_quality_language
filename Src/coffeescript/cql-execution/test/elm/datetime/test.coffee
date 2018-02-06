@@ -668,15 +668,12 @@ describe 'DifferenceBetween', ->
   it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
     @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new Uncertainty(-2678399999, 0)
 
-  # NOTE: Skipped for the purposes of Bonnie 11/1 release. Needs to be addressed
-  # afterwards.
-  it.skip 'should properly execute hours between when springing ahead for DST', ->
+  it 'should properly execute hours between when springing ahead for DST', ->
     @hoursBetween1and3CrossingSpringDST.exec(@ctx).should.equal 1
 
-  # NOTE: Skipped for the purposes of Bonnie 11/1 release. Needs to be addressed
-  # afterwards.
-  it.skip 'should properly execute hours between when falling back for DST', ->
+  it 'should properly execute hours between when falling back for DST', ->
     @hoursBetween1and3CrossingFallDST.exec(@ctx).should.equal 3
+
 
 describe 'DifferenceBetween Comparisons', ->
   @beforeEach ->
