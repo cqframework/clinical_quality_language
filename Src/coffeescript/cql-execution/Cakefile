@@ -66,8 +66,8 @@ task "test", "run tests", ->
   exec "NODE_ENV=test
     ./node_modules/.bin/nyc --reporter=html
     ./node_modules/.bin/mocha
-    --compilers coffee:coffee-script/register
-    --require coffee-script
+    --compilers coffee:coffeescript/register
+    --require coffeescript
     --recursive
     --colors
   ", {maxBuffer: 2048 * 1024 }, (err, output) ->

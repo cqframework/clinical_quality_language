@@ -27,9 +27,9 @@
         "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
         "args": [
             "--compilers",
-            "coffee:coffee-script/register",
+            "coffee:coffeescript/register",
             "--require",
-            "coffee-script",
+            "coffeescript",
             "--recursive",
             "--colors",
             "${workspaceRoot}/test"
@@ -49,4 +49,4 @@
 }
 
 
-// NODE_ENV=test ./node_modules/.bin/mocha --compilers coffee:coffee-script/register --require coffee-script --recursive --colors test/datatypes/datetime.coffee
+// NODE_ENV=test ./node_modules/.bin/mocha --compilers coffee:coffeescript/register --require coffeescript --recursive --colors test/datatypes/datetime.coffee

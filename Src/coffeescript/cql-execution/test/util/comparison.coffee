@@ -51,7 +51,8 @@ describe 'equals', ->
 
     equals(new Foo('abc', [1,2,3]), new Foo('abc', [1,2,3])).should.be.true()
     equals(new Foo('abc', [1,2,3]), new Foo('abcd', [1,2,3])).should.be.false()
-    equals(new Foo('abc', new Bar('xyz')), new Foo('abc', new Bar('xyz'))).should.be.true()
+    equals(new Foo('abc', new Bar('xyz', [1,2,3])), new Foo('abc', new Bar('xyz', [1,2,3]))).should.be.true()
+    equals(new Foo('abc', new Bar('xyz')), new Foo('abc', new Bar('xyz'))).should.be.false() # because Bar is missing components
     equals(new Foo('abc', new Bar('xyz')), new Foo('abc', new Bar('xyz',999))).should.be.false()
     equals(new Foo('abc', [1,2,3]), new Bar('abc', [1,2,3])).should.be.false()
     equals(new Bar('abc', [1,2,3]), new Foo('abc', [1,2,3])).should.be.false()
@@ -87,17 +88,17 @@ describe 'equals', ->
     equals([['a','b','c'],[1,2,3]], [['a','b','c'],[1,2,3,4]]).should.be.false()
 
   it 'should handle null values', ->
-    equals(null, null).should.be.true()
-    equals(null, 0).should.be.false()
-    equals(0, null).should.be.false()
-    equals(null, 'null').should.be.false()
-    equals('null', null).should.be.false()
-    equals(null, {}).should.be.false()
-    equals({}, null).should.be.false()
-    equals(null, [null]).should.be.false()
-    equals([null], null).should.be.false()
-    equals(null, {}.undef).should.be.false()
-    equals({}.undef, null).should.be.false()
+    should.not.exist(equals(null, null))
+    should.not.exist(equals(null, 0))
+    should.not.exist(equals(0, null))
+    should.not.exist(equals(null, 'null'))
+    should.not.exist(equals('null', null))
+    should.not.exist(equals(null, {}))
+    should.not.exist(equals({}, null))
+    should.not.exist(equals(null, [null]))
+    should.not.exist(equals([null], null))
+    should.not.exist(equals(null, {}.undef))
+    should.not.exist(equals({}.undef, null))
 
 describe 'equivalent', ->
   it 'should detect equivalent and non-equivalent codes', ->

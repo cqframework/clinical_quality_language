@@ -129,7 +129,7 @@ describe 'ConceptDef', ->
   it 'should execute to a Concept datatype', ->
     conceptDef = @lib.getConcept('Tobacco smoking status')
     concept = conceptDef.exec(@ctx)
-    concept.text.should.equal('Tobacco smoking status')
+    concept.display.should.equal('Tobacco smoking status')
     concept.codes.should.have.length(1)
     concept.codes[0].code.should.equal('72166-2')
     concept.codes[0].system.should.equal('http://loinc.org')
@@ -145,7 +145,7 @@ describe 'ConceptRef', ->
 
   it 'should execute to the defined concept', ->
     concept = @foo.exec(@ctx)
-    concept.text.should.equal('Tobacco smoking status')
+    concept.display.should.equal('Tobacco smoking status')
     concept.codes.should.have.length(1)
     concept.codes[0].code.should.equal('72166-2')
     concept.codes[0].system.should.equal('http://loinc.org')

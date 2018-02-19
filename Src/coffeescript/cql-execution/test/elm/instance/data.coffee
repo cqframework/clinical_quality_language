@@ -2,7 +2,7 @@
    WARNING: This is a GENERATED file.  Do not manually edit!
 
    To generate this file:
-       - Edit data.coffee to add a CQL Snippet
+       - Edit data.cql to add a CQL Snippet
        - From java dir: ./gradlew :cql-to-elm:generateTestData
 ###
 
@@ -10,9 +10,21 @@
 library TestSnippet version '1'
 using QUICK
 context Patient
-define Quantity: Quantity {
+define QuantityA: Quantity {
   unit: 'a',
   value: 12
+}
+
+define CodeA: Code {
+  system: 'http://loinc.org',
+  code: '12345',
+  version: '1',
+  display: 'Test Code'
+}
+
+define ConceptA: Concept {
+  codes: { CodeA },
+  display: 'Test Concept'
 }
 
 define Med : Medication {
@@ -20,7 +32,7 @@ define Med : Medication {
   isBrand: false
 }
 
-define val: Quantity.value
+define val: QuantityA.value
 ###
 
 module.exports['Instance'] = {
@@ -57,7 +69,7 @@ module.exports['Instance'] = {
             }
          }, {
             "localId" : "5",
-            "name" : "Quantity",
+            "name" : "QuantityA",
             "context" : "Patient",
             "accessLevel" : "Public",
             "annotation" : [ {
@@ -65,7 +77,7 @@ module.exports['Instance'] = {
                "s" : {
                   "r" : "5",
                   "s" : [ {
-                     "value" : [ "define ","Quantity",": " ]
+                     "value" : [ "define ","QuantityA",": " ]
                   }, {
                      "r" : "4",
                      "s" : [ {
@@ -117,25 +129,199 @@ module.exports['Instance'] = {
                } ]
             }
          }, {
-            "localId" : "9",
+            "localId" : "11",
+            "name" : "CodeA",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "11",
+                  "s" : [ {
+                     "value" : [ "define ","CodeA",": " ]
+                  }, {
+                     "r" : "10",
+                     "s" : [ {
+                        "value" : [ "Code"," {\n  " ]
+                     }, {
+                        "s" : [ {
+                           "value" : [ "system",": " ]
+                        }, {
+                           "r" : "6",
+                           "s" : [ {
+                              "value" : [ "'http://loinc.org'" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ ",\n  " ]
+                     }, {
+                        "s" : [ {
+                           "value" : [ "code",": " ]
+                        }, {
+                           "r" : "7",
+                           "s" : [ {
+                              "value" : [ "'12345'" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ ",\n  " ]
+                     }, {
+                        "s" : [ {
+                           "value" : [ "version",": " ]
+                        }, {
+                           "r" : "8",
+                           "s" : [ {
+                              "value" : [ "'1'" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ ",\n  " ]
+                     }, {
+                        "s" : [ {
+                           "value" : [ "display",": " ]
+                        }, {
+                           "r" : "9",
+                           "s" : [ {
+                              "value" : [ "'Test Code'" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\n}" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "10",
+               "classType" : "{urn:hl7-org:elm-types:r1}Code",
+               "type" : "Instance",
+               "element" : [ {
+                  "name" : "system",
+                  "value" : {
+                     "localId" : "6",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "http://loinc.org",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "code",
+                  "value" : {
+                     "localId" : "7",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "12345",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "version",
+                  "value" : {
+                     "localId" : "8",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "1",
+                     "type" : "Literal"
+                  }
+               }, {
+                  "name" : "display",
+                  "value" : {
+                     "localId" : "9",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "Test Code",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "localId" : "16",
+            "name" : "ConceptA",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "16",
+                  "s" : [ {
+                     "value" : [ "define ","ConceptA",": " ]
+                  }, {
+                     "r" : "15",
+                     "s" : [ {
+                        "value" : [ "Concept"," {\n  " ]
+                     }, {
+                        "s" : [ {
+                           "value" : [ "codes",": " ]
+                        }, {
+                           "r" : "13",
+                           "s" : [ {
+                              "value" : [ "{ " ]
+                           }, {
+                              "r" : "12",
+                              "s" : [ {
+                                 "value" : [ "CodeA" ]
+                              } ]
+                           }, {
+                              "value" : [ " }" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ ",\n  " ]
+                     }, {
+                        "s" : [ {
+                           "value" : [ "display",": " ]
+                        }, {
+                           "r" : "14",
+                           "s" : [ {
+                              "value" : [ "'Test Concept'" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\n}" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "15",
+               "classType" : "{urn:hl7-org:elm-types:r1}Concept",
+               "type" : "Instance",
+               "element" : [ {
+                  "name" : "codes",
+                  "value" : {
+                     "localId" : "13",
+                     "type" : "List",
+                     "element" : [ {
+                        "localId" : "12",
+                        "name" : "CodeA",
+                        "type" : "ExpressionRef"
+                     } ]
+                  }
+               }, {
+                  "name" : "display",
+                  "value" : {
+                     "localId" : "14",
+                     "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                     "value" : "Test Concept",
+                     "type" : "Literal"
+                  }
+               } ]
+            }
+         }, {
+            "localId" : "20",
             "name" : "Med",
             "context" : "Patient",
             "accessLevel" : "Public",
             "annotation" : [ {
                "type" : "Annotation",
                "s" : {
-                  "r" : "9",
+                  "r" : "20",
                   "s" : [ {
                      "value" : [ "define ","Med"," : " ]
                   }, {
-                     "r" : "8",
+                     "r" : "19",
                      "s" : [ {
                         "value" : [ "Medication"," {\n  " ]
                      }, {
                         "s" : [ {
                            "value" : [ "name",": " ]
                         }, {
-                           "r" : "6",
+                           "r" : "17",
                            "s" : [ {
                               "value" : [ "'Best Med Ever'" ]
                            } ]
@@ -153,13 +339,13 @@ module.exports['Instance'] = {
                }
             } ],
             "expression" : {
-               "localId" : "8",
+               "localId" : "19",
                "classType" : "{http://hl7.org/fhir}Medication",
                "type" : "Instance",
                "element" : [ {
                   "name" : "name",
                   "value" : {
-                     "localId" : "6",
+                     "localId" : "17",
                      "valueType" : "{urn:hl7-org:elm-types:r1}String",
                      "value" : "Best Med Ever",
                      "type" : "Literal"
@@ -167,7 +353,7 @@ module.exports['Instance'] = {
                }, {
                   "name" : "isBrand",
                   "value" : {
-                     "localId" : "7",
+                     "localId" : "18",
                      "valueType" : "{urn:hl7-org:elm-types:r1}Boolean",
                      "value" : "false",
                      "type" : "Literal"
@@ -175,27 +361,27 @@ module.exports['Instance'] = {
                } ]
             }
          }, {
-            "localId" : "12",
+            "localId" : "23",
             "name" : "val",
             "context" : "Patient",
             "accessLevel" : "Public",
             "annotation" : [ {
                "type" : "Annotation",
                "s" : {
-                  "r" : "12",
+                  "r" : "23",
                   "s" : [ {
                      "value" : [ "define ","val",": " ]
                   }, {
-                     "r" : "11",
+                     "r" : "22",
                      "s" : [ {
-                        "r" : "10",
+                        "r" : "21",
                         "s" : [ {
-                           "value" : [ "Quantity" ]
+                           "value" : [ "QuantityA" ]
                         } ]
                      }, {
                         "value" : [ "." ]
                      }, {
-                        "r" : "11",
+                        "r" : "22",
                         "s" : [ {
                            "value" : [ "value" ]
                         } ]
@@ -204,12 +390,12 @@ module.exports['Instance'] = {
                }
             } ],
             "expression" : {
-               "localId" : "11",
+               "localId" : "22",
                "path" : "value",
                "type" : "Property",
                "source" : {
-                  "localId" : "10",
-                  "name" : "Quantity",
+                  "localId" : "21",
+                  "name" : "QuantityA",
                   "type" : "ExpressionRef"
                }
             }

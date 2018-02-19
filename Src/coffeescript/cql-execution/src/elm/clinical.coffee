@@ -35,10 +35,14 @@ module.exports.InValueSet = class InValueSet extends Expression
 
   exec: (ctx) ->
     # Bonnie-633 Added null check
-    return false unless @code? and @valueset?
+    # spec indicates to return null if code is null, false is value set is null
+    return null unless @code?
+    return false unless @valueset?
     code = @code.execute(ctx)
+    # spec indicates to return null if code is null, false is value set is null
+    return null unless code?
     valueset = @valueset.execute(ctx)
-    if code? and valueset? then valueset.hasMatch code else false
+    if valueset? then valueset.hasMatch code else false
 
 module.exports.CodeSystemDef = class CodeSystemDef extends Expression
   constructor: (json) ->

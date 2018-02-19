@@ -47,8 +47,8 @@ module.exports.SingletonFrom = class SingletonFrom extends Expression
 
   exec: (ctx) ->
     arg = @execArgs ctx
-    if arg.length > 1 then throw new Error 'IllegalArgument: \'SingletonFrom\' requires a 0 or 1 arg array'
-    else if arg.length is 1 then return arg[0]
+    if arg? and arg.length > 1 then throw new Error 'IllegalArgument: \'SingletonFrom\' requires a 0 or 1 arg array'
+    else if arg? and arg.length is 1 then return arg[0]
     else return null
 
 module.exports.ToList = class ToList extends Expression
@@ -57,11 +57,11 @@ module.exports.ToList = class ToList extends Expression
 
   exec: (ctx) ->
     arg = @execArgs ctx
-    if arg? 
+    if arg?
       [arg]
     else
       []
-      
+
 module.exports.IndexOf = class IndexOf extends Expression
   constructor: (json) ->
     super
