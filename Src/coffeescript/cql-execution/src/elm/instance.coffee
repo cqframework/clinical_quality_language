@@ -20,7 +20,6 @@ module.exports.Instance = class Instance extends Expression
     obj = {}
     for el in @element
       obj[el.name] = el.exec(ctx)
-    # TODO: Support for other classes like Concept
     switch @classType
       when "{urn:hl7-org:elm-types:r1}Quantity" then new Quantity(obj)
       when "{urn:hl7-org:elm-types:r1}Code" then new Code(obj.code, obj.system, obj.version, obj.display)
