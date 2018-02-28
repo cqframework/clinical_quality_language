@@ -31461,3 +31461,344 @@ module.exports['DateMath'] = {
    }
 }
 
+### DateMath
+library TestSnippet version '1'
+using QUICK
+context Patient
+define June15th2013: DateTime(2013, 6, 15, 0, 0, 0, 0)
+define PlusThreeYears: June15th2013 + 3 years
+define MinusThreeYears: June15th2013 - 3 years
+define PlusEightMonths: June15th2013 + 8 months
+define MinusEightMonths: June15th2013 - 8 months
+define PlusThreeWeeks: June15th2013 + 3 weeks
+define MinusThreeWeeks: June15th2013 - 3 weeks
+define PlusTwentyDays: June15th2013 + 20 days
+define MinusTwentyDays: June15th2013 - 20 days
+define PlusThreeHours: June15th2013 + 3 hours
+define MinusThreeHours: June15th2013 - 3 hours
+define PlusThreeMinutes: June15th2013 + 3 minutes
+define MinusThreeMinutes: June15th2013 - 3 minutes
+define PlusThreeSeconds: June15th2013 + 3 seconds
+define MinusThreeSeconds: June15th2013 - 3 seconds
+define PlusThreeMilliseconds: June15th2013 + 3 milliseconds
+define MinusThreeMilliseconds: June15th2013 - 3 milliseconds
+###
+
+module.exports['DateMath'] = {
+   "library" : {
+      "identifier" : {
+         "id" : "TestSnippet",
+         "version" : "1"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localIdentifier" : "QUICK",
+            "uri" : "http://hl7.org/fhir"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "dataType" : "{http://hl7.org/fhir}Patient",
+                  "templateId" : "patient-qicore-qicore-patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "name" : "June15th2013",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "DateTime",
+               "year" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "2013",
+                  "type" : "Literal"
+               },
+               "month" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "6",
+                  "type" : "Literal"
+               },
+               "day" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "15",
+                  "type" : "Literal"
+               },
+               "hour" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               },
+               "minute" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               },
+               "second" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               },
+               "millisecond" : {
+                  "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+                  "value" : "0",
+                  "type" : "Literal"
+               }
+            }
+         }, {
+            "name" : "PlusThreeYears",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "years",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "MinusThreeYears",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "years",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "PlusEightMonths",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 8,
+                  "unit" : "months",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "MinusEightMonths",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 8,
+                  "unit" : "months",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "PlusThreeWeeks",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "weeks",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "MinusThreeWeeks",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "weeks",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "PlusTwentyDays",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 20,
+                  "unit" : "days",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "MinusTwentyDays",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 20,
+                  "unit" : "days",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "PlusThreeHours",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "hours",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "MinusThreeHours",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "hours",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "PlusThreeMinutes",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "minutes",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "MinusThreeMinutes",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "minutes",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "PlusThreeSeconds",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "seconds",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "MinusThreeSeconds",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "seconds",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "PlusThreeMilliseconds",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Add",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "milliseconds",
+                  "type" : "Quantity"
+               } ]
+            }
+         }, {
+            "name" : "MinusThreeMilliseconds",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "expression" : {
+               "type" : "Subtract",
+               "operand" : [ {
+                  "name" : "June15th2013",
+                  "type" : "ExpressionRef"
+               }, {
+                  "value" : 3,
+                  "unit" : "milliseconds",
+                  "type" : "Quantity"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

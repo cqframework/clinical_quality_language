@@ -146,6 +146,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testSorting() throws IOException {
+        runSemanticTest("OperatorTests/Sorting.cql", 1);
+    }
+
+    @Test
     public void testInvalidSortClauses() throws IOException {
         runSemanticTest("OperatorTests/InvalidSortClauses.cql", 3);
     }
@@ -165,18 +170,21 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/MessageOperators.cql", 0);
     }
 
+    @Test
+    public void testMultiSourceQuery() throws IOException {
+        runSemanticTest("OperatorTests/MultiSourceQuery.cql", 0);
+    }
+
+    @Test
+    public void testQuery() throws IOException {
+        runSemanticTest("OperatorTests/Query.cql", 0);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }
 
     private void runSemanticTest(String testFileName, int expectedErrors) throws IOException {
-        File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, new LibraryManager(modelManager));
-        for (CqlTranslatorException error : translator.getErrors()) {
-            System.err.println(String.format("(%d,%d): %s",
-                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
-        }
-        assertThat(translator.getErrors().size(), is(expectedErrors));
+        TestUtils.runSemanticTest(testFileName, expectedErrors);
     }
 }

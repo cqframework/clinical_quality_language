@@ -17,6 +17,7 @@
             "--colors",
             "--recursive",
             "${workspaceRoot}/lib-test/"
+<<<<<<< HEAD
         ],
         "internalConsoleOptions": "openOnSessionStart"
     },
@@ -33,6 +34,8 @@
             "--recursive",
             "--colors",
             "${workspaceRoot}/test"
+=======
+>>>>>>> master
         ],
         "internalConsoleOptions": "openOnSessionStart"
     },

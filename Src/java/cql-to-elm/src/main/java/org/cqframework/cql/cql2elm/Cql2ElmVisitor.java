@@ -56,7 +56,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     //Put them here for now, but eventually somewhere else?
     private final Set<String> definedExpressionDefinitions = new HashSet<>();
+    private final Stack<ExpressionDefinitionInfo> forwards = new Stack<>();
     private final Map<String, Set<Signature>> definedFunctionDefinitions = new HashMap<>();
+    private final Stack<FunctionDefinitionInfo> forwardFunctions = new Stack<>();
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private Stack<Chunk> chunks = new Stack<>();
     private String currentContext = "Patient"; // default context to patient
@@ -165,31 +167,33 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Element element = (Element)o;
             if (element.getLocalId() == null) {
                 element.setLocalId(Integer.toString(getNextLocalId()));
-        }
+            }
             chunk.setElement(element);
 
             if (element instanceof ExpressionDef && !(tree instanceof cqlParser.LibraryContext)) {
                 ExpressionDef expressionDef = (ExpressionDef)element;
-                expressionDef.getAnnotation().add(buildAnnotation(chunk));
+                if (expressionDef.getAnnotation().size() == 0) {
+                    expressionDef.getAnnotation().add(buildAnnotation(chunk));
+                }
             }
         }
 
         if (!chunks.isEmpty()) {
             chunks.peek().addChunk(chunk);
-    }
+        }
     }
 
     private Annotation buildAnnotation(Chunk chunk) {
         Annotation annotation = af.createAnnotation();
         annotation.setS(buildNarrative(chunk));
         return annotation;
-        }
+    }
 
     private Narrative buildNarrative(Chunk chunk) {
         Narrative narrative = af.createNarrative();
         if (chunk.getElement() != null) {
             narrative.setR(chunk.getElement().getLocalId());
-                }
+        }
 
         if (chunk.hasChunks()) {
             Narrative currentNarrative = null;
@@ -199,17 +203,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     if (currentNarrative != null) {
                         narrative.getContent().add(wrapNarrative(currentNarrative));
                         currentNarrative = null;
-                }
+                    }
                     narrative.getContent().add(wrapNarrative(chunkNarrative));
                 }
                 else {
                     if (currentNarrative == null) {
                         currentNarrative = chunkNarrative;
-            }
+                    }
                     else {
                         currentNarrative.getContent().addAll(chunkNarrative.getContent());
-            }
-        }
+                    }
+                }
             }
             if (currentNarrative != null) {
                 narrative.getContent().add(wrapNarrative(currentNarrative));
@@ -285,7 +289,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         } finally {
             if (annotate) {
                 popChunk(tree, o);
-    }
+            }
         }
     }
 
@@ -673,13 +677,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public ExpressionDef visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         ExpressionDef expressionDef = internalVisitExpressionDefinition(ctx);
-        if (definedExpressionDefinitions.contains(expressionDef.getName())) {
-            throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
-        }
+        if (forwards.isEmpty() || !forwards.peek().getName().equals(expressionDef.getName())) {
+            if (definedExpressionDefinitions.contains(expressionDef.getName())) {
+                throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
+            }
 
-        // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed because they are
-        // overwritten by name when they are encountered by the preprocessor.
-        definedExpressionDefinitions.add(expressionDef.getName());
+            // Track defined expression definitions locally, otherwise duplicate expression definitions will be missed because they are
+            // overwritten by name when they are encountered by the preprocessor.
+            definedExpressionDefinitions.add(expressionDef.getName());
+        }
         return expressionDef;
     }
 
@@ -896,7 +902,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
 
                 if (matcher.group(12) != null) {
-                    int offsetPolarity = matcher.group(12).equals("+") ? 1 : 0;
+                    int offsetPolarity = matcher.group(12).equals("+") ? 1 : -1;
 
                     if (matcher.group(15) != null) {
                         int hourOffset = Integer.parseInt(matcher.group(13));
@@ -1026,7 +1032,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
 
                 if (matcher.group(20) != null) {
-                    int offsetPolarity = matcher.group(20).equals("+") ? 1 : 0;
+                    int offsetPolarity = matcher.group(20).equals("+") ? 1 : -1;
 
                     if (matcher.group(23) != null) {
                         int hourOffset = Integer.parseInt(matcher.group(21));
@@ -1780,6 +1786,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitTypeExpression(@NotNull cqlParser.TypeExpressionContext ctx) {
+        // NOTE: These don't use the buildIs or buildAs because those start with a DataType, rather than a TypeSpecifier
         if (ctx.getChild(1).getText().equals("is")) {
             Is is = of.createIs()
                     .withOperand(parseExpression(ctx.expression()))
@@ -1800,6 +1807,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitCastExpression(@NotNull cqlParser.CastExpressionContext ctx) {
+        // NOTE: This doesn't use buildAs because it starts with a DataType, rather than a TypeSpecifier
         As as = of.createAs()
                 .withOperand(parseExpression(ctx.expression()))
                 .withAsTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()))
@@ -2311,7 +2319,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
                             timingOperator.setRight(subtract);
 
-                            if (isOffsetInclusive) {
+                            if (!isOffsetInclusive) {
                                 Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     before.setPrecision(parseDateTimePrecision(dateTimePrecision));
@@ -2334,7 +2342,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             libraryBuilder.resolveBinaryCall("System", "Add", add);
                             timingOperator.setRight(add);
 
-                            if (isOffsetInclusive) {
+                            if (!isOffsetInclusive) {
                                 After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
                                     after.setPrecision(parseDateTimePrecision(dateTimePrecision));
@@ -2528,7 +2536,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
                 : null;
 
-        if (ctx.getChildCount() == (1 + dateTimePrecision == null ? 0 : 1)) {
+        if (ctx.getChildCount() == (1 + (dateTimePrecision == null ? 0 : 1))) {
             operator = dateTimePrecision != null
                     ? of.createOverlaps().withPrecision(parseDateTimePrecision(dateTimePrecision))
                     : of.createOverlaps();
@@ -2695,8 +2703,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         ClassType classType = (ClassType)dataType;
-        ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
-        NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
+        // BTR -> The original intent of this code was to have the retrieve return the base type, and use the "templateId"
+        // element of the retrieve to communicate the "positive" or "negative" profile to the data access layer.
+        // However, because this notion of carrying the "profile" through a type is not general, it causes inconsistencies
+        // when using retrieve results with functions defined in terms of the same type (see GitHub Issue #131).
+        // Based on the discussion there, the retrieve will now return the declared type, whether it is a profile or not.
+        //ProfileType profileType = dataType instanceof ProfileType ? (ProfileType)dataType : null;
+        //NamedType namedType = profileType == null ? classType : (NamedType)classType.getBaseType();
+        NamedType namedType = classType;
+
+        ModelInfo modelInfo = libraryBuilder.getModel(namedType.getNamespace()).getModelInfo();
+        boolean useStrictRetrieveTyping = modelInfo.isStrictRetrieveTyping() != null && modelInfo.isStrictRetrieveTyping();
 
         Retrieve retrieve = of.createRetrieve()
                 .withDataType(libraryBuilder.dataTypeToQName((DataType)namedType))
@@ -2712,7 +2729,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             Property property = null;
             if (retrieve.getCodeProperty() == null) {
                 libraryBuilder.recordParsingException(new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
-                        CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                        useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                        getTrackBack(ctx)));
             }
             else {
                 try {
@@ -2722,7 +2740,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 catch (Exception e) {
                     libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            retrieve.getCodeProperty(), namedType.getName()), CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx), e));
+                            retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                            getTrackBack(ctx), e));
                 }
             }
 
@@ -2735,25 +2754,38 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 terminology = parseExpression(ctx.terminology().expression());
             }
 
-            // Resolve the terminology target using an in operator
+            // Resolve the terminology target using an in or = operator
             try {
-                Expression in = libraryBuilder.resolveIn(property, terminology);
-                if (in instanceof In) {
-                    retrieve.setCodes(((In) in).getOperand().get(1));
-                } else if (in instanceof InValueSet) {
-                    retrieve.setCodes(((InValueSet) in).getValueset());
-                } else if (in instanceof InCodeSystem) {
-                    retrieve.setCodes(((InCodeSystem) in).getCodesystem());
-                } else {
-                    libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
-                            CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                if (terminology.getResultType() instanceof ListType) {
+                    Expression in = libraryBuilder.resolveIn(property, terminology);
+                    if (in instanceof In) {
+                        retrieve.setCodes(((In) in).getOperand().get(1));
+                    } else if (in instanceof InValueSet) {
+                        retrieve.setCodes(((InValueSet) in).getValueset());
+                    } else if (in instanceof InCodeSystem) {
+                        retrieve.setCodes(((InCodeSystem) in).getCodesystem());
+                    } else {
+                        libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
+                                useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                getTrackBack(ctx)));
+                    }
+                }
+                else {
+                    // Resolve with equality to verify the type of the target
+                    BinaryExpression equal = of.createEqual().withOperand(property, terminology);
+                    libraryBuilder.resolveBinaryCall("System", "Equal", equal);
+
+                    // Automatically promote to a list for use in the retrieve target
+                    retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
                 }
             }
             catch (Exception e) {
-                // If something goes wrong attempting to resolve, just set to the expression and report it as a warning, it shouldn't prevent translation
+                // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
+                // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
                 retrieve.setCodes(terminology);
                 libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
-                        CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx), e));
+                        useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                        getTrackBack(ctx), e));
             }
         }
 
@@ -2795,7 +2827,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 queryContext.exitSourceClause();
             }
 
-            queryContext.addQuerySources(sources);
+            queryContext.addPrimaryQuerySources(sources);
 
             // If we are evaluating a population-level query whose source ranges over any patient-context expressions,
             // then references to patient context expressions within the iteration clauses of the query can be accessed
@@ -2835,7 +2867,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                                 of.createTupleElement()
                                         .withName(aqs.getAlias())
                                         .withValue(of.createAliasRef().withName(aqs.getAlias()));
-                        element.getValue().setResultType(aqs.getResultType()); // Doesn't use the fluent API to avoid casting
+                        DataType sourceType = aqs.getResultType() instanceof ListType ? ((ListType)aqs.getResultType()).getElementType() : aqs.getResultType();
+                        element.getValue().setResultType(sourceType); // Doesn't use the fluent API to avoid casting
                         element.setResultType(element.getValue().getResultType());
                         returnType.addElement(new TupleTypeElement(element.getName(), element.getResultType()));
                         returnExpression.getElement().add(element);
@@ -2844,6 +2877,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     returnExpression.setResultType(queryContext.isSingular() ? returnType : new ListType(returnType));
                     ret.setExpression(returnExpression);
                     ret.setResultType(returnExpression.getResultType());
+                }
+
+                queryContext.removeQuerySources(sources);
+                if (dfcx != null) {
+                    queryContext.removeLetClauses(dfcx);
                 }
 
                 DataType queryResultType = ret == null ? sources.get(0).getResultType() : ret.getResultType();
@@ -3120,7 +3158,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitWithClause(@NotNull cqlParser.WithClauseContext ctx) {
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        libraryBuilder.peekQueryContext().addQuerySource(aqs);
+        libraryBuilder.peekQueryContext().addRelatedQuerySource(aqs);
         try {
             Expression expression = (Expression) visit(ctx.expression());
             DataTypes.verifyType(expression.getResultType(), libraryBuilder.resolveTypeName("System", "Boolean"));
@@ -3136,7 +3174,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitWithoutClause(@NotNull cqlParser.WithoutClauseContext ctx) {
         AliasedQuerySource aqs = (AliasedQuerySource) visit(ctx.aliasedQuerySource());
-        libraryBuilder.peekQueryContext().addQuerySource(aqs);
+        libraryBuilder.peekQueryContext().addRelatedQuerySource(aqs);
         try {
             Expression expression = (Expression) visit(ctx.expression());
             DataTypes.verifyType(expression.getResultType(), libraryBuilder.resolveTypeName("System", "Boolean"));
@@ -3315,11 +3353,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 try {
                     Stack<Chunk> saveChunks = chunks;
                     chunks = new Stack<Chunk>();
+                    forwards.push(expressionInfo);
                     try {
-                    internalVisitExpressionDefinition(expressionInfo.getDefinition());
+                        // Have to call the visit to get the outer processing to occur
+                        visit(expressionInfo.getDefinition());
                     }
                     finally {
                         chunks = saveChunks;
+                        forwards.pop();
                     }
                 } finally {
                     currentContext = saveContext;
@@ -3363,23 +3404,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (result == null) {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             if (functionInfos != null) {
-                    Stack<Chunk> saveChunks = chunks;
-                    chunks = new Stack<Chunk>();
+                for (FunctionDefinitionInfo functionInfo : functionInfos) {
+                    String saveContext = currentContext;
+                    currentContext = functionInfo.getContext();
                     try {
-                        for (FunctionDefinitionInfo functionInfo : functionInfos) {
-                            String saveContext = currentContext;
-                            currentContext = functionInfo.getContext();
-                            try {
-                                internalVisitFunctionDefinition(functionInfo.getDefinition());
-                            } finally {
-                                currentContext = saveContext;
-                            }
+                        Stack<Chunk> saveChunks = chunks;
+                        chunks = new Stack<Chunk>();
+                        forwardFunctions.push(functionInfo);
+                        try {
+                            // Have to call the visit to allow the outer processing to occur
+                            visit(functionInfo.getDefinition());
                         }
-                    }
-                    finally {
-                        chunks = saveChunks;
+                        finally {
+                            forwardFunctions.pop();
+                            chunks = saveChunks;
+                        }
+                    } finally {
+                        currentContext = saveContext;
                     }
                 }
+            }
             result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
         }
 
@@ -3497,17 +3541,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef result = (FunctionDef)internalVisitFunctionDefinition(ctx);
         Operator operator = Operator.fromFunctionDef(result);
-        Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
-        if (definedSignatures == null) {
-            definedSignatures = new HashSet<>();
-            definedFunctionDefinitions.put(operator.getName(), definedSignatures);
-        }
+        if (forwardFunctions.isEmpty() || !forwardFunctions.peek().getName().equals(operator.getName())) {
+            Set<Signature> definedSignatures = definedFunctionDefinitions.get(operator.getName());
+            if (definedSignatures == null) {
+                definedSignatures = new HashSet<>();
+                definedFunctionDefinitions.put(operator.getName(), definedSignatures);
+            }
 
-        if (definedSignatures.contains(operator.getSignature())) {
-            throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
-        }
+            if (definedSignatures.contains(operator.getSignature())) {
+                throw new IllegalArgumentException(String.format("A function named %s with the same type of arguments is already defined in this library.", operator.getName()));
+            }
 
-        definedSignatures.add(operator.getSignature());
+            definedSignatures.add(operator.getSignature());
+        }
 
         return result;
     }

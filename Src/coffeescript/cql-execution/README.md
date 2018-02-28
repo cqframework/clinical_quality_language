@@ -26,7 +26,7 @@ For easiest integration, we will generate a coffee file using cql-to-elm:
 
 1. Install the [Java 7 SDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)
 2. `cd ${branch}/Src/java` (replacing `${branch}` with the path to your git branch)
-3. `./gradlew :cql-to-elm:installApp`
+3. `./gradlew :cql-to-elm:installDist`
 4. `./cql-to-elm/build/install/cql-to-elm/bin/cql-to-elm --format=coffee --input ${path_to_cql} --output ${branch}/Src/coffeescript/cql-execution/src/`
 
 The above example put the measure into the coffeescript src directory to make things easy, but it

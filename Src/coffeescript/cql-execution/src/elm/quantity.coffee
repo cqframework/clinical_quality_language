@@ -91,8 +91,6 @@ module.exports.Quantity = class Quantity extends Expression
     u.value *= @value
     u
 
-
-
 clean_unit = (units) ->
   if ucum_time_units[units] then ucum_to_cql_units[ucum_time_units[units]] else units
 

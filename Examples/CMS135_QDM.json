@@ -125,7 +125,7 @@
                "source" : [ {
                   "alias" : "E",
                   "expression" : {
-                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}EncounterPerformed",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}PositiveEncounterPerformed",
                      "templateId" : "PositiveEncounterPerformed",
                      "codeProperty" : "code",
                      "type" : "Retrieve",
@@ -140,6 +140,7 @@
                   "type" : "With",
                   "expression" : {
                      "dataType" : "{urn:healthit-gov:qdm:v5_0_1_draft}Diagnosis",
+                     "codeProperty" : "code",
                      "type" : "Retrieve",
                      "codes" : {
                         "name" : "Heart Failure",

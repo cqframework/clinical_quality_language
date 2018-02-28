@@ -94,9 +94,9 @@ define "INRResultsByDay":
 define "INRResultsPerDay":
 	(
     (distinct "INRResultsByDay" X return X.resultDate) D
-	    return First("INRResultsByDay" R where R.resultDate = D sort by R.distanceFromMidpoint)
+	    return First("INRResultsByDay" R where R.resultDate = D sort by distanceFromMidpoint)
   ) X
-	sort by X.resultDate
+	sort by resultDate
 
 define "TherapeuticRange": 
 	Interval[2.0, 3.0] // TODO: Units?

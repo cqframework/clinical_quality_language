@@ -9,13 +9,43 @@ import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.hl7.elm.r1.Library;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 public class TestUtils {
+
+    private static ModelManager modelManager;
+    private static LibraryManager libraryManager;
+
+    private static void setup() {
+        modelManager = new ModelManager();
+        libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+    }
+
+    private static ModelManager getModelManager() {
+        if (modelManager == null) {
+            setup();
+        }
+
+        return modelManager;
+    }
+
+    private static LibraryManager getLibraryManager() {
+        if (libraryManager == null) {
+            setup();
+        }
+
+        return libraryManager;
+    }
 
     public static Cql2ElmVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
         InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
@@ -26,16 +56,21 @@ public class TestUtils {
         return visitor;
     }
 
+    public static Object visitFile(String fileName) throws IOException {
+        File file = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(fileName).getFile(), "UTF-8"));
+        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager());
+        ensureValid(translator);
+        return translator.toObject();
+    }
+
     public static Object visitData(String cqlData) {
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager());
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static Library visitLibrary(String cqlLibrary) {
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, modelManager, new LibraryManager(modelManager));
+        CqlTranslator translator = CqlTranslator.fromText(cqlLibrary, getModelManager(), getLibraryManager());
         ensureValid(translator);
         return translator.toELM();
     }
@@ -48,8 +83,7 @@ public class TestUtils {
         if (enableDateRangeOptimization) {
             options.add(CqlTranslator.Options.EnableDateRangeOptimization);
         }
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromText(cqlData, modelManager, new LibraryManager(modelManager), options.toArray(new CqlTranslator.Options[options.size()]));
+        CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(), options.toArray(new CqlTranslator.Options[options.size()]));
         ensureValid(translator);
         return translator.toObject();
     }
@@ -85,5 +119,17 @@ public class TestUtils {
     private static TokenStream parseANTLRInputStream(ANTLRInputStream is) {
         cqlLexer lexer = new cqlLexer(is);
         return new CommonTokenStream(lexer);
+    }
+
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors) throws IOException {
+        File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, new LibraryManager(modelManager));
+        for (CqlTranslatorException error : translator.getErrors()) {
+            System.err.println(String.format("(%d,%d): %s",
+                    error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
+        }
+        assertThat(translator.getErrors().size(), is(expectedErrors));
+        return translator;
     }
 }

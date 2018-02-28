@@ -1,5 +1,11 @@
 {
    "library" : {
+      "annotation" : [ {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "CMS26",
          "version" : "2"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v5_0_2_draft" xmlns:dt="urn:hl7-org:elm-types:r1" targetNamespace="urn:healthit-gov:qdm:v5_0_2_draft" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v5_3" xmlns:dt="urn:hl7-org:elm-types:r1" targetNamespace="urn:healthit-gov:qdm:v5_3" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="urn:hl7-org:elm-types:r1" schemaLocation="..\..\..\cql-lm\schema\elm\types.xsd"/>
 	<xs:complexType name="QDMBaseType">
 		<xs:sequence>
@@ -272,6 +272,7 @@
 					<xs:element name="method" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="result" type="dt:Any" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="relatedTo" type="dt:Code" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -332,6 +333,7 @@
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relatedTo" type="dt:Code" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -350,6 +352,7 @@
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relatedTo" type="dt:Code" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -368,6 +371,7 @@
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relatedTo" type="dt:Code" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -947,6 +951,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0"/>
@@ -973,6 +978,7 @@
 				<xs:sequence>
 					<xs:element name="activeDatetime" type="dt:DateTime" minOccurs="1"/>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="1"/>
+					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0"/>
@@ -1064,6 +1070,7 @@
 					<xs:element name="result" type="dt:Any" minOccurs="0"/>
 					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1141,6 +1148,7 @@
 					<xs:element name="ordinality" type="dt:Code" minOccurs="0"/>
 					<xs:element name="incisionDatetime" type="dt:DateTime" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

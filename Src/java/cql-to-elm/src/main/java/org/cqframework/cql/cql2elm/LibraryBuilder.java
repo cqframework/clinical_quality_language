@@ -96,6 +96,14 @@ public class LibraryBuilder {
         listTraversal = false;
     }
 
+    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
+    public CqlTranslatorException.ErrorSeverity getErrorLevel() {
+        return errorLevel;
+    }
+    public void setErrorLevel(CqlTranslatorException.ErrorSeverity severity) {
+        errorLevel = severity;
+    }
+
     private Model loadModel(VersionedIdentifier modelIdentifier) {
         Model model = modelManager.resolveModel(modelIdentifier);
         loadConversionMap(model);
@@ -326,6 +334,24 @@ public class LibraryBuilder {
         }
     }
 
+    private boolean shouldReport(CqlTranslatorException.ErrorSeverity errorSeverity) {
+        switch (errorLevel) {
+            case Info:
+                return
+                        errorSeverity == CqlTranslatorException.ErrorSeverity.Info
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+            case Warning:
+                return
+                        errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+            case Error:
+                return errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+            default:
+                throw new IllegalArgumentException(String.format("Unknown error severity %s", errorSeverity.toString()));
+        }
+    }
+
     /**
      * Record any errors while parsing in both the list of errors but also in the library
      * itself so they can be processed easily by a remote client
@@ -333,24 +359,26 @@ public class LibraryBuilder {
      */
     public void recordParsingException(CqlTranslatorException e) {
         addException(e);
-        CqlToElmError err = af.createCqlToElmError();
-        err.setMessage(e.getMessage());
-        err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : (e instanceof CqlSemanticException ? ErrorType.SEMANTIC : ErrorType.INTERNAL));
-        err.setErrorSeverity(toErrorSeverity(e.getSeverity()));
-        if (e.getLocator() != null) {
-            err.setStartLine(e.getLocator().getStartLine());
-            err.setEndLine(e.getLocator().getEndLine());
-            err.setStartChar(e.getLocator().getStartChar());
-            err.setEndChar(e.getLocator().getEndChar());
-        }
+        if (shouldReport(e.getSeverity())) {
+            CqlToElmError err = af.createCqlToElmError();
+            err.setMessage(e.getMessage());
+            err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : (e instanceof CqlSemanticException ? ErrorType.SEMANTIC : ErrorType.INTERNAL));
+            err.setErrorSeverity(toErrorSeverity(e.getSeverity()));
+            if (e.getLocator() != null) {
+                err.setStartLine(e.getLocator().getStartLine());
+                err.setEndLine(e.getLocator().getEndLine());
+                err.setStartChar(e.getLocator().getStartChar());
+                err.setEndChar(e.getLocator().getEndChar());
+            }
 
-        if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
-            CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException)e.getCause();
-            err.setTargetIncludeLibraryId(incEx.getLibraryId());
-            err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
-            err.setErrorType(ErrorType.INCLUDE);
+            if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
+                CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException) e.getCause();
+                err.setTargetIncludeLibraryId(incEx.getLibraryId());
+                err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
+                err.setErrorType(ErrorType.INCLUDE);
+            }
+            library.getAnnotation().add(err);
         }
-        library.getAnnotation().add(err);
     }
 
     private String getLibraryName() {
@@ -398,7 +426,11 @@ public class LibraryBuilder {
                 .withId(includeDef.getPath())
                 .withVersion(includeDef.getVersion());
 
+        ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
         TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, errors);
+        for (CqlTranslatorException error : errors) {
+            this.addException(error);
+        }
         libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
         loadConversionMap(referencedLibrary);
     }
@@ -712,6 +744,14 @@ public class LibraryBuilder {
             expression = convertExpression(expression, conversion.getConversion());
         }
 
+        if (expression.getResultType().equals(resolveTypeName("System", "Boolean"))) {
+            reportWarning("Boolean-valued expression was promoted to a list.", expression);
+        }
+
+        return resolveToList(expression);
+    }
+
+    public Expression resolveToList(Expression expression) {
         // Use a ToList operator here to avoid duplicate evaluation of the operand.
         ToList toList = of.createToList().withOperand(expression);
         toList.setResultType(new ListType(expression.getResultType()));
@@ -744,34 +784,77 @@ public class LibraryBuilder {
         return interval;
     }
 
+    public As buildAs(Expression expression, DataType asType) {
+        As result = (As)of.createAs().withOperand(expression).withResultType(asType);
+        if (result.getResultType() instanceof NamedType) {
+            result.setAsType(dataTypeToQName(result.getResultType()));
+        }
+        else {
+            result.setAsTypeSpecifier(dataTypeToTypeSpecifier(result.getResultType()));
+        }
+
+        return result;
+    }
+
+    public Is buildIs(Expression expression, DataType isType) {
+        Is result = (Is)of.createIs().withOperand(expression).withResultType(resolveTypeName("System", "Boolean"));
+        if (isType instanceof NamedType) {
+            result.setIsType(dataTypeToQName(isType));
+        }
+        else {
+            result.setIsTypeSpecifier(dataTypeToTypeSpecifier(isType));
+        }
+
+        return result;
+    }
+
+    public Null buildNull(DataType nullType) {
+        Null result = (Null)of.createNull().withResultType(nullType);
+        if (nullType instanceof NamedType) {
+            result.setResultTypeName(dataTypeToQName(nullType));
+        }
+        else {
+            result.setResultTypeSpecifier(dataTypeToTypeSpecifier(nullType));
+        }
+        return result;
+    }
+
     public Expression convertExpression(Expression expression, Conversion conversion) {
         if (conversion.isCast()
                 && (conversion.getFromType().isSuperTypeOf(conversion.getToType())
                 || conversion.getFromType().isCompatibleWith(conversion.getToType()))) {
-            As castedOperand = (As)of.createAs()
-                    .withOperand(expression)
-                    .withResultType(conversion.getToType());
-
-            castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
-            if (castedOperand.getResultType() instanceof NamedType) {
-                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
-            }
-
+            As castedOperand = buildAs(expression, conversion.getToType());
             return castedOperand;
         }
         else if (conversion.isCast() && conversion.getConversion() != null
                 && (conversion.getFromType().isSuperTypeOf(conversion.getConversion().getFromType())
                 || conversion.getFromType().isCompatibleWith(conversion.getConversion().getFromType()))) {
-            As castedOperand = (As)of.createAs()
-                    .withOperand(expression)
-                    .withResultType(conversion.getConversion().getFromType());
+            As castedOperand = buildAs(expression, conversion.getConversion().getFromType());
 
-            castedOperand.setAsTypeSpecifier(dataTypeToTypeSpecifier(castedOperand.getResultType()));
-            if (castedOperand.getResultType() instanceof NamedType) {
-                castedOperand.setAsType(dataTypeToQName(castedOperand.getResultType()));
+            Expression result = convertExpression(castedOperand, conversion.getConversion());
+
+            if (conversion.hasAlternativeConversions()) {
+                Case caseResult = of.createCase();
+                caseResult.setResultType(result.getResultType());
+                caseResult.withCaseItem(
+                        of.createCaseItem()
+                                .withWhen(buildIs(expression, conversion.getConversion().getFromType()))
+                                .withThen(result)
+                );
+
+                for (Conversion alternative : conversion.getAlternativeConversions()) {
+                    caseResult.withCaseItem(
+                            of.createCaseItem()
+                                .withWhen(buildIs(expression, alternative.getFromType()))
+                                .withThen(convertExpression(buildAs(expression, alternative.getFromType()), alternative))
+                    );
+                }
+
+                caseResult.withElse(buildNull(result.getResultType()));
+                result = caseResult;
             }
 
-            return convertExpression(castedOperand, conversion.getConversion());
+            return result;
         }
         else if (conversion.isListConversion()) {
             return convertListExpression(expression, conversion);
@@ -1395,6 +1478,12 @@ public class LibraryBuilder {
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
+                if (identifier.equals("$this")) {
+                    IdentifierRef result = new IdentifierRef().withName(identifier);
+                    result.setResultType(query.getResultElementType());
+                    return result;
+                }
+
                 DataType sortColumnType = resolveProperty(query.getResultElementType(), identifier, false);
                 if (sortColumnType != null) {
                     IdentifierRef result = new IdentifierRef().withName(identifier);

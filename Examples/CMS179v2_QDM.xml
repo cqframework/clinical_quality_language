@@ -47,42 +47,42 @@
          </expression>
       </def>
       <def name="FlutterDiagnoses" context="Patient" accessLevel="Public">
-         <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" xsi:type="Retrieve">
+         <expression xmlns:ns1="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns1:Diagnosis" codeProperty="code" xsi:type="Retrieve">
             <codes name="Atrial Fibrillation/Flutter" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="WarfarinMedications" context="Patient" accessLevel="Public">
-         <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns2:MedicationActive" xsi:type="Retrieve">
+         <expression xmlns:ns2="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns2:MedicationActive" codeProperty="code" xsi:type="Retrieve">
             <codes name="Warfarin" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="FaceToFaceEncounters" context="Patient" accessLevel="Public">
-         <expression xmlns:ns3="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns3:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns3="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns3:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
             <codes name="Face-to-Face Interaction" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="OfficeVisitEncounters" context="Patient" accessLevel="Public">
-         <expression xmlns:ns4="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns4:EncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns4="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns4:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
             <codes name="Office Visit" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="ValvularHeartDiseaseDiagnoses" context="Patient" accessLevel="Public">
-         <expression xmlns:ns5="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns5:Diagnosis" xsi:type="Retrieve">
+         <expression xmlns:ns5="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns5:Diagnosis" codeProperty="code" xsi:type="Retrieve">
             <codes name="Valvular Heart Disease" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="INRLabResults" context="Patient" accessLevel="Public">
-         <expression xmlns:ns6="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns6:LaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns6="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns6:PositiveLaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
             <codes name="INR" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="BirthDate" context="Patient" accessLevel="Public">
-         <expression xmlns:ns7="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns7:PatientCharacteristicBirthdate" xsi:type="Retrieve">
+         <expression xmlns:ns7="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns7:PatientCharacteristicBirthdate" codeProperty="code" xsi:type="Retrieve">
             <codes name="birth date" xsi:type="ValueSetRef"/>
          </expression>
       </def>
       <def name="ComputedValueINRPercentTTR" context="Patient" accessLevel="Public">
-         <expression xmlns:ns8="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns8:LaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
+         <expression xmlns:ns8="urn:healthit-gov:qdm:v5_0_1_draft" dataType="ns8:PositiveLaboratoryTestPerformed" templateId="PositiveLaboratoryTestPerformed" codeProperty="code" xsi:type="Retrieve">
             <codes name="Computed Value INR percent TTR" xsi:type="ValueSetRef"/>
          </expression>
       </def>
@@ -298,9 +298,7 @@
                               <operand name="D" xsi:type="AliasRef"/>
                            </where>
                            <sort>
-                              <by direction="asc" xsi:type="ByExpression">
-                                 <expression path="distanceFromMidpoint" scope="R" xsi:type="Property"/>
-                              </by>
+                              <by direction="asc" path="distanceFromMidpoint" xsi:type="ByColumn"/>
                            </sort>
                         </source>
                      </expression>
@@ -308,9 +306,7 @@
                </expression>
             </source>
             <sort>
-               <by direction="asc" xsi:type="ByExpression">
-                  <expression path="resultDate" scope="X" xsi:type="Property"/>
-               </by>
+               <by direction="asc" path="resultDate" xsi:type="ByColumn"/>
             </sort>
          </expression>
       </def>

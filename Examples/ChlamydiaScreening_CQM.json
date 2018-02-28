@@ -1,5 +1,26 @@
 {
    "library" : {
+      "annotation" : [ {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "message" : "List-valued expression was demoted to a singleton.",
+         "errorType" : "semantic",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      } ],
       "identifier" : {
          "id" : "ChlamydiaScreening_CQM",
          "version" : "2"
@@ -609,7 +630,7 @@
                                  "expression" : {
                                     "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
                                     "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
-                                    "codeProperty" : "item[].code",
+                                    "codeProperty" : "item.code",
                                     "type" : "Retrieve",
                                     "codes" : {
                                        "name" : "Pregnancy Test",
@@ -651,12 +672,8 @@
                                           "sort" : {
                                              "by" : [ {
                                                 "direction" : "asc",
-                                                "type" : "ByExpression",
-                                                "expression" : {
-                                                   "path" : "dateTime",
-                                                   "scope" : "E",
-                                                   "type" : "Property"
-                                                }
+                                                "path" : "dateTime",
+                                                "type" : "ByColumn"
                                              } ]
                                           }
                                        }
@@ -677,7 +694,7 @@
                               "expression" : {
                                  "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
                                  "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
-                                 "codeProperty" : "item[].code",
+                                 "codeProperty" : "item.code",
                                  "type" : "Retrieve",
                                  "codes" : {
                                     "name" : "Pap Test",
@@ -719,12 +736,8 @@
                                        "sort" : {
                                           "by" : [ {
                                              "direction" : "asc",
-                                             "type" : "ByExpression",
-                                             "expression" : {
-                                                "path" : "dateTime",
-                                                "scope" : "E",
-                                                "type" : "Property"
-                                             }
+                                             "path" : "dateTime",
+                                             "type" : "ByColumn"
                                           } ]
                                        }
                                     }
@@ -745,7 +758,7 @@
                            "expression" : {
                               "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
                               "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
-                              "codeProperty" : "item[].code",
+                              "codeProperty" : "item.code",
                               "type" : "Retrieve",
                               "codes" : {
                                  "name" : "Lab Tests During Pregnancy",
@@ -802,7 +815,7 @@
                         "expression" : {
                            "dataType" : "{http://hl7.org/fhir}DiagnosticOrder",
                            "templateId" : "diagnosticorder-qicore-qicore-diagnosticorder",
-                           "codeProperty" : "item[].code",
+                           "codeProperty" : "item.code",
                            "type" : "Retrieve",
                            "codes" : {
                               "name" : "Lab Tests for Sexually Transmitted Infections",

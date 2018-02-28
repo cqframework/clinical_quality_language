@@ -12,9 +12,22 @@ public class QueryContext {
     private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
     private final HashMap<String, LetClause> lets = new HashMap<>();
 
-    public void addQuerySources(Collection<AliasedQuerySource> sources) {
+    private void internalAddQuerySource(AliasedQuerySource source) {
+        sources.put(source.getAlias(), source);
+    }
+
+    // Adds a related (i.e. with or without) source, which does not change cardinality of the query
+    public void addRelatedQuerySource(AliasedQuerySource source) {
+        internalAddQuerySource(source);
+    }
+
+    // Adds primary sources, which affect cardinality (any primary plural source results in a plural query)
+    public void addPrimaryQuerySources(Collection<AliasedQuerySource> sources) {
         for (AliasedQuerySource source : sources) {
-            addQuerySource(source);
+            internalAddQuerySource(source);
+            if (source.getResultType() instanceof ListType) {
+                isSingularValue = false;
+            }
         }
     }
 
@@ -22,15 +35,14 @@ public class QueryContext {
         return sources.values();
     }
 
-    public void addQuerySource(AliasedQuerySource source) {
-        sources.put(source.getAlias(), source);
-        if (source.getResultType() instanceof ListType) {
-            isSingularValue = false;
-        }
-    }
-
     public void removeQuerySource(AliasedQuerySource source) {
         sources.remove(source.getAlias());
+    }
+
+    public void removeQuerySources(Collection<AliasedQuerySource> sources) {
+        for (AliasedQuerySource source : sources) {
+            removeQuerySource(source);
+        }
     }
 
     public void addLetClauses(Collection<LetClause> lets) {
@@ -41,6 +53,16 @@ public class QueryContext {
 
     public void addLetClause(LetClause let) {
         lets.put(let.getIdentifier(), let);
+    }
+
+    public void removeLetClause(LetClause let) {
+        lets.remove(let.getIdentifier());
+    }
+
+    public void removeLetClauses(Collection<LetClause> lets) {
+        for (LetClause let : lets) {
+            removeLetClause(let);
+        }
     }
 
     public AliasedQuerySource resolveAlias(String identifier) {

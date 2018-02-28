@@ -2,11 +2,23 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
 
+import java.util.List;
+
 public class CqlTranslatorException extends RuntimeException {
     public enum ErrorSeverity {
         Info,
         Warning,
         Error
+    }
+
+    public static boolean HasErrors(List<CqlTranslatorException> exceptions) {
+        for (CqlTranslatorException exception : exceptions) {
+            if (exception.getSeverity() == ErrorSeverity.Error) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public CqlTranslatorException(String message) {

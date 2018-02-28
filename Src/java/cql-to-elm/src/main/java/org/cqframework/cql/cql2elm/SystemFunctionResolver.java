@@ -63,6 +63,7 @@ public class SystemFunctionResolver {
                 // Clinical Functions
                 case "AgeInYears":
                 case "AgeInMonths":
+                case "AgeInWeeks":
                 case "AgeInDays":
                 case "AgeInHours":
                 case "AgeInMinutes":
@@ -74,6 +75,7 @@ public class SystemFunctionResolver {
 
                 case "AgeInYearsAt":
                 case "AgeInMonthsAt":
+                case "AgeInWeeksAt":
                 case "AgeInDaysAt":
                 case "AgeInHoursAt":
                 case "AgeInMinutesAt":
@@ -85,7 +87,9 @@ public class SystemFunctionResolver {
                     return resolveCalculateAgeAt(ops, resolveAgeRelatedFunctionPrecision(fun));
                 }
 
+                case "CalculateAgeInYears":
                 case "CalculateAgeInMonths":
+                case "CalculateAgeInWeeks":
                 case "CalculateAgeInDays":
                 case "CalculateAgeInHours":
                 case "CalculateAgeInMinutes":
@@ -97,6 +101,7 @@ public class SystemFunctionResolver {
 
                 case "CalculateAgeInYearsAt":
                 case "CalculateAgeInMonthsAt":
+                case "CalculateAgeInWeeksAt":
                 case "CalculateAgeInDaysAt":
                 case "CalculateAgeInHoursAt":
                 case "CalculateAgeInMinutesAt":
@@ -297,6 +302,8 @@ public class SystemFunctionResolver {
             return DateTimePrecision.YEAR;
         } else if (name.contains("Months")) {
             return DateTimePrecision.MONTH;
+        } else if (name.contains("Weeks")) {
+            return DateTimePrecision.WEEK;
         } else if (name.contains("Days")) {
             return DateTimePrecision.DAY;
         } else if (name.contains("Hours")) {
@@ -411,7 +418,9 @@ public class SystemFunctionResolver {
         Slice slice = of.createSlice();
         slice.setSource(fun.getOperand().get(0));
         slice.setStartIndex(builder.createLiteral(0));
-        slice.setEndIndex(fun.getOperand().get(1));
+        Coalesce coalesce = of.createCoalesce().withOperand(fun.getOperand().get(1), builder.createLiteral(0));
+        builder.resolveCall("System", "Coalesce", new NaryExpressionInvocation(coalesce));
+        slice.setEndIndex(coalesce);
         builder.resolveCall("System", "Take", new TakeInvocation(slice));
         return slice;
     }

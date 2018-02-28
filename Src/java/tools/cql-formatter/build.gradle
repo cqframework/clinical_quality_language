@@ -1,0 +1,13 @@
+apply plugin: 'application'
+
+mainClassName = 'org.cqframework.cql.tools.formatter.Main'
+
+dependencies {
+    testCompile project(":cql-to-elm")
+    compile project(":cql")
+}
+
+
+test {
+    classpath = project.sourceSets.test.runtimeClasspath + files("${rootDir}/cql-to-elm/src/test/resources")
+}

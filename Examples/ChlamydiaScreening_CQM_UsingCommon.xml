@@ -106,9 +106,7 @@
                                  <operand valueType="t:String" value="completed" xsi:type="Literal"/>
                               </where>
                               <sort>
-                                 <by direction="asc" xsi:type="ByExpression">
-                                    <expression path="dateTime" scope="E" xsi:type="Property"/>
-                                 </by>
+                                 <by direction="asc" path="dateTime" xsi:type="ByColumn"/>
                               </sort>
                            </source>
                         </source>

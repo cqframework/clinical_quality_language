@@ -27,7 +27,6 @@ buildTestData = (watch = false) ->
 
 task 'build', 'Build lib/ and lib-test/ from src/ and test/', ->
   build('src', 'lib')
-  build('src', '../../java/cql-execution/src/main/resources/org/cqframework/cql/execution/javascript')
   build('test', 'lib-test')
 
 task 'build-test-data', 'Build test/data/cql-test-data.coffee from test/data/cql-test-data.txt', ->

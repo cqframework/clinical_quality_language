@@ -4,6 +4,7 @@ import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -960,6 +961,30 @@ public class Cql2ElmVisitorTest {
         assertThat(query.getRelationship(), is(empty()));
         assertThat(query.getWhere(), is(nullValue()));
         assertThat(query.getSort(), is(nullValue()));
+    }
+
+    @Test
+    public void testChoiceWithAlternativeConversion() throws IOException {
+        ExpressionDef def = (ExpressionDef) visitFile("TestChoiceTypes.cql");
+        Query query = (Query) def.getExpression();
+
+        // First check the source
+        AliasedQuerySource source = query.getSource().get(0);
+        assertThat(source.getAlias(), is("Q"));
+        Retrieve request = (Retrieve) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("QuestionnaireResponse"));
+
+        // Then check that the suchThat of the with is a greater with a Case as the left operand
+        RelationshipClause relationship = query.getRelationship().get(0);
+        assertThat(relationship.getSuchThat(), instanceOf(Greater.class));
+        Greater suchThat = (Greater)relationship.getSuchThat();
+        assertThat(suchThat.getOperand().get(0), instanceOf(Case.class));
+        Case caseExpression = (Case)suchThat.getOperand().get(0);
+        assertThat(caseExpression.getCaseItem(), hasSize(2));
+        assertThat(caseExpression.getCaseItem().get(0).getWhen(), instanceOf(Is.class));
+        assertThat(caseExpression.getCaseItem().get(0).getThen(), instanceOf(FunctionRef.class));
+        assertThat(caseExpression.getCaseItem().get(1).getWhen(), instanceOf(Is.class));
+        assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
     }
 
     // TODO: This test needs to be repurposed, it won't work with the query as is.

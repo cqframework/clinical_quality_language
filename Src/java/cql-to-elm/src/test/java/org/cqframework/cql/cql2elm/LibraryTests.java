@@ -86,4 +86,17 @@ public class LibraryTests {
         }
     }
 
+    @Test
+    public void testInvalidBaseLibrary() {
+        CqlTranslator translator = null;
+        try {
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingInvalidBaseLibrary.cql"), modelManager, libraryManager);
+            assertThat(translator.getErrors().size(), is(1));
+            assertThat(translator.getErrors().get(0), instanceOf(CqlTranslatorException.class));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'eclipse'
 
     group = 'info.cqframework'
-    version = '1.2.5-SNAPSHOT'
+    version = '1.2.18'
 }
 
 subprojects {
@@ -74,7 +74,7 @@ subprojects {
     tasks.withType(Javadoc) {
         options.addStringOption('Xdoclint:none', '-quiet')
     }
-    
+
     task javadocJar(type: Jar) {
         classifier = 'javadoc'
         from javadoc
@@ -84,13 +84,13 @@ subprojects {
         classifier = 'sources'
         from sourceSets.main.allSource
     }
-    
+
     artifacts {
         archives javadocJar, sourcesJar
     }
 }
 
-configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-execution']}) {
+configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm']}) {
     configurations {
         xjc
     }
@@ -149,14 +149,14 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-
        signing.password=secret
        signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
    - If the library version ends with '-SNAPSHOT', it will be deployed to the snapshot repository, else it will be
-     deployed to the staging repository (which you then must manually release).
+     deployed to the staging repository (which you then must manually release http://central.sonatype.org/pages/releasing-the-deployment.html).
    - Repo for snapshots and releases: https://oss.sonatype.org/content/groups/public/info/cqframework/
    - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
  */
-configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-to-elm', 'qdm']}) {
+configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-to-elm', 'qdm', 'cql-formatter']}) {
     apply plugin: 'maven'
     apply plugin: 'signing'
-    
+
     signing {
         required { gradle.taskGraph.hasTask(uploadArchives) }
         sign configurations.archives
@@ -166,7 +166,7 @@ configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                
+
                 /* Use these to test locally (but don't forget to comment out others!)
                 repository(url: "file://${buildDir}/repo")
                 snapshotRepository(url: "file://${buildDir}/ssRepo")
@@ -225,7 +225,7 @@ configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.4'
+    gradleVersion = '4.1'
 }
 
 idea {
