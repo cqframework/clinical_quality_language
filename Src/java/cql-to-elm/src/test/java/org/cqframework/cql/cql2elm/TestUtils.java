@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.fhir.ucum.UcumEssenceService;
+import org.fhir.ucum.UcumException;
+import org.fhir.ucum.UcumService;
 import org.hl7.elm.r1.Library;
 
 import java.io.File;
@@ -24,11 +27,17 @@ public class TestUtils {
 
     private static ModelManager modelManager;
     private static LibraryManager libraryManager;
+    private static UcumService ucumService;
 
     private static void setup() {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+        try {
+            ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("ucum-essence.xml"));
+        } catch (UcumException e) {
+            e.printStackTrace();
+        }
     }
 
     private static ModelManager getModelManager() {
@@ -103,7 +112,7 @@ public class TestUtils {
         preprocessor.visit(tree);
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        LibraryBuilder libraryBuilder = new LibraryBuilder(modelManager, libraryManager);
+        LibraryBuilder libraryBuilder = new LibraryBuilder(modelManager, libraryManager, ucumService);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(libraryBuilder);
         visitor.setTokenStream(tokens);
         visitor.setLibraryInfo(preprocessor.getLibraryInfo());
