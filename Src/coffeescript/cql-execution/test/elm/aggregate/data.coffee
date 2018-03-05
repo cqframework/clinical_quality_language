@@ -150,10 +150,6 @@ module.exports['Count'] = {
                      "operand" : {
                         "localId" : "11",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -161,10 +157,6 @@ module.exports['Count'] = {
                      "operand" : {
                         "localId" : "12",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -172,10 +164,6 @@ module.exports['Count'] = {
                      "operand" : {
                         "localId" : "13",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "14",
@@ -365,10 +353,6 @@ module.exports['Sum'] = {
                      "operand" : {
                         "localId" : "11",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -376,10 +360,6 @@ module.exports['Sum'] = {
                      "operand" : {
                         "localId" : "12",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -387,10 +367,6 @@ module.exports['Sum'] = {
                      "operand" : {
                         "localId" : "13",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "14",
@@ -552,10 +528,6 @@ module.exports['Sum'] = {
                      "operand" : {
                         "localId" : "27",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
@@ -563,10 +535,6 @@ module.exports['Sum'] = {
                      "operand" : {
                         "localId" : "28",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
@@ -574,10 +542,6 @@ module.exports['Sum'] = {
                      "operand" : {
                         "localId" : "29",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "30",
@@ -996,10 +960,6 @@ module.exports['Min'] = {
                      "operand" : {
                         "localId" : "12",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "14",
@@ -1016,10 +976,6 @@ module.exports['Min'] = {
                      "operand" : {
                         "localId" : "15",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "16",
@@ -1246,10 +1202,6 @@ module.exports['Min'] = {
                      "operand" : {
                         "localId" : "34",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "36",
@@ -1266,10 +1218,6 @@ module.exports['Min'] = {
                      "operand" : {
                         "localId" : "37",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "38",
@@ -1753,10 +1701,6 @@ module.exports['Max'] = {
                      "operand" : {
                         "localId" : "12",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -1764,10 +1708,6 @@ module.exports['Max'] = {
                      "operand" : {
                         "localId" : "13",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "14",
@@ -1941,10 +1881,6 @@ module.exports['Max'] = {
                      "operand" : {
                         "localId" : "28",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
@@ -1952,10 +1888,6 @@ module.exports['Max'] = {
                      "operand" : {
                         "localId" : "29",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "30",
@@ -2493,10 +2425,6 @@ module.exports['Avg'] = {
                            "operand" : {
                               "localId" : "11",
                               "type" : "Null"
-                           },
-                           "asTypeSpecifier" : {
-                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                              "type" : "NamedTypeSpecifier"
                            }
                         }, {
                            "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -2504,10 +2432,6 @@ module.exports['Avg'] = {
                            "operand" : {
                               "localId" : "12",
                               "type" : "Null"
-                           },
-                           "asTypeSpecifier" : {
-                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                              "type" : "NamedTypeSpecifier"
                            }
                         }, {
                            "localId" : "13",
@@ -2681,10 +2605,6 @@ module.exports['Avg'] = {
                      "operand" : {
                         "localId" : "26",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
@@ -2692,10 +2612,6 @@ module.exports['Avg'] = {
                      "operand" : {
                         "localId" : "27",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "28",
@@ -3766,10 +3682,6 @@ module.exports['Median'] = {
                            "operand" : {
                               "localId" : "68",
                               "type" : "Null"
-                           },
-                           "asTypeSpecifier" : {
-                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                              "type" : "NamedTypeSpecifier"
                            }
                         }, {
                            "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -3777,10 +3689,6 @@ module.exports['Median'] = {
                            "operand" : {
                               "localId" : "69",
                               "type" : "Null"
-                           },
-                           "asTypeSpecifier" : {
-                              "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                              "type" : "NamedTypeSpecifier"
                            }
                         }, {
                            "localId" : "70",
@@ -4046,10 +3954,6 @@ module.exports['Median'] = {
                      "operand" : {
                         "localId" : "98",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Quantity",
@@ -4057,10 +3961,6 @@ module.exports['Median'] = {
                      "operand" : {
                         "localId" : "99",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Quantity",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "100",
@@ -4505,10 +4405,6 @@ module.exports['Mode'] = {
                      "operand" : {
                         "localId" : "13",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -4516,10 +4412,6 @@ module.exports['Mode'] = {
                      "operand" : {
                         "localId" : "14",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "15",
@@ -6726,10 +6618,6 @@ module.exports['AllTrue'] = {
                      "operand" : {
                         "localId" : "11",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -6737,10 +6625,6 @@ module.exports['AllTrue'] = {
                      "operand" : {
                         "localId" : "12",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "13",
@@ -6858,10 +6742,6 @@ module.exports['AllTrue'] = {
                      "operand" : {
                         "localId" : "27",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -6869,10 +6749,6 @@ module.exports['AllTrue'] = {
                      "operand" : {
                         "localId" : "28",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "29",
@@ -7038,10 +6914,6 @@ module.exports['AnyTrue'] = {
                      "operand" : {
                         "localId" : "11",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -7049,10 +6921,6 @@ module.exports['AnyTrue'] = {
                      "operand" : {
                         "localId" : "12",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "13",
@@ -7170,10 +7038,6 @@ module.exports['AnyTrue'] = {
                      "operand" : {
                         "localId" : "27",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -7181,10 +7045,6 @@ module.exports['AnyTrue'] = {
                      "operand" : {
                         "localId" : "28",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "29",

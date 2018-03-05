@@ -462,10 +462,6 @@ module.exports['Concat'] = {
                   "operand" : {
                      "localId" : "41",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -913,10 +909,6 @@ module.exports['Combine'] = {
                      "operand" : {
                         "localId" : "23",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}String",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "24",
@@ -1112,10 +1104,6 @@ module.exports['Split'] = {
                   "operand" : {
                      "localId" : "10",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                },
                "separator" : {
@@ -1166,10 +1154,6 @@ module.exports['Split'] = {
                   "operand" : {
                      "localId" : "15",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1487,10 +1471,6 @@ module.exports['Upper'] = {
                   "operand" : {
                      "localId" : "11",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1677,10 +1657,6 @@ module.exports['Lower'] = {
                   "operand" : {
                      "localId" : "11",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1947,10 +1923,6 @@ module.exports['Indexer'] = {
                   "operand" : {
                      "localId" : "21",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -2134,10 +2106,6 @@ module.exports['PositionOf'] = {
                   "operand" : {
                      "localId" : "10",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                },
                "string" : {
@@ -2188,10 +2156,6 @@ module.exports['PositionOf'] = {
                   "operand" : {
                      "localId" : "15",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -2615,10 +2579,6 @@ module.exports['Substring'] = {
                   "operand" : {
                      "localId" : "36",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                },
                "startIndex" : {
@@ -2669,10 +2629,6 @@ module.exports['Substring'] = {
                   "operand" : {
                      "localId" : "41",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }

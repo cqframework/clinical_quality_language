@@ -157,10 +157,6 @@ module.exports['And'] = {
                   "operand" : {
                      "localId" : "11",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -268,10 +264,6 @@ module.exports['And'] = {
                   "operand" : {
                      "localId" : "23",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -304,10 +296,6 @@ module.exports['And'] = {
                   "operand" : {
                      "localId" : "26",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -315,10 +303,6 @@ module.exports['And'] = {
                   "operand" : {
                      "localId" : "27",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -351,10 +335,6 @@ module.exports['And'] = {
                   "operand" : {
                      "localId" : "30",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "31",
@@ -392,10 +372,6 @@ module.exports['And'] = {
                   "operand" : {
                      "localId" : "34",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "35",
@@ -560,10 +536,6 @@ module.exports['Or'] = {
                   "operand" : {
                      "localId" : "11",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -671,10 +643,6 @@ module.exports['Or'] = {
                   "operand" : {
                      "localId" : "23",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -707,10 +675,6 @@ module.exports['Or'] = {
                   "operand" : {
                      "localId" : "26",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -718,10 +682,6 @@ module.exports['Or'] = {
                   "operand" : {
                      "localId" : "27",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -754,10 +714,6 @@ module.exports['Or'] = {
                   "operand" : {
                      "localId" : "30",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "31",
@@ -795,10 +751,6 @@ module.exports['Or'] = {
                   "operand" : {
                      "localId" : "34",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "35",
@@ -963,10 +915,6 @@ module.exports['XOr'] = {
                   "operand" : {
                      "localId" : "11",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -1074,10 +1022,6 @@ module.exports['XOr'] = {
                   "operand" : {
                      "localId" : "23",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -1110,10 +1054,6 @@ module.exports['XOr'] = {
                   "operand" : {
                      "localId" : "26",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}Boolean",
@@ -1121,10 +1061,6 @@ module.exports['XOr'] = {
                   "operand" : {
                      "localId" : "27",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -1157,10 +1093,6 @@ module.exports['XOr'] = {
                   "operand" : {
                      "localId" : "30",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "31",
@@ -1198,10 +1130,6 @@ module.exports['XOr'] = {
                   "operand" : {
                      "localId" : "34",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "35",
@@ -1342,10 +1270,6 @@ module.exports['Not'] = {
                   "operand" : {
                      "localId" : "8",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1484,10 +1408,6 @@ module.exports['IsTrue'] = {
                   "operand" : {
                      "localId" : "8",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -1626,10 +1546,6 @@ module.exports['IsFalse'] = {
                   "operand" : {
                      "localId" : "8",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Boolean",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }

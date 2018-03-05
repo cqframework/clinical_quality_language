@@ -126,10 +126,6 @@ module.exports['FromString'] = {
                "operand" : {
                   "localId" : "6",
                   "type" : "Null"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}String",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {
@@ -770,10 +766,6 @@ module.exports['FromInteger'] = {
                "operand" : {
                   "localId" : "11",
                   "type" : "Null"
-               },
-               "asTypeSpecifier" : {
-                  "name" : "{urn:hl7-org:elm-types:r1}Decimal",
-                  "type" : "NamedTypeSpecifier"
                }
             }
          }, {

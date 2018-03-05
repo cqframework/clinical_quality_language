@@ -2165,10 +2165,6 @@ module.exports['QueryFilterNulls'] = {
                         "operand" : {
                            "localId" : "2",
                            "type" : "Null"
-                        },
-                        "asTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}String",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }, {
                         "localId" : "3",
@@ -2181,10 +2177,6 @@ module.exports['QueryFilterNulls'] = {
                         "operand" : {
                            "localId" : "4",
                            "type" : "Null"
-                        },
-                        "asTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}String",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }, {
                         "localId" : "5",
@@ -2197,10 +2189,6 @@ module.exports['QueryFilterNulls'] = {
                         "operand" : {
                            "localId" : "6",
                            "type" : "Null"
-                        },
-                        "asTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}String",
-                           "type" : "NamedTypeSpecifier"
                         }
                      } ]
                   }

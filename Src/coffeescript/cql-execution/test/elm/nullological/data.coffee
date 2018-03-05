@@ -435,10 +435,6 @@ module.exports['Coalesce'] = {
                   "operand" : {
                      "localId" : "10",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
@@ -446,10 +442,6 @@ module.exports['Coalesce'] = {
                   "operand" : {
                      "localId" : "11",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "12",
@@ -543,10 +535,6 @@ module.exports['Coalesce'] = {
                      "operand" : {
                         "localId" : "20",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}String",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "asType" : "{urn:hl7-org:elm-types:r1}String",
@@ -554,10 +542,6 @@ module.exports['Coalesce'] = {
                      "operand" : {
                         "localId" : "21",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}String",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "22",
@@ -570,10 +554,6 @@ module.exports['Coalesce'] = {
                      "operand" : {
                         "localId" : "23",
                         "type" : "Null"
-                     },
-                     "asTypeSpecifier" : {
-                        "name" : "{urn:hl7-org:elm-types:r1}String",
-                        "type" : "NamedTypeSpecifier"
                      }
                   }, {
                      "localId" : "24",
@@ -672,10 +652,6 @@ module.exports['Coalesce'] = {
                   "operand" : {
                      "localId" : "35",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}String",
@@ -683,10 +659,6 @@ module.exports['Coalesce'] = {
                   "operand" : {
                      "localId" : "36",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "37",
@@ -699,10 +671,6 @@ module.exports['Coalesce'] = {
                   "operand" : {
                      "localId" : "38",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "39",
@@ -810,10 +778,6 @@ module.exports['Coalesce'] = {
                   "operand" : {
                      "localId" : "48",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "asType" : "{urn:hl7-org:elm-types:r1}Integer",
@@ -821,10 +785,6 @@ module.exports['Coalesce'] = {
                   "operand" : {
                      "localId" : "49",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "50",

@@ -5537,10 +5537,6 @@ module.exports['IndexOf'] = {
                   "operand" : {
                      "localId" : "47",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}String",
-                     "type" : "NamedTypeSpecifier"
                   }
                }
             }
@@ -6006,10 +6002,6 @@ module.exports['Indexer'] = {
                   "operand" : {
                      "localId" : "38",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -6618,10 +6610,6 @@ module.exports['In'] = {
                   "operand" : {
                      "localId" : "46",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                }, {
                   "localId" : "50",
@@ -7379,10 +7367,6 @@ module.exports['Contains'] = {
                   "operand" : {
                      "localId" : "57",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -8361,10 +8345,6 @@ module.exports['Includes'] = {
                   "operand" : {
                      "localId" : "96",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }
@@ -10476,10 +10456,6 @@ module.exports['ProperIncludes'] = {
                   "operand" : {
                      "localId" : "99",
                      "type" : "Null"
-                  },
-                  "asTypeSpecifier" : {
-                     "name" : "{urn:hl7-org:elm-types:r1}Integer",
-                     "type" : "NamedTypeSpecifier"
                   }
                } ]
             }

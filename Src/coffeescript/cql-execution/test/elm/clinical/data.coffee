@@ -969,10 +969,6 @@ module.exports['InValueSet'] = {
                         "operand" : {
                            "localId" : "56",
                            "type" : "Null"
-                        },
-                        "asTypeSpecifier" : {
-                           "name" : "{urn:hl7-org:elm-types:r1}String",
-                           "type" : "NamedTypeSpecifier"
                         }
                      }
                   }, {
