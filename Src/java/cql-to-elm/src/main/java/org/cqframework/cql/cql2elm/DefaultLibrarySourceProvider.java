@@ -38,6 +38,7 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
 
             File mostRecentFile = null;
             Version mostRecent = null;
+            Version requestedVersion = libraryIdentifier.getVersion() == null ? null : new Version(libraryIdentifier.getVersion());
             for (File file : path.toFile().listFiles(filter)) {
                 String fileName = file.getName();
                 int indexOfExtension = fileName.lastIndexOf(".");
@@ -48,9 +49,12 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
                 int indexOfVersionSeparator = fileName.indexOf("-");
                 if (indexOfVersionSeparator >= 0) {
                     Version version = new Version(fileName.substring(indexOfVersionSeparator + 1));
-                    if (mostRecent == null || version.compareTo(mostRecent) > 0) {
-                        mostRecent = version;
-                        mostRecentFile = file;
+                    // If the file has a version, make sure it is compatible with the version we are looking for
+                    if (requestedVersion == null || version.compatibleWith(requestedVersion)) {
+                        if (mostRecent == null || version.compareTo(mostRecent) > 0) {
+                            mostRecent = version;
+                            mostRecentFile = file;
+                        }
                     }
                 }
                 else {
