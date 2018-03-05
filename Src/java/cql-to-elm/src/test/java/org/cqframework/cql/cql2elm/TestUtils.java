@@ -11,6 +11,8 @@ import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
 import org.hl7.elm.r1.Library;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,9 +37,15 @@ public class TestUtils {
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
             ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("ucum-essence.xml"));
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance(System.getProperty(XmlPullParserFactory.PROPERTY_NAME), null);
+            factory.setNamespaceAware(true);
+
         } catch (UcumException e) {
             e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
         }
+
     }
 
     private static ModelManager getModelManager() {
