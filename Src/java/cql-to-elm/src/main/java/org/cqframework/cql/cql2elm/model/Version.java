@@ -56,15 +56,18 @@ public class Version implements Comparable<Version> {
                     if (thisPart != thatPart)
                         return false;
                 }
+                break;
 
                 case 1: {
                     if (thisPart < thatPart)
                         return false;
                 }
+                break;
 
                 case 2: {
                     // ignore patch version....
                 }
+                break;
             }
         }
 
