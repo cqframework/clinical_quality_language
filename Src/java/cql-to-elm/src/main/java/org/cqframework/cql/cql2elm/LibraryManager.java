@@ -32,11 +32,11 @@ public class LibraryManager {
         translationStack = new Stack<>();
         this.librarySourceLoader = new DefaultLibrarySourceLoader();
     }
-    
+
     public LibrarySourceLoader getLibrarySourceLoader() {
       return librarySourceLoader;
     }
-    
+
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
@@ -47,13 +47,19 @@ public class LibraryManager {
         }
 
         TranslatedLibrary library = libraries.get(libraryIdentifier.getId());
-        
-        if (library != null 
-                && libraryIdentifier.getVersion() != null 
+
+        if (library != null
+                && libraryIdentifier.getVersion() != null
                 && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
             throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
                     libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
-        } else {
+        }
+
+        else if (library != null) {
+            return library;
+        }
+
+        else {
             library = translateLibrary(libraryIdentifier, errors);
             if (!HasErrors(errors)) {
                 libraries.put(libraryIdentifier.getId(), library);
