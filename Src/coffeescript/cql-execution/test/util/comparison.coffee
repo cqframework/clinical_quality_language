@@ -1,5 +1,6 @@
 should = require 'should'
-{equals} = require '../../lib/util/comparison'
+{equals, equivalent} = require '../../lib/util/comparison'
+{Code, Concept} = require '../../lib/datatypes/clinical'
 
 describe 'equals', ->
   it 'should detect equality/inequality for numbers', ->
@@ -50,7 +51,8 @@ describe 'equals', ->
 
     equals(new Foo('abc', [1,2,3]), new Foo('abc', [1,2,3])).should.be.true()
     equals(new Foo('abc', [1,2,3]), new Foo('abcd', [1,2,3])).should.be.false()
-    equals(new Foo('abc', new Bar('xyz')), new Foo('abc', new Bar('xyz'))).should.be.true()
+    equals(new Foo('abc', new Bar('xyz', [1,2,3])), new Foo('abc', new Bar('xyz', [1,2,3]))).should.be.true()
+    equals(new Foo('abc', new Bar('xyz')), new Foo('abc', new Bar('xyz'))).should.be.false() # because Bar is missing components
     equals(new Foo('abc', new Bar('xyz')), new Foo('abc', new Bar('xyz',999))).should.be.false()
     equals(new Foo('abc', [1,2,3]), new Bar('abc', [1,2,3])).should.be.false()
     equals(new Bar('abc', [1,2,3]), new Foo('abc', [1,2,3])).should.be.false()
@@ -86,14 +88,44 @@ describe 'equals', ->
     equals([['a','b','c'],[1,2,3]], [['a','b','c'],[1,2,3,4]]).should.be.false()
 
   it 'should handle null values', ->
-    equals(null, null).should.be.true()
-    equals(null, 0).should.be.false()
-    equals(0, null).should.be.false()
-    equals(null, 'null').should.be.false()
-    equals('null', null).should.be.false()
-    equals(null, {}).should.be.false()
-    equals({}, null).should.be.false()
-    equals(null, [null]).should.be.false()
-    equals([null], null).should.be.false()
-    equals(null, {}.undef).should.be.false()
-    equals({}.undef, null).should.be.false()
+    should.not.exist(equals(null, null))
+    should.not.exist(equals(null, 0))
+    should.not.exist(equals(0, null))
+    should.not.exist(equals(null, 'null'))
+    should.not.exist(equals('null', null))
+    should.not.exist(equals(null, {}))
+    should.not.exist(equals({}, null))
+    should.not.exist(equals(null, [null]))
+    should.not.exist(equals([null], null))
+    should.not.exist(equals(null, {}.undef))
+    should.not.exist(equals({}.undef, null))
+
+describe 'equivalent', ->
+  it 'should detect equivalent and non-equivalent codes', ->
+    equivalent(new Code('12345', 'Code System', '2016', 'Display Name'), new Code('12345', 'Code System', undefined, undefined)).should.be.true()
+    equivalent(new Code('1234', 'First Code System', '2016', 'Display Name'), new Code('1234', 'Different Code System', undefined, undefined)).should.be.false()
+    equivalent(new Code('123', 'test', '2016'), new Code('12', 'test', '2016')).should.be.false()
+    equivalent(new Code('123', undefined, undefined, undefined), new Code('123', undefined, undefined, undefined)).should.be.true()
+
+  it 'should detect if second parameter is not a code and still result to true', ->
+    equivalent(new Code('123', 'test', '2016'), '123').should.be.true()
+
+  it 'should detect if parameters are not codes and return using equals', ->
+    equivalent('123', '123').should.be.true()
+    equivalent(123, 123).should.be.true()
+    equivalent('123', new Code('123', 'test', '2016')).should.be.false()
+
+  it 'should consider codes with different versions to be equivalent', ->
+    equivalent(new Code('1234', 'System', '2016', 'Display Name'), new Code('1234', 'System', '2017', undefined)).should.be.true()
+
+  it 'should detect equivalency between code and list of codes', ->
+    equivalent(new Code('1234', 'System', 'version2017', 'Display Name'), [new Code('1234', 'System', 'version2017', undefined), new Code('1', '2', '3', undefined)]).should.be.true()
+    equivalent(new Code('1234', 'System', 'version2017', 'Display Name'), [new Code('1111', 'System', 'version2017', undefined), new Code('1', '2', '3', undefined)]).should.be.false()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), [new Code('1234', 'System', 'version2017', undefined), new Code('1', '2', '3', undefined)]).should.be.true()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), [new Code('1111', 'System', 'version2017', undefined), new Code('1', '2', '3', undefined)]).should.be.false()
+
+  it 'should detect equivalency between code and concept of codes', ->
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), new Concept([new Code('1234', 'System', 'version2016', undefined), new Code('1','2','3', undefined)])).should.be.true()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), new Concept([new Code('1111', 'System', 'version2016', undefined), new Code('1','2','3', undefined)])).should.be.false()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), new Concept([new Code('1234', 'System', 'version2017', undefined), new Code('1','2','3', undefined)])).should.be.true()
+    equivalent(new Code('1234', 'System', 'version2016', 'Display Name'), new Concept([new Code('1111', 'System', 'version2017', undefined), new Code('1','2','3', undefined)])).should.be.false()

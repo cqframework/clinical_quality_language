@@ -1,6 +1,31 @@
 should = require 'should'
 setup = require '../../setup'
 data = require './data'
+Q = require '../../../lib/elm/quantity'
+
+validateQuantity = (object,expectedValue,expectedUnit) ->
+  object.constructor.name.should.equal "Quantity"
+  q = Q.createQuantity(expectedValue,expectedUnit)
+  q.equals(object).should.be.true("Expected "+ object + " to equal " + q)
+  
+doQuantityMathTests = (tests, operator) ->
+  func = switch operator
+           when "*" then Q.doMultiplication
+           when "/" then Q.doDivision
+           when "+" then Q.doAddition
+           when "-" then Q.doSubtraction
+
+  for x in tests
+    a = Q.parseQuantity(x[0])
+    b = Q.parseQuantity(x[1])
+    # try to parse the expected value but if it comes back null
+    # which it will if there are no units create a new Quantity
+    # with just the exepected as the value with null units
+    e = Q.parseQuantity(x[2]) || new Q.Quantity({value: x[2]})
+
+    res = func(a,b)
+    e.equals(res).should.be.true(a + " " + operator + " " + b + " should eq " + e + " but was " + res )
+
 
 describe 'Add', ->
   @beforeEach ->
@@ -328,43 +353,35 @@ describe 'Quantity', ->
     setup @, data
 
   it "should be able to perform Quantity Addition", ->
-    aqq = @add_q_q.exec(@ctx)
-    aqq.value.should.equal 20
-    aqq.unit.should.equal 'days'
+    validateQuantity @add_q_q.exec(@ctx), 20 , 'days'
     adq = @add_d_q.exec(@ctx)
     adq.constructor.name.should.equal "DateTime"
     adq.year.should.equal 2000
     adq.month.should.equal 1
     adq.day.should.equal 11
+    validateQuantity @add_q_q_diff.exec(@ctx), (10 + (10/(24*60))), 'days'
+
 
 
   it "should be able to perform Quantity Subtraction", ->
-    sqq = @sub_q_q.exec(@ctx)
-    sqq.value.should.equal 0
-    sqq.unit.should.equal 'days'
+    validateQuantity @sub_q_q.exec(@ctx), 0, 'days'
     sdq = @sub_d_q.exec(@ctx)
     sdq.constructor.name.should.equal "DateTime"
     sdq.year.should.equal 1999
     sdq.month.should.equal 12
     sdq.day.should.equal 22
+    validateQuantity @sub_q_q_diff.exec(@ctx), (10 - (10/(24*60))), 'days'
 
   it "should be able to perform Quantity Division", ->
-    dqd = @div_q_d.exec(@ctx)
-    dqd.constructor.name.should.equal "Quantity"
-    dqd.unit.should.equal "days"
-    dqd.value.should.equal 5
-    dqq = @div_q_q.exec(@ctx)
-    dqq.should.equal 1
+    validateQuantity @div_q_d.exec(@ctx), 5, 'days'
+    validateQuantity @div_q_q.exec(@ctx), 1 , null
 
   it "should be able to perform Quantity Multiplication", ->
-    mdq = @mul_d_q.exec(@ctx)
-    mdq.constructor.name.should.equal "Quantity"
-    mdq.unit.should.equal "days"
-    mdq.value.should.equal 20
-    mqd = @mul_q_d.exec(@ctx)
-    mqd.constructor.name.should.equal "Quantity"
-    mqd.unit.should.equal "days"
-    mqd.value.should.equal 20
+    # decilmal to quantity multiplication results in decimal value only
+    validateQuantity @mul_d_q.exec(@ctx), 20, 'days'
+    validateQuantity @mul_q_d.exec(@ctx), 20, 'days'
+    validateQuantity @mul_q_q.exec(@ctx), 20, "m2"
+    validateQuantity @mul_q_q_diff.exec(@ctx), 20, "m/d"
 
   it "should be able to perform Quantity Absolution", ->
     q = @abs.exec(@ctx)
@@ -375,3 +392,47 @@ describe 'Quantity', ->
     q = @neg.exec(@ctx)
     q.value.should.equal -10
     q.unit.should.equal 'days'
+
+  it "should be able to perform ucum multiplication in cql", ->
+    @multiplyUcum.exec(@ctx).should.be.true()
+
+  it "should be able to perform ucum division in cql", ->
+    @divideUcum.exec(@ctx).should.be.true()
+
+  it "should be able to perform ucum addition in cql", ->
+    @addUcum.exec(@ctx).should.be.true()
+
+  it "should be able to perform ucum subtraction in cql", ->
+    @subtractUcum.exec(@ctx).should.be.true()
+
+  it "should be able to perform ucum multiplication", ->
+    tests = [
+      ["10 'm'", "20 'm'", "200 'm2'"],
+      ["25 'km'", "5 'm'", "125000 'm2'"],
+      ["10 'ml'", "20 'dl'", "0.02 'l2'"],
+    ]
+    doQuantityMathTests(tests, "*")
+
+  it "should be able to perform ucum division", ->
+    tests = [
+      ["10 'm2'", "5 'm'", "2 'm'"],
+      ["25 'km'", "5 'm'", "5000"],
+      ["100 'm'", "2 'h'", "0.01388889 'm/s' "],
+      ["100 'mg'", "2 '[lb_av]'", "50 'mg/[lb_av]' "]
+    ]
+    doQuantityMathTests(tests, "/")
+  it "should be able to perform ucum addition", ->
+    tests = [
+      ["10 'm'", "20 'm'", "30 'm'"],
+      ["25 'km'", "5 'm'", "25005 'm'"],
+      ["10 'ml'", "20 'dl'", "2.01 'l'"],
+    ]
+    doQuantityMathTests(tests, "+")
+
+  it "should be able to perform ucum subtraction", ->
+    tests = [
+      ["10 'd'", "20 'd'", "-10 'd'"],
+      ["25 'km'", "5 'm'", "24995 'm'"],
+      ["10 'ml'", "20 'dl'", "-1.99 'l'"],
+    ]
+    doQuantityMathTests(tests, "-")

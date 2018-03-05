@@ -2,8 +2,7 @@
 { ValueSet } = require '../datatypes/datatypes'
 { build } = require './builder'
 { typeIsArray } = require '../util/util'
-{ equals } = require '../util/comparison'
-
+{ equals, equivalent } = require '../util/comparison'
 
 module.exports.List = class List extends Expression
   constructor: (json) ->
@@ -11,7 +10,7 @@ module.exports.List = class List extends Expression
     @elements = (build json.element) ? []
 
   exec: (ctx) ->
-    (item.exec(ctx) for item in @elements)
+    (item.execute(ctx) for item in @elements)
 
 module.exports.Exists = class Exists extends Expression
   constructor: (json) ->
@@ -26,7 +25,7 @@ module.exports.Exists = class Exists extends Expression
 
 # Delegated to by overloaded#Union
 module.exports.doUnion = (a, b) ->
-  a.concat b
+  doDistinct(a.concat b)
 
 # Delegated to by overloaded#Except
 module.exports.doExcept = (a, b) ->
@@ -48,9 +47,20 @@ module.exports.SingletonFrom = class SingletonFrom extends Expression
 
   exec: (ctx) ->
     arg = @execArgs ctx
-    if arg.length > 1 then throw new Error 'IllegalArgument: \'SingletonFrom\' requires a 0 or 1 arg array'
-    else if arg.length is 1 then return arg[0]
+    if arg? and arg.length > 1 then throw new Error 'IllegalArgument: \'SingletonFrom\' requires a 0 or 1 arg array'
+    else if arg? and arg.length is 1 then return arg[0]
     else return null
+
+module.exports.ToList = class ToList extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    arg = @execArgs ctx
+    if arg?
+      [arg]
+    else
+      []
 
 module.exports.IndexOf = class IndexOf extends Expression
   constructor: (json) ->
@@ -69,7 +79,7 @@ module.exports.IndexOf = class IndexOf extends Expression
 
 # Delegated to by overloaded#Contains and overloaded#In
 module.exports.doContains = doContains = (container, item) ->
-  return true for element in container when equals element, item
+  return true for element in container when equivalent element, item
   return false
 
 # Delegated to by overloaded#Includes and overloaded@IncludedIn
@@ -99,10 +109,14 @@ module.exports.Distinct = class Distinct extends Expression
     super
 
   exec: (ctx) ->
-    arg = @execArgs ctx
-    container = {}
-    container[itm] = itm for itm in arg
-    value for key, value of container
+    doDistinct(@execArgs ctx)
+
+doDistinct = (list) ->
+  seen = []
+  list.filter (item) ->
+    isNew = seen.every (seenItem) -> !equals(item, seenItem)
+    seen.push item if isNew
+    isNew
 
 # ELM-only, not a product of CQL
 module.exports.Current = class Current extends UnimplementedExpression

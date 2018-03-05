@@ -55,6 +55,19 @@ define NotContainsDate: DateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
 define ContainsImpreciseDate: DateIvl contains DateTime(2012, 4)
 define NotContainsImpreciseDate: DateIvl contains DateTime(2012, 9)
 define MayContainImpreciseDate: DateIvl contains DateTime(2012)
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define ContainsDayOfDateLowEdge: PrecisionDateIvl contains day of DateTime(2012, 3, 2, 0, 0, 0, 0)
+define ContainsDayOfDateHighEdge: PrecisionDateIvl contains day of DateTime(2012, 9, 2, 23, 59, 59, 999)
+define NotContainsDayOfDateLowEdge: PrecisionDateIvl contains day of DateTime(2012, 3, 1, 23, 59, 59, 999)
+define NotContainsDayOfDateHighEdge: PrecisionDateIvl contains day of DateTime(2012, 9, 3, 0, 0, 0, 0)
+define ContainsDayOfDateImpreciseLowEdge: PrecisionDateIvl contains day of DateTime(2012, 3, 2)
+define ContainsDayOfDateImpreciseHighEdge: PrecisionDateIvl contains day of DateTime(2012, 9, 2)
+define ContainsDayOfDateVeryImpreciseMiddle: PrecisionDateIvl contains day of DateTime(2012, 6)
+define NotContainsDayOfDateVeryImpreciseLow: PrecisionDateIvl contains day of DateTime(2012, 2)
+define NotContainsDayOfDateVeryImpreciseHigh: PrecisionDateIvl contains day of DateTime(2012, 10)
+define MayContainDayOfDateVeryImpreciseLow: PrecisionDateIvl contains day of DateTime(2012, 3)
+define MayContainDayOfDateVeryImpreciseHigh: PrecisionDateIvl contains day of DateTime(2012, 9)
+define MayContainDayOfDateVeryImpreciseSurrounding: PrecisionDateIvl contains day of DateTime(2012)
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseContainsDate: ImpDateIvl contains DateTime(2012, 6, 1, 0, 0, 0, 0)
 define ImpreciseNotContainsDate: ImpDateIvl contains DateTime(2012, 9, 1, 0, 0, 0, 0)
@@ -95,6 +108,19 @@ define NotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in DateIvl
 define ContainsImpreciseDate: DateTime(2012, 4) in DateIvl
 define NotContainsImpreciseDate: DateTime(2012, 9) in DateIvl
 define MayContainImpreciseDate: DateTime(2012) in DateIvl
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define ContainsDayOfDateLowEdge: DateTime(2012, 3, 2, 0, 0, 0, 0) in day of PrecisionDateIvl
+define ContainsDayOfDateHighEdge: DateTime(2012, 9, 2, 23, 59, 59, 999) in day of PrecisionDateIvl
+define NotContainsDayOfDateLowEdge: DateTime(2012, 3, 1, 23, 59, 59, 999) in day of PrecisionDateIvl
+define NotContainsDayOfDateHighEdge: DateTime(2012, 9, 3, 0, 0, 0, 0) in day of PrecisionDateIvl
+define ContainsDayOfDateImpreciseLowEdge: DateTime(2012, 3, 2) in day of PrecisionDateIvl
+define ContainsDayOfDateImpreciseHighEdge: DateTime(2012, 9, 2) in day of PrecisionDateIvl
+define ContainsDayOfDateVeryImpreciseMiddle: DateTime(2012, 6) in day of PrecisionDateIvl
+define NotContainsDayOfDateVeryImpreciseLow: DateTime(2012, 2) in day of PrecisionDateIvl
+define NotContainsDayOfDateVeryImpreciseHigh: DateTime(2012, 10) in day of PrecisionDateIvl
+define MayContainDayOfDateVeryImpreciseLow: DateTime(2012, 3) in day of PrecisionDateIvl
+define MayContainDayOfDateVeryImpreciseHigh: DateTime(2012, 9) in day of PrecisionDateIvl
+define MayContainDayOfDateVeryImpreciseSurrounding: DateTime(2012) in day of PrecisionDateIvl
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseContainsDate: DateTime(2012, 6, 1, 0, 0, 0, 0) in ImpDateIvl
 define ImpreciseNotContainsDate: DateTime(2012, 9, 1, 0, 0, 0, 0) in ImpDateIvl
@@ -131,6 +157,19 @@ define NotIncludesDateIvl: DateIvl includes Interval[DateTime(2012, 6, 1, 0, 0, 
 define IncludesImpreciseDateIvl: DateIvl includes Interval[DateTime(2012, 4), DateTime(2012, 6)]
 define NotIncludesImpreciseDateIvl: DateIvl includes Interval[DateTime(2012, 4), DateTime(2012, 9)]
 define MayIncludeImpreciseDateIvl: DateIvl includes Interval[DateTime(2012), DateTime(2012)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define IncludesDayOfIvlLowEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define IncludesDayOfIvlHighEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 2, 23, 59, 59, 999))
+define NotIncludesDayOfIvlLowEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define NotIncludesDayOfIvlHighEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 3, 0, 0, 0, 0)]
+define IncludesDayOfIvlImpreciseLowEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 3, 2), DateTime(2012, 6, 1)]
+define IncludesDayOfIvlImpreciseHighEdge: PrecisionDateIvl includes day of Interval[DateTime(2012, 6, 1), DateTime(2012, 9, 2)]
+define IncludesDayOfIvlVeryImpreciseMiddle: PrecisionDateIvl includes day of Interval[DateTime(2012, 5), DateTime(2012, 6)]
+define NotIncludesDayOfIvlVeryImpreciseLow: PrecisionDateIvl includes day of Interval[DateTime(2012, 2), DateTime(2012, 6)]
+define NotIncludesDayOfIvlVeryImpreciseHigh: PrecisionDateIvl includes day of Interval[DateTime(2012, 6), DateTime(2012, 10)]
+define MayIncludeDayOfIvlVeryImpreciseLow: PrecisionDateIvl includes day of Interval[DateTime(2012, 3), DateTime(2012, 6)]
+define MayIncludeDayOfIvlVeryImpreciseHigh: PrecisionDateIvl includes day of Interval[DateTime(2012, 6), DateTime(2012, 9)]
+define MayIncludeDayOfIvlVeryImpreciseSurrounding: PrecisionDateIvl includes day of Interval[DateTime(2012), DateTime(2012)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseIncludesDateIvl: ImpDateIvl includes Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
 define ImpreciseNotIncludesDateIvl: ImpDateIvl includes Interval[DateTime(2012, 2, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
@@ -169,6 +208,15 @@ define NotProperlyIncludesDateIvl: DateIvl properly includes Interval[DateTime(2
 define PosInfEndProperlyIncludesIntIvl: Interval[0, null] properly includes Interval[1234, 5678]
 define PosInfEndNotProperlyIncludesIntIvl: Interval[0, null] properly includes Interval[0, null]
 define UnknownEndMayProperlyIncludeIntIvl: Interval[0, null) properly includes Interval[0, 0]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define ProperlyIncludesDayOfIvlLowEdge: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0))
+define ProperlyIncludesDayOfIvlHighEdge: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 2, 23, 59, 59, 999))
+define ProperlyIncludesDayOfIvlNearEdges: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3, 3, 0, 0, 0, 0), DateTime(2012, 9, 1, 23, 59, 59, 999))
+define NotProperlyIncludesDayOfIvlSameEdges: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 9, 2, 0, 0, 0, 0)]
+define MayProperlyIncludeDayOfIvlVeryImpreciseLow: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3), DateTime(2012, 6)]
+define MayProperlyIncludeDayOfIvlVeryImpreciseHigh: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 6), DateTime(2012, 9)]
+define MayProperlyIncludeDayOfIvlVeryImpreciseLowAndHigh: PrecisionDateIvl properly includes day of Interval[DateTime(2012, 3), DateTime(2012, 9)]
+define MayProperlyIncludeDayOfIvlVeryImpreciseSurrounding: PrecisionDateIvl properly includes day of Interval[DateTime(2012), DateTime(2012)]
 
 // @Test: IncludedIn
 define IncludesIntIvl: Interval[1, 4] included in Interval[1, 5]
@@ -181,6 +229,19 @@ define NotIncludesDateIvl: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2
 define IncludesImpreciseDateIvl: Interval[DateTime(2012, 4), DateTime(2012, 6)] included in DateIvl
 define NotIncludesImpreciseDateIvl: Interval[DateTime(2012, 4), DateTime(2012, 9)] included in DateIvl
 define MayIncludeImpreciseDateIvl: Interval[DateTime(2012), DateTime(2012)] included in DateIvl
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define IncludesDayOfIvlLowEdge: Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in day of PrecisionDateIvl
+define IncludesDayOfIvlHighEdge: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 2, 23, 59, 59, 999)) included in day of PrecisionDateIvl
+define NotIncludesDayOfIvlLowEdge: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] included in day of PrecisionDateIvl
+define NotIncludesDayOfIvlHighEdge: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 3, 0, 0, 0, 0)] included in day of PrecisionDateIvl
+define IncludesDayOfIvlImpreciseLowEdge: Interval[DateTime(2012, 3, 2), DateTime(2012, 6, 1)] included in day of PrecisionDateIvl
+define IncludesDayOfIvlImpreciseHighEdge: Interval[DateTime(2012, 6, 1), DateTime(2012, 9, 2)] included in day of PrecisionDateIvl
+define IncludesDayOfIvlVeryImpreciseMiddle: Interval[DateTime(2012, 5), DateTime(2012, 6)] included in day of PrecisionDateIvl
+define NotIncludesDayOfIvlVeryImpreciseLow: Interval[DateTime(2012, 2), DateTime(2012, 6)] included in day of PrecisionDateIvl
+define NotIncludesDayOfIvlVeryImpreciseHigh: Interval[DateTime(2012, 6), DateTime(2012, 10)] included in day of PrecisionDateIvl
+define MayIncludeDayOfIvlVeryImpreciseLow: Interval[DateTime(2012, 3), DateTime(2012, 6)] included in day of PrecisionDateIvl
+define MayIncludeDayOfIvlVeryImpreciseHigh: Interval[DateTime(2012, 6), DateTime(2012, 9)] included in day of PrecisionDateIvl
+define MayIncludeDayOfIvlVeryImpreciseSurrounding: Interval[DateTime(2012), DateTime(2012)] included in day of PrecisionDateIvl
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseIncludesDateIvl: Interval[DateTime(2012, 4, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
 define ImpreciseNotIncludesDateIvl: Interval[DateTime(2012, 2, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) included in ImpDateIvl
@@ -219,6 +280,15 @@ define NotProperlyIncludesDateIvl: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), Da
 define PosInfEndProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), null]
 define PosInfEndNotProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null] properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
 define UnknownEndMayBeProperlyIncludedInDateIvl: Interval[DateTime(2013, 1, 1, 0, 0, 0, 0), null) properly included in Interval[DateTime(2000, 1, 1, 0, 0, 0, 0), DateTime(2020, 1, 1, 0, 0, 0, 0)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define ProperlyIncludesDayOfIvlLowEdge: Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)) properly included in day of PrecisionDateIvl
+define ProperlyIncludesDayOfIvlHighEdge: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2012, 9, 2, 23, 59, 59, 999)) properly included in day of PrecisionDateIvl
+define ProperlyIncludesDayOfIvlNearEdges: Interval[DateTime(2012, 3, 3, 0, 0, 0, 0), DateTime(2012, 9, 1, 23, 59, 59, 999)) properly included in day of PrecisionDateIvl
+define NotProperlyIncludesDayOfIvlSameEdges: Interval[DateTime(2012, 3, 2, 0, 0, 0, 0), DateTime(2012, 9, 2, 0, 0, 0, 0)] properly included in day of PrecisionDateIvl
+define MayProperlyIncludeDayOfIvlVeryImpreciseLow: Interval[DateTime(2012, 3), DateTime(2012, 6)] properly included in day of PrecisionDateIvl
+define MayProperlyIncludeDayOfIvlVeryImpreciseHigh: Interval[DateTime(2012, 6), DateTime(2012, 9)] properly included in day of PrecisionDateIvl
+define MayProperlyIncludeDayOfIvlVeryImpreciseLowAndHigh: Interval[DateTime(2012, 3), DateTime(2012, 9)] properly included in day of PrecisionDateIvl
+define MayProperlyIncludeDayOfIvlVeryImpreciseSurrounding: Interval[DateTime(2012), DateTime(2012)] properly included in day of PrecisionDateIvl
 
 // @Test: After
 define AfterIntIvl: Interval[5, 10] after Interval[2, 4]
@@ -231,6 +301,13 @@ define NotAfterDateIvl: DateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0),
 define AfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012, 1), DateTime(2012, 2)]
 define NotAfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012, 1), DateTime(2012, 3)]
 define MayBeAfterImpreciseDateIvl: DateIvl after Interval[DateTime(2012), DateTime(2012)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define AfterDayOfIvl: PrecisionDateIvl after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define BeforeDayOfIvl: PrecisionDateIvl after day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define StartsSameDayOfIvlEnd: PrecisionDateIvl after day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 2, 0, 0, 0, 0)]
+define EndsSameDayOfIvlStart: PrecisionDateIvl after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define MayBeAfterDayOfImpreciseIvl: PrecisionDateIvl after day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayBeBeforeDayOfImpreciseIvl: PrecisionDateIvl after day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseAfterDateIvl: ImpDateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0))
 define ImpreciseNotAfterDateIvl: ImpDateIvl after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 4, 1, 0, 0, 0, 0))
@@ -261,6 +338,13 @@ define NotBeforeDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(201
 define BeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define NotBeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012, 8), DateTime(2012, 12)]
 define MayBeBeforeImpreciseDateIvl: DateIvl before Interval[DateTime(2012), DateTime(2012)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define AfterDayOfIvl: PrecisionDateIvl before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define BeforeDayOfIvl: PrecisionDateIvl before day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define StartsSameDayOfIvlEnd: PrecisionDateIvl before day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 2, 0, 0, 0, 0)]
+define EndsSameDayOfIvlStart: PrecisionDateIvl before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define MayBeAfterDayOfImpreciseIvl: PrecisionDateIvl before day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayBeBeforeDayOfImpreciseIvl: PrecisionDateIvl before day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseBeforeDateIvl: ImpDateIvl before Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0))
 define ImpreciseNotBeforeDateIvl: ImpDateIvl before Interval[DateTime(2012, 8, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0))
@@ -295,6 +379,13 @@ define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012
 define MayMeetAfterImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 1), DateTime(2012, 2)]
 define MayMeetBeforeImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define NotMeetsImpreciseDateIvl: DateIvl meets Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define MeetsAfterDayOfIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define MeetsBeforeDayOfIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotMeetsDayOfIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define NotMeetsDayOfImpreciseIVL: PrecisionDateIvl meets day of Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetAfterDayOfImpreciseIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayMeetBeforeDayOfImpreciseIvl: PrecisionDateIvl meets day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
 define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
@@ -342,6 +433,13 @@ define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012
 define MayMeetAfterImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 1), DateTime(2012, 2)]
 define MayMeetBeforeImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define NotMeetsImpreciseDateIvl: DateIvl meets after Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define MeetsAfterDayOfIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define MeetsBeforeDayOfIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotMeetsDayOfIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define NotMeetsDayOfImpreciseIVL: PrecisionDateIvl meets after day of Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetAfterDayOfImpreciseIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayMeetBeforeDayOfImpreciseIvl: PrecisionDateIvl meets after day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets after Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
 define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets after Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
@@ -389,6 +487,13 @@ define NotMeetsDateIvl: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012
 define MayMeetAfterImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 1), DateTime(2012, 2)]
 define MayMeetBeforeImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define NotMeetsImpreciseDateIvl: DateIvl meets before Interval[DateTime(2012, 1), DateTime(2012, 12)]
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define MeetsAfterDayOfIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define MeetsBeforeDayOfIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 9, 3, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotMeetsDayOfIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define NotMeetsDayOfImpreciseIVL: PrecisionDateIvl meets before day of Interval[DateTime(2012, 1), DateTime(2012, 2)]
+define MayMeetAfterDayOfImpreciseIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
+define MayMeetBeforeDayOfImpreciseIvl: PrecisionDateIvl meets before day of Interval[DateTime(2012, 9), DateTime(2012, 12)]
 define ImpDateIvl: Interval[DateTime(2012, 3), DateTime(2012, 8)]
 define ImpreciseMayMeetAfterDateIvl: ImpDateIvl meets before Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 2, 29, 23, 59, 59, 999)]
 define ImpreciseMayMeetBeforeDateIvl: ImpDateIvl meets before Interval[DateTime(2012, 9, 1, 0, 0, 0, 0), DateTime(2012, 12, 31, 23, 59, 59, 999)]
@@ -448,6 +553,16 @@ define ImpreciseOverlap: ivlD overlaps ivlE
 define NoOverlap: ivlC overlaps ivlD
 define NoImpreciseOverlap: ivlE overlaps ivlG
 define UnknownOverlap: ivlF overlaps ivlG
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+// NOTE: There appears to be a bug in cql-to-elm that translates these 'overlaps' to 'OverlapsAfter'!
+define OverlapsBeforeDayOfIvlEdge: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfIvlEdge: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define OverlapsContainsDayOfIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 5, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define OverlapsContainedByDayOfIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotOverlapsDayOfIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfImpreciseInterval: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1), DateTime(2012, 4)]
+define MayOverlapBeforeDayOfImpreciseIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 9), DateTime(2012, 10)]
+define MayOverlapAfterDayOfImpreciseIvl: PrecisionDateIvl overlaps day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
 
 // @Test: OverlapsAfter
 define OverlapsBeforeIntIvl: Interval[1, 5] overlaps after Interval[2, 7]
@@ -476,6 +591,15 @@ define ImpreciseOverlapAfter: ivlF overlaps after ivlE
 define NoOverlap: ivlC overlaps after ivlD
 define NoImpreciseOverlap: ivlE overlaps after ivlG
 define UnknownOverlap: ivlG overlaps after ivlF
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define OverlapsBeforeDayOfIvlEdge: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfIvlEdge: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define OverlapsContainsDayOfIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 5, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define OverlapsContainedByDayOfIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotOverlapsDayOfIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfImpreciseInterval: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1), DateTime(2012, 4)]
+define MayOverlapBeforeDayOfImpreciseIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 9), DateTime(2012, 10)]
+define MayOverlapAfterDayOfImpreciseIvl: PrecisionDateIvl overlaps after day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
 
 // @Test: OverlapsBefore
 define OverlapsBeforeIntIvl: Interval[1, 5] overlaps before Interval[2, 7]
@@ -504,6 +628,15 @@ define ImpreciseOverlapAfter: ivlF overlaps before ivlE
 define NoOverlap: ivlC overlaps before ivlD
 define NoImpreciseOverlap: ivlE overlaps before ivlG
 define UnknownOverlap: ivlF overlaps before ivlG
+define PrecisionDateIvl: Interval[DateTime(2012, 3, 2, 12, 34, 56, 789), DateTime(2012, 9, 2, 1, 23, 45, 678))
+define OverlapsBeforeDayOfIvlEdge: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 9, 2, 23, 59, 59, 999), DateTime(2012, 10, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfIvlEdge: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 2, 0, 0, 0, 0)]
+define OverlapsContainsDayOfIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 5, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)]
+define OverlapsContainedByDayOfIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 12, 1, 0, 0, 0, 0)]
+define NotOverlapsDayOfIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1, 2, 0, 0, 0, 0), DateTime(2012, 3, 1, 0, 0, 0, 0)]
+define OverlapsAfterDayOfImpreciseInterval: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1), DateTime(2012, 4)]
+define MayOverlapBeforeDayOfImpreciseIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 9), DateTime(2012, 10)]
+define MayOverlapAfterDayOfImpreciseIvl: PrecisionDateIvl overlaps before day of Interval[DateTime(2012, 1), DateTime(2012, 3)]
 
 // @Test: Width
 define IntWidth: width of Interval[-2, 5]
@@ -600,3 +733,55 @@ define DateTimeOverlapsIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), Dat
 define DateTimeBeginsIntersect: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 6, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 define DateTimeDuringIntersect: Interval[DateTime(2012, 3, 1, 0, 0, 0, 0), DateTime(2012, 5, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
 define DateTimeEndsIntersect: Interval[DateTime(2012, 6, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)] intersect Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2013, 1, 1, 0, 0, 0, 0)]
+
+// @Test: IntegerIntervalCollapse
+define IntEmptyIntervalList: List<Interval<Integer>>{}
+define Int1_6Interval: Interval[1, 6]
+define Int1_10Interval: Interval[1, 10]
+define Int5_10Interval: Interval[5, 10]
+define Int5_12Interval: Interval[5, 12]
+define Int10_15Interval: Interval[10, 15]
+define Int15_20Interval: Interval[15, 20]
+define Int1_12Interval: Interval[1, 12]
+define Int1_15Interval: Interval[1, 15]
+define Int1_10IntervalList: { Int1_10Interval }
+define Int1_12IntervalList: { Int1_12Interval }
+define Int1_15IntervalList: { Int1_15Interval }
+define IntTwoItemDisjointList: { Int1_10Interval, Int15_20Interval }
+define IntCollapseEmpty: collapse IntEmptyIntervalList
+define IntCollapseSingleInterval: collapse Int1_10IntervalList
+define IntCollapseDisjoint: collapse IntTwoItemDisjointList
+define IntCollapseDisjointReversed: collapse { Int15_20Interval, Int1_10Interval }
+define IntCollapseAdjacent: collapse { Int1_10Interval, Int10_15Interval }
+define IntCollapseOverlap: collapse { Int1_10Interval, Int5_12Interval }
+define IntCollapseOverlapContained: collapse { Int1_15Interval, Int5_12Interval }
+define IntCollapseOverlapContainedEdge: collapse { Int1_10Interval, Int5_10Interval }
+define IntCollapseOverlapContainedEdge2: collapse { Int1_15Interval, Int1_10Interval }
+define IntCollapseOverlapMultipleCombine: collapse { Int1_6Interval, Int5_12Interval, Int10_15Interval }
+
+// @Test: DateTimeIntervalCollapse
+define DateTimeEmptyIntervalList: List<Interval<DateTime>>{}
+define DateTime1_6Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 6, 0, 0, 0, 0)]
+define DateTime1_10Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 10, 0, 0, 0, 0)]
+define DateTime5_10Interval: Interval[DateTime(2012, 1, 5, 0, 0, 0, 0), DateTime(2012, 1, 10, 0, 0, 0, 0)]
+define DateTime5_12Interval: Interval[DateTime(2012, 1, 5, 0, 0, 0, 0), DateTime(2012, 1, 12, 0, 0, 0, 0)]
+define DateTime10_15Interval: Interval[DateTime(2012, 1, 10, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)]
+define DateTime15_20Interval: Interval[DateTime(2012, 1, 15, 0, 0, 0, 0), DateTime(2012, 1, 20, 0, 0, 0, 0)]
+define DateTime1_12Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 12, 0, 0, 0, 0)]
+define DateTime1_15Interval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 15, 0, 0, 0, 0)]
+define DateTime1_3ImpreciseInterval: Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), DateTime(2012, 1, 3)]
+define DateTime1_10IntervalList: { DateTime1_10Interval }
+define DateTime1_12IntervalList: { DateTime1_12Interval }
+define DateTime1_15IntervalList: { DateTime1_15Interval }
+define DateTimeTwoItemDisjointList: { DateTime1_10Interval, DateTime15_20Interval }
+define DateTimeCollapseEmpty: collapse DateTimeEmptyIntervalList
+define DateTimeCollapseSingleInterval: collapse DateTime1_10IntervalList
+define DateTimeCollapseDisjoint: collapse DateTimeTwoItemDisjointList
+define DateTimeCollapseDisjointReversed: collapse { DateTime15_20Interval, DateTime1_10Interval }
+define DateTimeCollapseAdjacent: collapse { DateTime1_10Interval, DateTime10_15Interval }
+define DateTimeCollapseOverlap: collapse { DateTime1_10Interval, DateTime5_12Interval }
+define DateTimeCollapseOverlapContained: collapse { DateTime1_15Interval, DateTime5_12Interval }
+define DateTimeCollapseOverlapContainedEdge: collapse { DateTime1_10Interval, DateTime5_10Interval }
+define DateTimeCollapseOverlapContainedEdge2: collapse { DateTime1_15Interval, DateTime1_10Interval }
+define DateTimeCollapseOverlapMultipleCombine: collapse { DateTime1_6Interval, DateTime5_12Interval, DateTime10_15Interval }
+define DateTimeCollapseImpreciseBoundary: collapse { DateTime1_3ImpreciseInterval, DateTime1_10Interval }

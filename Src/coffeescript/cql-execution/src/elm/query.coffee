@@ -21,11 +21,13 @@ module.exports.With = class With extends Expression
     @expression = build json.expression
     @suchThat = build json.suchThat
   exec: (ctx) ->
-    records = @expression.exec(ctx)
+    records = @expression.execute(ctx)
+    @isList = typeIsArray(records)
+    records = if @isList then records else [records]
     returns = for rec in records
       childCtx = ctx.childContext()
       childCtx.set @alias, rec
-      @suchThat.exec(childCtx)
+      @suchThat.execute(childCtx)
     returns.some (x) -> x
 
 module.exports.Without = class Without extends With
@@ -62,9 +64,9 @@ module.exports.ByExpression = class ByExpression extends Expression
 
   exec: (ctx,a,b) ->
     sctx = ctx.childContext(a)
-    a_val = @expression.exec(sctx)
+    a_val = @expression.execute(sctx)
     sctx = ctx.childContext(b)
-    b_val = @expression.exec(sctx)
+    b_val = @expression.execute(sctx)
 
     if a_val == b_val
       0
@@ -95,6 +97,7 @@ module.exports.SortClause = SortClause = class SortClause
       values.sort (a,b) =>
         order = 0
         for item in @by
+          # Do not use execute here because the value of the sort order is not important.
           order = item.exec(ctx,a,b)
           if order != 0 then break
         order
@@ -122,16 +125,16 @@ module.exports.Query = class Query extends Expression
     returnedValues = []
     @sources.forEach(ctx, (rctx) =>
       for def in @letClauses
-        rctx.set def.identifier, def.expression.exec(rctx)
+        rctx.set def.identifier, def.expression.execute(rctx)
 
       relations = for rel in @relationship
         child_ctx = rctx.childContext()
-        rel.exec(child_ctx)
+        rel.execute(child_ctx)
       passed = allTrue(relations)
-      passed = passed && if @where then @where.exec(rctx) else passed
+      passed = passed && if @where then @where.execute(rctx) else passed
       if passed
         if @returnClause?
-          val = @returnClause.expression.exec(rctx)
+          val = @returnClause.expression.execute(rctx)
           returnedValues.push val
         else
           if @aliases.length == 1
@@ -144,7 +147,7 @@ module.exports.Query = class Query extends Expression
     if distinct then returnedValues = toDistinctList(returnedValues)
 
     @sortClause?.sort(ctx, returnedValues)
-    returnedValues
+    return if @sources.returnsList() then returnedValues else returnedValues[0]
 
 module.exports.AliasRef = class AliasRef extends Expression
   constructor: (json) ->
@@ -164,7 +167,7 @@ class MultiSource
   constructor: (@sources) ->
     @alias = @sources[0].alias
     @expression = @sources[0].expression
-
+    @isList = true
     if @sources.length > 1
       @rest = new MultiSource(@sources.slice(1))
 
@@ -174,8 +177,13 @@ class MultiSource
       a = a.concat @rest.aliases()
     a
 
+  returnsList: ->
+    @isList || (@rest && @rest.returnsList())
+
   forEach: (ctx, func) ->
-    records = @expression.exec(ctx) || []
+    records = @expression.execute(ctx)
+    @isList = typeIsArray(records)
+    records = if @isList then records else [records]
     for rec in records
       rctx = new Context(ctx)
       rctx.set(@alias,rec)

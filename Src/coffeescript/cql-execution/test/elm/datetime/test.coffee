@@ -610,7 +610,7 @@ describe 'Before', ->
     should(@nullRight.exec(@ctx)).be.null
     should(@nullBoth.exec(@ctx)).be.null
 
-describe 'DurationBetween', ->
+describe 'DifferenceBetween', ->
   @beforeEach ->
     setup @, data
 
@@ -668,7 +668,14 @@ describe 'DurationBetween', ->
   it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
     @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new Uncertainty(-2678399999, 0)
 
-describe 'DurationBetween Comparisons', ->
+  it 'should properly execute hours between when springing ahead for DST', ->
+    @hoursBetween1and3CrossingSpringDST.exec(@ctx).should.equal 1
+
+  it 'should properly execute hours between when falling back for DST', ->
+    @hoursBetween1and3CrossingFallDST.exec(@ctx).should.equal 3
+
+
+describe 'DifferenceBetween Comparisons', ->
   @beforeEach ->
     setup @, data
 
@@ -701,6 +708,77 @@ describe 'DurationBetween Comparisons', ->
     @twentyFiveDaysLessThanDaysBetween.exec(@ctx).should.be.true()
     should(@fortyDaysEqualToDaysBetween.exec(@ctx)).be.null
     @twentyFiveDaysGreaterThanDaysBetween.exec(@ctx).should.be.false()
+
+  it 'should properly determine that Sep to Dec is NOT <= 2 months', ->
+    @bonnieTestCase.exec(@ctx).should.be.false()
+
+  it 'should properly determine that Sep to Dec is NOT <= 2 months with 0 timezone offset (Zulu)', ->
+    # THIS for some reason is BROKEN!
+    @bonnieTestCaseZulu.exec(@ctx).should.be.false()
+
+describe 'DurationBetween', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should properly execute years between', ->
+    @yearsBetween.exec(@ctx).should.equal 1
+
+  it 'should properly execute months between', ->
+    @monthsBetween.exec(@ctx).should.equal 12
+
+  it 'should properly execute days between', ->
+    @daysBetween.exec(@ctx).should.equal 365 + 21
+
+  it 'should properly execute weeks between', ->
+    @weeksBetween.exec(@ctx).should.equal 55
+
+  it 'should properly execute hours between', ->
+    @hoursBetween.exec(@ctx).should.equal 24 * (365 + 21) + 11
+
+  it 'should properly execute minutes between', ->
+    @minutesBetween.exec(@ctx).should.equal 60 * (24 * (365 + 21) + 11) + 29
+
+  it 'should properly execute seconds between', ->
+    @secondsBetween.exec(@ctx).should.equal 60 * (60 * (24 * (365 + 21) + 11) + 29) + 29
+
+  it 'should properly execute milliseconds between', ->
+    @millisecondsBetween.exec(@ctx).should.equal 1000 * (60 * (60 * (24 * (365 + 21) + 11) + 29) + 29) + 500
+
+  it 'should properly execute milliseconds between when date 1 is after date 2', ->
+    @millisecondsBetweenReversed.exec(@ctx).should.equal -1 * 1000 * (60 * (60 * (24 * (365 + 21) + 11) + 29) + 29) - 500
+
+  it 'should properly execute years between with an uncertainty', ->
+    @yearsBetweenUncertainty.exec(@ctx).should.equal 0
+
+  it 'should properly execute months between with an uncertainty', ->
+    @monthsBetweenUncertainty.exec(@ctx).should.equal 0
+
+  it 'should properly execute weeks between with an uncertainty', ->
+    @weeksBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 4)
+
+  it 'should properly execute days between with an uncertainty', ->
+    @daysBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 30)
+
+  it 'should properly execute hours between with an uncertainty', ->
+    @hoursBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 743)
+
+  it 'should properly execute minutes between with an uncertainty', ->
+    @minutesBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 44639)
+
+  it 'should properly execute seconds between with an uncertainty', ->
+    @secondsBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 2678399)
+
+  it 'should properly execute milliseconds between with an uncertainty', ->
+    @millisecondsBetweenUncertainty.exec(@ctx).should.eql new Uncertainty(0, 2678399999)
+
+  it 'should properly execute seconds between when date 1 is after date 2 with an uncertainty', ->
+    @millisecondsBetweenReversedUncertainty.exec(@ctx).should.eql new Uncertainty(-2678399999, 0)
+
+  it 'should properly execute hours between when falling back for DST', ->
+    @hoursBetween1and3CrossingSpringDST.exec(@ctx).should.equal 1
+
+  it 'should properly execute hours between when springing ahead for DST', ->
+    @hoursBetween1and3CrossingFallDST.exec(@ctx).should.equal 3
 
 describe 'DateMath', ->
   @beforeEach ->

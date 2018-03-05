@@ -43,6 +43,15 @@ describe 'Using CommonLib2', ->
   it "should execute expression from included library that uses parameter", ->
     @exprUsesParam.exec(@ctx).should.equal 17
 
+  it "should execute expression from included library that uses sent-in parameter", ->
+    @exprUsesParam.exec(@ctx.withParameters({SomeNumber: 42})).should.equal 42
+
+  it "should execute parameter from included library", ->
+    @exprUsesParamDirectly.exec(@ctx).should.equal 17
+
+  it "should execute sent-in parameter from included library", ->
+    @exprUsesParamDirectly.exec(@ctx.withParameters({SomeNumber: 73})).should.equal 73
+
   it "should execute function from included library that uses parameter", ->
     @funcUsesParam.exec(@ctx).should.equal 22
 

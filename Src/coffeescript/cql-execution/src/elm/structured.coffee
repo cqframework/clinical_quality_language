@@ -10,7 +10,7 @@ module.exports.Property = class Property extends Expression
 
   exec: (ctx) ->
     obj = if @scope? then ctx.get(@scope) else @source
-    if obj instanceof Expression then obj = obj.exec(ctx)
+    if obj instanceof Expression then obj = obj.execute(ctx)
     val = obj?[@path] ? obj?.get?(@path)
 
     if !val
@@ -20,7 +20,7 @@ module.exports.Property = class Property extends Expression
       for part in parts
         _obj = curr_obj?[part] ? curr_obj?.get?(part)
         curr_obj = if _obj instanceof Function then _obj.call(curr_obj) else _obj
-      val = curr_obj
+      val = curr_obj ? null # convert undefined to null
     if val instanceof Function then val.call(obj) else val
 
 module.exports.Tuple = class Tuple extends Expression
@@ -33,7 +33,7 @@ module.exports.Tuple = class Tuple extends Expression
   exec: (ctx) ->
     val = {}
     for el in @elements
-      val[el.name] = el.value?.exec(ctx)
+      val[el.name] = el.value?.execute(ctx)
     val
 
 module.exports.TupleElement = class TupleElement extends UnimplementedExpression

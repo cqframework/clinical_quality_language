@@ -77,3 +77,22 @@ module.exports.minValueForInstance = (val) ->
     val2
   else
     null
+
+
+module.exports.decimalAdjust =(type, value, exp) ->
+  #If the exp is undefined or zero...
+  if typeof exp == 'undefined' || +exp == 0
+    return Math[type](value)
+  value = +value
+  exp = +exp
+  #If the value is not a number or the exp is not an integer...
+  if isNaN(value) || !(typeof exp == 'number' && exp % 1 == 0)
+    return NaN
+  #Shift
+  value = value.toString().split('e')
+  v = if value[1] then (+value[1] - exp) else -exp
+  value = Math[type](+(value[0] + 'e' + v))
+  #Shift back
+  value = value.toString().split('e')
+  v = if value[1] then (+value[1] + exp) else exp
+  +(value[0] + 'e' + v )

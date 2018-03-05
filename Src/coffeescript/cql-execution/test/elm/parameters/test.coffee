@@ -184,7 +184,7 @@ describe 'QuantityParameterTypes', ->
     should(() => @foo.exec(@ctx.withParameters { FooP: q })).throw(/.*wrong type.*/)
 
   it 'should execute to default value', ->
-    @foo2.exec(@ctx).should.eql new Quantity({value: 10, unit: "dL"})
+    @foo2.exec(@ctx).should.eql new Quantity({localId: '4', value: 10, unit: "dL"})
 
   it 'should execute to overriding valid value', ->
     q = new Quantity({value: 5, unit: "mg"})
@@ -301,3 +301,27 @@ describe 'TupleParameterTypes', ->
 
   it 'should throw when overriding tuple contains a wrong property type', ->
     should(() => @foo2.exec(@ctx.withParameters { FooP: { Hello: "World", MeaningOfLife: "Forty-Two" } })).throw(/.*wrong type.*/)
+
+describe 'DefaultAndNoDefault', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should be able to retrieve a provided value and a default value', ->
+    @foo.exec(@ctx.withParameters { FooWithNoDefault: 1 }).should.eql 1
+    @foo2.exec(@ctx.withParameters { FooWithNoDefault: 1 }).should.eql 5
+
+describe 'MeasurementPeriodParameter', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should execute expression with a passed in measurement period in a child context', ->
+    @ctx = @ctx.withParameters({"Measurement Period": new Interval(new DateTime(2012, 1, 1, 0, 0, 0, 0), new DateTime(2013, 1, 1, 0, 0, 0, 0))})
+    rctx = @ctx.childContext()
+    @measurementPeriod.exec(rctx).should.equal true
+
+  it 'should execute expression with a passed in measurement period in a child context', ->
+    @ctx = @ctx.withParameters({"Measurement Period": new Interval(new DateTime(2012, 1, 1, 0, 0, 0, 0), new DateTime(2013, 1, 1, 0, 0, 0, 0))})
+    r1ctx = @ctx.childContext()
+    r2ctx = r1ctx.childContext()
+    r3ctx = r2ctx.childContext()
+    @measurementPeriod.exec(r3ctx).should.equal true

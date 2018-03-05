@@ -1,4 +1,6 @@
 library     = require './elm/library'
+quantity    = require './elm/quantity'
+expression  = require './elm/expression'
 repository  = require './runtime/repository'
 context     = require './runtime/context'
 exec        = require './runtime/executor'
@@ -15,6 +17,8 @@ module.exports.PopulationContext  = context.PopulationContext
 module.exports.Executor           = exec.Executor
 module.exports.Results            = results.Results
 module.exports.Code               = datatypes.Code
+module.exports.Quantity           = quantity.Quantity
+module.exports.Expression         = expression.Expression
 module.exports.ValueSet           = datatypes.ValueSet
 module.exports.DateTime           = datatypes.DateTime
 module.exports.Interval           = datatypes.Interval

@@ -1,4 +1,5 @@
 { Uncertainty } = require './uncertainty'
+moment = require 'moment'
 
 module.exports.DateTime = class DateTime
   @Unit: { YEAR: 'year', MONTH: 'month', WEEK: 'week', DAY: 'day', HOUR: 'hour', MINUTE: 'minute', SECOND: 'second', MILLISECOND: 'millisecond' }
@@ -90,7 +91,7 @@ module.exports.DateTime = class DateTime
   sameAs: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then null
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low == 0 and diff.high == 0) then true
       when (diff.low <= 0 and diff.high >= 0) then null
@@ -102,7 +103,7 @@ module.exports.DateTime = class DateTime
   sameOrBefore: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low >= 0 and diff.high >= 0) then true
       when (diff.low < 0 and diff.high < 0) then false
@@ -111,7 +112,7 @@ module.exports.DateTime = class DateTime
   sameOrAfter: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low <= 0 and diff.high <= 0) then true
       when (diff.low > 0 and diff.high > 0) then false
@@ -120,7 +121,7 @@ module.exports.DateTime = class DateTime
   before: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low > 0 and diff.high > 0) then true
       when (diff.low <= 0 and diff.high <= 0) then false
@@ -129,7 +130,7 @@ module.exports.DateTime = class DateTime
   after: (other, precision = DateTime.Unit.MILLISECOND) ->
     if not(other instanceof DateTime) then return false
 
-    diff = @durationBetween(other, precision)
+    diff = @differenceBetween(other, precision)
     switch
       when (diff.low < 0 and diff.high < 0) then true
       when (diff.low >= 0 and diff.high >= 0) then false
@@ -154,39 +155,128 @@ module.exports.DateTime = class DateTime
 
     result
 
-  durationBetween: (other, unitField) ->
+  differenceBetween: (other, unitField) ->
     if not(other instanceof DateTime) then return null
 
-    if @timezoneOffset isnt other.timezoneOffset
-      other = other.convertToTimezoneOffset(@timezoneOffset)
+    # According to CQL spec, to calculate difference, you can just floor lesser precisions and do a duration
+    # Make copies since we'll be flooring values and mucking with timezones
+    a = @copy()
+    b = other.copy()
+    # Use moment.js for day or finer granularity due to the daylight savings time fall back/spring forward
+    if unitField == DateTime.Unit.MONTH || unitField == DateTime.Unit.YEAR
+      # The dates need to agree on where the boundaries are, so we must normalize to the same time zone
+      if a.timezoneOffset isnt b.timezoneOffset
+        b = b.convertToTimezoneOffset(a.timezoneOffset)
 
-    a = @toUncertainty(true)
-    b = other.toUncertainty(true)
+      # JS always represents dates in the current locale, but in locales with DST, we want to account for the
+      # potential difference in offset from one date to the other.  We try to simulate them being in the same
+      # timezone, because we don't want midnight to roll back to 11:00pm since that will mess up day boundaries.
+      aJS = a.toJSDate(true)
+      bJS = b.toJSDate(true)
+      # Set tzDiff to zero if a and b are both UTC (UTC is not subject to DST)
+      tzDiff = if a.isUTC() && b.isUTC() then 0 else aJS.getTimezoneOffset() - bJS.getTimezoneOffset()
+      if (tzDiff != 0)
+        # Since we'll be doing duration later, account for timezone offset by adding to the time (if possible)
+        if b.year? and b.month? and b.day? and b.hour? and b.minute? then b = b.add(tzDiff, DateTime.Unit.MINUTE)
+        else if b.year? and b.month? and b.day? and b.hour? then b = b.add(tzDiff/60, DateTime.Unit.HOUR)
+        else b.timezoneOffset = b.timezoneOffset + (tzDiff/60)
+
+    # Now floor lesser precisions before we go on to calculate duration
+    if unitField == DateTime.Unit.YEAR
+      a = new DateTime(a.year, 1, 1, 12, 0, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, 1, 1, 12, 0, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.MONTH
+      a = new DateTime(a.year, a.month, 1, 12, 0, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, 1, 12, 0, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.WEEK
+      a = @_floorWeek(a)
+      b = @_floorWeek(b)
+    else if unitField == DateTime.Unit.DAY
+      a = new DateTime(a.year, a.month, a.day, 12, 0, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, b.day, 12, 0, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.HOUR
+      a = new DateTime(a.year, a.month, a.day, a.hour, 30, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, b.day, b.hour, 30, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.MINUTE
+      a = new DateTime(a.year, a.month, a.day, a.hour, a.minute, 0, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, b.day, b.hour, b.minute, 0, 0, b.timezoneOffset)
+    else if unitField == DateTime.Unit.SECOND
+      a = new DateTime(a.year, a.month, a.day, a.hour, a.minute, a.second, 0, a.timezoneOffset)
+      b = new DateTime(b.year, b.month, b.day, b.hour, b.minute, b.second, 0, b.timezoneOffset)
+
+    # Because moment.js handles years and months differently, use the existing durationBetween for those
+    # Finer granularity times can be handled by the DST-aware moment.js library.
+    if unitField == DateTime.Unit.YEAR || unitField == DateTime.Unit.MONTH
+      a.durationBetween(b, unitField)
+    else
+      aUncertainty = a.toUncertainty()
+      bUncertainty = b.toUncertainty()
+      aLowMoment = moment(aUncertainty.low).utc()
+      aHighMoment = moment(aUncertainty.high).utc()
+      bLowMoment = moment(bUncertainty.low).utc()
+      bHighMoment = moment(bUncertainty.high).utc()
+      # moment uses the plural form of the unitField
+      new Uncertainty(bLowMoment.diff(aHighMoment, unitField + 's'), bHighMoment.diff(aLowMoment, unitField + 's'))
+
+  _floorWeek: (d) ->
+    # To "floor" a week, we need to go back to the last Sunday (that's when getDay() == 0 in javascript)
+    # But if we don't know the day, then just return it as-is
+    if (not d.day?) then return d
+    floored = new Date(d.year, d.month-1, d.day)
+    floored.setDate(floored.getDate() - 1) while floored.getDay() > 0
+    new DateTime(floored.getFullYear(), floored.getMonth()+1, floored.getDate(), 12, 0, 0, 0, d.timezoneOffset)
+
+  durationBetween: (other, unitField) ->
+    if not(other instanceof DateTime) then return null
+    a = @toUncertainty()
+    b = other.toUncertainty()
     new Uncertainty(@_durationBetweenDates(a.high, b.low, unitField), @_durationBetweenDates(a.low, b.high, unitField))
 
+  # NOTE: a and b are real JS dates -- not DateTimes
   _durationBetweenDates: (a, b, unitField) ->
-    # To count boundaries below month, we need to floor units at lower precisions
-    [a, b] = [a, b].map (x) ->
-      switch unitField
-        when DateTime.Unit.WEEK then new Date(x.getFullYear(), x.getMonth(), x.getDate())
-        when DateTime.Unit.DAY then new Date(x.getFullYear(), x.getMonth(), x.getDate())
-        when DateTime.Unit.HOUR then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours())
-        when DateTime.Unit.MINUTE then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes())
-        when DateTime.Unit.SECOND then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes(), x.getSeconds())
-        when DateTime.Unit.MILLISECOND then new Date(x.getFullYear(), x.getMonth(), x.getDate(), x.getHours(), x.getMinutes(), x.getSeconds(), x.getMilliseconds())
-        else x
-
+    # DurationBetween is different than DifferenceBetween in that DurationBetween counts whole elapsed time periods, but
+    # DifferenceBetween counts boundaries.  For example:
+    # difference in days between @2012-01-01T23:59:59.999 and @2012-01-02T00:00:00.0 calculates to 1 (since it crosses day boundary)
+    # days between @2012-01-01T23:59:59.999 and @2012-01-02T00:00:00.0 calculates to 0 (since there are no full days between them)
     msDiff = b.getTime() - a.getTime()
-    switch unitField
-      when DateTime.Unit.YEAR then b.getFullYear() - a.getFullYear()
-      when DateTime.Unit.MONTH then b.getMonth() - a.getMonth() + (12 * (b.getFullYear() - a.getFullYear()))
-      when DateTime.Unit.WEEK then Math.floor(msDiff / (7 * 24 * 60 * 60 * 1000))
-      when DateTime.Unit.DAY then Math.floor(msDiff / (24 * 60 * 60 * 1000))
-      when DateTime.Unit.HOUR then Math.floor(msDiff / (60 * 60 * 1000))
-      when DateTime.Unit.MINUTE then Math.floor(msDiff / (60 * 1000))
-      when DateTime.Unit.SECOND then Math.floor(msDiff / 1000)
-      when DateTime.Unit.MILLISECOND then msDiff
-      else null
+
+    if msDiff == 0 then return 0
+    # If it's a negative delta, we need to use ceiling instead of floor when truncating
+    truncFunc = if msDiff > 0 then Math.floor else Math.ceil
+    # For ms, s, min, hr, day, and week this is trivial
+    if unitField == DateTime.Unit.MILLISECOND then msDiff
+    else if unitField == DateTime.Unit.SECOND then truncFunc(msDiff / 1000)
+    else if unitField == DateTime.Unit.MINUTE then truncFunc(msDiff / (60 * 1000))
+    else if unitField == DateTime.Unit.HOUR then truncFunc(msDiff / (60 * 60 * 1000))
+    else if unitField == DateTime.Unit.DAY
+      truncFunc(msDiff / (24 * 60 * 60 * 1000))
+    else if unitField == DateTime.Unit.WEEK
+      truncFunc(msDiff / (7 * 24 * 60 * 60 * 1000))
+    # Months and years are trickier since months are variable length
+    else if unitField == DateTime.Unit.MONTH or unitField == DateTime.Unit.YEAR
+      # First get the rough months, essentially counting month "boundaries"
+      months = (b.getFullYear() - a.getFullYear()) * 12 + (b.getMonth() - a.getMonth())
+      # Now we need to look at the smaller units to see how they compare.  Since we only care about comparing
+      # days and below at this point, it's much easier to bring a up to b so it's in the same month, then
+      # we can compare on just the remaining units.
+      aInMonth = new Date(a.getTime())
+      # Remember the original timezone offset because if it changes when we bring it up a month, we need to fix it
+      aInMonthOriginalOffset = aInMonth.getTimezoneOffset()
+      aInMonth.setMonth(a.getMonth() + months)
+      if aInMonthOriginalOffset != aInMonth.getTimezoneOffset()
+        aInMonth.setMinutes(aInMonth.getMinutes() + (aInMonthOriginalOffset - aInMonth.getTimezoneOffset()))
+      # When a is before b, then if a's smaller units are greater than b's, a whole month hasn't elapsed, so adjust
+      if msDiff > 0 and aInMonth > b then months = months - 1
+      # When b is before a, then if a's smaller units are less than b's, a whole month hasn't elaspsed backwards, so adjust
+      else if msDiff < 0 and aInMonth < b then months = months + 1
+      # If this is months, just return them, but if it's years, we need to convert
+      if unitField == DateTime.Unit.MONTH
+        months
+      else
+        truncFunc(months/12)
+    else
+      null
+
 
   isPrecise: () ->
     DateTime.FIELDS.every (field) => @[field]?
@@ -207,6 +297,10 @@ module.exports.DateTime = class DateTime
       if (@[field]? and not other[field]?) then return false
       if (not @[field]? and other[field]?) then return false
     true
+
+  isUTC: () ->
+    # A timezoneOffset of 0 indicates UTC time.
+    !@timezoneOffset
 
   getPrecision: () ->
     result = null
@@ -244,7 +338,7 @@ module.exports.DateTime = class DateTime
     @toString()
 
   _pad: (num) ->
-    String("0" + num).slice(-2);
+    String("0" + num).slice(-2)
 
   # TODO: Needs unit tests!
   toString: () ->

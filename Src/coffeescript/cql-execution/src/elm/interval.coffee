@@ -14,23 +14,23 @@ module.exports.Interval = class Interval extends Expression
     @high = build(json.high)
 
   exec: (ctx) ->
-    new dtivl.Interval(@low.exec(ctx), @high.exec(ctx), @lowClosed, @highClosed)
+    new dtivl.Interval(@low.execute(ctx), @high.execute(ctx), @lowClosed, @highClosed)
 
 # Equal is completely handled by overloaded#Equal
 
 # NotEqual is completely handled by overloaded#Equal
 
 # Delegated to by overloaded#Contains and overloaded#In
-module.exports.doContains = (interval, item) ->
-  interval.contains item
+module.exports.doContains = (interval, item, precision) ->
+  interval.contains item, precision
 
 # Delegated to by overloaded#Includes and overloaded#IncludedIn
-module.exports.doIncludes = doIncludes = (interval, subinterval) ->
-  interval.includes subinterval
+module.exports.doIncludes = doIncludes = (interval, subinterval, precision) ->
+  interval.includes subinterval, precision
 
 # Delegated to by overloaded#ProperIncludes and overloaded@ProperIncludedIn
-module.exports.doProperIncludes = (interval, subinterval) ->
-  interval.properlyIncludes subinterval
+module.exports.doProperIncludes = (interval, subinterval, precision) ->
+  interval.properlyIncludes subinterval, precision
 
 # Delegated to by overloaded#After
 module.exports.doAfter = (a, b, precision) ->
@@ -43,50 +43,56 @@ module.exports.doBefore = (a, b, precision) ->
 module.exports.Meets = class Meets extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.meets b else null
+    if a? and b? then a.meets(b, @precision) else null
 
 module.exports.MeetsAfter = class MeetsAfter extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.meetsAfter b else null
+    if a? and b? then a.meetsAfter(b, @precision) else null
 
 module.exports.MeetsBefore = class MeetsBefore extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.meetsBefore b else null
+    if a? and b? then a.meetsBefore(b, @precision) else null
 
 module.exports.Overlaps = class Overlaps extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.overlaps b else null
+    if a? and b? then a.overlaps(b, @precision) else null
 
 module.exports.OverlapsAfter = class OverlapsAfter extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.overlapsAfter b else null
+    if a? and b? then a.overlapsAfter(b, @precision) else null
 
 module.exports.OverlapsBefore = class OverlapsBefore extends Expression
   constructor: (json) ->
     super
+    @precision = json.precision?.toLowerCase()
 
   exec: (ctx) ->
     [a, b] = @execArgs ctx
-    if a? and b? then a.overlapsBefore b else null
+    if a? and b? then a.overlapsBefore(b, @precision) else null
 
 # Delegated to by overloaded#Union
 module.exports.doUnion = (a, b) ->
@@ -105,7 +111,7 @@ module.exports.Width = class Width extends Expression
     super
 
   exec: (ctx) ->
-    @arg.exec(ctx)?.width()
+    @arg.execute(ctx)?.width()
 
 # TODO: Spec has "Begin" defined, but shouldn't it be "Start"?
 module.exports.Start = class Start extends Expression
@@ -113,18 +119,62 @@ module.exports.Start = class Start extends Expression
     super
 
   exec: (ctx) ->
-    @arg.exec(ctx)?.low
+    @arg.execute(ctx)?.low
 
 module.exports.End = class End  extends Expression
   constructor: (json) ->
     super
 
   exec: (ctx) ->
-    @arg.exec(ctx)?.high
+    @arg.execute(ctx)?.high
 
 # TODO: Spec has "Begins" defined, but shouldn't it be "Starts"?
 module.exports.Starts = class Starts extends UnimplementedExpression
 
 module.exports.Ends = class Ends extends UnimplementedExpression
 
-module.exports.Collapse = class Collapse extends UnimplementedExpression
+module.exports.Collapse = class Collapse extends Expression
+  constructor: (json) ->
+    super
+
+  exec: (ctx) ->
+    intervals = @execArgs ctx
+    if intervals?.length <= 1
+      intervals
+    else
+      # we don't handle imprecise intervals at this time
+      for a in intervals
+        if a.low.isImprecise?() || a.high.isImprecise?()
+          throw new Error("Collapse does not support imprecise dates at this time.")
+
+      # sort intervals by start
+      intervals.sort (a,b)->
+        if typeof a.low.before == 'function'
+          return -1 if a.low.before b.low
+          return 1 if a.low.after b.low
+        else
+          return -1 if a.low < b.low
+          return 1 if a.low > b.low
+        0
+
+      # collapse intervals as necessary
+      collapsedIntervals = []
+      a = intervals.shift()
+      b = intervals.shift()
+      while b
+        if typeof b.low.sameOrBefore == 'function'
+          if b.low.sameOrBefore a.high
+            a.high = b.high if b.high.after a.high
+          else
+            collapsedIntervals.push a
+            a = b
+        else
+          if b.low <= a.high
+            a.high = b.high if b.high > a.high
+          else
+            collapsedIntervals.push a
+            a = b
+        b = intervals.shift()
+      collapsedIntervals.push a
+      collapsedIntervals
+

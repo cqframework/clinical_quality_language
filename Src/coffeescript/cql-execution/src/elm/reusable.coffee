@@ -8,7 +8,7 @@ module.exports.ExpressionDef = class ExpressionDef extends Expression
     @context = json.context
     @expression = build json.expression
   exec: (ctx) ->
-    value = @expression?.exec(ctx)
+    value = @expression?.execute(ctx)
     ctx.rootContext().set @name,value
     value
 
@@ -21,7 +21,7 @@ module.exports.ExpressionRef = class ExpressionRef extends Expression
     ctx = if @library then ctx.getLibraryContext(@library) else ctx
     value = ctx.get(@name)
     if value instanceof Expression
-      value = value.exec(ctx)
+      value = value.execute(ctx)
     value
 
 module.exports.FunctionDef = class FunctionDef extends Expression
@@ -46,7 +46,7 @@ module.exports.FunctionRef = class FunctionRef extends Expression
       throw new Error("incorrect number of arguments supplied")
     for p, i in functionDef.parameters
       child_ctx.set(p.name,args[i])
-    functionDef.expression.exec(child_ctx)
+    functionDef.expression.execute(child_ctx)
 
 module.exports.OperandRef = class OperandRef extends Expression
   constructor: (json) ->

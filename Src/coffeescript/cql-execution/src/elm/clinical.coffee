@@ -24,7 +24,7 @@ module.exports.ValueSetRef = class ValueSetRef extends Expression
     # TODO: This calls the code service every time-- should be optimized
     valueset = ctx.getValueSet(@name)
     if valueset instanceof Expression
-      valueset = valueset.exec(ctx)
+      valueset = valueset.execute(ctx)
     valueset
 
 module.exports.InValueSet = class InValueSet extends Expression
@@ -34,9 +34,15 @@ module.exports.InValueSet = class InValueSet extends Expression
     @valueset = new ValueSetRef json.valueset
 
   exec: (ctx) ->
-    code = @code.exec(ctx)
-    valueset = @valueset.exec(ctx)
-    if code? and valueset? then valueset.hasCode code else false
+    # Bonnie-633 Added null check
+    # spec indicates to return null if code is null, false is value set is null
+    return null unless @code?
+    return false unless @valueset?
+    code = @code.execute(ctx)
+    # spec indicates to return null if code is null, false is value set is null
+    return null unless code?
+    valueset = @valueset.execute(ctx)
+    if valueset? then valueset.hasMatch code else false
 
 module.exports.CodeSystemDef = class CodeSystemDef extends Expression
   constructor: (json) ->
@@ -57,7 +63,7 @@ module.exports.CodeDef = class CodeDef extends Expression
     @display = json.display
 
   exec: (ctx) ->
-    system = ctx.getCodeSystem(@systemName)?.exec(ctx)
+    system = ctx.getCodeSystem(@systemName)?.execute(ctx)
     new dt.Code(@id, system.id, system.version, @display)
 
 module.exports.CodeRef = class CodeRef extends Expression
@@ -66,7 +72,7 @@ module.exports.CodeRef = class CodeRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.getCode(@name)?.exec(ctx)
+    ctx.getCode(@name)?.execute(ctx)
 
 module.exports.ConceptDef = class ConceptDef extends Expression
   constructor: (json) ->
@@ -76,7 +82,7 @@ module.exports.ConceptDef = class ConceptDef extends Expression
     @codes = json.code
 
   exec: (ctx) ->
-    codes = (ctx.getCode(code.name)?.exec(ctx) for code in @codes)
+    codes = (ctx.getCode(code.name)?.execute(ctx) for code in @codes)
     new dt.Concept(codes, @display)
 
 module.exports.ConceptRef = class ConceptRef extends Expression
@@ -85,7 +91,7 @@ module.exports.ConceptRef = class ConceptRef extends Expression
     @name = json.name
 
   exec: (ctx) ->
-    ctx.getConcept(@name)?.exec(ctx)
+    ctx.getConcept(@name)?.execute(ctx)
 
 module.exports.Concept = class Concept extends Expression
   constructor: (json) ->
@@ -101,52 +107,16 @@ module.exports.Concept = class Concept extends Expression
     codes = (@toCode(ctx, code) for code in @codes)
     new dt.Concept(codes, @display)
 
-calculateAge = (date1, date2, precision) ->
-  if date1.getTime() - date2.getTime() > 0 then return 0
-  value = if precision is "Year"
-    monthsDiff(date1,date2) / 12
-  else if  precision is "Month"
-    monthsDiff(date1,date2)
-  else
-    ageInMS = date2.getTime() - date1.getTime()
-    divisor = switch (precision)
-      when 'Day' then 1000 * 60 * 60 * 24
-      when 'Hour' then 1000 * 60 * 60
-      when 'Minute' then 1000 * 60
-      when 'Second' then 1000
-      else 1
-    ageInMS / divisor
-  Math.floor(value)
-
-monthsDiff = (date1, date2) ->
-  [high,low] = if date1.getTime() > date2.getTime() then [date1,date2] else [date2,date1]
-  #Rough approximation not taking day into account yet.  This may be +1 month
-  months = ((high.getFullYear() - low.getFullYear()) * 12) + (high.getMonth() - low.getMonth())
-  return 0 if months is 0
-
-  date3 = new Date(low.getTime())
-  #add the number of months to the low date clone to bring it up to the current month and year
-  # note however that this may push the date into the next month.  If the low date was in a month
-  # with 31 days and the high date is in a month with less then 31 days this will cause the date to
-  #be pushed forward into the next month.
-  date3.setMonth(low.getMonth() + months)
-  # If the months are equal and the adjusted dated is greater than the high date we havn't
-  # reached the actual turn over day so remove a month from the count
-  if date3.getMonth() == high.getMonth() && (date3.getDate() - high.getDate() > 0)
-    months--
-
-  months
-
-
 module.exports.CalculateAge = class CalculateAge extends Expression
   constructor: (json) ->
     super
     @precision = json.precision
 
   exec: (ctx) ->
-    date1 = @execArgs(ctx).toJSDate()
-    date2 = new Date()
-    calculateAge date1, date2, @precision
+    date1 = @execArgs(ctx)
+    date2 = dt.DateTime.fromDate(new Date())
+    result = date1?.durationBetween(date2, @precision.toLowerCase())
+    if result? && result.isPoint() then result.low else result
 
 module.exports.CalculateAgeAt = class CalculateAgeAt extends Expression
   constructor: (json) ->
@@ -154,7 +124,9 @@ module.exports.CalculateAgeAt = class CalculateAgeAt extends Expression
     @precision = json.precision
 
   exec: (ctx) ->
-    args = @execArgs(ctx)
-    date1 = args[0].toJSDate()
-    date2 = args[1].toJSDate()
-    calculateAge date1, date2, @precision
+    [date1, date2] = @execArgs(ctx)
+    if date1? && date2?
+      result = date1.durationBetween(date2, @precision.toLowerCase())
+      if result? && result.isPoint() then result.low else result
+    else
+      null

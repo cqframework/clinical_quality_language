@@ -2,7 +2,7 @@
    WARNING: This is a GENERATED file.  Do not manually edit!
 
    To generate this file:
-       - Edit data.coffee to add a CQL Snippet
+       - Edit data.cql to add a CQL Snippet
        - From java dir: ./gradlew :cql-to-elm:generateTestData
 ###
 
@@ -28,6 +28,7 @@ module.exports['Tuple'] = {
             "localIdentifier" : "System",
             "uri" : "urn:hl7-org:elm-types:r1"
          }, {
+            "localId" : "1",
             "localIdentifier" : "QUICK",
             "uri" : "http://hl7.org/fhir"
          } ]
@@ -45,14 +46,43 @@ module.exports['Tuple'] = {
                }
             }
          }, {
+            "localId" : "5",
             "name" : "tup",
             "context" : "Patient",
             "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "5",
+                  "s" : [ {
+                     "value" : [ "define ","tup",": " ]
+                  }, {
+                     "r" : "4",
+                     "s" : [ {
+                        "value" : [ "{" ]
+                     }, {
+                        "s" : [ {
+                           "value" : [ "a",": ","1" ]
+                        } ]
+                     }, {
+                        "value" : [ ", " ]
+                     }, {
+                        "s" : [ {
+                           "value" : [ "b",": ","2" ]
+                        } ]
+                     }, {
+                        "value" : [ "}" ]
+                     } ]
+                  } ]
+               }
+            } ],
             "expression" : {
+               "localId" : "4",
                "type" : "Tuple",
                "element" : [ {
                   "name" : "a",
                   "value" : {
+                     "localId" : "2",
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "1",
                      "type" : "Literal"
@@ -60,6 +90,7 @@ module.exports['Tuple'] = {
                }, {
                   "name" : "b",
                   "value" : {
+                     "localId" : "3",
                      "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
                      "value" : "2",
                      "type" : "Literal"

@@ -10,7 +10,7 @@ module.exports.DateTime = class DateTime extends Expression
       if json[property]? then @[property] = build json[property]
 
   exec: (ctx) ->
-    args = ((if @[p]? then @[p].exec(ctx)) for p in DateTime.PROPERTIES)
+    args = ((if @[p]? then @[p].execute(ctx)) for p in DateTime.PROPERTIES)
     new DT.DateTime(args...)
 
 module.exports.Time = class Time extends Expression
@@ -21,7 +21,7 @@ module.exports.Time = class Time extends Expression
       if json[property]? then @[property] = build json[property]
 
   exec: (ctx) ->
-    args = ((if @[p]? then @[p].exec(ctx)) for p in Time.PROPERTIES)
+    args = ((if @[p]? then @[p].execute(ctx)) for p in Time.PROPERTIES)
     (new DT.DateTime(0, 1, 1, args...)).getTime()
 
 # TODO: Update to use timestamp of request, per the spec
@@ -116,6 +116,19 @@ module.exports.doAfter = (a, b, precision) ->
 module.exports.doBefore = (a, b, precision) ->
   a.before b, precision
 
+module.exports.DifferenceBetween = class DifferenceBetween extends Expression
+  constructor: (json) ->
+    super
+    @precision = json.precision
+
+  exec: (ctx) ->
+    args = @execArgs(ctx)
+    # Check to make sure args exist and that they have differenceBetween functions so that they can be compared to one another
+    if !args[0]? || !args[1]? || typeof args[0].differenceBetween != 'function' || typeof args[1].differenceBetween != 'function'
+      return null
+    result = args[0].differenceBetween(args[1], @precision?.toLowerCase())
+    if result? && result.isPoint() then result.low else result
+
 module.exports.DurationBetween = class DurationBetween extends Expression
   constructor: (json) ->
     super
@@ -123,5 +136,8 @@ module.exports.DurationBetween = class DurationBetween extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx)
+    # Check to make sure args exist and that they have durationBetween functions so that they can be compared to one another
+    if !args[0]? || !args[1]? || typeof args[0].durationBetween != 'function' || typeof args[1].durationBetween != 'function'
+      return null
     result = args[0].durationBetween(args[1], @precision?.toLowerCase())
-    if result.isPoint() then result.low else result
+    if result? && result.isPoint() then result.low else result

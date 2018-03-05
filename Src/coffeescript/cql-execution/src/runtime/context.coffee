@@ -10,11 +10,15 @@ module.exports.Context = class Context
   constructor: (@parent, @_codeService = null, _parameters = {}) ->
     @context_values = {}
     @library_context = {}
+    @localId_context = {}
+    # TODO: If there is an issue with number of parameters look into cql4browsers fix: 387ea77538182833283af65e6341e7a05192304c
     @checkParameters(_parameters) # not crazy about possibly throwing an error in a constructor, but...
     @_parameters = _parameters
 
   @property "parameters" ,
-    get: -> @_parameters || @parent?.parameters
+    get: ->
+      @_parameters || @parent?.parameters
+
     set: (params) ->
       @checkParameters(params)
       @_parameters = params
@@ -46,8 +50,17 @@ module.exports.Context = class Context
   getLibraryContext: (library) ->
     @parent?.getLibraryContext(library)
 
+  getLocalIdContext: (localId) ->
+    @parent?.getLocalIdContext(localId)
+
   getParameter: (name) ->
     @parent?.getParameter(name)
+
+  getParentParameter: (name) ->
+    if @parent?.parameters[name]?
+      @parent.parameters[name]
+    else if @parent?
+      @parent.getParentParameter name
 
   getValueSet: (name) ->
     @parent?.getValueSet(name)
@@ -71,6 +84,38 @@ module.exports.Context = class Context
 
   set: (identifier, value) ->
     @context_values[identifier] = value
+
+  setLocalIdWithResult: (localId, value) ->
+    # Temporary fix. Real fix will be to return a list of all result values for a given localId.
+    ctx = @localId_context[localId]
+    if (ctx == false || ctx == null || ctx == undefined || ctx.length == 0)
+      @localId_context[localId] = value
+    else
+      ctx
+
+  getLocalIdResult: (localId) ->
+    @localId_context[localId]
+
+  # Returns an object of objects containing each library name
+  # with the localIds and result values
+  getAllLocalIds: ->
+    localIdResults = {}
+    # Add the localIds and result values from the main library
+    localIdResults[@parent.source.library.identifier.id] = {}
+    localIdResults[@parent.source.library.identifier.id] = @localId_context
+
+    # Iterate over support libraries and store localIds
+    for libName, lib of @library_context
+      @supportLibraryLocalIds lib, localIdResults
+    localIdResults
+
+  # Recursive function that will grab nested support library localId results
+  supportLibraryLocalIds: (lib, localIdResults) ->
+    # Set library identifier name as the key and the object of localIds with their results as the value
+    localIdResults[lib.library.source.library.identifier.id] = lib.localId_context
+    # Iterate over any support libraries in the current support library
+    for supportLibName, supportLib of lib.library_context
+      @supportLibraryLocalIds supportLib, localIdResults
 
   checkParameters: (params) ->
     for pName, pVal of params
@@ -155,6 +200,9 @@ module.exports.PatientContext = class PatientContext extends Context
 
   getLibraryContext: (library) ->
     @library_context[library] ||= new PatientContext(@get(library),@patient,@codeService,@parameters)
+
+  getLocalIdContext: (localId) ->
+    @localId_context[localId] ||= new PatientContext(@get(library),@patient,@codeService,@parameters)
 
   findRecords: ( profile) ->
     @patient?.findRecords(profile)

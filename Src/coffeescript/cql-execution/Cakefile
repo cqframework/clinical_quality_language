@@ -1,4 +1,6 @@
 fs = require 'fs'
+browserify = require 'browserify'
+babelify = require 'babelify'
 
 {spawn, exec} = require 'child_process'
 
@@ -34,6 +36,19 @@ task "build-all", "Build src/, test/ and test/data/cql-test-data.txt", ->
   invoke 'build'
   invoke 'build-test-data'
 
+task "build-cql4browsers", "Builds the cql4browsers.js file", ->
+  console.log 'Browserifing cql4browsers...'
+  outputJsFile = fs.createWriteStream('./src/example/browser/cql4browsers.js')
+  browserify('./lib/example/browser/simple-browser-support.js')
+    .transform(babelify,
+      global: true
+      only: /node_modules\/ucum\//,
+      plugins: ["transform-es2015-arrow-functions"]
+    )
+    .bundle()
+    .pipe(outputJsFile)
+  outputJsFile.on('finish', -> console.log 'Done! Output to ./src/example/browser/cql4browsers.js')
+
 task 'watch', 'Watch src/ and test/ for changes', ->
   build('src', 'lib', true)
   build('test', 'lib-test', true)
@@ -48,9 +63,10 @@ task "watch-all", "Watch src/, test/, and test/data/cql-test-data.txt for change
 task "test", "run tests", ->
   invoke 'build'
   exec "NODE_ENV=test
+    ./node_modules/.bin/nyc --reporter=html
     ./node_modules/.bin/mocha
-    --compilers coffee:coffee-script/register
-    --require coffee-script
+    --compilers coffee:coffeescript/register
+    --require coffeescript
     --recursive
     --colors
   ", {maxBuffer: 2048 * 1024 }, (err, output) ->

@@ -7,8 +7,7 @@ you can follow these steps:
 
 1. Install [Node.js](http://nodejs.org/)
 2. Install [CoffeeScript](http://coffeescript.org/)
-3. Install [Browserify](http://browserify.org/)
-4. Execute the following from the _cql-execution_ directory:
+3. Execute the following from the _cql-execution_ directory:
    1. `npm install`
-   2. `browserify lib/example/browser/simple-browser-support.js -o src/example/browser/cql4browsers.js`
-
+   2. `cake build`
+   3. `cake build-cql4browsers`

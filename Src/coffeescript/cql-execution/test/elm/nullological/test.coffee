@@ -25,7 +25,7 @@ describe 'IsNull', ->
   it 'should detect that non-null variable is not null', ->
     @nonNullVarIsNull.exec(@ctx).should.be.false()
 
-describe.skip 'Coalesce', ->
+describe 'Coalesce', ->
   @beforeEach ->
     setup @, data
 
@@ -40,3 +40,15 @@ describe.skip 'Coalesce', ->
 
   it 'should return first non-null in array', ->
     @listArgStartsWithNull.exec(@ctx).should.equal 'One'
+
+  it 'should return null for all-null array', ->
+    should(@listArgAllNull.exec(@ctx)).be.null
+
+  it 'should be able to handle ExpressionRef with list', ->
+    @listExpressionRef.exec(@ctx).should.equal 'One'
+
+  it 'should be able to handle Retrieve as list', ->
+    should(@retrieveAsList.exec(@ctx)).be.null
+
+  it 'should be able to handle Union as list', ->
+    @unionAsList.exec(@ctx).should.equal 3

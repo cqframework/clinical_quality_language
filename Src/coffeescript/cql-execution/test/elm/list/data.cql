@@ -136,6 +136,8 @@ define NullValue: flatten null
 // @Test: Distinct
 define LotsOfDups: distinct {1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 4, 3, 2, 1}
 define NoDups: distinct {2, 4, 6, 8, 10}
+define DupsTuples: distinct { Tuple{ hello: 'world' }, Tuple{ hello: 'cleveland' }, Tuple{ hello: 'world' }, Tuple{ hello: 'dolly' } }
+define NoDupsTuples: distinct { Tuple{ hello: 'world' }, Tuple{ hello: 'cleveland' } }
 
 // @Test: First
 define Numbers: First({1, 2, 3, 4})
@@ -161,3 +163,8 @@ define Lists: Length({ {1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {10, 11, 12}})
 define Tuples: Length({ Tuple{a: 1, b: 2, c: 3}, Tuple{a: 24, b: 25, c: 26} })
 define Empty: Length(List<Integer>{})
 define NullValue: Length(null as List<Integer>)
+
+// @Test: ToList
+define FiveInFive: 5 in 5 // CQL-to-ELM will promote the second 5 to a list via ToList
+define FourInFive: 4 in 5 // CQL-to-ELM will promote the 5 to a list via ToList
+define LengthOfNull: Length(null as Integer) // CQL-to-ELM will promote the null to a list via ToList

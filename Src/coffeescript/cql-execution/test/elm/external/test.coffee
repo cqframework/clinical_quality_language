@@ -47,3 +47,13 @@ describe 'Retrieve', ->
   it 'should not find encounter performances using wrong codeProperty', ->
     e = @wrongCodeProperty.exec(@ctx)
     e.should.be.empty
+
+  it 'should find conditions by specific pharyngitis code', ->
+    e = @conditionsByCode.exec(@ctx)
+    e.should.have.length(1)
+    e[0].id().should.equal 'http://cqframework.org/3/2'
+
+  it 'should find conditions by specific pharyngitis concept', ->
+    e = @conditionsByConcept.exec(@ctx)
+    e.should.have.length(1)
+    e[0].id().should.equal 'http://cqframework.org/3/2'

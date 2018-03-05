@@ -2,6 +2,7 @@ should = require 'should'
 setup = require '../../setup'
 data = require './data'
 vsets = require './valuesets'
+{ Uncertainty } = require '../../../lib/datatypes/uncertainty'
 { p1, p2 } = require './patients'
 { PatientSource} = require '../../../lib/cql-patient'
 
@@ -67,8 +68,11 @@ describe 'InValueSet', ->
   it 'should not find medium code in value set', ->
     @wrongMediumCode.exec(@ctx).should.be.false()
 
-  it 'should not find long code in value set', ->
-    @wrongLongCode.exec(@ctx).should.be.false()
+  it 'should find long code with different version in value set', ->
+    @longCodeDifferentVersion.exec(@ctx).should.be.true()
+
+  it 'should not find code if it is null', ->
+    @nullCode.exec(@ctx).should.be.false()
 
 describe 'Patient Property In ValueSet', ->
   @beforeEach ->
@@ -125,7 +129,7 @@ describe 'ConceptDef', ->
   it 'should execute to a Concept datatype', ->
     conceptDef = @lib.getConcept('Tobacco smoking status')
     concept = conceptDef.exec(@ctx)
-    concept.text.should.equal('Tobacco smoking status')
+    concept.display.should.equal('Tobacco smoking status')
     concept.codes.should.have.length(1)
     concept.codes[0].code.should.equal('72166-2')
     concept.codes[0].system.should.equal('http://loinc.org')
@@ -141,7 +145,7 @@ describe 'ConceptRef', ->
 
   it 'should execute to the defined concept', ->
     concept = @foo.exec(@ctx)
-    concept.text.should.equal('Tobacco smoking status')
+    concept.display.should.equal('Tobacco smoking status')
     concept.codes.should.have.length(1)
     concept.codes[0].code.should.equal('72166-2')
     concept.codes[0].system.should.equal('http://loinc.org')
@@ -169,33 +173,54 @@ describe 'CalculateAge', ->
   it 'should execute age in years', ->
     @years.exec(@ctx).should.equal @full_months // 12
 
-  it 'should execute age in months', ->
-    @months.exec(@ctx).should.equal @full_months
+  it.skip 'should execute age in months', ->
+    # This test is failing if you run it in the first half of any
+    # given month and passing for the second half.
+
+    # what is returned will depend on whether the day in the current month has
+    # made it to the 17th day of the month as declared in the birthday
+    dayOfMonth = @today
+    # Test executing on each day of the month (up to 28 for simplicity).
+    for i in [1 .. 28]
+      dayOfMonth.setDate(i)
+      month_offset = if dayOfMonth.getMonth() == 5 && dayOfMonth.getDate() < 17 then 6 else 5
+      full_months = ((dayOfMonth.getFullYear() - 1980) * 12) + (dayOfMonth.getMonth() - month_offset)
+      [full_months, full_months+1].indexOf(@months.exec(@ctx)).should.not.equal -1
+
+  # Skipping because cql-to-elm in this branch does not properly translate AgeInWeeks
+  it.skip 'should execute age in weeks', ->
+    # this is an uncertainty since birthdate is only specfied to days
+    @weeks.exec(@ctx).should.eql Math.floor(@timediff // 1000 // 60 // 60 // 24 // 7)
 
   it 'should execute age in days', ->
-    @days.exec(@ctx).should.equal @timediff // 1000 // 60 // 60 // 24
+    # this is an uncertainty since birthdate is only specfied to days
+    days = @timediff // 1000 // 60 // 60 // 24
+    @days.exec(@ctx).should.eql new Uncertainty(days-1, days)
 
   it 'should execute age in hours', ->
-    # a little strange since the qicore data model specified birthDate as a date (no time)
-    @hours.exec(@ctx).should.equal @timediff // 1000 // 60 // 60
+    # this is an uncertainty since birthdate is only specfied to days
+    hours = @timediff // 1000 // 60 // 60
+    @hours.exec(@ctx).should.eql new Uncertainty(hours-24, hours)
 
   it 'should execute age in minutes', ->
-    # a little strange since the qicore data model specified birthDate as a date (no time)
-    @minutes.exec(@ctx).should.equal @timediff // 1000 // 60
+    # this is an uncertainty since birthdate is only specfied to days
+    minutes = @timediff // 1000 // 60
+    @minutes.exec(@ctx).should.eql new Uncertainty(minutes-(24*60), minutes)
 
   it 'should execute age in seconds', ->
-    # a little strange since the qicore data model specified birthDate as a date (no time)
-    @seconds.exec(@ctx).should.equal @timediff // 1000
+    # this is an uncertainty since birthdate is only specfied to days
+    seconds = @timediff // 1000
+    @seconds.exec(@ctx).should.eql new Uncertainty(seconds-(24*60*60), seconds)
 
 describe 'CalculateAgeAt', ->
   @beforeEach ->
     setup @, data, [ p1 ]
 
-  it 'should execute age at 2012 as 31', ->
-    @ageAt2012.exec(@ctx).should.equal 31
+  it 'should execute age at 2012 as 31 - 32 (since 2012 is not precise to days)', ->
+    @ageAt2012.exec(@ctx).should.eql new Uncertainty(31, 32)
 
   it 'should execute age at 19810216 as 0', ->
     @ageAt19810216.exec(@ctx).should.equal 0
 
-  it 'should execute age at 1975 as -5', ->
-    @ageAt19810216.exec(@ctx).should.equal 0
+  it 'should execute age at 1975 as -5 to -4 (since 1975 is not precise to days)', ->
+    @ageAt1975.exec(@ctx).should.eql new Uncertainty(-5, -4)

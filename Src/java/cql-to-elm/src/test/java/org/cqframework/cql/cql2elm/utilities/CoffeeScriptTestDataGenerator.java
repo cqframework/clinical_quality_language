@@ -70,13 +70,13 @@ public class CoffeeScriptTestDataGenerator {
     private static void writeSnippetsToCoffeeFile(Map<String,StringBuilder> snippets, Path file) throws IOException {
         // Write to a temp file and then move, else the coffee compiler can get confused if it's watching the file
         File tempFile = new File(file.toFile().getAbsolutePath() + ".tmp");
-        
+
         PrintWriter pw = new PrintWriter(tempFile, "UTF-8");
         pw.println("###");
         pw.println("   WARNING: This is a GENERATED file.  Do not manually edit!");
         pw.println();
         pw.println("   To generate this file:");
-        pw.println("       - Edit " + file.toFile().getName() + " to add a CQL Snippet");
+        pw.println("       - Edit " + file.toFile().getName().replace(".coffee", ".cql") + " to add a CQL Snippet");
         pw.println("       - From java dir: ./gradlew :cql-to-elm:generateTestData");
         pw.println("###");
         pw.println();
@@ -93,7 +93,8 @@ public class CoffeeScriptTestDataGenerator {
                 ModelManager modelManager = new ModelManager();
                 LibraryManager libraryManager = new LibraryManager(modelManager);
                 libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(file.getParent()));
-                CqlTranslator cqlt = CqlTranslator.fromText(snippet, modelManager, libraryManager, CqlTranslator.Options.EnableDateRangeOptimization);
+                CqlTranslator.Options[] options = {CqlTranslator.Options.EnableDateRangeOptimization, CqlTranslator.Options.EnableAnnotations};
+                CqlTranslator cqlt = CqlTranslator.fromText(snippet, modelManager, libraryManager, options);
                 if (! cqlt.getErrors().isEmpty()) {
                     pw.println("###");
                     pw.println("Translation Error(s):");

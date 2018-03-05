@@ -1,5 +1,6 @@
 { Expression } = require './expression'
 { Uncertainty } = require '../datatypes/datatypes'
+{ IncompatibleTypesException } = require './quantity'
 
 # Equal is completely handled by overloaded#Equal
 
@@ -11,7 +12,13 @@ module.exports.Less = class Less extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx).map (x) -> Uncertainty.from x
-    args[0].lessThan args[1]
+    try
+      args[0].lessThan args[1]
+    catch error
+      if error instanceof IncompatibleTypesException
+        return null
+      else
+        throw error
 
 module.exports.LessOrEqual = class LessOrEqual extends Expression
   constructor: (json) ->
@@ -19,7 +26,13 @@ module.exports.LessOrEqual = class LessOrEqual extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx).map (x) -> Uncertainty.from x
-    args[0].lessThanOrEquals args[1]
+    try
+      args[0].lessThanOrEquals args[1]
+    catch error
+      if error instanceof IncompatibleTypesException
+        return null
+      else
+        throw error
 
 module.exports.Greater = class Greater extends Expression
   constructor: (json) ->
@@ -27,7 +40,13 @@ module.exports.Greater = class Greater extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx).map (x) -> Uncertainty.from x
-    args[0].greaterThan args[1]
+    try
+      args[0].greaterThan args[1]
+    catch error
+      if error instanceof IncompatibleTypesException
+        return null
+      else
+        throw error
 
 module.exports.GreaterOrEqual = class GreaterOrEqual extends Expression
   constructor: (json) ->
@@ -35,4 +54,10 @@ module.exports.GreaterOrEqual = class GreaterOrEqual extends Expression
 
   exec: (ctx) ->
     args = @execArgs(ctx).map (x) -> Uncertainty.from x
-    args[0].greaterThanOrEquals args[1]
+    try
+      args[0].greaterThanOrEquals args[1]
+    catch error
+      if error instanceof IncompatibleTypesException
+        return null
+      else
+        throw error

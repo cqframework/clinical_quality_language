@@ -11,7 +11,7 @@ module.exports.If = class If extends Expression
     @els = build json.else
 
   exec: (ctx) ->
-    if @condition.exec(ctx) then @th.exec(ctx) else @els.exec(ctx)
+    if @condition.execute(ctx) then @th.execute(ctx) else @els.execute(ctx)
 
 module.exports.CaseItem = CaseItem = class CaseItem
   constructor:(json) ->
@@ -31,14 +31,14 @@ module.exports.Case = class Case extends Expression
     if @comparand then @exec_selected(ctx) else @exec_standard(ctx)
 
   exec_selected: (ctx) ->
-    val = @comparand.exec(ctx)
+    val = @comparand.execute(ctx)
     for ci in @caseItems
-      if equals ci.when.exec(ctx), val
-       return ci.then.exec(ctx)
-    @els.exec(ctx)
+      if equals ci.when.execute(ctx), val
+       return ci.then.execute(ctx)
+    @els.execute(ctx)
 
   exec_standard: (ctx) ->
     for ci in @caseItems
-      if ci.when.exec(ctx)
-       return ci.then.exec(ctx)
-    @els.exec(ctx)
+      if ci.when.execute(ctx)
+       return ci.then.execute(ctx)
+    @els.execute(ctx)

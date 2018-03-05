@@ -20,7 +20,8 @@ define WrongString: 'M' in "Female"
 define WrongStringInVersionedValueSet: 'M' in "Versioned Female"
 define WrongShortCode: Code { code: 'M' } in "Female"
 define WrongMediumCode: Code { code: 'F', system: '3.16.840.1.113883.18.2' } in "Female"
-define WrongLongCode: Code { code: 'F', system: '2.16.840.1.113883.18.2', version: 'HL7V2.6' } in "Female"
+define LongCodeDifferentVersion: Code { code: 'F', system: '2.16.840.1.113883.18.2', version: 'HL7V2.6' } in "Female"
+define NullCode: Code { code: null, system: '2.16.840.1.113883.18.2', version: 'HL7V2.6' } in "Female"
 
 // @Test: Patient Property In ValueSet
 valueset "Female": '2.16.840.1.113883.3.560.100.2'
@@ -51,6 +52,8 @@ define Foo: "Tobacco smoking status"
 // @Test: CalculateAge
 define Years: AgeInYears()
 define Months: AgeInMonths()
+// Commented out until cql-to-elm supports it
+// define Weeks: AgeInWeeks()
 define Days: AgeInDays()
 define Hours: AgeInHours()
 define Minutes: AgeInMinutes()

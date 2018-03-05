@@ -86,8 +86,8 @@ describe 'Union', ->
   it 'should union two lists to a single list', ->
     @oneToTen.exec(@ctx).should.eql [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-  it 'should maintain duplicate elements (according to CQL spec)', ->
-    @oneToFiveOverlapped.exec(@ctx).should.eql [1, 2, 3, 4, 3, 4, 5]
+  it 'should remove duplicate elements (according to CQL 1.2 spec)', ->
+    @oneToFiveOverlapped.exec(@ctx).should.eql [1, 2, 3, 4, 5]
 
   it 'should not fill in values in a disjoint union', ->
     @disjoint.exec(@ctx).should.eql [1, 2, 4, 5]
@@ -359,6 +359,12 @@ describe 'Distinct', ->
   it 'should do nothing to an already distinct array', ->
     @noDups.exec(@ctx).should.eql [2, 4, 6, 8, 10]
 
+  it 'should remove duplicate tuples', ->
+    @dupsTuples.exec(@ctx).should.eql [{ hello: 'world' }, { hello: 'cleveland' }, { hello: 'dolly'}]
+
+  it 'should do nothing to an array of distinct tuples', ->
+    @noDupsTuples.exec(@ctx).should.eql [{ hello: 'world' }, { hello: 'cleveland' }]
+
 describe 'First', ->
   @beforeEach ->
     setup @, data
@@ -427,3 +433,16 @@ describe 'Length', ->
 
   it 'should return null for an empty list', ->
     should(@nullValue.exec(@ctx)).be.null
+
+describe 'ToList', ->
+  @beforeEach ->
+    setup @, data
+
+  it 'should return true that 5 is in 5', ->
+    @fiveInFive.exec(@ctx).should.be.true()
+
+  it 'should return false that 4 is in 5', ->
+    @fourInFive.exec(@ctx).should.be.false()
+
+  it 'should make null into an empty list', ->
+    @lengthOfNull.exec(@ctx).should.equal 0

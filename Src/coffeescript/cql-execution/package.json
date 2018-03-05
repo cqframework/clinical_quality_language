@@ -30,10 +30,18 @@
     "url": "https://github.com/cqframework/clinical_quality_language.git"
   },
   "devDependencies": {
-    "coffee-script": "^1.12.0",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.4.0",
+    "coffeescript": "^1.12.7",
     "coveralls": "^2.13.1",
     "mocha": "^3.4.2",
+    "nyc": "^11.4.1",
     "should": "^11.2.1"
+  },
+  "dependencies": {
+    "moment": "^2.20.1",
+    "ucum": "0.0.7"
   },
   "main": "lib/cql",
   "directories": {
@@ -43,5 +51,5 @@
     "prepublish": "./node_modules/.bin/cake build",
     "test": "./node_modules/.bin/cake test"
   },
-  "license": "Apache-2.0"  
+  "license": "Apache-2.0"
 }
