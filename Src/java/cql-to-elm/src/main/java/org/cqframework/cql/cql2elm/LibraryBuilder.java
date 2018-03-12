@@ -1029,11 +1029,34 @@ public class LibraryBuilder {
     }
 
     public void validateUnit(String unit) {
-        if (ucumService != null) {
-            String message = ucumService.validate(unit);
-            if (message != null) {
-                throw new IllegalArgumentException(message);
-            }
+        switch (unit) {
+            case "year":
+            case "years":
+            case "month":
+            case "months":
+            case "week":
+            case "weeks":
+            case "day":
+            case "days":
+            case "hour":
+            case "hours":
+            case "minute":
+            case "minutes":
+            case "second":
+            case "seconds":
+            case "millisecond":
+            case "milliseconds":
+                // CQL-defined temporal precisions are valid units
+            break;
+
+            default:
+                if (ucumService != null) {
+                    String message = ucumService.validate(unit);
+                    if (message != null) {
+                        throw new IllegalArgumentException(message);
+                    }
+                }
+            break;
         }
     }
 

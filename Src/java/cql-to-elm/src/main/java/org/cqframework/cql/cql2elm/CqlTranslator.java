@@ -12,6 +12,8 @@ import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
+import org.fhir.ucum.UcumEssenceService;
+import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.elm.r1.Library;
@@ -320,7 +322,7 @@ public class CqlTranslator {
                                  boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
                                  boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
                                  boolean disableListTraversal, boolean disableDemotion, boolean disablePromotion,
-                                 boolean disableMethodInvocation) throws IOException {
+                                 boolean disableMethodInvocation, boolean validateUnits) throws IOException {
         ArrayList<CqlTranslator.Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
             options.add(CqlTranslator.Options.EnableDateRangeOptimization);
@@ -355,9 +357,18 @@ public class CqlTranslator {
 
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
+        UcumService ucumService = null;
+        if (validateUnits) {
+            try {
+                ucumService = new UcumEssenceService("/ucum-essence.xml");
+            } catch (UcumException e) {
+                System.err.println("Could not create UCUM validation service:");
+                e.printStackTrace();
+            }
+        }
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, errorLevel, options.toArray(new CqlTranslator.Options[options.size()]));
+        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, ucumService, errorLevel, options.toArray(new CqlTranslator.Options[options.size()]));
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {
@@ -411,6 +422,7 @@ public class CqlTranslator {
         OptionSpec disableMethodInvocation = parser.accepts("disable-method-invocation");
         OptionSpec strict = parser.accepts("strict");
         OptionSpec debug = parser.accepts("debug");
+        OptionSpec validateUnits = parser.accepts("validate-units");
 
         OptionSet options = parser.parse(args);
 
@@ -493,7 +505,8 @@ public class CqlTranslator {
                     options.has(strict) || options.has(disableListTraversal),
                     options.has(strict) || options.has(disableDemotion),
                     options.has(strict) || options.has(disablePromotion),
-                    options.has(strict) || options.has(disableMethodInvocation));
+                    options.has(strict) || options.has(disableMethodInvocation),
+                    options.has(validateUnits));
         }
     }
 }

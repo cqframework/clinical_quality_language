@@ -11,7 +11,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4.1'
     compile group: 'com.fasterxml.jackson.core', name:'jackson-databind', version:'2.4.1'
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
-    compile group: 'org.fhir', name: 'ucum', version: '1.0-SNAPSHOT'
+    compile group: 'org.fhir', name: 'ucum', version: '1.0.1'
     runtime project(':quick')
     runtime project(':qdm')
 }
