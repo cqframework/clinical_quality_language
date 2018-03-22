@@ -25,6 +25,7 @@ define TestListInListOfLists: { 1 } in { { 1 }, { 2 }, { 3 }, { 4 }, { 5 } }
 
 define TestEquality: Patient.name.given = 'Smith'
 define TestEmpty: Patient.name.given.empty()
+define TestHasValue: Patient.name.hasValue()
 define TestNot: Patient.deceased.value.not()
 define TestNotImplicit: Patient.deceased.not()
 define TestExists: Patient.name.given.exists()
