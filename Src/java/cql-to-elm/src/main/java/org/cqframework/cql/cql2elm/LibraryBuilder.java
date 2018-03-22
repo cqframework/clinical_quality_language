@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
@@ -11,6 +12,7 @@ import org.hl7.elm.r1.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.namespace.QName;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder {
-    public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager) {
+    public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
         }
@@ -37,6 +39,8 @@ public class LibraryBuilder {
 
         translatedLibrary = new TranslatedLibrary();
         translatedLibrary.setLibrary(library);
+
+        this.ucumService = ucumService;
     }
 
     // Only exceptions of severity Error
@@ -87,6 +91,7 @@ public class LibraryBuilder {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
+    private UcumService ucumService = null;
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -1019,6 +1024,46 @@ public class LibraryBuilder {
         Literal result = of.createLiteral()
                 .withValue(value)
                 .withValueType(dataTypeToQName(resultType));
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public void validateUnit(String unit) {
+        switch (unit) {
+            case "year":
+            case "years":
+            case "month":
+            case "months":
+            case "week":
+            case "weeks":
+            case "day":
+            case "days":
+            case "hour":
+            case "hours":
+            case "minute":
+            case "minutes":
+            case "second":
+            case "seconds":
+            case "millisecond":
+            case "milliseconds":
+                // CQL-defined temporal precisions are valid units
+            break;
+
+            default:
+                if (ucumService != null) {
+                    String message = ucumService.validate(unit);
+                    if (message != null) {
+                        throw new IllegalArgumentException(message);
+                    }
+                }
+            break;
+        }
+    }
+
+    public Quantity createQuantity(BigDecimal value, String unit) {
+        validateUnit(unit);
+        Quantity result = of.createQuantity().withValue(value).withUnit(unit);
+        DataType resultType = resolveTypeName("System", "Quantity");
         result.setResultType(resultType);
         return result;
     }

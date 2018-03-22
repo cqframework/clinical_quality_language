@@ -67,6 +67,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private boolean implicitPatientCreated = false;
+    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
         super();
@@ -77,6 +78,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         this.libraryBuilder = libraryBuilder;
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
+        this.decimalFormat.setParseBigDecimal(true);
     }
     
     public void enableAnnotations() {
@@ -1086,13 +1088,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Expression visitQuantity(@NotNull cqlParser.QuantityContext ctx) {
         if (ctx.unit() != null) {
-            DecimalFormat df = new DecimalFormat("#.#");
-            df.setParseBigDecimal(true);
             try {
-                Quantity result = of.createQuantity()
-                        .withValue((BigDecimal) df.parse(ctx.NUMBER().getText()))
-                        .withUnit(parseString(ctx.unit()));
-                result.setResultType(libraryBuilder.resolveTypeName("System", "Quantity"));
+                Quantity result = libraryBuilder.createQuantity((BigDecimal) decimalFormat.parse(ctx.NUMBER().getText()), parseString(ctx.unit()));
                 return result;
             } catch (ParseException e) {
                 throw new IllegalArgumentException(String.format("Could not parse quantity literal: %s", ctx.getText()), e);
