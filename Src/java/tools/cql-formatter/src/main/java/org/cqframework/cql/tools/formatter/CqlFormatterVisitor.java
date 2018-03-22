@@ -65,6 +65,16 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         }
     }
 
+    private boolean useSpaces = true;
+    public boolean getUseSpaces() {
+        return useSpaces;
+    }
+
+    private int indentSize = 2;
+    public int getIndentSize() {
+        return indentSize;
+    }
+
     private StringBuilder output;
 
     private final char space = '\u0020';
@@ -259,12 +269,17 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         indentLevel = 0;
     }
 
+    private void indent() {
+        int indent = indentLevel * (useSpaces ? indentSize : 1);
+        for (int i = 0; i < indent; i++) {
+            output.append(useSpaces ? space : tab);
+        }
+    }
+
     private void newLine() {
         output.append(newLine);
         currentLine++;
-        for (int i = 0; i < indentLevel; i++) {
-            output.append(tab);
-        }
+        indent();
         onNewLine = true;
     }
 
