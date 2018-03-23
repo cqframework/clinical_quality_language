@@ -19,7 +19,7 @@ public class CqlFormatterVisitorTest {
     private void runTest(String fileName) throws IOException {
         String input = getInputStreamAsString(getInput(fileName));
         FormatResult result = getFormattedOutput(getInput(fileName));
-        inError = result.errors.size() > 0 ? true : false;
+        inError = result.errors.size() > 0;
         Assert.assertTrue(inputMatchesOutput(input, result.output));
     }
 
@@ -43,6 +43,8 @@ public class CqlFormatterVisitorTest {
         runTest("git-issue-210-b.cql");
         Assert.assertFalse(inError);
         runTest("git-issue-210-c.cql");
+        Assert.assertFalse(inError);
+        runTest("git-issue-246.cql");
         Assert.assertFalse(inError);
         runTest("comment-after.cql");
         Assert.assertFalse(inError);
