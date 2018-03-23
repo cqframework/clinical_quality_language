@@ -85,6 +85,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
     private boolean onNewLine;
     private boolean needsWhitespace;
     private int indentLevel = 0;
+    private int previousIndentLevel = 0;
 
     private boolean isFirstTupleElement = false;
 
@@ -252,21 +253,32 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         if (needsWhitespaceBefore(terminal)) {
             ensureWhitespace();
         }
+        if (terminal.equals("else")) {
+            increaseIndentLevel();
+            newLine();
+            decreaseIndentLevel();
+        }
+        if (terminal.equals("end")) {
+            newLine();
+        }
         output.append(terminal);
         onNewLine = false;
         needsWhitespace = needsWhitespaceAfter(terminal);
     }
 
     private void increaseIndentLevel() {
-        indentLevel++;
+        previousIndentLevel = indentLevel;
+        indentLevel = previousIndentLevel + 1;
     }
 
     private void decreaseIndentLevel() {
-        indentLevel--;
+        previousIndentLevel = indentLevel;
+        indentLevel = previousIndentLevel - 1;
     }
 
     private void resetIndentLevel() {
         indentLevel = 0;
+        previousIndentLevel = 0;
     }
 
     private void indent() {
@@ -1009,8 +1021,26 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         return super.visitDurationExpressionTerm(ctx);
     }
 
+    private boolean hasNeighborOnLine(ParserRuleContext ctx) {
+        ParserRuleContext context = ctx.getParent();
+        while (context != null) {
+            if (context.getStart().getStartIndex() < ctx.getStart().getStartIndex()) {
+                return context.getStart().getLine() == ctx.getStart().getLine();
+            }
+            context = context.getParent();
+        }
+        return false;
+    }
+
     @Override
     public Object visitCaseExpressionTerm(cqlParser.CaseExpressionTermContext ctx) {
+        if (hasNeighborOnLine(ctx)) {
+            newLine();
+            if (previousIndentLevel == indentLevel) {
+                increaseIndentLevel();
+            }
+        }
+
         return super.visitCaseExpressionTerm(ctx);
     }
 
@@ -1041,7 +1071,12 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitCaseExpressionItem(cqlParser.CaseExpressionItemContext ctx) {
-        return super.visitCaseExpressionItem(ctx);
+        try {
+            enterClause();
+            return super.visitCaseExpressionItem(ctx);
+        } finally {
+            exitClause();
+        }
     }
 
     @Override
