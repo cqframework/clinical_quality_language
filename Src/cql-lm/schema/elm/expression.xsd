@@ -132,7 +132,12 @@ The following changes were made since the initial informative ballot in Septembe
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
-					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>This element is deprecated. New implementations should use the new elementType element.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="elementType" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="name" type="xs:string" use="required"/>
 			</xs:extension>
@@ -157,7 +162,12 @@ The following changes were made since the initial informative ballot in Septembe
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
 				<xs:sequence>
-					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>This element is deprecated. New implementations should use the new choice element.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -275,6 +285,11 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:extension base="ExpressionRef">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="signature" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies the declared signature of the function being called. If no signature is specified, the run-time types of the operands should be used to resolve any overload.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
