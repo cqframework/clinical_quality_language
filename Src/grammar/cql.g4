@@ -2,7 +2,7 @@ grammar cql;
 
 /*
  * Clinical Quality Language Grammar Specification
- * Version 1.2 - Jan 2017 STU Ballot
+ * Version 1.3 - May 2018 STU3 Ballot
  */
 
 import fhirpath;
@@ -450,7 +450,7 @@ identifier
     | 'display'
     | 'distinct'
     | 'end'
-    // | 'exists'
+    // | 'exists' NOTE: This is excluded because including it causes a significant performance degradation in the ANTLR parser, still looking into a fix for this
     | 'not'
     | 'start'
     | 'time'

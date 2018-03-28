@@ -67,10 +67,20 @@
 	</xs:complexType>
 	<xs:complexType name="ClassInfoElement">
 		<xs:sequence>
-			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>This element is deprecated. New implementations should use the new elementTypeSpecifier element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="type" type="xs:string" use="optional"/>
+		<xs:attribute name="type" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>This attribute is deprecated. New implementations should use the new elementType attribute</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="elementType" type="xs:string" use="optional"/>
 		<xs:attribute name="prohibited" type="xs:boolean" use="optional"/>
 		<xs:attribute name="oneBased" type="xs:boolean" use="optional">
 			<xs:annotation>
@@ -87,6 +97,11 @@
 				<xs:sequence>
 					<xs:element name="element" type="ClassInfoElement" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
+				<xs:attribute name="namespace" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Namespace is the namespace of the class. This is typically just the name of the model, but can contain additional qualifiers.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="name" type="xs:string" use="required">
 					<xs:annotation>
 						<xs:documentation>The name attribute specifies the name of the type within the data model. This corresponds to the name of the class within the class model, or the name of the type in the case of an xsd. In FHIR, this corresponds to the name of the resource.</xs:documentation>
@@ -124,6 +139,11 @@
 	<xs:complexType name="SimpleTypeInfo">
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
+				<xs:attribute name="namespace" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Namespace is the namespace of the type. This is typically just the name of the model, but can contain additional qualifiers.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="name" type="xs:string" use="required">
 					<xs:annotation>
 						<xs:documentation>Name is the unqualified name of the type within this model.</xs:documentation>
@@ -154,10 +174,20 @@
 	</xs:complexType>
 	<xs:complexType name="TupleTypeInfoElement">
 		<xs:sequence>
-			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>This element is deprecated. New implementations should use the new elementTypeSpecifier element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
-		<xs:attribute name="type" type="xs:string" use="optional"/>
+		<xs:attribute name="type" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>This attribute is deprecated. New implementations should use the new elementType attribute.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="elementType" type="xs:string" use="optional"/>
 		<xs:attribute name="prohibited" type="xs:boolean" use="optional"/>
 		<xs:attribute name="oneBased" type="xs:boolean" use="optional">
 			<xs:annotation>
@@ -192,7 +222,12 @@
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
 				<xs:sequence>
-					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>This element is deprecated. New implementations should use the new choice element.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -206,7 +241,12 @@
 	<xs:complexType name="NamedTypeSpecifier">
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
-				<xs:attribute name="modelName" type="xs:string" use="optional"/>
+				<xs:attribute name="modelName" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>This attribute is deprecated. New implementations should use the new namespace attribute.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="namespace" type="xs:string" use="optional"/>
 				<xs:attribute name="name" type="xs:string" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
