@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 
 import java.util.*;
@@ -47,9 +48,10 @@ public class OperatorMap {
                     // subtype = 1
                     // compatible = 2
                     // cast = 3
-                    // conversion = 4
-                    // demotion = 5
-                    // promotion = 6
+                    // conversion to simple type = 4
+                    // conversion to complex type = 5
+                    // demotion = 6
+                    // promotion = 7
                 Iterator<DataType> operands = resolution.getOperator().getSignature().getOperandTypes().iterator();
                 Iterator<DataType> callOperands = callContext.getSignature().getOperandTypes().iterator();
                 Iterator<Conversion> conversions = resolution.hasConversions() ? resolution.getConversions().iterator() : null;
@@ -72,10 +74,14 @@ public class OperatorMap {
                             score += 3;
                         }
                         else if (conversion.isListDemotion()) {
-                            score += 5;
+                            score += 6;
                         }
                         else if (conversion.isListPromotion()) {
-                            score += 6;
+                            score += 7;
+                        }
+                        else if (conversion.getToType() instanceof ClassType) {
+                            // TODO: #1443 - This didn't work because the ambiguous target is actually a List<Quantity> | List<Decimal>, not Quantity | Decimal
+                            score += 5;
                         }
                         else {
                             score += 4;
