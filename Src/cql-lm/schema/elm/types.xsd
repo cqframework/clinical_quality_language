@@ -58,6 +58,16 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Ratio">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:sequence>
+					<xs:element name="numerator" type="Quantity" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="denominator" type="Quantity" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="String">
 		<xs:complexContent>
 			<xs:extension base="Any">
