@@ -192,7 +192,7 @@ The following changes were made since the initial informative ballot in Septembe
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="BinaryExpression">
+	<xs:complexType name="BinaryExpression" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The BinaryExpression type defines the abstract base type for expressions that take two arguments.</xs:documentation>
 		</xs:annotation>
@@ -204,7 +204,7 @@ The following changes were made since the initial informative ballot in Septembe
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="TernaryExpression">
+	<xs:complexType name="TernaryExpression" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The TernaryExpression type defines the abstract base type for expressions that take three arguments.</xs:documentation>
 		</xs:annotation>
