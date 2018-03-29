@@ -85,9 +85,17 @@ public class SystemLibraryHelper {
         system.add(new Conversion(stringToTime, false));
 
         // ToQuantity(String) : Quantity
+        // ToQuantity(Integer) : Quantity
+        // ToQuantity(Decimal) : Quantity
         Operator stringToQuantity = new Operator("ToQuantity", new Signature(systemModel.getString()), systemModel.getQuantity());
         system.add(stringToQuantity);
         system.add(new Conversion(stringToQuantity, false));
+        //Operator integerToQuantity = new Operator("ToQuantity", new Signature(systemModel.getInteger()), systemModel.getQuantity());
+        //system.add(integerToQuantity);
+        //system.add(new Conversion(integerToQuantity, true));
+        //Operator decimalToQuantity = new Operator("ToQuantity", new Signature(systemModel.getDecimal()), systemModel.getQuantity());
+        //system.add(decimalToQuantity);
+        //system.add(new Conversion(decimalToQuantity, true));
 
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
