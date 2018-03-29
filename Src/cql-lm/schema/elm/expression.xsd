@@ -923,11 +923,13 @@ The Add operator is defined for the Integer, Decimal, and Quantity types. In add
 
 For Date, DateTime, and Time values, the operator returns the value of the given date/time, incremented by the time-valued quantity, respecting variable length periods for calendar years and months.
 
-For Date values, the quantity unit must be one of years, months, or days.
+For Date values, the quantity unit must be one of years, months, weeks, or days.
 
-For DateTime values, the quantity unit must be one of years, months, days, hours, minutes, seconds, or milliseconds.
+For DateTime values, the quantity unit must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
 
 For Time values, the quantity unit must be one of hours, minutes, seconds, or milliseconds.
+
+Note that as with any date/time operations, temporal units may be specified with either singular, plural, or UCUM units.
 
 The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
 
@@ -945,7 +947,13 @@ When subtracting quantities, the dimensions of each quantity must be the same, b
 
 The Subtract operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be subtracted from a Date, DateTime, or Time using this operator.
 
-For Date, DateTime, Time values, the operator returns the value of the given date/time, decremented by the time-valued quantity, respective variable length periods for calendar years and months.
+For Date, DateTime, Time values, the operator returns the value of the given date/time, decremented by the time-valued quantity, respecting variable length periods for calendar years and months.
+
+For Date values, the quantity unit must be one of years, months, weeks, or days.
+
+For DateTime values, the quantity unit must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
+
+For Time values, the quantity unit must be one of hours, minutes, seconds, or milliseconds.
 
 The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
 
@@ -1424,11 +1432,9 @@ Platforms will typically use native regular expression implementations. These ar
 		<xs:annotation>
 			<xs:documentation>The DurationBetween operator returns the number of whole calendar periods for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional periods are dropped.
 
-For Date values, precision must be one of years, months, or days.			
+For Date values, precision must be one of Year, Month, Week, or Day.			
 
-For DateTime values, precision must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
-
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
+For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
 			
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1442,11 +1448,9 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The DifferenceBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional boundaries are dropped.
 			
-For Date values, precision must be one of years, months, or days.
+For Date values, precision must be one of Year, Month, Week, or Day.			
 
-For DateTime values, precision must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
-
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
+For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
 			
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1600,9 +1604,9 @@ As with all date/time calculations, comparisons are performed respecting the tim
 
 If either or both arguments are null, the result is null.
 
-For Date values, precision must be one of years, months, or days.
-			
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.</xs:documentation>
+For Date values, precision must be one of Year, Month, Week, or Day.			
+
+For Time values, precision must be one of Hour, Minute, Second, or Millisecond.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1622,10 +1626,10 @@ This operator uses the semantics described in the Start and End operators to det
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-For Date values, precision must be one of years, months, or days.
+For Date values, precision must be one of Year, Month, Week, or Day.			
 
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
-
+For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
+			
 For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1646,10 +1650,10 @@ This operator uses the semantics described in the Start and End operators to det
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-For Date values, precision must be one of years, months, or days.
+For Date values, precision must be one of Year, Month, Week, or Day.			
 
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
-
+For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
+			
 For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
