@@ -2380,6 +2380,20 @@ If the list is null, the result is null.</xs:documentation>
 			<xs:extension base="AggregateExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Product">
+		<xs:annotation>
+			<xs:documentation>The Product operator returns the geometric product of non-null elements in the source.
+			
+If a path is specified, elements with no value for the property specified by the path are ignored. 
+
+If the source contains no non-null elements, null is returned.
+
+If the list is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AggregateExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Min">
 		<xs:annotation>
 			<xs:documentation>The Min operator returns the minimum element in the source. Comparison semantics are defined by the comparison operators for the type of the values being aggregated.
@@ -2410,7 +2424,21 @@ If the source is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Avg">
 		<xs:annotation>
-			<xs:documentation>The Avg operator returns the average of the elements in source.
+			<xs:documentation>The Avg operator returns the average of the non-null elements in source.
+			
+If a path is specified, elements with no value for the property specified by the path are ignored.
+			
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AggregateExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GeometricMean">
+		<xs:annotation>
+			<xs:documentation>The GeometricMean operator returns the geometric mean of the non-null elements in source.
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 			
