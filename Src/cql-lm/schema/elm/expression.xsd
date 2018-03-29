@@ -2092,7 +2092,7 @@ This operator has two overloads:
 	List
 	Interval
 
-For the list overload, this operator returns a list with the elements that appear in both lists, using equivalence semantics.
+For the list overload, this operator returns a list with the elements that appear in both lists, using equivalence semantics. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results.
 
 For the interval overload, this operator returns the interval that defines the overlapping portion of both arguments. If the arguments do not overlap, this operator returns null.
 
@@ -2110,7 +2110,7 @@ This operator has two overloads:
 	List, List
 	Interval, Interval
 
-For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equivalence semantics. If either argument is null, it should be treated as an empty list.
+For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equivalence semantics. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results. If the left argument is null, the result is null. If the right argument is null, the result is the left argument.
 
 For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null. If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
