@@ -27,6 +27,13 @@
 			<xs:element name="display" type="String" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="Date">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="DateTime">
 		<xs:complexContent>
 			<xs:extension base="Any">
@@ -118,6 +125,16 @@
 				<xs:sequence>
 					<xs:element name="low" type="Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="high" type="Quantity" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DateInterval">
+		<xs:complexContent>
+			<xs:extension base="Interval">
+				<xs:sequence>
+					<xs:element name="low" type="Date" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="high" type="Date" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
