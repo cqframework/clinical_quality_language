@@ -622,9 +622,9 @@ The static type of the then argument within the first caseItem determines the ty
 		<xs:annotation>
 			<xs:documentation>The Convert operator converts a value to a specific type. The result of the operator is the value of the argument converted to the target type, if possible. Note that use of this operator may result in a run-time exception being thrown if there is no valid conversion from the actual value to the target type.
 
-This operator supports conversion between String and each of Boolean, Integer, Decimal, Quantity, DateTime, and Time, as well as conversion from Integer to Decimal and from Code to Concept.
+This operator supports conversion between String and each of Boolean, Integer, Decimal, Quantity, Date, DateTime, and Time, as well as conversion from Integer to Decimal and from Code to Concept.
 
-Conversion between String and DateTime/Time is performed using the ISO-8601 standard format: YYYY-MM-DDThh:mm:ss(+|-)hh:mm.</xs:documentation>
+Conversion between String and Date/DateTime/Time is performed using the ISO-8601 standard format: YYYY-MM-DDThh:mm:ss(+|-)hh:mm.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -657,9 +657,29 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ToDate">
+		<xs:annotation>
+			<xs:documentation>The ToDate operator converts the value of its argument to a Date value. The operator expects the string to be formatted using the ISO-8601 date representation: 
+
+YYYY-MM-DD
+
+In addition, the string must be interpretable as a valid date value.
+
+If the input string is not formatted correctly, or does not represent a valid date value, a run-time error is thrown.
+
+As with date literals, date values may be specified to any precision.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ToDateTime">
 		<xs:annotation>
-			<xs:documentation>The ToDateTime operator converts the value of its argument to a DateTime value. The operator expects the string to be formatted using the ISO-8601 date/time representation: 
+			<xs:documentation>The ToDateTime operator converts the value of its argument to a DateTime value. 
+				
+For string values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
 
 YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 
@@ -668,6 +688,8 @@ In addition, the string must be interpretable as a valid date/time value.
 If the input string is not formatted correctly, or does not represent a valid date/time value, a run-time error is thrown.
 
 As with date/time literals, date/time values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+
+For Date values, the result is a DateTime with all time components set to 0, except the timezone, which is set to the timezone of the evaluation request timestamp.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -751,6 +773,7 @@ Boolean true|false
 Integer (-)?#0
 Decimal (-)?#0.0#
 Quantity (-)?#0.0# '&lt;unit&gt;'
+Date YYYY-MM-DD
 DateTime YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 Time	Thh:mm:ss.fff(+|-)hh:mm
 
@@ -841,7 +864,7 @@ For comparisons involving quantities, the dimensions of each quantity must be th
 
 If either argument is null, the result is null.
 
-The Less operator is defined for the Integer, Decimal, String, DateTime, Time, and Quantity types.</xs:documentation>
+The Less operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -855,7 +878,7 @@ For comparisons involving quantities, the dimensions of each quantity must be th
 
 If either argument is null, the result is null.
 
-The Greater operator is defined for the Integer, Decimal, String, DateTime, Time, and Quantity types.</xs:documentation>
+The Greater operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -869,7 +892,7 @@ For comparisons involving quantities, the dimensions of each quantity must be th
 
 If either argument is null, the result is null.
 
-The LessOrEqual operator is defined for the Integer, Decimal, String, DateTime, Time, and Quantity types.</xs:documentation>
+The LessOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -883,7 +906,7 @@ For comparisons involving quantities, the dimensions of each quantity must be th
 
 If either argument is null, the result is null.
 
-The GreaterOrEqual operator is defined for the Integer, Decimal, String, DateTime, Time, and Quantity types.</xs:documentation>
+The GreaterOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -896,9 +919,11 @@ The GreaterOrEqual operator is defined for the Integer, Decimal, String, DateTim
 			
 When adding quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be added, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input. Attempting to operate on quantities with invalid units will result in a run-time error.
 			
-The Add operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be added to a DateTime or Time using this operator.
+The Add operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be added to a Date, DateTime or Time using this operator.
 
-For DateTime and Time values, the operator returns the value of the given date/time, incremented by the time-valued quantity, respecting variable length periods for calendar years and months.
+For Date, DateTime, and Time values, the operator returns the value of the given date/time, incremented by the time-valued quantity, respecting variable length periods for calendar years and months.
+
+For Date values, the quantity unit must be one of years, months, or days.
 
 For DateTime values, the quantity unit must be one of years, months, days, hours, minutes, seconds, or milliseconds.
 
@@ -918,9 +943,9 @@ If either argument is null, the result is null.</xs:documentation>
 			
 When subtracting quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be subtracted, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input. Attempting to operate on quantities with invalid units will result in a run-time error.
 
-The Subtract operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be subtracted from a DateTime or Time using this operator.
+The Subtract operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be subtracted from a Date, DateTime, or Time using this operator.
 
-For DateTime and Time values, the operator returns the value of the given date/time, decremented by the time-valued quantity, respective variable length periods for calendar years and months.
+For Date, DateTime, Time values, the operator returns the value of the given date/time, decremented by the time-valued quantity, respective variable length periods for calendar years and months.
 
 The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
 
@@ -1101,13 +1126,13 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Successor operator returns the successor of the argument. For example, the successor of 1 is 2. If the argument is already the maximum value for the type, a run-time error is thrown.
 			
-The Successor operator is defined for the Integer, Decimal, DateTime, and Time types.
+The Successor operator is defined for the Integer, Decimal, Date, DateTime, and Time types.
 
 For Integer, Successor is equivalent to adding 1.
 
 For Decimal, Successor is equivalent to adding the minimum precision value for the Decimal type, or 10^-08.
 
-For DateTime and Time values, Successor is equivalent to adding a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Successor is equivalent to adding 1 millisecond; if the DateTime is specified to the second, Successor is equivalent to adding one second, etc.
+For Date, DateTime, and Time values, Successor is equivalent to adding a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Successor is equivalent to adding 1 millisecond; if the DateTime is specified to the second, Successor is equivalent to adding one second, etc.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1119,13 +1144,13 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Predecessor operator returns the predecessor of the argument. For example, the predecessor of 2 is 1. If the argument is already the minimum value for the type, a run-time error is thrown.
 			
-The Predecessor operator is defined for the Integer, Decimal, DateTime, and Time types.
+The Predecessor operator is defined for the Integer, Decimal, Date, DateTime, and Time types.
 
 For Integer, Predecessor is equivalent to subtracting 1.
 
 For Decimal, Predecessor is equivalent to subtracting the minimum precision value for the Decimal type, or 10^-08.
 
-For DateTime and Time values, Predecessor is equivalent to subtracting a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Predecessor is equivalent to subtracting 1 millisecond; if the DateTime is specified to the second, Predecessor is equivalent to subtracting one second, etc.
+For Date, DateTime, and Time values, Predecessor is equivalent to subtracting a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Predecessor is equivalent to subtracting 1 millisecond; if the DateTime is specified to the second, Predecessor is equivalent to subtracting one second, etc.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1137,11 +1162,13 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The MinValue operator returns the minimum representable value for the given type.
 
-The MinValue operator is defined for the Integer, Decimal, DateTime, and Time types.
+The MinValue operator is defined for the Integer, Decimal, Date, DateTime, and Time types.
 
 For Integer, MinValue returns the minimum signed 32-bit integer, -(2^31).
 
 For Decimal, MinValue returns the minimum representable Decimal value, (-10^37 - 1) / 10^8 (-9999999999999999999999999999.99999999).
+
+For Date, MinValue returns the minimum representable Date value, Date(1, 1, 1).
 
 For DateTime, MinValue returns the minimum representable DateTime value, DateTime(1, 1, 1, 0, 0, 0, 0).
 
@@ -1159,11 +1186,13 @@ For any other type, attempting to invoke MinValue results in an error.</xs:docum
 		<xs:annotation>
 			<xs:documentation>The MaxValue operator returns the maximum representable value for the given type.
 			
-The MaxValue operator is defined for the Integer, Decimal, DateTime, and Time types.
+The MaxValue operator is defined for the Integer, Decimal, Date, DateTime, and Time types.
 
 For Integer, MaxValue returns the maximum signed 32-bit integer, 2^31 - 1.
 
 For Decimal, MaxValue returns the maximum representable Decimal value, (10^37 - 1) / 10^8 (9999999999999999999999999999.99999999).
+
+For Date, MaxValue returns the maximum representable Date value, Date(9999, 12, 31).
 
 For DateTime, MaxValue returns the maximum representable DateTime value, DateTime(9999, 12, 31, 23, 59, 59, 999).
 
@@ -1394,7 +1423,9 @@ Platforms will typically use native regular expression implementations. These ar
 	<xs:complexType name="DurationBetween">
 		<xs:annotation>
 			<xs:documentation>The DurationBetween operator returns the number of whole calendar periods for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional periods are dropped.
-			
+
+For Date values, precision must be one of years, months, or days.			
+
 For DateTime values, precision must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
 
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
@@ -1411,6 +1442,8 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The DifferenceBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional boundaries are dropped.
 			
+For Date values, precision must be one of years, months, or days.
+
 For DateTime values, precision must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
 
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
@@ -1492,6 +1525,22 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="Expression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Date">
+		<xs:annotation>
+			<xs:documentation>The Date operator constructs a date value from the given components.
+			
+At least one component must be specified, and no component may be specified at a precision below an unspecified precision. For example, month may be null, but if it is, day must be null as well.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="year" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="month" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="day" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="DateTime">
 		<xs:annotation>
 			<xs:documentation>The DateTime operator constructs a date/time value from the given components.
@@ -1537,7 +1586,7 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 	</xs:complexType>
 	<xs:complexType name="SameAs">
 		<xs:annotation>
-			<xs:documentation>The SameAs operator is defined for DateTime and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameAs operator is defined for Date, DateTime, and Time values, as well as date/time-based intervals.
 			
 The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
 			
@@ -1550,6 +1599,8 @@ For intervals, this operator uses the semantics described in the Start and End o
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
 If either or both arguments are null, the result is null.
+
+For Date values, precision must be one of years, months, or days.
 			
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.</xs:documentation>
 		</xs:annotation>
@@ -1561,7 +1612,7 @@ For Time values, precision must be one of hours, minutes, seconds, or millisecon
 	</xs:complexType>
 	<xs:complexType name="SameOrBefore">
 		<xs:annotation>
-			<xs:documentation>The SameOrBefore operator is defined for DateTime and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameOrBefore operator is defined for Date, DateTime, and Time values, as well as date/time-based intervals.
 
 The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. If either or both arguments are null, the result is null.
 
@@ -1570,6 +1621,8 @@ For the Interval overload, the SameOrBefore operator returns true if the first i
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
+
+For Date values, precision must be one of years, months, or days.
 
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
 
@@ -1583,7 +1636,7 @@ For comparisons involving date/time or time values with imprecision, note that t
 	</xs:complexType>
 	<xs:complexType name="SameOrAfter">
 		<xs:annotation>
-			<xs:documentation>The SameOrAfter operator is defined DateTime and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameOrAfter operator is defined for Date, DateTime, and Time values, as well as date/time-based intervals.
 			
 The SameOrAfter operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. If either or both arguments are null, the result is null.
 
@@ -1592,6 +1645,8 @@ For the Interval overload, the SameOrAfter operator returns true if the first in
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
+
+For Date values, precision must be one of years, months, or days.
 
 For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
 
@@ -1618,7 +1673,7 @@ For comparisons involving date/time or time values with imprecision, note that t
 		<xs:annotation>
 			<xs:documentation>The Width operator returns the width of an interval. The result of this operator is equivalent to invoking: End(i) - Start(i) + point-size.
 			
-Note that this operator is not defined for intervals of type DateTime and Time.
+Note that this operator is not defined for intervals of type Date, DateTime, and Time.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1819,13 +1874,13 @@ This operator uses the semantics described in the Start and End operators to det
 	</xs:complexType>
 	<xs:complexType name="Before">
 		<xs:annotation>
-			<xs:documentation>The Before operator is defined for Intervals, as well as DateTime and Time values.
+			<xs:documentation>The Before operator is defined for Intervals, as well as Date, DateTime, and Time values.
 			
 For the Interval overload, the Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval.
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-For the DateTime and Time overloads, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+For the Date, DateTime, and Time overloads, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
 If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
@@ -1840,13 +1895,13 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="After">
 		<xs:annotation>
-			<xs:documentation>The After operator is defined for Intervals, as well as DateTime and Time values.
+			<xs:documentation>The After operator is defined for Intervals, as well as Date, DateTime, and Time values.
 			
 For the Interval overload, the After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval.
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-For the DateTime and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+For the Date, DateTime, and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
 If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
  
