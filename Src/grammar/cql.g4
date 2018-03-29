@@ -281,7 +281,7 @@ expression
     | 'not' expression                                                                              #notExpression
     | 'exists' expression                                                                           #existenceExpression
     | expression 'properly'? 'between' expressionTerm 'and' expressionTerm                          #betweenExpression
-    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm                         #durationBetweenExpression
+    | ('duration' 'in')? pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm      #durationBetweenExpression
     | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       #differenceBetweenExpression
     | expression ('<=' | '<' | '>' | '>=') expression                                               #inequalityExpression
     | expression intervalOperatorPhrase expression                                                  #timingExpression
@@ -317,6 +317,7 @@ expressionTerm
     | ('start' | 'end') 'of' expressionTerm                              #timeBoundaryExpressionTerm
     | dateTimeComponent 'from' expressionTerm                            #timeUnitExpressionTerm
     | 'duration' 'in' pluralDateTimePrecision 'of' expressionTerm        #durationExpressionTerm
+    | 'difference' 'in' pluralDateTimePrecision 'of' expressionTerm      #differenceExpressionTerm
     | 'width' 'of' expressionTerm                                        #widthExpressionTerm
     | 'successor' 'of' expressionTerm                                    #successorExpressionTerm
     | 'predecessor' 'of' expressionTerm                                  #predecessorExpressionTerm
