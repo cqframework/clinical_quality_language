@@ -2081,7 +2081,7 @@ For the interval overload, this operator returns the interval that starts at the
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
+			<xs:extension base="NaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Intersect">
@@ -2099,7 +2099,7 @@ For the interval overload, this operator returns the interval that defines the o
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
+			<xs:extension base="NaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Except">
@@ -2115,7 +2115,7 @@ For the list overload, this operator returns a list with the elements that appea
 For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null. If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
+			<xs:extension base="NaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<!-- List/Set Operators -->
