@@ -335,6 +335,19 @@ Note that this operator explicitly requires a ValueSetRef as its valueset argume
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Ratio">
+		<xs:annotation>
+			<xs:documentation>The Ratio type defines a ratio between two quantities. For example, the titre 1:128, or the concentration ratio 5 mg/10 mL. The numerator and denominator are both quantities.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="numerator" type="Quantity"/>
+					<xs:element name="denominator" type="Quantity"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="CalculateAge">
 		<xs:annotation>
 			<xs:documentation>Calculates the age in the specified precision of a person born on the given date as of today.</xs:documentation>

@@ -389,6 +389,10 @@ term
     | '(' expression ')'    #parenthesizedTerm
     ;
 
+ratio
+    : quantity ':' quantity
+    ;
+
 literal
         : ('true' | 'false')                                    #booleanLiteral
         | 'null'                                                #nullLiteral
@@ -397,6 +401,7 @@ literal
         | DATETIME                                              #dateTimeLiteral
         | TIME                                                  #timeLiteral
         | quantity                                              #quantityLiteral
+        | ratio                                                 #ratioLiteral
         ;
 
 intervalSelector
