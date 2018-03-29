@@ -447,7 +447,7 @@ public class SystemLibraryHelper {
         // ToConcept(list<Code>)
         Operator codesToConcept = new Operator("ToConcept", new Signature(new ListType(systemModel.getCode())), systemModel.getConcept());
         system.add(codesToConcept);
-        system.add(new Conversion(codesToConcept, true));
+        system.add(new Conversion(codesToConcept, false));
 
         system.add(new Operator("CalculateAge", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
         system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
