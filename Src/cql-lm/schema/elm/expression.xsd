@@ -347,7 +347,7 @@ The following changes were made since the initial informative ballot in Septembe
 	</xs:complexType>
 	<xs:complexType name="IdentifierRef">
 		<xs:annotation>
-			<xs:documentation>The IdentifierRef type defines an expression that references an unresolved identifier. An unresolved identifier reference generally indicates an error condition. The implementation is free to attempt to resolve the identifier, but is also justified in throwing an error at compile-time (or run-time for an interpretive system) when an identifier ref is encountered.</xs:documentation>
+			<xs:documentation>The IdentifierRef type defines an expression that references an identifier that is either unresolved, or has been resolved to an attribute in an unambiguous iteration context such as a sort. Implementations should attempt to resolve the identifier, only throwing an error at compile-time (or run-time for an interpretive system) if the identifier reference cannot be resolved.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
