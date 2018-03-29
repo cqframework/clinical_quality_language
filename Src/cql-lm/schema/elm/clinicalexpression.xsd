@@ -309,6 +309,21 @@ Note that this operator explicitly requires a CodeSystemRef as its codesystem ar
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="AnyInCodeSystem">
+		<xs:annotation>
+			<xs:documentation>The AnyInCodeSystem operator returns true if any of the given codes are in the given code system.
+			
+Note that this operator explicitly requires a CodeSystemRef as its codesystem argument. This allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="codes" type="Expression"/>
+					<xs:element name="codesystem" type="CodeSystemRef"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="InValueSet">
 		<xs:annotation>
 			<xs:documentation>The InValueSet operator returns true if the given code is in the given value set.
@@ -319,6 +334,21 @@ Note that this operator explicitly requires a ValueSetRef as its valueset argume
 			<xs:extension base="Expression">
 				<xs:sequence>
 					<xs:element name="code" type="Expression"/>
+					<xs:element name="valueset" type="ValueSetRef"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AnyInValueSet">
+		<xs:annotation>
+			<xs:documentation>The AnyInValueSet operator returns true if any of the given codes are in the given value set.
+			
+Note that this operator explicitly requires a ValueSetRef as its valueset argument. This allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="codes" type="Expression"/>
 					<xs:element name="valueset" type="ValueSetRef"/>
 				</xs:sequence>
 			</xs:extension>
