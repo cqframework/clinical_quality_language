@@ -238,14 +238,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Ends) return visitEnds((Ends)elm, context);
         else if (elm instanceof Equal) return visitEqual((Equal)elm, context);
         else if (elm instanceof Equivalent) return visitEquivalent((Equivalent)elm, context);
-        else if (elm instanceof Except) return visitExcept((Except)elm, context);
         else if (elm instanceof Greater) return visitGreater((Greater)elm, context);
         else if (elm instanceof GreaterOrEqual) return visitGreaterOrEqual((GreaterOrEqual)elm, context);
         else if (elm instanceof In) return visitIn((In)elm, context);
         else if (elm instanceof IncludedIn) return visitIncludedIn((IncludedIn)elm, context);
         else if (elm instanceof Includes) return visitIncludes((Includes)elm, context);
         else if (elm instanceof Indexer) return visitIndexer((Indexer)elm, context);
-        else if (elm instanceof Intersect) return visitIntersect((Intersect)elm, context);
         else if (elm instanceof Less) return visitLess((Less)elm, context);
         else if (elm instanceof LessOrEqual) return visitLessOrEqual((LessOrEqual)elm, context);
         else if (elm instanceof Log) return visitLog((Log)elm, context);
@@ -271,7 +269,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Subtract) return visitSubtract((Subtract)elm, context);
         else if (elm instanceof Times) return visitTimes((Times)elm, context);
         else if (elm instanceof TruncatedDivide) return visitTruncatedDivide((TruncatedDivide)elm, context);
-        else if (elm instanceof Union) return visitUnion((Union)elm, context);
         else if (elm instanceof Xor) return visitXor((Xor)elm, context);
         else return null;
     }
@@ -302,6 +299,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitNaryExpression(NaryExpression elm, C context) {
         if (elm instanceof Coalesce) return visitCoalesce((Coalesce)elm, context);
         else if (elm instanceof Concatenate) return visitConcatenate((Concatenate)elm, context);
+        else if (elm instanceof Except) return visitExcept((Except)elm, context);
+        else if (elm instanceof Intersect) return visitIntersect((Intersect)elm, context);
+        else if (elm instanceof Union) return visitUnion((Union)elm, context);
         else return null;
     }
 

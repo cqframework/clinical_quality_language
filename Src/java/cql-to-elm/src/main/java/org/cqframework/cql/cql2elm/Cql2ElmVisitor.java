@@ -1638,15 +1638,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             case "|":
             case "union":
                 Union union = of.createUnion().withOperand(left, right);
-                libraryBuilder.resolveBinaryCall("System", "Union", union);
+                libraryBuilder.resolveNaryCall("System", "Union", union);
                 return union;
             case "intersect":
                 Intersect intersect = of.createIntersect().withOperand(left, right);
-                libraryBuilder.resolveBinaryCall("System", "Intersect", intersect);
+                libraryBuilder.resolveNaryCall("System", "Intersect", intersect);
                 return intersect;
             case "except":
                 Except except = of.createExcept().withOperand(left, right);
-                libraryBuilder.resolveBinaryCall("System", "Except", except);
+                libraryBuilder.resolveNaryCall("System", "Except", except);
                 return except;
         }
 
