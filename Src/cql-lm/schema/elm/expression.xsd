@@ -628,7 +628,9 @@ The static type of the then argument within the first caseItem determines the ty
 	</xs:complexType>
 	<xs:complexType name="Convert">
 		<xs:annotation>
-			<xs:documentation>The Convert operator converts a value to a specific type. The result of the operator is the value of the argument converted to the target type, if possible. Note that use of this operator may result in a run-time exception being thrown if there is no valid conversion from the actual value to the target type.
+			<xs:documentation>The Convert operator converts a value to a specific type. The result of the operator is the value of the argument converted to the target type, if possible.
+				
+If no valid conversion exists from the actual value to the target type, the result is null.
 
 This operator supports conversion between String and each of Boolean, Integer, Decimal, Quantity, Date, DateTime, and Time, as well as conversion from Integer to Decimal and from Code to Concept.
 
@@ -643,11 +645,40 @@ Conversion between String and Date/DateTime/Time is performed using the ISO-8601
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="CanConvert">
+		<xs:annotation>
+			<xs:documentation>The CanConvert operator returns true if the given value can be converted to a specific type, and false otherwise.
+
+This operator supports testing for conversion between String and each of Boolean, Integer, Decimal, Quantity, Ratio, Date, DateTime, and Time, as well as conversion from Integer to Decimal, Integer or Decimal to Quantity, and from Code to Concept.
+
+Conversion between String and Date/DateTime/Time is checked using the ISO-8601 standard format: YYYY-MM-DDThh:mm:ss(+|-)hh:mm.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression">
+				<xs:sequence>
+					<xs:element name="toTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="toType" type="xs:QName" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ToBoolean">
 		<xs:annotation>
 			<xs:documentation>The ToBoolean operator converts the value of its argument to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
 			
-If the input cannot be interpreted as a valid Boolean value, a run-time error is thrown.
+If the input cannot be interpreted as a valid Boolean value, the result is null.
+
+If the argument is null the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsBoolean">
+		<xs:annotation>
+			<xs:documentation>The IsBoolean operator returns true if the value of its argument can be converted to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
+			
+If the input cannot be interpreted as a valid Boolean value, the result is false.
 
 If the argument is null the result is null.</xs:documentation>
 		</xs:annotation>
@@ -665,6 +696,24 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="IsDate">
+		<xs:annotation>
+			<xs:documentation>The IsDate operator returns true if the value of its argument can be converted to a Date value. The operator expects the string to be formatted using the ISO-8601 date representation: 
+
+YYYY-MM-DD
+
+In addition, the string must be interpretable as a valid date value.
+
+If the input string is not formatted correctly, or does not represent a valid date value, the result is false.
+
+As with date literals, date values may be specified to any precision.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ToDate">
 		<xs:annotation>
 			<xs:documentation>The ToDate operator converts the value of its argument to a Date value. The operator expects the string to be formatted using the ISO-8601 date representation: 
@@ -673,9 +722,31 @@ YYYY-MM-DD
 
 In addition, the string must be interpretable as a valid date value.
 
-If the input string is not formatted correctly, or does not represent a valid date value, a run-time error is thrown.
+If the input string is not formatted correctly, or does not represent a valid date value, the result is null.
 
 As with date literals, date values may be specified to any precision.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsDateTime">
+		<xs:annotation>
+			<xs:documentation>The IsDateTime operator returns true if the value of its argument can be converted to a DateTime value. 
+				
+For string values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
+
+YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+
+In addition, the string must be interpretable as a valid date/time value.
+
+If the input string is not formatted correctly, or does not represent a valid date/time value, the result is false.
+
+As with date/time literals, date/time values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+
+For Date values, the result is a DateTime with all time components set to 0, except the timezone, which is set to the timezone of the evaluation request timestamp.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -693,11 +764,29 @@ YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 
 In addition, the string must be interpretable as a valid date/time value.
 
-If the input string is not formatted correctly, or does not represent a valid date/time value, a run-time error is thrown.
+If the input string is not formatted correctly, or does not represent a valid date/time value, the result is null.
 
 As with date/time literals, date/time values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
 
 For Date values, the result is a DateTime with all time components set to 0, except the timezone, which is set to the timezone of the evaluation request timestamp.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsDecimal">
+		<xs:annotation>
+			<xs:documentation>The IsDecimal operator returns true if the value of its argument can be converted to a Decimal value. The operator accepts strings using the following format:
+
+(+|-)?#0(.0#)?
+
+Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit, followed optionally by a decimal point, at least one digit, and any number of additional digits (including none).
+
+Note that the decimal value returned by this operator must be limited in precision and scale to the maximum precision and scale representable for Decimal values within CQL.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, the result is false.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -715,7 +804,25 @@ Meaning an optional polarity indicator, followed by any number of digits (includ
 
 Note that the decimal value returned by this operator must be limited in precision and scale to the maximum precision and scale representable for Decimal values within CQL.
 
-If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, a run-time error is thrown.
+If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, the result is null.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsInteger">
+		<xs:annotation>
+			<xs:documentation>The IsInteger operator returns true if the value of its argument can be converted to an Integer value. The operator accepts strings using the following format:
+
+(+|-)?#0
+
+Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit.
+
+Note that the integer value returned by this operator must be a valid value in the range representable for Integer values in CQL.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, the result is false.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -733,7 +840,25 @@ Meaning an optional polarity indicator, followed by any number of digits (includ
 
 Note that the integer value returned by this operator must be a valid value in the range representable for Integer values in CQL.
 
-If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, a run-time error is thrown.
+If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, the result is null.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsQuantity">
+		<xs:annotation>
+			<xs:documentation>The IsQuantity operator returns true if the value of its argument can be converted to a Quantity value. The operator accepts strings using the following format:
+
+(+|-)?#0(.0#)?('&lt;unit&gt;')?
+
+Meaning an optional polarity indicator, followed by any number of digits (including none) followed by at least one digit, optionally followed by a decimal point, at least one digit, and any number of additional digits, all optionally followed by a unit designator as a string literal specifying a valid UCUM unit of measure. Spaces are allowed between the quantity value and the unit designator.
+
+Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL. 
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, the result is false.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -751,7 +876,39 @@ Meaning an optional polarity indicator, followed by any number of digits (includ
 
 Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL. 
 
-If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, a run-time error is thrown.
+If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, the result is null.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IsRatio">
+		<xs:annotation>
+			<xs:documentation>The IsRatio operator returns true if the value of its argument can be converted to a Ratio value. The operator accepts strings using the following format:
+
+&lt;quantity&gt;:&lt;quantity&gt;
+
+Meaning a quantity, followed by a colon (:), followed by another quantity. The operator accepts quantity strings using the same format as the ToQuantity operator.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Ratio value, the result is false.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToRatio">
+		<xs:annotation>
+			<xs:documentation>The ToRatio operator converts the value of its argument to a Ratio value. The operator accepts strings using the following format:
+
+&lt;quantity&gt;:&lt;quantity&gt;
+
+Meaning a quantity, followed by a colon (:), followed by another quantity. The operator accepts quantity strings using the same format as the ToQuantity operator.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Ratio value, the result is null.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -791,6 +948,24 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="IsTime">
+		<xs:annotation>
+			<xs:documentation>The IsTime operator returns true if the value of its argument can be converted to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
+
+Thh:mm:ss.fff(+|-)hh:mm
+
+In addition, the string must be interpretable as a valid time-of-day value.
+
+If the input string is not formatted correctly, or does not represent a valid time-of-day value, the result is false.
+
+As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ToTime">
 		<xs:annotation>
 			<xs:documentation>The ToTime operator converts the value of its argument to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
@@ -799,7 +974,7 @@ Thh:mm:ss.fff(+|-)hh:mm
 
 In addition, the string must be interpretable as a valid time-of-day value.
 
-If the input string is not formatted correctly, or does not represent a valid time-of-day value, a run-time error is thrown.
+If the input string is not formatted correctly, or does not represent a valid time-of-day value, the result is null.
 
 As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
 
