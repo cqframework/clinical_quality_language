@@ -330,6 +330,7 @@ expressionTerm
     | 'if' expression 'then' expression 'else' expression                #ifThenElseExpressionTerm
     | 'case' expression? caseExpressionItem+ 'else' expression 'end'     #caseExpressionTerm
     | ('distinct' | 'collapse' | 'flatten') expression                   #aggregateExpressionTerm
+    | 'expand' expression ('per' (dateTimePrecision | expression))?      #expandExpressionTerm
     ;
 
 caseExpressionItem
