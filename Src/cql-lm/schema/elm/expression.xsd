@@ -296,7 +296,15 @@ The following changes were made since the initial informative ballot in Septembe
 	</xs:complexType>
 	<xs:complexType name="ParameterDef">
 		<xs:annotation>
-			<xs:documentation>The ParameterDef type defines a parameter that can be referenced by name anywhere within an expression. Parameters are defined at the artifact level, and may be provided as part of the payload for an evaluation request. If no parameter value is provided, the default element is used to provide the value for the parameter. If no parameter or default is provided, the parameter is defined to be null.</xs:documentation>
+			<xs:documentation>The ParameterDef type defines a parameter that can be referenced by name anywhere within an expression. 
+	
+Parameters are defined at the artifact level, and may be provided as part of the payload for an evaluation request. 
+
+If no parameter value is provided, the default element is used to provide the value for the parameter. 
+	
+If no parameter or default is provided, the parameter is defined to be null.
+
+Note that the expression specified in the default element must be able to be evaluated at compile-time (i.e. without reference to any run-time capabilities such as data, terminology, and library references, both local and included).</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
