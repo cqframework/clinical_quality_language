@@ -1907,7 +1907,7 @@ There are two overloads of this operator:
 	List, T : The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 	
-For the List, T overload, this operator returns true if the given element is in the list, using equivalence semantics. If the list-valued argument is null, it should be treated as the empty list.
+For the List, T overload, this operator returns true if the given element is in the list, using equivalence semantics. If the list-valued argument is null, the result is null.
 
 For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
 		</xs:annotation>
@@ -1945,7 +1945,7 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns true if the given element is in the given list, using equivalence semantics. If the list-valued argument is null, it should be treated as an empty list.
+For the T, List overload, this operator returns true if the given element is in the given list, using equivalence semantics. If the list-valued argument is null, the result is null.
 
 For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
 		</xs:annotation>
