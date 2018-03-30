@@ -930,6 +930,16 @@ The operator is used to implement list promotion efficiently.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ToChars">
+		<xs:annotation>
+			<xs:documentation>The ToChars operator takes a string and returns a list with one string for each character in the input, in the order in which they appear in the string.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ToString">
 		<xs:annotation>
 			<xs:documentation>The ToString operator converts the value of its argument to a String value. The operator uses the following string representations for each type:
@@ -2549,6 +2559,25 @@ An aggregate operation performed over an empty list is defined to return null, e
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="path" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Aggregate">
+		<xs:annotation>
+			<xs:documentation>The Aggregate operator performs custom aggregation by evaluating an expression for each element of the source.
+			
+If a path is specified, the aggregation is performed for value of the property specified by the path for each element of the source.
+
+The iteration expression has access to the $this, $index, and $total variables. At the end of each iteration, the value of the $total variable is updated to the result of the iteration expression. The value of the $total variable is initialized to the result of the initialValue expression, if present.
+
+If the list is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AggregateExpression">
+				<xs:sequence>
+					<xs:element name="iteration" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="initialValue" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

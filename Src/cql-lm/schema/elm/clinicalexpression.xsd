@@ -354,6 +354,30 @@ Note that this operator explicitly requires a ValueSetRef as its valueset argume
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Subsumes">
+		<xs:annotation>
+			<xs:documentation>The Subsumes operator returns true if the given codes are equivalent, or if the first code subsumes the second (i.e. the first code is an ancestor of the second in a subsumption hierarchy), and false otherwise. 
+
+For the Concept overload, this operator returns true if any code in the first concept subsumes any code in the second.
+				
+If either or both arguments are null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SubsumedBy">
+		<xs:annotation>
+			<xs:documentation>The SubsumedBy operator returns true if the given codes are equivalent, or if the first code is subsumed by the second code (i.e. the first code is a descendent of the second code in a subsumption hierarchy), and false otherwise. 
+
+For the Concept overload, this operator returns true if any code in the first concept is subsumed by any code in the second.
+				
+If either or both arguments are null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Quantity">
 		<xs:annotation>
 			<xs:documentation>The Quantity type defines a clinical quantity. For example, the quantity 10 days or 30 mmHg. The value is a decimal, while the unit is expected to be a valid UCUM unit.</xs:documentation>
