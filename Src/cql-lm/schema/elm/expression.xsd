@@ -2249,6 +2249,23 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Expand">
+		<xs:annotation>
+			<xs:documentation>The Expand operator returns the set of unit intervals for all the ranges present in the given list of intervals.
+				
+The per argument determines the size of the resulting intervals and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
+
+Note that if the values in the intervals have a higher precision than the per expression, the higher precision values will be truncated to the granularity specified by the per expression.
+
+If the list of intervals is empty, the result is empty. If the list of intervals contains nulls, they will be excluded from the resulting list.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Union">
 		<xs:annotation>
 			<xs:documentation>The Union operator returns the union of its arguments.
