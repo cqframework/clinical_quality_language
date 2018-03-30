@@ -400,9 +400,40 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return param;
     }
 
+    private List<String> parseQualifiers(cqlParser.NamedTypeSpecifierContext ctx) {
+        List<String> qualifiers = new ArrayList<>();
+        if (ctx.qualifier() != null) {
+            for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
+                String qualifier = parseString(qualifierContext);
+                qualifiers.add(qualifier);
+            }
+        }
+        return qualifiers;
+    }
+
+    private String getModelIdentifier(List<String> qualifiers) {
+        return qualifiers.size() > 0 ? qualifiers.get(0) : null;
+    }
+
+    private String getTypeIdentifier(List<String> qualifiers, String identifier) {
+        if (qualifiers.size() > 1) {
+            String result = null;
+            for (int i = 1; i < qualifiers.size(); i++) {
+                result = result == null ? qualifiers.get(i) : (result + "." + qualifiers.get(i));
+            }
+            return result + "." + identifier;
+        }
+
+        return identifier;
+    }
+
     @Override
     public NamedTypeSpecifier visitNamedTypeSpecifier(@NotNull cqlParser.NamedTypeSpecifierContext ctx) {
-        DataType resultType = libraryBuilder.resolveTypeName(parseString(ctx.modelIdentifier()), parseString(ctx.identifier()));
+        List<String> qualifiers = parseQualifiers(ctx);
+        String modelIdentifier = getModelIdentifier(qualifiers);
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.identifier()));
+
+        DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         NamedTypeSpecifier result = of.createNamedTypeSpecifier()
                 .withName(libraryBuilder.dataTypeToQName(resultType));
 
@@ -2688,8 +2719,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Retrieve visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
-        String model = parseString(ctx.namedTypeSpecifier().modelIdentifier());
-        String label = parseString(ctx.namedTypeSpecifier().identifier());
+        List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
+        String model = getModelIdentifier(qualifiers);
+        String label = getTypeIdentifier(qualifiers, parseString(ctx.namedTypeSpecifier().identifier()));
         DataType dataType = libraryBuilder.resolveTypeName(model, label);
         if (dataType == null) {
             throw new IllegalArgumentException(String.format("Could not resolve type name %s.", label));
