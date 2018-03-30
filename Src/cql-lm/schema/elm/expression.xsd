@@ -744,9 +744,9 @@ In addition, the string must be interpretable as a valid date/time value.
 
 If the input string is not formatted correctly, or does not represent a valid date/time value, the result is false.
 
-As with date/time literals, date/time values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+As with date/time literals, date/time values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
 
-For Date values, the result is a DateTime with all time components set to 0, except the timezone, which is set to the timezone of the evaluation request timestamp.
+For Date values, the result is a DateTime with all time components set to 0, except the timezone offset, which is set to the timezone offset of the evaluation request timestamp.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -766,9 +766,9 @@ In addition, the string must be interpretable as a valid date/time value.
 
 If the input string is not formatted correctly, or does not represent a valid date/time value, the result is null.
 
-As with date/time literals, date/time values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+As with date/time literals, date/time values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
 
-For Date values, the result is a DateTime with all time components set to 0, except the timezone, which is set to the timezone of the evaluation request timestamp.
+For Date values, the result is a DateTime with all time components set to 0, except the timezone offset, which is set to the timezone offset of the evaluation request timestamp.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -958,7 +958,7 @@ In addition, the string must be interpretable as a valid time-of-day value.
 
 If the input string is not formatted correctly, or does not represent a valid time-of-day value, the result is false.
 
-As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -976,7 +976,7 @@ In addition, the string must be interpretable as a valid time-of-day value.
 
 If the input string is not formatted correctly, or does not represent a valid time-of-day value, the result is null.
 
-As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1665,7 +1665,7 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="TimezoneFrom">
 		<xs:annotation>
-			<xs:documentation>The TimezoneFrom operator returns the timezone of the argument.
+			<xs:documentation>The TimezoneFrom operator returns the timezone offset of the argument.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1706,7 +1706,7 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:documentation>The Now operator returns the date and time of the start timestamp associated with the evaluation request. Now is defined in this way for two reasons:
 1) The operation will always return the same value within any given evaluation, ensuring that the result of an expression containing Now will always return the same result.
 
-2) The operation will return the timestamp associated with the evaluation request, allowing the evaluation to be performed with the same timezone information as the data delivered with the evaluation request.</xs:documentation>
+2) The operation will return the timestamp associated with the evaluation request, allowing the evaluation to be performed with the same timezone offset information as the data delivered with the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression"/>
