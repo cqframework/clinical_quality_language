@@ -360,7 +360,7 @@ public class CqlTranslator {
         UcumService ucumService = null;
         if (validateUnits) {
             try {
-                ucumService = new UcumEssenceService("/ucum-essence.xml");
+                ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
             } catch (UcumException e) {
                 System.err.println("Could not create UCUM validation service:");
                 e.printStackTrace();
