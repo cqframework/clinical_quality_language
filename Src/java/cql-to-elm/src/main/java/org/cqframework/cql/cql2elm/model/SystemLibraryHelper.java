@@ -36,6 +36,7 @@ public class SystemLibraryHelper {
         // ToString(DateTime) : String
         // ToString(Time) : String
         // ToString(Quantity) : String
+        // ToString(Ratio) : String
         Operator booleanToString = new Operator("ToString", new Signature(systemModel.getBoolean()), systemModel.getString());
         system.add(booleanToString);
         system.add(new Conversion(booleanToString, false));
@@ -54,6 +55,9 @@ public class SystemLibraryHelper {
         Operator quantityToString = new Operator("ToString", new Signature(systemModel.getQuantity()), systemModel.getString());
         system.add(quantityToString);
         system.add(new Conversion(quantityToString, false));
+        Operator ratioToString = new Operator("ToString", new Signature(systemModel.getRatio()), systemModel.getString());
+        system.add(ratioToString);
+        system.add(new Conversion(ratioToString, false));
 
         // ToBoolean(String) : Boolean
         Operator stringToBoolean = new Operator("ToBoolean", new Signature(systemModel.getString()), systemModel.getBoolean());
@@ -96,6 +100,11 @@ public class SystemLibraryHelper {
         //Operator decimalToQuantity = new Operator("ToQuantity", new Signature(systemModel.getDecimal()), systemModel.getQuantity());
         //system.add(decimalToQuantity);
         //system.add(new Conversion(decimalToQuantity, true));
+
+        // ToRatio(String) : Ratio
+        Operator stringToRatio = new Operator("ToRatio", new Signature(systemModel.getString()), systemModel.getRatio());
+        system.add(stringToRatio);
+        system.add(new Conversion(stringToRatio, false));
 
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
