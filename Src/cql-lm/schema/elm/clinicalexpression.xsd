@@ -301,7 +301,7 @@ Note that the recommended approach to statically binding to an expansion set is 
 Note that this operator explicitly requires a CodeSystemRef as its codesystem argument. This allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="code" type="Expression"/>
 					<xs:element name="codesystem" type="CodeSystemRef"/>
@@ -316,7 +316,7 @@ Note that this operator explicitly requires a CodeSystemRef as its codesystem ar
 Note that this operator explicitly requires a CodeSystemRef as its codesystem argument. This allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="codes" type="Expression"/>
 					<xs:element name="codesystem" type="CodeSystemRef"/>
@@ -331,7 +331,7 @@ Note that this operator explicitly requires a CodeSystemRef as its codesystem ar
 Note that this operator explicitly requires a ValueSetRef as its valueset argument. This allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="code" type="Expression"/>
 					<xs:element name="valueset" type="ValueSetRef"/>
@@ -346,7 +346,7 @@ Note that this operator explicitly requires a ValueSetRef as its valueset argume
 Note that this operator explicitly requires a ValueSetRef as its valueset argument. This allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="codes" type="Expression"/>
 					<xs:element name="valueset" type="ValueSetRef"/>

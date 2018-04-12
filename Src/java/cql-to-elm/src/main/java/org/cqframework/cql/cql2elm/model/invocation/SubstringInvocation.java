@@ -6,7 +6,7 @@ import org.hl7.elm.r1.Substring;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class SubstringInvocation extends AbstractExpressionInvocation {
+public class SubstringInvocation extends OperatorExpressionInvocation {
     public SubstringInvocation(Substring expression) {
         super(expression);
     }

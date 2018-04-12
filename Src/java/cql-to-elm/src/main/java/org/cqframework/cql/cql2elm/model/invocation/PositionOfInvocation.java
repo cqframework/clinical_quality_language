@@ -7,7 +7,7 @@ import org.hl7.elm.r1.Split;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class PositionOfInvocation extends AbstractExpressionInvocation {
+public class PositionOfInvocation extends OperatorExpressionInvocation {
     public PositionOfInvocation(PositionOf expression) {
         super(expression);
     }

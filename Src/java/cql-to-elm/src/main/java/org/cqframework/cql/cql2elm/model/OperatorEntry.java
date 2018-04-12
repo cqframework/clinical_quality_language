@@ -142,13 +142,25 @@ public class OperatorEntry {
         public List<OperatorResolution> resolve(CallContext callContext, ConversionMap conversionMap, OperatorMap operatorMap) {
             ArrayList<OperatorResolution> results = null;
 
+            int signatureCount = 0;
             for (SignatureNode n : signatures.values()) {
+
+                if (n.getSignature().getSize() == callContext.getSignature().getSize()) {
+                    signatureCount++;
+                }
+
                 List<OperatorResolution> nodeResults = n.resolve(callContext, conversionMap, operatorMap);
                 if (nodeResults != null) {
                     if (results == null) {
                         results = new ArrayList();
                     }
                     results.addAll(nodeResults);
+                }
+            }
+
+            if (results != null && signatureCount > 1) {
+                for (OperatorResolution result : results) {
+                    result.setOperatorHasOverloads();
                 }
             }
 

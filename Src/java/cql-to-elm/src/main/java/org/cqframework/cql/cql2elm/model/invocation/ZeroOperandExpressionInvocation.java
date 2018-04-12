@@ -1,11 +1,12 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
 import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.OperatorExpression;
 
 import java.util.ArrayList;
 
-public class ZeroOperandExpressionInvocation extends AbstractExpressionInvocation {
-    public ZeroOperandExpressionInvocation(Expression expression) {
+public class ZeroOperandExpressionInvocation extends OperatorExpressionInvocation {
+    public ZeroOperandExpressionInvocation(OperatorExpression expression) {
         super(expression);
     }
 

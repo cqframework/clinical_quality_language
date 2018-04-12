@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by Bryn on 5/17/2017.
  */
-public class SkipInvocation extends AbstractExpressionInvocation {
+public class SkipInvocation extends OperatorExpressionInvocation {
     public SkipInvocation(Slice expression) {
         super(expression);
     }

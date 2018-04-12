@@ -20,6 +20,28 @@ import java.util.List;
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder {
+    public static enum SignatureLevel {
+        /*
+        Indicates signatures will never be included in operator invocations
+         */
+        None,
+
+        /*
+        Indicates signatures will only be included in invocations if the declared signature of the resolve operator is different than the invocation signature
+         */
+        Differing,
+
+        /*
+        Indicates signatures will only be included in invocations if the function has multiple overloads with the same number of arguments as the invocation
+         */
+        Overloads,
+
+        /*
+        Indicates signatures will always be included in invocations
+         */
+        All
+    }
+
     public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
@@ -92,6 +114,7 @@ public class LibraryBuilder {
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private UcumService ucumService = null;
+    private SignatureLevel signatureLevel = SignatureLevel.Differing;
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -99,6 +122,14 @@ public class LibraryBuilder {
 
     public void disableListTraversal() {
         listTraversal = false;
+    }
+
+    public SignatureLevel getSignatureLevel() {
+        return this.signatureLevel;
+    }
+
+    public void setSignatureLevel(SignatureLevel signatureLevel) {
+        this.signatureLevel = signatureLevel;
     }
 
     private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
@@ -608,6 +639,13 @@ public class LibraryBuilder {
 
                 invocation.setOperands(convertedOperands);
             }
+
+            if (signatureLevel == SignatureLevel.All || (signatureLevel == SignatureLevel.Differing
+                && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
+                    || (signatureLevel == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
+                invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
+            }
+
             invocation.setResultType(resolution.getOperator().getResultType());
             return invocation.getExpression();
         }
@@ -1092,6 +1130,14 @@ public class LibraryBuilder {
         }
 
         throw new IllegalArgumentException("A named type is required in this context.");
+    }
+
+    public Iterable<TypeSpecifier> dataTypesToTypeSpecifiers(Iterable<DataType> types) {
+        ArrayList<TypeSpecifier> result = new ArrayList<TypeSpecifier>();
+        for (DataType type : types) {
+            result.add(dataTypeToTypeSpecifier(type));
+        }
+        return result;
     }
 
     public TypeSpecifier dataTypeToTypeSpecifier(DataType type) {

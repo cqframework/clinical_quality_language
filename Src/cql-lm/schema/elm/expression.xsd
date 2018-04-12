@@ -180,12 +180,28 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:extension base="Element"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="OperatorExpression" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The Operator type defines the abstract base type for all built-in operators used in the ELM expression language. This explicitly excludes FunctionRef, which is the concrete type for all function invocations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="signature" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies the declared signature of the operator or function being called. If no signature is specified, the run-time types of the operands should be used to resolve any overload.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="UnaryExpression" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The UnaryExpression type defines the abstract base type for expressions that take a single argument.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
@@ -197,7 +213,7 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:documentation>The BinaryExpression type defines the abstract base type for expressions that take two arguments.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="2" maxOccurs="2"/>
 				</xs:sequence>
@@ -209,7 +225,7 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:documentation>The TernaryExpression type defines the abstract base type for expressions that take three arguments.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="3" maxOccurs="3"/>
 				</xs:sequence>
@@ -221,7 +237,7 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:documentation>The NaryExpression type defines an abstract base class for an expression that takes any number of arguments, including zero.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
@@ -284,12 +300,12 @@ The following changes were made since the initial informative ballot in Septembe
 		<xs:complexContent>
 			<xs:extension base="ExpressionRef">
 				<xs:sequence>
-					<xs:element name="operand" type="Expression" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="signature" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
 						<xs:annotation>
 							<xs:documentation>Specifies the declared signature of the function being called. If no signature is specified, the run-time types of the operands should be used to resolve any overload.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
+					<xs:element name="operand" type="Expression" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1275,7 +1291,7 @@ If the argument is null, the result is null.
 Precision determines the decimal place at which the rounding will occur. If precision is not specified or null, 0 is assumed.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="precision" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1425,7 +1441,7 @@ If any argument is null, the result is null.</xs:documentation>
 If either argument is null, or any element in the source list of strings is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="separator" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1442,7 +1458,7 @@ If the stringToSplit argument is null, the result is null.
 If the stringToSplit argument does not contain any appearances of the separator, the result is a list of strings containing one element that is the value of the stringToSplit argument.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="stringToSplit" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="separator" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1511,7 +1527,7 @@ If the pattern is not found, the result is -1.
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="pattern" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="string" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -1528,7 +1544,7 @@ If the pattern is not found, the result is -1.
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="pattern" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="string" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -1545,7 +1561,7 @@ If length is ommitted, the substring returned starts at startIndex and continues
 If stringToSub or startIndex is null, or startIndex is out of range, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="stringToSub" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="startIndex" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -1700,7 +1716,7 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:documentation>The TimeOfDay operator returns the time-of-day of the start timestamp associated with the evaluation request. See the Now operator for more information on the rationale for defining the TimeOfDay operator in this way.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression"/>
+			<xs:extension base="OperatorExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Today">
@@ -1708,7 +1724,7 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:documentation>The Today operator returns the date (with no time component) of the start timestamp associated with the evaluation request. See the Now operator for more information on the rationale for defining the Today operator in this way.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression"/>
+			<xs:extension base="OperatorExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Now">
@@ -1719,7 +1735,7 @@ If the argument is null, the result is null.</xs:documentation>
 2) The operation will return the timestamp associated with the evaluation request, allowing the evaluation to be performed with the same timezone offset information as the data delivered with the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression"/>
+			<xs:extension base="OperatorExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Date">
@@ -1729,7 +1745,7 @@ If the argument is null, the result is null.</xs:documentation>
 At least one component must be specified, and no component may be specified at a precision below an unspecified precision. For example, month may be null, but if it is, day must be null as well.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="year" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="month" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1747,7 +1763,7 @@ At least one component other than timezoneOffset must be specified, and no compo
 If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="year" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="month" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1770,7 +1786,7 @@ At least one component other than timezoneOffset must be specified, and no compo
 If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="hour" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="minute" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -2377,7 +2393,7 @@ If the source argument is null, the result is null.</xs:documentation>
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression"/>
 				</xs:sequence>
@@ -2392,7 +2408,7 @@ If the argument is null, the result is null.</xs:documentation>
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression"/>
 				</xs:sequence>
@@ -2413,7 +2429,7 @@ If the endIndex is null, the slice continues to the last element of the list.
 If the startIndex or endIndex is less than 0, or if the endIndex is less than the startIndex, the result is an empty list.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression"/>
 					<xs:element name="startIndex" type="Expression"/>
@@ -2434,7 +2450,7 @@ If the list is empty, or no element is found, the result is -1.
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="element" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -2556,6 +2572,11 @@ An aggregate operation performed over an empty list is defined to return null, e
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:sequence>
+					<xs:element name="signature" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies the declared signature of the operator or function being called. If no signature is specified, the run-time types of the operands should be used to resolve any overload.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="path" type="xs:string" use="optional"/>
@@ -2987,7 +3008,7 @@ For list types, the result is the same as invoking Children on each element in t
 If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
@@ -3003,7 +3024,7 @@ For list types, the result is the same as invoking Descendents on each element i
 If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
@@ -3026,7 +3047,7 @@ If the severity is Warning, the operator is expected to provide the message as a
 If the severity is Message, the operator is expected to provide the message as information to the calling environment.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="condition" type="Expression" minOccurs="0" maxOccurs="1"/>

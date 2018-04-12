@@ -6,7 +6,7 @@ import org.hl7.elm.r1.Round;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class RoundInvocation extends AbstractExpressionInvocation {
+public class RoundInvocation extends OperatorExpressionInvocation {
     public RoundInvocation(Round expression) {
         super(expression);
     }

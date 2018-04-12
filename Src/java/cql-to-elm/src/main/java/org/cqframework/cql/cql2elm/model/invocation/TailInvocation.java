@@ -9,7 +9,7 @@ import java.util.Collections;
 /**
  * Created by Bryn on 5/17/2017.
  */
-public class TailInvocation extends AbstractExpressionInvocation {
+public class TailInvocation extends OperatorExpressionInvocation {
     public TailInvocation(Slice expression) {
         super(expression);
     }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by Bryn on 5/17/2017.
  */
-public class TakeInvocation extends AbstractExpressionInvocation {
+public class TakeInvocation extends OperatorExpressionInvocation {
     public TakeInvocation(Slice expression) {
         super(expression);
     }

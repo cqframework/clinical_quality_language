@@ -6,7 +6,7 @@ import org.hl7.elm.r1.Expression;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class CombineInvocation extends AbstractExpressionInvocation {
+public class CombineInvocation extends OperatorExpressionInvocation {
     public CombineInvocation(Combine expression) {
         super(expression);
     }
