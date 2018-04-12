@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
-public class IndexOfInvocation extends AbstractExpressionInvocation {
+public class IndexOfInvocation extends OperatorExpressionInvocation {
     public IndexOfInvocation(IndexOf expression) {
         super(expression);
     }

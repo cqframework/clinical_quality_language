@@ -71,6 +71,7 @@ The CQL-to-ELM Translator is designed as a component that can be incorporated in
 |annotations|Boolean|Indicates that the translator should produce source code annotations as part of the output|
 |locators|Boolean|Indicates that the translator should include source code locators within output ELM|
 |result-types|Boolean|Indicates that the translator should include result types in the output ELM|
+|signatures|None||Differing||Overloads||All|Indicates whether signatures should be included for invocations in the output ELM. Differing will include invocation signatures that differ from the declared signature. Overloads will include declaration signatures when the operator or function has more than one overload with the same number of arguments as the invocation|
 |detailed-errors|Boolean|Indicates that the translator should produce detailed errors|
 |error-level|Info||Warning||Error|Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output|
 |disable-list-traversal|Boolean|Disables traversal of paths on list-valued expressions|

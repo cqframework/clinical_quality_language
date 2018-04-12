@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class DateTimeInvocation extends AbstractExpressionInvocation {
+public class DateTimeInvocation extends OperatorExpressionInvocation {
     public DateTimeInvocation(DateTime expression) {
         super(expression);
     }

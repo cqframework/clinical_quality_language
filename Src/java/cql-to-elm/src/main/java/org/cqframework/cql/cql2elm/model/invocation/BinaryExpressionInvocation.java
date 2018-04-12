@@ -6,7 +6,7 @@ import org.hl7.elm.r1.Expression;
 import java.util.List;
 
 
-public class BinaryExpressionInvocation extends AbstractExpressionInvocation {
+public class BinaryExpressionInvocation extends OperatorExpressionInvocation {
     public BinaryExpressionInvocation(BinaryExpression expression) {
         super(expression);
     }

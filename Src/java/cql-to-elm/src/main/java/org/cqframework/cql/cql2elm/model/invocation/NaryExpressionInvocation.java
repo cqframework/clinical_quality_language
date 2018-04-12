@@ -6,7 +6,7 @@ import org.hl7.elm.r1.NaryExpression;
 import java.util.List;
 
 
-public class NaryExpressionInvocation extends AbstractExpressionInvocation {
+public class NaryExpressionInvocation extends OperatorExpressionInvocation {
     public NaryExpressionInvocation(NaryExpression expression) {
         super(expression);
     }

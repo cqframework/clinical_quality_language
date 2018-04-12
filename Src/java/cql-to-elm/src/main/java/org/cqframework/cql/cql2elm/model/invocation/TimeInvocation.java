@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TimeInvocation extends AbstractExpressionInvocation {
+public class TimeInvocation extends OperatorExpressionInvocation {
     public TimeInvocation(Time expression) {
         super(expression);
     }

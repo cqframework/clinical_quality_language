@@ -6,7 +6,7 @@ import org.hl7.elm.r1.Message;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class MessageInvocation extends AbstractExpressionInvocation {
+public class MessageInvocation extends OperatorExpressionInvocation {
     public MessageInvocation(Message expression) {
         super(expression);
     }

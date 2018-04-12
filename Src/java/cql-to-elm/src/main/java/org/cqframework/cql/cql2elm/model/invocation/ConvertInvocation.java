@@ -5,7 +5,7 @@ import org.hl7.elm.r1.Expression;
 
 import java.util.Collections;
 
-public class ConvertInvocation extends AbstractExpressionInvocation {
+public class ConvertInvocation extends OperatorExpressionInvocation {
     public ConvertInvocation(Convert expression) {
         super(expression);
     }

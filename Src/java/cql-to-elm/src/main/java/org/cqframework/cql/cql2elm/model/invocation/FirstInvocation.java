@@ -2,10 +2,11 @@ package org.cqframework.cql.cql2elm.model.invocation;
 
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.First;
+import org.hl7.elm.r1.TypeSpecifier;
 
 import java.util.Collections;
 
-public class FirstInvocation extends AbstractExpressionInvocation {
+public class FirstInvocation extends OperatorExpressionInvocation {
     public FirstInvocation(First expression) {
         super(expression);
     }
