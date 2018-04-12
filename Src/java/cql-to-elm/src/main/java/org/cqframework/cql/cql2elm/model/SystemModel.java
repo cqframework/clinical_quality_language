@@ -40,6 +40,8 @@ public class SystemModel extends Model {
 
     public DataType getQuantity() { return this.resolveTypeName("Quantity"); }
 
+    public DataType getRatio() { return this.resolveTypeName("Ratio"); }
+
     public DataType getCode() { return this.resolveTypeName("Code"); }
 
     public DataType getConcept() { return this.resolveTypeName("Concept"); }

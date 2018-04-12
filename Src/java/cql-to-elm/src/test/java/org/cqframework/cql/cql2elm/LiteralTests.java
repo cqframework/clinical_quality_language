@@ -89,4 +89,30 @@ public class LiteralTests {
         assertThat(quantity.getValue(), is(BigDecimal.valueOf(10)));
         assertThat(quantity.getUnit(), is("{shab-shab-shab}"));
     }
+
+    @Test
+    public void RatioLiteralTests() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("RatioLiteralTest.cql", 0);
+        Library library = translator.toELM();
+        defs = new HashMap<>();
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("SimpleRatio");
+        assertThat(def, hasTypeAndResult(Ratio.class, "System.Ratio"));
+        Ratio ratio = (Ratio)def.getExpression();
+        assertThat(ratio.getNumerator().getValue(), is(BigDecimal.valueOf(5)));
+        assertThat(ratio.getDenominator().getValue(), is(BigDecimal.valueOf(5)));
+
+        def = defs.get("QuantityRatio");
+        assertThat(def, hasTypeAndResult(Ratio.class, "System.Ratio"));
+        ratio = (Ratio)def.getExpression();
+        assertThat(ratio.getNumerator().getValue(), is(BigDecimal.valueOf(5)));
+        assertThat(ratio.getNumerator().getUnit(), is("mg"));
+        assertThat(ratio.getDenominator().getValue(), is(BigDecimal.valueOf(100)));
+        assertThat(ratio.getDenominator().getUnit(), is("mL"));
+    }
 }

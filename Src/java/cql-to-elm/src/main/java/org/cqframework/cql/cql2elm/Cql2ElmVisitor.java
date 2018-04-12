@@ -1116,18 +1116,41 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
     }
 
+    private BigDecimal parseDecimal(String value) {
+        try {
+            BigDecimal result = (BigDecimal)decimalFormat.parse(value);
+            return result;
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(String.format("Could not parse number literal: %s", value, e));
+        }
+    }
+
     @Override
     public Expression visitQuantity(@NotNull cqlParser.QuantityContext ctx) {
         if (ctx.unit() != null) {
-            try {
-                Quantity result = libraryBuilder.createQuantity((BigDecimal) decimalFormat.parse(ctx.NUMBER().getText()), parseString(ctx.unit()));
-                return result;
-            } catch (ParseException e) {
-                throw new IllegalArgumentException(String.format("Could not parse quantity literal: %s", ctx.getText()), e);
-            }
+            Quantity result = libraryBuilder.createQuantity(parseDecimal(ctx.NUMBER().getText()), parseString(ctx.unit()));
+            return result;
         } else {
             return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
         }
+    }
+
+    private Quantity getQuantity(Expression source) {
+        if (source instanceof Literal) {
+            return libraryBuilder.createQuantity(parseDecimal(((Literal)source).getValue()), "1");
+        }
+        else if (source instanceof Quantity) {
+            return (Quantity)source;
+        }
+
+        throw new IllegalArgumentException("Could not create quantity from source expression.");
+    }
+
+    @Override
+    public Expression visitRatio(@NotNull cqlParser.RatioContext ctx) {
+        Quantity numerator = getQuantity((Expression)visit(ctx.quantity(0)));
+        Quantity denominator = getQuantity((Expression)visit(ctx.quantity(1)));
+        return libraryBuilder.createRatio(numerator, denominator);
     }
 
     @Override

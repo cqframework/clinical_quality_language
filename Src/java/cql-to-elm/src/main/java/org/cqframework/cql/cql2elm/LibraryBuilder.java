@@ -13,6 +13,7 @@ import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
@@ -115,6 +116,7 @@ public class LibraryBuilder {
     private boolean listTraversal = true;
     private UcumService ucumService = null;
     private SignatureLevel signatureLevel = SignatureLevel.Differing;
+    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -1102,6 +1104,13 @@ public class LibraryBuilder {
         validateUnit(unit);
         Quantity result = of.createQuantity().withValue(value).withUnit(unit);
         DataType resultType = resolveTypeName("System", "Quantity");
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public Ratio createRatio(Quantity numerator, Quantity denominator) {
+        Ratio result = of.createRatio().withNumerator(numerator).withDenominator(denominator);
+        DataType resultType = resolveTypeName("System", "Ratio");
         result.setResultType(resultType);
         return result;
     }
