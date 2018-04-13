@@ -164,6 +164,7 @@ public class SystemFunctionResolver {
 
                 case "Contains":
                 case "Except":
+                case "Expand":
                 case "In":
                 case "Includes":
                 case "IncludedIn":
@@ -177,6 +178,7 @@ public class SystemFunctionResolver {
                 case "Distinct":
                 case "Exists":
                 case "Flatten":
+                case "Collapse":
                 case "SingletonFrom": {
                     return resolveUnary(fun);
                 }
