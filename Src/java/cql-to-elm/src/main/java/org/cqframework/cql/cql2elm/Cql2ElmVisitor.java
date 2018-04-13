@@ -369,7 +369,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ParameterDef param = of.createParameterDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
-                .withDefault(parseExpression(ctx.expression()))
+                .withDefault(parseLiteralExpression(ctx.expression()))
                 .withParameterTypeSpecifier(parseTypeSpecifier(ctx.typeSpecifier()));
 
         DataType paramType = null;
@@ -2798,6 +2798,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Retrieve visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
+        libraryBuilder.checkLiteralContext();
         List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
         String model = getModelIdentifier(qualifiers);
         String label = getTypeIdentifier(qualifiers, parseString(ctx.namedTypeSpecifier().identifier()));
@@ -3672,6 +3673,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public String parseString(ParseTree pt) {
         return StringEscapeUtils.unescapeCql(pt == null ? null : (String) visit(pt));
+    }
+
+    private Expression parseLiteralExpression(ParseTree pt) {
+        libraryBuilder.pushLiteralContext();
+        try {
+            return parseExpression(pt);
+        }
+        finally {
+            libraryBuilder.popLiteralContext();
+        }
     }
 
     private Expression parseExpression(ParseTree pt) {

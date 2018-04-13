@@ -96,6 +96,7 @@ public class LibraryBuilder {
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
+    private int literalContext = 0;
     private ModelManager modelManager = null;
     private Model defaultModel = null;
     private LibraryManager libraryManager = null;
@@ -116,7 +117,6 @@ public class LibraryBuilder {
     private boolean listTraversal = true;
     private UcumService ucumService = null;
     private SignatureLevel signatureLevel = SignatureLevel.Differing;
-    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -335,6 +335,11 @@ public class LibraryBuilder {
     }
 
     public TranslatedLibrary resolveLibrary(String identifier) {
+
+        if (!identifier.equals("System")) {
+            checkLiteralContext();
+        }
+
         TranslatedLibrary result = libraries.get(identifier);
         if (result == null) {
             throw new IllegalArgumentException(String.format("Could not resolve library name %s.", identifier));
@@ -552,10 +557,12 @@ public class LibraryBuilder {
     }
 
     public ParameterDef resolveParameterRef(String identifier) {
+        checkLiteralContext();
         return translatedLibrary.resolveParameterRef(identifier);
     }
 
     public ExpressionDef resolveExpressionRef(String identifier) {
+        checkLiteralContext();
         return translatedLibrary.resolveExpressionRef(identifier);
     }
 
@@ -717,6 +724,10 @@ public class LibraryBuilder {
         Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
         if (systemFunction != null) {
             return systemFunction;
+        }
+
+        if (mustResolve) {
+            checkLiteralContext();
         }
 
         fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve);
@@ -1394,6 +1405,7 @@ public class LibraryBuilder {
         Element element = resolve(identifier);
 
         if (element instanceof ExpressionDef) {
+            checkLiteralContext();
             ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
             expressionRef.setResultType(getExpressionDefResultType((ExpressionDef)element));
             if (expressionRef.getResultType() == null) {
@@ -1404,6 +1416,7 @@ public class LibraryBuilder {
         }
 
         if (element instanceof ParameterDef) {
+            checkLiteralContext();
             ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
             parameterRef.setResultType(element.getResultType());
             if (parameterRef.getResultType() == null) {
@@ -1414,6 +1427,7 @@ public class LibraryBuilder {
         }
 
         if (element instanceof ValueSetDef) {
+            checkLiteralContext();
             ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
             valuesetRef.setResultType(element.getResultType());
             if (valuesetRef.getResultType() == null) {
@@ -1424,6 +1438,7 @@ public class LibraryBuilder {
         }
 
         if (element instanceof CodeSystemDef) {
+            checkLiteralContext();
             CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
             codesystemRef.setResultType(element.getResultType());
             if (codesystemRef.getResultType() == null) {
@@ -1435,6 +1450,7 @@ public class LibraryBuilder {
         }
 
         if (element instanceof CodeDef) {
+            checkLiteralContext();
             CodeRef codeRef = of.createCodeRef().withName(((CodeDef)element).getName());
             codeRef.setResultType(element.getResultType());
             if (codeRef.getResultType() == null) {
@@ -1445,6 +1461,7 @@ public class LibraryBuilder {
         }
 
         if (element instanceof ConceptDef) {
+            checkLiteralContext();
             ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef)element).getName());
             conceptRef.setResultType(element.getResultType());
             if (conceptRef.getResultType() == null) {
@@ -1455,6 +1472,7 @@ public class LibraryBuilder {
         }
 
         if (element instanceof IncludeDef) {
+            checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
             return libraryRef;
@@ -1871,5 +1889,27 @@ public class LibraryBuilder {
 
     public void endFunctionDef() {
         functionDefs.pop();
+    }
+
+    public void pushLiteralContext() {
+        literalContext++;
+    }
+
+    public void popLiteralContext() {
+        if (!inLiteralContext()) {
+            throw new IllegalStateException("Not in literal context");
+        }
+
+        literalContext--;
+    }
+
+    public boolean inLiteralContext() {
+        return literalContext > 0;
+    }
+
+    public void checkLiteralContext() {
+        if (inLiteralContext()) {
+            throw new IllegalStateException("Expressions in this context must be able to be evaluated at compile-time.");
+        }
     }
 }
