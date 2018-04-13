@@ -32,6 +32,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testInvalidParameters() throws IOException {
+        runSemanticTest("ParameterTestInvalid.cql", 17);
+    }
+
+    @Test
     public void testSignatureResolution() throws IOException {
         runSemanticTest("SignatureResolutionTest.cql");
     }
