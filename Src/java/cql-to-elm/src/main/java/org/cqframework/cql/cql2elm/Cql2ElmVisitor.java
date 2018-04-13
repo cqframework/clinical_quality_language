@@ -1289,16 +1289,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitPredecessorExpressionTerm(@NotNull cqlParser.PredecessorExpressionTermContext ctx) {
-        Predecessor result = of.createPredecessor().withOperand(parseExpression(ctx.expressionTerm()));
-        libraryBuilder.resolveUnaryCall("System", "Predecessor", result);
-        return result;
+        return libraryBuilder.buildPredecessor(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
     public Object visitSuccessorExpressionTerm(@NotNull cqlParser.SuccessorExpressionTermContext ctx) {
-        Successor result = of.createSuccessor().withOperand(parseExpression(ctx.expressionTerm()));
-        libraryBuilder.resolveUnaryCall("System", "Successor", result);
-        return result;
+        return libraryBuilder.buildSuccessor(parseExpression(ctx.expressionTerm()));
     }
 
     @Override
@@ -1335,17 +1331,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         TypeSpecifier targetType = parseTypeSpecifier(ctx.namedTypeSpecifier());
         switch (extent) {
             case "minimum": {
-                MinValue minimum = of.createMinValue();
-                minimum.setValueType(libraryBuilder.dataTypeToQName(targetType.getResultType()));
-                minimum.setResultType(targetType.getResultType());
-                return minimum;
+                return libraryBuilder.buildMinimum(targetType.getResultType());
             }
 
             case "maximum": {
-                MaxValue maximum = of.createMaxValue();
-                maximum.setValueType(libraryBuilder.dataTypeToQName(targetType.getResultType()));
-                maximum.setResultType(targetType.getResultType());
-                return maximum;
+                return libraryBuilder.buildMaximum(targetType.getResultType());
             }
 
             default: throw new IllegalArgumentException(String.format("Unknown extent: %s", extent));
@@ -2766,6 +2756,44 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         throw new IllegalArgumentException(String.format("Unknown aggregate operator %s.", ctx.getChild(0).getText()));
+    }
+
+    public Object visitExpandExpressionTerm(@NotNull cqlParser.ExpandExpressionTermContext ctx) {
+        Expression source = parseExpression(ctx.expression(0));
+        Expression per = null;
+        if (ctx.dateTimePrecision() != null) {
+            per = libraryBuilder.createQuantity(BigDecimal.valueOf(1.0), parseString(ctx.dateTimePrecision()));
+        }
+        else if (ctx.expression().size() > 1) {
+            per = parseExpression(ctx.expression(1));
+        }
+        else {
+            // Determine per quantity based on point type of the intervals involved
+            if (source.getResultType() instanceof ListType) {
+                ListType listType = (ListType)source.getResultType();
+                if (listType.getElementType() instanceof IntervalType) {
+                    IntervalType intervalType = (IntervalType)listType.getElementType();
+                    DataType pointType = intervalType.getPointType();
+
+                    // Successor(MinValue<T>) - MinValue<T>
+                    MinValue minimum = libraryBuilder.buildMinimum(pointType);
+                    track(minimum, ctx);
+
+                    Expression successor = libraryBuilder.buildSuccessor(minimum);
+                    track(successor, ctx);
+
+                    minimum = libraryBuilder.buildMinimum(pointType);
+                    track(minimum, ctx);
+
+                    Subtract subtract = of.createSubtract().withOperand(successor, minimum);
+                    libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
+                    per = subtract;
+                }
+            }
+        }
+        Expand expand = of.createExpand().withOperand(source, per);
+        libraryBuilder.resolveBinaryCall("System", "Expand", expand);
+        return expand;
     }
 
     @Override

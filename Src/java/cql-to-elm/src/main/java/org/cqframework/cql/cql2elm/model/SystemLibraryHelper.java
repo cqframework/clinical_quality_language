@@ -326,6 +326,8 @@ public class SystemLibraryHelper {
         //system.add(new GenericOperator("Equal", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Except<T>(interval<T>, interval<T>) : interval<T>
         system.add(new GenericOperator("Except", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), new IntervalType(new TypeParameter("T")), new TypeParameter("T")));
+        // Expand<T>(list<interval<T>>, Quantity) : list<interval<T>>
+        system.add(new GenericOperator("Expand", new Signature(new ListType(new IntervalType(new TypeParameter("T"))), systemModel.getQuantity()), new IntervalType(new TypeParameter("T")), new TypeParameter("T")));
         // In<T>(T, interval<T>) : Boolean
         system.add(new GenericOperator("In", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Includes<T>(interval<T>, interval<T>) : Boolean

@@ -864,6 +864,32 @@ public class LibraryBuilder {
         return result;
     }
 
+    public MinValue buildMinimum(DataType dataType) {
+        MinValue minimum = of.createMinValue();
+        minimum.setValueType(dataTypeToQName(dataType));
+        minimum.setResultType(dataType);
+        return minimum;
+    }
+
+    public MaxValue buildMaximum(DataType dataType) {
+        MaxValue maximum = of.createMaxValue();
+        maximum.setValueType(dataTypeToQName(dataType));
+        maximum.setResultType(dataType);
+        return maximum;
+    }
+
+    public Expression buildPredecessor(Expression source) {
+        Predecessor result = of.createPredecessor().withOperand(source);
+        resolveUnaryCall("System", "Predecessor", result);
+        return result;
+    }
+
+    public Expression buildSuccessor(Expression source) {
+        Successor result = of.createSuccessor().withOperand(source);
+        resolveUnaryCall("System", "Successor", result);
+        return result;
+    }
+
     public Expression convertExpression(Expression expression, Conversion conversion) {
         if (conversion.isCast()
                 && (conversion.getFromType().isSuperTypeOf(conversion.getToType())
