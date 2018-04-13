@@ -115,6 +115,10 @@ public class SystemFunctionResolver {
                     return resolveDateTime(fun);
                 }
 
+                case "Date": {
+                    return resolveDate(fun);
+                }
+
                 case "Time": {
                     return resolveTime(fun);
                 }
@@ -347,6 +351,13 @@ public class SystemFunctionResolver {
         DateTimeInvocation.setDateTimeFieldsFromOperands(dt, fun.getOperand());
         builder.resolveCall("System", "DateTime", new DateTimeInvocation(dt));
         return dt;
+    }
+
+    private Date resolveDate(FunctionRef fun) {
+        final Date d = of.createDate();
+        DateInvocation.setDateFieldsFromOperands(d, fun.getOperand());
+        builder.resolveCall("System", "Date", new DateInvocation(d));
+        return d;
     }
 
     private Time resolveTime(FunctionRef fun) {

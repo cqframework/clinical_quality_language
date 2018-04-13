@@ -37,10 +37,10 @@ define IntegerToDecimalFun: ToDecimal(1)
 // ToDateTime(String) : DateTime
 define StringToDateTime: convert '2014-01-01T00:00:00:00.0000+0700' to DateTime
 define StringToDateTimeFun: ToDateTime('2014-01-01T00:00:00:00.0000+0700')
-// ToTime(String) : DateTime
+// ToTime(String) : Time
 define StringToTime: convert 'T00:00:00:00.0000+0700' to Time
 define StringToTimeFun: ToTime('T00:00:00:00.0000+0700')
-// ToConcept(Code) : DateTime
+// ToConcept(Code) : Concept
 define MyCode: Code 'ABC' from "FAKECS" display 'ABC'
 define CodeToConcept: convert MyCode to Concept
 define CodeToConceptFun: ToConcept(MyCode)

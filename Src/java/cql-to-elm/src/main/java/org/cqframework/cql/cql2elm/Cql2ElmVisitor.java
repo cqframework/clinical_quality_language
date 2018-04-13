@@ -1092,6 +1092,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     }
                 }
 
+                if (result.getHour() == null) {
+                    org.hl7.elm.r1.Date date = of.createDate();
+                    date.setYear(result.getYear());
+                    date.setMonth(result.getMonth());
+                    date.setDay(result.getDay());
+                    date.setResultType(libraryBuilder.resolveTypeName("System", "Date"));
+                    return date;
+                }
+
                 result.setResultType(libraryBuilder.resolveTypeName("System", "DateTime"));
                 return result;
             }

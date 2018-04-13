@@ -56,4 +56,4 @@ define TestIndexOf: Patient.name.given.indexOf('abc')
 define TestImplicitSubstring: Patient.name.given.where(substring($this.length()-3) = 'out')
 */
 
-define TestLiteralDate: Patient.birthDate = @1974-12-25
+define TestLiteralDate: Patient.birthDate = @1974-12-25T00:00:00.0Z // NOTE: FHIR Model Infos should be regen-ed with the Date type available

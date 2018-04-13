@@ -34,6 +34,7 @@ public class SystemLibraryHelper {
         // ToString(Integer) : String
         // ToString(Decimal) : String
         // ToString(DateTime) : String
+        // ToString(Date) : String
         // ToString(Time) : String
         // ToString(Quantity) : String
         // ToString(Ratio) : String
@@ -49,6 +50,9 @@ public class SystemLibraryHelper {
         Operator dateTimeToString = new Operator("ToString", new Signature(systemModel.getDateTime()), systemModel.getString());
         system.add(dateTimeToString);
         system.add(new Conversion(dateTimeToString, false));
+        Operator dateToString = new Operator("ToString", new Signature(systemModel.getDate()), systemModel.getString());
+        system.add(dateToString);
+        system.add(new Conversion(dateToString, false));
         Operator timeToString = new Operator("ToString", new Signature(systemModel.getTime()), systemModel.getString());
         system.add(timeToString);
         system.add(new Conversion(timeToString, false));
@@ -79,9 +83,18 @@ public class SystemLibraryHelper {
         system.add(new Conversion(integerToDecimal, true));
 
         // ToDateTime(String) : DateTime
+        // ToDateTime(Date) : DateTime
         Operator stringToDateTime = new Operator("ToDateTime", new Signature(systemModel.getString()), systemModel.getDateTime());
         system.add(stringToDateTime);
         system.add(new Conversion(stringToDateTime, false));
+        Operator dateToDateTime = new Operator("ToDateTime", new Signature(systemModel.getDate()), systemModel.getDateTime());
+        system.add(dateToDateTime);
+        system.add(new Conversion(dateToDateTime, true));
+
+        // ToDate(String) : Date
+        Operator stringToDate = new Operator("ToDate", new Signature(systemModel.getString()), systemModel.getDate());
+        system.add(stringToDate);
+        system.add(new Conversion(stringToDate, false));
 
         // ToTime(String) : Time
         Operator stringToTime = new Operator("ToTime", new Signature(systemModel.getString()), systemModel.getTime());
@@ -127,6 +140,10 @@ public class SystemLibraryHelper {
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("Less", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
+        system.add(new Operator("LessOrEqual", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
+        system.add(new Operator("Greater", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
+        system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
@@ -229,10 +246,13 @@ public class SystemLibraryHelper {
 
         // Date/Time Operators
         system.add(new Operator("Add", new Signature(systemModel.getDateTime(), systemModel.getQuantity()), systemModel.getDateTime()));
+        system.add(new Operator("Add", new Signature(systemModel.getDate(), systemModel.getQuantity()), systemModel.getDate()));
         system.add(new Operator("Add", new Signature(systemModel.getTime(), systemModel.getQuantity()), systemModel.getTime()));
         system.add(new Operator("After", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("After", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("After", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Before", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("Before", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("Before", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger()), systemModel.getDateTime()));
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getDateTime()));
@@ -242,26 +262,37 @@ public class SystemLibraryHelper {
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getDateTime()));
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getDateTime()));
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getDecimal()), systemModel.getDateTime()));
-        system.add(new Operator("DateFrom", new Signature(systemModel.getDateTime()), systemModel.getDateTime()));
+        system.add(new Operator("Date", new Signature(systemModel.getInteger()), systemModel.getDate()));
+        system.add(new Operator("Date", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getDate()));
+        system.add(new Operator("Date", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getDate()));
+        system.add(new Operator("DateFrom", new Signature(systemModel.getDateTime()), systemModel.getDate()));
         system.add(new Operator("TimeFrom", new Signature(systemModel.getDateTime()), systemModel.getTime()));
         system.add(new Operator("TimezoneFrom", new Signature(systemModel.getDateTime()), systemModel.getDecimal()));
+        system.add(new Operator("TimezoneFrom", new Signature(systemModel.getDate()), systemModel.getDecimal()));
         system.add(new Operator("TimezoneFrom", new Signature(systemModel.getTime()), systemModel.getDecimal()));
         system.add(new Operator("DateTimeComponentFrom", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("DateTimeComponentFrom", new Signature(systemModel.getDate()), systemModel.getInteger()));
         system.add(new Operator("DateTimeComponentFrom", new Signature(systemModel.getTime()), systemModel.getInteger()));
         system.add(new Operator("DifferenceBetween", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("DifferenceBetween", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getInteger()));
         system.add(new Operator("DifferenceBetween", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getInteger()));
         system.add(new Operator("DurationBetween", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("DurationBetween", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getInteger()));
         system.add(new Operator("DurationBetween", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getInteger()));
         system.add(new Operator("Now", new Signature(), systemModel.getDateTime()));
         system.add(new Operator("SameAs", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("SameAs", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("SameAs", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("SameOrAfter", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("SameOrAfter", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("SameOrAfter", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("SameOrBefore", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("SameOrBefore", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("SameOrBefore", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Subtract", new Signature(systemModel.getDateTime(), systemModel.getQuantity()), systemModel.getDateTime()));
+        system.add(new Operator("Subtract", new Signature(systemModel.getDate(), systemModel.getQuantity()), systemModel.getDate()));
         system.add(new Operator("Subtract", new Signature(systemModel.getTime(), systemModel.getQuantity()), systemModel.getTime()));
-        system.add(new Operator("Today", new Signature(), systemModel.getDateTime()));
+        system.add(new Operator("Today", new Signature(), systemModel.getDate()));
         system.add(new Operator("Time", new Signature(systemModel.getInteger()), systemModel.getTime()));
         system.add(new Operator("Time", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getTime()));
         system.add(new Operator("Time", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getTime()));
@@ -424,12 +455,14 @@ public class SystemLibraryHelper {
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDateTime())), systemModel.getDateTime()));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getDate())), systemModel.getDate()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getTime())), systemModel.getTime()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getDateTime())), systemModel.getDateTime()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getDate())), systemModel.getDate()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getTime())), systemModel.getTime()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
         system.add(new Operator("Median", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));

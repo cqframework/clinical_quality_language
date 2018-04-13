@@ -7,6 +7,7 @@
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Decimal" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="String" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="DateTime" baseType="System.Any"/>
+    <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Date" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:SimpleTypeInfo" name="Time" baseType="System.Any"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Quantity" baseType="System.Any">
         <ns4:element name="value" type="System.Decimal"/>
