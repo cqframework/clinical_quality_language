@@ -24,12 +24,14 @@ public class SystemFunctionResolver {
                 case "AnyTrue":
                 case "Avg":
                 case "Count":
+                case "GeometricMean":
                 case "Max":
                 case "Median":
                 case "Min":
                 case "Mode":
                 case "PopulationStdDev":
                 case "PopulationVariance":
+                case "Product":
                 case "StdDev":
                 case "Sum":
                 case "Variance": {

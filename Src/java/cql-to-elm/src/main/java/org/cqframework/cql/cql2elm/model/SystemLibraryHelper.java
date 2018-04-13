@@ -451,6 +451,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         // Count<T>(list<T>) : Integer
         system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
+        system.add(new Operator("GeometricMean", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
@@ -473,6 +474,8 @@ public class SystemLibraryHelper {
         system.add(new Operator("PopulationStdDev", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
+        system.add(new Operator("Product", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
+        system.add(new Operator("Product", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
