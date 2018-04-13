@@ -1470,6 +1470,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Object visitDifferenceExpressionTerm(@NotNull cqlParser.DifferenceExpressionTermContext ctx) {
+        // difference in days of X <=> difference in days between start of X and end of X
+        Expression operand = parseExpression(ctx.expressionTerm());
+
+        Start start = of.createStart().withOperand(operand);
+        libraryBuilder.resolveUnaryCall("System", "Start", start);
+
+        End end = of.createEnd().withOperand(operand);
+        libraryBuilder.resolveUnaryCall("System", "End", end);
+
+        DifferenceBetween result = of.createDifferenceBetween()
+                .withPrecision(parseDateTimePrecision(ctx.pluralDateTimePrecision().getText()))
+                .withOperand(start, end);
+
+        libraryBuilder.resolveBinaryCall("System", "DifferenceBetween", result);
+        return result;
+    }
+
+    @Override
     public Object visitBetweenExpression(@NotNull cqlParser.BetweenExpressionContext ctx) {
         // X properly? between Y and Z
         Expression first = parseExpression(ctx.expression());

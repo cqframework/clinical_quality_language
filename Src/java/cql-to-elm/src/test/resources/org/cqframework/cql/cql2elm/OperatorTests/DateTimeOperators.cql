@@ -21,6 +21,9 @@ define SecondFromDateTime: second from DateTime(2014, 1, 1, 0, 0, 0, 0)
 define MillisecondFromDateTime: millisecond from DateTime(2014, 1, 1, 0, 0, 0, 0)
 define DifferenceBetweenExpression: difference in days between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
 define DurationBetweenExpression: days between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
+define DurationInBetweenExpression: duration in days between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
+define DifferenceExpression: difference in days of Interval[DateTime(2014, 1, 1), DateTime(2014, 12, 31)]
+define DurationExpression: duration in days of Interval[DateTime(2014, 1, 1), DateTime(2014, 12, 31)]
 define NowExpression: Now()
 define SameAsExpression: DateTime(2014, 1, 1) same day as DateTime(2014, 1, 1)
 define SameOrAfterExpression: DateTime(2014, 1, 1) same day or after DateTime(2014, 1, 1)
