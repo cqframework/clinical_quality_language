@@ -258,6 +258,7 @@ public class SystemMethodResolver {
     public Expression resolveMethod(Expression target, @NotNull cqlParser.FunctionContext ctx, boolean mustResolve) {
         String functionName = visitor.parseString(ctx.identifier());
         switch (functionName) {
+            case "aggregate": return builder.resolveFunction(null, "Aggregate", getParams(target, ctx));
             case "all": {
                 // .all(criteria) resolves as .where(criteria).select(true).allTrue()
                 Query query = createWhere(target, functionName, ctx);
@@ -399,6 +400,7 @@ public class SystemMethodResolver {
             }
             case "length": return builder.resolveFunction(null, "Length", getParams(target, ctx));
             case "matches": return builder.resolveFunction(null, "Matches", getParams(target, ctx));
+            case "memberOf": return builder.resolveFunction(null, "InValueSet", getParams(target, ctx));
             case "not": return builder.resolveFunction(null, "Not", getParams(target, ctx));
             case "ofType": return createOfType(target, functionName, ctx);
             case "repeat": return createRepeat(target, functionName, ctx);
@@ -412,10 +414,13 @@ public class SystemMethodResolver {
             case "startsWith": return builder.resolveFunction(null, "StartsWith", getParams(target, ctx));
             case "subsetOf": return builder.resolveFunction(null, "IncludedIn", getParams(target, ctx));
             case "substring": return builder.resolveFunction(null, "Substring", getParams(target, ctx));
+            case "subsumes": return builder.resolveFunction(null, "Subsumes", getParams(target, ctx));
+            case "subsumedBy": return builder.resolveFunction(null, "SubsumedBy", getParams(target, ctx));
             case "supersetOf": return builder.resolveFunction(null, "Includes", getParams(target, ctx));
             case "tail": return builder.resolveFunction(null, "Tail", getParams(target, ctx));
             case "take": return builder.resolveFunction(null, "Take", getParams(target, ctx));
             case "toBoolean": return builder.resolveFunction(null, "ToBoolean", getParams(target, ctx));
+            case "toChars": return builder.resolveFunction(null, "ToChars", getParams(target, ctx));
             case "toDateTime": return builder.resolveFunction(null, "ToDateTime", getParams(target, ctx));
             case "toDecimal": return builder.resolveFunction(null, "ToDecimal", getParams(target, ctx));
             case "toInteger": return builder.resolveFunction(null, "ToInteger", getParams(target, ctx));

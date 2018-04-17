@@ -68,6 +68,11 @@ public class SystemLibraryHelper {
         system.add(stringToBoolean);
         system.add(new Conversion(stringToBoolean, false));
 
+        // ToChars(String) : List(String)
+        Operator toChars = new Operator("ToChars", new Signature(systemModel.getString()), new ListType(systemModel.getString()));
+        system.add(toChars);
+        system.add(new Conversion(toChars, false));
+
         // ToInteger(String) : Integer
         Operator stringToInteger = new Operator("ToInteger", new Signature(systemModel.getString()), systemModel.getInteger());
         system.add(stringToInteger);
@@ -503,9 +508,23 @@ public class SystemLibraryHelper {
         system.add(new Operator("InValueSet", new Signature(systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("InValueSet", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
 
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getString())), systemModel.getBoolean()));
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getCode())), systemModel.getBoolean()));
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getConcept())), systemModel.getBoolean()));
+
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
+
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getString())), systemModel.getBoolean()));
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getCode())), systemModel.getBoolean()));
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getConcept())), systemModel.getBoolean()));
+
+        system.add(new Operator("Subsumes", new Signature(systemModel.getCode(), systemModel.getCode()), systemModel.getBoolean()));
+        system.add(new Operator("Subsumes", new Signature(systemModel.getConcept(), systemModel.getConcept()), systemModel.getBoolean()));
+
+        system.add(new Operator("SubsumedBy", new Signature(systemModel.getCode(), systemModel.getCode()), systemModel.getBoolean()));
+        system.add(new Operator("SubsumedBy", new Signature(systemModel.getConcept(), systemModel.getConcept()), systemModel.getBoolean()));
 
         // Errors
         // Message(source T, condition Boolean, code String, severity String, message String) T

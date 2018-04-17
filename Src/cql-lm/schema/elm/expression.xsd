@@ -2551,6 +2551,26 @@ It is an error to invoke the Current operator outside the context of a scoped op
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Iteration">
+		<xs:annotation>
+			<xs:documentation>The Iteration expression returns the current iteration number of a scoped operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="scope" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Total">
+		<xs:annotation>
+			<xs:documentation>The Total expression returns the current value of the total aggregation accumulator in an aggregate operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="scope" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="SingletonFrom">
 		<xs:annotation>
 			<xs:documentation>The SingletonFrom expression extracts a single element from the source list. If the source list is empty, the result is null. If the source list contains one element, that element is returned. If the list contains more than one element, a run-time error is thrown. If the source list is null, the result is null.</xs:documentation>
