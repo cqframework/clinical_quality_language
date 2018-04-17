@@ -1378,6 +1378,18 @@ public class LibraryBuilder {
             return thisElement;
         }
 
+        if (identifier.equals("$index")) {
+            Iteration result = of.createIteration();
+            result.setResultType(resolveTypeName("System", "Integer"));
+            return result;
+        }
+
+        if (identifier.equals("$total")) {
+            Total result = of.createTotal();
+            result.setResultType(resolveTypeName("System", "Decimal")); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
+            return result;
+        }
+
         AliasedQuerySource alias = resolveAlias(identifier);
         if (alias != null) {
             AliasRef result = of.createAliasRef().withName(identifier);
