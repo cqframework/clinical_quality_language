@@ -41,6 +41,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean dateRangeOptimization = false;
     private boolean detailedErrors = false;
     private boolean methodInvocation = true;
+    private boolean includeDeprecatedElements = false;
     private TokenStream tokenStream;
 
     private final LibraryBuilder libraryBuilder;
@@ -447,7 +448,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public TupleElementDefinition visitTupleElementDefinition(@NotNull cqlParser.TupleElementDefinitionContext ctx) {
         TupleElementDefinition result = of.createTupleElementDefinition()
                 .withName(parseString(ctx.identifier()))
-                .withType(parseTypeSpecifier(ctx.typeSpecifier()));
+                .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
+
+        if (includeDeprecatedElements) {
+            result.setType(result.getElementType());
+        }
 
         return result;
     }
@@ -458,7 +463,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         TupleTypeSpecifier typeSpecifier = of.createTupleTypeSpecifier();
         for (cqlParser.TupleElementDefinitionContext definitionContext : ctx.tupleElementDefinition()) {
             TupleElementDefinition element = (TupleElementDefinition)visit(definitionContext);
-            resultType.addElement(new TupleTypeElement(element.getName(), element.getType().getResultType()));
+            resultType.addElement(new TupleTypeElement(element.getName(), element.getElementType().getResultType()));
             typeSpecifier.getElement().add(element);
         }
 
@@ -476,7 +481,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             typeSpecifiers.add(typeSpecifier);
             types.add(typeSpecifier.getResultType());
         }
-        ChoiceTypeSpecifier result = of.createChoiceTypeSpecifier().withType(typeSpecifiers);
+        ChoiceTypeSpecifier result = of.createChoiceTypeSpecifier().withChoice(typeSpecifiers);
+        if (includeDeprecatedElements) {
+            result.getType().addAll(typeSpecifiers);
+        }
         ChoiceType choiceType = new ChoiceType(types);
         result.setResultType(choiceType);
         return result;
@@ -1654,72 +1662,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression left = parseExpression(ctx.expression(0));
         Expression right = parseExpression(ctx.expression(1));
 
-        // for union of lists
-            // collect list of types in either side
-            // cast both operands to a choice type with all types
-
-        // for intersect of lists
-            // collect list of types in both sides
-            // cast both operands to a choice type with all types
-            // TODO: cast the result to a choice type with only types in both sides
-
-        // for difference of lists
-            // collect list of types in both sides
-            // cast both operands to a choice type with all types
-            // TODO: cast the result to the initial type of the left
-
-        if (left.getResultType() instanceof ListType && right.getResultType() instanceof ListType) {
-            ListType leftListType = (ListType)left.getResultType();
-            ListType rightListType = (ListType)right.getResultType();
-
-            if (!(leftListType.isSuperTypeOf(rightListType) || rightListType.isSuperTypeOf(leftListType))
-                    && !(leftListType.isCompatibleWith(rightListType) || rightListType.isCompatibleWith(leftListType))) {
-                Set<DataType> elementTypes = new HashSet<DataType>();
-                if (leftListType.getElementType() instanceof ChoiceType) {
-                    for (DataType choice : ((ChoiceType)leftListType.getElementType()).getTypes()) {
-                        elementTypes.add(choice);
-                    }
-                }
-                else {
-                    elementTypes.add(leftListType.getElementType());
-                }
-
-                if (rightListType.getElementType() instanceof ChoiceType) {
-                    for (DataType choice : ((ChoiceType)rightListType.getElementType()).getTypes()) {
-                        elementTypes.add(choice);
-                    }
-                }
-                else {
-                    elementTypes.add(rightListType.getElementType());
-                }
-
-                if (elementTypes.size() > 1) {
-                    ListType targetType = new ListType(new ChoiceType(elementTypes));
-                    left = of.createAs().withOperand(left).withAsTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(targetType));
-                    track(left, ctx.expression(0));
-                    left.setResultType(targetType);
-
-                    right = of.createAs().withOperand(right).withAsTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(targetType));
-                    track(right, ctx.expression(1));
-                    right.setResultType(targetType);
-                }
-            }
-        }
-
         switch (operator) {
             case "|":
             case "union":
-                Union union = of.createUnion().withOperand(left, right);
-                libraryBuilder.resolveNaryCall("System", "Union", union);
-                return union;
+                return libraryBuilder.resolveUnion(left, right);
             case "intersect":
-                Intersect intersect = of.createIntersect().withOperand(left, right);
-                libraryBuilder.resolveNaryCall("System", "Intersect", intersect);
-                return intersect;
+                return libraryBuilder.resolveIntersect(left, right);
             case "except":
-                Except except = of.createExcept().withOperand(left, right);
-                libraryBuilder.resolveNaryCall("System", "Except", except);
-                return except;
+                return libraryBuilder.resolveExcept(left, right);
         }
 
         return of.createNull();

@@ -17,6 +17,7 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
+
 /**
  * Created by Bryn on 12/29/2016.
  */
@@ -588,6 +589,115 @@ public class LibraryBuilder {
 
     public Expression resolveAggregateCall(String libraryName, String operatorName, AggregateExpression expression) {
         return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression));
+    }
+
+    private class BinaryWrapper {
+        public Expression left;
+        public Expression right;
+
+        public BinaryWrapper(Expression left, Expression right) {
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    private BinaryWrapper normalizeListTypes(Expression left, Expression right) {
+        // for union of lists
+        // collect list of types in either side
+        // cast both operands to a choice type with all types
+
+        // for intersect of lists
+        // collect list of types in both sides
+        // cast both operands to a choice type with all types
+        // TODO: cast the result to a choice type with only types in both sides
+
+        // for difference of lists
+        // collect list of types in both sides
+        // cast both operands to a choice type with all types
+        // TODO: cast the result to the initial type of the left
+
+        if (left.getResultType() instanceof ListType && right.getResultType() instanceof ListType) {
+            ListType leftListType = (ListType)left.getResultType();
+            ListType rightListType = (ListType)right.getResultType();
+
+            if (!(leftListType.isSuperTypeOf(rightListType) || rightListType.isSuperTypeOf(leftListType))
+                    && !(leftListType.isCompatibleWith(rightListType) || rightListType.isCompatibleWith(leftListType))) {
+                Set<DataType> elementTypes = new HashSet<DataType>();
+                if (leftListType.getElementType() instanceof ChoiceType) {
+                    for (DataType choice : ((ChoiceType)leftListType.getElementType()).getTypes()) {
+                        elementTypes.add(choice);
+                    }
+                }
+                else {
+                    elementTypes.add(leftListType.getElementType());
+                }
+
+                if (rightListType.getElementType() instanceof ChoiceType) {
+                    for (DataType choice : ((ChoiceType)rightListType.getElementType()).getTypes()) {
+                        elementTypes.add(choice);
+                    }
+                }
+                else {
+                    elementTypes.add(rightListType.getElementType());
+                }
+
+                if (elementTypes.size() > 1) {
+                    ListType targetType = new ListType(new ChoiceType(elementTypes));
+                    left = of.createAs().withOperand(left).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
+                    left.setResultType(targetType);
+
+                    right = of.createAs().withOperand(right).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
+                    right.setResultType(targetType);
+                }
+            }
+        }
+
+        return new BinaryWrapper(left, right);
+    }
+
+    public Expression resolveUnion(Expression left, Expression right) {
+        // Create right-leaning bushy instead of left-deep
+        if (left instanceof Union) {
+            Union leftUnion = (Union)left;
+            Expression leftUnionLeft = leftUnion.getOperand().get(0);
+            Expression leftUnionRight = leftUnion.getOperand().get(1);
+            if (leftUnionLeft instanceof Union && !(leftUnionRight instanceof Union)) {
+                left = leftUnionLeft;
+                right = resolveUnion(leftUnionRight, right);
+            }
+        }
+
+        // TODO: Take advantage of nary unions
+        BinaryWrapper wrapper = normalizeListTypes(left, right);
+        Union union = of.createUnion().withOperand(wrapper.left, wrapper.right);
+        resolveNaryCall("System", "Union", union);
+        return union;
+    }
+
+    public Expression resolveIntersect(Expression left, Expression right) {
+        // Create right-leaning bushy instead of left-deep
+        if (left instanceof Intersect) {
+            Intersect leftIntersect = (Intersect)left;
+            Expression leftIntersectLeft = leftIntersect.getOperand().get(0);
+            Expression leftIntersectRight = leftIntersect.getOperand().get(1);
+            if (leftIntersectLeft instanceof Intersect && !(leftIntersectRight instanceof Intersect)) {
+                left = leftIntersectLeft;
+                right = resolveIntersect(leftIntersectRight, right);
+            }
+        }
+
+        // TODO: Take advantage of nary intersect
+        BinaryWrapper wrapper = normalizeListTypes(left, right);
+        Intersect intersect = of.createIntersect().withOperand(wrapper.left, wrapper.right);
+        resolveNaryCall("System", "Intersect", intersect);
+        return intersect;
+    }
+
+    public Expression resolveExcept(Expression left, Expression right) {
+        BinaryWrapper wrapper = normalizeListTypes(left, right);
+        Except except = of.createExcept().withOperand(wrapper.left, wrapper.right);
+        resolveNaryCall("System", "Except", except);
+        return except;
     }
 
     public Expression resolveIn(Expression left, Expression right) {

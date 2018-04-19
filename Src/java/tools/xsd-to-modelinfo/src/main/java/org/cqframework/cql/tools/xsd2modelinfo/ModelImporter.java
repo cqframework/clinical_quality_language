@@ -36,6 +36,10 @@ public class ModelImporter {
     }
 
     private static String getQualifiedName(String modelName, String name) {
+        if (name.startsWith(modelName + ".")) {
+            return name;
+        }
+
         return String.format("%s.%s", modelName, name);
     }
 
@@ -162,10 +166,16 @@ public class ModelImporter {
             ClassInfoElement cie = new ClassInfoElement().withName(element.getName());
             TypeSpecifier elementTypeSpecifier = toTypeSpecifier(element.getType());
             if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
-                cie.setType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
+                cie.setElementType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
+                if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
+                    cie.setType(toTypeName((NamedTypeSpecifier) elementTypeSpecifier));
+                }
             }
             else {
-                cie.setTypeSpecifier(elementTypeSpecifier);
+                cie.setElementTypeSpecifier(elementTypeSpecifier);
+                if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
+                    cie.setTypeSpecifier(elementTypeSpecifier);
+                }
             }
             if (element.isProhibited()) {
                 cie.setProhibited(true);
@@ -212,10 +222,16 @@ public class ModelImporter {
 
             TypeSpecifier elementTypeSpecifier = toTypeSpecifier(element.getType());
             if (elementTypeSpecifier instanceof NamedTypeSpecifier) {
-                infoElement.setType(toTypeName((NamedTypeSpecifier)elementTypeSpecifier));
+                infoElement.setElementType(toTypeName((NamedTypeSpecifier) elementTypeSpecifier));
+                if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
+                    infoElement.setType(toTypeName((NamedTypeSpecifier) elementTypeSpecifier));
+                }
             }
             else {
-                infoElement.setTypeSpecifier(elementTypeSpecifier);
+                infoElement.setElementTypeSpecifier(elementTypeSpecifier);
+                if (options.getVersionPolicy() == ModelImporterOptions.VersionPolicy.INCLUDE_DEPRECATED) {
+                    infoElement.setTypeSpecifier(elementTypeSpecifier);
+                }
             }
 
             result.getElement().add(infoElement);
