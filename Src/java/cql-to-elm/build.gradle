@@ -15,15 +15,3 @@ dependencies {
     runtime project(':quick')
     runtime project(':qdm')
 }
-
-task generateTestData (dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.cqframework.cql.cql2elm.utilities.CoffeeScriptTestDataGenerator'
-    classpath = sourceSets.test.runtimeClasspath
-    args = ["-r", "-i", "${projectDir}/../../coffeescript/cql-execution/test/elm"]
-}
-
-task watchTestData (dependsOn: 'testClasses', type: JavaExec) {
-    main = 'org.cqframework.cql.cql2elm.utilities.CoffeeScriptTestDataGenerator'
-    classpath = sourceSets.test.runtimeClasspath
-    args = ["-r", "-w", "-i", "${projectDir}/../../coffeescript/cql-execution/test/elm"]
-}
