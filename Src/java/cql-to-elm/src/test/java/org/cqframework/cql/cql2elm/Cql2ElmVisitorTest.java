@@ -993,6 +993,37 @@ public class Cql2ElmVisitorTest {
         ExpressionDef def = (ExpressionDef) visitFile("TestURIConversion.cql");
     }
 
+    @Test
+    public void testUnion() throws IOException {
+        ExpressionDef def = (ExpressionDef) visitFile("TestUnion.cql");
+
+        // Union(Union(Union(Union(A, B), Union(C,D)), Union(E,F)), Union(G,H))
+        Union union1 = (Union)def.getExpression();
+        Union union2 = (Union)union1.getOperand().get(0);
+        Union union3 = (Union)union2.getOperand().get(0);
+        Union union4 = (Union)union3.getOperand().get(0);
+        Union union5 = (Union)union3.getOperand().get(1);
+        Union union6 = (Union)union2.getOperand().get(1);
+        Union union7 = (Union)union1.getOperand().get(1);
+        ExpressionRef a = (ExpressionRef)union4.getOperand().get(0);
+        ExpressionRef b = (ExpressionRef)union4.getOperand().get(1);
+        ExpressionRef c = (ExpressionRef)union5.getOperand().get(0);
+        ExpressionRef d = (ExpressionRef)union5.getOperand().get(1);
+        ExpressionRef e = (ExpressionRef)union6.getOperand().get(0);
+        ExpressionRef f = (ExpressionRef)union6.getOperand().get(1);
+        ExpressionRef g = (ExpressionRef)union7.getOperand().get(0);
+        ExpressionRef h = (ExpressionRef)union7.getOperand().get(1);
+
+        assertThat(a.getName(), is("A"));
+        assertThat(b.getName(), is("B"));
+        assertThat(c.getName(), is("C"));
+        assertThat(d.getName(), is("D"));
+        assertThat(e.getName(), is("E"));
+        assertThat(f.getName(), is("F"));
+        assertThat(g.getName(), is("G"));
+        assertThat(h.getName(), is("H"));
+    }
+
     // TODO: This test needs to be repurposed, it won't work with the query as is.
     @Test(enabled = false)
     public void testSameAs() {
