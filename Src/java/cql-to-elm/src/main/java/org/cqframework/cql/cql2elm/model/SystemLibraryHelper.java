@@ -112,12 +112,12 @@ public class SystemLibraryHelper {
         Operator stringToQuantity = new Operator("ToQuantity", new Signature(systemModel.getString()), systemModel.getQuantity());
         system.add(stringToQuantity);
         system.add(new Conversion(stringToQuantity, false));
-        //Operator integerToQuantity = new Operator("ToQuantity", new Signature(systemModel.getInteger()), systemModel.getQuantity());
-        //system.add(integerToQuantity);
-        //system.add(new Conversion(integerToQuantity, true));
-        //Operator decimalToQuantity = new Operator("ToQuantity", new Signature(systemModel.getDecimal()), systemModel.getQuantity());
-        //system.add(decimalToQuantity);
-        //system.add(new Conversion(decimalToQuantity, true));
+        Operator integerToQuantity = new Operator("ToQuantity", new Signature(systemModel.getInteger()), systemModel.getQuantity());
+        system.add(integerToQuantity);
+        system.add(new Conversion(integerToQuantity, true));
+        Operator decimalToQuantity = new Operator("ToQuantity", new Signature(systemModel.getDecimal()), systemModel.getQuantity());
+        system.add(decimalToQuantity);
+        system.add(new Conversion(decimalToQuantity, true));
 
         // ToRatio(String) : Ratio
         Operator stringToRatio = new Operator("ToRatio", new Signature(systemModel.getString()), systemModel.getRatio());
@@ -170,7 +170,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Ceiling", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
 
         system.add(new Operator("Divide", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        //system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
         system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Floor", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
@@ -192,8 +192,8 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Multiply", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
-        system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getQuantity()), systemModel.getQuantity()));
+        //system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        //system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getQuantity()), systemModel.getQuantity()));
         system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Negate", new Signature(systemModel.getInteger()), systemModel.getInteger()));
@@ -202,6 +202,7 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Predecessor", new Signature(systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+        system.add(new Operator("Predecessor", new Signature(systemModel.getDate()), systemModel.getDate()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getDateTime()), systemModel.getDateTime()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getTime()), systemModel.getTime()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getQuantity()), systemModel.getQuantity()));
@@ -218,6 +219,7 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Successor", new Signature(systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Successor", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+        system.add(new Operator("Successor", new Signature(systemModel.getDate()), systemModel.getDate()));
         system.add(new Operator("Successor", new Signature(systemModel.getDateTime()), systemModel.getDateTime()));
         system.add(new Operator("Successor", new Signature(systemModel.getTime()), systemModel.getTime()));
         system.add(new Operator("Successor", new Signature(systemModel.getQuantity()), systemModel.getQuantity()));

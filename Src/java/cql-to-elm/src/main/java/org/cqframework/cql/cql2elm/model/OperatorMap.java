@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.model;
 
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.ListType;
 
 import java.util.*;
 
@@ -79,8 +80,8 @@ public class OperatorMap {
                         else if (conversion.isListPromotion()) {
                             score += 7;
                         }
-                        else if (conversion.getToType() instanceof ClassType) {
-                            // TODO: #1443 - This didn't work because the ambiguous target is actually a List<Quantity> | List<Decimal>, not Quantity | Decimal
+                        else if (conversion.getToType() instanceof ClassType
+                                || (conversion.getToType() instanceof ListType && ((ListType)conversion.getToType()).getElementType() instanceof ClassType)) {
                             score += 5;
                         }
                         else {
