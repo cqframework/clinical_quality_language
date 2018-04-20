@@ -527,11 +527,21 @@
                   "where" : {
                      "type" : "And",
                      "operand" : [ {
-                        "type" : "In",
+                        "type" : "IncludedIn",
                         "operand" : [ {
-                           "path" : "issued",
-                           "scope" : "R",
-                           "type" : "Property"
+                           "lowClosed" : true,
+                           "highClosed" : true,
+                           "type" : "Interval",
+                           "low" : {
+                              "path" : "issued",
+                              "scope" : "R",
+                              "type" : "Property"
+                           },
+                           "high" : {
+                              "path" : "issued",
+                              "scope" : "R",
+                              "type" : "Property"
+                           }
                         }, {
                            "name" : "MeasurementPeriod",
                            "type" : "ParameterRef"

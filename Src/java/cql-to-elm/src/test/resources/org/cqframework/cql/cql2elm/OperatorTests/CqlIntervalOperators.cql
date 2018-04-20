@@ -3,7 +3,7 @@ library CqlIntervalOperatorsTest version '1'
 context Population
 
 //After
-define TestAfterNull: null after IntegerIntervalTest
+//define TestAfterNull: null after IntegerIntervalTest // Could use the upcast, but do we really need to support this construct?
 define IntegerIntervalAfterTrue: IntegerIntervalTest2 after IntegerIntervalTest
 define IntegerIntervalAfterFalse: IntegerIntervalTest after IntegerIntervalTest2
 define IntegerIntervalPointAfterTrue: 12 after IntegerIntervalTest
@@ -28,7 +28,7 @@ define TimeAfterTrue: Interval[@T15:59:59.999, @T20:59:59.999] after @T12:59:59.
 define TimeAfterFalse: Interval[@T15:59:59.999, @T20:59:59.999] after @T17:59:59.999
 
 //Before
-define TestBeforeNull : null before IntegerIntervalTest
+//define TestBeforeNull : null before IntegerIntervalTest // Could use the upcast, but do we really need to support this construct?
 define IntegerIntervalBeforeFalse: IntegerIntervalTest2 before IntegerIntervalTest
 define IntegerIntervalBeforeTrue: IntegerIntervalTest before IntegerIntervalTest2
 define IntegerIntervalPointBeforeTrue: 9 before IntegerIntervalTest2

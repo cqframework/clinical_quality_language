@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.List;
 
 
+
 /**
  * Created by Bryn on 12/29/2016.
  */
@@ -924,6 +925,37 @@ public class LibraryBuilder {
         return toList;
     }
 
+    private Expression demoteIntervalExpression(Expression expression, Conversion conversion) {
+        IntervalType fromType = (IntervalType)conversion.getFromType();
+        DataType toType = conversion.getToType();
+
+        PointFrom pointFrom = of.createPointFrom().withOperand(expression);
+        pointFrom.setResultType(fromType.getPointType());
+        resolveUnaryCall("System", "PointFrom", pointFrom);
+        reportWarning("Interval-valued expression was demoted to a point.", expression);
+
+        if (conversion.getConversion() != null) {
+            return convertExpression(pointFrom, conversion.getConversion());
+        }
+        else {
+            return pointFrom;
+        }
+    }
+
+    private Expression promoteIntervalExpression(Expression expression, Conversion conversion) {
+        if (conversion.getConversion() != null) {
+            expression = convertExpression(expression, conversion.getConversion());
+        }
+
+        return resolveToInterval(expression);
+    }
+
+    public Expression resolveToInterval(Expression expression) {
+        Interval toInterval = of.createInterval().withLow(expression).withHigh(expression).withLowClosed(true).withHighClosed(true);
+        toInterval.setResultType(new IntervalType(expression.getResultType()));
+        return toInterval;
+    }
+
     private Expression convertIntervalExpression(Expression expression, Conversion conversion) {
         IntervalType fromType = (IntervalType)conversion.getFromType();
         IntervalType toType = (IntervalType)conversion.getToType();
@@ -1060,6 +1092,12 @@ public class LibraryBuilder {
         else if (conversion.isIntervalConversion()) {
             return convertIntervalExpression(expression, conversion);
         }
+        else if (conversion.isIntervalDemotion()) {
+            return demoteIntervalExpression(expression, conversion);
+        }
+        else if (conversion.isIntervalPromotion()) {
+            return promoteIntervalExpression(expression, conversion);
+        }
         else if (conversion.getOperator() != null) {
             FunctionRef functionRef = (FunctionRef)of.createFunctionRef()
                     .withLibraryName(conversion.getOperator().getLibraryName())
@@ -1087,6 +1125,9 @@ public class LibraryBuilder {
             }
             else if (conversion.getToType().equals(resolveTypeName("System", "String"))) {
                 return (Expression)of.createToString().withOperand(expression).withResultType(conversion.getToType());
+            }
+            else if (conversion.getToType().equals(resolveTypeName("System", "Date"))) {
+                return (Expression)of.createToDate().withOperand(expression).withResultType(conversion.getToType());
             }
             else if (conversion.getToType().equals(resolveTypeName("System", "DateTime"))) {
                 return (Expression)of.createToDateTime().withOperand(expression).withResultType(conversion.getToType());

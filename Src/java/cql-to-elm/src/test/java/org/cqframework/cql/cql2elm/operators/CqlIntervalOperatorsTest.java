@@ -4,6 +4,7 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
+import org.junit.Ignore;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -40,11 +41,12 @@ public class CqlIntervalOperatorsTest {
         }
     }
 
-    @Test
-    public void testAfter() {
-        ExpressionDef def = defs.get("TestAfterNull");
-        assertThat(def, hasTypeAndResult(After.class, "System.Boolean"));
-    }
+// Ignored, see comment in test source
+//    @Test
+//    public void testAfter() {
+//        ExpressionDef def = defs.get("TestAfterNull");
+//        assertThat(def, hasTypeAndResult(After.class, "System.Boolean"));
+//    }
 
     @Test
     public void testOverlapsDay() {

@@ -1994,11 +1994,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
                 : null;
 
-        if (!isRightPoint &&
-                !(timingOperator.getRight().getResultType() instanceof IntervalType
-                        || timingOperator.getRight().getResultType() instanceof ListType)) {
-            isRightPoint = true;
-        }
+        // If the right is not convertible to an interval or list
+        //if (!isRightPoint &&
+        //        !(timingOperator.getRight().getResultType() instanceof IntervalType
+        //                || timingOperator.getRight().getResultType() instanceof ListType)) {
+        //    isRightPoint = true;
+        //}
 
         if (isRightPoint) {
             if (isProper) {
@@ -2087,11 +2088,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 ? ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()
                 : null;
 
-        if (!isLeftPoint &&
-                !(timingOperator.getLeft().getResultType() instanceof IntervalType
-                        || timingOperator.getLeft().getResultType() instanceof ListType)) {
-            isLeftPoint = true;
-        }
+        // If the left is not convertible to an interval or list
+        //if (!isLeftPoint &&
+        //        !(timingOperator.getLeft().getResultType() instanceof IntervalType
+        //                || timingOperator.getLeft().getResultType() instanceof ListType)) {
+        //    isLeftPoint = true;
+        //}
 
         if (isLeftPoint) {
             if (isProper) {

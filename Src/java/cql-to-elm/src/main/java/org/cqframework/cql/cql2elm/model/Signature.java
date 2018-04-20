@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.InstantiationContext;
 
@@ -44,6 +45,25 @@ public class Signature {
         return false;
     }
 
+    private boolean getHasChoices() {
+        for (DataType operandType : operandTypes) {
+            if (operandType instanceof ChoiceType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasChoices;
+    private boolean calculatedHasChoices;
+    public boolean containsChoices() {
+        if (!calculatedHasChoices) {
+            hasChoices = getHasChoices();
+            calculatedHasChoices = true;
+        }
+        return hasChoices;
+    }
 
     public boolean isSubTypeOf(Signature other) {
         if (operandTypes.size() == other.operandTypes.size()) {
