@@ -74,10 +74,10 @@ public class OperatorMap {
                         if (conversion.isCast()) {
                             score += 3;
                         }
-                        else if (conversion.isListDemotion()) {
+                        else if (conversion.isListDemotion() || conversion.isIntervalDemotion()) {
                             score += 6;
                         }
-                        else if (conversion.isListPromotion()) {
+                        else if (conversion.isListPromotion() || conversion.isIntervalPromotion()) {
                             score += 7;
                         }
                         else if (conversion.getToType() instanceof ClassType

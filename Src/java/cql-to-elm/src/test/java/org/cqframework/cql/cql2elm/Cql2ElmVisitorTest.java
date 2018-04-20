@@ -1024,6 +1024,37 @@ public class Cql2ElmVisitorTest {
         assertThat(h.getName(), is("H"));
     }
 
+    @Test
+    public void testFHIRTiming() throws IOException {
+        ExpressionDef def = (ExpressionDef) visitFile("TestFHIRTiming.cql");
+        // Query->
+        //  where->
+        //      IncludedIn->
+        //          left->
+        //              case FHIR.dateTime then Interval[FHIR.dateTime, FHIR.dateTime]
+        //              case FHIR.period then ToInterval(FHIR.period)
+        //          right-> MeasurementPeriod
+        Query query = (Query) def.getExpression();
+
+        // First check the source
+        AliasedQuerySource source = query.getSource().get(0);
+        assertThat(source.getAlias(), is("P"));
+        Retrieve request = (Retrieve) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("Procedure"));
+
+        // Then check that the where an IncludedIn with a Case as the left operand
+        Expression where = query.getWhere();
+        assertThat(where, instanceOf(IncludedIn.class));
+        IncludedIn includedIn = (IncludedIn)where;
+        assertThat(includedIn.getOperand().get(0), instanceOf(Case.class));
+        Case caseExpression = (Case)includedIn.getOperand().get(0);
+        assertThat(caseExpression.getCaseItem(), hasSize(2));
+        assertThat(caseExpression.getCaseItem().get(0).getWhen(), instanceOf(Is.class));
+        assertThat(caseExpression.getCaseItem().get(0).getThen(), instanceOf(Interval.class));
+        assertThat(caseExpression.getCaseItem().get(1).getWhen(), instanceOf(Is.class));
+        assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
+    }
+
     // TODO: This test needs to be repurposed, it won't work with the query as is.
     @Test(enabled = false)
     public void testSameAs() {

@@ -150,6 +150,35 @@ public class ConversionMap {
         return null;
     }
 
+    public Conversion findIntervalDemotion(IntervalType fromType, DataType toType, OperatorMap operatorMap) {
+        DataType pointType = fromType.getPointType();
+        if (pointType.isSubTypeOf(toType)) {
+            return new Conversion(fromType, toType, null);
+        }
+        else {
+            Conversion pointConversion = findConversion(pointType, toType, true, operatorMap);
+            if (pointConversion != null) {
+                return new Conversion(fromType, toType, pointConversion);
+            }
+        }
+
+        return null;
+    }
+
+    public Conversion findIntervalPromotion(DataType fromType, IntervalType toType, OperatorMap operatorMap) {
+        if (fromType.isSubTypeOf(toType.getPointType())) {
+            return new Conversion(fromType, toType, null);
+        }
+        else {
+            Conversion pointConversion = findConversion(fromType, toType.getPointType(), true, operatorMap);
+            if (pointConversion != null) {
+                return new Conversion(fromType, toType, pointConversion);
+            }
+        }
+
+        return null;
+    }
+
     public void ensureGenericConversionInstantiated(DataType fromType, DataType toType, boolean isImplicit, OperatorMap operatorMap) {
         for (Conversion c : getGenericConversions()) {
             if (c.getOperator() != null) {
@@ -210,6 +239,14 @@ public class ConversionMap {
 
             if (!(fromType instanceof ListType) && toType instanceof ListType && promotion) {
                 result = findListPromotion(fromType, (ListType)toType, operatorMap);
+            }
+
+            if (fromType instanceof IntervalType && !(toType instanceof IntervalType) && demotion) {
+                result = findIntervalDemotion((IntervalType)fromType, toType, operatorMap);
+            }
+
+            if (!(fromType instanceof IntervalType) && toType instanceof IntervalType && promotion) {
+                result = findIntervalPromotion(fromType, (IntervalType)toType, operatorMap);
             }
 
             // If the from type is a choice, attempt to find a conversion between one of the choice types

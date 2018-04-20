@@ -97,6 +97,35 @@ public class Conversion {
         this.isListPromotionFlag = true;
     }
 
+    public Conversion(IntervalType fromType, DataType toType, Conversion elementConversion) {
+        if (fromType == null) {
+            throw new IllegalArgumentException("fromType is null");
+        }
+
+
+        setIsImplicit(true);
+        this.fromType = fromType;
+        this.toType = toType;
+        this.conversionField = elementConversion;
+        this.isIntervalDemotionFlag = true;
+    }
+
+    public Conversion(DataType fromType, IntervalType toType, Conversion elementConversion) {
+        if (fromType == null) {
+            throw new IllegalArgumentException("fromType is null");
+        }
+
+        if (toType == null) {
+            throw new IllegalArgumentException("toType is null");
+        }
+
+        setIsImplicit(true);
+        this.fromType = fromType;
+        this.toType = toType;
+        this.conversionField = elementConversion;
+        this.isIntervalPromotionFlag = true;
+    }
+
     public Conversion(IntervalType fromType, IntervalType toType, Conversion pointConversion) {
         if (fromType == null) {
             throw new IllegalArgumentException("fromType is null");
@@ -213,6 +242,16 @@ public class Conversion {
     private boolean isIntervalConversionFlag;
     public boolean isIntervalConversion() {
         return isIntervalConversionFlag;
+    }
+
+    private boolean isIntervalPromotionFlag;
+    public boolean isIntervalPromotion() {
+        return isIntervalPromotionFlag;
+    }
+
+    private boolean isIntervalDemotionFlag;
+    public boolean isIntervalDemotion() {
+        return isIntervalDemotionFlag;
     }
 
     private DataType fromType;
