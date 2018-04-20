@@ -987,6 +987,12 @@ public class Cql2ElmVisitorTest {
         assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
     }
 
+    @Test
+    public void testURIConversion() throws IOException {
+        // If this translates without errors, the test is successful
+        ExpressionDef def = (ExpressionDef) visitFile("TestURIConversion.cql");
+    }
+
     // TODO: This test needs to be repurposed, it won't work with the query as is.
     @Test(enabled = false)
     public void testSameAs() {
