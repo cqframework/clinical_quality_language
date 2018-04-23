@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
@@ -1053,6 +1054,13 @@ public class Cql2ElmVisitorTest {
         assertThat(caseExpression.getCaseItem().get(0).getThen(), instanceOf(Interval.class));
         assertThat(caseExpression.getCaseItem().get(1).getWhen(), instanceOf(Is.class));
         assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
+    }
+
+    @Test
+    public void testPatientContext() throws IOException {
+        TranslatedLibrary library = visitFileLibrary("TestPatientContext.cql");
+        ExpressionDef patient = library.resolveExpressionRef("Patient");
+        assertThat(patient.getExpression(), instanceOf(Literal.class));
     }
 
     // TODO: This test needs to be repurposed, it won't work with the query as is.
