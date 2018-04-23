@@ -40,6 +40,22 @@ public abstract class DataType {
         return false;
     }
 
+    /**
+     * @param other
+     * @return The first supertype of this type that is also a supertype of other
+     */
+    public DataType getCommonSuperTypeOf(DataType other) {
+        DataType currentType = this;
+        while (currentType != null) {
+            if (currentType.isSuperTypeOf(other)) {
+                return currentType;
+            }
+            currentType = currentType.baseType;
+        }
+
+        return null;
+    }
+
     // Note that this is not how implicit/explicit conversions are defined, the notion of
     // type compatibility is used to support implicit casting, such as casting a "null"
     // literal to any other type, or casting a class to an equivalent tuple.
