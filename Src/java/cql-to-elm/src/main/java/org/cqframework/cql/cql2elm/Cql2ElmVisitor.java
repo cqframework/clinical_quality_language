@@ -68,6 +68,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private boolean implicitPatientCreated = false;
+    private ExpressionDef implicitPatientExpressionDef = null;
     private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
@@ -662,24 +663,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     patientRetrieve.setTemplateId(patientClassIdentifier);
                 }
 
-                ExpressionDef patientExpressionDef = of.createExpressionDef()
+                implicitPatientExpressionDef = of.createExpressionDef()
                         .withName("Patient")
                         .withContext(currentContext)
                         .withExpression(of.createSingletonFrom().withOperand(patientRetrieve));
-                track(patientExpressionDef, ctx);
-                patientExpressionDef.getExpression().setResultType(patientType);
-                patientExpressionDef.setResultType(patientType);
-                libraryBuilder.addExpression(patientExpressionDef);
+                track(implicitPatientExpressionDef, ctx);
+                implicitPatientExpressionDef.getExpression().setResultType(patientType);
+                implicitPatientExpressionDef.setResultType(patientType);
+                libraryBuilder.addExpression(implicitPatientExpressionDef);
             }
             else {
-                ExpressionDef patientExpressionDef = of.createExpressionDef()
+                implicitPatientExpressionDef = of.createExpressionDef()
                         .withName("Patient")
                         .withContext(currentContext)
                         .withExpression(of.createNull());
-                track(patientExpressionDef, ctx);
-                patientExpressionDef.getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
-                patientExpressionDef.setResultType(patientExpressionDef.getExpression().getResultType());
-                libraryBuilder.addExpression(patientExpressionDef);
+                track(implicitPatientExpressionDef, ctx);
+                implicitPatientExpressionDef.getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
+                implicitPatientExpressionDef.setResultType(implicitPatientExpressionDef.getExpression().getResultType());
+                libraryBuilder.addExpression(implicitPatientExpressionDef);
             }
 
             implicitPatientCreated = true;
@@ -692,7 +693,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public ExpressionDef internalVisitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
-        if (def == null) {
+        if (def == null || def == implicitPatientExpressionDef) {
+            if (def != null && def == implicitPatientExpressionDef) {
+                libraryBuilder.removeExpression(def);
+                implicitPatientExpressionDef = null;
+                def = null;
+            }
             libraryBuilder.pushExpressionContext(currentContext);
             try {
                 libraryBuilder.pushExpressionDefinition(identifier);

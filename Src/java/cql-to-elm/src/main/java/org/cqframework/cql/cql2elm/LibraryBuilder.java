@@ -534,6 +534,13 @@ public class LibraryBuilder {
         translatedLibrary.add(expDef);
     }
 
+    public void removeExpression(ExpressionDef expDef) {
+        if (library.getStatements() != null) {
+            library.getStatements().getDef().remove(expDef);
+            translatedLibrary.remove(expDef);
+        }
+    }
+
     public Element resolve(String identifier) {
         return translatedLibrary.resolve(identifier);
     }
