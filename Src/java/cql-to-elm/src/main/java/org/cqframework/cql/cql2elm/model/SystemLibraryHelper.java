@@ -126,9 +126,14 @@ public class SystemLibraryHelper {
 
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
-        system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        //system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equal(Any, Any) : Boolean
+        system.add(new Operator("Equal", new Signature(systemModel.getAny(), systemModel.getAny()), systemModel.getBoolean()));
         // Equivalent<T>(T, T) : Boolean
-        system.add(new GenericOperator("Equivalent", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        //system.add(new GenericOperator("Equivalent", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equivalent(Any, Any) : Boolean
+        system.add(new Operator("Equivalent", new Signature(systemModel.getAny(), systemModel.getAny()), systemModel.getBoolean()));
+
         system.add(new Operator("Less", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
@@ -310,16 +315,8 @@ public class SystemLibraryHelper {
         // Interval Operators
         // After<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("After", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-//        // After<T>(T, interval<T>) : Boolean
-//        system.add(new GenericOperator("After", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-//        // After<T>(interval<T>, T) : Boolean
-//        system.add(new GenericOperator("After", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // Before<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("Before", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-//        // Before<T>(T, interval<T>) : Boolean
-//        system.add(new GenericOperator("Before", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-//        // Before<T>(interval,T>, T) : Boolean
-//        system.add(new GenericOperator("Before", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // Collapse<T>(list<interval<T>>) : list<interval<T>>
         system.add(new GenericOperator("Collapse", new Signature(new ListType(new IntervalType(new TypeParameter("T")))), new ListType(new IntervalType(new TypeParameter("T"))), new TypeParameter("T")));
         // Contains<T>(interval<T>, T) : Boolean
@@ -328,9 +325,12 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("End", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Ends<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("Ends", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Equal<T>(interval<T>, interval<T>) : Boolean
-        // Already covered by Equal<T>(T, T)
+        // Handled by generic Equal
+        //// Equal<T>(interval<T>, interval<T>) : Boolean
         //system.add(new GenericOperator("Equal", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Handled by generic Equivalent
+        //// Equivalent<T>(interval<T>, interval<T>) : Boolean
+        //system.add(new GenericOperator("Equivalent", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Except<T>(interval<T>, interval<T>) : interval<T>
         system.add(new GenericOperator("Except", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), new IntervalType(new TypeParameter("T")), new TypeParameter("T")));
         // Expand<T>(list<interval<T>>, Quantity) : list<interval<T>>
@@ -368,22 +368,10 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("ProperIncludedIn", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameAs<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameAs", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-//        // SameAs<T>(interval<T>, T) : Boolean
-//        system.add(new GenericOperator("SameAs", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-//        // SameAs<T>(T, interval<T>) : Boolean
-//        system.add(new GenericOperator("SameAs", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameOrAfter<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameOrAfter", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-//        // SameOrAfter<T>(interval<T>, T) : Boolean
-//        system.add(new GenericOperator("SameOrAfter", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-//        // SameOrAfter<T>(T, interval<T>) : Boolean
-//        system.add(new GenericOperator("SameOrAfter", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameOrBefore<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameOrBefore", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-//        // SameOrBefore<T>(interval<T>, T) : Boolean
-//        system.add(new GenericOperator("SameOrBefore", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-//        // SameOrBefore<T>(T, interval<T>) : Boolean
-//        system.add(new GenericOperator("SameOrBefore", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Start<T>(interval<T>) : T
         system.add(new GenericOperator("Start", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Starts<T>(interval<T>, interval<T>) : Boolean
@@ -398,9 +386,12 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Contains", new Signature(new ListType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // Distinct<T>(list<T>) : list<T>
         system.add(new GenericOperator("Distinct", new Signature(new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
-        // Equal<T>(list<T>, list<T>) : Boolean
-        // Already covered by Equal<T>(T, T)
+        // Handled by generic Equal
+        //// Equal<T>(list<T>, list<T>) : Boolean
         //system.add(new GenericOperator("Equal", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Handled by generic Equivalent
+        //// Equivalent<T>(list<T>, list<T>) : Boolean
+        //system.add(new GenericOperator("Equivalent", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Except<T>(list<T>, list<T>) : list<T>
         system.add(new GenericOperator("Except", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // Exists<T>(list<T>) : Boolean
@@ -459,7 +450,9 @@ public class SystemLibraryHelper {
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         // Count<T>(list<T>) : Integer
-        system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
+        //system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
+        // Count(list<Any>) : Integer
+        system.add(new Operator("Count", new Signature(new ListType(systemModel.getAny())), systemModel.getInteger()));
         system.add(new Operator("GeometricMean", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));

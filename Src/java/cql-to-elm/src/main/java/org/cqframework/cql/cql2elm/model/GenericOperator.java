@@ -13,6 +13,8 @@ public class GenericOperator extends Operator {
     public GenericOperator(String name, Signature signature, DataType resultType, TypeParameter... typeParameters) {
         super(name, signature, resultType);
 
+        // TODO: This constructor really ought to be replacing the TypeParameter references in its signature with copies of the referenced type parameter given here,
+        // but the constructor order and signature hiding of the base make that quite difficult here...
         for (TypeParameter typeParameter : typeParameters) {
             this.typeParameters.add(typeParameter);
         }

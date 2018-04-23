@@ -37,8 +37,13 @@ public class InstantiationContextImpl implements InstantiationContext {
         // If the type is not yet bound, bind it to the call type.
         DataType boundType = typeMap.get(parameter);
         if (boundType == null) {
-            typeMap.put(parameter, callType);
-            return true;
+            if (parameter.canBind(callType)) {
+                typeMap.put(parameter, callType);
+                return true;
+            }
+            else {
+                return false;
+            }
         }
         else {
             // If the type is bound, and is a super type of the call type, return true;
@@ -47,8 +52,13 @@ public class InstantiationContextImpl implements InstantiationContext {
             }
             else if (callType.isSuperTypeOf(boundType) || boundType.isCompatibleWith(callType)) {
                 // If the call type is a super type of the bound type, switch the bound type for this parameter to the call type
-                typeMap.put(parameter, callType);
-                return true;
+                if (parameter.canBind(callType)) {
+                    typeMap.put(parameter, callType);
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
             else {
                 // If there is an implicit conversion path from the call type to the bound type, return true
@@ -58,8 +68,14 @@ public class InstantiationContextImpl implements InstantiationContext {
                     if (boundType instanceof ListType) {
                         ListType boundListType = (ListType)boundType;
                         if (boundListType.getElementType().isSuperTypeOf(callType) || callType.isCompatibleWith(boundListType.getElementType())) {
-                            typeMap.put(parameter, callType);
-                            conversionScore -= 4; // This removes the list promotion
+                            if (parameter.canBind(callType)) {
+                                typeMap.put(parameter, callType);
+                                conversionScore -= 4; // This removes the list promotion
+                                return true;
+                            }
+                            else {
+                                return false;
+                            }
                         }
                     }
                     return true;
@@ -69,9 +85,38 @@ public class InstantiationContextImpl implements InstantiationContext {
                 conversion = conversionMap.findConversion(boundType, callType, true, operatorMap);
                 if (conversion != null) {
                     // switch the bound type to the call type and return true
-                    typeMap.put(parameter, callType);
-                    conversionScore -= 2; // This removes the conversion from the instantiation
-                    return true;
+                    if (parameter.canBind(callType)) {
+                        typeMap.put(parameter, callType);
+                        conversionScore -= 2; // This removes the conversion from the instantiation
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+
+                // Find the first supertype that is a supertype of both types
+                DataType boundCommonSuperType = boundType.getCommonSuperTypeOf(callType);
+                DataType callCommonSuperType = callType.getCommonSuperTypeOf(boundType);
+                if (boundCommonSuperType != null && callCommonSuperType != null) {
+                    if (boundCommonSuperType.isSuperTypeOf(callCommonSuperType)) {
+                        if (parameter.canBind(boundCommonSuperType)) {
+                            typeMap.put(parameter, boundCommonSuperType);
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        if (parameter.canBind(callCommonSuperType)) {
+                            typeMap.put(parameter, callCommonSuperType);
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
                 }
             }
         }

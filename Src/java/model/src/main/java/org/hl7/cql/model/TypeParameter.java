@@ -1,6 +1,28 @@
 package org.hl7.cql.model;
 
 public class TypeParameter extends DataType {
+    public enum TypeParameterConstraint {
+        /**
+         * Indicates the type parameter has no constraint and be bound to any type
+         */
+        NONE,
+
+        /**
+         * Indicates the type parameter can only be bound to class types
+         */
+        CLASS,
+
+        /**
+         * Indicates the type parameter can only be bound to value types (simple types)
+         */
+        VALUE,
+
+        /**
+         * Indicates the type parameter can only be bound to the constraint type or a type derived from the constraint type
+         */
+        TYPE
+    }
+
     public TypeParameter(String identifier) {
         if (identifier == null || identifier.equals("")) {
             throw new IllegalArgumentException("identifier is null");
@@ -9,9 +31,43 @@ public class TypeParameter extends DataType {
         this.identifier = identifier;
     }
 
+    public TypeParameter(String identifier, TypeParameterConstraint constraint, DataType constraintType) {
+        this(identifier);
+        this.constraint = constraint;
+        this.constraintType = constraintType;
+    }
+
     private String identifier;
     public String getIdentifier() {
         return identifier;
+    }
+
+    public TypeParameterConstraint constraint = TypeParameterConstraint.NONE;
+    public TypeParameterConstraint getConstraint() {
+        return constraint;
+    }
+
+    private DataType constraintType;
+    public DataType getConstraintType() {
+        return constraintType;
+    }
+
+    /**
+     * @param callType
+     * @return True if the given callType can be bound to this parameter (i.e. it satisfied any constraints defined for the type parameter)
+     */
+    public boolean canBind(DataType callType) {
+        switch (constraint) {
+            case CLASS:
+                return callType instanceof ClassType;
+            case VALUE:
+                return callType instanceof SimpleType && !callType.equals(DataType.ANY);
+            case TYPE:
+                return callType.isSubTypeOf(constraintType);
+            case NONE:
+            default:
+                return true;
+        }
     }
 
     @Override
