@@ -70,7 +70,7 @@ public class InstantiationContextImpl implements InstantiationContext {
                         if (boundListType.getElementType().isSuperTypeOf(callType) || callType.isCompatibleWith(boundListType.getElementType())) {
                             if (parameter.canBind(callType)) {
                                 typeMap.put(parameter, callType);
-                                conversionScore -= 4; // This removes the list promotion
+                                conversionScore -= ConversionMap.ConversionScore.ListPromotion.score(); // This removes the list promotion
                                 return true;
                             }
                             else {
@@ -87,7 +87,9 @@ public class InstantiationContextImpl implements InstantiationContext {
                     // switch the bound type to the call type and return true
                     if (parameter.canBind(callType)) {
                         typeMap.put(parameter, callType);
-                        conversionScore -= 2; // This removes the conversion from the instantiation
+                        conversionScore -= ((conversion.getToType() instanceof SimpleType)
+                                ? ConversionMap.ConversionScore.SimpleConversion.score()
+                                : ConversionMap.ConversionScore.ComplexConversion.score()); // This removes the conversion from the instantiation
                         return true;
                     }
                     else {
@@ -140,7 +142,34 @@ public class InstantiationContextImpl implements InstantiationContext {
         for (Conversion c : conversionMap.getConversions(callType)) {
             if (c.getToType() instanceof IntervalType) {
                 results.add((IntervalType)c.getToType());
-                conversionScore += 2;
+                conversionScore += ConversionMap.ConversionScore.ComplexConversion.score();
+            }
+        }
+
+        if (results.isEmpty()) {
+            for (Conversion c : conversionMap.getGenericConversions()) {
+                if (c.getOperator() != null) {
+                    if (c.getToType() instanceof IntervalType) {
+                        // instantiate the generic...
+                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap);
+                        Operator operator = instantiationResult.getOperator();
+                        // TODO: Consider impact of conversion score of the generic instantiation on this conversion score
+                        if (operator != null) {
+                            operatorMap.addOperator(operator);
+                            Conversion conversion = new Conversion(operator, true);
+                            conversionMap.add(conversion);
+                            results.add((IntervalType)conversion.getToType());
+                        }
+                    }
+                }
+            }
+        }
+
+        // Add interval promotion if no other conversion is found
+        if (results.isEmpty()) {
+            if (!(callType instanceof IntervalType)) {
+                results.add(new IntervalType(callType));
+                conversionScore += ConversionMap.ConversionScore.IntervalPromotion.score();
             }
         }
 
@@ -153,7 +182,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         for (Conversion c : conversionMap.getConversions(callType)) {
             if (c.getToType() instanceof ListType) {
                 results.add((ListType)c.getToType());
-                conversionScore += 2;
+                conversionScore += ConversionMap.ConversionScore.ComplexConversion.score();
             }
         }
 
@@ -181,7 +210,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         if (results.isEmpty()) {
             if (!(callType instanceof ListType)) {
                 results.add(new ListType(callType));
-                conversionScore += 4; // List promotion has a score of 4
+                conversionScore += ConversionMap.ConversionScore.ListPromotion.score();
             }
         }
 
@@ -194,7 +223,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         for (Conversion c : conversionMap.getConversions(callType)) {
             if (c.getToType() instanceof SimpleType) {
                 results.add((SimpleType)c.getToType());
-                conversionScore += 2;
+                conversionScore += ConversionMap.ConversionScore.SimpleConversion.score();
             }
         }
 
@@ -216,6 +245,17 @@ public class InstantiationContextImpl implements InstantiationContext {
             }
         }
 
+        // Add interval demotion if no other conversion is found
+        if (results.isEmpty()) {
+            if (callType instanceof IntervalType) {
+                IntervalType callIntervalType = (IntervalType)callType;
+                if (callIntervalType.getPointType() instanceof SimpleType) {
+                    results.add((SimpleType)callIntervalType.getPointType());
+                    conversionScore += ConversionMap.ConversionScore.IntervalDemotion.score();
+                }
+            }
+        }
+
         // NOTE: FHIRPath Support
         // Add list demotion if no other conversion is found
         if (results.isEmpty()) {
@@ -223,7 +263,7 @@ public class InstantiationContextImpl implements InstantiationContext {
                 ListType callListType = (ListType)callType;
                 if (callListType.getElementType() instanceof SimpleType) {
                     results.add((SimpleType)callListType.getElementType());
-                    conversionScore += 3; // List demotion has a score of 3
+                    conversionScore += ConversionMap.ConversionScore.ListDemotion.score();
                 }
             }
         }

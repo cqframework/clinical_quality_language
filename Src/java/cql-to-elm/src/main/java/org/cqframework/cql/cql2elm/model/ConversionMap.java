@@ -11,6 +11,27 @@ import java.util.List;
 import java.util.Map;
 
 public class ConversionMap {
+    public enum ConversionScore {
+        ExactMatch (0),
+        SubType (1),
+        Compatible (2),
+        Cast (3),
+        SimpleConversion (4),
+        ComplexConversion (5),
+        IntervalDemotion (6),
+        ListDemotion (7),
+        IntervalPromotion (8),
+        ListPromotion (9);
+
+        private final int score;
+        public int score() {
+            return score;
+        }
+
+        ConversionScore(int score) {
+            this.score = score;
+        }
+    }
     private Map<DataType, List<Conversion>> map = new HashMap<>();
     private List<Conversion> genericConversions = new ArrayList<>();
     private boolean demotion = true;
