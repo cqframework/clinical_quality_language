@@ -1063,6 +1063,22 @@ public class Cql2ElmVisitorTest {
         assertThat(patient.getExpression(), instanceOf(Literal.class));
     }
 
+    @Test
+    public void testIncludedIn() throws IOException {
+        ExpressionDef def = (ExpressionDef) visitFile("TestIncludedIn.cql");
+        // Query->
+        //   where->
+        //      IncludedIn ->
+        //        left -> Interval
+        //        right -> ParameterRef
+        Query query = (Query)def.getExpression();
+        Expression where = query.getWhere();
+        assertThat(where, instanceOf(IncludedIn.class));
+        IncludedIn includedIn = (IncludedIn)where;
+        assertThat(includedIn.getOperand().get(0), instanceOf(Interval.class));
+        assertThat(includedIn.getOperand().get(1), instanceOf(ParameterRef.class));
+    }
+
     // TODO: This test needs to be repurposed, it won't work with the query as is.
     @Test(enabled = false)
     public void testSameAs() {
