@@ -80,4 +80,4 @@ The following options are supported:
 * `--annotations` or `-a`: Include CQL source annotations in the output.
 * `--stdout` or `-s`: Write output to the console instead of a file.
 
-For more information on the CQL-to-ELM translator, refer to the [Overview](cql-to-elm/OVERVIEW.md) for that project.
+For a complete list of supported options as well as more information on the CQL-to-ELM translator, refer to the [Overview](cql-to-elm/OVERVIEW.md) for that project.
