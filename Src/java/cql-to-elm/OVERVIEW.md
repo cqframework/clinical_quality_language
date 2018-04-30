@@ -61,22 +61,24 @@ The CQL-to-ELM Translator is substantially complete, supporting all language con
 The CQL-to-ELM Translator is designed as a component that can be incorporated in integrated development environments. However, it also supports command-line usage, with the following arguments available:
 
 |Argument|Type|Description|
-|----|----|----|
-|input|File||Path|The name of the input file or directory. If a directory is given, all files ending in .cql will be processed|
-|model|File|The name of an input file containing the model info to use for translation|
-|output|File|The name of the output file or directory. If no output is given, an output is constructed based on the input name and target format|
-|format|XML||JSON||COFFEE|The target format for the output|
+|----|----|----|----|
+|input|File||Path|The name of the input file or directory (REQUIRED). If a directory is given, all files ending in .cql will be processed|
+|model|File|The name of an input file containing the model info to use for translation. Model info can also be provided through an implementation of the ModelInfoProvider interface|
+|output|File|The name of the output file or directory. If no output is given, an output file name is constructed based on the input name and target format|
+|format|XML (default)||JSON||COFFEE|The target format for the output|
 |verify|Boolean|Indicates that the translator should only verify the input, not create output|
 |date-range-optimization|Boolean|Indicates that the translator should perform date range optimization of retrieves where possible|
 |annotations|Boolean|Indicates that the translator should produce source code annotations as part of the output|
 |locators|Boolean|Indicates that the translator should include source code locators within output ELM|
 |result-types|Boolean|Indicates that the translator should include result types in the output ELM|
-|signatures|None||Differing||Overloads||All|Indicates whether signatures should be included for invocations in the output ELM. Differing will include invocation signatures that differ from the declared signature. Overloads will include declaration signatures when the operator or function has more than one overload with the same number of arguments as the invocation|
+|signatures|None (default)||Differing||Overloads||All|Indicates whether signatures should be included for invocations in the output ELM. Differing will include invocation signatures that differ from the declared signature. Overloads will include declaration signatures when the operator or function has more than one overload with the same number of arguments as the invocation|
 |detailed-errors|Boolean|Indicates that the translator should produce detailed errors|
-|error-level|Info||Warning||Error|Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output|
+|error-level|Info (default)||Warning||Error|Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output|
 |disable-list-traversal|Boolean|Disables traversal of paths on list-valued expressions|
 |disable-demotion|Boolean|Disables demotion of list-valued expressions to singletons|
 |disable-promotion|Boolean|Disables promotion of singletons to list-valued expressions|
 |disable-method-invocation|Boolean|Disables method-style invocation support|
 |strict|Boolean|A combination option that is equivalent to specifying all of disable-list-traversal, disable-demotion, disable-promotion, and disable-method-invocation|
 |debug|Boolean|A combination option that is equivalent to specifying all of annotations, locators, and result-types|
+|validate-units|Boolean|Indicates that the translator should validate UCUM units in quantity literals|
+|stdout|Boolean|Indicates that the translator should write output to the console instead of a file|
