@@ -61,7 +61,7 @@ The CQL-to-ELM Translator is substantially complete, supporting all language con
 The CQL-to-ELM Translator is designed as a component that can be incorporated in integrated development environments. However, it also supports command-line usage, with the following arguments available:
 
 |Argument|Type|Description|
-|----|----|----|----|
+|----|----|----|
 |input|File||Path|The name of the input file or directory (REQUIRED). If a directory is given, all files ending in .cql will be processed|
 |model|File|The name of an input file containing the model info to use for translation. Model info can also be provided through an implementation of the ModelInfoProvider interface|
 |output|File|The name of the output file or directory. If no output is given, an output file name is constructed based on the input name and target format|
