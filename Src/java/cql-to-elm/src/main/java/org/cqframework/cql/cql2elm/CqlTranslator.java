@@ -448,17 +448,17 @@ public class CqlTranslator {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         OptionParser parser = new OptionParser();
-        OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required();
-        OptionSpec<File> model = parser.accepts("model").withRequiredArg().ofType(File.class);
-        OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class);
-        OptionSpec<CqlTranslator.Format> format = parser.accepts("format").withRequiredArg().ofType(CqlTranslator.Format.class).defaultsTo(CqlTranslator.Format.XML);
+        OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required().describedAs("The name of the input file or directory. If a directory is given, all files ending in .cql will be processed");
+        OptionSpec<File> model = parser.accepts("model").withRequiredArg().ofType(File.class).describedAs("The name of an input file containing the model info to use for translation. Model info can also be provided through an implementation of ModelInfoProvider");
+        OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class).describedAs("The name of the output file or directory. If no output is given, an output file name is constructed based on the input name and target format");
+        OptionSpec<CqlTranslator.Format> format = parser.accepts("format").withRequiredArg().ofType(CqlTranslator.Format.class).defaultsTo(CqlTranslator.Format.XML).describedAs("The target format for the output");
         OptionSpec verify = parser.accepts("verify");
         OptionSpec optimization = parser.accepts("date-range-optimization");
         OptionSpec annotations = parser.accepts("annotations");
         OptionSpec locators = parser.accepts("locators");
         OptionSpec resultTypes = parser.accepts("result-types");
         OptionSpec detailedErrors = parser.accepts("detailed-errors");
-        OptionSpec errorLevel = parser.accepts("error-level").withRequiredArg().ofType(CqlTranslatorException.ErrorSeverity.class).defaultsTo(CqlTranslatorException.ErrorSeverity.Info);
+        OptionSpec errorLevel = parser.accepts("error-level").withRequiredArg().ofType(CqlTranslatorException.ErrorSeverity.class).defaultsTo(CqlTranslatorException.ErrorSeverity.Info).describedAs("Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output");
         OptionSpec disableListTraversal = parser.accepts("disable-list-traversal");
         OptionSpec disableDemotion = parser.accepts("disable-demotion");
         OptionSpec disablePromotion = parser.accepts("disable-promotion");
@@ -466,7 +466,7 @@ public class CqlTranslator {
         OptionSpec strict = parser.accepts("strict");
         OptionSpec debug = parser.accepts("debug");
         OptionSpec validateUnits = parser.accepts("validate-units");
-        OptionSpec<LibraryBuilder.SignatureLevel> signatures = parser.accepts("signatures").withRequiredArg().ofType(LibraryBuilder.SignatureLevel.class).defaultsTo(LibraryBuilder.SignatureLevel.None);
+        OptionSpec<LibraryBuilder.SignatureLevel> signatures = parser.accepts("signatures").withRequiredArg().ofType(LibraryBuilder.SignatureLevel.class).defaultsTo(LibraryBuilder.SignatureLevel.None).describedAs("Indicates whether signatures should be included for invocations in the output ELM. Differing will include invocation signatures that differ from the declared signature. Overloads will include declaration signatures when the operator or function has more than one overload with the same number of arguments as the invocation");
 
         OptionSet options = parser.parse(args);
 
