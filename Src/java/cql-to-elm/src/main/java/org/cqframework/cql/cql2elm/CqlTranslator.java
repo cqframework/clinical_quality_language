@@ -38,8 +38,10 @@ public class CqlTranslator {
         EnableResultTypes,
         EnableDetailedErrors,
         DisableListTraversal,
-        DisableDemotion,
-        DisablePromotion,
+        DisableListDemotion,
+        DisableListPromotion,
+        DisableIntervalDemotion,
+        DisableIntervalPromotion,
         DisableMethodInvocation
     }
     public static enum Format { XML, JSON, COFFEE }
@@ -296,11 +298,17 @@ public class CqlTranslator {
         if (optionList.contains(CqlTranslator.Options.DisableListTraversal)) {
             builder.disableListTraversal();
         }
-        if (optionList.contains(CqlTranslator.Options.DisableDemotion)) {
-            builder.getConversionMap().disableDemotion();
+        if (optionList.contains(CqlTranslator.Options.DisableListDemotion)) {
+            builder.getConversionMap().disableListDemotion();
         }
-        if (optionList.contains(CqlTranslator.Options.DisablePromotion)) {
-            builder.getConversionMap().disablePromotion();
+        if (optionList.contains(CqlTranslator.Options.DisableListPromotion)) {
+            builder.getConversionMap().disableListPromotion();
+        }
+        if (optionList.contains(CqlTranslator.Options.DisableIntervalDemotion)) {
+            builder.getConversionMap().disableIntervalDemotion();
+        }
+        if (optionList.contains(CqlTranslator.Options.DisableIntervalPromotion)) {
+            builder.getConversionMap().disableIntervalPromotion();
         }
         if (optionList.contains(CqlTranslator.Options.DisableMethodInvocation)) {
             visitor.disableMethodInvocation();
@@ -363,7 +371,8 @@ public class CqlTranslator {
     private static void writeELM(Path inPath, Path outPath, CqlTranslator.Format format, boolean dateRangeOptimizations,
                                  boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
                                  boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
-                                 boolean disableListTraversal, boolean disableDemotion, boolean disablePromotion,
+                                 boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
+                                 boolean disableIntervalDemotion, boolean disableIntervalPromotion,
                                  boolean disableMethodInvocation, boolean validateUnits,
                                  LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         ArrayList<CqlTranslator.Options> options = new ArrayList<>();
@@ -385,11 +394,17 @@ public class CqlTranslator {
         if (disableListTraversal) {
             options.add(CqlTranslator.Options.DisableListTraversal);
         }
-        if (disableDemotion) {
-            options.add(CqlTranslator.Options.DisableDemotion);
+        if (disableListDemotion) {
+            options.add(CqlTranslator.Options.DisableListDemotion);
         }
-        if (disablePromotion) {
-            options.add(CqlTranslator.Options.DisablePromotion);
+        if (disableListPromotion) {
+            options.add(CqlTranslator.Options.DisableListPromotion);
+        }
+        if (disableIntervalDemotion) {
+            options.add(CqlTranslator.Options.DisableIntervalDemotion);
+        }
+        if (disableIntervalPromotion) {
+            options.add(CqlTranslator.Options.DisableIntervalPromotion);
         }
         if (disableMethodInvocation) {
             options.add(CqlTranslator.Options.DisableMethodInvocation);
@@ -460,8 +475,10 @@ public class CqlTranslator {
         OptionSpec detailedErrors = parser.accepts("detailed-errors");
         OptionSpec errorLevel = parser.accepts("error-level").withRequiredArg().ofType(CqlTranslatorException.ErrorSeverity.class).defaultsTo(CqlTranslatorException.ErrorSeverity.Info).describedAs("Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output");
         OptionSpec disableListTraversal = parser.accepts("disable-list-traversal");
-        OptionSpec disableDemotion = parser.accepts("disable-demotion");
-        OptionSpec disablePromotion = parser.accepts("disable-promotion");
+        OptionSpec disableListDemotion = parser.accepts("disable-list-demotion");
+        OptionSpec disableListPromotion = parser.accepts("disable-list-promotion");
+        OptionSpec disableIntervalDemotion = parser.accepts("disable-interval-demotion");
+        OptionSpec disableIntervalPromotion = parser.accepts("disable-interval-promotion");
         OptionSpec disableMethodInvocation = parser.accepts("disable-method-invocation");
         OptionSpec strict = parser.accepts("strict");
         OptionSpec debug = parser.accepts("debug");
@@ -548,8 +565,10 @@ public class CqlTranslator {
                             ? (CqlTranslatorException.ErrorSeverity)options.valueOf(errorLevel)
                             : CqlTranslatorException.ErrorSeverity.Info,
                     options.has(strict) || options.has(disableListTraversal),
-                    options.has(strict) || options.has(disableDemotion),
-                    options.has(strict) || options.has(disablePromotion),
+                    options.has(strict) || options.has(disableListDemotion),
+                    options.has(strict) || options.has(disableListPromotion),
+                    options.has(strict) || options.has(disableIntervalDemotion),
+                    options.has(strict) || options.has(disableIntervalPromotion),
                     options.has(strict) || options.has(disableMethodInvocation),
                     options.has(validateUnits),
                     signatureLevel);

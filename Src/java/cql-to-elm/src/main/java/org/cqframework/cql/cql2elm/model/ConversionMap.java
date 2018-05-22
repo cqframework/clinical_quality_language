@@ -34,23 +34,41 @@ public class ConversionMap {
     }
     private Map<DataType, List<Conversion>> map = new HashMap<>();
     private List<Conversion> genericConversions = new ArrayList<>();
-    private boolean demotion = true;
-    private boolean promotion = true;
+    private boolean listDemotion = true;
+    private boolean listPromotion = true;
+    private boolean intervalDemotion = true;
+    private boolean intervalPromotion = true;
 
-    public void enableDemotion() {
-        demotion = true;
+    public void enableListDemotion() {
+        listDemotion = true;
     }
 
-    public void disableDemotion() {
-        demotion = false;
+    public void disableListDemotion() {
+        listDemotion = false;
     }
 
-    public void enablePromotion() {
-        promotion = true;
+    public void enableListPromotion() {
+        listPromotion = true;
     }
 
-    public void disablePromotion() {
-        promotion = false;
+    public void disableListPromotion() {
+        listPromotion = false;
+    }
+
+    public void enableIntervalDemotion() {
+        intervalDemotion = true;
+    }
+
+    public void disableIntervalDemotion() {
+        intervalDemotion = false;
+    }
+
+    public void enableIntervalPromotion() {
+        intervalPromotion = true;
+    }
+
+    public void disableIntervalPromotion() {
+        intervalPromotion = false;
     }
 
     public void add(Conversion conversion) {
@@ -254,19 +272,19 @@ public class ConversionMap {
             // NOTE: FHIRPath Implicit conversion from list to singleton
             // If the from type is a list and the target type is a singleton (potentially with a compatible conversion),
             // Convert by invoking a singleton
-            if (fromType instanceof ListType && !(toType instanceof ListType) && demotion) {
+            if (fromType instanceof ListType && !(toType instanceof ListType) && listDemotion) {
                 result = findListDemotion((ListType)fromType, toType, operatorMap);
             }
 
-            if (!(fromType instanceof ListType) && toType instanceof ListType && promotion) {
+            if (!(fromType instanceof ListType) && toType instanceof ListType && listPromotion) {
                 result = findListPromotion(fromType, (ListType)toType, operatorMap);
             }
 
-            if (fromType instanceof IntervalType && !(toType instanceof IntervalType) && demotion) {
+            if (fromType instanceof IntervalType && !(toType instanceof IntervalType) && intervalDemotion) {
                 result = findIntervalDemotion((IntervalType)fromType, toType, operatorMap);
             }
 
-            if (!(fromType instanceof IntervalType) && toType instanceof IntervalType && promotion) {
+            if (!(fromType instanceof IntervalType) && toType instanceof IntervalType && intervalPromotion) {
                 result = findIntervalPromotion(fromType, (IntervalType)toType, operatorMap);
             }
 
