@@ -10,6 +10,7 @@ define DecimalCeiling: Ceiling(1.0)
 define IntegerCeiling: Ceiling(1)
 
 define IntegerDivide: 1 / 1
+define IntegerDivide10: 1 / 0
 define RealDivide: 1.0 / 1.0
 define QuantityRealDivide: 1'g/cm3' / 1.0
 define QuantityDivide: 1'g/cm3' / 1'g/cm3'
