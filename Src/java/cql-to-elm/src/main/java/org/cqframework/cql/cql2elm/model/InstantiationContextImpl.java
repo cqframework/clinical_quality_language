@@ -167,7 +167,7 @@ public class InstantiationContextImpl implements InstantiationContext {
 
         // Add interval promotion if no other conversion is found
         if (results.isEmpty()) {
-            if (!(callType instanceof IntervalType)) {
+            if (!(callType instanceof IntervalType) && operatorMap.isPointType(callType)) {
                 results.add(new IntervalType(callType));
                 conversionScore += ConversionMap.ConversionScore.IntervalPromotion.score();
             }

@@ -32,6 +32,27 @@ public class OperatorMap {
         return entry;
     }
 
+    public boolean supportsOperator(String libraryName, String operatorName, DataType... signature) {
+        CallContext call = new CallContext(libraryName, operatorName, signature);
+        try {
+            OperatorResolution resolution = resolveOperator(call, null);
+            if (resolution == null) {
+                return false;
+            }
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Returns true if the given type supports the operations necessary to be the point type of an interval
+    // (i.e. comparison, successor, and predecessor)
+    public boolean isPointType(DataType type) {
+        return supportsOperator("System", "LessOrEqual", type, type) && supportsOperator("System", "Successor", type);
+    }
+
     public OperatorResolution resolveOperator(CallContext callContext, ConversionMap conversionMap) {
         OperatorEntry entry = getEntry(callContext.getOperatorName());
         List<OperatorResolution> results = entry.resolve(callContext, this, conversionMap);

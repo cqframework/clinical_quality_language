@@ -35,6 +35,24 @@ public class ArithmeticOperatorsTest {
     }
 
     @Test
+    public void testDivide() {
+        ExpressionDef def = defs.get("IntegerDivide");
+        assertThat(def, hasTypeAndResult(Divide.class, "System.Decimal"));
+
+        def = defs.get("IntegerDivide10");
+        assertThat(def, hasTypeAndResult(Divide.class, "System.Decimal"));
+
+        def = defs.get("RealDivide");
+        assertThat(def, hasTypeAndResult(Divide.class, "System.Decimal"));
+
+        def = defs.get("QuantityRealDivide");
+        assertThat(def, hasTypeAndResult(Divide.class, "System.Quantity"));
+
+        def = defs.get("QuantityDivide");
+        assertThat(def, hasTypeAndResult(Divide.class, "System.Quantity"));
+    }
+
+    @Test
     public void testCeiling() {
         ExpressionDef def = defs.get("IntegerCeiling");
         assertThat(def, hasTypeAndResult(Ceiling.class, "System.Integer"));
