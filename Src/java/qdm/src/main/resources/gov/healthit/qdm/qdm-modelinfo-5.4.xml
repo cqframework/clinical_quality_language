@@ -8,10 +8,6 @@
         <ns4:element name="namingSystem" type="System.String"/>
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Ratio" baseType="System.Any">
-        <ns4:element name="numerator" type="System.Quantity"/>
-        <ns4:element name="denominator" type="System.Quantity"/>
-    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="reason" type="System.Code"/>
@@ -31,7 +27,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
             </ns4:typeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
@@ -51,7 +47,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="resultDatetime" type="System.DateTime"/>
@@ -118,7 +114,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="DateTime"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Time"/>
             </ns4:typeSpecifier>
@@ -145,7 +141,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="resultDatetime" type="System.DateTime"/>
@@ -172,7 +168,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="DateTime"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Time"/>
             </ns4:typeSpecifier>
@@ -266,7 +262,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="status" type="System.Code"/>
@@ -339,7 +335,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="status" type="System.Code"/>
@@ -424,7 +420,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="anatomicalLocationSite" type="System.Code"/>
