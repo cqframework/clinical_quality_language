@@ -111,6 +111,7 @@
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
+        <ns4:element name="method" type="System.Code"/>
         <ns4:element name="result"> <!-- type="System.Any">-->
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Integer"/>
@@ -430,6 +431,8 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="components" type="list&lt;QDM.Component&gt;"/>
     </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.PositiveAssessmentOrder" retrievable="true" baseType="QDM.AssessmentOrder" identifier="PositiveAssessmentOrder" label="Assessment, Order" primaryCodePath="code"/>
+    <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.NegativeAssessmentOrder" retrievable="true" baseType="QDM.AssessmentOrder" identifier="NegativeAssessmentOrder" label="Assessment, Not Ordered" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.PositiveAssessmentRecommended" retrievable="true" baseType="QDM.AssessmentRecommended" identifier="PositiveAssessmentRecommended" label="Assessment, Recommended" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.NegativeAssessmentRecommended" retrievable="true" baseType="QDM.AssessmentRecommended" identifier="NegativeAssessmentRecommended" label="Assessment, Not Recommended" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.PositiveAssessmentPerformed" retrievable="true" baseType="QDM.AssessmentPerformed" identifier="PositiveAssessmentPerformed" label="Assessment, Performed" primaryCodePath="code"/>
