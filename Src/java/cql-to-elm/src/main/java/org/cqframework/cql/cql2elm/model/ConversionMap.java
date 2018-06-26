@@ -18,9 +18,9 @@ public class ConversionMap {
         Cast (3),
         SimpleConversion (4),
         ComplexConversion (5),
-        IntervalDemotion (6),
+        IntervalPromotion (6),
         ListDemotion (7),
-        IntervalPromotion (8),
+        IntervalDemotion (8),
         ListPromotion (9);
 
         private final int score;
@@ -123,10 +123,10 @@ public class ConversionMap {
         return null;
     }
 
-    public Conversion findChoiceConversion(ChoiceType fromType, DataType toType, OperatorMap operatorMap) {
+    public Conversion findChoiceConversion(ChoiceType fromType, DataType toType, boolean allowPromotionAndDemotion, OperatorMap operatorMap) {
         Conversion result = null;
         for (DataType choice : fromType.getTypes()) {
-            Conversion choiceConversion = findConversion(choice, toType, true, operatorMap);
+            Conversion choiceConversion = findConversion(choice, toType, true, allowPromotionAndDemotion, operatorMap);
             if (choiceConversion != null) {
                 if (result == null) {
                     result = new Conversion(fromType, toType, choiceConversion);
@@ -141,7 +141,7 @@ public class ConversionMap {
     }
 
     public Conversion findListConversion(ListType fromType, ListType toType, OperatorMap operatorMap) {
-        Conversion elementConversion = findConversion(fromType.getElementType(), toType.getElementType(), true, operatorMap);
+        Conversion elementConversion = findConversion(fromType.getElementType(), toType.getElementType(), true, false, operatorMap);
 
         if (elementConversion != null) {
             return new Conversion(fromType, toType, elementConversion);
@@ -151,7 +151,7 @@ public class ConversionMap {
     }
 
     public Conversion findIntervalConversion(IntervalType fromType, IntervalType toType, OperatorMap operatorMap) {
-        Conversion pointConversion = findConversion(fromType.getPointType(), toType.getPointType(), true, operatorMap);
+        Conversion pointConversion = findConversion(fromType.getPointType(), toType.getPointType(), true, false, operatorMap);
 
         if (pointConversion != null) {
             return new Conversion(fromType, toType, pointConversion);
@@ -166,7 +166,7 @@ public class ConversionMap {
             return new Conversion(fromType, toType, null);
         }
         else {
-            Conversion elementConversion = findConversion(elementType, toType, true, operatorMap);
+            Conversion elementConversion = findConversion(elementType, toType, true, false, operatorMap);
             if (elementConversion != null) {
                 return new Conversion(fromType, toType, elementConversion);
             }
@@ -180,7 +180,7 @@ public class ConversionMap {
             return new Conversion(fromType, toType, null);
         }
         else {
-            Conversion elementConversion = findConversion(fromType, toType.getElementType(), true, operatorMap);
+            Conversion elementConversion = findConversion(fromType, toType.getElementType(), true, false, operatorMap);
             if (elementConversion != null) {
                 return new Conversion(fromType, toType, elementConversion);
             }
@@ -195,7 +195,7 @@ public class ConversionMap {
             return new Conversion(fromType, toType, null);
         }
         else {
-            Conversion pointConversion = findConversion(pointType, toType, true, operatorMap);
+            Conversion pointConversion = findConversion(pointType, toType, true, false, operatorMap);
             if (pointConversion != null) {
                 return new Conversion(fromType, toType, pointConversion);
             }
@@ -209,7 +209,7 @@ public class ConversionMap {
             return new Conversion(fromType, toType, null);
         }
         else {
-            Conversion pointConversion = findConversion(fromType, toType.getPointType(), true, operatorMap);
+            Conversion pointConversion = findConversion(fromType, toType.getPointType(), true, false, operatorMap);
             if (pointConversion != null) {
                 return new Conversion(fromType, toType, pointConversion);
             }
@@ -222,7 +222,7 @@ public class ConversionMap {
         for (Conversion c : getGenericConversions()) {
             if (c.getOperator() != null) {
                 // instantiate the generic...
-                InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(fromType), operatorMap, this);
+                InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(fromType), operatorMap, this, false);
                 Operator operator = instantiationResult.getOperator();
                 if (operator != null && !operatorMap.containsOperator(operator)) {
                     operatorMap.addOperator(operator);
@@ -257,7 +257,7 @@ public class ConversionMap {
         return result;
     }
 
-    public Conversion findConversion(DataType fromType, DataType toType, boolean isImplicit, OperatorMap operatorMap) {
+    public Conversion findConversion(DataType fromType, DataType toType, boolean isImplicit, boolean allowPromotionAndDemotion, OperatorMap operatorMap) {
         Conversion result = findCompatibleConversion(fromType, toType);
         if (result == null) {
             result = internalFindConversion(fromType, toType, isImplicit);
@@ -272,25 +272,25 @@ public class ConversionMap {
             // NOTE: FHIRPath Implicit conversion from list to singleton
             // If the from type is a list and the target type is a singleton (potentially with a compatible conversion),
             // Convert by invoking a singleton
-            if (fromType instanceof ListType && !(toType instanceof ListType) && listDemotion) {
+            if (fromType instanceof ListType && !(toType instanceof ListType) && (allowPromotionAndDemotion || listDemotion)) {
                 result = findListDemotion((ListType)fromType, toType, operatorMap);
             }
 
-            if (!(fromType instanceof ListType) && toType instanceof ListType && listPromotion) {
+            if (!(fromType instanceof ListType) && toType instanceof ListType && (allowPromotionAndDemotion || listPromotion)) {
                 result = findListPromotion(fromType, (ListType)toType, operatorMap);
             }
 
-            if (fromType instanceof IntervalType && !(toType instanceof IntervalType) && intervalDemotion) {
+            if (fromType instanceof IntervalType && !(toType instanceof IntervalType) && (allowPromotionAndDemotion || intervalDemotion)) {
                 result = findIntervalDemotion((IntervalType)fromType, toType, operatorMap);
             }
 
-            if (!(fromType instanceof IntervalType) && toType instanceof IntervalType && intervalPromotion) {
+            if (!(fromType instanceof IntervalType) && toType instanceof IntervalType && (allowPromotionAndDemotion || intervalPromotion)) {
                 result = findIntervalPromotion(fromType, (IntervalType)toType, operatorMap);
             }
 
             // If the from type is a choice, attempt to find a conversion between one of the choice types
             if (fromType instanceof ChoiceType) {
-                result = findChoiceConversion((ChoiceType)fromType, toType, operatorMap);
+                result = findChoiceConversion((ChoiceType)fromType, toType, allowPromotionAndDemotion, operatorMap);
             }
 
             // If both types are lists, attempt to find a conversion between the element types
