@@ -33,7 +33,7 @@ public class OperatorMap {
     }
 
     public boolean supportsOperator(String libraryName, String operatorName, DataType... signature) {
-        CallContext call = new CallContext(libraryName, operatorName, signature);
+        CallContext call = new CallContext(libraryName, operatorName, false, signature);
         try {
             OperatorResolution resolution = resolveOperator(call, null);
             if (resolution == null) {
@@ -64,17 +64,6 @@ public class OperatorMap {
             int lowestScore = Integer.MAX_VALUE;
             List<OperatorResolution> lowestScoringResults = new ArrayList<>();
             for (OperatorResolution resolution : results) {
-                // for each operand
-                    // exact match = 0
-                    // subtype = 1
-                    // compatible = 2
-                    // cast = 3
-                    // conversion to simple type = 4
-                    // conversion to complex type = 5
-                    // interval demotion = 6
-                    // list demotion = 7
-                    // interval promotion = 8
-                    // list promotion = 9
                 Iterator<DataType> operands = resolution.getOperator().getSignature().getOperandTypes().iterator();
                 Iterator<DataType> callOperands = callContext.getSignature().getOperandTypes().iterator();
                 Iterator<Conversion> conversions = resolution.hasConversions() ? resolution.getConversions().iterator() : null;

@@ -57,7 +57,7 @@ public class OperatorEntry {
             if (results == null && conversionMap != null) {
                 // Attempt to find a conversion path from the call signature to the target signature
                 Conversion[] conversions = new Conversion[operator.getSignature().getSize()];
-                boolean isConvertible = callContext.getSignature().isConvertibleTo(operator.getSignature(), conversionMap, operatorMap, conversions);
+                boolean isConvertible = callContext.getSignature().isConvertibleTo(operator.getSignature(), conversionMap, operatorMap, callContext.getAllowPromotionAndDemotion(), conversions);
                 if (isConvertible) {
                     OperatorResolution resolution = new OperatorResolution(operator);
                     resolution.setConversions(conversions);
@@ -260,7 +260,7 @@ public class OperatorEntry {
             boolean signaturesInstantiated = false;
             List<Signature> callSignatures = expandChoices(callContext.getSignature());
             for (Signature callSignature : callSignatures) {
-                Operator result = instantiate(callSignature, operatorMap, conversionMap);
+                Operator result = instantiate(callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion());
                 if (result != null && !signatures.contains(result)) {
                     // If the generic signature was instantiated, store it as an actual signature.
                     signatures.add(new SignatureNode(result));
@@ -277,12 +277,12 @@ public class OperatorEntry {
         return results;
     }
 
-    private Operator instantiate(Signature signature, OperatorMap operatorMap, ConversionMap conversionMap) {
+    private Operator instantiate(Signature signature, OperatorMap operatorMap, ConversionMap conversionMap, boolean allowPromotionAndDemotion) {
         List<Operator> instantiations = new ArrayList<Operator>();
         int lowestConversionScore = Integer.MAX_VALUE;
         Operator instantiation = null;
         for (GenericOperator genericOperator : genericOperators.values()) {
-            InstantiationResult instantiationResult = genericOperator.instantiate(signature, operatorMap, conversionMap);
+            InstantiationResult instantiationResult = genericOperator.instantiate(signature, operatorMap, conversionMap, allowPromotionAndDemotion);
             if (instantiationResult.getOperator() != null) {
                 if (instantiationResult.getConversionScore() <= lowestConversionScore) {
                     if (instantiation == null || instantiationResult.getConversionScore() < lowestConversionScore) {

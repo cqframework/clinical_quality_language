@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class InstantiationContextImpl implements InstantiationContext {
-    public InstantiationContextImpl(Map<TypeParameter, DataType> typeMap, OperatorMap operatorMap, ConversionMap conversionMap) {
+    public InstantiationContextImpl(Map<TypeParameter, DataType> typeMap, OperatorMap operatorMap, ConversionMap conversionMap, boolean allowPromotionAndDemotion) {
         if (typeMap == null) {
             throw new IllegalArgumentException("typeMap is null");
         }
@@ -22,11 +22,13 @@ public class InstantiationContextImpl implements InstantiationContext {
         this.typeMap = typeMap;
         this.operatorMap = operatorMap;
         this.conversionMap = conversionMap;
+        this.allowPromotionAndDemotion = allowPromotionAndDemotion;
     }
 
     private Map<TypeParameter, DataType> typeMap;
     private OperatorMap operatorMap;
     private ConversionMap conversionMap;
+    private boolean allowPromotionAndDemotion;
     private int conversionScore;
     public int getConversionScore() {
         return conversionScore;
@@ -62,7 +64,7 @@ public class InstantiationContextImpl implements InstantiationContext {
             }
             else {
                 // If there is an implicit conversion path from the call type to the bound type, return true
-                Conversion conversion = conversionMap.findConversion(callType, boundType, true, operatorMap);
+                Conversion conversion = conversionMap.findConversion(callType, boundType, true, allowPromotionAndDemotion, operatorMap);
                 if (conversion != null) {
                     // if the conversion is a list promotion, switch the bound type to the call type
                     if (boundType instanceof ListType) {
@@ -82,7 +84,7 @@ public class InstantiationContextImpl implements InstantiationContext {
                 }
 
                 // If there is an implicit conversion path from the bound type to the call type
-                conversion = conversionMap.findConversion(boundType, callType, true, operatorMap);
+                conversion = conversionMap.findConversion(boundType, callType, true, allowPromotionAndDemotion, operatorMap);
                 if (conversion != null) {
                     // switch the bound type to the call type and return true
                     if (parameter.canBind(callType)) {
@@ -151,7 +153,7 @@ public class InstantiationContextImpl implements InstantiationContext {
                 if (c.getOperator() != null) {
                     if (c.getToType() instanceof IntervalType) {
                         // instantiate the generic...
-                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap);
+                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap, false);
                         Operator operator = instantiationResult.getOperator();
                         // TODO: Consider impact of conversion score of the generic instantiation on this conversion score
                         if (operator != null) {
@@ -191,7 +193,7 @@ public class InstantiationContextImpl implements InstantiationContext {
                 if (c.getOperator() != null) {
                     if (c.getToType() instanceof ListType) {
                         // instantiate the generic...
-                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap);
+                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap, false);
                         Operator operator = instantiationResult.getOperator();
                         // TODO: Consider impact of conversion score of the generic instantiation on this conversion score
                         if (operator != null) {
@@ -231,7 +233,7 @@ public class InstantiationContextImpl implements InstantiationContext {
             for (Conversion c : conversionMap.getGenericConversions()) {
                 if (c.getOperator() != null) {
                     if (c.getToType() instanceof SimpleType) {
-                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap);
+                        InstantiationResult instantiationResult = ((GenericOperator)c.getOperator()).instantiate(new Signature(callType), operatorMap, conversionMap, false);
                         Operator operator = instantiationResult.getOperator();
                         // TODO: Consider impact of conversion score of the generic instantiation on this conversion score
                         if (operator != null) {

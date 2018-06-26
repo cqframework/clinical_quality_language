@@ -575,28 +575,32 @@ public class LibraryBuilder {
         return translatedLibrary.resolveExpressionRef(identifier);
     }
 
-    public Conversion findConversion(DataType fromType, DataType toType, boolean implicit) {
-        return conversionMap.findConversion(fromType, toType, implicit, translatedLibrary.getOperatorMap());
+    public Conversion findConversion(DataType fromType, DataType toType, boolean implicit, boolean allowPromotionAndDemotion) {
+        return conversionMap.findConversion(fromType, toType, implicit, allowPromotionAndDemotion, translatedLibrary.getOperatorMap());
     }
 
     public Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression));
+        return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression), false);
     }
 
     public Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression));
+        return resolveBinaryCall(libraryName, operatorName, expression, true, false);
+    }
+
+    public Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression, boolean mustResolve, boolean allowPromotionAndDemotion) {
+        return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression), mustResolve, allowPromotionAndDemotion);
     }
 
     public Expression resolveTernaryCall(String libraryName, String operatorName, TernaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new TernaryExpressionInvocation(expression));
+        return resolveCall(libraryName, operatorName, new TernaryExpressionInvocation(expression), false);
     }
 
     public Expression resolveNaryCall(String libraryName, String operatorName, NaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new NaryExpressionInvocation(expression));
+        return resolveCall(libraryName, operatorName, new NaryExpressionInvocation(expression), false);
     }
 
     public Expression resolveAggregateCall(String libraryName, String operatorName, AggregateExpression expression) {
-        return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression));
+        return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression), false);
     }
 
     private class BinaryWrapper {
@@ -730,11 +734,75 @@ public class LibraryBuilder {
         return in;
     }
 
-    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
-        return resolveCall(libraryName, operatorName, invocation, true);
+    public Expression resolveIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        In in = of.createIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        resolveBinaryCall("System", "In", in);
+        return in;
     }
 
-    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve) {
+    public Expression resolveProperIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        ProperIn properIn = of.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        resolveBinaryCall("System", "ProperIn", properIn);
+        return properIn;
+    }
+
+    public Expression resolveContains(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Contains contains = of.createContains().withOperand(left, right).withPrecision(dateTimePrecision);
+        resolveBinaryCall("System", "Contains", contains);
+        return contains;
+    }
+
+    public Expression resolveProperContains(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        ProperContains properContains = of.createProperContains().withOperand(left, right).withPrecision(dateTimePrecision);
+        resolveBinaryCall("System", "ProperContains", properContains);
+        return properContains;
+    }
+
+    public Expression resolveIncludes(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Includes includes = of.createIncludes().withOperand(left, right).withPrecision(dateTimePrecision);
+        Expression result = resolveBinaryCall("System", "Includes", includes, false, false);
+        if (result == null) {
+            return resolveContains(left, right, dateTimePrecision);
+        }
+        return result;
+    }
+
+    public Expression resolveProperIncludes(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        ProperIncludes properIncludes = of.createProperIncludes().withOperand(left, right).withPrecision(dateTimePrecision);
+        Expression result = resolveBinaryCall("System", "ProperIncludes", properIncludes, false, false);
+        if (result == null) {
+            return resolveProperContains(left, right, dateTimePrecision);
+        }
+        return result;
+    }
+
+    public Expression resolveIncludedIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        IncludedIn includedIn = of.createIncludedIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        Expression result = resolveBinaryCall("System", "IncludedIn", includedIn, false, false);
+        if (result == null) {
+            return resolveIn(left, right, dateTimePrecision);
+        }
+        return result;
+    }
+
+    public Expression resolveProperIncludedIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        ProperIncludedIn properIncludedIn = of.createProperIncludedIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        Expression result = resolveBinaryCall("System", "ProperIncludedIn", properIncludedIn, false, false);
+        if (result == null) {
+            return resolveProperIn(left, right, dateTimePrecision);
+        }
+        return result;
+    }
+
+    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
+        return resolveCall(libraryName, operatorName, invocation, true, false);
+    }
+
+    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean allowPromotionAndDemotion) {
+        return resolveCall(libraryName, operatorName, invocation, true, allowPromotionAndDemotion);
+    }
+
+    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
@@ -745,7 +813,7 @@ public class LibraryBuilder {
             dataTypes.add(operand.getResultType());
         }
 
-        CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
+        CallContext callContext = new CallContext(libraryName, operatorName, allowPromotionAndDemotion, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
         if (resolution != null || mustResolve) {
             checkOperator(callContext, resolution);
@@ -848,7 +916,7 @@ public class LibraryBuilder {
             checkLiteralContext();
         }
 
-        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve);
+        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve, false);
 
         return fun;
     }
@@ -861,7 +929,7 @@ public class LibraryBuilder {
     }
 
     public Expression convertExpression(Expression expression, DataType targetType) {
-        Conversion conversion = findConversion(expression.getResultType(), targetType, true);
+        Conversion conversion = findConversion(expression.getResultType(), targetType, true, false);
         if (conversion != null) {
             return convertExpression(expression, conversion);
         }
@@ -1116,7 +1184,7 @@ public class LibraryBuilder {
                 return systemFunction;
             }
 
-            resolveCall(functionRef.getLibraryName(), functionRef.getName(), new FunctionRefInvocation(functionRef));
+            resolveCall(functionRef.getLibraryName(), functionRef.getName(), new FunctionRefInvocation(functionRef), false);
 
             return functionRef;
         }
@@ -1167,7 +1235,7 @@ public class LibraryBuilder {
             return;
         }
 
-        Conversion conversion = findConversion(actualType, expectedType, true);
+        Conversion conversion = findConversion(actualType, expectedType, true, false);
         if (conversion != null) {
             return;
         }
@@ -1196,12 +1264,12 @@ public class LibraryBuilder {
             return second;
         }
 
-        Conversion conversion = findConversion(second, first, true);
+        Conversion conversion = findConversion(second, first, true, false);
         if (conversion != null) {
             return first;
         }
 
-        conversion = findConversion(first, second, true);
+        conversion = findConversion(first, second, true, false);
         if (conversion != null) {
             return second;
         }
