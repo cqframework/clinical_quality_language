@@ -66,6 +66,7 @@ public class Model {
         if (result == null) {
             result = systemModel.resolveTypeName(typeName);
             if (result == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not resolve type name %s in model %s.",
                         typeName, info.getName()));
             }

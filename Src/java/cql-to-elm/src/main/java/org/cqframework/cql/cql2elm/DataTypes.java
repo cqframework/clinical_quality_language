@@ -5,6 +5,7 @@ import org.hl7.cql.model.DataType;
 public class DataTypes {
     public static void verifyType(DataType actualType, DataType expectedType) {
         if (!subTypeOf(actualType, expectedType)) {
+            // ERROR:
             throw new IllegalArgumentException(String.format(
                     "Expected an expression of type '%s', but found an expression of type '%s'.",
                     expectedType != null ? expectedType.toLabel() : "<unknown>",
@@ -16,6 +17,7 @@ public class DataTypes {
     public static void verifyCast(DataType targetType, DataType sourceType) {
         // Casting can be used for compatible types as well as subtypes
         if (!(subTypeOf(targetType, sourceType) || compatibleWith(sourceType, targetType))) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Expression of type '%s' cannot be cast as a value of type '%s'.",
                     sourceType != null ? sourceType.toLabel() : "<unknown>",
                     targetType != null ? targetType.toLabel() : "<unknown>"
