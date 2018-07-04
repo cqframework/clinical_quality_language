@@ -133,6 +133,7 @@ public class OperatorMap {
             }
 
             if (lowestScoringResults.size() > 1) {
+                // ERROR:
                 StringBuilder message = new StringBuilder("Call to operator ").append(callContext.getOperatorName())
                         .append(callContext.getSignature()).append(" is ambiguous with: ");
                 for (OperatorResolution resolution : lowestScoringResults) {

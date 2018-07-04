@@ -253,6 +253,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         Object o = null;
         try {
+            // ERROR:
             try {
                 o = super.visit(tree);
             } catch (CqlTranslatorIncludeException e) {
@@ -543,6 +544,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (def == null) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve reference to code system %s.", name));
         }
 
@@ -566,6 +568,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (def == null) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve reference to code %s.", name));
         }
 
@@ -726,6 +729,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         ExpressionDef expressionDef = internalVisitExpressionDefinition(ctx);
         if (forwards.isEmpty() || !forwards.peek().getName().equals(expressionDef.getName())) {
             if (definedExpressionDefinitions.contains(expressionDef.getName())) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Identifier %s is already in use in this library.", expressionDef.getName()));
             }
 
@@ -1316,6 +1320,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         SingletonFrom result = of.createSingletonFrom().withOperand(parseExpression(ctx.expressionTerm()));
 
         if (!(result.getOperand().getResultType() instanceof ListType)) {
+            // ERROR:
             throw new IllegalArgumentException("List type expected.");
         }
 
@@ -1330,6 +1335,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         PointFrom result = of.createPointFrom().withOperand(parseExpression(ctx.expressionTerm()));
 
         if (!(result.getOperand().getResultType() instanceof IntervalType)) {
+            // ERROR:
             throw new IllegalArgumentException("Interval type expected.");
         }
 
@@ -1371,6 +1377,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (!(result.getOperand().getResultType() instanceof IntervalType)) {
+            // ERROR:
             throw new IllegalArgumentException("Interval type expected.");
         }
 
@@ -1775,6 +1782,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Object result = super.visitTermExpression(ctx);
 
         if (result instanceof LibraryRef) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Identifier %s is a library and cannot be used as an expression.", ((LibraryRef)result).getLibraryName()));
         }
 
@@ -1807,6 +1815,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (!DataTypes.equal(operand.getResultType(), targetType.getResultType())) {
             Conversion conversion = libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false, true);
             if (conversion == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
                         operand.getResultType(), targetType.getResultType()));
             }
@@ -2701,10 +2710,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         String label = getTypeIdentifier(qualifiers, parseString(ctx.namedTypeSpecifier().identifier()));
         DataType dataType = libraryBuilder.resolveTypeName(model, label);
         if (dataType == null) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve type name %s.", label));
         }
 
         if (!(dataType instanceof ClassType) || !((ClassType)dataType).isRetrievable()) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Specified data type %s does not support retrieval.", label));
         }
 
@@ -2734,6 +2745,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
             Property property = null;
             if (retrieve.getCodeProperty() == null) {
+                // ERROR:
+                // WARNING:
                 libraryBuilder.recordParsingException(new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
                         useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
                         getTrackBack(ctx)));
@@ -2746,6 +2759,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 catch (Exception e) {
                     libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
+                            // ERROR:
+                            // WARNING:
                             retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
                             getTrackBack(ctx), e));
                 }
@@ -2771,6 +2786,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     } else if (in instanceof InCodeSystem) {
                         retrieve.setCodes(((InCodeSystem) in).getCodesystem());
                     } else {
+                        // ERROR:
+                        // WARNING:
                         libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
                                 useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
                                 getTrackBack(ctx)));
@@ -2789,6 +2806,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
                 // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
                 retrieve.setCodes(terminology);
+                // ERROR:
+                // WARNING:
                 libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
                         useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
                         getTrackBack(ctx), e));
@@ -2895,6 +2914,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 SortClause sort = null;
                 if (ctx.sortClause() != null) {
                     if (queryContext.isSingular()) {
+                        // ERROR:
                         throw new IllegalArgumentException("Sort clause cannot be used in a singular query.");
                     }
                     queryContext.enterSortClause();
@@ -3519,6 +3539,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 if (resultType != null && fun.getExpression() != null && fun.getExpression().getResultType() != null) {
                     if (!DataTypes.subTypeOf(fun.getExpression().getResultType(), resultType.getResultType())) {
+                        // ERROR:
                         throw new IllegalArgumentException(String.format("Function %s has declared return type %s but the function body returns incompatible type %s.",
                                 fun.getName(), resultType.getResultType(), fun.getExpression().getResultType()));
                     }
@@ -3529,6 +3550,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             else {
                 fun.setExternal(true);
                 if (resultType == null) {
+                    // ERROR:
                     throw new IllegalArgumentException(String.format("Function %s is marked external but does not declare a return type.", fun.getName()));
                 }
                 fun.setResultType(resultType.getResultType());

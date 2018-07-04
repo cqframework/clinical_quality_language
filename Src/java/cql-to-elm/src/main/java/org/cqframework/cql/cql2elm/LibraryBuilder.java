@@ -883,6 +883,7 @@ public class LibraryBuilder {
 
     public void checkOperator(CallContext callContext, OperatorResolution resolution) {
         if (resolution == null) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with signature %s.",
                     callContext.getOperatorName(), callContext.getSignature()));
         }
@@ -890,6 +891,7 @@ public class LibraryBuilder {
 
     public void checkAccessLevel(String libraryName, String objectName, AccessModifier accessModifier) {
         if (accessModifier == AccessModifier.PRIVATE) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Object %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
         }
     }
@@ -971,6 +973,7 @@ public class LibraryBuilder {
         SingletonFrom singletonFrom = of.createSingletonFrom().withOperand(expression);
         singletonFrom.setResultType(fromType.getElementType());
         resolveUnaryCall("System", "SingletonFrom", singletonFrom);
+        // WARNING:
         reportWarning("List-valued expression was demoted to a singleton.", expression);
 
         if (conversion.getConversion() != null) {
@@ -987,6 +990,7 @@ public class LibraryBuilder {
         }
 
         if (expression.getResultType().equals(resolveTypeName("System", "Boolean"))) {
+            // WARNING:
             reportWarning("Boolean-valued expression was promoted to a list.", expression);
         }
 
@@ -1007,6 +1011,7 @@ public class LibraryBuilder {
         PointFrom pointFrom = of.createPointFrom().withOperand(expression);
         pointFrom.setResultType(fromType.getPointType());
         resolveUnaryCall("System", "PointFrom", pointFrom);
+        // WARNING:
         reportWarning("Interval-valued expression was demoted to a point.", expression);
 
         if (conversion.getConversion() != null) {
@@ -1356,6 +1361,7 @@ public class LibraryBuilder {
                 if (ucumService != null) {
                     String message = ucumService.validate(unit);
                     if (message != null) {
+                        // ERROR:
                         throw new IllegalArgumentException(message);
                     }
                 }
@@ -1401,6 +1407,7 @@ public class LibraryBuilder {
             return new QName(modelInfo.getUrl(), namedType.getSimpleName());
         }
 
+        // ERROR:
         throw new IllegalArgumentException("A named type is required in this context.");
     }
 
@@ -1528,6 +1535,7 @@ public class LibraryBuilder {
                     case "highClosed":
                         return resolveTypeName("System", "Boolean");
                     default:
+                        // ERROR:
                         throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
                 }
             }
@@ -1573,6 +1581,7 @@ public class LibraryBuilder {
         }
 
         if (mustResolve) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
         }
 
@@ -1647,6 +1656,7 @@ public class LibraryBuilder {
             ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
             expressionRef.setResultType(getExpressionDefResultType((ExpressionDef)element));
             if (expressionRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
                         expressionRef.getName()));
             }
@@ -1658,6 +1668,7 @@ public class LibraryBuilder {
             ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
             parameterRef.setResultType(element.getResultType());
             if (parameterRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
@@ -1669,6 +1680,7 @@ public class LibraryBuilder {
             ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
             valuesetRef.setResultType(element.getResultType());
             if (valuesetRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
             }
@@ -1680,6 +1692,7 @@ public class LibraryBuilder {
             CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
             codesystemRef.setResultType(element.getResultType());
             if (codesystemRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
@@ -1692,6 +1705,7 @@ public class LibraryBuilder {
             CodeRef codeRef = of.createCodeRef().withName(((CodeDef)element).getName());
             codeRef.setResultType(element.getResultType());
             if (codeRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
@@ -1703,6 +1717,7 @@ public class LibraryBuilder {
             ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef)element).getName());
             conceptRef.setResultType(element.getResultType());
             if (conceptRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
@@ -1717,6 +1732,7 @@ public class LibraryBuilder {
         }
 
         if (mustResolve) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
         }
 
@@ -1800,6 +1816,7 @@ public class LibraryBuilder {
                 return result;
             }
 
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in library %s.",
                     memberIdentifier, referencedLibrary.getIdentifier().getId()));
         }
@@ -2048,6 +2065,7 @@ public class LibraryBuilder {
 
     public void pushExpressionDefinition(String identifier) {
         if (expressionDefinitions.contains(identifier)) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Cannot resolve reference to expression or function %s because it results in a circular reference.", identifier));
         }
         expressionDefinitions.push(new ExpressionDefinitionContext(identifier));
@@ -2147,6 +2165,7 @@ public class LibraryBuilder {
 
     public void checkLiteralContext() {
         if (inLiteralContext()) {
+            // ERROR:
             throw new IllegalStateException("Expressions in this context must be able to be evaluated at compile-time.");
         }
     }
