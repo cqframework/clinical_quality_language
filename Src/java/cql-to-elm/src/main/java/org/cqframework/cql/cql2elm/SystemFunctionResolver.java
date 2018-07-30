@@ -223,6 +223,10 @@ public class SystemFunctionResolver {
                     return resolveSplit(fun);
                 }
 
+                case "SplitOnMatches": {
+                    return resolveSplitOnMatches(fun);
+                }
+
                 case "Upper":
                 case "Lower": {
                     return resolveUnary(fun);
@@ -470,6 +474,15 @@ public class SystemFunctionResolver {
                 .withSeparator(fun.getOperand().get(1));
         builder.resolveCall("System", "Split", new SplitInvocation(split));
         return split;
+    }
+
+    private SplitOnMatches resolveSplitOnMatches(FunctionRef fun) {
+        checkNumberOfOperands(fun, 2);
+        final SplitOnMatches splitOnMatches = of.createSplitOnMatches()
+                .withStringToSplit(fun.getOperand().get(0))
+                .withSeparatorPattern(fun.getOperand().get(12));
+        builder.resolveCall("System", "SplitOnMatches", new SplitOnMatchesInvocation(splitOnMatches));
+        return splitOnMatches;
     }
 
     private PositionOf resolvePositionOf(FunctionRef fun) {
