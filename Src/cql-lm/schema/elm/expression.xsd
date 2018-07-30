@@ -1823,9 +1823,7 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 			
 The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
 			
-For the Interval overload, the SameAs operator returns true if the intervals start and end at the same value.
-
-For the Interval/point overloads, the SameAs operator returns true if the interval starts and ends at the point value.
+For the Interval overloads, the SameAs operator returns true if the intervals start and end at the same value.
 
 For intervals, this operator uses the semantics described in the Start and End operator to determine interval boundaries.
 
