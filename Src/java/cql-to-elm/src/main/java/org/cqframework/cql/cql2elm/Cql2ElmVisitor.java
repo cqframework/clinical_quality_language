@@ -42,6 +42,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean detailedErrors = false;
     private boolean methodInvocation = true;
     private boolean includeDeprecatedElements = false;
+    private boolean fromKeywordRequired = false;
     private TokenStream tokenStream;
 
     private final LibraryBuilder libraryBuilder;
@@ -137,6 +138,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public void disableMethodInvocation() {
         methodInvocation = false;
+    }
+
+    public boolean isFromKeywordRequired() {
+        return fromKeywordRequired;
+    }
+
+    public void enableFromKeywordRequired() {
+        fromKeywordRequired = true;
+    }
+
+    public void disableFromKeywordRequired() {
+        fromKeywordRequired = false;
     }
 
     public TokenStream getTokenStream() {
@@ -2823,16 +2836,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitSingleSourceClause(@NotNull cqlParser.SingleSourceClauseContext ctx) {
-        List<AliasedQuerySource> sources = new ArrayList<>();
-        sources.add((AliasedQuerySource) visit(ctx.aliasedQuerySource()));
-        return sources;
-    }
+    public Object visitSourceClause(@NotNull cqlParser.SourceClauseContext ctx) {
+        boolean hasFrom = "from".equals(ctx.getChild(0).getText());
+        if (!hasFrom && fromKeywordRequired) {
+            throw new IllegalArgumentException("The from keyword is required for queries.");
+        }
 
-    @Override
-    public Object visitMultipleSourceClause(@NotNull cqlParser.MultipleSourceClauseContext ctx) {
         List<AliasedQuerySource> sources = new ArrayList<>();
         for (cqlParser.AliasedQuerySourceContext source : ctx.aliasedQuerySource()) {
+            if (sources.size() > 0 && !hasFrom) {
+                throw new IllegalArgumentException("The from keyword is required for multi-source queries.");
+            }
             sources.add((AliasedQuerySource) visit(source));
         }
         return sources;

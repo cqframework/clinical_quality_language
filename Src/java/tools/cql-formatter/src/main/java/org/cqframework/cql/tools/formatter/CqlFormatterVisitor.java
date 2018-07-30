@@ -690,16 +690,6 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitSourceClause(cqlParser.SourceClauseContext ctx) {
-        return super.visitSourceClause(ctx);
-    }
-
-    @Override
-    public Object visitSingleSourceClause(cqlParser.SingleSourceClauseContext ctx) {
-        return super.visitSingleSourceClause(ctx);
-    }
-
-    @Override
-    public Object visitMultipleSourceClause(cqlParser.MultipleSourceClauseContext ctx) {
         Object result = defaultResult();
         int n = ctx.getChildCount();
         boolean clauseEntered = false;
@@ -732,6 +722,45 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         }
     }
 
+//    @Override
+//    public Object visitSingleSourceClause(cqlParser.SingleSourceClauseContext ctx) {
+//        return super.visitSingleSourceClause(ctx);
+//    }
+//
+//    @Override
+//    public Object visitMultipleSourceClause(cqlParser.MultipleSourceClauseContext ctx) {
+//        Object result = defaultResult();
+//        int n = ctx.getChildCount();
+//        boolean clauseEntered = false;
+//        try {
+//            for (int i = 0; i < n; i++) {
+//                if (!shouldVisitNextChild(ctx, result)) {
+//                    break;
+//                }
+//
+//                ParseTree c = ctx.getChild(i);
+//
+//                if (i == 1) {
+//                    enterClause();
+//                    clauseEntered = true;
+//                }
+//
+//                if (i > 1 && !c.getText().equals(",")) {
+//                    newLine();
+//                }
+//
+//                Object childResult = c.accept(this);
+//                result = aggregateResult(result, childResult);
+//            }
+//            return result;
+//        }
+//        finally {
+//            if (clauseEntered) {
+//                exitClause();
+//            }
+//        }
+//    }
+//
     @Override
     public Object visitLetClause(cqlParser.LetClauseContext ctx) {
         enterClause();
