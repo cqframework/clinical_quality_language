@@ -1459,7 +1459,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 break;
             case "year":
             case "month":
-            case "week":
             case "day":
             case "hour":
             case "minute":
@@ -1470,6 +1469,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         .withPrecision(parseDateTimePrecision(component));
                 operatorName = "DateTimeComponentFrom";
                 break;
+            case "week":
+                throw new IllegalArgumentException("Date/time values do not have a week component.");
             default:
                 throw new IllegalArgumentException(String.format("Unknown precision '%s'.", component));
         }
