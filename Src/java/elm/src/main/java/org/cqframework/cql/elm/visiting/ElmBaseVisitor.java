@@ -179,7 +179,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         if (elm instanceof Abs) return visitAbs((Abs)elm, context);
         else if (elm instanceof As) return visitAs((As)elm, context);
         else if (elm instanceof Ceiling) return visitCeiling((Ceiling)elm, context);
-        else if (elm instanceof Collapse) return visitCollapse((Collapse)elm, context);
         else if (elm instanceof Convert) return visitConvert((Convert)elm, context);
         else if (elm instanceof DateFrom) return visitDateFrom((DateFrom)elm, context);
         else if (elm instanceof DateTimeComponentFrom) return visitDateTimeComponentFrom((DateTimeComponentFrom)elm, context);
@@ -232,6 +231,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof And) return visitAnd((And)elm, context);
         else if (elm instanceof Before) return visitBefore((Before)elm, context);
         else if (elm instanceof Contains) return visitContains((Contains)elm, context);
+        else if (elm instanceof Collapse) return visitCollapse((Collapse)elm, context);
         else if (elm instanceof DifferenceBetween) return visitDifferenceBetween((DifferenceBetween)elm, context);
         else if (elm instanceof Divide) return visitDivide((Divide)elm, context);
         else if (elm instanceof DurationBetween) return visitDurationBetween((DurationBetween)elm, context);

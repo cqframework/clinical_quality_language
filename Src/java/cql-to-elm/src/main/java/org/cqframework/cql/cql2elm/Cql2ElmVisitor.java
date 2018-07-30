@@ -2665,10 +2665,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 Distinct distinct = of.createDistinct().withOperand(parseExpression(ctx.expression()));
                 libraryBuilder.resolveUnaryCall("System", "Distinct", distinct);
                 return distinct;
-            case "collapse":
-                Collapse collapse = of.createCollapse().withOperand(parseExpression(ctx.expression()));
-                libraryBuilder.resolveUnaryCall("System", "Collapse", collapse);
-                return collapse;
             case "flatten":
                 Flatten flatten = of.createFlatten().withOperand(parseExpression(ctx.expression()));
                 libraryBuilder.resolveUnaryCall("System", "Flatten", flatten);
@@ -2678,7 +2674,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         throw new IllegalArgumentException(String.format("Unknown aggregate operator %s.", ctx.getChild(0).getText()));
     }
 
-    public Object visitExpandExpressionTerm(@NotNull cqlParser.ExpandExpressionTermContext ctx) {
+    @Override
+    public Object visitSetAggregateExpressionTerm(@NotNull cqlParser.SetAggregateExpressionTermContext ctx) {
         Expression source = parseExpression(ctx.expression(0));
         Expression per = null;
         if (ctx.dateTimePrecision() != null) {
@@ -2695,25 +2692,39 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     IntervalType intervalType = (IntervalType)listType.getElementType();
                     DataType pointType = intervalType.getPointType();
 
-                    // Successor(MinValue<T>) - MinValue<T>
-                    MinValue minimum = libraryBuilder.buildMinimum(pointType);
-                    track(minimum, ctx);
+                    per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
 
-                    Expression successor = libraryBuilder.buildSuccessor(minimum);
-                    track(successor, ctx);
-
-                    minimum = libraryBuilder.buildMinimum(pointType);
-                    track(minimum, ctx);
-
-                    Subtract subtract = of.createSubtract().withOperand(successor, minimum);
-                    libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
-                    per = subtract;
+                    // TODO: Test this...
+//                    // Successor(MinValue<T>) - MinValue<T>
+//                    MinValue minimum = libraryBuilder.buildMinimum(pointType);
+//                    track(minimum, ctx);
+//
+//                    Expression successor = libraryBuilder.buildSuccessor(minimum);
+//                    track(successor, ctx);
+//
+//                    minimum = libraryBuilder.buildMinimum(pointType);
+//                    track(minimum, ctx);
+//
+//                    Subtract subtract = of.createSubtract().withOperand(successor, minimum);
+//                    libraryBuilder.resolveBinaryCall("System", "Subtract", subtract);
+//                    per = subtract;
                 }
             }
         }
-        Expand expand = of.createExpand().withOperand(source, per);
-        libraryBuilder.resolveBinaryCall("System", "Expand", expand);
-        return expand;
+
+        switch (ctx.getChild(0).getText()) {
+            case "expand":
+                Expand expand = of.createExpand().withOperand(source, per);
+                libraryBuilder.resolveBinaryCall("System", "Expand", expand);
+                return expand;
+
+            case "collapse":
+                Collapse collapse = of.createCollapse().withOperand(source, per);
+                libraryBuilder.resolveBinaryCall("System", "Collapse", collapse);
+                return collapse;
+        }
+
+        throw new IllegalArgumentException(String.format("Unknown aggregate set operator %s.", ctx.getChild(0).getText()));
     }
 
     @Override

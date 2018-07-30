@@ -347,7 +347,8 @@ public class SystemLibraryHelper {
         // Before<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("Before", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Collapse<T>(list<interval<T>>) : list<interval<T>>
-        system.add(new GenericOperator("Collapse", new Signature(new ListType(new IntervalType(new TypeParameter("T")))), new ListType(new IntervalType(new TypeParameter("T"))), new TypeParameter("T")));
+        // Collapse<T>(list<interval<T>>, Quantity) : list<interval<T>>
+        system.add(new GenericOperator("Collapse", new Signature(new ListType(new IntervalType(new TypeParameter("T"))), systemModel.getQuantity()), new ListType(new IntervalType(new TypeParameter("T"))), new TypeParameter("T")));
         // Contains<T>(interval<T>, T) : Boolean
         system.add(new GenericOperator("Contains", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // End<T>(interval<T>) : T
@@ -362,6 +363,7 @@ public class SystemLibraryHelper {
         //system.add(new GenericOperator("Equivalent", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Except<T>(interval<T>, interval<T>) : interval<T>
         system.add(new GenericOperator("Except", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), new IntervalType(new TypeParameter("T")), new TypeParameter("T")));
+        // Expand<T>(list<interval<T>>) : list<interval<T>>
         // Expand<T>(list<interval<T>>, Quantity) : list<interval<T>>
         system.add(new GenericOperator("Expand", new Signature(new ListType(new IntervalType(new TypeParameter("T"))), systemModel.getQuantity()), new IntervalType(new TypeParameter("T")), new TypeParameter("T")));
         // In<T>(T, interval<T>) : Boolean
