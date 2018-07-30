@@ -1486,6 +1486,25 @@ If the stringToSplit argument does not contain any appearances of the separator,
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+  <xs:complexType name="SplitOnMatches">
+    <xs:annotation>
+      <xs:documentation>The SplitOnMatches operator splits a string into a list of strings using matches of a regex pattern.
+        
+The separatorPattern argument is a regex pattern, following the same semantics as the Matches operator.
+
+If the stringToSplit argument is null, the result is null.
+
+If the stringToSplit argument does not contain any appearances of the separator pattern, the result is a list of strings containing one element that is the input value of the stringToSplit argument.</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="OperatorExpression">
+        <xs:sequence>
+          <xs:element name="stringToSplit" type="Expression" minOccurs="1" maxOccurs="1"/>
+          <xs:element name="separatorPattern" type="Expression" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
 	<xs:complexType name="Length">
 		<xs:annotation>
 			<xs:documentation>The Length operator returns the length of its argument.
