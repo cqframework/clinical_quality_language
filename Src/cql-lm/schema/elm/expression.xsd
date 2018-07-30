@@ -690,9 +690,9 @@ If the argument is null the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="IsBoolean">
+	<xs:complexType name="ConvertsToBoolean">
 		<xs:annotation>
-			<xs:documentation>The IsBoolean operator returns true if the value of its argument can be converted to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
+			<xs:documentation>The ConvertsToBoolean operator returns true if the value of its argument can be converted to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
 			
 If the input cannot be interpreted as a valid Boolean value, the result is false.
 
@@ -712,9 +712,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="IsDate">
+	<xs:complexType name="ConvertsToDate">
 		<xs:annotation>
-			<xs:documentation>The IsDate operator returns true if the value of its argument can be converted to a Date value. The operator expects the string to be formatted using the ISO-8601 date representation: 
+			<xs:documentation>The ConvertsToDate operator returns true if the value of its argument can be converted to a Date value. The operator expects the string to be formatted using the ISO-8601 date representation: 
 
 YYYY-MM-DD
 
@@ -748,9 +748,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="IsDateTime">
+	<xs:complexType name="ConvertsToDateTime">
 		<xs:annotation>
-			<xs:documentation>The IsDateTime operator returns true if the value of its argument can be converted to a DateTime value. 
+			<xs:documentation>The ConvertsToDateTime operator returns true if the value of its argument can be converted to a DateTime value. 
 				
 For string values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
 
@@ -761,8 +761,6 @@ In addition, the string must be interpretable as a valid date/time value.
 If the input string is not formatted correctly, or does not represent a valid date/time value, the result is false.
 
 As with date/time literals, date/time values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
-
-For Date values, the result is a DateTime with all time components set to 0, except the timezone offset, which is set to the timezone offset of the evaluation request timestamp.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -792,9 +790,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="IsDecimal">
+	<xs:complexType name="ConvertsToDecimal">
 		<xs:annotation>
-			<xs:documentation>The IsDecimal operator returns true if the value of its argument can be converted to a Decimal value. The operator accepts strings using the following format:
+			<xs:documentation>The ConvertsToDecimal operator returns true if the value of its argument can be converted to a Decimal value. The operator accepts strings using the following format:
 
 (+|-)?#0(.0#)?
 
@@ -828,9 +826,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="IsInteger">
+	<xs:complexType name="ConvertsToInteger">
 		<xs:annotation>
-			<xs:documentation>The IsInteger operator returns true if the value of its argument can be converted to an Integer value. The operator accepts strings using the following format:
+			<xs:documentation>The ConvertsToInteger operator returns true if the value of its argument can be converted to an Integer value. The operator accepts strings using the following format:
 
 (+|-)?#0
 
@@ -864,9 +862,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="IsQuantity">
+	<xs:complexType name="ConvertsToQuantity">
 		<xs:annotation>
-			<xs:documentation>The IsQuantity operator returns true if the value of its argument can be converted to a Quantity value. The operator accepts strings using the following format:
+			<xs:documentation>The ConvertsToQuantity operator returns true if the value of its argument can be converted to a Quantity value. The operator accepts strings using the following format:
 
 (+|-)?#0(.0#)?('&lt;unit&gt;')?
 
@@ -900,9 +898,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="IsRatio">
+	<xs:complexType name="ConvertsToRatio">
 		<xs:annotation>
-			<xs:documentation>The IsRatio operator returns true if the value of its argument can be converted to a Ratio value. The operator accepts strings using the following format:
+			<xs:documentation>The ConvertsToRatio operator returns true if the value of its argument can be converted to a Ratio value. The operator accepts strings using the following format:
 
 &lt;quantity&gt;:&lt;quantity&gt;
 
@@ -956,6 +954,27 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ConvertsToString">
+		<xs:annotation>
+		<xs:documentation>The ConvertsToString operator returns true if the value of its argument can be converted to a String value.
+			
+The operator returns true if the argument is any of the following types:
+
+Boolean
+Integer
+Decimal
+DateTime
+Date
+Time
+Quantity
+Ratio			
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ToString">
 		<xs:annotation>
 			<xs:documentation>The ToString operator converts the value of its argument to a String value. The operator uses the following string representations for each type:
@@ -967,6 +986,7 @@ Quantity (-)?#0.0# '&lt;unit&gt;'
 Date YYYY-MM-DD
 DateTime YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 Time	Thh:mm:ss.fff(+|-)hh:mm
+Ratio &lt;quantity&gt;:&lt;quantity&gt;
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -974,9 +994,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="IsTime">
+	<xs:complexType name="ConvertsToTime">
 		<xs:annotation>
-			<xs:documentation>The IsTime operator returns true if the value of its argument can be converted to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
+			<xs:documentation>The ConvertsToTime operator returns true if the value of its argument can be converted to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
 
 Thh:mm:ss.fff(+|-)hh:mm
 
