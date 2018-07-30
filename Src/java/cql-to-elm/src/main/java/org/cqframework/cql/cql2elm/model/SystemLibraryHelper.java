@@ -124,6 +124,34 @@ public class SystemLibraryHelper {
         system.add(stringToRatio);
         system.add(new Conversion(stringToRatio, false));
 
+        // ConvertsToBoolean(Any): Boolean
+        Operator convertsTo = new Operator("ConvertsToBoolean", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToInteger(Any): Boolean
+        convertsTo = new Operator("ConvertsToInteger", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToDecimal
+        convertsTo = new Operator("ConvertsToDecimal", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToDateTime
+        convertsTo = new Operator("ConvertsToDateTime", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToDate
+        convertsTo = new Operator("ConvertsToDate", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToTime
+        convertsTo = new Operator("ConvertsToTime", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToString
+        convertsTo = new Operator("ConvertsToString", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToQuantity
+        convertsTo = new Operator("ConvertsToQuantity", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToRatio
+        convertsTo = new Operator("ConvertsToRatio", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
         //system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
