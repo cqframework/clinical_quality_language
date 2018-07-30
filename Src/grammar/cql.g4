@@ -226,16 +226,7 @@ query
     ;
 
 sourceClause
-    : singleSourceClause
-    | multipleSourceClause
-    ;
-
-singleSourceClause
-    : aliasedQuerySource
-    ;
-
-multipleSourceClause
-    : 'from' aliasedQuerySource (',' aliasedQuerySource)*
+    : 'from'? aliasedQuerySource (',' aliasedQuerySource)*
     ;
 
 letClause

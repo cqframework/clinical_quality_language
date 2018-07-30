@@ -42,7 +42,8 @@ public class CqlTranslator {
         DisableListPromotion,
         DisableIntervalDemotion,
         DisableIntervalPromotion,
-        DisableMethodInvocation
+        DisableMethodInvocation,
+        RequireFromKeyword
     }
     public static enum Format { XML, JSON, COFFEE }
     private static JAXBContext jaxbContext;
@@ -313,6 +314,9 @@ public class CqlTranslator {
         if (optionList.contains(CqlTranslator.Options.DisableMethodInvocation)) {
             visitor.disableMethodInvocation();
         }
+        if (optionList.contains(CqlTranslator.Options.RequireFromKeyword)) {
+            visitor.enableFromKeywordRequired();
+        }
 
         parser.removeErrorListeners(); // Clear the default console listener
         parser.addErrorListener(new CqlTranslator.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled()));
@@ -373,7 +377,7 @@ public class CqlTranslator {
                                  boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
                                  boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
                                  boolean disableIntervalDemotion, boolean disableIntervalPromotion,
-                                 boolean disableMethodInvocation, boolean validateUnits,
+                                 boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
                                  LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         ArrayList<CqlTranslator.Options> options = new ArrayList<>();
         if (dateRangeOptimizations) {
@@ -408,6 +412,9 @@ public class CqlTranslator {
         }
         if (disableMethodInvocation) {
             options.add(CqlTranslator.Options.DisableMethodInvocation);
+        }
+        if (requireFromKeyword) {
+            options.add(CqlTranslator.Options.RequireFromKeyword);
         }
 
         System.err.println("================================================================================");
@@ -480,6 +487,7 @@ public class CqlTranslator {
         OptionSpec disableIntervalDemotion = parser.accepts("disable-interval-demotion");
         OptionSpec disableIntervalPromotion = parser.accepts("disable-interval-promotion");
         OptionSpec disableMethodInvocation = parser.accepts("disable-method-invocation");
+        OptionSpec requireFromKeyword = parser.accepts("require-from-keyword");
         OptionSpec strict = parser.accepts("strict");
         OptionSpec debug = parser.accepts("debug");
         OptionSpec validateUnits = parser.accepts("validate-units");
@@ -570,6 +578,7 @@ public class CqlTranslator {
                     options.has(strict) || options.has(disableIntervalDemotion),
                     options.has(strict) || options.has(disableIntervalPromotion),
                     options.has(strict) || options.has(disableMethodInvocation),
+                    options.has(requireFromKeyword),
                     options.has(validateUnits),
                     signatureLevel);
         }

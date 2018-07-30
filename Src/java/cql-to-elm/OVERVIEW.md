@@ -75,10 +75,13 @@ The CQL-to-ELM Translator is designed as a component that can be incorporated in
 |detailed-errors||Indicates that the translator should produce detailed errors|
 |error-level|Info (default)\|Warning\|Error|Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output|
 |disable-list-traversal||Disables traversal of paths on list-valued expressions|
-|disable-demotion||Disables demotion of list-valued expressions to singletons|
-|disable-promotion||Disables promotion of singletons to list-valued expressions|
+|disable-list-demotion||Disables demotion of list-valued expressions to singletons|
+|disable-list-promotion||Disables promotion of singletons to list-valued expressions|
+|disable-interval-demotion||Disables demotion of interval-valued expressions to points|
+|disable-interval-promotion||Disables promotion of point-valued expressions to intervals|
 |disable-method-invocation||Disables method-style invocation support|
-|strict||A combination option that is equivalent to specifying all of disable-list-traversal, disable-demotion, disable-promotion, and disable-method-invocation|
+|require-from-keyword||Indicates that all queries will be required to start with a `from` keyword|
+|strict||A combination option that is equivalent to specifying all of disable-list-traversal, disable-list-demotion, disable-list-promotion, disable-interval-demotion, disable-interval-promotion, and disable-method-invocation|
 |debug||A combination option that is equivalent to specifying all of annotations, locators, and result-types|
 |validate-units||Indicates that the translator should validate UCUM units in quantity literals|
 |stdout||Indicates that the translator should write output to the console instead of a file|
