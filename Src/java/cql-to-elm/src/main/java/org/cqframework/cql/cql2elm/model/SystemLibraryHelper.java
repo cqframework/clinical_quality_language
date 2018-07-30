@@ -525,7 +525,9 @@ public class SystemLibraryHelper {
         system.add(new Conversion(codesToConcept, false));
 
         system.add(new Operator("CalculateAge", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("CalculateAge", new Signature(systemModel.getDate()), systemModel.getInteger()));
         system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getInteger()));
 
         system.add(new Operator("InValueSet", new Signature(systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("InValueSet", new Signature(systemModel.getCode()), systemModel.getBoolean()));

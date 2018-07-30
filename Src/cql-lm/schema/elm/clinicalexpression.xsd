@@ -404,7 +404,15 @@ If either or both arguments are null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="CalculateAge">
 		<xs:annotation>
-			<xs:documentation>Calculates the age in the specified precision of a person born on the given date as of today.</xs:documentation>
+			<xs:documentation>Calculates the age in the specified precision of a person born on the given Date or DateTime as of Today or Now.
+
+The CalculateAge operator is defined for Date and DateTime.
+
+For the Date overload, the calculation is performed using Today(), and the precision must be one of year, month, week, or day.
+
+For the DateTime overload, the calculation is performed using Now().
+
+The result of the calculation is always the number of whole calendar periods that have elapsed between the given datet/time and today/now.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -414,7 +422,15 @@ If either or both arguments are null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="CalculateAgeAt">
 		<xs:annotation>
-			<xs:documentation>Calculates the age in the specified precision of a person born on the first date as of the second date.</xs:documentation>
+			<xs:documentation>Calculates the age in the specified precision of a person born on the first Date or DateTime as of the second Date or DateTime.
+      
+The CalculateAgeAt operator has two signatures:
+  Date, Date
+  DateTime, DateTime
+
+For the Date overload, precision must be one of year, month, week, or day.
+
+The result of the calculation is the number of whole calendar periods that have elapsed between the first date/time and the second.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
