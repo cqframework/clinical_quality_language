@@ -951,7 +951,6 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
-					<xs:element name="activeDatetime" type="dt:DateTime" minOccurs="1"/>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
