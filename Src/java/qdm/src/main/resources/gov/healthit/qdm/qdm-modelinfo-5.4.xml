@@ -383,7 +383,6 @@
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="activeDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="refills" type="System.Integer"/>
