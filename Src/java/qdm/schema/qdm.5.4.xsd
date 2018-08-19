@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:healthit-gov:qdm:v5_4" xmlns:dt="urn:hl7-org:elm-types:r1" targetNamespace="urn:healthit-gov:qdm:v5_4" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:import namespace="urn:hl7-org:elm-types:r1" schemaLocation="..\..\..\cql-lm\schema\elm\types.xsd"/>
+	<xs:complexType name="Identifier">
+		<xs:sequence>
+			<xs:element name="namingSystem" type="dt:String" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="value" type="dt:String"/>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="QDMBaseType">
 		<xs:sequence>
-			<xs:element name="id" type="dt:Code" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="id" type="Identifier" minOccurs="1" maxOccurs="1"/>
 			<xs:element name="code" type="dt:Code" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="patientId" type="dt:Code" minOccurs="1" maxOccurs="1"/>
-			<xs:element name="reporter" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="recorder" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="patientId" type="Identifier" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="reporter" type="Identifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="recorder" type="Identifier" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Ratio">
@@ -272,7 +278,7 @@
 					<xs:element name="method" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="result" type="dt:Any" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
-					<xs:element name="relatedTo" type="dt:Code" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="relatedTo" type="Identifier" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -331,7 +337,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relatedTo" type="dt:Code" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="relatedTo" type="Identifier" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="targetOutcome" type="dt:Any" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -355,7 +361,7 @@
 					<xs:element name="recipient" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relatedTo" type="dt:Code" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="relatedTo" type="Identifier" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -893,6 +899,7 @@
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="dt:Code" minOccurs="0"/>
+					<xs:element name="daysSupplied" type="dt:Integer" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
@@ -931,7 +938,10 @@
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="dt:Code" minOccurs="0"/>
+					<xs:element name="daysSupplied" type="dt:Integer" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
+					<xs:element name="prescriberIdentifier" type="Identifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="dispenserIdentifier" type="Identifier" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -957,9 +967,11 @@
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="dt:Code" minOccurs="0"/>
+					<xs:element name="daysSupplied" type="dt:Integer" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
 					<xs:element name="setting" type="dt:Code" minOccurs="0"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
+					<xs:element name="prescriberIdentifier" type="Identifier" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
