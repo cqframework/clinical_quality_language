@@ -322,6 +322,7 @@
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Code"/>
+        <ns4:element name="daysSupplied" type="System.Integer"/>
         <ns4:element name="route" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
@@ -353,7 +354,10 @@
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Code"/>
+        <ns4:element name="daysSupplied" type="System.Integer"/>
         <ns4:element name="route" type="System.Code"/>
+        <ns4:element name="prescriberId" type="QDM.Id"/>
+        <ns4:element name="dispenserId" type="QDM.Id"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyRecommended" retrievable="false" baseType="QDM.QDMBaseType">
@@ -389,9 +393,11 @@
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Code"/>
+        <ns4:element name="daysSupplied" type="System.Integer"/>
         <ns4:element name="route" type="System.Code"/>
         <ns4:element name="setting" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
+        <ns4:element name="prescriberId" type="QDM.Id"/>
         <ns4:element name="negationRationale" type="System.Code"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceRecommended" retrievable="false" baseType="QDM.QDMBaseType">
