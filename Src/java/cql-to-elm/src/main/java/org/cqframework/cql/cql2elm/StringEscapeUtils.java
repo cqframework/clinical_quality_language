@@ -49,6 +49,7 @@ public class StringEscapeUtils {
                                     { "\\\\", "\\" },
                                     { "\\\"", "\"" },
                                     { "\\'", "\'" },
+                                    { "\\`", "`"},
                                     { "\\/", "/" },
                                     { "\\", "" }
                             }
@@ -63,6 +64,7 @@ public class StringEscapeUtils {
         // CQL supports the following escape characters in both strings and identifiers:
         // \" - double-quote
         // \' - single-quote
+        // \` - backtick
         // \\ - backslash
         // \/ - slash
         // \f - form feed
