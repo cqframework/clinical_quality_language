@@ -88,7 +88,7 @@ qualifiedIdentifier
 
 identifier
         : IDENTIFIER
-        | QUOTEDIDENTIFIER
+        | DELIMITEDIDENTIFIER
         | 'as'
         | 'is'
         ;
@@ -138,8 +138,8 @@ IDENTIFIER
         : ([A-Za-z] | '_')([A-Za-z0-9] | '_')*            // Added _ to support CQL (FHIR could constrain it out)
         ;
 
-QUOTEDIDENTIFIER
-        : '"' (ESC | .)*? '"'
+DELIMITEDIDENTIFIER
+        : '`' (ESC | .)*? '`'
         ;
 
 STRING
@@ -165,7 +165,7 @@ LINE_COMMENT
         ;
 
 fragment ESC
-        : '\\' (["'\\/fnrt] | UNICODE)    // allow \", \', \\, \/, \f, etc. and \uXXX
+        : '\\' ([`'\\/fnrt] | UNICODE)    // allow \`, \', \\, \/, \f, etc. and \uXXX
         ;
 
 fragment UNICODE

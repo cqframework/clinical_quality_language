@@ -1807,16 +1807,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitTerminal(@NotNull TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
-        if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType) {
-            // chop off leading and trailing ' or "
+        if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType || cqlLexer.DELIMITEDIDENTIFIER == tokenType) {
+            // chop off leading and trailing ', ", or `
             text = text.substring(1, text.length() - 1);
 
-            if (cqlLexer.STRING == tokenType) {
-                text = text.replace("''", "'");
-            }
-            else {
-                text = text.replace("\"\"", "\"");
-            }
+            // This is an alternate style of escaping that was removed when we switched to industry-standard escape sequences
+            //if (cqlLexer.STRING == tokenType) {
+            //    text = text.replace("''", "'");
+            //}
+            //else {
+            //    text = text.replace("\"\"", "\"");
+            //}
         }
 
         return text;

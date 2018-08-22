@@ -437,6 +437,7 @@ conceptSelector
 
 identifier
     : IDENTIFIER
+    | DELIMITEDIDENTIFIER
     | QUOTEDIDENTIFIER
     | 'all'
     | 'Code'
@@ -456,4 +457,12 @@ identifier
     | 'version'
     | 'where'
     ;
+
+QUOTEDIDENTIFIER
+        : '"' (ESC | .)*? '"'
+        ;
+
+fragment ESC
+        : '\\' ([`'"\\/fnrt] | UNICODE)    // allow \`, \', \", \\, \/, \f, etc. and \uXXX
+        ;
 
