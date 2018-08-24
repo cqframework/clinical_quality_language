@@ -956,7 +956,7 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ConvertsToString">
 		<xs:annotation>
-		<xs:documentation>The ConvertsToString operator returns true if the value of its argument can be converted to a String value.
+			<xs:documentation>The ConvertsToString operator returns true if the value of its argument can be converted to a String value.
 			
 The operator returns true if the argument is any of the following types:
 
@@ -1486,25 +1486,25 @@ If the stringToSplit argument does not contain any appearances of the separator,
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-  <xs:complexType name="SplitOnMatches">
-    <xs:annotation>
-      <xs:documentation>The SplitOnMatches operator splits a string into a list of strings using matches of a regex pattern.
+	<xs:complexType name="SplitOnMatches">
+		<xs:annotation>
+			<xs:documentation>The SplitOnMatches operator splits a string into a list of strings using matches of a regex pattern.
         
 The separatorPattern argument is a regex pattern, following the same semantics as the Matches operator.
 
 If the stringToSplit argument is null, the result is null.
 
 If the stringToSplit argument does not contain any appearances of the separator pattern, the result is a list of strings containing one element that is the input value of the stringToSplit argument.</xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="OperatorExpression">
-        <xs:sequence>
-          <xs:element name="stringToSplit" type="Expression" minOccurs="1" maxOccurs="1"/>
-          <xs:element name="separatorPattern" type="Expression" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OperatorExpression">
+				<xs:sequence>
+					<xs:element name="stringToSplit" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="separatorPattern" type="Expression" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Length">
 		<xs:annotation>
 			<xs:documentation>The Length operator returns the length of its argument.
@@ -1683,6 +1683,8 @@ Platforms will typically use native regular expression implementations. These ar
 For Date values, precision must be one of Year, Month, Week, or Day.			
 
 For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
+
+For calculations involving weeks, the duration of a week is equivalent to 7 days.
 			
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1694,11 +1696,13 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="DifferenceBetween">
 		<xs:annotation>
-			<xs:documentation>The DifferenceBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional boundaries are dropped.
+			<xs:documentation>The DifferenceBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. Because this operation is only counting boundaries crossed, the result is always an integer.
 			
 For Date values, precision must be one of Year, Month, Week, or Day.			
 
 For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
+
+For calculations involving weeks, Sunday is considered to be the first day of the week for the purposes of determining boundaries.
 			
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1744,7 +1748,7 @@ If the argument is null, the result is null.</xs:documentation>
 			
 If the argument is null, the result is null.
 
-The precision must be one of year, month, day, hour, minute, second, or millisecond. Note specifically that since there is variability how weeks are counted, week precision is not supported, and will result in an error.</xs:documentation>
+The precision must be one of Year, Month, Day, Hour, Minute, Second, or Millisecond. Note specifically that since there is variability how weeks are counted, Week precision is not supported, and will result in an error.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -1852,7 +1856,7 @@ As with all date/time calculations, comparisons are performed respecting the tim
 
 If either or both arguments are null, the result is null.
 
-For Date values, precision must be one of Year, Month, Week, or Day.			
+For Date values, precision must be one of Year, Month, or Day. Note specifically that since there is variability how weeks are counted, Week precision is not supported, and will result in an error.
 
 For Time values, precision must be one of Hour, Minute, Second, or Millisecond.</xs:documentation>
 		</xs:annotation>
@@ -1874,7 +1878,7 @@ This operator uses the semantics described in the Start and End operators to det
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-For Date values, precision must be one of Year, Month, Week, or Day.			
+For Date values, precision must be one of Year, Month, or Day.	Note specifically that since there is variability how weeks are counted, Week precision is not supported, and will result in an error.
 
 For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
 			
@@ -1898,7 +1902,7 @@ This operator uses the semantics described in the Start and End operators to det
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-For Date values, precision must be one of Year, Month, Week, or Day.			
+For Date values, precision must be one of Year, Month, or Day.	Note specifically that since there is variability how weeks are counted, Week precision is not supported, and will result in an error.
 
 For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
 			
@@ -2333,8 +2337,7 @@ If the list of intervals is empty, the result is empty. If the list of intervals
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression">
-			</xs:extension>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Union">
