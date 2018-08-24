@@ -412,7 +412,7 @@ For the Date overload, the calculation is performed using Today(), and the preci
 
 For the DateTime overload, the calculation is performed using Now().
 
-The result of the calculation is always the number of whole calendar periods that have elapsed between the given datet/time and today/now.</xs:documentation>
+The result of the calculation is always the number of whole calendar periods that have elapsed between the given date/time and today/now.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
