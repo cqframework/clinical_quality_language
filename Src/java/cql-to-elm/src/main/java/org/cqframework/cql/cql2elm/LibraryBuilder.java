@@ -931,7 +931,11 @@ public class LibraryBuilder {
     }
 
     public Expression convertExpression(Expression expression, DataType targetType) {
-        Conversion conversion = findConversion(expression.getResultType(), targetType, true, false);
+        return convertExpression(expression, targetType, true);
+    }
+
+    public Expression convertExpression(Expression expression, DataType targetType, boolean implicit) {
+        Conversion conversion = findConversion(expression.getResultType(), targetType, implicit, false);
         if (conversion != null) {
             return convertExpression(expression, conversion);
         }
@@ -1218,6 +1222,12 @@ public class LibraryBuilder {
             else if (conversion.getToType().equals(resolveTypeName("System", "Quantity"))) {
                 return (Expression)of.createToQuantity().withOperand(expression).withResultType(conversion.getToType());
             }
+            else if (conversion.getToType().equals(resolveTypeName("System", "Ratio"))) {
+                return (Expression)of.createToRatio().withOperand(expression).withResultType(conversion.getToType());
+            }
+            else if (conversion.getToType().equals(resolveTypeName("System", "Concept"))) {
+                return (Expression)of.createToConcept().withOperand(expression).withResultType(conversion.getToType());
+            }
             else {
                 Convert convertedOperand = (Convert)of.createConvert()
                         .withOperand(expression)
@@ -1298,7 +1308,19 @@ public class LibraryBuilder {
         }
 
         if (!targetType.isSuperTypeOf(expression.getResultType())) {
-            return convertExpression(expression, targetType);
+            return convertExpression(expression, targetType, true);
+        }
+
+        return expression;
+    }
+
+    public Expression enforceCompatible(Expression expression, DataType targetType) {
+        if (targetType == null) {
+            return of.createNull();
+        }
+
+        if (!targetType.isSuperTypeOf(expression.getResultType())) {
+            return convertExpression(expression, targetType, false);
         }
 
         return expression;

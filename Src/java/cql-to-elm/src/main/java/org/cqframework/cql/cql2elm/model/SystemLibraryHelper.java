@@ -96,10 +96,14 @@ public class SystemLibraryHelper {
         system.add(dateToDateTime);
         system.add(new Conversion(dateToDateTime, true));
 
+        // ToDate(DateTime) : Date
         // ToDate(String) : Date
         Operator stringToDate = new Operator("ToDate", new Signature(systemModel.getString()), systemModel.getDate());
         system.add(stringToDate);
         system.add(new Conversion(stringToDate, false));
+        Operator dateTimeToDate = new Operator("ToDate", new Signature(systemModel.getDateTime()), systemModel.getDate());
+        system.add(dateTimeToDate);
+        system.add(new Conversion(dateTimeToDate, false));
 
         // ToTime(String) : Time
         Operator stringToTime = new Operator("ToTime", new Signature(systemModel.getString()), systemModel.getTime());

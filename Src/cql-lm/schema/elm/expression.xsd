@@ -648,7 +648,17 @@ The static type of the then argument within the first caseItem determines the ty
 				
 If no valid conversion exists from the actual value to the target type, the result is null.
 
-This operator supports conversion between String and each of Boolean, Integer, Decimal, Quantity, Date, DateTime, and Time, as well as conversion from Integer to Decimal and from Code to Concept.
+This operator supports conversion:
+
+Between String and each of Boolean, Integer, Decimal, Quantity, Ratio, Date, DateTime, and Time
+
+as well as:
+
+From Integer to Decimal or Quantity
+From Decimal to Quantity
+Between Date and DateTime
+From Code to Concept
+Between Concept and List&lt;Code&gt;
 
 Conversion between String and Date/DateTime/Time is performed using the ISO-8601 standard format: YYYY-MM-DDThh:mm:ss(+|-)hh:mm.</xs:documentation>
 		</xs:annotation>
@@ -665,7 +675,17 @@ Conversion between String and Date/DateTime/Time is performed using the ISO-8601
 		<xs:annotation>
 			<xs:documentation>The CanConvert operator returns true if the given value can be converted to a specific type, and false otherwise.
 
-This operator supports testing for conversion between String and each of Boolean, Integer, Decimal, Quantity, Ratio, Date, DateTime, and Time, as well as conversion from Integer to Decimal, Integer or Decimal to Quantity, and from Code to Concept.
+This operator returns true for conversion:
+
+Between String and each of Boolean, Integer, Decimal, Quantity, Ratio, Date, DateTime, and Time,
+
+as well as:
+
+From Integer to Decimal or Quantity
+From Decimal to Quantity
+Between Date and DateTime
+From Code to Concept
+Between Concept and List&lt;Code&gt;
 
 Conversion between String and Date/DateTime/Time is checked using the ISO-8601 standard format: YYYY-MM-DDThh:mm:ss(+|-)hh:mm.</xs:documentation>
 		</xs:annotation>
@@ -680,7 +700,9 @@ Conversion between String and Date/DateTime/Time is checked using the ISO-8601 s
 	</xs:complexType>
 	<xs:complexType name="ToBoolean">
 		<xs:annotation>
-			<xs:documentation>The ToBoolean operator converts the value of its argument to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
+			<xs:documentation>The ToBoolean operator converts the value of its argument to a Boolean value. 
+
+The operator accepts 'true', 't', 'yes', 'y', and '1' as string representations of true, and 'false', 'f', 'no', 'n', and '0' as string representations of false, ignoring case.
 			
 If the input cannot be interpreted as a valid Boolean value, the result is null.
 
@@ -692,7 +714,9 @@ If the argument is null the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ConvertsToBoolean">
 		<xs:annotation>
-			<xs:documentation>The ConvertsToBoolean operator returns true if the value of its argument can be converted to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
+			<xs:documentation>The ConvertsToBoolean operator returns true if the value of its argument can be converted to a Boolean value. 
+			
+The operator accepts 'true', 't', 'yes', 'y', and '1' as string representations of true, and 'false', 'f', 'no', 'n', and '0' as string representations of false, ignoring case.
 			
 If the input cannot be interpreted as a valid Boolean value, the result is false.
 
@@ -714,7 +738,9 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ConvertsToDate">
 		<xs:annotation>
-			<xs:documentation>The ConvertsToDate operator returns true if the value of its argument can be converted to a Date value. The operator expects the string to be formatted using the ISO-8601 date representation: 
+			<xs:documentation>The ConvertsToDate operator returns true if the value of its argument can be converted to a Date value. 
+			
+Fro String values, The operator expects the string to be formatted using the ISO-8601 date representation: 
 
 YYYY-MM-DD
 
@@ -732,7 +758,9 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ToDate">
 		<xs:annotation>
-			<xs:documentation>The ToDate operator converts the value of its argument to a Date value. The operator expects the string to be formatted using the ISO-8601 date representation: 
+			<xs:documentation>The ToDate operator converts the value of its argument to a Date value. 
+			
+Fro String values, The operator expects the string to be formatted using the ISO-8601 date representation: 
 
 YYYY-MM-DD
 
@@ -741,6 +769,8 @@ In addition, the string must be interpretable as a valid date value.
 If the input string is not formatted correctly, or does not represent a valid date value, the result is null.
 
 As with date literals, date values may be specified to any precision.
+
+For DateTime values, the result is equivalent to extracting the Date component of the DateTime value.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -752,7 +782,7 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The ConvertsToDateTime operator returns true if the value of its argument can be converted to a DateTime value. 
 				
-For string values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
+For String values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
 
 YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 
@@ -772,7 +802,7 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The ToDateTime operator converts the value of its argument to a DateTime value. 
 				
-For string values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
+For String values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
 
 YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 
@@ -996,7 +1026,9 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ConvertsToTime">
 		<xs:annotation>
-			<xs:documentation>The ConvertsToTime operator returns true if the value of its argument can be converted to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
+			<xs:documentation>The ConvertsToTime operator returns true if the value of its argument can be converted to a Time value. 
+			
+For String values, the operator expects the string to be formatted using ISO-8601 time representation: 
 
 Thh:mm:ss.fff(+|-)hh:mm
 
@@ -1014,7 +1046,9 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ToTime">
 		<xs:annotation>
-			<xs:documentation>The ToTime operator converts the value of its argument to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
+			<xs:documentation>The ToTime operator converts the value of its argument to a Time value. 
+			
+For String values, the operator expects the string to be formatted using ISO-8601 time representation: 
 
 Thh:mm:ss.fff(+|-)hh:mm
 
@@ -1023,6 +1057,8 @@ In addition, the string must be interpretable as a valid time-of-day value.
 If the input string is not formatted correctly, or does not represent a valid time-of-day value, the result is null.
 
 As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
+
+For DateTime values, the result is the same as extracting the Time component from the DateTime value.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>

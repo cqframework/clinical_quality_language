@@ -63,7 +63,13 @@ public class SystemFunctionResolver {
                 }
 
                 // Clinical Functions
-                case "AgeInYears":
+                case "AgeInYears": {
+                    checkNumberOfOperands(fun, 0);
+                    return resolveCalculateAge(
+                            builder.enforceCompatible(getPatientBirthDateProperty(), builder.resolveTypeName("System", "Date")),
+                            resolveAgeRelatedFunctionPrecision(fun));
+                }
+
                 case "AgeInMonths":
                 case "AgeInWeeks":
                 case "AgeInDays":
@@ -72,7 +78,9 @@ public class SystemFunctionResolver {
                 case "AgeInSeconds":
                 case "AgeInMilliseconds": {
                     checkNumberOfOperands(fun, 0);
-                    return resolveCalculateAge(getPatientBirthDateProperty(), resolveAgeRelatedFunctionPrecision(fun));
+                    return resolveCalculateAge(
+                            builder.ensureCompatible(getPatientBirthDateProperty(), builder.resolveTypeName("System", "DateTime")),
+                            resolveAgeRelatedFunctionPrecision(fun));
                 }
 
                 case "AgeInYearsAt":
@@ -552,6 +560,15 @@ public class SystemFunctionResolver {
                 break;
             case "ToDecimal":
                 convert.setToType(builder.dataTypeToQName(sm.getDecimal()));
+                break;
+            case "ToQuantity":
+                convert.setToType(builder.dataTypeToQName(sm.getQuantity()));
+                break;
+            case "ToRatio":
+                convert.setToType(builder.dataTypeToQName(sm.getRatio()));
+                break;
+            case "ToDate":
+                convert.setToType(builder.dataTypeToQName(sm.getDate()));
                 break;
             case "ToDateTime":
                 convert.setToType(builder.dataTypeToQName(sm.getDateTime()));
