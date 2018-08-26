@@ -1880,7 +1880,7 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 	</xs:complexType>
 	<xs:complexType name="SameAs">
 		<xs:annotation>
-			<xs:documentation>The SameAs operator is defined for Date, DateTime, and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameAs operator is defined for Date, DateTime, and Time values, as well as intervals.
 			
 The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
 			
@@ -1904,7 +1904,7 @@ For Time values, precision must be one of Hour, Minute, Second, or Millisecond.<
 	</xs:complexType>
 	<xs:complexType name="SameOrBefore">
 		<xs:annotation>
-			<xs:documentation>The SameOrBefore operator is defined for Date, DateTime, and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameOrBefore operator is defined for Date, DateTime, and Time values, as well as intervals.
 
 The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. If either or both arguments are null, the result is null.
 
@@ -1928,7 +1928,7 @@ For comparisons involving date/time or time values with imprecision, note that t
 	</xs:complexType>
 	<xs:complexType name="SameOrAfter">
 		<xs:annotation>
-			<xs:documentation>The SameOrAfter operator is defined for Date, DateTime, and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameOrAfter operator is defined for Date, DateTime, and Time values, as well as intervals.
 			
 The SameOrAfter operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. If either or both arguments are null, the result is null.
 
