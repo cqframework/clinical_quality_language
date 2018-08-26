@@ -1075,13 +1075,13 @@ For simple types, this means that equality returns true if and only if the resul
 
 For quantities, this means that the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
-For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements by name are equal.
+For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements that have values, by name, are equal.
 
-For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using the same semantics.
+For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using equality semantics.
 
 For interval types, equality returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the interval as determined by the Start and End operators.
 
-For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the values are different, the comparison stops and the result is false. If one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, the comparison stops and the result is true.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1099,13 +1099,13 @@ For list types, this means that two lists are equivalent if and only if the list
 
 For interval types, this means that two intervals are equivalent if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators are equivalent.
 
-For Code values, equivalence is defined based on the code, system, and verrsion elements only. The display element is ignored for the purposes of determining Code equivalence.
+For date/time values, the comparison is performed in the same way as it is for equality, except that if one input has a value for a given precision and the other does not, the comparison stops and the result is false, rather than null.
+
+For Code values, equivalence is defined based on the code and system elements only. The display and version elements are ignored for the purposes of determining Code equivalence.
 
 For Concept values, equivalence is defined as a non-empty intersection of the codes in each Concept.
 
-Note that this operator will always return true or false, even if either or both of its arguments are null or contain null components.
-
-This operator, and the corresponding notion of equivalence, are used throughout ELM to define the behavior of membership and containment operators such as In, Contains, Includes, IndexOf, and others. This provides consistent and intuitive behavior in the presence of missing information in list and membership contexts.</xs:documentation>
+Note that this operator will always return true or false, even if either or both of its arguments are null or contain null components.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1127,6 +1127,8 @@ The NotEqual operator is a shorthand for invocation of logical negation of the E
 			
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, the comparison stops and the result is false.
+
 If either argument is null, the result is null.
 
 The Less operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
@@ -1140,6 +1142,8 @@ The Less operator is defined for the Integer, Decimal, String, Date, DateTime, T
 			<xs:documentation>The Greater operator returns true if the first argument is greater than the second argument.
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
+
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, the comparison stops and the result is false.
 
 If either argument is null, the result is null.
 
@@ -1155,6 +1159,8 @@ The Greater operator is defined for the Integer, Decimal, String, Date, DateTime
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, the comparison stops and the result is true.
+
 If either argument is null, the result is null.
 
 The LessOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
@@ -1168,6 +1174,8 @@ The LessOrEqual operator is defined for the Integer, Decimal, String, Date, Date
 			<xs:documentation>The GreaterOrEqual operator returns true if the first argument is greater than or equal to the second argument.
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
+
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, the comparison stops and the result is true.
 
 If either argument is null, the result is null.
 
@@ -1882,19 +1890,23 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 		<xs:annotation>
 			<xs:documentation>The SameAs operator is defined for Date, DateTime, and Time values, as well as intervals.
 			
+For the Interval overloads, the SameAs operator returns true if the intervals start and end at the same value, using the semantics described in the Start and End operator to determine interval boundaries.
+
 The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
 			
-For the Interval overloads, the SameAs operator returns true if the intervals start and end at the same value.
+For Date values, precision must be one of year, month, or day.
 
-For intervals, this operator uses the semantics described in the Start and End operator to determine interval boundaries.
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-If either or both arguments are null, the result is null.
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
-For Date values, precision must be one of Year, Month, or Day. Note specifically that since there is variability how weeks are counted, Week precision is not supported, and will result in an error.
-
-For Time values, precision must be one of Hour, Minute, Second, or Millisecond.</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1906,19 +1918,23 @@ For Time values, precision must be one of Hour, Minute, Second, or Millisecond.<
 		<xs:annotation>
 			<xs:documentation>The SameOrBefore operator is defined for Date, DateTime, and Time values, as well as intervals.
 
-The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. If either or both arguments are null, the result is null.
+For the Interval overload, the SameOrBefore operator returns true if the first interval ends on or before the second one starts. In other words, if the ending point of the first interval is less than or equal to the starting point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Interval overload, the SameOrBefore operator returns true if the first interval ends on or before the second one starts. In other words, if the ending point of the first interval is less than or equal to the starting point of the second interval.
+The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, or the specified precision has been reached, the comparison stops and the result is true.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+For Date values, precision must be one of year, month, or day.
+
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-For Date values, precision must be one of Year, Month, or Day.	Note specifically that since there is variability how weeks are counted, Week precision is not supported, and will result in an error.
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
-For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
-			
-For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1930,19 +1946,23 @@ For comparisons involving date/time or time values with imprecision, note that t
 		<xs:annotation>
 			<xs:documentation>The SameOrAfter operator is defined for Date, DateTime, and Time values, as well as intervals.
 			
-The SameOrAfter operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. If either or both arguments are null, the result is null.
+For the Interval overload, the SameOrAfter operator returns true if the first interval starts on or after the second one ends. In other words, if the starting point of the first interval is greater than or equal to the ending point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Interval overload, the SameOrAfter operator returns true if the first interval starts on or after the second one ends. In other words, if the starting point of the first interval is greater than or equal to the ending point of the second interval.
-			
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+For the Date, DateTime, and Time overloads, this operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, or the specified precision has been reached, the comparison stops and the result is true.
+
+For Date values, precision must be one of year, month, or day.
+
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-For Date values, precision must be one of Year, Month, or Day.	Note specifically that since there is variability how weeks are counted, Week precision is not supported, and will result in an error.
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
-For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
-			
-For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2012,9 +2032,11 @@ There are two overloads of this operator:
 	List, T : The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 	
-For the List, T overload, this operator returns true if the given element is in the list, using equivalence semantics. If the list-valued argument is null, the result is null.
+For the List, T overload, this operator returns true if the given element is in the list, using equality semantics.
 
-For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2031,9 +2053,11 @@ There are two overloads of this operator:
 	List, T: The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 	
-For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equivalence semantics.
+For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equality semantics.
 
-For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2050,9 +2074,11 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns true if the given element is in the given list, using equivalence semantics. If the list-valued argument is null, the result is null.
+For the T, List overload, this operator returns true if the given element is in the given list, using equality semantics.
 
-For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2069,9 +2095,11 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equivalence semantics. If the list-valued argument is null, it should be treated as an empty list.
+For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equality semantics.
 
-For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2088,11 +2116,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equivalence semantics. If either argument is null, it should be treated as an empty list.
+For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equality semantics.
 
-For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. If either argument is null, the result is null.
+For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If either argument is null, the result is null. </xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2109,11 +2139,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 	
-For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equivalence semantics. If either argument is null, it should be treated as an empty list.
+For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equality semantics.
 
-For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If either argument is null, the result is null.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2130,11 +2162,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 	
-For the List, List overload, this operator returns true if the first list includes every element of the second list, using equivalence semantics, and the first list is strictly larger. If either argument is null, it should be treated as an empty list.
+For the List, List overload, this operator returns true if the first list includes every element of the second list, using equality semantics, and the first list is strictly larger.
 
-For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2151,11 +2185,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equivalence semantics, and the first list is strictly smaller. If either argument is null, it should be treated as an empty list.
+For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equality semantics, and the first list is strictly smaller.
 
-For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If either argument is null, the result is null. </xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2168,13 +2204,21 @@ This operator uses the semantics described in the Start and End operators to det
 		<xs:annotation>
 			<xs:documentation>The Before operator is defined for Intervals, as well as Date, DateTime, and Time values.
 			
-For the Interval overload, the Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval.
-			
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+For the Interval overload, the Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Date, DateTime, and Time overloads, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+For the Date, DateTime, and Time overloads, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, or the specified precision has been reached, the comparison stops and the result is false.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For Date values, precision must be one of year, month, or day.
+
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
+
+As with all date/time calculations, comparisons are performed respecting the timezone offset.
+
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2189,14 +2233,22 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The After operator is defined for Intervals, as well as Date, DateTime, and Time values.
 			
-For the Interval overload, the After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval.
-			
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+For the Interval overload, the After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Date, DateTime, and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+For the Date, DateTime, and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, or the specified precision has been reached, the comparison stops and the result is false.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
- 
+For Date values, precision must be one of year, month, or day.
+
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
+
+As with all date/time calculations, comparisons are performed respecting the timezone offset.
+
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
+
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -2402,7 +2454,7 @@ This operator has two overloads:
 	List
 	Interval
 
-For the list overload, this operator returns a list with the elements that appear in both lists, using equivalence semantics. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results.
+For the list overload, this operator returns a list with the elements that appear in both lists, using equality semantics. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results.
 
 For the interval overload, this operator returns the interval that defines the overlapping portion of both arguments. If the arguments do not overlap, this operator returns null.
 
@@ -2420,9 +2472,11 @@ This operator has two overloads:
 	List, List
 	Interval, Interval
 
-For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equivalence semantics. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results. If the left argument is null, the result is null. If the right argument is null, the result is the left argument.
+For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equality semantics. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results.
 
-For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null. If either argument is null, the result is null.</xs:documentation>
+For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="NaryExpression"/>
@@ -2527,7 +2581,7 @@ If the startIndex or endIndex is less than 0, or if the endIndex is less than th
 		<xs:annotation>
 			<xs:documentation>The IndexOf operator returns the 0-based index of the given element in the given source list.
 
-The operator uses equivalence semantics as defined in the Equivalent operator to determine the index. The search is linear, and returns the index of the first element for which the equivalence comparison returns true.
+The operator uses equality semantics as defined in the Equal operator to determine the index. The search is linear, and returns the index of the first element for which the equality comparison returns true.
 
 If the list is empty, or no element is found, the result is -1.
 
@@ -2595,7 +2649,7 @@ If the element argument evaluates to null for some item in the source list, the 
 		<xs:annotation>
 			<xs:documentation>The Repeat expression performs successive ForEach until no new elements are returned.
 			
-The operator uses equivalence comparison semantics as defined in the Equivalent operator.
+The operator uses equality comparison semantics as defined in the Equal operator.
 
 If the source argument is null, the result is null.
 
@@ -2615,7 +2669,7 @@ If the element argument evaluates to null for some item in the source list, the 
 		<xs:annotation>
 			<xs:documentation>The Distinct operator takes a list of elements and returns a list containing only the unique elements within the input. For example, given the list of integers { 1, 1, 1, 2, 2, 3, 4, 4 }, the result of Distinct would be { 1, 2, 3, 4 }.
 			
-The operator uses equivalence comparison semantics as defined in the Equivalent operator.
+The operator uses equality comparison semantics as defined in the Equal operator.
 
 If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
