@@ -36,8 +36,8 @@ public class ConversionMap {
     private List<Conversion> genericConversions = new ArrayList<>();
     private boolean listDemotion = true;
     private boolean listPromotion = true;
-    private boolean intervalDemotion = true;
-    private boolean intervalPromotion = true;
+    private boolean intervalDemotion = false;
+    private boolean intervalPromotion = false;
 
     public void enableListDemotion() {
         listDemotion = true;
