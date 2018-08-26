@@ -40,8 +40,8 @@ public class CqlTranslator {
         DisableListTraversal,
         DisableListDemotion,
         DisableListPromotion,
-        DisableIntervalDemotion,
-        DisableIntervalPromotion,
+        EnableIntervalDemotion,
+        EnableIntervalPromotion,
         DisableMethodInvocation,
         RequireFromKeyword
     }
@@ -305,11 +305,11 @@ public class CqlTranslator {
         if (optionList.contains(CqlTranslator.Options.DisableListPromotion)) {
             builder.getConversionMap().disableListPromotion();
         }
-        if (optionList.contains(CqlTranslator.Options.DisableIntervalDemotion)) {
-            builder.getConversionMap().disableIntervalDemotion();
+        if (optionList.contains(CqlTranslator.Options.EnableIntervalDemotion)) {
+            builder.getConversionMap().enableIntervalDemotion();
         }
-        if (optionList.contains(CqlTranslator.Options.DisableIntervalPromotion)) {
-            builder.getConversionMap().disableIntervalPromotion();
+        if (optionList.contains(CqlTranslator.Options.EnableIntervalPromotion)) {
+            builder.getConversionMap().enableIntervalPromotion();
         }
         if (optionList.contains(CqlTranslator.Options.DisableMethodInvocation)) {
             visitor.disableMethodInvocation();
@@ -376,7 +376,7 @@ public class CqlTranslator {
                                  boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
                                  boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
                                  boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
-                                 boolean disableIntervalDemotion, boolean disableIntervalPromotion,
+                                 boolean enableIntervalDemotion, boolean enableIntervalPromotion,
                                  boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
                                  LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
         ArrayList<CqlTranslator.Options> options = new ArrayList<>();
@@ -404,11 +404,11 @@ public class CqlTranslator {
         if (disableListPromotion) {
             options.add(CqlTranslator.Options.DisableListPromotion);
         }
-        if (disableIntervalDemotion) {
-            options.add(CqlTranslator.Options.DisableIntervalDemotion);
+        if (enableIntervalDemotion) {
+            options.add(CqlTranslator.Options.EnableIntervalDemotion);
         }
-        if (disableIntervalPromotion) {
-            options.add(CqlTranslator.Options.DisableIntervalPromotion);
+        if (enableIntervalPromotion) {
+            options.add(CqlTranslator.Options.EnableIntervalPromotion);
         }
         if (disableMethodInvocation) {
             options.add(CqlTranslator.Options.DisableMethodInvocation);
@@ -484,8 +484,8 @@ public class CqlTranslator {
         OptionSpec disableListTraversal = parser.accepts("disable-list-traversal");
         OptionSpec disableListDemotion = parser.accepts("disable-list-demotion");
         OptionSpec disableListPromotion = parser.accepts("disable-list-promotion");
-        OptionSpec disableIntervalDemotion = parser.accepts("disable-interval-demotion");
-        OptionSpec disableIntervalPromotion = parser.accepts("disable-interval-promotion");
+        OptionSpec enableIntervalDemotion = parser.accepts("enable-interval-demotion");
+        OptionSpec enableIntervalPromotion = parser.accepts("enable-interval-promotion");
         OptionSpec disableMethodInvocation = parser.accepts("disable-method-invocation");
         OptionSpec requireFromKeyword = parser.accepts("require-from-keyword");
         OptionSpec strict = parser.accepts("strict");
@@ -575,8 +575,8 @@ public class CqlTranslator {
                     options.has(strict) || options.has(disableListTraversal),
                     options.has(strict) || options.has(disableListDemotion),
                     options.has(strict) || options.has(disableListPromotion),
-                    options.has(strict) || options.has(disableIntervalDemotion),
-                    options.has(strict) || options.has(disableIntervalPromotion),
+                    options.has(enableIntervalDemotion),
+                    options.has(enableIntervalPromotion),
                     options.has(strict) || options.has(disableMethodInvocation),
                     options.has(requireFromKeyword),
                     options.has(validateUnits),

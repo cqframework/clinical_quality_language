@@ -77,8 +77,8 @@ The CQL-to-ELM Translator is designed as a component that can be incorporated in
 |disable-list-traversal||Disables traversal of paths on list-valued expressions|
 |disable-list-demotion||Disables demotion of list-valued expressions to singletons|
 |disable-list-promotion||Disables promotion of singletons to list-valued expressions|
-|disable-interval-demotion||Disables demotion of interval-valued expressions to points|
-|disable-interval-promotion||Disables promotion of point-valued expressions to intervals|
+|enable-interval-demotion||Enables demotion of interval-valued expressions to points|
+|enable-interval-promotion||Enables promotion of point-valued expressions to intervals|
 |disable-method-invocation||Disables method-style invocation support|
 |require-from-keyword||Indicates that all queries will be required to start with a `from` keyword|
 |strict||A combination option that is equivalent to specifying all of disable-list-traversal, disable-list-demotion, disable-list-promotion, disable-interval-demotion, disable-interval-promotion, and disable-method-invocation|
