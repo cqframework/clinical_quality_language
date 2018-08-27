@@ -26,7 +26,7 @@ public class TestPointIntervalSignatures {
 
     @Test
     public void TestResolvedSignatures() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestPointIntervalSignatures.cql", 0, CqlTranslator.Options.DisableIntervalDemotion, CqlTranslator.Options.DisableIntervalPromotion);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestPointIntervalSignatures.cql", 0);
         Library library = translator.toELM();
         defs = new HashMap<>();
         if (library.getStatements() != null) {
