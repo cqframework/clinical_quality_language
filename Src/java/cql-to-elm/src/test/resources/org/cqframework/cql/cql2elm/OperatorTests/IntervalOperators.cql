@@ -5,6 +5,7 @@ define IntervalBefore: Interval[1, 5] before Interval[10, 15]
 define PointIntervalBefore: 5 before Interval[10, 15]
 define IntervalPointBefore: Interval[1, 5] before 10
 define IntervalCollapse: collapse { Interval[1, 5], Interval[3, 7], Interval[5, 10], Interval[50, 100] }
+define IntervalCollapseWithPer: collapse { Interval[1, 5], Interval[3, 7], Interval[5, 10], Interval[50, 100] } per 1 '1'
 define IntervalContains: Interval[1, 5] contains 3
 define IntervalEnd: end of Interval[1, 5]
 define IntervalEnds: Interval[3, 5] ends Interval[1, 5]
