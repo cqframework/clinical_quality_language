@@ -104,7 +104,7 @@
 			<xs:extension base="Interval">
 				<xs:sequence>
 					<xs:element name="low" type="Integer" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="high" type="Integer"  minOccurs="0" maxOccurs="1"/>
+					<xs:element name="high" type="Integer" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -133,8 +133,8 @@
 		<xs:complexContent>
 			<xs:extension base="Interval">
 				<xs:sequence>
-					<xs:element name="low" type="Date" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="high" type="Date" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="low" type="Date" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="high" type="Date" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -143,8 +143,8 @@
 		<xs:complexContent>
 			<xs:extension base="Interval">
 				<xs:sequence>
-					<xs:element name="low" type="DateTime" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="high" type="DateTime" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="low" type="DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="high" type="DateTime" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -153,8 +153,8 @@
 		<xs:complexContent>
 			<xs:extension base="Interval">
 				<xs:sequence>
-					<xs:element name="low" type="Time" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="high" type="Time" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="low" type="Time" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="high" type="Time" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
