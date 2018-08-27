@@ -1447,7 +1447,7 @@ The MinValue operator is defined for the Integer, Decimal, Date, DateTime, and T
 
 For Integer, MinValue returns the minimum signed 32-bit integer, -(2^31).
 
-For Decimal, MinValue returns the minimum representable Decimal value, (-10^37 - 1) / 10^8 (-9999999999999999999999999999.99999999).
+For Decimal, MinValue returns the minimum representable Decimal value, (-10^28 + 1) / 10^8 (-99999999999999999999.99999999).
 
 For Date, MinValue returns the minimum representable Date value, Date(1, 1, 1).
 
@@ -1471,7 +1471,7 @@ The MaxValue operator is defined for the Integer, Decimal, Date, DateTime, and T
 
 For Integer, MaxValue returns the maximum signed 32-bit integer, 2^31 - 1.
 
-For Decimal, MaxValue returns the maximum representable Decimal value, (10^37 - 1) / 10^8 (9999999999999999999999999999.99999999).
+For Decimal, MaxValue returns the maximum representable Decimal value, (10^28 - 1) / 10^8 (99999999999999999999.99999999).
 
 For Date, MaxValue returns the maximum representable Date value, Date(9999, 12, 31).
 
