@@ -2414,7 +2414,7 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Expand">
 		<xs:annotation>
-			<xs:documentation>The Expand operator returns the set of unit intervals for all the ranges present in the given list of intervals.
+			<xs:documentation>The Expand operator returns the set of intervals of width per for all the ranges present in the given list of intervals.
 				
 The per argument determines the size of the resulting intervals and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
 
