@@ -2397,6 +2397,8 @@ If either argument is null, the result is null.</xs:documentation>
 	<xs:complexType name="Collapse">
 		<xs:annotation>
 			<xs:documentation>The Collapse operator returns the unique set of intervals that completely covers the ranges present in the given list of intervals.
+			
+The operation is performed by combining successive intervals in the input that either overlap or meet, using the semantics defined for the Overlaps and Meets operators. Note that because those operators are themselves defined in terms of interval successor and predecessor operators, sets of date/time-based intervals that are only defined to a particular precision will calculate meets and overlaps at that precision. For example, a list of DateTime-based intervals where the boundaries are all specified to the hour will collapse at the hour precision, unless the collapse precision is overridden with the per argument.
 
 The per argument determines the precision at which the collapse is computed and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
 
