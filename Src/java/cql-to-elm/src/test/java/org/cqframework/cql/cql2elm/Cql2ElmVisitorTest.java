@@ -1032,8 +1032,9 @@ public class Cql2ElmVisitorTest {
         //  where->
         //      IncludedIn->
         //          left->
-        //              case FHIR.dateTime then Interval[FHIR.dateTime, FHIR.dateTime]
-        //              case FHIR.period then ToInterval(FHIR.period)
+        //              ToInterval()
+        //                  As(fhir:Period) ->
+        //                      Property(P.performed)
         //          right-> MeasurementPeriod
         Query query = (Query) def.getExpression();
 
@@ -1047,13 +1048,16 @@ public class Cql2ElmVisitorTest {
         Expression where = query.getWhere();
         assertThat(where, instanceOf(IncludedIn.class));
         IncludedIn includedIn = (IncludedIn)where;
-        assertThat(includedIn.getOperand().get(0), instanceOf(Case.class));
-        Case caseExpression = (Case)includedIn.getOperand().get(0);
-        assertThat(caseExpression.getCaseItem(), hasSize(2));
-        assertThat(caseExpression.getCaseItem().get(0).getWhen(), instanceOf(Is.class));
-        assertThat(caseExpression.getCaseItem().get(0).getThen(), instanceOf(Interval.class));
-        assertThat(caseExpression.getCaseItem().get(1).getWhen(), instanceOf(Is.class));
-        assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
+        assertThat(includedIn.getOperand().get(0), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef)includedIn.getOperand().get(0);
+        assertThat(functionRef.getName(), is("ToInterval"));
+        assertThat(functionRef.getOperand().get(0), instanceOf(As.class));
+        As asExpression = (As)functionRef.getOperand().get(0);
+        assertThat(asExpression.getAsType().getLocalPart(), is("Period"));
+        assertThat(asExpression.getOperand(), instanceOf(Property.class));
+        Property property = (Property)asExpression.getOperand();
+        assertThat(property.getScope(), is("P"));
+        assertThat(property.getPath(), is("performed"));
     }
 
     @Test
@@ -1068,15 +1072,15 @@ public class Cql2ElmVisitorTest {
         ExpressionDef def = (ExpressionDef) visitFile("TestIncludedIn.cql");
         // Query->
         //   where->
-        //      IncludedIn ->
-        //        left -> Interval
+        //      In ->
+        //        left -> Property
         //        right -> ParameterRef
         Query query = (Query)def.getExpression();
         Expression where = query.getWhere();
-        assertThat(where, instanceOf(IncludedIn.class));
-        IncludedIn includedIn = (IncludedIn)where;
-        assertThat(includedIn.getOperand().get(0), instanceOf(Interval.class));
-        assertThat(includedIn.getOperand().get(1), instanceOf(ParameterRef.class));
+        assertThat(where, instanceOf(In.class));
+        In inExpression = (In)where;
+        assertThat(inExpression.getOperand().get(0), instanceOf(Property.class));
+        assertThat(inExpression.getOperand().get(1), instanceOf(ParameterRef.class));
     }
 
     // TODO: This test needs to be repurposed, it won't work with the query as is.
