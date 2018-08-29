@@ -12,5 +12,6 @@ define oddsAndEvens:
 
 // Since the value of Odd in each tuple is an integer (not a list), it should be promoted
 // to a list, or CQL-to-ELM should produce an error.  But... it goes through unscathed!
+// Fixed, this now correctly gives an error
 define shouldNotBeAllowed:
   (oddsAndEvens) OE where OE.Odd includes 3

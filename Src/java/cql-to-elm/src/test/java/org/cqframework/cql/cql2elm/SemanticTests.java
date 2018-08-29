@@ -177,7 +177,7 @@ public class SemanticTests {
 
     @Test
     public void testMultiSourceQuery() throws IOException {
-        runSemanticTest("OperatorTests/MultiSourceQuery.cql", 0);
+        runSemanticTest("OperatorTests/MultiSourceQuery.cql", 1);
     }
 
     @Test
