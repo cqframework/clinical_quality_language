@@ -63,14 +63,14 @@ public class SystemFunctionResolver {
                 }
 
                 // Clinical Functions
-                case "AgeInYears": {
+                case "AgeInYears":
+                case "AgeInMonths": {
                     checkNumberOfOperands(fun, 0);
                     return resolveCalculateAge(
                             builder.enforceCompatible(getPatientBirthDateProperty(), builder.resolveTypeName("System", "Date")),
                             resolveAgeRelatedFunctionPrecision(fun));
                 }
 
-                case "AgeInMonths":
                 case "AgeInWeeks":
                 case "AgeInDays":
                 case "AgeInHours":
