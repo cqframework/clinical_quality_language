@@ -1898,6 +1898,8 @@ For the Interval overloads, the SameAs operator returns true if the intervals st
 
 The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
 			
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
+
 For Date values, precision must be one of year, month, or day.
 
 For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
@@ -1907,8 +1909,6 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
-
-If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1924,7 +1924,9 @@ If either argument is null, the result is null.</xs:documentation>
 
 For the Interval overload, the SameOrBefore operator returns true if the first interval ends on or before the second one starts. In other words, if the ending point of the first interval is less than or equal to the starting point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, or the specified precision has been reached, the comparison stops and the result is true.
+The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is true.
+
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 For Date values, precision must be one of year, month, or day.
 
@@ -1935,8 +1937,6 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
-
-If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1952,7 +1952,9 @@ If either argument is null, the result is null.</xs:documentation>
 			
 For the Interval overload, the SameOrAfter operator returns true if the first interval starts on or after the second one ends. In other words, if the starting point of the first interval is greater than or equal to the ending point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Date, DateTime, and Time overloads, this operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, or the specified precision has been reached, the comparison stops and the result is true.
+For the Date, DateTime, and Time overloads, this operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is true.
+
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 For Date values, precision must be one of year, month, or day.
 
@@ -1963,8 +1965,6 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
-
-If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2210,7 +2210,9 @@ If either argument is null, the result is null. </xs:documentation>
 			
 For the Interval overload, the Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Date, DateTime, and Time overloads, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, or the specified precision has been reached, the comparison stops and the result is false.
+For the Date, DateTime, and Time overloads, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is false.
+
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 For Date values, precision must be one of year, month, or day.
 
@@ -2221,8 +2223,6 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
-
-If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2239,7 +2239,9 @@ If either argument is null, the result is null.</xs:documentation>
 			
 For the Interval overload, the After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Date, DateTime, and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision, or the specified precision has been reached, the comparison stops and the result is false.
+For the Date, DateTime, and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is false.
+
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 For Date values, precision must be one of year, month, or day.
 
@@ -2250,8 +2252,6 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
-
-If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
