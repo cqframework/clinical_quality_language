@@ -60,7 +60,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         for (Token token : tokens.getTokens()) {
             if (token.getText().startsWith("//") || token.getText().startsWith("/*")) {
                 String whitespace = token.getTokenIndex() < 1 ? "" : tokens.get(token.getTokenIndex() - 1).getText();
-                comments.add(new CommentToken(token, whitespace));
+                comments.add(new CommentToken(token, whitespace.matches("\\s+") ? whitespace : ""));
             }
         }
     }
@@ -320,7 +320,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
         reset();
         super.visitLibrary(ctx);
         resetIndentLevel();
-        newLine();
+//        newLine();
         return output.toString();
     }
 
