@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
 import org.cqframework.cql.cql2elm.model.Invocation;
+import org.cqframework.cql.cql2elm.model.OperatorResolution;
 import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Round;
@@ -50,5 +51,13 @@ public abstract class AbstractExpressionInvocation implements Invocation {
         }
 
         return operand;
+    }
+
+    private OperatorResolution resolution;
+    public OperatorResolution getResolution() {
+        return resolution;
+    }
+    public void setResolution(OperatorResolution resolution) {
+        this.resolution = resolution;
     }
 }

@@ -169,7 +169,7 @@ public class InstantiationContextImpl implements InstantiationContext {
 
         // Add interval promotion if no other conversion is found
         if (results.isEmpty()) {
-            if (!(callType instanceof IntervalType) && operatorMap.isPointType(callType)) {
+            if (!(callType instanceof IntervalType) && operatorMap.isPointType(callType) && (allowPromotionAndDemotion || conversionMap.isIntervalPromotionEnabled())) {
                 results.add(new IntervalType(callType));
                 conversionScore += ConversionMap.ConversionScore.IntervalPromotion.score();
             }
@@ -210,7 +210,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         // NOTE: FHIRPath support
         // Add list promotion if no other conversion is found
         if (results.isEmpty()) {
-            if (!(callType instanceof ListType)) {
+            if (!(callType instanceof ListType) && (allowPromotionAndDemotion || conversionMap.isListPromotionEnabled())) {
                 results.add(new ListType(callType));
                 conversionScore += ConversionMap.ConversionScore.ListPromotion.score();
             }
@@ -251,7 +251,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         if (results.isEmpty()) {
             if (callType instanceof IntervalType) {
                 IntervalType callIntervalType = (IntervalType)callType;
-                if (callIntervalType.getPointType() instanceof SimpleType) {
+                if (callIntervalType.getPointType() instanceof SimpleType && (allowPromotionAndDemotion || conversionMap.isIntervalDemotionEnabled())) {
                     results.add((SimpleType)callIntervalType.getPointType());
                     conversionScore += ConversionMap.ConversionScore.IntervalDemotion.score();
                 }
@@ -263,7 +263,7 @@ public class InstantiationContextImpl implements InstantiationContext {
         if (results.isEmpty()) {
             if (callType instanceof ListType) {
                 ListType callListType = (ListType)callType;
-                if (callListType.getElementType() instanceof SimpleType) {
+                if (callListType.getElementType() instanceof SimpleType && (allowPromotionAndDemotion || conversionMap.isListDemotionEnabled())) {
                     results.add((SimpleType)callListType.getElementType());
                     conversionScore += ConversionMap.ConversionScore.ListDemotion.score();
                 }

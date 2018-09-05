@@ -583,12 +583,22 @@ public class LibraryBuilder {
         return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression), false);
     }
 
+    public Invocation resolveBinaryInvocation(String libraryName, String operatorName, BinaryExpression expression) {
+        return resolveBinaryInvocation(libraryName, operatorName, expression, true, false);
+    }
+
     public Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression) {
-        return resolveBinaryCall(libraryName, operatorName, expression, true, false);
+        Invocation invocation = resolveBinaryInvocation(libraryName, operatorName, expression);
+        return invocation != null ? invocation.getExpression() : null;
+    }
+
+    public Invocation resolveBinaryInvocation(String libraryName, String operatorName, BinaryExpression expression, boolean mustResolve, boolean allowPromotionAndDemotion) {
+        return resolveInvocation(libraryName, operatorName, new BinaryExpressionInvocation(expression), mustResolve, allowPromotionAndDemotion);
     }
 
     public Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression, boolean mustResolve, boolean allowPromotionAndDemotion) {
-        return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression), mustResolve, allowPromotionAndDemotion);
+        Invocation invocation = resolveBinaryInvocation(libraryName, operatorName, expression, mustResolve, allowPromotionAndDemotion);
+        return invocation != null ? invocation.getExpression() : null;
     }
 
     public Expression resolveTernaryCall(String libraryName, String operatorName, TernaryExpression expression) {
@@ -735,63 +745,125 @@ public class LibraryBuilder {
     }
 
     public Expression resolveIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Invocation result = resolveInInvocation(left, right, dateTimePrecision);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveInInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         In in = of.createIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        resolveBinaryCall("System", "In", in);
-        return in;
+        return resolveBinaryInvocation("System", "In", in);
     }
 
     public Expression resolveProperIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Invocation result = resolveProperInInvocation(left, right, dateTimePrecision);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveProperInInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         ProperIn properIn = of.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        resolveBinaryCall("System", "ProperIn", properIn);
-        return properIn;
+        return resolveBinaryInvocation("System", "ProperIn", properIn);
     }
 
     public Expression resolveContains(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Invocation result = resolveContainsInvocation(left, right, dateTimePrecision);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveContainsInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         Contains contains = of.createContains().withOperand(left, right).withPrecision(dateTimePrecision);
-        resolveBinaryCall("System", "Contains", contains);
-        return contains;
+        return resolveBinaryInvocation("System", "Contains", contains);
     }
 
     public Expression resolveProperContains(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Invocation result = resolveProperContainsInvocation(left, right, dateTimePrecision);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveProperContainsInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         ProperContains properContains = of.createProperContains().withOperand(left, right).withPrecision(dateTimePrecision);
-        resolveBinaryCall("System", "ProperContains", properContains);
-        return properContains;
+        return resolveBinaryInvocation("System", "ProperContains", properContains);
+    }
+
+    private Expression lowestScoringInvocation(Invocation primary, Invocation secondary) {
+        if (primary != null) {
+            if (secondary != null) {
+                if (secondary.getResolution().getScore() < primary.getResolution().getScore()) {
+                    return secondary.getExpression();
+                }
+            }
+
+            return primary.getExpression();
+        }
+
+        if (secondary != null) {
+            return secondary.getExpression();
+        }
+
+        return null;
     }
 
     public Expression resolveIncludes(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         Includes includes = of.createIncludes().withOperand(left, right).withPrecision(dateTimePrecision);
-        Expression result = resolveBinaryCall("System", "Includes", includes, false, false);
-        if (result == null) {
-            return resolveContains(left, right, dateTimePrecision);
+        Invocation includesInvocation = resolveBinaryInvocation("System", "Includes", includes, false, false);
+
+        Contains contains = of.createContains().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation containsInvocation = resolveBinaryInvocation("System", "Contains", contains, false, false);
+
+        Expression result = lowestScoringInvocation(includesInvocation, containsInvocation);
+        if (result != null) {
+            return result;
         }
-        return result;
+
+        // Neither operator resolved, so force a resolve to throw
+        return resolveBinaryCall("System", "Includes", includes);
     }
 
     public Expression resolveProperIncludes(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         ProperIncludes properIncludes = of.createProperIncludes().withOperand(left, right).withPrecision(dateTimePrecision);
-        Expression result = resolveBinaryCall("System", "ProperIncludes", properIncludes, false, false);
-        if (result == null) {
-            return resolveProperContains(left, right, dateTimePrecision);
+        Invocation properIncludesInvocation = resolveBinaryInvocation("System", "ProperIncludes", properIncludes, false, false);
+
+        ProperContains properContains = of.createProperContains().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation properContainsInvocation = resolveBinaryInvocation("System", "ProperContains", properContains, false, false);
+
+        Expression result = lowestScoringInvocation(properIncludesInvocation, properContainsInvocation);
+        if (result != null) {
+            return result;
         }
-        return result;
+
+        // Neither operator resolved, so force a resolve to throw
+        return resolveBinaryCall("System", "ProperIncludes", properIncludes);
     }
 
     public Expression resolveIncludedIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         IncludedIn includedIn = of.createIncludedIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        Expression result = resolveBinaryCall("System", "IncludedIn", includedIn, false, false);
-        if (result == null) {
-            return resolveIn(left, right, dateTimePrecision);
+        Invocation includedInInvocation = resolveBinaryInvocation("System", "IncludedIn", includedIn, false, false);
+
+        In in = of.createIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation inInvocation = resolveBinaryInvocation("System", "In", in, false, false);
+
+        Expression result = lowestScoringInvocation(includedInInvocation, inInvocation);
+        if (result != null) {
+            return result;
         }
-        return result;
+
+        // Neither operator resolved, so force a resolve to throw
+        return resolveBinaryCall("System", "IncludedIn", includedIn);
     }
 
     public Expression resolveProperIncludedIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
         ProperIncludedIn properIncludedIn = of.createProperIncludedIn().withOperand(left, right).withPrecision(dateTimePrecision);
-        Expression result = resolveBinaryCall("System", "ProperIncludedIn", properIncludedIn, false, false);
-        if (result == null) {
-            return resolveProperIn(left, right, dateTimePrecision);
+        Invocation properIncludedInInvocation = resolveBinaryInvocation("System", "ProperIncludedIn", properIncludedIn, false, false);
+
+        ProperIn properIn = of.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation properInInvocation = resolveBinaryInvocation("System", "ProperIn", properIn, false, false);
+
+        Expression result = lowestScoringInvocation(properIncludedInInvocation, properInInvocation);
+        if (result != null) {
+            return result;
         }
-        return result;
+
+        // Neither operator resolved, so force a resolve to throw
+        return resolveBinaryCall("System", "ProperIncludedIn", properIncludedIn);
     }
 
     public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
@@ -803,6 +875,11 @@ public class LibraryBuilder {
     }
 
     public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion) {
+        Invocation result = resolveInvocation(libraryName, operatorName, invocation, mustResolve, allowPromotionAndDemotion);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveInvocation(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
@@ -813,7 +890,7 @@ public class LibraryBuilder {
             dataTypes.add(operand.getResultType());
         }
 
-        CallContext callContext = new CallContext(libraryName, operatorName, allowPromotionAndDemotion, dataTypes.toArray(new DataType[dataTypes.size()]));
+        CallContext callContext = new CallContext(libraryName, operatorName, allowPromotionAndDemotion, mustResolve, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
         if (resolution != null || mustResolve) {
             checkOperator(callContext, resolution);
@@ -842,7 +919,8 @@ public class LibraryBuilder {
             }
 
             invocation.setResultType(resolution.getOperator().getResultType());
-            return invocation.getExpression();
+            invocation.setResolution(resolution);
+            return invocation;
         }
         return null;
     }

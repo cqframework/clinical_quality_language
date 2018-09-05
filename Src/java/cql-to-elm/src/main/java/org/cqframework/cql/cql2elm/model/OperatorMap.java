@@ -33,7 +33,7 @@ public class OperatorMap {
     }
 
     public boolean supportsOperator(String libraryName, String operatorName, DataType... signature) {
-        CallContext call = new CallContext(libraryName, operatorName, false, signature);
+        CallContext call = new CallContext(libraryName, operatorName, false, false, signature);
         try {
             OperatorResolution resolution = resolveOperator(call, null);
             if (resolution == null) {
@@ -122,6 +122,8 @@ public class OperatorMap {
                     }
                 }
 
+                resolution.setScore(score);
+
                 if (score < lowestScore) {
                     lowestScore = score;
                     lowestScoringResults.clear();
@@ -133,13 +135,18 @@ public class OperatorMap {
             }
 
             if (lowestScoringResults.size() > 1) {
-                // ERROR:
-                StringBuilder message = new StringBuilder("Call to operator ").append(callContext.getOperatorName())
-                        .append(callContext.getSignature()).append(" is ambiguous with: ");
-                for (OperatorResolution resolution : lowestScoringResults) {
-                    message.append("\n  - ").append(resolution.getOperator().getName()).append(resolution.getOperator().getSignature());
+                if (callContext.getMustResolve()) {
+                    // ERROR:
+                    StringBuilder message = new StringBuilder("Call to operator ").append(callContext.getOperatorName())
+                            .append(callContext.getSignature()).append(" is ambiguous with: ");
+                    for (OperatorResolution resolution : lowestScoringResults) {
+                        message.append("\n  - ").append(resolution.getOperator().getName()).append(resolution.getOperator().getSignature());
+                    }
+                    throw new IllegalArgumentException(message.toString());
                 }
-                throw new IllegalArgumentException(message.toString());
+                else {
+                    return null;
+                }
             }
             else {
                 result = lowestScoringResults.get(0);

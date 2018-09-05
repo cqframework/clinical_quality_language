@@ -47,12 +47,20 @@ public class ConversionMap {
         listDemotion = false;
     }
 
+    public boolean isListDemotionEnabled() {
+        return listDemotion;
+    }
+
     public void enableListPromotion() {
         listPromotion = true;
     }
 
     public void disableListPromotion() {
         listPromotion = false;
+    }
+
+    public boolean isListPromotionEnabled() {
+        return listPromotion;
     }
 
     public void enableIntervalDemotion() {
@@ -63,12 +71,20 @@ public class ConversionMap {
         intervalDemotion = false;
     }
 
+    public boolean isIntervalDemotionEnabled() {
+        return intervalDemotion;
+    }
+
     public void enableIntervalPromotion() {
         intervalPromotion = true;
     }
 
     public void disableIntervalPromotion() {
         intervalPromotion = false;
+    }
+
+    public boolean isIntervalPromotionEnabled() {
+        return intervalPromotion;
     }
 
     public void add(Conversion conversion) {

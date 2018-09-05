@@ -16,4 +16,8 @@ public interface Invocation {
     void setResultType(DataType resultType);
 
     Expression getExpression();
+
+    void setResolution(OperatorResolution resolution);
+
+    OperatorResolution getResolution();
 }
