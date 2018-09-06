@@ -270,6 +270,7 @@ public class SystemFunctionResolver {
                 case "ToInteger":
                 case "ToDecimal":
                 case "ToDateTime":
+                case "ToDate":
                 case "ToTime":
                 case "ToQuantity":
                 case "ToConcept": {
