@@ -72,54 +72,7 @@ public class OperatorMap {
                     DataType operand = operands.next();
                     DataType callOperand = callOperands.next();
                     Conversion conversion = conversions != null ? conversions.next() : null;
-                    if (operand.equals(callOperand)) {
-                        score += ConversionMap.ConversionScore.ExactMatch.score();
-                    }
-                    else if (operand.isSuperTypeOf(callOperand)) {
-                        score += ConversionMap.ConversionScore.SubType.score();
-                    }
-                    else if (callOperand.isCompatibleWith(operand)) {
-                        score += ConversionMap.ConversionScore.Compatible.score();
-                    }
-                    else if (conversion != null) {
-                        if (conversion.isCast()) {
-                            score += ConversionMap.ConversionScore.Cast.score();
-                        }
-                        else if (conversion.isIntervalDemotion()) {
-                            score += ConversionMap.ConversionScore.IntervalDemotion.score();
-                        }
-                        else if (conversion.isListDemotion()) {
-                            score += ConversionMap.ConversionScore.ListDemotion.score();
-                        }
-                        else if (conversion.isIntervalPromotion()) {
-                            score += ConversionMap.ConversionScore.IntervalPromotion.score();
-                        }
-                        else if (conversion.isListPromotion()) {
-                            score += ConversionMap.ConversionScore.ListPromotion.score();
-                        }
-                        else if (conversion.isListConversion()) {
-                            if (((ListType)conversion.getToType()).getElementType() instanceof SimpleType) {
-                                score += ConversionMap.ConversionScore.SimpleConversion.score();
-                            }
-                            else {
-                                score += ConversionMap.ConversionScore.ComplexConversion.score();
-                            }
-                        }
-                        else if (conversion.isIntervalConversion()) {
-                            if (((IntervalType)conversion.getToType()).getPointType() instanceof SimpleType) {
-                                score += ConversionMap.ConversionScore.SimpleConversion.score();
-                            }
-                            else {
-                                score += ConversionMap.ConversionScore.ComplexConversion.score();
-                            }
-                        }
-                        else if (conversion.getToType() instanceof ClassType) {
-                            score += ConversionMap.ConversionScore.ComplexConversion.score();
-                        }
-                        else {
-                            score += ConversionMap.ConversionScore.SimpleConversion.score();
-                        }
-                    }
+                    score += ConversionMap.getConversionScore(callOperand, operand, conversion);
                 }
 
                 resolution.setScore(score);

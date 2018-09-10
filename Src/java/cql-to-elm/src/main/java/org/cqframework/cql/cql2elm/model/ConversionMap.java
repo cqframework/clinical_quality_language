@@ -1,9 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.cql.model.ChoiceType;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.IntervalType;
-import org.hl7.cql.model.ListType;
+import org.hl7.cql.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +29,24 @@ public class ConversionMap {
             this.score = score;
         }
     }
+
+    public static int getConversionScore(DataType callOperand, DataType operand, Conversion conversion) {
+        if (operand.equals(callOperand)) {
+            return ConversionMap.ConversionScore.ExactMatch.score();
+        }
+        else if (operand.isSuperTypeOf(callOperand)) {
+            return ConversionMap.ConversionScore.SubType.score();
+        }
+        else if (callOperand.isCompatibleWith(operand)) {
+            return ConversionMap.ConversionScore.Compatible.score();
+        }
+        else if (conversion != null) {
+            return conversion.getScore();
+        }
+
+        throw new IllegalArgumentException("Could not determine conversion score for conversion");
+    }
+
     private Map<DataType, List<Conversion>> map = new HashMap<>();
     private List<Conversion> genericConversions = new ArrayList<>();
     private boolean listDemotion = true;

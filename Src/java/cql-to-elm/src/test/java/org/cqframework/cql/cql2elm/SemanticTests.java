@@ -22,6 +22,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testInValueSet() throws IOException {
+        runSemanticTest("InValueSetTest.cql");
+    }
+
+    @Test
     public void testProperties() throws IOException {
         runSemanticTest("PropertyTest.cql");
     }
