@@ -2811,6 +2811,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         retrieve.setCodes(((InValueSet) in).getValueset());
                     } else if (in instanceof InCodeSystem) {
                         retrieve.setCodes(((InCodeSystem) in).getCodesystem());
+                    } else if (in instanceof AnyInValueSet) {
+                        retrieve.setCodes(((AnyInValueSet) in).getValueset());
+                    } else if (in instanceof AnyInCodeSystem) {
+                        retrieve.setCodes(((AnyInCodeSystem) in).getCodesystem());
                     } else {
                         // ERROR:
                         // WARNING:
