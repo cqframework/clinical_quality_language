@@ -724,6 +724,14 @@ public class LibraryBuilder {
 
     public Expression resolveIn(Expression left, Expression right) {
         if (right instanceof ValueSetRef) {
+            if (left.getResultType() instanceof ListType) {
+                AnyInValueSet anyIn = of.createAnyInValueSet()
+                        .withCodes(left)
+                        .withValueset((ValueSetRef)right);
+                resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
+                return anyIn;
+            }
+
             InValueSet in = of.createInValueSet()
                     .withCode(left)
                     .withValueset((ValueSetRef) right);
@@ -732,6 +740,13 @@ public class LibraryBuilder {
         }
 
         if (right instanceof CodeSystemRef) {
+            if (left.getResultType() instanceof ListType) {
+                AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
+                        .withCodes(left)
+                        .withCodesystem((CodeSystemRef)right);
+                resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
+                return anyIn;
+            }
             InCodeSystem in = of.createInCodeSystem()
                     .withCode(left)
                     .withCodesystem((CodeSystemRef)right);
