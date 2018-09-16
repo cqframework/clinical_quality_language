@@ -513,6 +513,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Product", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
         system.add(new Operator("Product", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("Product", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
