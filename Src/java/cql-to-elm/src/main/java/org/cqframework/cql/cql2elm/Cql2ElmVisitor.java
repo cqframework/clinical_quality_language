@@ -1401,10 +1401,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private DateTimePrecision parseDateTimePrecision(String dateTimePrecision) {
-        return parseDateTimePrecision(dateTimePrecision, true);
+        return parseDateTimePrecision(dateTimePrecision, true, true);
     }
 
-    private DateTimePrecision parseDateTimePrecision(String dateTimePrecision, boolean precisionRequired) {
+    private DateTimePrecision parseComparableDateTimePrecision(String dateTimePrecision) {
+        return parseDateTimePrecision(dateTimePrecision, true, false);
+    }
+
+    private DateTimePrecision parseComparableDateTimePrecision(String dateTimePrecision, boolean precisionRequired) {
+        return parseDateTimePrecision(dateTimePrecision, precisionRequired, false);
+    }
+
+    private DateTimePrecision parseDateTimePrecision(String dateTimePrecision, boolean precisionRequired, boolean allowWeeks) {
         if (dateTimePrecision == null) {
             if (precisionRequired) {
                 throw new IllegalArgumentException("dateTimePrecision is null");
@@ -1425,6 +1433,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             case "wk":
             case "week":
             case "weeks":
+                if (!allowWeeks) {
+                    throw new IllegalArgumentException("Week precision cannot be used for comparisons.");
+                }
                 return DateTimePrecision.WEEK;
             case "d":
             case "day":
@@ -1601,7 +1612,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             case "in":
                 if (ctx.dateTimePrecisionSpecifier() != null) {
                     In in = of.createIn()
-                            .withPrecision(parseDateTimePrecision(ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()))
+                            .withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()))
                             .withOperand(
                                     parseExpression(ctx.expression(0)),
                                     parseExpression(ctx.expression(1))
@@ -1617,7 +1628,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             case "contains":
                 if (ctx.dateTimePrecisionSpecifier() != null) {
                     Contains contains = of.createContains()
-                            .withPrecision(parseDateTimePrecision(ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()))
+                            .withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecisionSpecifier().dateTimePrecision().getText()))
                             .withOperand(
                                     parseExpression(ctx.expression(0)),
                                     parseExpression(ctx.expression(1))
@@ -1962,7 +1973,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         boolean allowPromotionAndDemotion = false;
         if (ctx.relativeQualifier() == null) {
             if (ctx.dateTimePrecision() != null) {
-                operator = of.createSameAs().withPrecision(parseDateTimePrecision(ctx.dateTimePrecision().getText()));
+                operator = of.createSameAs().withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecision().getText()));
             } else {
                 operator = of.createSameAs();
             }
@@ -1971,7 +1982,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             switch (ctx.relativeQualifier().getText()) {
                 case "or after": {
                     if (ctx.dateTimePrecision() != null) {
-                        operator = of.createSameOrAfter().withPrecision(parseDateTimePrecision(ctx.dateTimePrecision().getText()));
+                        operator = of.createSameOrAfter().withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecision().getText()));
                     } else {
                         operator = of.createSameOrAfter();
                     }
@@ -1981,7 +1992,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 break;
                 case "or before": {
                     if (ctx.dateTimePrecision() != null) {
-                        operator = of.createSameOrBefore().withPrecision(parseDateTimePrecision(ctx.dateTimePrecision().getText()));
+                        operator = of.createSameOrBefore().withPrecision(parseComparableDateTimePrecision(ctx.dateTimePrecision().getText()));
                     } else {
                         operator = of.createSameOrBefore();
                     }
@@ -2044,17 +2055,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (isRightPoint) {
             if (isProper) {
-                return libraryBuilder.resolveProperContains(timingOperator.getLeft(), timingOperator.getRight(), parseDateTimePrecision(dateTimePrecision, false));
+                return libraryBuilder.resolveProperContains(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
             }
 
-            return libraryBuilder.resolveContains(timingOperator.getLeft(), timingOperator.getRight(), parseDateTimePrecision(dateTimePrecision, false));
+            return libraryBuilder.resolveContains(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
         if (isProper) {
-            return libraryBuilder.resolveProperIncludes(timingOperator.getLeft(), timingOperator.getRight(), parseDateTimePrecision(dateTimePrecision, false));
+            return libraryBuilder.resolveProperIncludes(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
-        return libraryBuilder.resolveIncludes(timingOperator.getLeft(), timingOperator.getRight(), parseDateTimePrecision(dateTimePrecision, false));
+        return libraryBuilder.resolveIncludes(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
     }
 
     @Override
@@ -2101,17 +2112,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (isLeftPoint) {
             if (isProper) {
-                return libraryBuilder.resolveProperIn(timingOperator.getLeft(), timingOperator.getRight(), parseDateTimePrecision(dateTimePrecision, false));
+                return libraryBuilder.resolveProperIn(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
             }
 
-            return libraryBuilder.resolveIn(timingOperator.getLeft(), timingOperator.getRight(), parseDateTimePrecision(dateTimePrecision, false));
+            return libraryBuilder.resolveIn(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
         if (isProper) {
-            return libraryBuilder.resolveProperIncludedIn(timingOperator.getLeft(), timingOperator.getRight(), parseDateTimePrecision(dateTimePrecision, false));
+            return libraryBuilder.resolveProperIncludedIn(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
         }
 
-        return libraryBuilder.resolveIncludedIn(timingOperator.getLeft(), timingOperator.getRight(), parseDateTimePrecision(dateTimePrecision, false));
+        return libraryBuilder.resolveIncludedIn(timingOperator.getLeft(), timingOperator.getRight(), parseComparableDateTimePrecision(dateTimePrecision, false));
     }
 
     @Override
@@ -2202,7 +2213,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (isBefore) {
                     SameOrBefore sameOrBefore = of.createSameOrBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
-                        sameOrBefore.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                        sameOrBefore.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
                     libraryBuilder.resolveBinaryCall("System", "SameOrBefore", sameOrBefore, true, true);
                     return sameOrBefore;
@@ -2210,7 +2221,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 } else {
                     SameOrAfter sameOrAfter = of.createSameOrAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
-                        sameOrAfter.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                        sameOrAfter.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
                     libraryBuilder.resolveBinaryCall("System", "SameOrAfter", sameOrAfter, true, true);
                     return sameOrAfter;
@@ -2220,7 +2231,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (isBefore) {
                     Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
-                        before.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                        before.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
                     libraryBuilder.resolveBinaryCall("System", "Before", before, true, true);
                     return before;
@@ -2228,7 +2239,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 } else {
                     After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                     if (dateTimePrecision != null) {
-                        after.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                        after.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                     }
                     libraryBuilder.resolveBinaryCall("System", "After", after, true, true);
                     return after;
@@ -2286,7 +2297,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                 SameAs sameAs = of.createSameAs().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                 if (dateTimePrecision != null) {
-                    sameAs.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                    sameAs.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                 }
                 libraryBuilder.resolveBinaryCall("System", "SameAs", sameAs);
                 return sameAs;
@@ -2312,7 +2323,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             if (!isOffsetInclusive) {
                                 Before before = of.createBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
-                                    before.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                                    before.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "Before", before, true, true);
                                 return before;
@@ -2320,7 +2331,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             else {
                                 SameOrBefore sameOrBefore = of.createSameOrBefore().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
-                                    sameOrBefore.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                                    sameOrBefore.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "SameOrBefore", sameOrBefore, true, true);
                                 return sameOrBefore;
@@ -2335,7 +2346,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             if (!isOffsetInclusive) {
                                 After after = of.createAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
-                                    after.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                                    after.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "After", after, true, true);
                                 return after;
@@ -2343,7 +2354,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             else {
                                 SameOrAfter sameOrAfter = of.createSameOrAfter().withOperand(timingOperator.getLeft(), timingOperator.getRight());
                                 if (dateTimePrecision != null) {
-                                    sameOrAfter.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                                    sameOrAfter.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                                 }
                                 libraryBuilder.resolveBinaryCall("System", "SameOrAfter", sameOrAfter, true, true);
                                 return sameOrAfter;
@@ -2383,7 +2394,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         track(interval, ctx.quantityOffset());
                         In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
                         if (dateTimePrecision != null) {
-                            in.setPrecision(parseDateTimePrecision(dateTimePrecision));
+                            in.setPrecision(parseComparableDateTimePrecision(dateTimePrecision));
                         }
                         track(in, ctx.quantityOffset());
                         libraryBuilder.resolveBinaryCall("System", "In", in);
@@ -2496,18 +2507,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (ctx.getChildCount() == (1 + (dateTimePrecision == null ? 0 : 1))) {
             operator = dateTimePrecision != null
-                    ? of.createMeets().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    ? of.createMeets().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                     : of.createMeets();
             operatorName = "Meets";
         } else {
             if ("before".equals(ctx.getChild(1).getText())) {
                 operator = dateTimePrecision != null
-                        ? of.createMeetsBefore().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        ? of.createMeetsBefore().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                         : of.createMeetsBefore();
                 operatorName = "MeetsBefore";
             } else {
                 operator = dateTimePrecision != null
-                        ? of.createMeetsAfter().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        ? of.createMeetsAfter().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                         : of.createMeetsAfter();
                 operatorName = "MeetsAfter";
             }
@@ -2528,18 +2539,18 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         if (ctx.getChildCount() == (1 + (dateTimePrecision == null ? 0 : 1))) {
             operator = dateTimePrecision != null
-                    ? of.createOverlaps().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                    ? of.createOverlaps().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                     : of.createOverlaps();
             operatorName = "Overlaps";
         } else {
             if ("before".equals(ctx.getChild(1).getText())) {
                 operator = dateTimePrecision != null
-                        ? of.createOverlapsBefore().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        ? of.createOverlapsBefore().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                         : of.createOverlapsBefore();
                 operatorName = "OverlapsBefore";
             } else {
                 operator = dateTimePrecision != null
-                        ? of.createOverlapsAfter().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                        ? of.createOverlapsAfter().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                         : of.createOverlapsAfter();
                 operatorName = "OverlapsAfter";
             }
@@ -2557,7 +2568,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 : null;
 
         Starts starts = (dateTimePrecision != null
-                ? of.createStarts().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                ? of.createStarts().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                 : of.createStarts()
         ).withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
 
@@ -2572,7 +2583,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 : null;
 
         Ends ends = (dateTimePrecision != null
-                ? of.createEnds().withPrecision(parseDateTimePrecision(dateTimePrecision))
+                ? of.createEnds().withPrecision(parseComparableDateTimePrecision(dateTimePrecision))
                 : of.createEnds()
         ).withOperand(timingOperators.peek().getLeft(), timingOperators.peek().getRight());
 
