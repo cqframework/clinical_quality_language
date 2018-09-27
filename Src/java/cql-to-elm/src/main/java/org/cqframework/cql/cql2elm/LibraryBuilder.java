@@ -1009,9 +1009,10 @@ public class LibraryBuilder {
         FunctionRef fun = buildFunctionRef(libraryName, functionName, paramList);
 
         // First attempt to resolve as a system or local function
-        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), false, false);
+        FunctionRefInvocation invocation = new FunctionRefInvocation(fun);
+        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), invocation, false, false);
         if (fun != null) {
-            if ("System".equals(fun.getLibraryName())) {
+            if ("System".equals(invocation.getResolution().getOperator().getLibraryName())) {
                 fun = buildFunctionRef(libraryName, functionName, paramList); // Rebuild the fun from the original arguments, otherwise it will resolve with conversions in place
                 Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
                 if (systemFunction != null) {

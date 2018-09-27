@@ -37,10 +37,4 @@ public class FunctionRefInvocation extends AbstractExpressionInvocation {
             ((FunctionRef)expression).getSignature().add(typeSpecifier);
         }
     }
-
-    @Override
-    public void setResolution(OperatorResolution resolution) {
-        super.setResolution(resolution);
-        ((FunctionRef)expression).setLibraryName(resolution.getOperator().getLibraryName());
-    }
 }
