@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import org.cqframework.cql.cql2elm.model.OperatorResolution;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.FunctionRef;
 import org.hl7.elm.r1.TypeSpecifier;
@@ -35,5 +36,11 @@ public class FunctionRefInvocation extends AbstractExpressionInvocation {
         for (TypeSpecifier typeSpecifier : signature) {
             ((FunctionRef)expression).getSignature().add(typeSpecifier);
         }
+    }
+
+    @Override
+    public void setResolution(OperatorResolution resolution) {
+        super.setResolution(resolution);
+        ((FunctionRef)expression).setLibraryName(resolution.getOperator().getLibraryName());
     }
 }

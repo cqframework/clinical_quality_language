@@ -993,7 +993,7 @@ public class LibraryBuilder {
         return resolveFunction(libraryName, functionName, paramList, true);
     }
 
-    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve) {
+    private FunctionRef buildFunctionRef(String libraryName, String functionName, Iterable<Expression> paramList) {
         FunctionRef fun = of.createFunctionRef()
                 .withLibraryName(libraryName)
                 .withName(functionName);
@@ -1002,16 +1002,46 @@ public class LibraryBuilder {
             fun.getOperand().add(param);
         }
 
-        Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
-        if (systemFunction != null) {
-            return systemFunction;
+        return fun;
+    }
+
+    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve) {
+        FunctionRef fun = buildFunctionRef(libraryName, functionName, paramList);
+
+        // First attempt to resolve as a system or local function
+        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), false, false);
+        if (fun != null) {
+            if ("System".equals(fun.getLibraryName())) {
+                fun = buildFunctionRef(libraryName, functionName, paramList); // Rebuild the fun from the original arguments, otherwise it will resolve with conversions in place
+                Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
+                if (systemFunction != null) {
+                    return systemFunction;
+                }
+            }
+            else {
+                // If the invocation is to a local function or a function in a non-system library, check literal context
+                if (mustResolve) {
+                    checkLiteralContext();
+                }
+            }
         }
 
-        if (mustResolve) {
-            checkLiteralContext();
-        }
+        // If it didn't resolve, there are two possibilities
+            // 1. It is a special system function resolution that only resolves with the systemFunctionResolver
+            // 2. It is an error condition that needs to be reported
+        if (fun == null) {
+            fun = buildFunctionRef(libraryName, functionName, paramList);
+            Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
+            if (systemFunction != null) {
+                return systemFunction;
+            }
 
-        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve, false);
+            if (mustResolve) {
+                checkLiteralContext();
+            }
+
+            fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve, false);
+        }
 
         return fun;
     }

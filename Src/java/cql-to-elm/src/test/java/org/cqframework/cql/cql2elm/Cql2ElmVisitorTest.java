@@ -998,6 +998,14 @@ public class Cql2ElmVisitorTest {
     }
 
     @Test
+    public void testLocalFunctionResolution() throws IOException {
+        ExpressionDef def = (ExpressionDef)visitFile("LocalFunctionResolutionTest.cql");
+        assertThat(def.getExpression(), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef)def.getExpression();
+        assertThat(functionRef.getName(), is("ToDate"));
+    }
+
+    @Test
     public void testURIConversion() throws IOException {
         // If this translates without errors, the test is successful
         ExpressionDef def = (ExpressionDef) visitFile("TestURIConversion.cql");
