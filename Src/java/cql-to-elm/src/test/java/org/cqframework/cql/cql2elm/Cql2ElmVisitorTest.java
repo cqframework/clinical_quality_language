@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.cqframework.cql.cql2elm.TestUtils.*;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
+import static org.cqframework.cql.cql2elm.matchers.QdmDataType.qdmDataType;
 import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -986,6 +987,14 @@ public class Cql2ElmVisitorTest {
         assertThat(caseExpression.getCaseItem().get(0).getThen(), instanceOf(FunctionRef.class));
         assertThat(caseExpression.getCaseItem().get(1).getWhen(), instanceOf(Is.class));
         assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
+    }
+
+    @Test
+    public void testChoiceAssignment() throws IOException {
+        ExpressionDef def = (ExpressionDef)visitFile("TestChoiceAssignment.cql");
+        Instance instance = (Instance)def.getExpression();
+
+        assertThat(instance.getClassType(), qdmDataType("PositiveAssessmentPerformed"));
     }
 
     @Test

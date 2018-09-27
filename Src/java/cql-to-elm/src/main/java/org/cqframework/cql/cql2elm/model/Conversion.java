@@ -42,6 +42,22 @@ public class Conversion {
         this.isCastFlag = true;
     }
 
+    public Conversion(DataType fromType, ChoiceType toType, Conversion choiceConversion) {
+        if (fromType == null) {
+            throw new IllegalArgumentException("fromType is null");
+        }
+
+        if (toType == null) {
+            throw new IllegalArgumentException("toType is null");
+        }
+
+        setIsImplicit(true);
+        this.fromType = fromType;
+        this.toType = toType;
+        this.conversionField = choiceConversion;
+        this.isCastFlag = true;
+    }
+
     public Conversion(ListType fromType, ListType toType, Conversion elementConversion) {
         if (fromType == null) {
             throw new IllegalArgumentException("fromType is null");

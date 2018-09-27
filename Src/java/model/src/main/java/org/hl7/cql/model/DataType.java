@@ -60,7 +60,16 @@ public abstract class DataType {
     // type compatibility is used to support implicit casting, such as casting a "null"
     // literal to any other type, or casting a class to an equivalent tuple.
     public boolean isCompatibleWith(DataType other) {
-        return false; // default implementation returns false.
+        // A type is compatible with a choice type if it is a subtype of one of the choice types
+        if (other instanceof ChoiceType) {
+            for (DataType choice : ((ChoiceType)other).getTypes()) {
+                if (this.isSubTypeOf(choice)) {
+                    return true;
+                }
+            }
+        }
+
+        return this.equals(other); // Any data type is compatible with itself
     }
 
     public abstract boolean isGeneric();

@@ -149,7 +149,7 @@ public class TupleType extends DataType {
             return this.equals(classType.getTupleType());
         }
 
-        return false;
+        return super.isCompatibleWith(other);
     }
 
     @Override

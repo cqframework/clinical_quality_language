@@ -171,6 +171,17 @@ public class ConversionMap {
         return result;
     }
 
+    public Conversion findTargetChoiceConversion(DataType fromType, ChoiceType toType, boolean allowPromotionAndDemotion, OperatorMap operatorMap) {
+        for (DataType choice : toType.getTypes()) {
+            Conversion choiceConversion = findConversion(fromType, choice, true, allowPromotionAndDemotion, operatorMap);
+            if (choiceConversion != null) {
+                return new Conversion(fromType, toType, choiceConversion);
+            }
+        }
+
+        return null;
+    }
+
     public Conversion findListConversion(ListType fromType, ListType toType, OperatorMap operatorMap) {
         Conversion elementConversion = findConversion(fromType.getElementType(), toType.getElementType(), true, false, operatorMap);
 
@@ -319,9 +330,14 @@ public class ConversionMap {
                 result = findIntervalPromotion(fromType, (IntervalType)toType, operatorMap);
             }
 
-            // If the from type is a choice, attempt to find a conversion between one of the choice types
+            // If the from type is a choice, attempt to find a conversion from one of the choice types
             if (fromType instanceof ChoiceType) {
                 result = findChoiceConversion((ChoiceType)fromType, toType, allowPromotionAndDemotion, operatorMap);
+            }
+
+            // If the target type is a choice, attempt to find a conversion to one of the choice types
+            if (toType instanceof ChoiceType) {
+                result = findTargetChoiceConversion(fromType, (ChoiceType)toType, allowPromotionAndDemotion, operatorMap);
             }
 
             // If both types are lists, attempt to find a conversion between the element types
