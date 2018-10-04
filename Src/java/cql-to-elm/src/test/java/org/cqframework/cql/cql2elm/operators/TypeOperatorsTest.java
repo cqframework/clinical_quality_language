@@ -277,7 +277,7 @@ public class TypeOperatorsTest {
         ExpressionDef def = defs.get("StringToDateTime");
         assertThat(def, hasTypeAndResult(ToDateTime.class, "System.DateTime"));
         ToDateTime convert = (ToDateTime) def.getExpression();
-        assertThat(convert.getOperand(), literalFor("2014-01-01T00:00:00:00.0000+0700"));
+        assertThat(convert.getOperand(), literalFor("2014-01-01T00:00:00.0000+0700"));
         //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "DateTime"));
     }
 
@@ -286,7 +286,7 @@ public class TypeOperatorsTest {
         ExpressionDef def = defs.get("StringToDateTimeFun");
         assertThat(def, hasTypeAndResult(ToDateTime.class, "System.DateTime"));
         ToDateTime convert = (ToDateTime) def.getExpression();
-        assertThat(convert.getOperand(), literalFor("2014-01-01T00:00:00:00.0000+0700"));
+        assertThat(convert.getOperand(), literalFor("2014-01-01T00:00:00.0000+0700"));
         //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "DateTime")));
         //assertThat(convert.getToTypeSpecifier(), nullValue());
     }
@@ -296,7 +296,7 @@ public class TypeOperatorsTest {
         ExpressionDef def = defs.get("StringToTime");
         assertThat(def, hasTypeAndResult(ToTime.class, "System.Time"));
         ToTime convert = (ToTime) def.getExpression();
-        assertThat(convert.getOperand(), literalFor("T00:00:00:00.0000+0700"));
+        assertThat(convert.getOperand(), literalFor("T00:00:00.0000+0700"));
         //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Time"));
     }
 
@@ -305,7 +305,7 @@ public class TypeOperatorsTest {
         ExpressionDef def = defs.get("StringToTimeFun");
         assertThat(def, hasTypeAndResult(ToTime.class, "System.Time"));
         ToTime convert = (ToTime) def.getExpression();
-        assertThat(convert.getOperand(), literalFor("T00:00:00:00.0000+0700"));
+        assertThat(convert.getOperand(), literalFor("T00:00:00.0000+0700"));
         //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Time")));
         //assertThat(convert.getToTypeSpecifier(), nullValue());
     }
