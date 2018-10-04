@@ -1013,8 +1013,8 @@ public class LibraryBuilder {
         fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), invocation, false, false);
         if (fun != null) {
             if ("System".equals(invocation.getResolution().getOperator().getLibraryName())) {
-                fun = buildFunctionRef(libraryName, functionName, paramList); // Rebuild the fun from the original arguments, otherwise it will resolve with conversions in place
-                Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
+                FunctionRef systemFun = buildFunctionRef(libraryName, functionName, paramList); // Rebuild the fun from the original arguments, otherwise it will resolve with conversions in place
+                Expression systemFunction = systemFunctionResolver.resolveSystemFunction(systemFun);
                 if (systemFunction != null) {
                     return systemFunction;
                 }
