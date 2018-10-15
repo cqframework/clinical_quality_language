@@ -40,11 +40,36 @@ public abstract class DataType {
         return false;
     }
 
+    /**
+     * @param other
+     * @return The first supertype of this type that is also a supertype of other
+     */
+    public DataType getCommonSuperTypeOf(DataType other) {
+        DataType currentType = this;
+        while (currentType != null) {
+            if (currentType.isSuperTypeOf(other)) {
+                return currentType;
+            }
+            currentType = currentType.baseType;
+        }
+
+        return null;
+    }
+
     // Note that this is not how implicit/explicit conversions are defined, the notion of
     // type compatibility is used to support implicit casting, such as casting a "null"
     // literal to any other type, or casting a class to an equivalent tuple.
     public boolean isCompatibleWith(DataType other) {
-        return false; // default implementation returns false.
+        // A type is compatible with a choice type if it is a subtype of one of the choice types
+        if (other instanceof ChoiceType) {
+            for (DataType choice : ((ChoiceType)other).getTypes()) {
+                if (this.isSubTypeOf(choice)) {
+                    return true;
+                }
+            }
+        }
+
+        return this.equals(other); // Any data type is compatible with itself
     }
 
     public abstract boolean isGeneric();

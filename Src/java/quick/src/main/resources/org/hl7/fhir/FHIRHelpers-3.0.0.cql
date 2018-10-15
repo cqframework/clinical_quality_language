@@ -58,7 +58,7 @@ define function ToString(value FHIR.TestReportResult): value.value
 define function ToString(value FHIR.ConceptMapGroupUnmappedMode): value.value
 define function ToDateTime(value FHIR.instant): value.value
 define function ToDateTime(value FHIR.dateTime): value.value
-define function ToDateTime(value FHIR.date): value.value
+define function ToDate(value FHIR.date): value.value
 define function ToString(value FHIR.DocumentMode): value.value
 define function ToString(value FHIR.AssertionOperatorType): value.value
 define function ToString(value FHIR.DaysOfWeek): value.value

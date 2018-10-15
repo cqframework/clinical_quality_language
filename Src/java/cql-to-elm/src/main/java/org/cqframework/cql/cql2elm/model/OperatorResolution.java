@@ -50,4 +50,22 @@ public class OperatorResolution {
     public boolean hasConversions() {
         return this.conversions != null;
     }
+
+    private boolean operatorHasOverloads = false;
+    public boolean getOperatorHasOverloads() {
+        return operatorHasOverloads;
+    }
+
+    public void setOperatorHasOverloads() {
+        operatorHasOverloads = true;
+    }
+
+    private int score;
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 }

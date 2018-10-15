@@ -5,6 +5,29 @@ define ThisShouldWork: 5 = 5.5
 define IntegerDecimalMultiplication: 5 * 5.0
 define DecimalIntegerMultiplication: 5.0 * 5
 
+// Integer to Quantity
+define IntegerQuantityEquality: 5 = 5.5 'g'
+define QuantityIntegerEquality: 5.5 'g' = 5
+define IntegerQuantityAddition: 5 + 5.5 'g'
+define QuantityIntegerAddition: 5.5 'g' + 5
+define IntegerQuantityMultiplication: 5 * 5.5 'g'
+define QuantityIntegerMultiplication: 5.5 'g' * 5
+define IntegerQuantityDivision: 5 / 5.5 'g'
+define QuantityIntegerDivision: 5.5 'g' / 5
+
+// Decimal to Quantity
+define DecimalQuantityEquality: 5.0 = 5.5 'g'
+define QuantityDecimalEquality: 5.5 'g' = 5.0
+define DecimalQuantityAddition: 5.0 + 5.5 'g'
+define QuantityDecimalAddition: 5.5 'g' + 5.0
+define DecimalQuantityMultiplication: 5.0 * 5.5 'g'
+define QuantityDecimalMultiplication: 5.5 'g' * 5.0
+define DecimalQuantityDivision: 5.0 / 5.5 'g'
+define QuantityDecimalDivision: 5.5 'g' / 5.0
+
+// Date to DateTime
+define DateTimeDateEquality: @2017-01-01T10:30:00.0 = @2017-01-01
+
 // null to any type
 define IntegerAnyMultiplication: 5 * null
 

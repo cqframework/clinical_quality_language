@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 import static org.cqframework.cql.cql2elm.TestUtils.*;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
+import static org.cqframework.cql.cql2elm.matchers.QdmDataType.qdmDataType;
 import static org.cqframework.cql.cql2elm.matchers.QuickDataType.quickDataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -985,6 +987,117 @@ public class Cql2ElmVisitorTest {
         assertThat(caseExpression.getCaseItem().get(0).getThen(), instanceOf(FunctionRef.class));
         assertThat(caseExpression.getCaseItem().get(1).getWhen(), instanceOf(Is.class));
         assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
+    }
+
+    @Test
+    public void testChoiceAssignment() throws IOException {
+        ExpressionDef def = (ExpressionDef)visitFile("TestChoiceAssignment.cql");
+        Instance instance = (Instance)def.getExpression();
+
+        assertThat(instance.getClassType(), qdmDataType("PositiveAssessmentPerformed"));
+    }
+
+    @Test
+    public void testLocalFunctionResolution() throws IOException {
+        ExpressionDef def = (ExpressionDef)visitFile("LocalFunctionResolutionTest.cql");
+        assertThat(def.getExpression(), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef)def.getExpression();
+        assertThat(functionRef.getName(), is("ToDate"));
+    }
+
+    @Test
+    public void testURIConversion() throws IOException {
+        // If this translates without errors, the test is successful
+        ExpressionDef def = (ExpressionDef) visitFile("TestURIConversion.cql");
+    }
+
+    @Test
+    public void testUnion() throws IOException {
+        ExpressionDef def = (ExpressionDef) visitFile("TestUnion.cql");
+
+        // Union(Union(Union(Union(A, B), Union(C,D)), Union(E,F)), Union(G,H))
+        Union union1 = (Union)def.getExpression();
+        Union union2 = (Union)union1.getOperand().get(0);
+        Union union3 = (Union)union2.getOperand().get(0);
+        Union union4 = (Union)union3.getOperand().get(0);
+        Union union5 = (Union)union3.getOperand().get(1);
+        Union union6 = (Union)union2.getOperand().get(1);
+        Union union7 = (Union)union1.getOperand().get(1);
+        ExpressionRef a = (ExpressionRef)union4.getOperand().get(0);
+        ExpressionRef b = (ExpressionRef)union4.getOperand().get(1);
+        ExpressionRef c = (ExpressionRef)union5.getOperand().get(0);
+        ExpressionRef d = (ExpressionRef)union5.getOperand().get(1);
+        ExpressionRef e = (ExpressionRef)union6.getOperand().get(0);
+        ExpressionRef f = (ExpressionRef)union6.getOperand().get(1);
+        ExpressionRef g = (ExpressionRef)union7.getOperand().get(0);
+        ExpressionRef h = (ExpressionRef)union7.getOperand().get(1);
+
+        assertThat(a.getName(), is("A"));
+        assertThat(b.getName(), is("B"));
+        assertThat(c.getName(), is("C"));
+        assertThat(d.getName(), is("D"));
+        assertThat(e.getName(), is("E"));
+        assertThat(f.getName(), is("F"));
+        assertThat(g.getName(), is("G"));
+        assertThat(h.getName(), is("H"));
+    }
+
+    @Test
+    public void testFHIRTiming() throws IOException {
+        ExpressionDef def = (ExpressionDef) visitFile("TestFHIRTiming.cql");
+        // Query->
+        //  where->
+        //      IncludedIn->
+        //          left->
+        //              ToInterval()
+        //                  As(fhir:Period) ->
+        //                      Property(P.performed)
+        //          right-> MeasurementPeriod
+        Query query = (Query) def.getExpression();
+
+        // First check the source
+        AliasedQuerySource source = query.getSource().get(0);
+        assertThat(source.getAlias(), is("P"));
+        Retrieve request = (Retrieve) source.getExpression();
+        assertThat(request.getDataType(), quickDataType("Procedure"));
+
+        // Then check that the where an IncludedIn with a Case as the left operand
+        Expression where = query.getWhere();
+        assertThat(where, instanceOf(IncludedIn.class));
+        IncludedIn includedIn = (IncludedIn)where;
+        assertThat(includedIn.getOperand().get(0), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef)includedIn.getOperand().get(0);
+        assertThat(functionRef.getName(), is("ToInterval"));
+        assertThat(functionRef.getOperand().get(0), instanceOf(As.class));
+        As asExpression = (As)functionRef.getOperand().get(0);
+        assertThat(asExpression.getAsType().getLocalPart(), is("Period"));
+        assertThat(asExpression.getOperand(), instanceOf(Property.class));
+        Property property = (Property)asExpression.getOperand();
+        assertThat(property.getScope(), is("P"));
+        assertThat(property.getPath(), is("performed"));
+    }
+
+    @Test
+    public void testPatientContext() throws IOException {
+        TranslatedLibrary library = visitFileLibrary("TestPatientContext.cql");
+        ExpressionDef patient = library.resolveExpressionRef("Patient");
+        assertThat(patient.getExpression(), instanceOf(Literal.class));
+    }
+
+    @Test
+    public void testIncludedIn() throws IOException {
+        ExpressionDef def = (ExpressionDef) visitFile("TestIncludedIn.cql");
+        // Query->
+        //   where->
+        //      In ->
+        //        left -> Property
+        //        right -> ParameterRef
+        Query query = (Query)def.getExpression();
+        Expression where = query.getWhere();
+        assertThat(where, instanceOf(In.class));
+        In inExpression = (In)where;
+        assertThat(inExpression.getOperand().get(0), instanceOf(Property.class));
+        assertThat(inExpression.getOperand().get(1), instanceOf(ParameterRef.class));
     }
 
     // TODO: This test needs to be repurposed, it won't work with the query as is.

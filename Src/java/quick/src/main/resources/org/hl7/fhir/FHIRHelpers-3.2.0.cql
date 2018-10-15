@@ -154,7 +154,7 @@ define function ToString(value FHIR.TestReportResult): value.value
 define function ToString(value FHIR.ConceptMapGroupUnmappedMode): value.value
 define function ToDateTime(value FHIR.instant): value.value
 define function ToDateTime(value FHIR.dateTime): value.value
-define function ToDateTime(value FHIR.date): value.value
+define function ToDate(value FHIR.date): value.value
 define function ToInteger(value FHIR.positiveInt): value.value
 define function ToString(value FHIR.ClinicalImpressionStatus): value.value
 define function ToString(value FHIR.NarrativeStatus): value.value

@@ -26,7 +26,7 @@ define function ToConcept(concept FHIR.CodeableConcept):
     }
 
 define function ToString(value FHIR.uuid): value.value
-define function ToDateTime(value FHIR.date): value.value
+define function ToDate(value FHIR.date): value.value
 define function ToString(value FHIR.EnrollmentRequestStatus): value.value
 define function ToString(value FHIR.PlanActionPrecheckBehavior): value.value
 define function ToString(value FHIR.ProvenanceEntityRole): value.value

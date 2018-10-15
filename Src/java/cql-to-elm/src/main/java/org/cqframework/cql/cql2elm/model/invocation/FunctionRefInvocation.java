@@ -1,7 +1,9 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
+import org.cqframework.cql.cql2elm.model.OperatorResolution;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.FunctionRef;
+import org.hl7.elm.r1.TypeSpecifier;
 
 import java.util.List;
 
@@ -21,6 +23,18 @@ public class FunctionRefInvocation extends AbstractExpressionInvocation {
         expOperands.clear();
         for (Expression operand : operands) {
             expOperands.add(operand);
+        }
+    }
+
+    @Override
+    public Iterable<TypeSpecifier> getSignature() {
+        return ((FunctionRef)expression).getSignature();
+    }
+
+    @Override
+    public void setSignature(Iterable<TypeSpecifier> signature) {
+        for (TypeSpecifier typeSpecifier : signature) {
+            ((FunctionRef)expression).getSignature().add(typeSpecifier);
         }
     }
 }

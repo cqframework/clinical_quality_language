@@ -16,6 +16,7 @@ public class ModelImporterOptions {
     public enum SimpleTypeRestrictionPolicy {USE_BASETYPE, EXTEND_BASETYPE, IGNORE}
     public enum ChoiceTypePolicy {USE_CHOICE, EXPAND}
     public enum ElementRedeclarationPolicy {DISCARD_INVALID_REDECLARATIONS, RENAME_INVALID_REDECLARATIONS, FAIL_INVALID_REDECLARATIONS }
+    public enum VersionPolicy {CURRENT, INCLUDE_DEPRECATED}
     private static final Pattern RETYPE_PATTERN = Pattern.compile("\\s*retype\\.(.+)\\s*");
     private static final Pattern EXTEND_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\s*");
     private static final Pattern EXTEND_EL_PATTERN = Pattern.compile("\\s*extend\\.([^\\[]+)\\[([^\\]]+)\\]\\s*");
@@ -66,6 +67,16 @@ public class ModelImporterOptions {
      * </ul>
      */
     private ElementRedeclarationPolicy elementRedeclarationPolicy = null;
+
+    /**
+     * Determines whether deprecated elements should be included in the output.
+     *
+     * <ul>
+     *     <li><b>CURRENT</b>: Include only elements for the latest version of model info.</li>
+     *     <li><b>INCLUDE_DEPRECATED</b>: Include deprecated elements in addition to elements for the latest version.</li>
+     * </ul>
+     */
+    private VersionPolicy versionPolicy = null;
 
     /**
      * Some HL7 standards prefix all of their type names with an ID of the standard.  For example, the CDA R2 schema
@@ -139,6 +150,19 @@ public class ModelImporterOptions {
         return this;
     }
 
+    public VersionPolicy getVersionPolicy() {
+        return versionPolicy != null ? versionPolicy : VersionPolicy.CURRENT;
+    }
+
+    public void setVersionPolicy(VersionPolicy versionPolicy) {
+        this.versionPolicy = versionPolicy;
+    }
+
+    public ModelImporterOptions withVersionPolicy(VersionPolicy versionPolicy) {
+        this.versionPolicy = versionPolicy;
+        return this;
+    }
+
     public String getNormalizePrefix() {
         return normalizePrefix;
     }
@@ -180,6 +204,11 @@ public class ModelImporterOptions {
         String elementRedeclarationPolicy = properties.getProperty("element-redeclaration-policy");
         if (elementRedeclarationPolicy != null && !elementRedeclarationPolicy.isEmpty()) {
             setElementRedeclarationPolicy(ElementRedeclarationPolicy.valueOf(elementRedeclarationPolicy));
+        }
+
+        String versionPolicy = properties.getProperty("version-policy");
+        if (versionPolicy != null && !versionPolicy.isEmpty()) {
+            setVersionPolicy(VersionPolicy.valueOf(versionPolicy));
         }
 
         // Iterate the properties (sorting to ensure class extensions come before element mappings)
@@ -225,6 +254,9 @@ public class ModelImporterOptions {
         }
         if (elementRedeclarationPolicy != null) {
             properties.setProperty("element-redeclaration-policy", elementRedeclarationPolicy.name());
+        }
+        if (versionPolicy != null) {
+            properties.setProperty("version-policy", versionPolicy.name());
         }
         if (! typeMap.isEmpty()) {
             for (Map.Entry<QName, ModelImporterMapperValue> entry : typeMap.entrySet()) {

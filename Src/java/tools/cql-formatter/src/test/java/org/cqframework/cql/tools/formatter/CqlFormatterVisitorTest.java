@@ -26,18 +26,22 @@ public class CqlFormatterVisitorTest {
     @Test
     public void TestFormatterSpecific() throws IOException {
         runTest("comments.cql");
-        try {
-            // this test has an extra "`", which is ignored - causing the input to differ from the output.
+        // I commented these catches out because it seems to me that the formatter should not clobber input when these errors occur...
+        // I don't understand why this first one ever ran, it should have reported an error, and should not have clobbered input
+        // And the second one correctly reported an error, but why was it allowed to clobber the input?
+        // At any rate, they both work correctly now (I had to add null to the characters to ignore for comparison though)
+        //try {
+            // this test has an extra "`", which is not ignored - causing a syntax error.
             runTest("git-issue-206-a.cql");
-        } catch (AssertionError ae) {
-            Assert.assertFalse(inError);
-        }
-        try {
+        //} catch (AssertionError ae) {
+        //    Assert.assertFalse(inError);
+        //}
+        //try {
             // this test has an extra """, which is not ignored - causing a syntax error.
             runTest("git-issue-206-b.cql");
-        } catch (AssertionError ae) {
-            Assert.assertTrue(inError);
-        }
+        //} catch (AssertionError ae) {
+        //    Assert.assertTrue(inError);
+        //}
         runTest("git-issue-210-a.cql");
         Assert.assertFalse(inError);
         runTest("git-issue-210-b.cql");
@@ -116,7 +120,7 @@ public class CqlFormatterVisitorTest {
     }
 
     private boolean inputMatchesOutput(String input, String output) {
-        return input.replaceAll("\\s", "").equals(output.replaceAll("\\s", ""));
+        return input.replaceAll("[\\s\\u0000]", "").equals(output.replaceAll("[\\s\\u0000]", ""));
     }
 
     private InputStream getInput(String fileName) {

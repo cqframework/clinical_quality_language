@@ -17,19 +17,21 @@ public class SystemFunctionResolver {
     }
 
     public Expression resolveSystemFunction(FunctionRef fun) {
-        if (fun.getLibraryName() == null || fun.getLibraryName() == "System") {
+        if (fun.getLibraryName() == null || "System".equals(fun.getLibraryName())) {
             switch (fun.getName()) {
                 // Aggregate Functions
                 case "AllTrue":
                 case "AnyTrue":
                 case "Avg":
                 case "Count":
+                case "GeometricMean":
                 case "Max":
                 case "Median":
                 case "Min":
                 case "Mode":
                 case "PopulationStdDev":
                 case "PopulationVariance":
+                case "Product":
                 case "StdDev":
                 case "Sum":
                 case "Variance": {
@@ -62,7 +64,13 @@ public class SystemFunctionResolver {
 
                 // Clinical Functions
                 case "AgeInYears":
-                case "AgeInMonths":
+                case "AgeInMonths": {
+                    checkNumberOfOperands(fun, 0);
+                    return resolveCalculateAge(
+                            builder.enforceCompatible(getPatientBirthDateProperty(), builder.resolveTypeName("System", "Date")),
+                            resolveAgeRelatedFunctionPrecision(fun));
+                }
+
                 case "AgeInWeeks":
                 case "AgeInDays":
                 case "AgeInHours":
@@ -70,7 +78,9 @@ public class SystemFunctionResolver {
                 case "AgeInSeconds":
                 case "AgeInMilliseconds": {
                     checkNumberOfOperands(fun, 0);
-                    return resolveCalculateAge(getPatientBirthDateProperty(), resolveAgeRelatedFunctionPrecision(fun));
+                    return resolveCalculateAge(
+                            builder.ensureCompatible(getPatientBirthDateProperty(), builder.resolveTypeName("System", "DateTime")),
+                            resolveAgeRelatedFunctionPrecision(fun));
                 }
 
                 case "AgeInYearsAt":
@@ -113,6 +123,10 @@ public class SystemFunctionResolver {
                 // DateTime Functions
                 case "DateTime": {
                     return resolveDateTime(fun);
+                }
+
+                case "Date": {
+                    return resolveDate(fun);
                 }
 
                 case "Time": {
@@ -158,6 +172,7 @@ public class SystemFunctionResolver {
 
                 case "Contains":
                 case "Except":
+                case "Expand":
                 case "In":
                 case "Includes":
                 case "IncludedIn":
@@ -171,6 +186,7 @@ public class SystemFunctionResolver {
                 case "Distinct":
                 case "Exists":
                 case "Flatten":
+                case "Collapse":
                 case "SingletonFrom": {
                     return resolveUnary(fun);
                 }
@@ -215,6 +231,10 @@ public class SystemFunctionResolver {
                     return resolveSplit(fun);
                 }
 
+                case "SplitOnMatches": {
+                    return resolveSplitOnMatches(fun);
+                }
+
                 case "Upper":
                 case "Lower": {
                     return resolveUnary(fun);
@@ -250,6 +270,7 @@ public class SystemFunctionResolver {
                 case "ToInteger":
                 case "ToDecimal":
                 case "ToDateTime":
+                case "ToDate":
                 case "ToTime":
                 case "ToQuantity":
                 case "ToConcept": {
@@ -347,6 +368,13 @@ public class SystemFunctionResolver {
         DateTimeInvocation.setDateTimeFieldsFromOperands(dt, fun.getOperand());
         builder.resolveCall("System", "DateTime", new DateTimeInvocation(dt));
         return dt;
+    }
+
+    private Date resolveDate(FunctionRef fun) {
+        final Date d = of.createDate();
+        DateInvocation.setDateFieldsFromOperands(d, fun.getOperand());
+        builder.resolveCall("System", "Date", new DateInvocation(d));
+        return d;
     }
 
     private Time resolveTime(FunctionRef fun) {
@@ -457,6 +485,15 @@ public class SystemFunctionResolver {
         return split;
     }
 
+    private SplitOnMatches resolveSplitOnMatches(FunctionRef fun) {
+        checkNumberOfOperands(fun, 2);
+        final SplitOnMatches splitOnMatches = of.createSplitOnMatches()
+                .withStringToSplit(fun.getOperand().get(0))
+                .withSeparatorPattern(fun.getOperand().get(12));
+        builder.resolveCall("System", "SplitOnMatches", new SplitOnMatchesInvocation(splitOnMatches));
+        return splitOnMatches;
+    }
+
     private PositionOf resolvePositionOf(FunctionRef fun) {
         checkNumberOfOperands(fun, 2);
         final PositionOf pos = of.createPositionOf()
@@ -524,6 +561,15 @@ public class SystemFunctionResolver {
                 break;
             case "ToDecimal":
                 convert.setToType(builder.dataTypeToQName(sm.getDecimal()));
+                break;
+            case "ToQuantity":
+                convert.setToType(builder.dataTypeToQName(sm.getQuantity()));
+                break;
+            case "ToRatio":
+                convert.setToType(builder.dataTypeToQName(sm.getRatio()));
+                break;
+            case "ToDate":
+                convert.setToType(builder.dataTypeToQName(sm.getDate()));
                 break;
             case "ToDateTime":
                 convert.setToType(builder.dataTypeToQName(sm.getDateTime()));

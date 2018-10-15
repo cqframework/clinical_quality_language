@@ -5,7 +5,7 @@ import org.hl7.elm.r1.Last;
 
 import java.util.Collections;
 
-public class LastInvocation extends AbstractExpressionInvocation {
+public class LastInvocation extends OperatorExpressionInvocation {
     public LastInvocation(Last expression) {
         super(expression);
     }

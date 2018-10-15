@@ -21,7 +21,7 @@
         <ns4:element name="period" type="FHIR.Period"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.date" retrievable="false" baseType="FHIR.Element">
-		<ns4:element name="value" type="System.DateTime"/>
+		<ns4:element name="value" type="System.Date"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="FHIR.DetectedIssue.Mitigation" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="action" type="FHIR.CodeableConcept"/>

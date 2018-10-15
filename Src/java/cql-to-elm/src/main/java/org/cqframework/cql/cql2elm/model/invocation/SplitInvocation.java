@@ -6,7 +6,7 @@ import org.hl7.elm.r1.Split;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class SplitInvocation extends AbstractExpressionInvocation {
+public class SplitInvocation extends OperatorExpressionInvocation {
     public SplitInvocation(Split expression) {
         super(expression);
     }

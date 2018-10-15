@@ -11,6 +11,7 @@ define oddsAndEvens:
   from (List{1, 3}) Odd, (List{2, 4}) Even
 
 // Since the value of Odd in each tuple is an integer (not a list), it should be promoted
-// to a list, or CQL-to-ELM should produce an error.  But... it goes through unscathed!
+// to a list, or CQL-to-ELM should produce an error if list promotion is disabled
+// Fixed, this now correctly translates to a Contains(ToList(OE.Odd), 3)
 define shouldNotBeAllowed:
   (oddsAndEvens) OE where OE.Odd includes 3

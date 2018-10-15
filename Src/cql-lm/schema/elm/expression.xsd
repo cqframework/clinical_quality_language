@@ -132,7 +132,12 @@ The following changes were made since the initial informative ballot in Septembe
 		<xs:complexContent>
 			<xs:extension base="Element">
 				<xs:sequence>
-					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>This element is deprecated. New implementations should use the new elementType element.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="elementType" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="name" type="xs:string" use="required"/>
 			</xs:extension>
@@ -157,7 +162,12 @@ The following changes were made since the initial informative ballot in Septembe
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
 				<xs:sequence>
-					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>This element is deprecated. New implementations should use the new choice element.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -170,36 +180,52 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:extension base="Element"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="OperatorExpression" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The Operator type defines the abstract base type for all built-in operators used in the ELM expression language. This explicitly excludes FunctionRef, which is the concrete type for all function invocations.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:sequence>
+					<xs:element name="signature" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies the declared signature of the operator or function being called. If no signature is specified, the run-time types of the operands should be used to resolve any overload.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="UnaryExpression" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The UnaryExpression type defines the abstract base type for expressions that take a single argument.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="BinaryExpression">
+	<xs:complexType name="BinaryExpression" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The BinaryExpression type defines the abstract base type for expressions that take two arguments.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="2" maxOccurs="2"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="TernaryExpression">
+	<xs:complexType name="TernaryExpression" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The TernaryExpression type defines the abstract base type for expressions that take three arguments.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="3" maxOccurs="3"/>
 				</xs:sequence>
@@ -211,7 +237,7 @@ The following changes were made since the initial informative ballot in Septembe
 			<xs:documentation>The NaryExpression type defines an abstract base class for an expression that takes any number of arguments, including zero.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
@@ -274,6 +300,11 @@ The following changes were made since the initial informative ballot in Septembe
 		<xs:complexContent>
 			<xs:extension base="ExpressionRef">
 				<xs:sequence>
+					<xs:element name="signature" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies the declared signature of the function being called. If no signature is specified, the run-time types of the operands should be used to resolve any overload.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 					<xs:element name="operand" type="Expression" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
@@ -281,7 +312,15 @@ The following changes were made since the initial informative ballot in Septembe
 	</xs:complexType>
 	<xs:complexType name="ParameterDef">
 		<xs:annotation>
-			<xs:documentation>The ParameterDef type defines a parameter that can be referenced by name anywhere within an expression. Parameters are defined at the artifact level, and may be provided as part of the payload for an evaluation request. If no parameter value is provided, the default element is used to provide the value for the parameter. If no parameter or default is provided, the parameter is defined to be null.</xs:documentation>
+			<xs:documentation>The ParameterDef type defines a parameter that can be referenced by name anywhere within an expression. 
+	
+Parameters are defined at the artifact level, and may be provided as part of the payload for an evaluation request. 
+
+If no parameter value is provided, the default element is used to provide the value for the parameter. 
+	
+If no parameter or default is provided, the parameter is defined to be null.
+
+Note that the expression specified in the default element must be able to be evaluated at compile-time (i.e. without reference to any run-time capabilities such as data, terminology, and library references, both local and included).</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
@@ -332,7 +371,7 @@ The following changes were made since the initial informative ballot in Septembe
 	</xs:complexType>
 	<xs:complexType name="IdentifierRef">
 		<xs:annotation>
-			<xs:documentation>The IdentifierRef type defines an expression that references an unresolved identifier. An unresolved identifier reference generally indicates an error condition. The implementation is free to attempt to resolve the identifier, but is also justified in throwing an error at compile-time (or run-time for an interpretive system) when an identifier ref is encountered.</xs:documentation>
+			<xs:documentation>The IdentifierRef type defines an expression that references an identifier that is either unresolved, or has been resolved to an attribute in an unambiguous iteration context such as a sort. Implementations should attempt to resolve the identifier, only throwing an error at compile-time (or run-time for an interpretive system) if the identifier reference cannot be resolved.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -448,7 +487,7 @@ If any argument is null, the resulting list will have null for that element.</xs
 	<!-- Logical Operators -->
 	<xs:complexType name="And">
 		<xs:annotation>
-			<xs:documentation>The And operator returns the logical conjunction of its arguments. Note that this operator is defined using 3-valued logic semantics. This means that if either argument is false, the result is false; if both arguments are true, the result is true; otherwise, the result is null.</xs:documentation>
+			<xs:documentation>The And operator returns the logical conjunction of its arguments. Note that this operator is defined using 3-valued logic semantics. This means that if either argument is false, the result is false; if both arguments are true, the result is true; otherwise, the result is null. Note also that ELM does not prescribe short-circuit evaluation.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -456,7 +495,7 @@ If any argument is null, the resulting list will have null for that element.</xs
 	</xs:complexType>
 	<xs:complexType name="Or">
 		<xs:annotation>
-			<xs:documentation>The Or operator returns the logical disjunction of its arguments. Note that this operator is defined using 3-valued logic semantics. This means that if either argument is true, the result is true; if both arguments are false, the result is false; otherwise, the result is null.</xs:documentation>
+			<xs:documentation>The Or operator returns the logical disjunction of its arguments. Note that this operator is defined using 3-valued logic semantics. This means that if either argument is true, the result is true; if both arguments are false, the result is false; otherwise, the result is null. Note also that ELM does not prescribe short-circuit evaluation.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -605,11 +644,50 @@ The static type of the then argument within the first caseItem determines the ty
 	</xs:complexType>
 	<xs:complexType name="Convert">
 		<xs:annotation>
-			<xs:documentation>The Convert operator converts a value to a specific type. The result of the operator is the value of the argument converted to the target type, if possible. Note that use of this operator may result in a run-time exception being thrown if there is no valid conversion from the actual value to the target type.
+			<xs:documentation>The Convert operator converts a value to a specific type. The result of the operator is the value of the argument converted to the target type, if possible.
+				
+If no valid conversion exists from the actual value to the target type, the result is null.
 
-This operator supports conversion between String and each of Boolean, Integer, Decimal, Quantity, DateTime, and Time, as well as conversion from Integer to Decimal and from Code to Concept.
+This operator supports conversion:
 
-Conversion between String and DateTime/Time is performed using the ISO-8601 standard format: YYYY-MM-DDThh:mm:ss(+|-)hh:mm.</xs:documentation>
+Between String and each of Boolean, Integer, Decimal, Quantity, Ratio, Date, DateTime, and Time
+
+as well as:
+
+From Integer to Decimal or Quantity
+From Decimal to Quantity
+Between Date and DateTime
+From Code to Concept
+Between Concept and List&lt;Code&gt;
+
+Conversion between String and Date/DateTime/Time is performed using the ISO-8601 standard format: YYYY-MM-DDThh:mm:ss(+|-)hh:mm.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression">
+				<xs:sequence>
+					<xs:element name="toTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="toType" type="xs:QName" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CanConvert">
+		<xs:annotation>
+			<xs:documentation>The CanConvert operator returns true if the given value can be converted to a specific type, and false otherwise.
+
+This operator returns true for conversion:
+
+Between String and each of Boolean, Integer, Decimal, Quantity, Ratio, Date, DateTime, and Time,
+
+as well as:
+
+From Integer to Decimal or Quantity
+From Decimal to Quantity
+Between Date and DateTime
+From Code to Concept
+Between Concept and List&lt;Code&gt;
+
+Conversion between String and Date/DateTime/Time is checked using the ISO-8601 standard format: YYYY-MM-DDThh:mm:ss(+|-)hh:mm.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -622,9 +700,25 @@ Conversion between String and DateTime/Time is performed using the ISO-8601 stan
 	</xs:complexType>
 	<xs:complexType name="ToBoolean">
 		<xs:annotation>
-			<xs:documentation>The ToBoolean operator converts the value of its argument to a Boolean value. The operator accepts "true", "t", "yes", "y", and "1" as string representations of true, and "false", "f", "no", "n", and "0" as string representations of false, ignoring case.
+			<xs:documentation>The ToBoolean operator converts the value of its argument to a Boolean value. 
+
+The operator accepts 'true', 't', 'yes', 'y', and '1' as string representations of true, and 'false', 'f', 'no', 'n', and '0' as string representations of false, ignoring case.
 			
-If the input cannot be interpreted as a valid Boolean value, a run-time error is thrown.
+If the input cannot be interpreted as a valid Boolean value, the result is null.
+
+If the argument is null the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConvertsToBoolean">
+		<xs:annotation>
+			<xs:documentation>The ConvertsToBoolean operator returns true if the value of its argument can be converted to a Boolean value. 
+			
+The operator accepts 'true', 't', 'yes', 'y', and '1' as string representations of true, and 'false', 'f', 'no', 'n', and '0' as string representations of false, ignoring case.
+			
+If the input cannot be interpreted as a valid Boolean value, the result is false.
 
 If the argument is null the result is null.</xs:documentation>
 		</xs:annotation>
@@ -642,17 +736,101 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="ToDateTime">
+	<xs:complexType name="ConvertsToDate">
 		<xs:annotation>
-			<xs:documentation>The ToDateTime operator converts the value of its argument to a DateTime value. The operator expects the string to be formatted using the ISO-8601 date/time representation: 
+			<xs:documentation>The ConvertsToDate operator returns true if the value of its argument can be converted to a Date value. 
+			
+Fro String values, The operator expects the string to be formatted using the ISO-8601 date representation: 
+
+YYYY-MM-DD
+
+In addition, the string must be interpretable as a valid date value.
+
+If the input string is not formatted correctly, or does not represent a valid date value, the result is false.
+
+As with date literals, date values may be specified to any precision.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToDate">
+		<xs:annotation>
+			<xs:documentation>The ToDate operator converts the value of its argument to a Date value. 
+			
+Fro String values, The operator expects the string to be formatted using the ISO-8601 date representation: 
+
+YYYY-MM-DD
+
+In addition, the string must be interpretable as a valid date value.
+
+If the input string is not formatted correctly, or does not represent a valid date value, the result is null.
+
+As with date literals, date values may be specified to any precision.
+
+For DateTime values, the result is equivalent to extracting the Date component of the DateTime value.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConvertsToDateTime">
+		<xs:annotation>
+			<xs:documentation>The ConvertsToDateTime operator returns true if the value of its argument can be converted to a DateTime value. 
+				
+For String values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
 
 YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 
 In addition, the string must be interpretable as a valid date/time value.
 
-If the input string is not formatted correctly, or does not represent a valid date/time value, a run-time error is thrown.
+If the input string is not formatted correctly, or does not represent a valid date/time value, the result is false.
 
-As with date/time literals, date/time values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+As with date/time literals, date/time values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToDateTime">
+		<xs:annotation>
+			<xs:documentation>The ToDateTime operator converts the value of its argument to a DateTime value. 
+				
+For String values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
+
+YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+
+In addition, the string must be interpretable as a valid date/time value.
+
+If the input string is not formatted correctly, or does not represent a valid date/time value, the result is null.
+
+As with date/time literals, date/time values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
+
+For Date values, the result is a DateTime with all time components set to 0, except the timezone offset, which is set to the timezone offset of the evaluation request timestamp.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConvertsToDecimal">
+		<xs:annotation>
+			<xs:documentation>The ConvertsToDecimal operator returns true if the value of its argument can be converted to a Decimal value. The operator accepts strings using the following format:
+
+(+|-)?#0(.0#)?
+
+Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit, followed optionally by a decimal point, at least one digit, and any number of additional digits (including none).
+
+Note that the decimal value returned by this operator must be limited in precision and scale to the maximum precision and scale representable for Decimal values within CQL.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, the result is false.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -670,7 +848,25 @@ Meaning an optional polarity indicator, followed by any number of digits (includ
 
 Note that the decimal value returned by this operator must be limited in precision and scale to the maximum precision and scale representable for Decimal values within CQL.
 
-If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, a run-time error is thrown.
+If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, the result is null.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConvertsToInteger">
+		<xs:annotation>
+			<xs:documentation>The ConvertsToInteger operator returns true if the value of its argument can be converted to an Integer value. The operator accepts strings using the following format:
+
+(+|-)?#0
+
+Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit.
+
+Note that the integer value returned by this operator must be a valid value in the range representable for Integer values in CQL.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, the result is false.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -688,7 +884,25 @@ Meaning an optional polarity indicator, followed by any number of digits (includ
 
 Note that the integer value returned by this operator must be a valid value in the range representable for Integer values in CQL.
 
-If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, a run-time error is thrown.
+If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, the result is null.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConvertsToQuantity">
+		<xs:annotation>
+			<xs:documentation>The ConvertsToQuantity operator returns true if the value of its argument can be converted to a Quantity value. The operator accepts strings using the following format:
+
+(+|-)?#0(.0#)?('&lt;unit&gt;')?
+
+Meaning an optional polarity indicator, followed by any number of digits (including none) followed by at least one digit, optionally followed by a decimal point, at least one digit, and any number of additional digits, all optionally followed by a unit designator as a string literal specifying a valid UCUM unit of measure. Spaces are allowed between the quantity value and the unit designator.
+
+Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL. 
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, the result is false.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -706,7 +920,39 @@ Meaning an optional polarity indicator, followed by any number of digits (includ
 
 Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL. 
 
-If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, a run-time error is thrown.
+If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, the result is null.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConvertsToRatio">
+		<xs:annotation>
+			<xs:documentation>The ConvertsToRatio operator returns true if the value of its argument can be converted to a Ratio value. The operator accepts strings using the following format:
+
+&lt;quantity&gt;:&lt;quantity&gt;
+
+Meaning a quantity, followed by a colon (:), followed by another quantity. The operator accepts quantity strings using the same format as the ToQuantity operator.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Ratio value, the result is false.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ToRatio">
+		<xs:annotation>
+			<xs:documentation>The ToRatio operator converts the value of its argument to a Ratio value. The operator accepts strings using the following format:
+
+&lt;quantity&gt;:&lt;quantity&gt;
+
+Meaning a quantity, followed by a colon (:), followed by another quantity. The operator accepts quantity strings using the same format as the ToQuantity operator.
+
+If the input string is not formatted correctly, or cannot be interpreted as a valid Ratio value, the result is null.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -728,6 +974,37 @@ The operator is used to implement list promotion efficiently.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ToChars">
+		<xs:annotation>
+			<xs:documentation>The ToChars operator takes a string and returns a list with one string for each character in the input, in the order in which they appear in the string.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConvertsToString">
+		<xs:annotation>
+			<xs:documentation>The ConvertsToString operator returns true if the value of its argument can be converted to a String value.
+			
+The operator returns true if the argument is any of the following types:
+
+Boolean
+Integer
+Decimal
+DateTime
+Date
+Time
+Quantity
+Ratio			
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="ToString">
 		<xs:annotation>
 			<xs:documentation>The ToString operator converts the value of its argument to a String value. The operator uses the following string representations for each type:
@@ -736,8 +1013,30 @@ Boolean true|false
 Integer (-)?#0
 Decimal (-)?#0.0#
 Quantity (-)?#0.0# '&lt;unit&gt;'
+Date YYYY-MM-DD
 DateTime YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 Time	Thh:mm:ss.fff(+|-)hh:mm
+Ratio &lt;quantity&gt;:&lt;quantity&gt;
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConvertsToTime">
+		<xs:annotation>
+			<xs:documentation>The ConvertsToTime operator returns true if the value of its argument can be converted to a Time value. 
+			
+For String values, the operator expects the string to be formatted using ISO-8601 time representation: 
+
+Thh:mm:ss.fff(+|-)hh:mm
+
+In addition, the string must be interpretable as a valid time-of-day value.
+
+If the input string is not formatted correctly, or does not represent a valid time-of-day value, the result is false.
+
+As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -747,15 +1046,19 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ToTime">
 		<xs:annotation>
-			<xs:documentation>The ToTime operator converts the value of its argument to a Time value. The operator expects the string to be formatted using ISO-8601 time representation: 
+			<xs:documentation>The ToTime operator converts the value of its argument to a Time value. 
+			
+For String values, the operator expects the string to be formatted using ISO-8601 time representation: 
 
 Thh:mm:ss.fff(+|-)hh:mm
 
 In addition, the string must be interpretable as a valid time-of-day value.
 
-If the input string is not formatted correctly, or does not represent a valid time-of-day value, a run-time error is thrown.
+If the input string is not formatted correctly, or does not represent a valid time-of-day value, the result is null.
 
-As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone is supplied, the timezone of the evaluation request timestamp is assumed.
+As with time-of-day literals, time-of-day values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
+
+For DateTime values, the result is the same as extracting the Time component from the DateTime value.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -772,13 +1075,13 @@ For simple types, this means that equality returns true if and only if the resul
 
 For quantities, this means that the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
-For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements by name are equal.
+For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements that have values, by name, are equal.
 
-For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using the same semantics.
+For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using equality semantics.
 
 For interval types, equality returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the interval as determined by the Start and End operators.
 
-For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the values are different, the comparison stops and the result is false. If one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -796,13 +1099,13 @@ For list types, this means that two lists are equivalent if and only if the list
 
 For interval types, this means that two intervals are equivalent if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators are equivalent.
 
-For Code values, equivalence is defined based on the code, system, and verrsion elements only. The display element is ignored for the purposes of determining Code equivalence.
+For date/time values, the comparison is performed in the same way as it is for equality, except that if one input has a value for a given precision and the other does not, the comparison stops and the result is false, rather than null.
+
+For Code values, equivalence is defined based on the code and system elements only. The display and version elements are ignored for the purposes of determining Code equivalence.
 
 For Concept values, equivalence is defined as a non-empty intersection of the codes in each Concept.
 
-Note that this operator will always return true or false, even if either or both of its arguments are null or contain null components.
-
-This operator, and the corresponding notion of equivalence, are used throughout ELM to define the behavior of membership and containment operators such as In, Contains, Includes, IndexOf, and others. This provides consistent and intuitive behavior in the presence of missing information in list and membership contexts.</xs:documentation>
+Note that this operator will always return true or false, even if either or both of its arguments are null or contain null components.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -824,9 +1127,11 @@ The NotEqual operator is a shorthand for invocation of logical negation of the E
 			
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is false.
+
 If either argument is null, the result is null.
 
-The Less operator is defined for the Integer, Decimal, String, DateTime, Time, and Quantity types.</xs:documentation>
+The Less operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -838,9 +1143,11 @@ The Less operator is defined for the Integer, Decimal, String, DateTime, Time, a
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is false.
+
 If either argument is null, the result is null.
 
-The Greater operator is defined for the Integer, Decimal, String, DateTime, Time, and Quantity types.</xs:documentation>
+The Greater operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -852,9 +1159,11 @@ The Greater operator is defined for the Integer, Decimal, String, DateTime, Time
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true.
+
 If either argument is null, the result is null.
 
-The LessOrEqual operator is defined for the Integer, Decimal, String, DateTime, Time, and Quantity types.</xs:documentation>
+The LessOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -866,9 +1175,11 @@ The LessOrEqual operator is defined for the Integer, Decimal, String, DateTime, 
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
+For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true.
+
 If either argument is null, the result is null.
 
-The GreaterOrEqual operator is defined for the Integer, Decimal, String, DateTime, Time, and Quantity types.</xs:documentation>
+The GreaterOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -881,13 +1192,17 @@ The GreaterOrEqual operator is defined for the Integer, Decimal, String, DateTim
 			
 When adding quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be added, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input. Attempting to operate on quantities with invalid units will result in a run-time error.
 			
-The Add operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be added to a DateTime or Time using this operator.
+The Add operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be added to a Date, DateTime or Time using this operator.
 
-For DateTime and Time values, the operator returns the value of the given date/time, incremented by the time-valued quantity, respecting variable length periods for calendar years and months.
+For Date, DateTime, and Time values, the operator returns the value of the given date/time, incremented by the time-valued quantity, respecting variable length periods for calendar years and months.
 
-For DateTime values, the quantity unit must be one of years, months, days, hours, minutes, seconds, or milliseconds.
+For Date values, the quantity unit must be one of years, months, weeks, or days.
+
+For DateTime values, the quantity unit must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
 
 For Time values, the quantity unit must be one of hours, minutes, seconds, or milliseconds.
+
+Note that as with any date/time operations, temporal units may be specified with either singular, plural, or UCUM units.
 
 The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
 
@@ -903,9 +1218,15 @@ If either argument is null, the result is null.</xs:documentation>
 			
 When subtracting quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' can be subtracted, but units of 'cm2' and 'cm' cannot. The unit of the result will be the most granular unit of either input. Attempting to operate on quantities with invalid units will result in a run-time error.
 
-The Subtract operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be subtracted from a DateTime or Time using this operator.
+The Subtract operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be subtracted from a Date, DateTime, or Time using this operator.
 
-For DateTime and Time values, the operator returns the value of the given date/time, decremented by the time-valued quantity, respective variable length periods for calendar years and months.
+For Date, DateTime, Time values, the operator returns the value of the given date/time, decremented by the time-valued quantity, respecting variable length periods for calendar years and months.
+
+For Date values, the quantity unit must be one of years, months, weeks, or days.
+
+For DateTime values, the quantity unit must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
+
+For Time values, the quantity unit must be one of hours, minutes, seconds, or milliseconds.
 
 The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
 
@@ -937,7 +1258,7 @@ For division operations involving quantities, the resulting quantity will have t
 
 If either argument is null, the result is null.
 
-The Divide operator is defined for the Integer, Decimal and Quantity types.</xs:documentation>
+The Divide operator is defined for the Decimal and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1034,7 +1355,7 @@ If the argument is null, the result is null.
 Precision determines the decimal place at which the rounding will occur. If precision is not specified or null, 0 is assumed.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="operand" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="precision" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1086,13 +1407,13 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Successor operator returns the successor of the argument. For example, the successor of 1 is 2. If the argument is already the maximum value for the type, a run-time error is thrown.
 			
-The Successor operator is defined for the Integer, Decimal, DateTime, and Time types.
+The Successor operator is defined for the Integer, Decimal, Date, DateTime, and Time types.
 
 For Integer, Successor is equivalent to adding 1.
 
 For Decimal, Successor is equivalent to adding the minimum precision value for the Decimal type, or 10^-08.
 
-For DateTime and Time values, Successor is equivalent to adding a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Successor is equivalent to adding 1 millisecond; if the DateTime is specified to the second, Successor is equivalent to adding one second, etc.
+For Date, DateTime, and Time values, Successor is equivalent to adding a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Successor is equivalent to adding 1 millisecond; if the DateTime is specified to the second, Successor is equivalent to adding one second, etc.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1104,13 +1425,13 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Predecessor operator returns the predecessor of the argument. For example, the predecessor of 2 is 1. If the argument is already the minimum value for the type, a run-time error is thrown.
 			
-The Predecessor operator is defined for the Integer, Decimal, DateTime, and Time types.
+The Predecessor operator is defined for the Integer, Decimal, Date, DateTime, and Time types.
 
 For Integer, Predecessor is equivalent to subtracting 1.
 
 For Decimal, Predecessor is equivalent to subtracting the minimum precision value for the Decimal type, or 10^-08.
 
-For DateTime and Time values, Predecessor is equivalent to subtracting a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Predecessor is equivalent to subtracting 1 millisecond; if the DateTime is specified to the second, Predecessor is equivalent to subtracting one second, etc.
+For Date, DateTime, and Time values, Predecessor is equivalent to subtracting a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Predecessor is equivalent to subtracting 1 millisecond; if the DateTime is specified to the second, Predecessor is equivalent to subtracting one second, etc.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1122,11 +1443,13 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The MinValue operator returns the minimum representable value for the given type.
 
-The MinValue operator is defined for the Integer, Decimal, DateTime, and Time types.
+The MinValue operator is defined for the Integer, Decimal, Date, DateTime, and Time types.
 
 For Integer, MinValue returns the minimum signed 32-bit integer, -(2^31).
 
-For Decimal, MinValue returns the minimum representable Decimal value, (-10^37 - 1) / 10^8 (-9999999999999999999999999999.99999999).
+For Decimal, MinValue returns the minimum representable Decimal value, (-10^28 + 1) / 10^8 (-99999999999999999999.99999999).
+
+For Date, MinValue returns the minimum representable Date value, Date(1, 1, 1).
 
 For DateTime, MinValue returns the minimum representable DateTime value, DateTime(1, 1, 1, 0, 0, 0, 0).
 
@@ -1144,11 +1467,13 @@ For any other type, attempting to invoke MinValue results in an error.</xs:docum
 		<xs:annotation>
 			<xs:documentation>The MaxValue operator returns the maximum representable value for the given type.
 			
-The MaxValue operator is defined for the Integer, Decimal, DateTime, and Time types.
+The MaxValue operator is defined for the Integer, Decimal, Date, DateTime, and Time types.
 
 For Integer, MaxValue returns the maximum signed 32-bit integer, 2^31 - 1.
 
-For Decimal, MaxValue returns the maximum representable Decimal value, (10^37 - 1) / 10^8 (9999999999999999999999999999.99999999).
+For Decimal, MaxValue returns the maximum representable Decimal value, (10^28 - 1) / 10^8 (99999999999999999999.99999999).
+
+For Date, MaxValue returns the maximum representable Date value, Date(9999, 12, 31).
 
 For DateTime, MaxValue returns the maximum representable DateTime value, DateTime(9999, 12, 31, 23, 59, 59, 999).
 
@@ -1180,7 +1505,7 @@ If any argument is null, the result is null.</xs:documentation>
 If either argument is null, or any element in the source list of strings is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="separator" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1197,10 +1522,29 @@ If the stringToSplit argument is null, the result is null.
 If the stringToSplit argument does not contain any appearances of the separator, the result is a list of strings containing one element that is the value of the stringToSplit argument.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="stringToSplit" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="separator" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SplitOnMatches">
+		<xs:annotation>
+			<xs:documentation>The SplitOnMatches operator splits a string into a list of strings using matches of a regex pattern.
+        
+The separatorPattern argument is a regex pattern, following the same semantics as the Matches operator.
+
+If the stringToSplit argument is null, the result is null.
+
+If the stringToSplit argument does not contain any appearances of the separator pattern, the result is a list of strings containing one element that is the input value of the stringToSplit argument.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OperatorExpression">
+				<xs:sequence>
+					<xs:element name="stringToSplit" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="separatorPattern" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1266,7 +1610,7 @@ If the pattern is not found, the result is -1.
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="pattern" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="string" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -1283,7 +1627,7 @@ If the pattern is not found, the result is -1.
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="pattern" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="string" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -1300,7 +1644,7 @@ If length is ommitted, the substring returned starts at startIndex and continues
 If stringToSub or startIndex is null, or startIndex is out of range, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="stringToSub" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="startIndex" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -1379,12 +1723,16 @@ Platforms will typically use native regular expression implementations. These ar
 	<xs:complexType name="DurationBetween">
 		<xs:annotation>
 			<xs:documentation>The DurationBetween operator returns the number of whole calendar periods for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional periods are dropped.
-			
-For DateTime values, precision must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
 
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
+For Date values, precision must be one of Year, Month, Week, or Day.			
+
+For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
+
+For calculations involving weeks, the duration of a week is equivalent to 7 days.
 			
-If either argument is null, the result is null.</xs:documentation>
+If either argument is null, the result is null.
+
+Note that this operator can be implemented using Uncertainty as described in the CQL specification, Chapter 5, Precision-Based Timing.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1394,13 +1742,17 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="DifferenceBetween">
 		<xs:annotation>
-			<xs:documentation>The DifferenceBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. The result of this operation is always an integer; any fractional boundaries are dropped.
+			<xs:documentation>The DifferenceBetween operator returns the number of boundaries crossed for the specified precision between the first and second arguments. If the first argument is after the second argument, the result is negative. Because this operation is only counting boundaries crossed, the result is always an integer.
 			
-For DateTime values, precision must be one of years, months, weeks, days, hours, minutes, seconds, or milliseconds.
+For Date values, precision must be one of Year, Month, Week, or Day.			
 
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
+For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
+
+For calculations involving weeks, Sunday is considered to be the first day of the week for the purposes of determining boundaries.
 			
-If either argument is null, the result is null.</xs:documentation>
+If either argument is null, the result is null.
+
+Note that this operator can be implemented using Uncertainty as described in the CQL specification, Chapter 5, Precision-Based Timing.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1430,7 +1782,7 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="TimezoneFrom">
 		<xs:annotation>
-			<xs:documentation>The TimezoneFrom operator returns the timezone of the argument.
+			<xs:documentation>The TimezoneFrom operator returns the timezone offset of the argument.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1442,7 +1794,9 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The DateTimeComponentFrom operator returns the specified component of the argument.
 			
-If the argument is null, the result is null.</xs:documentation>
+If the argument is null, the result is null.
+
+The precision must be one of Year, Month, Day, Hour, Minute, Second, or Millisecond. Note specifically that since there is variability how weeks are counted, Week precision is not supported, and will result in an error.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -1455,7 +1809,7 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:documentation>The TimeOfDay operator returns the time-of-day of the start timestamp associated with the evaluation request. See the Now operator for more information on the rationale for defining the TimeOfDay operator in this way.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression"/>
+			<xs:extension base="OperatorExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Today">
@@ -1463,7 +1817,7 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:documentation>The Today operator returns the date (with no time component) of the start timestamp associated with the evaluation request. See the Now operator for more information on the rationale for defining the Today operator in this way.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression"/>
+			<xs:extension base="OperatorExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Now">
@@ -1471,10 +1825,26 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:documentation>The Now operator returns the date and time of the start timestamp associated with the evaluation request. Now is defined in this way for two reasons:
 1) The operation will always return the same value within any given evaluation, ensuring that the result of an expression containing Now will always return the same result.
 
-2) The operation will return the timestamp associated with the evaluation request, allowing the evaluation to be performed with the same timezone information as the data delivered with the evaluation request.</xs:documentation>
+2) The operation will return the timestamp associated with the evaluation request, allowing the evaluation to be performed with the same timezone offset information as the data delivered with the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression"/>
+			<xs:extension base="OperatorExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Date">
+		<xs:annotation>
+			<xs:documentation>The Date operator constructs a date value from the given components.
+			
+At least one component must be specified, and no component may be specified at a precision below an unspecified precision. For example, month may be null, but if it is, day must be null as well.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="OperatorExpression">
+				<xs:sequence>
+					<xs:element name="year" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="month" type="Expression" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="day" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="DateTime">
@@ -1486,7 +1856,7 @@ At least one component other than timezoneOffset must be specified, and no compo
 If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="year" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="month" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1509,7 +1879,7 @@ At least one component other than timezoneOffset must be specified, and no compo
 If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="hour" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="minute" type="Expression" minOccurs="0" maxOccurs="1"/>
@@ -1522,21 +1892,25 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 	</xs:complexType>
 	<xs:complexType name="SameAs">
 		<xs:annotation>
-			<xs:documentation>The SameAs operator is defined for DateTime and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameAs operator is defined for Date, DateTime, and Time values, as well as intervals.
 			
+For the Interval overloads, the SameAs operator returns true if the intervals start and end at the same value, using the semantics described in the Start and End operator to determine interval boundaries.
+
 The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
 			
-For the Interval overload, the SameAs operator returns true if the intervals start and end at the same value.
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
-For the Interval/point overloads, the SameAs operator returns true if the interval starts and ends at the point value.
+For Date values, precision must be one of year, month, or day.
 
-For intervals, this operator uses the semantics described in the Start and End operator to determine interval boundaries.
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-If either or both arguments are null, the result is null.
-			
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1546,19 +1920,25 @@ For Time values, precision must be one of hours, minutes, seconds, or millisecon
 	</xs:complexType>
 	<xs:complexType name="SameOrBefore">
 		<xs:annotation>
-			<xs:documentation>The SameOrBefore operator is defined for DateTime and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameOrBefore operator is defined for Date, DateTime, and Time values, as well as intervals.
 
-The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. If either or both arguments are null, the result is null.
+For the Interval overload, the SameOrBefore operator returns true if the first interval ends on or before the second one starts. In other words, if the ending point of the first interval is less than or equal to the starting point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Interval overload, the SameOrBefore operator returns true if the first interval ends on or before the second one starts. In other words, if the ending point of the first interval is less than or equal to the starting point of the second interval.
+The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is true.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
+
+For Date values, precision must be one of year, month, or day.
+
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
-
-For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1568,19 +1948,25 @@ For comparisons involving date/time or time values with imprecision, note that t
 	</xs:complexType>
 	<xs:complexType name="SameOrAfter">
 		<xs:annotation>
-			<xs:documentation>The SameOrAfter operator is defined DateTime and Time values, as well as date/time-based intervals.
+			<xs:documentation>The SameOrAfter operator is defined for Date, DateTime, and Time values, as well as intervals.
 			
-The SameOrAfter operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. If either or both arguments are null, the result is null.
+For the Interval overload, the SameOrAfter operator returns true if the first interval starts on or after the second one ends. In other words, if the starting point of the first interval is greater than or equal to the ending point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Interval overload, the SameOrAfter operator returns true if the first interval starts on or after the second one ends. In other words, if the starting point of the first interval is greater than or equal to the ending point of the second interval.
-			
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+For the Date, DateTime, and Time overloads, this operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is true.
+
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
+
+For Date values, precision must be one of year, month, or day.
+
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
 As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
-For Time values, precision must be one of hours, minutes, seconds, or milliseconds.
-
-For comparisons involving date/time or time values with imprecision, note that the result of the comparison may be null, depending on whether the values involved are specified to the level of precision used for the comparison.</xs:documentation>
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1603,7 +1989,7 @@ For comparisons involving date/time or time values with imprecision, note that t
 		<xs:annotation>
 			<xs:documentation>The Width operator returns the width of an interval. The result of this operator is equivalent to invoking: End(i) - Start(i) + point-size.
 			
-Note that this operator is not defined for intervals of type DateTime and Time.
+Note that this operator is not defined for intervals of type Date, DateTime, and Time.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1650,9 +2036,11 @@ There are two overloads of this operator:
 	List, T : The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 	
-For the List, T overload, this operator returns true if the given element is in the list, using equivalence semantics. If the list-valued argument is null, it should be treated as the empty list.
+For the List, T overload, this operator returns true if the given element is in the list, using equality semantics.
 
-For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1669,9 +2057,11 @@ There are two overloads of this operator:
 	List, T: The type of T must be the same as the element type of the list.
 	Interval, T : The type of T must be the same as the point type of the interval.
 	
-For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equivalence semantics.
+For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equality semantics.
 
-For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
+For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1688,9 +2078,11 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns true if the given element is in the given list, using equivalence semantics. If the list-valued argument is null, it should be treated as an empty list.
+For the T, List overload, this operator returns true if the given element is in the given list, using equality semantics.
 
-For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1707,9 +2099,11 @@ There are two overloads of this operator:
 	T, List : The type of T must be the same as the element type of the list.
 	T, Interval : The type of T must be the same as the point type of the interval.
 	
-For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equivalence semantics. If the list-valued argument is null, it should be treated as an empty list.
+For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equality semantics.
 
-For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.</xs:documentation>
+For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1726,11 +2120,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equivalence semantics. If either argument is null, it should be treated as an empty list.
+For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equality semantics.
 
-For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. If either argument is null, the result is null.
+For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If either argument is null, the result is null. </xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1747,11 +2143,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 	
-For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equivalence semantics. If either argument is null, it should be treated as an empty list.
+For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equality semantics.
 
-For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If either argument is null, the result is null.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1768,11 +2166,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 	
-For the List, List overload, this operator returns true if the first list includes every element of the second list, using equivalence semantics, and the first list is strictly larger. If either argument is null, it should be treated as an empty list.
+For the List, List overload, this operator returns true if the first list includes every element of the second list, using equality semantics, and the first list is strictly larger.
 
-For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1789,11 +2189,13 @@ There are two overloads of this operator:
 	List, List : The element type of both lists must be the same.
 	Interval, Interval : The point type of both intervals must be the same.
 
-For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equivalence semantics, and the first list is strictly smaller. If either argument is null, it should be treated as an empty list.
+For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equality semantics, and the first list is strictly smaller.
 
-For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If either argument is null, the result is null. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
 
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.</xs:documentation>
+This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+
+If either argument is null, the result is null. </xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -1804,15 +2206,23 @@ This operator uses the semantics described in the Start and End operators to det
 	</xs:complexType>
 	<xs:complexType name="Before">
 		<xs:annotation>
-			<xs:documentation>The Before operator is defined for Intervals, as well as DateTime and Time values.
+			<xs:documentation>The Before operator is defined for Intervals, as well as Date, DateTime, and Time values.
 			
-For the Interval overload, the Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval.
-			
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+For the Interval overload, the Before operator returns true if the first interval ends before the second one starts. In other words, if the ending point of the first interval is less than the starting point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the DateTime and Time overloads, the Before operator returns true if the first datetime is before the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+For the Date, DateTime, and Time overloads, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is false.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
+
+For Date values, precision must be one of year, month, or day.
+
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
+
+As with all date/time calculations, comparisons are performed respecting the timezone offset.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1825,16 +2235,24 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="After">
 		<xs:annotation>
-			<xs:documentation>The After operator is defined for Intervals, as well as DateTime and Time values.
+			<xs:documentation>The After operator is defined for Intervals, as well as Date, DateTime, and Time values.
 			
-For the Interval overload, the After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval.
-			
-This operator uses the semantics described in the Start and End operators to determine interval boundaries.
+For the Interval overload, the After operator returns true if the first interval starts after the second one ends. In other words, if the starting point of the first interval is greater than the ending point of the second interval using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the DateTime and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. As with all date/time calculations, comparisons are performed respecting the timezone offset.
+For the Date, DateTime, and Time overloads, the After operator returns true if the first datetime is after the second datetime at the specified level of precision. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is false.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
- 
+If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
+
+For Date values, precision must be one of year, month, or day.
+
+For DateTime values, precision must be one of year, month, day, hour, minute, second, or millisecond.
+
+For Time values, precision must be one of hour, minute, second, or millisecond.
+
+Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
+
+As with all date/time calculations, comparisons are performed respecting the timezone offset.
+
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1983,13 +2401,37 @@ If either argument is null, the result is null.</xs:documentation>
 	<xs:complexType name="Collapse">
 		<xs:annotation>
 			<xs:documentation>The Collapse operator returns the unique set of intervals that completely covers the ranges present in the given list of intervals.
+			
+The operation is performed by combining successive intervals in the input that either overlap or meet, using the semantics defined for the Overlaps and Meets operators. Note that because those operators are themselves defined in terms of interval successor and predecessor operators, sets of date/time-based intervals that are only defined to a particular precision will calculate meets and overlaps at that precision. For example, a list of DateTime-based intervals where the boundaries are all specified to the hour will collapse at the hour precision, unless the collapse precision is overridden with the per argument.
+
+The per argument determines the precision at which the collapse is computed and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
+
+If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. the interval that has a width equal to the result of the successor function for the point type).
 
 If the list of intervals is empty, the result is empty. If the list of intervals contains a single interval, the result is a list with that interval. If the list of intervals contains nulls, they will be excluded from the resulting list.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="UnaryExpression"/>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Expand">
+		<xs:annotation>
+			<xs:documentation>The Expand operator returns the set of intervals of width per for all the ranges present in the given list of intervals.
+				
+The per argument determines the size of the resulting intervals and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
+
+If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. the interval that has a width equal to the result of the successor function for the point type).
+
+Note that if the values in the intervals have a higher precision than the per expression, the higher precision values will be truncated to the granularity specified by the per expression.
+
+If the list of intervals is empty, the result is empty. If the list of intervals contains nulls, they will be excluded from the resulting list.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Union">
@@ -2007,7 +2449,7 @@ For the interval overload, this operator returns the interval that starts at the
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
+			<xs:extension base="NaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Intersect">
@@ -2018,14 +2460,14 @@ This operator has two overloads:
 	List
 	Interval
 
-For the list overload, this operator returns a list with the elements that appear in both lists, using equivalence semantics.
+For the list overload, this operator returns a list with the elements that appear in both lists, using equality semantics. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results.
 
 For the interval overload, this operator returns the interval that defines the overlapping portion of both arguments. If the arguments do not overlap, this operator returns null.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
+			<xs:extension base="NaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Except">
@@ -2036,12 +2478,14 @@ This operator has two overloads:
 	List, List
 	Interval, Interval
 
-For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equivalence semantics. If either argument is null, it should be treated as an empty list.
+For the list overload, this operator returns a list with the elements that appear in the first operand, that do not appear in the second operand, using equality semantics. The operator is defined with set semantics, meaning that each element will appear in the result at most once, and that there is no expectation that the order of the inputs will be preserved in the results.
 
-For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null. If either argument is null, the result is null.</xs:documentation>
+For the interval overload, this operator returns the portion of the first interval that does not overlap with the second. If the second argument is properly contained within the first and does not start or end it, this operator returns null.
+
+If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="BinaryExpression"/>
+			<xs:extension base="NaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<!-- List/Set Operators -->
@@ -2093,7 +2537,7 @@ If the source argument is null, the result is null.</xs:documentation>
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression"/>
 				</xs:sequence>
@@ -2108,7 +2552,7 @@ If the argument is null, the result is null.</xs:documentation>
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression"/>
 				</xs:sequence>
@@ -2129,7 +2573,7 @@ If the endIndex is null, the slice continues to the last element of the list.
 If the startIndex or endIndex is less than 0, or if the endIndex is less than the startIndex, the result is an empty list.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression"/>
 					<xs:element name="startIndex" type="Expression"/>
@@ -2143,14 +2587,14 @@ If the startIndex or endIndex is less than 0, or if the endIndex is less than th
 		<xs:annotation>
 			<xs:documentation>The IndexOf operator returns the 0-based index of the given element in the given source list.
 
-The operator uses equivalence semantics as defined in the Equivalent operator to determine the index. The search is linear, and returns the index of the first element for which the equivalence comparison returns true.
+The operator uses equality semantics as defined in the Equal operator to determine the index. The search is linear, and returns the index of the first element for which the equality comparison returns true.
 
 If the list is empty, or no element is found, the result is -1.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="element" type="Expression" minOccurs="1" maxOccurs="1"/>
@@ -2211,7 +2655,7 @@ If the element argument evaluates to null for some item in the source list, the 
 		<xs:annotation>
 			<xs:documentation>The Repeat expression performs successive ForEach until no new elements are returned.
 			
-The operator uses equivalence comparison semantics as defined in the Equivalent operator.
+The operator uses equality comparison semantics as defined in the Equal operator.
 
 If the source argument is null, the result is null.
 
@@ -2231,7 +2675,7 @@ If the element argument evaluates to null for some item in the source list, the 
 		<xs:annotation>
 			<xs:documentation>The Distinct operator takes a list of elements and returns a list containing only the unique elements within the input. For example, given the list of integers { 1, 1, 1, 2, 2, 3, 4, 4 }, the result of Distinct would be { 1, 2, 3, 4 }.
 			
-The operator uses equivalence comparison semantics as defined in the Equivalent operator.
+The operator uses equality comparison semantics as defined in the Equal operator.
 
 If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2244,6 +2688,26 @@ If the source argument is null, the result is null.</xs:documentation>
 			<xs:documentation>The Current expression returns the value of the object currently in scope. For example, within a ForEach expression, this returns the current element being considered in the iteration.
 			
 It is an error to invoke the Current operator outside the context of a scoped operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="scope" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Iteration">
+		<xs:annotation>
+			<xs:documentation>The Iteration expression returns the current iteration number of a scoped operation.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Expression">
+				<xs:attribute name="scope" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Total">
+		<xs:annotation>
+			<xs:documentation>The Total expression returns the current value of the total aggregation accumulator in an aggregate operation.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -2272,9 +2736,33 @@ An aggregate operation performed over an empty list is defined to return null, e
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:sequence>
+					<xs:element name="signature" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies the declared signature of the operator or function being called. If no signature is specified, the run-time types of the operands should be used to resolve any overload.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="path" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Aggregate">
+		<xs:annotation>
+			<xs:documentation>The Aggregate operator performs custom aggregation by evaluating an expression for each element of the source.
+			
+If a path is specified, the aggregation is performed for value of the property specified by the path for each element of the source.
+
+The iteration expression has access to the $this, $index, and $total variables. At the end of each iteration, the value of the $total variable is updated to the result of the iteration expression. The value of the $total variable is initialized to the result of the initialValue expression, if present.
+
+If the list is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AggregateExpression">
+				<xs:sequence>
+					<xs:element name="iteration" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="initialValue" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -2295,6 +2783,20 @@ If the list is null, the result is 0.</xs:documentation>
 	<xs:complexType name="Sum">
 		<xs:annotation>
 			<xs:documentation>The Sum operator returns the sum of non-null elements in the source.
+			
+If a path is specified, elements with no value for the property specified by the path are ignored. 
+
+If the source contains no non-null elements, null is returned.
+
+If the list is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AggregateExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Product">
+		<xs:annotation>
+			<xs:documentation>The Product operator returns the geometric product of non-null elements in the source.
 			
 If a path is specified, elements with no value for the property specified by the path are ignored. 
 
@@ -2336,7 +2838,21 @@ If the source is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Avg">
 		<xs:annotation>
-			<xs:documentation>The Avg operator returns the average of the elements in source.
+			<xs:documentation>The Avg operator returns the average of the non-null elements in source.
+			
+If a path is specified, elements with no value for the property specified by the path are ignored.
+			
+If the source contains no non-null elements, null is returned.
+
+If the source is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="AggregateExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GeometricMean">
+		<xs:annotation>
+			<xs:documentation>The GeometricMean operator returns the geometric mean of the non-null elements in source.
 			
 If a path is specified, elements with no value for the property specified by the path are ignored.
 			
@@ -2656,7 +3172,7 @@ For list types, the result is the same as invoking Children on each element in t
 If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
@@ -2672,7 +3188,7 @@ For list types, the result is the same as invoking Descendents on each element i
 If the source is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 				</xs:sequence>
@@ -2695,7 +3211,7 @@ If the severity is Warning, the operator is expected to provide the message as a
 If the severity is Message, the operator is expected to provide the message as information to the calling environment.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:extension base="Expression">
+			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="source" type="Expression" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="condition" type="Expression" minOccurs="0" maxOccurs="1"/>

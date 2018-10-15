@@ -78,6 +78,13 @@ public class AggregateOperatorsTest {
     }
 
     @Test
+    public void testGeometricMean() {
+        ExpressionDef def = defs.get("GeometricMeanExpression");
+        assertThat(def, hasTypeAndResult(GeometricMean.class, "System.Decimal"));
+        assertThat(((GeometricMean)def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0, 5.0));
+    }
+
+    @Test
     public void testMax() {
         ExpressionDef def = defs.get("IntegerMax");
         assertThat(def, hasTypeAndResult(Max.class, "System.Integer"));
@@ -185,6 +192,17 @@ public class AggregateOperatorsTest {
         def = defs.get("QuantityPopulationVariance");
         assertThat(def, hasTypeAndResult(PopulationVariance.class, "System.Quantity"));
         assertQuantityListOneMeterToFourMeters(((PopulationVariance) def.getExpression()).getSource());
+    }
+
+    @Test
+    public void testProduct() {
+        ExpressionDef def = defs.get("IntegerProduct");
+        assertThat(def, hasTypeAndResult(Product.class, "System.Integer"));
+        assertThat(((Product) def.getExpression()).getSource(), listOfLiterals(1, 2, 3, 4, 5));
+
+        def = defs.get("DecimalProduct");
+        assertThat(def, hasTypeAndResult(Product.class, "System.Decimal"));
+        assertThat(((Product) def.getExpression()).getSource(), listOfLiterals(1.0, 2.0, 3.0, 4.0, 5.0));
     }
 
     @Test

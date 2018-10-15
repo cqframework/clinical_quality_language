@@ -34,8 +34,10 @@ public class SystemLibraryHelper {
         // ToString(Integer) : String
         // ToString(Decimal) : String
         // ToString(DateTime) : String
+        // ToString(Date) : String
         // ToString(Time) : String
         // ToString(Quantity) : String
+        // ToString(Ratio) : String
         Operator booleanToString = new Operator("ToString", new Signature(systemModel.getBoolean()), systemModel.getString());
         system.add(booleanToString);
         system.add(new Conversion(booleanToString, false));
@@ -48,17 +50,28 @@ public class SystemLibraryHelper {
         Operator dateTimeToString = new Operator("ToString", new Signature(systemModel.getDateTime()), systemModel.getString());
         system.add(dateTimeToString);
         system.add(new Conversion(dateTimeToString, false));
+        Operator dateToString = new Operator("ToString", new Signature(systemModel.getDate()), systemModel.getString());
+        system.add(dateToString);
+        system.add(new Conversion(dateToString, false));
         Operator timeToString = new Operator("ToString", new Signature(systemModel.getTime()), systemModel.getString());
         system.add(timeToString);
         system.add(new Conversion(timeToString, false));
         Operator quantityToString = new Operator("ToString", new Signature(systemModel.getQuantity()), systemModel.getString());
         system.add(quantityToString);
         system.add(new Conversion(quantityToString, false));
+        Operator ratioToString = new Operator("ToString", new Signature(systemModel.getRatio()), systemModel.getString());
+        system.add(ratioToString);
+        system.add(new Conversion(ratioToString, false));
 
         // ToBoolean(String) : Boolean
         Operator stringToBoolean = new Operator("ToBoolean", new Signature(systemModel.getString()), systemModel.getBoolean());
         system.add(stringToBoolean);
         system.add(new Conversion(stringToBoolean, false));
+
+        // ToChars(String) : List(String)
+        Operator toChars = new Operator("ToChars", new Signature(systemModel.getString()), new ListType(systemModel.getString()));
+        system.add(toChars);
+        system.add(new Conversion(toChars, false));
 
         // ToInteger(String) : Integer
         Operator stringToInteger = new Operator("ToInteger", new Signature(systemModel.getString()), systemModel.getInteger());
@@ -75,9 +88,22 @@ public class SystemLibraryHelper {
         system.add(new Conversion(integerToDecimal, true));
 
         // ToDateTime(String) : DateTime
+        // ToDateTime(Date) : DateTime
         Operator stringToDateTime = new Operator("ToDateTime", new Signature(systemModel.getString()), systemModel.getDateTime());
         system.add(stringToDateTime);
         system.add(new Conversion(stringToDateTime, false));
+        Operator dateToDateTime = new Operator("ToDateTime", new Signature(systemModel.getDate()), systemModel.getDateTime());
+        system.add(dateToDateTime);
+        system.add(new Conversion(dateToDateTime, true));
+
+        // ToDate(DateTime) : Date
+        // ToDate(String) : Date
+        Operator stringToDate = new Operator("ToDate", new Signature(systemModel.getString()), systemModel.getDate());
+        system.add(stringToDate);
+        system.add(new Conversion(stringToDate, false));
+        Operator dateTimeToDate = new Operator("ToDate", new Signature(systemModel.getDateTime()), systemModel.getDate());
+        system.add(dateTimeToDate);
+        system.add(new Conversion(dateTimeToDate, false));
 
         // ToTime(String) : Time
         Operator stringToTime = new Operator("ToTime", new Signature(systemModel.getString()), systemModel.getTime());
@@ -85,15 +111,61 @@ public class SystemLibraryHelper {
         system.add(new Conversion(stringToTime, false));
 
         // ToQuantity(String) : Quantity
+        // ToQuantity(Integer) : Quantity
+        // ToQuantity(Decimal) : Quantity
         Operator stringToQuantity = new Operator("ToQuantity", new Signature(systemModel.getString()), systemModel.getQuantity());
         system.add(stringToQuantity);
         system.add(new Conversion(stringToQuantity, false));
+        Operator integerToQuantity = new Operator("ToQuantity", new Signature(systemModel.getInteger()), systemModel.getQuantity());
+        system.add(integerToQuantity);
+        system.add(new Conversion(integerToQuantity, true));
+        Operator decimalToQuantity = new Operator("ToQuantity", new Signature(systemModel.getDecimal()), systemModel.getQuantity());
+        system.add(decimalToQuantity);
+        system.add(new Conversion(decimalToQuantity, true));
+
+        // ToRatio(String) : Ratio
+        Operator stringToRatio = new Operator("ToRatio", new Signature(systemModel.getString()), systemModel.getRatio());
+        system.add(stringToRatio);
+        system.add(new Conversion(stringToRatio, false));
+
+        // ConvertsToBoolean(Any): Boolean
+        Operator convertsTo = new Operator("ConvertsToBoolean", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToInteger(Any): Boolean
+        convertsTo = new Operator("ConvertsToInteger", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToDecimal
+        convertsTo = new Operator("ConvertsToDecimal", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToDateTime
+        convertsTo = new Operator("ConvertsToDateTime", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToDate
+        convertsTo = new Operator("ConvertsToDate", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToTime
+        convertsTo = new Operator("ConvertsToTime", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToString
+        convertsTo = new Operator("ConvertsToString", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToQuantity
+        convertsTo = new Operator("ConvertsToQuantity", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToRatio
+        convertsTo = new Operator("ConvertsToRatio", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
 
         // Comparison Operators
         // Equal<T>(T, T) : Boolean
-        system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        //system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equal(Any, Any) : Boolean
+        system.add(new Operator("Equal", new Signature(systemModel.getAny(), systemModel.getAny()), systemModel.getBoolean()));
         // Equivalent<T>(T, T) : Boolean
-        system.add(new GenericOperator("Equivalent", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        //system.add(new GenericOperator("Equivalent", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equivalent(Any, Any) : Boolean
+        system.add(new Operator("Equivalent", new Signature(systemModel.getAny(), systemModel.getAny()), systemModel.getBoolean()));
+
         system.add(new Operator("Less", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
@@ -110,6 +182,10 @@ public class SystemLibraryHelper {
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("Less", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
+        system.add(new Operator("LessOrEqual", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
+        system.add(new Operator("Greater", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
+        system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
@@ -131,7 +207,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Ceiling", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
 
         system.add(new Operator("Divide", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        //system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
         system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Floor", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
@@ -153,8 +229,8 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Multiply", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
-        system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getQuantity()), systemModel.getQuantity()));
+        //system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        //system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getQuantity()), systemModel.getQuantity()));
         system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Negate", new Signature(systemModel.getInteger()), systemModel.getInteger()));
@@ -163,6 +239,7 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Predecessor", new Signature(systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+        system.add(new Operator("Predecessor", new Signature(systemModel.getDate()), systemModel.getDate()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getDateTime()), systemModel.getDateTime()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getTime()), systemModel.getTime()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getQuantity()), systemModel.getQuantity()));
@@ -179,6 +256,7 @@ public class SystemLibraryHelper {
 
         system.add(new Operator("Successor", new Signature(systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Successor", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+        system.add(new Operator("Successor", new Signature(systemModel.getDate()), systemModel.getDate()));
         system.add(new Operator("Successor", new Signature(systemModel.getDateTime()), systemModel.getDateTime()));
         system.add(new Operator("Successor", new Signature(systemModel.getTime()), systemModel.getTime()));
         system.add(new Operator("Successor", new Signature(systemModel.getQuantity()), systemModel.getQuantity()));
@@ -205,6 +283,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("PositionOf", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getInteger()));
         system.add(new Operator("ReplaceMatches", new Signature(systemModel.getString(), systemModel.getString(), systemModel.getString()), systemModel.getString()));
         system.add(new Operator("Split", new Signature(systemModel.getString(), systemModel.getString()), new ListType(systemModel.getString())));
+        system.add(new Operator("SplitOnMatches", new Signature(systemModel.getString(), systemModel.getString()), new ListType(systemModel.getString())));
         system.add(new Operator("StartsWith", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("Substring", new Signature(systemModel.getString(), systemModel.getInteger()), systemModel.getString()));
         system.add(new Operator("Substring", new Signature(systemModel.getString(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getString()));
@@ -212,10 +291,13 @@ public class SystemLibraryHelper {
 
         // Date/Time Operators
         system.add(new Operator("Add", new Signature(systemModel.getDateTime(), systemModel.getQuantity()), systemModel.getDateTime()));
+        system.add(new Operator("Add", new Signature(systemModel.getDate(), systemModel.getQuantity()), systemModel.getDate()));
         system.add(new Operator("Add", new Signature(systemModel.getTime(), systemModel.getQuantity()), systemModel.getTime()));
         system.add(new Operator("After", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("After", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("After", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Before", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("Before", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("Before", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger()), systemModel.getDateTime()));
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getDateTime()));
@@ -225,26 +307,37 @@ public class SystemLibraryHelper {
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getDateTime()));
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getDateTime()));
         system.add(new Operator("DateTime", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getDecimal()), systemModel.getDateTime()));
-        system.add(new Operator("DateFrom", new Signature(systemModel.getDateTime()), systemModel.getDateTime()));
+        system.add(new Operator("Date", new Signature(systemModel.getInteger()), systemModel.getDate()));
+        system.add(new Operator("Date", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getDate()));
+        system.add(new Operator("Date", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getDate()));
+        system.add(new Operator("DateFrom", new Signature(systemModel.getDateTime()), systemModel.getDate()));
         system.add(new Operator("TimeFrom", new Signature(systemModel.getDateTime()), systemModel.getTime()));
         system.add(new Operator("TimezoneFrom", new Signature(systemModel.getDateTime()), systemModel.getDecimal()));
+        system.add(new Operator("TimezoneFrom", new Signature(systemModel.getDate()), systemModel.getDecimal()));
         system.add(new Operator("TimezoneFrom", new Signature(systemModel.getTime()), systemModel.getDecimal()));
         system.add(new Operator("DateTimeComponentFrom", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("DateTimeComponentFrom", new Signature(systemModel.getDate()), systemModel.getInteger()));
         system.add(new Operator("DateTimeComponentFrom", new Signature(systemModel.getTime()), systemModel.getInteger()));
         system.add(new Operator("DifferenceBetween", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("DifferenceBetween", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getInteger()));
         system.add(new Operator("DifferenceBetween", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getInteger()));
         system.add(new Operator("DurationBetween", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("DurationBetween", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getInteger()));
         system.add(new Operator("DurationBetween", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getInteger()));
         system.add(new Operator("Now", new Signature(), systemModel.getDateTime()));
         system.add(new Operator("SameAs", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("SameAs", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("SameAs", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("SameOrAfter", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("SameOrAfter", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("SameOrAfter", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("SameOrBefore", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("SameOrBefore", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("SameOrBefore", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Subtract", new Signature(systemModel.getDateTime(), systemModel.getQuantity()), systemModel.getDateTime()));
+        system.add(new Operator("Subtract", new Signature(systemModel.getDate(), systemModel.getQuantity()), systemModel.getDate()));
         system.add(new Operator("Subtract", new Signature(systemModel.getTime(), systemModel.getQuantity()), systemModel.getTime()));
-        system.add(new Operator("Today", new Signature(), systemModel.getDateTime()));
+        system.add(new Operator("Today", new Signature(), systemModel.getDate()));
         system.add(new Operator("Time", new Signature(systemModel.getInteger()), systemModel.getTime()));
         system.add(new Operator("Time", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getTime()));
         system.add(new Operator("Time", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getTime()));
@@ -255,29 +348,28 @@ public class SystemLibraryHelper {
         // Interval Operators
         // After<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("After", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // After<T>(T, interval<T>) : Boolean
-        system.add(new GenericOperator("After", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // After<T>(interval<T>, T) : Boolean
-        system.add(new GenericOperator("After", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // Before<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("Before", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Before<T>(T, interval<T>) : Boolean
-        system.add(new GenericOperator("Before", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Before<T>(interval,T>, T) : Boolean
-        system.add(new GenericOperator("Before", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // Collapse<T>(list<interval<T>>) : list<interval<T>>
-        system.add(new GenericOperator("Collapse", new Signature(new ListType(new IntervalType(new TypeParameter("T")))), new ListType(new IntervalType(new TypeParameter("T"))), new TypeParameter("T")));
+        // Collapse<T>(list<interval<T>>, Quantity) : list<interval<T>>
+        system.add(new GenericOperator("Collapse", new Signature(new ListType(new IntervalType(new TypeParameter("T"))), systemModel.getQuantity()), new ListType(new IntervalType(new TypeParameter("T"))), new TypeParameter("T")));
         // Contains<T>(interval<T>, T) : Boolean
         system.add(new GenericOperator("Contains", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // End<T>(interval<T>) : T
         system.add(new GenericOperator("End", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Ends<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("Ends", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Equal<T>(interval<T>, interval<T>) : Boolean
-        // Already covered by Equal<T>(T, T)
+        // Handled by generic Equal
+        //// Equal<T>(interval<T>, interval<T>) : Boolean
         //system.add(new GenericOperator("Equal", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Handled by generic Equivalent
+        //// Equivalent<T>(interval<T>, interval<T>) : Boolean
+        //system.add(new GenericOperator("Equivalent", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Except<T>(interval<T>, interval<T>) : interval<T>
         system.add(new GenericOperator("Except", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), new IntervalType(new TypeParameter("T")), new TypeParameter("T")));
+        // Expand<T>(list<interval<T>>) : list<interval<T>>
+        // Expand<T>(list<interval<T>>, Quantity) : list<interval<T>>
+        system.add(new GenericOperator("Expand", new Signature(new ListType(new IntervalType(new TypeParameter("T"))), systemModel.getQuantity()), new IntervalType(new TypeParameter("T")), new TypeParameter("T")));
         // In<T>(T, interval<T>) : Boolean
         system.add(new GenericOperator("In", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Includes<T>(interval<T>, interval<T>) : Boolean
@@ -311,22 +403,10 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("ProperIncludedIn", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameAs<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameAs", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // SameAs<T>(interval<T>, T) : Boolean
-        system.add(new GenericOperator("SameAs", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-        // SameAs<T>(T, interval<T>) : Boolean
-        system.add(new GenericOperator("SameAs", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameOrAfter<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameOrAfter", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // SameOrAfter<T>(interval<T>, T) : Boolean
-        system.add(new GenericOperator("SameOrAfter", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-        // SameOrAfter<T>(T, interval<T>) : Boolean
-        system.add(new GenericOperator("SameOrAfter", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameOrBefore<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameOrBefore", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // SameOrBefore<T>(interval<T>, T) : Boolean
-        system.add(new GenericOperator("SameOrBefore", new Signature(new IntervalType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
-        // SameOrBefore<T>(T, interval<T>) : Boolean
-        system.add(new GenericOperator("SameOrBefore", new Signature(new TypeParameter("T"), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Start<T>(interval<T>) : T
         system.add(new GenericOperator("Start", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Starts<T>(interval<T>, interval<T>) : Boolean
@@ -341,9 +421,12 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Contains", new Signature(new ListType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // Distinct<T>(list<T>) : list<T>
         system.add(new GenericOperator("Distinct", new Signature(new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
-        // Equal<T>(list<T>, list<T>) : Boolean
-        // Already covered by Equal<T>(T, T)
+        // Handled by generic Equal
+        //// Equal<T>(list<T>, list<T>) : Boolean
         //system.add(new GenericOperator("Equal", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Handled by generic Equivalent
+        //// Equivalent<T>(list<T>, list<T>) : Boolean
+        //system.add(new GenericOperator("Equivalent", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Except<T>(list<T>, list<T>) : list<T>
         system.add(new GenericOperator("Except", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // Exists<T>(list<T>) : Boolean
@@ -402,17 +485,22 @@ public class SystemLibraryHelper {
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         // Count<T>(list<T>) : Integer
-        system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
+        //system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
+        // Count(list<Any>) : Integer
+        system.add(new Operator("Count", new Signature(new ListType(systemModel.getAny())), systemModel.getInteger()));
+        system.add(new Operator("GeometricMean", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDateTime())), systemModel.getDateTime()));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getDate())), systemModel.getDate()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getTime())), systemModel.getTime()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getDateTime())), systemModel.getDateTime()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getDate())), systemModel.getDate()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getTime())), systemModel.getTime()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
         system.add(new Operator("Median", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
@@ -423,6 +511,9 @@ public class SystemLibraryHelper {
         system.add(new Operator("PopulationStdDev", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
+        system.add(new Operator("Product", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
+        system.add(new Operator("Product", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
+        system.add(new Operator("Product", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
@@ -439,18 +530,34 @@ public class SystemLibraryHelper {
         // ToConcept(list<Code>)
         Operator codesToConcept = new Operator("ToConcept", new Signature(new ListType(systemModel.getCode())), systemModel.getConcept());
         system.add(codesToConcept);
-        system.add(new Conversion(codesToConcept, true));
+        system.add(new Conversion(codesToConcept, false));
 
         system.add(new Operator("CalculateAge", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("CalculateAge", new Signature(systemModel.getDate()), systemModel.getInteger()));
         system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("CalculateAgeAt", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getInteger()));
 
         system.add(new Operator("InValueSet", new Signature(systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("InValueSet", new Signature(systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("InValueSet", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
 
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getString())), systemModel.getBoolean()));
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getCode())), systemModel.getBoolean()));
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getConcept())), systemModel.getBoolean()));
+
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
+
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getString())), systemModel.getBoolean()));
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getCode())), systemModel.getBoolean()));
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getConcept())), systemModel.getBoolean()));
+
+        system.add(new Operator("Subsumes", new Signature(systemModel.getCode(), systemModel.getCode()), systemModel.getBoolean()));
+        system.add(new Operator("Subsumes", new Signature(systemModel.getConcept(), systemModel.getConcept()), systemModel.getBoolean()));
+
+        system.add(new Operator("SubsumedBy", new Signature(systemModel.getCode(), systemModel.getCode()), systemModel.getBoolean()));
+        system.add(new Operator("SubsumedBy", new Signature(systemModel.getConcept(), systemModel.getConcept()), systemModel.getBoolean()));
 
         // Errors
         // Message(source T, condition Boolean, code String, severity String, message String) T

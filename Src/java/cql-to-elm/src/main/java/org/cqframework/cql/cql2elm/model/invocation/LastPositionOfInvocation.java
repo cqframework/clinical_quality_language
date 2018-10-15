@@ -6,7 +6,7 @@ import org.hl7.elm.r1.LastPositionOf;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class LastPositionOfInvocation extends AbstractExpressionInvocation {
+public class LastPositionOfInvocation extends OperatorExpressionInvocation {
     public LastPositionOfInvocation(LastPositionOf expression) {
         super(expression);
     }

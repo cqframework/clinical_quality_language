@@ -5,7 +5,7 @@ import org.hl7.elm.r1.InValueSet;
 
 import java.util.Collections;
 
-public class InValueSetInvocation extends AbstractExpressionInvocation {
+public class InValueSetInvocation extends OperatorExpressionInvocation {
     public InValueSetInvocation(InValueSet expression) {
         super(expression);
     }

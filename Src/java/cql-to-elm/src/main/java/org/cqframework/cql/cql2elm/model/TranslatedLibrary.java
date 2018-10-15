@@ -79,6 +79,13 @@ public class TranslatedLibrary {
         }
     }
 
+    public void remove(ExpressionDef expression) {
+        if (expression instanceof FunctionDef) {
+            throw new IllegalArgumentException("FunctionDef cannot be removed.");
+        }
+        namespace.remove(expression.getName());
+    }
+
     private void ensureLibrary(Operator operator) {
         // Functions can be defined in an anonymous library
         if (this.identifier != null && this.identifier.getId() != null) {

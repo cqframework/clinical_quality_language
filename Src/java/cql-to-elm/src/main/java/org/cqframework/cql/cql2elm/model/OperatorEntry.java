@@ -1,9 +1,9 @@
 package org.cqframework.cql.cql2elm.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.hl7.cql.model.ChoiceType;
+import org.hl7.cql.model.DataType;
+
+import java.util.*;
 
 public class OperatorEntry {
     public OperatorEntry(String name) {
@@ -57,7 +57,7 @@ public class OperatorEntry {
             if (results == null && conversionMap != null) {
                 // Attempt to find a conversion path from the call signature to the target signature
                 Conversion[] conversions = new Conversion[operator.getSignature().getSize()];
-                boolean isConvertible = callContext.getSignature().isConvertibleTo(operator.getSignature(), conversionMap, operatorMap, conversions);
+                boolean isConvertible = callContext.getSignature().isConvertibleTo(operator.getSignature(), conversionMap, operatorMap, callContext.getAllowPromotionAndDemotion(), conversions);
                 if (isConvertible) {
                     OperatorResolution resolution = new OperatorResolution(operator);
                     resolution.setConversions(conversions);
@@ -142,13 +142,25 @@ public class OperatorEntry {
         public List<OperatorResolution> resolve(CallContext callContext, ConversionMap conversionMap, OperatorMap operatorMap) {
             ArrayList<OperatorResolution> results = null;
 
+            int signatureCount = 0;
             for (SignatureNode n : signatures.values()) {
+
+                if (n.getSignature().getSize() == callContext.getSignature().getSize()) {
+                    signatureCount++;
+                }
+
                 List<OperatorResolution> nodeResults = n.resolve(callContext, conversionMap, operatorMap);
                 if (nodeResults != null) {
                     if (results == null) {
                         results = new ArrayList();
                     }
                     results.addAll(nodeResults);
+                }
+            }
+
+            if (results != null && signatureCount > 1) {
+                for (OperatorResolution result : results) {
+                    result.setOperatorHasOverloads();
                 }
             }
 
@@ -196,6 +208,45 @@ public class OperatorEntry {
         return true;
     }
 
+    public List<Signature> expandChoices(Signature callSignature) {
+        ArrayList<Signature> signatures = new ArrayList<Signature>();
+        if (callSignature.containsChoices()) {
+
+            ArrayList<ArrayList<DataType>> operandList = new ArrayList<ArrayList<DataType>>();
+            for (DataType operand : callSignature.getOperandTypes()) {
+                ArrayList<DataType> list = new ArrayList<DataType>();
+                if (operand instanceof ChoiceType) {
+                    for (DataType type : ((ChoiceType)operand).getTypes()) {
+                        list.add(type);
+                    }
+                }
+                else {
+                    list.add(operand);
+                }
+                operandList.add(list);
+            }
+
+            DataType[] result = new DataType[callSignature.getSize()];
+            collectSignatures(operandList, result, 0, signatures);
+        }
+        else {
+            signatures.add(callSignature);
+        }
+        return signatures;
+    }
+
+    private void collectSignatures(ArrayList<ArrayList<DataType>> operandList, DataType[] result, int k, List<Signature> signatures) {
+        if (k == operandList.size()) {
+            signatures.add(new Signature(result));
+        }
+        else {
+            for (int j = 0; j < operandList.get(k).size(); j++) {
+                result[k] = operandList.get(k).get(j);
+                collectSignatures(operandList, result, k + 1, signatures);
+            }
+        }
+    }
+
     public List<OperatorResolution> resolve(CallContext callContext, OperatorMap operatorMap, ConversionMap conversionMap) {
         if (callContext == null) {
             throw new IllegalArgumentException("callContext is null");
@@ -205,27 +256,33 @@ public class OperatorEntry {
 
         // If there is no resolution, or all resolutions require conversion, attempt to instantiate a generic signature
         if (results == null || allResultsUseConversion(results)) {
-            Operator result = instantiate(callContext.getSignature(), operatorMap, conversionMap);
-            if (result != null && !signatures.contains(result)) {
-                // If the generic signature was instantiated, store it as an actual signature.
-                signatures.add(new SignatureNode(result));
+            // If the callContext signature contains choices, attempt instantiation with all possible combinations of the call signature (ouch, this could really hurt...)
+            boolean signaturesInstantiated = false;
+            List<Signature> callSignatures = expandChoices(callContext.getSignature());
+            for (Signature callSignature : callSignatures) {
+                Operator result = instantiate(callSignature, operatorMap, conversionMap, callContext.getAllowPromotionAndDemotion());
+                if (result != null && !signatures.contains(result)) {
+                    // If the generic signature was instantiated, store it as an actual signature.
+                    signatures.add(new SignatureNode(result));
+                    signaturesInstantiated = true;
+                }
             }
 
             // re-attempt the resolution with the instantiated signature registered
-            results = signatures.resolve(callContext, conversionMap, operatorMap);
+            if (signaturesInstantiated) {
+                results = signatures.resolve(callContext, conversionMap, operatorMap);
+            }
         }
-
-
 
         return results;
     }
 
-    private Operator instantiate(Signature signature, OperatorMap operatorMap, ConversionMap conversionMap) {
+    private Operator instantiate(Signature signature, OperatorMap operatorMap, ConversionMap conversionMap, boolean allowPromotionAndDemotion) {
         List<Operator> instantiations = new ArrayList<Operator>();
         int lowestConversionScore = Integer.MAX_VALUE;
         Operator instantiation = null;
         for (GenericOperator genericOperator : genericOperators.values()) {
-            InstantiationResult instantiationResult = genericOperator.instantiate(signature, operatorMap, conversionMap);
+            InstantiationResult instantiationResult = genericOperator.instantiate(signature, operatorMap, conversionMap, allowPromotionAndDemotion);
             if (instantiationResult.getOperator() != null) {
                 if (instantiationResult.getConversionScore() <= lowestConversionScore) {
                     if (instantiation == null || instantiationResult.getConversionScore() < lowestConversionScore) {

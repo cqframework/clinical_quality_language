@@ -34,11 +34,17 @@ public class SystemModel extends Model {
         return this.resolveTypeName("DateTime");
     }
 
+    public DataType getDate() {
+        return this.resolveTypeName("Date");
+    }
+
     public DataType getTime() {
         return this.resolveTypeName("Time");
     }
 
     public DataType getQuantity() { return this.resolveTypeName("Quantity"); }
+
+    public DataType getRatio() { return this.resolveTypeName("Ratio"); }
 
     public DataType getCode() { return this.resolveTypeName("Code"); }
 

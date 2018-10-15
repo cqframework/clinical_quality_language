@@ -12,9 +12,9 @@ expression
         | ('+' | '-') expression                                    #polarityExpression
         | expression ('*' | '/' | 'div' | 'mod') expression         #multiplicativeExpression
         | expression ('+' | '-' | '&') expression                   #additiveExpression
+        | expression ('is' | 'as') typeSpecifier                    #typeExpression
         | expression '|' expression                                 #unionExpression
         | expression ('<=' | '<' | '>' | '>=') expression           #inequalityExpression
-        | expression ('is' | 'as') typeSpecifier                    #typeExpression
         | expression ('=' | '~' | '!=' | '!~') expression           #equalityExpression
         | expression ('in' | 'contains') expression                 #membershipExpression
         | expression 'and' expression                               #andExpression
@@ -48,6 +48,8 @@ invocation                          // Terms that can be used after the function
         : identifier                                            #memberInvocation
         | function                                              #functionInvocation
         | '$this'                                               #thisInvocation
+        | '$index'                                              #indexInvocation
+        | '$total'                                              #totalInvocation
         ;
 
 function
@@ -86,7 +88,7 @@ qualifiedIdentifier
 
 identifier
         : IDENTIFIER
-        | QUOTEDIDENTIFIER
+        | DELIMITEDIDENTIFIER
         | 'as'
         | 'is'
         ;
@@ -136,8 +138,8 @@ IDENTIFIER
         : ([A-Za-z] | '_')([A-Za-z0-9] | '_')*            // Added _ to support CQL (FHIR could constrain it out)
         ;
 
-QUOTEDIDENTIFIER
-        : '"' (ESC | .)*? '"'
+DELIMITEDIDENTIFIER
+        : '`' (ESC | .)*? '`'
         ;
 
 STRING
@@ -163,7 +165,7 @@ LINE_COMMENT
         ;
 
 fragment ESC
-        : '\\' (["'\\/fnrt] | UNICODE)    // allow \", \', \\, \/, \f, etc. and \uXXX
+        : '\\' ([`'\\/fnrt] | UNICODE)    // allow \`, \', \\, \/, \f, etc. and \uXXX
         ;
 
 fragment UNICODE

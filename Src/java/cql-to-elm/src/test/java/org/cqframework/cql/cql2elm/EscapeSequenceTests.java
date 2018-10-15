@@ -54,6 +54,24 @@ public class EscapeSequenceTests {
         literal = (Literal)def.getExpression();
         assertThat(literal.getValue(), is("Hello \"World\""));
 
+        def = defs.get("BacktickEscapeString");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is("Hello `World`"));
+
+        def = defs.get("StringWithDoubleQuotes");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is("This string has \"double-quotes\""));
+
+        def = defs.get("StringWithBackticks");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is("This string has `backticks`"));
+
         def = defs.get("NEscapeString");
         assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
 
@@ -84,19 +102,17 @@ public class EscapeSequenceTests {
         literal = (Literal)def.getExpression();
         assertThat(literal.getValue(), is("/"));
 
-        //Github #82: The grammar has a bug related to escapes. An STU comment has been submitted to address this in CQL 1.2
-        //def = defs.get("BackslashEscapeString");
-        //assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+        def = defs.get("BackslashEscapeString");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
 
-        //literal = (Literal)def.getExpression();
-        //assertThat(literal.getValue(), is("\\"));
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is("\\"));
 
-        //Github #82: The grammar has a bug related to escapes. An STU comment has been submitted to address this in CQL 1.2
-        //def = defs.get("CharacterEscapesString");
-        //assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+        def = defs.get("CharacterEscapesString");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
 
-        //literal = (Literal)def.getExpression();
-        //assertThat(literal.getValue(), is("\f\n\r\t/\\"));
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is("\f\n\r\t/\\"));
 
         def = defs.get("UnicodeEscapeString");
         assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
@@ -126,6 +142,24 @@ public class EscapeSequenceTests {
         assertThat(literal.getValue(), is(def.getName()));
 
         def = defs.get("Hello \"World\"");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is(def.getName()));
+
+        def = defs.get("Hello `World`");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is(def.getName()));
+
+        def = defs.get("Hello 'World'2");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is(def.getName()));
+
+        def = defs.get("Hello `World`2");
         assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
 
         literal = (Literal)def.getExpression();
@@ -161,19 +195,17 @@ public class EscapeSequenceTests {
         literal = (Literal)def.getExpression();
         assertThat(literal.getValue(), is(def.getName()));
 
-        //Github #82: The grammar has a bug related to escapes. An STU comment has been submitted to address this in CQL 1.2
-        //def = defs.get("\\");
-        //assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+        def = defs.get("\\");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
 
-        //literal = (Literal)def.getExpression();
-        //assertThat(literal.getValue(), is(def.getName()));
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is(def.getName()));
 
-        //Github #82: The grammar has a bug related to escapes. An STU comment has been submitted to address this in CQL 1.2
-        //def = defs.get("\f\n\r\t/\\");
-        //assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+        def = defs.get("\f\n\r\t/\\");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
 
-        //literal = (Literal)def.getExpression();
-        //assertThat(literal.getValue(), is(def.getName()));
+        literal = (Literal)def.getExpression();
+        assertThat(literal.getValue(), is(def.getName()));
 
         def = defs.get("\u0020");
         assertThat(def, hasTypeAndResult(Literal.class, "System.String"));

@@ -1,8 +1,9 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.*;
 
 import java.util.*;
+import java.util.jar.Pack200;
 
 public class OperatorMap {
     private Map<String, OperatorEntry> operators = new HashMap<>();
@@ -31,6 +32,27 @@ public class OperatorMap {
         return entry;
     }
 
+    public boolean supportsOperator(String libraryName, String operatorName, DataType... signature) {
+        CallContext call = new CallContext(libraryName, operatorName, false, false, signature);
+        try {
+            OperatorResolution resolution = resolveOperator(call, null);
+            if (resolution == null) {
+                return false;
+            }
+        }
+        catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Returns true if the given type supports the operations necessary to be the point type of an interval
+    // (i.e. comparison, successor, and predecessor)
+    public boolean isPointType(DataType type) {
+        return supportsOperator("System", "LessOrEqual", type, type) && supportsOperator("System", "Successor", type);
+    }
+
     public OperatorResolution resolveOperator(CallContext callContext, ConversionMap conversionMap) {
         OperatorEntry entry = getEntry(callContext.getOperatorName());
         List<OperatorResolution> results = entry.resolve(callContext, this, conversionMap);
@@ -42,46 +64,18 @@ public class OperatorMap {
             int lowestScore = Integer.MAX_VALUE;
             List<OperatorResolution> lowestScoringResults = new ArrayList<>();
             for (OperatorResolution resolution : results) {
-                // for each operand
-                    // exact match = 0
-                    // subtype = 1
-                    // compatible = 2
-                    // cast = 3
-                    // conversion = 4
-                    // demotion = 5
-                    // promotion = 6
                 Iterator<DataType> operands = resolution.getOperator().getSignature().getOperandTypes().iterator();
                 Iterator<DataType> callOperands = callContext.getSignature().getOperandTypes().iterator();
                 Iterator<Conversion> conversions = resolution.hasConversions() ? resolution.getConversions().iterator() : null;
-                int score = 0;
+                int score = ConversionMap.ConversionScore.ExactMatch.score();
                 while (operands.hasNext()) {
                     DataType operand = operands.next();
                     DataType callOperand = callOperands.next();
                     Conversion conversion = conversions != null ? conversions.next() : null;
-                    if (operand.equals(callOperand)) {
-                        score += 0;
-                    }
-                    else if (operand.isSuperTypeOf(callOperand)) {
-                        score += 1;
-                    }
-                    else if (callOperand.isCompatibleWith(operand)) {
-                        score += 2;
-                    }
-                    else if (conversion != null) {
-                        if (conversion.isCast()) {
-                            score += 3;
-                        }
-                        else if (conversion.isListDemotion()) {
-                            score += 5;
-                        }
-                        else if (conversion.isListPromotion()) {
-                            score += 6;
-                        }
-                        else {
-                            score += 4;
-                        }
-                    }
+                    score += ConversionMap.getConversionScore(callOperand, operand, conversion);
                 }
+
+                resolution.setScore(score);
 
                 if (score < lowestScore) {
                     lowestScore = score;
@@ -94,12 +88,18 @@ public class OperatorMap {
             }
 
             if (lowestScoringResults.size() > 1) {
-                StringBuilder message = new StringBuilder("Call to operator ").append(callContext.getOperatorName())
-                        .append(callContext.getSignature()).append(" is ambiguous with: ");
-                for (OperatorResolution resolution : lowestScoringResults) {
-                    message.append("\n  - ").append(resolution.getOperator().getName()).append(resolution.getOperator().getSignature());
+                if (callContext.getMustResolve()) {
+                    // ERROR:
+                    StringBuilder message = new StringBuilder("Call to operator ").append(callContext.getOperatorName())
+                            .append(callContext.getSignature()).append(" is ambiguous with: ");
+                    for (OperatorResolution resolution : lowestScoringResults) {
+                        message.append("\n  - ").append(resolution.getOperator().getName()).append(resolution.getOperator().getSignature());
+                    }
+                    throw new IllegalArgumentException(message.toString());
                 }
-                throw new IllegalArgumentException(message.toString());
+                else {
+                    return null;
+                }
             }
             else {
                 result = lowestScoringResults.get(0);

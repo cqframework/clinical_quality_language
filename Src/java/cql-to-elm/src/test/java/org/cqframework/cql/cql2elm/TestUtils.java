@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
@@ -83,6 +84,13 @@ public class TestUtils {
         return translator.toObject();
     }
 
+    public static TranslatedLibrary visitFileLibrary(String fileName) throws IOException {
+        File file = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(fileName).getFile(), "UTF-8"));
+        CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager(), getUcumService());
+        ensureValid(translator);
+        return translator.getTranslatedLibrary();
+    }
+
     public static Object visitData(String cqlData) {
         CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(), getUcumService());
         ensureValid(translator);
@@ -142,10 +150,10 @@ public class TestUtils {
         return new CommonTokenStream(lexer);
     }
 
-    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors) throws IOException {
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
         File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, new LibraryManager(modelManager), getUcumService());
+        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, new LibraryManager(modelManager), getUcumService(), options);
         for (CqlTranslatorException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));

@@ -13,6 +13,8 @@ public class GenericOperator extends Operator {
     public GenericOperator(String name, Signature signature, DataType resultType, TypeParameter... typeParameters) {
         super(name, signature, resultType);
 
+        // TODO: This constructor really ought to be replacing the TypeParameter references in its signature with copies of the referenced type parameter given here,
+        // but the constructor order and signature hiding of the base make that quite difficult here...
         for (TypeParameter typeParameter : typeParameters) {
             this.typeParameters.add(typeParameter);
         }
@@ -23,11 +25,11 @@ public class GenericOperator extends Operator {
         return this.typeParameters;
     }
 
-    public InstantiationResult instantiate(Signature callSignature, OperatorMap operatorMap, ConversionMap conversionMap) {
-        return instantiate(callSignature, null, operatorMap, conversionMap);
+    public InstantiationResult instantiate(Signature callSignature, OperatorMap operatorMap, ConversionMap conversionMap, boolean allowPromotionAndDemotion) {
+        return instantiate(callSignature, null, operatorMap, conversionMap, allowPromotionAndDemotion);
     }
 
-    public InstantiationResult instantiate(Signature callSignature, Map<TypeParameter, DataType> parameters, OperatorMap operatorMap, ConversionMap conversionMap) {
+    public InstantiationResult instantiate(Signature callSignature, Map<TypeParameter, DataType> parameters, OperatorMap operatorMap, ConversionMap conversionMap, boolean allowPromotionAndDemotion) {
         Map<TypeParameter, DataType> typeMap = new HashMap<>();
 
         for (TypeParameter p : typeParameters) {
@@ -40,7 +42,7 @@ public class GenericOperator extends Operator {
             }
         }
 
-        InstantiationContextImpl context = new InstantiationContextImpl(typeMap, operatorMap, conversionMap);
+        InstantiationContextImpl context = new InstantiationContextImpl(typeMap, operatorMap, conversionMap, allowPromotionAndDemotion);
 
         Boolean instantiable = getSignature().isInstantiable(callSignature, context);
         if (instantiable) {

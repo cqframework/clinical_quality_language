@@ -13,13 +13,38 @@ import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
+
+
 
 /**
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder {
+    public static enum SignatureLevel {
+        /*
+        Indicates signatures will never be included in operator invocations
+         */
+        None,
+
+        /*
+        Indicates signatures will only be included in invocations if the declared signature of the resolve operator is different than the invocation signature
+         */
+        Differing,
+
+        /*
+        Indicates signatures will only be included in invocations if the function has multiple overloads with the same number of arguments as the invocation
+         */
+        Overloads,
+
+        /*
+        Indicates signatures will always be included in invocations
+         */
+        All
+    }
+
     public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
@@ -73,6 +98,7 @@ public class LibraryBuilder {
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
+    private int literalContext = 0;
     private ModelManager modelManager = null;
     private Model defaultModel = null;
     private LibraryManager libraryManager = null;
@@ -92,6 +118,7 @@ public class LibraryBuilder {
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private UcumService ucumService = null;
+    private SignatureLevel signatureLevel = SignatureLevel.Differing;
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -99,6 +126,14 @@ public class LibraryBuilder {
 
     public void disableListTraversal() {
         listTraversal = false;
+    }
+
+    public SignatureLevel getSignatureLevel() {
+        return this.signatureLevel;
+    }
+
+    public void setSignatureLevel(SignatureLevel signatureLevel) {
+        this.signatureLevel = signatureLevel;
     }
 
     private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
@@ -302,6 +337,11 @@ public class LibraryBuilder {
     }
 
     public TranslatedLibrary resolveLibrary(String identifier) {
+
+        if (!identifier.equals("System")) {
+            checkLiteralContext();
+        }
+
         TranslatedLibrary result = libraries.get(identifier);
         if (result == null) {
             throw new IllegalArgumentException(String.format("Could not resolve library name %s.", identifier));
@@ -494,6 +534,13 @@ public class LibraryBuilder {
         translatedLibrary.add(expDef);
     }
 
+    public void removeExpression(ExpressionDef expDef) {
+        if (library.getStatements() != null) {
+            library.getStatements().getDef().remove(expDef);
+            translatedLibrary.remove(expDef);
+        }
+    }
+
     public Element resolve(String identifier) {
         return translatedLibrary.resolve(identifier);
     }
@@ -519,39 +566,172 @@ public class LibraryBuilder {
     }
 
     public ParameterDef resolveParameterRef(String identifier) {
+        checkLiteralContext();
         return translatedLibrary.resolveParameterRef(identifier);
     }
 
     public ExpressionDef resolveExpressionRef(String identifier) {
+        checkLiteralContext();
         return translatedLibrary.resolveExpressionRef(identifier);
     }
 
-    public Conversion findConversion(DataType fromType, DataType toType, boolean implicit) {
-        return conversionMap.findConversion(fromType, toType, implicit, translatedLibrary.getOperatorMap());
+    public Conversion findConversion(DataType fromType, DataType toType, boolean implicit, boolean allowPromotionAndDemotion) {
+        return conversionMap.findConversion(fromType, toType, implicit, allowPromotionAndDemotion, translatedLibrary.getOperatorMap());
     }
 
     public Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression));
+        return resolveCall(libraryName, operatorName, new UnaryExpressionInvocation(expression), false);
+    }
+
+    public Invocation resolveBinaryInvocation(String libraryName, String operatorName, BinaryExpression expression) {
+        return resolveBinaryInvocation(libraryName, operatorName, expression, true, false);
     }
 
     public Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new BinaryExpressionInvocation(expression));
+        Invocation invocation = resolveBinaryInvocation(libraryName, operatorName, expression);
+        return invocation != null ? invocation.getExpression() : null;
+    }
+
+    public Invocation resolveBinaryInvocation(String libraryName, String operatorName, BinaryExpression expression, boolean mustResolve, boolean allowPromotionAndDemotion) {
+        return resolveInvocation(libraryName, operatorName, new BinaryExpressionInvocation(expression), mustResolve, allowPromotionAndDemotion);
+    }
+
+    public Expression resolveBinaryCall(String libraryName, String operatorName, BinaryExpression expression, boolean mustResolve, boolean allowPromotionAndDemotion) {
+        Invocation invocation = resolveBinaryInvocation(libraryName, operatorName, expression, mustResolve, allowPromotionAndDemotion);
+        return invocation != null ? invocation.getExpression() : null;
     }
 
     public Expression resolveTernaryCall(String libraryName, String operatorName, TernaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new TernaryExpressionInvocation(expression));
+        return resolveCall(libraryName, operatorName, new TernaryExpressionInvocation(expression), false);
     }
 
     public Expression resolveNaryCall(String libraryName, String operatorName, NaryExpression expression) {
-        return resolveCall(libraryName, operatorName, new NaryExpressionInvocation(expression));
+        return resolveCall(libraryName, operatorName, new NaryExpressionInvocation(expression), false);
     }
 
     public Expression resolveAggregateCall(String libraryName, String operatorName, AggregateExpression expression) {
-        return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression));
+        return resolveCall(libraryName, operatorName, new AggregateExpressionInvocation(expression), false);
+    }
+
+    private class BinaryWrapper {
+        public Expression left;
+        public Expression right;
+
+        public BinaryWrapper(Expression left, Expression right) {
+            this.left = left;
+            this.right = right;
+        }
+    }
+
+    private BinaryWrapper normalizeListTypes(Expression left, Expression right) {
+        // for union of lists
+        // collect list of types in either side
+        // cast both operands to a choice type with all types
+
+        // for intersect of lists
+        // collect list of types in both sides
+        // cast both operands to a choice type with all types
+        // TODO: cast the result to a choice type with only types in both sides
+
+        // for difference of lists
+        // collect list of types in both sides
+        // cast both operands to a choice type with all types
+        // TODO: cast the result to the initial type of the left
+
+        if (left.getResultType() instanceof ListType && right.getResultType() instanceof ListType) {
+            ListType leftListType = (ListType)left.getResultType();
+            ListType rightListType = (ListType)right.getResultType();
+
+            if (!(leftListType.isSuperTypeOf(rightListType) || rightListType.isSuperTypeOf(leftListType))
+                    && !(leftListType.isCompatibleWith(rightListType) || rightListType.isCompatibleWith(leftListType))) {
+                Set<DataType> elementTypes = new HashSet<DataType>();
+                if (leftListType.getElementType() instanceof ChoiceType) {
+                    for (DataType choice : ((ChoiceType)leftListType.getElementType()).getTypes()) {
+                        elementTypes.add(choice);
+                    }
+                }
+                else {
+                    elementTypes.add(leftListType.getElementType());
+                }
+
+                if (rightListType.getElementType() instanceof ChoiceType) {
+                    for (DataType choice : ((ChoiceType)rightListType.getElementType()).getTypes()) {
+                        elementTypes.add(choice);
+                    }
+                }
+                else {
+                    elementTypes.add(rightListType.getElementType());
+                }
+
+                if (elementTypes.size() > 1) {
+                    ListType targetType = new ListType(new ChoiceType(elementTypes));
+                    left = of.createAs().withOperand(left).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
+                    left.setResultType(targetType);
+
+                    right = of.createAs().withOperand(right).withAsTypeSpecifier(dataTypeToTypeSpecifier(targetType));
+                    right.setResultType(targetType);
+                }
+            }
+        }
+
+        return new BinaryWrapper(left, right);
+    }
+
+    public Expression resolveUnion(Expression left, Expression right) {
+        // Create right-leaning bushy instead of left-deep
+        if (left instanceof Union) {
+            Union leftUnion = (Union)left;
+            Expression leftUnionLeft = leftUnion.getOperand().get(0);
+            Expression leftUnionRight = leftUnion.getOperand().get(1);
+            if (leftUnionLeft instanceof Union && !(leftUnionRight instanceof Union)) {
+                left = leftUnionLeft;
+                right = resolveUnion(leftUnionRight, right);
+            }
+        }
+
+        // TODO: Take advantage of nary unions
+        BinaryWrapper wrapper = normalizeListTypes(left, right);
+        Union union = of.createUnion().withOperand(wrapper.left, wrapper.right);
+        resolveNaryCall("System", "Union", union);
+        return union;
+    }
+
+    public Expression resolveIntersect(Expression left, Expression right) {
+        // Create right-leaning bushy instead of left-deep
+        if (left instanceof Intersect) {
+            Intersect leftIntersect = (Intersect)left;
+            Expression leftIntersectLeft = leftIntersect.getOperand().get(0);
+            Expression leftIntersectRight = leftIntersect.getOperand().get(1);
+            if (leftIntersectLeft instanceof Intersect && !(leftIntersectRight instanceof Intersect)) {
+                left = leftIntersectLeft;
+                right = resolveIntersect(leftIntersectRight, right);
+            }
+        }
+
+        // TODO: Take advantage of nary intersect
+        BinaryWrapper wrapper = normalizeListTypes(left, right);
+        Intersect intersect = of.createIntersect().withOperand(wrapper.left, wrapper.right);
+        resolveNaryCall("System", "Intersect", intersect);
+        return intersect;
+    }
+
+    public Expression resolveExcept(Expression left, Expression right) {
+        BinaryWrapper wrapper = normalizeListTypes(left, right);
+        Except except = of.createExcept().withOperand(wrapper.left, wrapper.right);
+        resolveNaryCall("System", "Except", except);
+        return except;
     }
 
     public Expression resolveIn(Expression left, Expression right) {
         if (right instanceof ValueSetRef) {
+            if (left.getResultType() instanceof ListType) {
+                AnyInValueSet anyIn = of.createAnyInValueSet()
+                        .withCodes(left)
+                        .withValueset((ValueSetRef)right);
+                resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
+                return anyIn;
+            }
+
             InValueSet in = of.createInValueSet()
                     .withCode(left)
                     .withValueset((ValueSetRef) right);
@@ -560,6 +740,13 @@ public class LibraryBuilder {
         }
 
         if (right instanceof CodeSystemRef) {
+            if (left.getResultType() instanceof ListType) {
+                AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
+                        .withCodes(left)
+                        .withCodesystem((CodeSystemRef)right);
+                resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
+                return anyIn;
+            }
             InCodeSystem in = of.createInCodeSystem()
                     .withCode(left)
                     .withCodesystem((CodeSystemRef)right);
@@ -572,11 +759,142 @@ public class LibraryBuilder {
         return in;
     }
 
-    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
-        return resolveCall(libraryName, operatorName, invocation, true);
+    public Expression resolveIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Invocation result = resolveInInvocation(left, right, dateTimePrecision);
+        return result != null ? result.getExpression() : null;
     }
 
-    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve) {
+    public Invocation resolveInInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        In in = of.createIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        return resolveBinaryInvocation("System", "In", in);
+    }
+
+    public Expression resolveProperIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Invocation result = resolveProperInInvocation(left, right, dateTimePrecision);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveProperInInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        ProperIn properIn = of.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        return resolveBinaryInvocation("System", "ProperIn", properIn);
+    }
+
+    public Expression resolveContains(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Invocation result = resolveContainsInvocation(left, right, dateTimePrecision);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveContainsInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Contains contains = of.createContains().withOperand(left, right).withPrecision(dateTimePrecision);
+        return resolveBinaryInvocation("System", "Contains", contains);
+    }
+
+    public Expression resolveProperContains(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Invocation result = resolveProperContainsInvocation(left, right, dateTimePrecision);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveProperContainsInvocation(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        ProperContains properContains = of.createProperContains().withOperand(left, right).withPrecision(dateTimePrecision);
+        return resolveBinaryInvocation("System", "ProperContains", properContains);
+    }
+
+    private Expression lowestScoringInvocation(Invocation primary, Invocation secondary) {
+        if (primary != null) {
+            if (secondary != null) {
+                if (secondary.getResolution().getScore() < primary.getResolution().getScore()) {
+                    return secondary.getExpression();
+                }
+            }
+
+            return primary.getExpression();
+        }
+
+        if (secondary != null) {
+            return secondary.getExpression();
+        }
+
+        return null;
+    }
+
+    public Expression resolveIncludes(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        Includes includes = of.createIncludes().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation includesInvocation = resolveBinaryInvocation("System", "Includes", includes, false, false);
+
+        Contains contains = of.createContains().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation containsInvocation = resolveBinaryInvocation("System", "Contains", contains, false, false);
+
+        Expression result = lowestScoringInvocation(includesInvocation, containsInvocation);
+        if (result != null) {
+            return result;
+        }
+
+        // Neither operator resolved, so force a resolve to throw
+        return resolveBinaryCall("System", "Includes", includes);
+    }
+
+    public Expression resolveProperIncludes(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        ProperIncludes properIncludes = of.createProperIncludes().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation properIncludesInvocation = resolveBinaryInvocation("System", "ProperIncludes", properIncludes, false, false);
+
+        ProperContains properContains = of.createProperContains().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation properContainsInvocation = resolveBinaryInvocation("System", "ProperContains", properContains, false, false);
+
+        Expression result = lowestScoringInvocation(properIncludesInvocation, properContainsInvocation);
+        if (result != null) {
+            return result;
+        }
+
+        // Neither operator resolved, so force a resolve to throw
+        return resolveBinaryCall("System", "ProperIncludes", properIncludes);
+    }
+
+    public Expression resolveIncludedIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        IncludedIn includedIn = of.createIncludedIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation includedInInvocation = resolveBinaryInvocation("System", "IncludedIn", includedIn, false, false);
+
+        In in = of.createIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation inInvocation = resolveBinaryInvocation("System", "In", in, false, false);
+
+        Expression result = lowestScoringInvocation(includedInInvocation, inInvocation);
+        if (result != null) {
+            return result;
+        }
+
+        // Neither operator resolved, so force a resolve to throw
+        return resolveBinaryCall("System", "IncludedIn", includedIn);
+    }
+
+    public Expression resolveProperIncludedIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
+        ProperIncludedIn properIncludedIn = of.createProperIncludedIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation properIncludedInInvocation = resolveBinaryInvocation("System", "ProperIncludedIn", properIncludedIn, false, false);
+
+        ProperIn properIn = of.createProperIn().withOperand(left, right).withPrecision(dateTimePrecision);
+        Invocation properInInvocation = resolveBinaryInvocation("System", "ProperIn", properIn, false, false);
+
+        Expression result = lowestScoringInvocation(properIncludedInInvocation, properInInvocation);
+        if (result != null) {
+            return result;
+        }
+
+        // Neither operator resolved, so force a resolve to throw
+        return resolveBinaryCall("System", "ProperIncludedIn", properIncludedIn);
+    }
+
+    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation) {
+        return resolveCall(libraryName, operatorName, invocation, true, false);
+    }
+
+    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean allowPromotionAndDemotion) {
+        return resolveCall(libraryName, operatorName, invocation, true, allowPromotionAndDemotion);
+    }
+
+    public Expression resolveCall(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion) {
+        Invocation result = resolveInvocation(libraryName, operatorName, invocation, mustResolve, allowPromotionAndDemotion);
+        return result != null ? result.getExpression() : null;
+    }
+
+    public Invocation resolveInvocation(String libraryName, String operatorName, Invocation invocation, boolean mustResolve, boolean allowPromotionAndDemotion) {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
@@ -587,7 +905,7 @@ public class LibraryBuilder {
             dataTypes.add(operand.getResultType());
         }
 
-        CallContext callContext = new CallContext(libraryName, operatorName, dataTypes.toArray(new DataType[dataTypes.size()]));
+        CallContext callContext = new CallContext(libraryName, operatorName, allowPromotionAndDemotion, mustResolve, dataTypes.toArray(new DataType[dataTypes.size()]));
         OperatorResolution resolution = resolveCall(callContext);
         if (resolution != null || mustResolve) {
             checkOperator(callContext, resolution);
@@ -608,8 +926,16 @@ public class LibraryBuilder {
 
                 invocation.setOperands(convertedOperands);
             }
+
+            if (signatureLevel == SignatureLevel.All || (signatureLevel == SignatureLevel.Differing
+                && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
+                    || (signatureLevel == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
+                invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
+            }
+
             invocation.setResultType(resolution.getOperator().getResultType());
-            return invocation.getExpression();
+            invocation.setResolution(resolution);
+            return invocation;
         }
         return null;
     }
@@ -650,6 +976,7 @@ public class LibraryBuilder {
 
     public void checkOperator(CallContext callContext, OperatorResolution resolution) {
         if (resolution == null) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with signature %s.",
                     callContext.getOperatorName(), callContext.getSignature()));
         }
@@ -657,6 +984,7 @@ public class LibraryBuilder {
 
     public void checkAccessLevel(String libraryName, String objectName, AccessModifier accessModifier) {
         if (accessModifier == AccessModifier.PRIVATE) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Object %s in library %s is marked private and cannot be referenced from another library.", objectName, libraryName));
         }
     }
@@ -665,7 +993,7 @@ public class LibraryBuilder {
         return resolveFunction(libraryName, functionName, paramList, true);
     }
 
-    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve) {
+    private FunctionRef buildFunctionRef(String libraryName, String functionName, Iterable<Expression> paramList) {
         FunctionRef fun = of.createFunctionRef()
                 .withLibraryName(libraryName)
                 .withName(functionName);
@@ -674,12 +1002,47 @@ public class LibraryBuilder {
             fun.getOperand().add(param);
         }
 
-        Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
-        if (systemFunction != null) {
-            return systemFunction;
+        return fun;
+    }
+
+    public Expression resolveFunction(String libraryName, String functionName, Iterable<Expression> paramList, boolean mustResolve) {
+        FunctionRef fun = buildFunctionRef(libraryName, functionName, paramList);
+
+        // First attempt to resolve as a system or local function
+        FunctionRefInvocation invocation = new FunctionRefInvocation(fun);
+        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), invocation, false, false);
+        if (fun != null) {
+            if ("System".equals(invocation.getResolution().getOperator().getLibraryName())) {
+                FunctionRef systemFun = buildFunctionRef(libraryName, functionName, paramList); // Rebuild the fun from the original arguments, otherwise it will resolve with conversions in place
+                Expression systemFunction = systemFunctionResolver.resolveSystemFunction(systemFun);
+                if (systemFunction != null) {
+                    return systemFunction;
+                }
+            }
+            else {
+                // If the invocation is to a local function or a function in a non-system library, check literal context
+                if (mustResolve) {
+                    checkLiteralContext();
+                }
+            }
         }
 
-        fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve);
+        // If it didn't resolve, there are two possibilities
+            // 1. It is a special system function resolution that only resolves with the systemFunctionResolver
+            // 2. It is an error condition that needs to be reported
+        if (fun == null) {
+            fun = buildFunctionRef(libraryName, functionName, paramList);
+            Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
+            if (systemFunction != null) {
+                return systemFunction;
+            }
+
+            if (mustResolve) {
+                checkLiteralContext();
+            }
+
+            fun = (FunctionRef)resolveCall(fun.getLibraryName(), fun.getName(), new FunctionRefInvocation(fun), mustResolve, false);
+        }
 
         return fun;
     }
@@ -692,7 +1055,11 @@ public class LibraryBuilder {
     }
 
     public Expression convertExpression(Expression expression, DataType targetType) {
-        Conversion conversion = findConversion(expression.getResultType(), targetType, true);
+        return convertExpression(expression, targetType, true);
+    }
+
+    public Expression convertExpression(Expression expression, DataType targetType, boolean implicit) {
+        Conversion conversion = findConversion(expression.getResultType(), targetType, implicit, false);
         if (conversion != null) {
             return convertExpression(expression, conversion);
         }
@@ -734,6 +1101,7 @@ public class LibraryBuilder {
         SingletonFrom singletonFrom = of.createSingletonFrom().withOperand(expression);
         singletonFrom.setResultType(fromType.getElementType());
         resolveUnaryCall("System", "SingletonFrom", singletonFrom);
+        // WARNING:
         reportWarning("List-valued expression was demoted to a singleton.", expression);
 
         if (conversion.getConversion() != null) {
@@ -750,6 +1118,7 @@ public class LibraryBuilder {
         }
 
         if (expression.getResultType().equals(resolveTypeName("System", "Boolean"))) {
+            // WARNING:
             reportWarning("Boolean-valued expression was promoted to a list.", expression);
         }
 
@@ -761,6 +1130,38 @@ public class LibraryBuilder {
         ToList toList = of.createToList().withOperand(expression);
         toList.setResultType(new ListType(expression.getResultType()));
         return toList;
+    }
+
+    private Expression demoteIntervalExpression(Expression expression, Conversion conversion) {
+        IntervalType fromType = (IntervalType)conversion.getFromType();
+        DataType toType = conversion.getToType();
+
+        PointFrom pointFrom = of.createPointFrom().withOperand(expression);
+        pointFrom.setResultType(fromType.getPointType());
+        resolveUnaryCall("System", "PointFrom", pointFrom);
+        // WARNING:
+        reportWarning("Interval-valued expression was demoted to a point.", expression);
+
+        if (conversion.getConversion() != null) {
+            return convertExpression(pointFrom, conversion.getConversion());
+        }
+        else {
+            return pointFrom;
+        }
+    }
+
+    private Expression promoteIntervalExpression(Expression expression, Conversion conversion) {
+        if (conversion.getConversion() != null) {
+            expression = convertExpression(expression, conversion.getConversion());
+        }
+
+        return resolveToInterval(expression);
+    }
+
+    public Expression resolveToInterval(Expression expression) {
+        Interval toInterval = of.createInterval().withLow(expression).withHigh(expression).withLowClosed(true).withHighClosed(true);
+        toInterval.setResultType(new IntervalType(expression.getResultType()));
+        return toInterval;
     }
 
     private Expression convertIntervalExpression(Expression expression, Conversion conversion) {
@@ -824,6 +1225,32 @@ public class LibraryBuilder {
         return result;
     }
 
+    public MinValue buildMinimum(DataType dataType) {
+        MinValue minimum = of.createMinValue();
+        minimum.setValueType(dataTypeToQName(dataType));
+        minimum.setResultType(dataType);
+        return minimum;
+    }
+
+    public MaxValue buildMaximum(DataType dataType) {
+        MaxValue maximum = of.createMaxValue();
+        maximum.setValueType(dataTypeToQName(dataType));
+        maximum.setResultType(dataType);
+        return maximum;
+    }
+
+    public Expression buildPredecessor(Expression source) {
+        Predecessor result = of.createPredecessor().withOperand(source);
+        resolveUnaryCall("System", "Predecessor", result);
+        return result;
+    }
+
+    public Expression buildSuccessor(Expression source) {
+        Successor result = of.createSuccessor().withOperand(source);
+        resolveUnaryCall("System", "Successor", result);
+        return result;
+    }
+
     public Expression convertExpression(Expression expression, Conversion conversion) {
         if (conversion.isCast()
                 && (conversion.getFromType().isSuperTypeOf(conversion.getToType())
@@ -873,6 +1300,12 @@ public class LibraryBuilder {
         else if (conversion.isIntervalConversion()) {
             return convertIntervalExpression(expression, conversion);
         }
+        else if (conversion.isIntervalDemotion()) {
+            return demoteIntervalExpression(expression, conversion);
+        }
+        else if (conversion.isIntervalPromotion()) {
+            return promoteIntervalExpression(expression, conversion);
+        }
         else if (conversion.getOperator() != null) {
             FunctionRef functionRef = (FunctionRef)of.createFunctionRef()
                     .withLibraryName(conversion.getOperator().getLibraryName())
@@ -884,7 +1317,7 @@ public class LibraryBuilder {
                 return systemFunction;
             }
 
-            resolveCall(functionRef.getLibraryName(), functionRef.getName(), new FunctionRefInvocation(functionRef));
+            resolveCall(functionRef.getLibraryName(), functionRef.getName(), new FunctionRefInvocation(functionRef), false);
 
             return functionRef;
         }
@@ -901,6 +1334,9 @@ public class LibraryBuilder {
             else if (conversion.getToType().equals(resolveTypeName("System", "String"))) {
                 return (Expression)of.createToString().withOperand(expression).withResultType(conversion.getToType());
             }
+            else if (conversion.getToType().equals(resolveTypeName("System", "Date"))) {
+                return (Expression)of.createToDate().withOperand(expression).withResultType(conversion.getToType());
+            }
             else if (conversion.getToType().equals(resolveTypeName("System", "DateTime"))) {
                 return (Expression)of.createToDateTime().withOperand(expression).withResultType(conversion.getToType());
             }
@@ -909,6 +1345,12 @@ public class LibraryBuilder {
             }
             else if (conversion.getToType().equals(resolveTypeName("System", "Quantity"))) {
                 return (Expression)of.createToQuantity().withOperand(expression).withResultType(conversion.getToType());
+            }
+            else if (conversion.getToType().equals(resolveTypeName("System", "Ratio"))) {
+                return (Expression)of.createToRatio().withOperand(expression).withResultType(conversion.getToType());
+            }
+            else if (conversion.getToType().equals(resolveTypeName("System", "Concept"))) {
+                return (Expression)of.createToConcept().withOperand(expression).withResultType(conversion.getToType());
             }
             else {
                 Convert convertedOperand = (Convert)of.createConvert()
@@ -932,7 +1374,7 @@ public class LibraryBuilder {
             return;
         }
 
-        Conversion conversion = findConversion(actualType, expectedType, true);
+        Conversion conversion = findConversion(actualType, expectedType, true, false);
         if (conversion != null) {
             return;
         }
@@ -961,12 +1403,12 @@ public class LibraryBuilder {
             return second;
         }
 
-        Conversion conversion = findConversion(second, first, true);
+        Conversion conversion = findConversion(second, first, true, false);
         if (conversion != null) {
             return first;
         }
 
-        conversion = findConversion(first, second, true);
+        conversion = findConversion(first, second, true, false);
         if (conversion != null) {
             return second;
         }
@@ -990,7 +1432,19 @@ public class LibraryBuilder {
         }
 
         if (!targetType.isSuperTypeOf(expression.getResultType())) {
-            return convertExpression(expression, targetType);
+            return convertExpression(expression, targetType, true);
+        }
+
+        return expression;
+    }
+
+    public Expression enforceCompatible(Expression expression, DataType targetType) {
+        if (targetType == null) {
+            return of.createNull();
+        }
+
+        if (!targetType.isSuperTypeOf(expression.getResultType())) {
+            return convertExpression(expression, targetType, false);
         }
 
         return expression;
@@ -1053,6 +1507,7 @@ public class LibraryBuilder {
                 if (ucumService != null) {
                     String message = ucumService.validate(unit);
                     if (message != null) {
+                        // ERROR:
                         throw new IllegalArgumentException(message);
                     }
                 }
@@ -1064,6 +1519,13 @@ public class LibraryBuilder {
         validateUnit(unit);
         Quantity result = of.createQuantity().withValue(value).withUnit(unit);
         DataType resultType = resolveTypeName("System", "Quantity");
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public Ratio createRatio(Quantity numerator, Quantity denominator) {
+        Ratio result = of.createRatio().withNumerator(numerator).withDenominator(denominator);
+        DataType resultType = resolveTypeName("System", "Ratio");
         result.setResultType(resultType);
         return result;
     }
@@ -1091,7 +1553,16 @@ public class LibraryBuilder {
             return new QName(modelInfo.getUrl(), namedType.getSimpleName());
         }
 
+        // ERROR:
         throw new IllegalArgumentException("A named type is required in this context.");
+    }
+
+    public Iterable<TypeSpecifier> dataTypesToTypeSpecifiers(Iterable<DataType> types) {
+        ArrayList<TypeSpecifier> result = new ArrayList<TypeSpecifier>();
+        for (DataType type : types) {
+            result.add(dataTypeToTypeSpecifier(type));
+        }
+        return result;
     }
 
     public TypeSpecifier dataTypeToTypeSpecifier(DataType type) {
@@ -1210,6 +1681,7 @@ public class LibraryBuilder {
                     case "highClosed":
                         return resolveTypeName("System", "Boolean");
                     default:
+                        // ERROR:
                         throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
                 }
             }
@@ -1255,6 +1727,7 @@ public class LibraryBuilder {
         }
 
         if (mustResolve) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
         }
 
@@ -1286,6 +1759,18 @@ public class LibraryBuilder {
             return thisElement;
         }
 
+        if (identifier.equals("$index")) {
+            Iteration result = of.createIteration();
+            result.setResultType(resolveTypeName("System", "Integer"));
+            return result;
+        }
+
+        if (identifier.equals("$total")) {
+            Total result = of.createTotal();
+            result.setResultType(resolveTypeName("System", "Decimal")); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
+            return result;
+        }
+
         AliasedQuerySource alias = resolveAlias(identifier);
         if (alias != null) {
             AliasRef result = of.createAliasRef().withName(identifier);
@@ -1313,9 +1798,11 @@ public class LibraryBuilder {
         Element element = resolve(identifier);
 
         if (element instanceof ExpressionDef) {
+            checkLiteralContext();
             ExpressionRef expressionRef = of.createExpressionRef().withName(((ExpressionDef) element).getName());
             expressionRef.setResultType(getExpressionDefResultType((ExpressionDef)element));
             if (expressionRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
                         expressionRef.getName()));
             }
@@ -1323,9 +1810,11 @@ public class LibraryBuilder {
         }
 
         if (element instanceof ParameterDef) {
+            checkLiteralContext();
             ParameterRef parameterRef = of.createParameterRef().withName(((ParameterDef) element).getName());
             parameterRef.setResultType(element.getResultType());
             if (parameterRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
@@ -1333,9 +1822,11 @@ public class LibraryBuilder {
         }
 
         if (element instanceof ValueSetDef) {
+            checkLiteralContext();
             ValueSetRef valuesetRef = of.createValueSetRef().withName(((ValueSetDef) element).getName());
             valuesetRef.setResultType(element.getResultType());
             if (valuesetRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
             }
@@ -1343,9 +1834,11 @@ public class LibraryBuilder {
         }
 
         if (element instanceof CodeSystemDef) {
+            checkLiteralContext();
             CodeSystemRef codesystemRef = of.createCodeSystemRef().withName(((CodeSystemDef) element).getName());
             codesystemRef.setResultType(element.getResultType());
             if (codesystemRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
@@ -1354,9 +1847,11 @@ public class LibraryBuilder {
         }
 
         if (element instanceof CodeDef) {
+            checkLiteralContext();
             CodeRef codeRef = of.createCodeRef().withName(((CodeDef)element).getName());
             codeRef.setResultType(element.getResultType());
             if (codeRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
@@ -1364,9 +1859,11 @@ public class LibraryBuilder {
         }
 
         if (element instanceof ConceptDef) {
+            checkLiteralContext();
             ConceptRef conceptRef = of.createConceptRef().withName(((ConceptDef)element).getName());
             conceptRef.setResultType(element.getResultType());
             if (conceptRef.getResultType() == null) {
+                // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
@@ -1374,12 +1871,14 @@ public class LibraryBuilder {
         }
 
         if (element instanceof IncludeDef) {
+            checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
             return libraryRef;
         }
 
         if (mustResolve) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
         }
 
@@ -1463,6 +1962,7 @@ public class LibraryBuilder {
                 return result;
             }
 
+            // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in library %s.",
                     memberIdentifier, referencedLibrary.getIdentifier().getId()));
         }
@@ -1711,6 +2211,7 @@ public class LibraryBuilder {
 
     public void pushExpressionDefinition(String identifier) {
         if (expressionDefinitions.contains(identifier)) {
+            // ERROR:
             throw new IllegalArgumentException(String.format("Cannot resolve reference to expression or function %s because it results in a circular reference.", identifier));
         }
         expressionDefinitions.push(new ExpressionDefinitionContext(identifier));
@@ -1790,5 +2291,28 @@ public class LibraryBuilder {
 
     public void endFunctionDef() {
         functionDefs.pop();
+    }
+
+    public void pushLiteralContext() {
+        literalContext++;
+    }
+
+    public void popLiteralContext() {
+        if (!inLiteralContext()) {
+            throw new IllegalStateException("Not in literal context");
+        }
+
+        literalContext--;
+    }
+
+    public boolean inLiteralContext() {
+        return literalContext > 0;
+    }
+
+    public void checkLiteralContext() {
+        if (inLiteralContext()) {
+            // ERROR:
+            throw new IllegalStateException("Expressions in this context must be able to be evaluated at compile-time.");
+        }
     }
 }

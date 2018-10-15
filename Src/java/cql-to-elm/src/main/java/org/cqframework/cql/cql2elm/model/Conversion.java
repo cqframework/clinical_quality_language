@@ -1,9 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.hl7.cql.model.ChoiceType;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.IntervalType;
-import org.hl7.cql.model.ListType;
+import org.hl7.cql.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +27,22 @@ public class Conversion {
     }
 
     public Conversion(ChoiceType fromType, DataType toType, Conversion choiceConversion) {
+        if (fromType == null) {
+            throw new IllegalArgumentException("fromType is null");
+        }
+
+        if (toType == null) {
+            throw new IllegalArgumentException("toType is null");
+        }
+
+        setIsImplicit(true);
+        this.fromType = fromType;
+        this.toType = toType;
+        this.conversionField = choiceConversion;
+        this.isCastFlag = true;
+    }
+
+    public Conversion(DataType fromType, ChoiceType toType, Conversion choiceConversion) {
         if (fromType == null) {
             throw new IllegalArgumentException("fromType is null");
         }
@@ -95,6 +108,35 @@ public class Conversion {
         this.toType = toType;
         this.conversionField = elementConversion;
         this.isListPromotionFlag = true;
+    }
+
+    public Conversion(IntervalType fromType, DataType toType, Conversion elementConversion) {
+        if (fromType == null) {
+            throw new IllegalArgumentException("fromType is null");
+        }
+
+
+        setIsImplicit(true);
+        this.fromType = fromType;
+        this.toType = toType;
+        this.conversionField = elementConversion;
+        this.isIntervalDemotionFlag = true;
+    }
+
+    public Conversion(DataType fromType, IntervalType toType, Conversion elementConversion) {
+        if (fromType == null) {
+            throw new IllegalArgumentException("fromType is null");
+        }
+
+        if (toType == null) {
+            throw new IllegalArgumentException("toType is null");
+        }
+
+        setIsImplicit(true);
+        this.fromType = fromType;
+        this.toType = toType;
+        this.conversionField = elementConversion;
+        this.isIntervalPromotionFlag = true;
     }
 
     public Conversion(IntervalType fromType, IntervalType toType, Conversion pointConversion) {
@@ -186,6 +228,47 @@ public class Conversion {
         getAlternativeConversions().add(alternativeConversion);
     }
 
+    public int getScore() {
+        int nestedScore = conversionField != null ? conversionField.getScore() : 0;
+        if (isCast()) {
+            return ConversionMap.ConversionScore.Cast.score() + nestedScore;
+        }
+        else if (isIntervalDemotion()) {
+            return ConversionMap.ConversionScore.IntervalDemotion.score() + nestedScore;
+        }
+        else if (isListDemotion()) {
+            return ConversionMap.ConversionScore.ListDemotion.score() + nestedScore;
+        }
+        else if (isIntervalPromotion()) {
+            return ConversionMap.ConversionScore.IntervalPromotion.score() + nestedScore;
+        }
+        else if (isListPromotion()) {
+            return ConversionMap.ConversionScore.ListPromotion.score() + nestedScore;
+        }
+        else if (isListConversion()) {
+            if (((ListType)getToType()).getElementType() instanceof SimpleType) {
+                return ConversionMap.ConversionScore.SimpleConversion.score() + nestedScore;
+            }
+            else {
+                return ConversionMap.ConversionScore.ComplexConversion.score() + nestedScore;
+            }
+        }
+        else if (isIntervalConversion()) {
+            if (((IntervalType)getToType()).getPointType() instanceof SimpleType) {
+                return ConversionMap.ConversionScore.SimpleConversion.score() + nestedScore;
+            }
+            else {
+                return ConversionMap.ConversionScore.ComplexConversion.score() + nestedScore;
+            }
+        }
+        else if (getToType() instanceof ClassType) {
+            return ConversionMap.ConversionScore.ComplexConversion.score() + nestedScore;
+        }
+        else {
+            return ConversionMap.ConversionScore.SimpleConversion.score() + nestedScore;
+        }
+    }
+
     public boolean isGeneric() {
         return this.operator instanceof GenericOperator;
     }
@@ -213,6 +296,16 @@ public class Conversion {
     private boolean isIntervalConversionFlag;
     public boolean isIntervalConversion() {
         return isIntervalConversionFlag;
+    }
+
+    private boolean isIntervalPromotionFlag;
+    public boolean isIntervalPromotion() {
+        return isIntervalPromotionFlag;
+    }
+
+    private boolean isIntervalDemotionFlag;
+    public boolean isIntervalDemotion() {
+        return isIntervalDemotionFlag;
     }
 
     private DataType fromType;

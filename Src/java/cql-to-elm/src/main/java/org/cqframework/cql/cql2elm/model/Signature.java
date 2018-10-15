@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.InstantiationContext;
 
@@ -44,6 +45,25 @@ public class Signature {
         return false;
     }
 
+    private boolean getHasChoices() {
+        for (DataType operandType : operandTypes) {
+            if (operandType instanceof ChoiceType) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean hasChoices;
+    private boolean calculatedHasChoices;
+    public boolean containsChoices() {
+        if (!calculatedHasChoices) {
+            hasChoices = getHasChoices();
+            calculatedHasChoices = true;
+        }
+        return hasChoices;
+    }
 
     public boolean isSubTypeOf(Signature other) {
         if (operandTypes.size() == other.operandTypes.size()) {
@@ -82,11 +102,11 @@ public class Signature {
         return new Signature(result);
     }
 
-    public boolean isConvertibleTo(Signature other, ConversionMap conversionMap, OperatorMap operatorMap, Conversion[] conversions) {
+    public boolean isConvertibleTo(Signature other, ConversionMap conversionMap, OperatorMap operatorMap, boolean allowPromotionAndDemotion, Conversion[] conversions) {
         if (operandTypes.size() == other.operandTypes.size()) {
             for (int i = 0; i < operandTypes.size(); i++) {
                 if (!operandTypes.get(i).isSubTypeOf(other.operandTypes.get(i))) {
-                    Conversion conversion = conversionMap.findConversion(operandTypes.get(i), other.operandTypes.get(i), true, operatorMap);
+                    Conversion conversion = conversionMap.findConversion(operandTypes.get(i), other.operandTypes.get(i), true, allowPromotionAndDemotion, operatorMap);
                     if (conversion != null) {
                         conversions[i] = conversion;
                     } else {

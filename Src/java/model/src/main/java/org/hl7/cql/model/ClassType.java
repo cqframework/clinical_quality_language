@@ -231,7 +231,7 @@ public class ClassType extends DataType implements NamedType {
         //    return getTupleType().equals(classType.getTupleType());
         }
 
-        return false;
+        return super.isCompatibleWith(other);
     }
 
     @Override

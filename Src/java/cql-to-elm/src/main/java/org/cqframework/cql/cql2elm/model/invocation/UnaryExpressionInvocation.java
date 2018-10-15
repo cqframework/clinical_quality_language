@@ -5,7 +5,7 @@ import org.hl7.elm.r1.UnaryExpression;
 
 import java.util.Collections;
 
-public class UnaryExpressionInvocation extends AbstractExpressionInvocation {
+public class UnaryExpressionInvocation extends OperatorExpressionInvocation {
     public UnaryExpressionInvocation(UnaryExpression expression) {
         super(expression);
     }

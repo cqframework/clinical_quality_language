@@ -2,7 +2,7 @@ grammar cql;
 
 /*
  * Clinical Quality Language Grammar Specification
- * Version 1.2 - Jan 2017 STU Ballot
+ * Version 1.3 - STU3 Publication
  */
 
 import fhirpath;
@@ -15,14 +15,14 @@ library
     :
     libraryDefinition?
     usingDefinition*
-	includeDefinition*
-	codesystemDefinition*
-	valuesetDefinition*
-	codeDefinition*
-	conceptDefinition*
-	parameterDefinition*
-	statement*
-	;
+    includeDefinition*
+    codesystemDefinition*
+    valuesetDefinition*
+    codeDefinition*
+    conceptDefinition*
+    parameterDefinition*
+    statement*
+    ;
 
 /*
  * Definitions
@@ -114,7 +114,7 @@ typeSpecifier
     ;
 
 namedTypeSpecifier
-    : (modelIdentifier '.')? identifier
+    : (qualifier '.')* identifier
     ;
 
 modelIdentifier
@@ -226,16 +226,7 @@ query
     ;
 
 sourceClause
-    : singleSourceClause
-    | multipleSourceClause
-    ;
-
-singleSourceClause
-    : aliasedQuerySource
-    ;
-
-multipleSourceClause
-    : 'from' aliasedQuerySource (',' aliasedQuerySource)*
+    : 'from'? aliasedQuerySource (',' aliasedQuerySource)*
     ;
 
 letClause
@@ -281,7 +272,7 @@ expression
     | 'not' expression                                                                              #notExpression
     | 'exists' expression                                                                           #existenceExpression
     | expression 'properly'? 'between' expressionTerm 'and' expressionTerm                          #betweenExpression
-    | pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm                         #durationBetweenExpression
+    | ('duration' 'in')? pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm      #durationBetweenExpression
     | 'difference' 'in' pluralDateTimePrecision 'between' expressionTerm 'and' expressionTerm       #differenceBetweenExpression
     | expression ('<=' | '<' | '>' | '>=') expression                                               #inequalityExpression
     | expression intervalOperatorPhrase expression                                                  #timingExpression
@@ -309,26 +300,28 @@ pluralDateTimePrecision
     ;
 
 expressionTerm
-    : term                                                               #termExpressionTerm
-    | expressionTerm '.' invocation                                      #invocationExpressionTerm
-    | expressionTerm '[' expression ']'                                  #indexedExpressionTerm
-    | 'convert' expression 'to' typeSpecifier                            #conversionExpressionTerm
-    | ('+' | '-') expressionTerm                                         #polarityExpressionTerm
-    | ('start' | 'end') 'of' expressionTerm                              #timeBoundaryExpressionTerm
-    | dateTimeComponent 'from' expressionTerm                            #timeUnitExpressionTerm
-    | 'duration' 'in' pluralDateTimePrecision 'of' expressionTerm        #durationExpressionTerm
-    | 'width' 'of' expressionTerm                                        #widthExpressionTerm
-    | 'successor' 'of' expressionTerm                                    #successorExpressionTerm
-    | 'predecessor' 'of' expressionTerm                                  #predecessorExpressionTerm
-    | 'singleton' 'from' expressionTerm                                  #elementExtractorExpressionTerm
-    | 'point' 'from' expressionTerm                                      #pointExtractorExpressionTerm
-    | ('minimum' | 'maximum') namedTypeSpecifier                         #typeExtentExpressionTerm
-    | expressionTerm '^' expressionTerm                                  #powerExpressionTerm
-    | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm          #multiplicationExpressionTerm
-    | expressionTerm ('+' | '-' | '&') expressionTerm                    #additionExpressionTerm
-    | 'if' expression 'then' expression 'else' expression                #ifThenElseExpressionTerm
-    | 'case' expression? caseExpressionItem+ 'else' expression 'end'     #caseExpressionTerm
-    | ('distinct' | 'collapse' | 'flatten') expression                   #aggregateExpressionTerm
+    : term                                                                          #termExpressionTerm
+    | expressionTerm '.' invocation                                                 #invocationExpressionTerm
+    | expressionTerm '[' expression ']'                                             #indexedExpressionTerm
+    | 'convert' expression 'to' typeSpecifier                                       #conversionExpressionTerm
+    | ('+' | '-') expressionTerm                                                    #polarityExpressionTerm
+    | ('start' | 'end') 'of' expressionTerm                                         #timeBoundaryExpressionTerm
+    | dateTimeComponent 'from' expressionTerm                                       #timeUnitExpressionTerm
+    | 'duration' 'in' pluralDateTimePrecision 'of' expressionTerm                   #durationExpressionTerm
+    | 'difference' 'in' pluralDateTimePrecision 'of' expressionTerm                 #differenceExpressionTerm
+    | 'width' 'of' expressionTerm                                                   #widthExpressionTerm
+    | 'successor' 'of' expressionTerm                                               #successorExpressionTerm
+    | 'predecessor' 'of' expressionTerm                                             #predecessorExpressionTerm
+    | 'singleton' 'from' expressionTerm                                             #elementExtractorExpressionTerm
+    | 'point' 'from' expressionTerm                                                 #pointExtractorExpressionTerm
+    | ('minimum' | 'maximum') namedTypeSpecifier                                    #typeExtentExpressionTerm
+    | expressionTerm '^' expressionTerm                                             #powerExpressionTerm
+    | expressionTerm ('*' | '/' | 'div' | 'mod') expressionTerm                     #multiplicationExpressionTerm
+    | expressionTerm ('+' | '-' | '&') expressionTerm                               #additionExpressionTerm
+    | 'if' expression 'then' expression 'else' expression                           #ifThenElseExpressionTerm
+    | 'case' expression? caseExpressionItem+ 'else' expression 'end'                #caseExpressionTerm
+    | ('distinct' | 'flatten') expression                                           #aggregateExpressionTerm
+    | ('expand' | 'collapse') expression ('per' (dateTimePrecision | expression))?  #setAggregateExpressionTerm
     ;
 
 caseExpressionItem
@@ -389,6 +382,10 @@ term
     | '(' expression ')'    #parenthesizedTerm
     ;
 
+ratio
+    : quantity ':' quantity
+    ;
+
 literal
         : ('true' | 'false')                                    #booleanLiteral
         | 'null'                                                #nullLiteral
@@ -397,6 +394,7 @@ literal
         | DATETIME                                              #dateTimeLiteral
         | TIME                                                  #timeLiteral
         | quantity                                              #quantityLiteral
+        | ratio                                                 #ratioLiteral
         ;
 
 intervalSelector
@@ -439,6 +437,7 @@ conceptSelector
 
 identifier
     : IDENTIFIER
+    | DELIMITEDIDENTIFIER
     | QUOTEDIDENTIFIER
     | 'all'
     | 'Code'
@@ -450,7 +449,7 @@ identifier
     | 'display'
     | 'distinct'
     | 'end'
-    // | 'exists'
+    // | 'exists' NOTE: This is excluded because including it causes a significant performance degradation in the ANTLR parser, still looking into a fix for this
     | 'not'
     | 'start'
     | 'time'
@@ -458,4 +457,12 @@ identifier
     | 'version'
     | 'where'
     ;
+
+QUOTEDIDENTIFIER
+        : '"' (ESC | .)*? '"'
+        ;
+
+fragment ESC
+        : '\\' ([`'"\\/fnrt] | UNICODE)    // allow \`, \', \", \\, \/, \f, etc. and \uXXX
+        ;
 

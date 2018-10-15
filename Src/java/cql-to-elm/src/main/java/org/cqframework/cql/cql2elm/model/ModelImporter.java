@@ -252,10 +252,19 @@ public class ModelImporter {
         return result;
     }
 
+    private DataType resolveTypeNameOrSpecifier(TupleTypeInfoElement element) {
+        DataType result = resolveTypeNameOrSpecifier(element.getElementType(), element.getElementTypeSpecifier());
+        if (result == null) {
+            result = resolveTypeNameOrSpecifier(element.getType(), element.getTypeSpecifier());
+        }
+
+        return result;
+    }
+
     private Collection<TupleTypeElement> resolveTupleTypeElements(Collection<TupleTypeInfoElement> infoElements) {
         List<TupleTypeElement> elements = new ArrayList();
         for (TupleTypeInfoElement e : infoElements) {
-            elements.add(new TupleTypeElement(e.getName(), resolveTypeNameOrSpecifier(e.getType(), e.getTypeSpecifier())));
+            elements.add(new TupleTypeElement(e.getName(), resolveTypeNameOrSpecifier(e)));
         }
         return elements;
     }
@@ -265,10 +274,19 @@ public class ModelImporter {
         return result;
     }
 
+    private DataType resolveTypeNameOrSpecifier(ClassInfoElement element) {
+        DataType result = resolveTypeNameOrSpecifier(element.getElementType(), element.getElementTypeSpecifier());
+        if (result == null) {
+            result = resolveTypeNameOrSpecifier(element.getType(), element.getTypeSpecifier());
+        }
+
+        return result;
+    }
+
     private Collection<ClassTypeElement> resolveClassTypeElements(Collection<ClassInfoElement> infoElements) {
         List<ClassTypeElement> elements = new ArrayList();
         for (ClassInfoElement e : infoElements) {
-            elements.add(new ClassTypeElement(e.getName(), resolveTypeNameOrSpecifier(e.getType(), e.getTypeSpecifier()), e.isProhibited(), e.isOneBased()));
+            elements.add(new ClassTypeElement(e.getName(), resolveTypeNameOrSpecifier(e), e.isProhibited(), e.isOneBased()));
         }
         return elements;
     }
@@ -310,8 +328,15 @@ public class ModelImporter {
 
     private ChoiceType resolveChoiceType(ChoiceTypeInfo t) {
         ArrayList<DataType> types = new ArrayList<DataType>();
-        for (TypeSpecifier typeSpecifier : t.getType()) {
-            types.add(resolveTypeSpecifier(typeSpecifier));
+        if (t.getChoice() != null && t.getChoice().size() > 0) {
+            for (TypeSpecifier typeSpecifier : t.getChoice()) {
+                types.add(resolveTypeSpecifier(typeSpecifier));
+            }
+        }
+        else {
+            for (TypeSpecifier typeSpecifier : t.getType()) {
+                types.add(resolveTypeSpecifier(typeSpecifier));
+            }
         }
         return new ChoiceType(types);
     }

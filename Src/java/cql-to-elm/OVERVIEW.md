@@ -17,22 +17,22 @@ The `cql`, `model`, `elm`, and `cql-to-elm` packages are required to use the tra
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>model</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>elm</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql-to-elm</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
     </dependency>
     
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
@@ -40,12 +40,12 @@ In addition, to use the translator with QDM, FHIR, and QUICK, the model info pac
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>quick</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>qdm</artifactId>
-      <version>1.2.5-SNAPSHOT</version>
+      <version>1.3.0-SNAPSHOT</version>
     </dependency>
 
 ## Technologies
@@ -54,28 +54,34 @@ CQL is defined using an [ANTLR4](http://www.antlr.org/) grammar. ANTLR4 is a sim
 
 ## Current Status
 
-The CQL-to-ELM Translator is substantially complete, supporting all language constructs of the latest version of CQL (Release 1 STU 2 (1.2)), as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the Issues tracker in the Github repository.
+The CQL-to-ELM Translator supports all language constructs of the latest version of CQL (Release 1 STU 3 (1.3)), as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the Issues tracker in the Github repository.
 
 ## Usage
 
-The CQL-to-ELM Translator is designed as a component that can be incorporated in integrated development environments. However, it also supports command-line usage, with the following arguments available:
+The CQL-to-ELM Translator is designed as a component that can be incorporated in integrated development environments. However, it also supports command-line usage, with the following options available:
 
-|Argument|Type|Description|
+|Option|Values|Description|
 |----|----|----|
-|input|File||Path|The name of the input file or directory. If a directory is given, all files ending in .cql will be processed|
-|model|File|The name of an input file containing the model info to use for translation|
-|output|File|The name of the output file or directory. If no output is given, an output is constructed based on the input name and target format|
-|format|XML||JSON||COFFEE|The target format for the output|
-|verify|Boolean|Indicates that the translator should only verify the input, not create output|
-|date-range-optimization|Boolean|Indicates that the translator should perform date range optimization of retrieves where possible|
-|annotations|Boolean|Indicates that the translator should produce source code annotations as part of the output|
-|locators|Boolean|Indicates that the translator should include source code locators within output ELM|
-|result-types|Boolean|Indicates that the translator should include result types in the output ELM|
-|detailed-errors|Boolean|Indicates that the translator should produce detailed errors|
-|error-level|Info||Warning||Error|Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output|
-|disable-list-traversal|Boolean|Disables traversal of paths on list-valued expressions|
-|disable-demotion|Boolean|Disables demotion of list-valued expressions to singletons|
-|disable-promotion|Boolean|Disables promotion of singletons to list-valued expressions|
-|disable-method-invocation|Boolean|Disables method-style invocation support|
-|strict|Boolean|A combination option that is equivalent to specifying all of disable-list-traversal, disable-demotion, disable-promotion, and disable-method-invocation|
-|debug|Boolean|A combination option that is equivalent to specifying all of annotations, locators, and result-types|
+|input|File\|Path|The name of the input file or directory (REQUIRED). If a directory is given, all files ending in .cql will be processed|
+|model|File|The name of an input file containing the model info to use for translation. Model info can also be provided through an implementation of the ModelInfoProvider interface|
+|output|File|The name of the output file or directory. If no output is given, an output file name is constructed based on the input name and target format|
+|format|XML (default)\|JSON\|COFFEE|The target format for the output|
+|verify||Indicates that the translator should only verify the input, not create output|
+|date-range-optimization||Indicates that the translator should perform date range optimization of retrieves where possible|
+|annotations||Indicates that the translator should produce source code annotations as part of the output|
+|locators||Indicates that the translator should include source code locators within output ELM|
+|result-types||Indicates that the translator should include result types in the output ELM|
+|signatures|None (default)\|Differing\|Overloads\|All|Indicates whether signatures should be included for invocations in the output ELM. Differing will include invocation signatures that differ from the declared signature. Overloads will include declaration signatures when the operator or function has more than one overload with the same number of arguments as the invocation|
+|detailed-errors||Indicates that the translator should produce detailed errors|
+|error-level|Info (default)\|Warning\|Error|Indicates the minimum severity message that will be reported. If no error-level is specified, all messages will be output|
+|disable-list-traversal||Disables traversal of paths on list-valued expressions|
+|disable-list-demotion||Disables demotion of list-valued expressions to singletons|
+|disable-list-promotion||Disables promotion of singletons to list-valued expressions|
+|enable-interval-demotion||Enables demotion of interval-valued expressions to points|
+|enable-interval-promotion||Enables promotion of point-valued expressions to intervals|
+|disable-method-invocation||Disables method-style invocation support|
+|require-from-keyword||Indicates that all queries will be required to start with a `from` keyword|
+|strict||A combination option that is equivalent to specifying all of disable-list-traversal, disable-list-demotion, disable-list-promotion, disable-interval-demotion, disable-interval-promotion, and disable-method-invocation|
+|debug||A combination option that is equivalent to specifying all of annotations, locators, and result-types|
+|validate-units||Indicates that the translator should validate UCUM units in quantity literals|
+|stdout||Indicates that the translator should write output to the console instead of a file|

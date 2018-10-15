@@ -6,7 +6,7 @@ import org.hl7.elm.r1.TernaryExpression;
 import java.util.List;
 
 
-public class TernaryExpressionInvocation extends AbstractExpressionInvocation {
+public class TernaryExpressionInvocation extends OperatorExpressionInvocation {
     public TernaryExpressionInvocation(TernaryExpression expression) {
         super(expression);
     }
