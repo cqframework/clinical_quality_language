@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <modelInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="QUICKFHIR" version="3.0.1" url="http://hl7.org/fhir" patientClassName="QUICKFHIR.Patient" patientBirthDatePropertyName="birthDate" xmlns="urn:hl7-org:elm-modelinfo:r1">
     <requiredModelInfo name="System" version="1.0.0" />
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="Account" label="Account" retrievable="true">
