@@ -140,7 +140,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Concept" />
             </typeSpecifier>
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="dosage">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Dosage" />
         </element>
@@ -248,17 +248,6 @@
         </element>
         <element name="instance" type="QUICKFHIR.Reference" />
         <element name="causality" type="System.String" />
-    </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Quantity" name="Age" label="Age" primaryCodePath="code">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="value" type="System.Decimal" />
-        <element name="comparator" type="System.String" />
-        <element name="unit" type="System.String" />
-        <element name="system" type="System.String" />
-        <element name="code" type="System.String" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="AllergyIntolerance" label="AllergyIntolerance" retrievable="true" primaryCodePath="code">
         <element name="id" type="System.String" />
@@ -1128,8 +1117,8 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
             </typeSpecifier>
         </element>
-        <element name="dailyAmount" type="QUICKFHIR.SimpleQuantity" />
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="dailyAmount" type="System.Quantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="description" type="System.String" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.BackboneElement" name="CarePlan.ActivityComponent">
@@ -1468,7 +1457,7 @@
         <element name="programCode">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="System.Concept" />
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="unitPrice" type="System.Quantity" />
         <element name="factor" type="System.Decimal" />
         <element name="net" type="System.Quantity" />
@@ -1494,7 +1483,7 @@
         <element name="programCode">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="System.Concept" />
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="unitPrice" type="System.Quantity" />
         <element name="factor" type="System.Decimal" />
         <element name="net" type="System.Quantity" />
@@ -1548,7 +1537,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
             </typeSpecifier>
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="unitPrice" type="System.Quantity" />
         <element name="factor" type="System.Decimal" />
         <element name="net" type="System.Quantity" />
@@ -2962,7 +2951,7 @@
         </element>
         <element name="identifier" type="QUICKFHIR.Identifier" />
         <element name="effectiveTime" type="System.DateTime" />
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="unitPrice" type="System.Quantity" />
         <element name="factor" type="System.Decimal" />
         <element name="points" type="System.Decimal" />
@@ -3021,7 +3010,7 @@
         </element>
         <element name="identifier" type="QUICKFHIR.Identifier" />
         <element name="effectiveTime" type="System.DateTime" />
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="unitPrice" type="System.Quantity" />
         <element name="factor" type="System.Decimal" />
         <element name="points" type="System.Decimal" />
@@ -3037,17 +3026,6 @@
         <element name="contact">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.ContactDetail" />
         </element>
-    </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Quantity" name="Count" label="Count" primaryCodePath="code">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="value" type="System.Decimal" />
-        <element name="comparator" type="System.String" />
-        <element name="unit" type="System.String" />
-        <element name="system" type="System.String" />
-        <element name="code" type="System.String" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="Coverage" label="Coverage" retrievable="true" primaryCodePath="type">
         <element name="id" type="System.String" />
@@ -3557,17 +3535,6 @@
         <element name="role" type="System.Concept" />
         <element name="actor" type="QUICKFHIR.Reference" />
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Quantity" name="Distance" label="Distance" primaryCodePath="code">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="value" type="System.Decimal" />
-        <element name="comparator" type="System.String" />
-        <element name="unit" type="System.String" />
-        <element name="system" type="System.String" />
-        <element name="code" type="System.String" />
-    </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="DocumentManifest" label="DocumentManifest" retrievable="true">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
@@ -3770,30 +3737,19 @@
         <element name="dose">
             <typeSpecifier xsi:type="ChoiceTypeSpecifier">
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SimpleQuantity" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Quantity" />
             </typeSpecifier>
         </element>
-        <element name="maxDosePerPeriod" type="QUICKFHIR.Ratio" />
-        <element name="maxDosePerAdministration" type="QUICKFHIR.SimpleQuantity" />
-        <element name="maxDosePerLifetime" type="QUICKFHIR.SimpleQuantity" />
+        <element name="maxDosePerPeriod" type="System.Ratio" />
+        <element name="maxDosePerAdministration" type="System.Quantity" />
+        <element name="maxDosePerLifetime" type="System.Quantity" />
         <element name="rate">
             <typeSpecifier xsi:type="ChoiceTypeSpecifier">
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SimpleQuantity" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Quantity" />
             </typeSpecifier>
         </element>
-    </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Quantity" name="Duration" label="Duration" primaryCodePath="code">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="value" type="System.Decimal" />
-        <element name="comparator" type="System.String" />
-        <element name="unit" type="System.String" />
-        <element name="system" type="System.String" />
-        <element name="code" type="System.String" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" name="Element" label="Element">
         <element name="id" type="System.String" />
@@ -3849,7 +3805,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Identifier" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Signature" />
@@ -3878,7 +3834,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Identifier" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Signature" />
@@ -3905,7 +3861,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Identifier" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Signature" />
@@ -4823,7 +4779,7 @@
         <element name="programCode">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="System.Concept" />
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="unitPrice" type="System.Quantity" />
         <element name="factor" type="System.Decimal" />
         <element name="net" type="System.Quantity" />
@@ -4858,7 +4814,7 @@
         <element name="programCode">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="System.Concept" />
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="unitPrice" type="System.Quantity" />
         <element name="factor" type="System.Decimal" />
         <element name="net" type="System.Quantity" />
@@ -4920,7 +4876,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
             </typeSpecifier>
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="unitPrice" type="System.Quantity" />
         <element name="factor" type="System.Decimal" />
         <element name="net" type="System.Quantity" />
@@ -5037,7 +4993,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Identifier" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Signature" />
@@ -5747,7 +5703,7 @@
         <element name="expirationDate" type="System.DateTime" />
         <element name="site" type="System.Concept" />
         <element name="route" type="System.Concept" />
-        <element name="doseQuantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="doseQuantity" type="System.Quantity" />
         <element name="practitioner">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Immunization.PractitionerComponent" />
         </element>
@@ -6537,7 +6493,7 @@
             </typeSpecifier>
         </element>
         <element name="isActive" type="System.Boolean" />
-        <element name="amount" type="QUICKFHIR.Ratio" />
+        <element name="amount" type="System.Ratio" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.BackboneElement" name="Medication.Package.BatchComponent">
         <element name="id" type="System.String" />
@@ -6564,7 +6520,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
             </typeSpecifier>
         </element>
-        <element name="amount" type="QUICKFHIR.SimpleQuantity" />
+        <element name="amount" type="System.Quantity" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.BackboneElement" name="Medication.PackageComponent">
         <element name="id" type="System.String" />
@@ -6662,11 +6618,11 @@
         <element name="site" type="System.Concept" />
         <element name="route" type="System.Concept" />
         <element name="method" type="System.Concept" />
-        <element name="dose" type="QUICKFHIR.SimpleQuantity" />
+        <element name="dose" type="System.Quantity" />
         <element name="rate">
             <typeSpecifier xsi:type="ChoiceTypeSpecifier">
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SimpleQuantity" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Quantity" />
             </typeSpecifier>
         </element>
     </typeInfo>
@@ -6722,8 +6678,8 @@
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Reference" />
         </element>
         <element name="type" type="System.Concept" />
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
-        <element name="daysSupply" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
+        <element name="daysSupply" type="System.Quantity" />
         <element name="whenPrepared" type="System.DateTime" />
         <element name="whenHandedOver" type="System.DateTime" />
         <element name="destination" type="QUICKFHIR.Reference" />
@@ -6850,7 +6806,7 @@
             <typeSpecifier xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
         </element>
         <element name="numberOfRepeatsAllowed" type="System.Integer" />
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="expectedSupplyDuration" type="System.Quantity" />
         <element name="performer" type="QUICKFHIR.Reference" />
     </typeInfo>
@@ -7102,17 +7058,6 @@
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="System.Code" />
         </element>
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Quantity" name="Money" label="Money" primaryCodePath="code">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="value" type="System.Decimal" />
-        <element name="comparator" type="System.String" />
-        <element name="unit" type="System.String" />
-        <element name="system" type="System.String" />
-        <element name="code" type="System.String" />
-    </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="NamingSystem" label="NamingSystem" retrievable="true">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
@@ -7222,11 +7167,11 @@
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
         </element>
         <element name="schedule" type="QUICKFHIR.Timing" />
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="rate">
             <typeSpecifier xsi:type="ChoiceTypeSpecifier">
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SimpleQuantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Quantity" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
             </typeSpecifier>
         </element>
     </typeInfo>
@@ -7242,12 +7187,12 @@
         <element name="baseFormulaProductName" type="System.String" />
         <element name="additiveType" type="System.Concept" />
         <element name="additiveProductName" type="System.String" />
-        <element name="caloricDensity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="caloricDensity" type="System.Quantity" />
         <element name="routeofAdministration" type="System.Concept" />
         <element name="administration">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.NutritionOrder.EnteralFormula.AdministrationComponent" />
         </element>
-        <element name="maxVolumeToDeliver" type="QUICKFHIR.SimpleQuantity" />
+        <element name="maxVolumeToDeliver" type="System.Quantity" />
         <element name="administrationInstruction" type="System.String" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.BackboneElement" name="NutritionOrder.OralDiet.NutrientComponent">
@@ -7259,7 +7204,7 @@
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
         </element>
         <element name="modifier" type="System.Concept" />
-        <element name="amount" type="QUICKFHIR.SimpleQuantity" />
+        <element name="amount" type="System.Quantity" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.BackboneElement" name="NutritionOrder.OralDiet.TextureComponent">
         <element name="id" type="System.String" />
@@ -7310,7 +7255,7 @@
         <element name="schedule">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Timing" />
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="instruction" type="System.String" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="Observation" label="Observation" retrievable="true" primaryCodePath="code">
@@ -7358,7 +7303,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="String" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Boolean" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Attachment" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Time" />
@@ -7398,7 +7343,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Concept" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="String" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Attachment" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Time" />
@@ -7422,8 +7367,8 @@
         <element name="modifierExtension">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
         </element>
-        <element name="low" type="QUICKFHIR.SimpleQuantity" />
-        <element name="high" type="QUICKFHIR.SimpleQuantity" />
+        <element name="low" type="System.Quantity" />
+        <element name="high" type="System.Quantity" />
         <element name="type" type="System.Concept" />
         <element name="appliesTo">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="System.Concept" />
@@ -7690,7 +7635,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Identifier" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Signature" />
@@ -7914,14 +7859,6 @@
         </element>
         <element name="type" type="System.Concept" />
         <element name="text" type="System.String" />
-    </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Element" name="Period" label="Period">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="start" type="System.DateTime" />
-        <element name="end" type="System.DateTime" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="Person" label="Person" retrievable="true">
         <element name="id" type="System.String" />
@@ -8939,22 +8876,6 @@
             </typeSpecifier>
         </element>
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Element" name="Range" label="Range">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="low" type="QUICKFHIR.SimpleQuantity" />
-        <element name="high" type="QUICKFHIR.SimpleQuantity" />
-    </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Element" name="Ratio" label="Ratio">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="numerator" type="System.Quantity" />
-        <element name="denominator" type="System.Quantity" />
-    </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Element" name="Reference" label="Reference">
         <element name="id" type="System.String" />
         <element name="extension">
@@ -9403,7 +9324,7 @@
         <element name="extension">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
         </element>
-        <element name="origin" type="QUICKFHIR.SimpleQuantity" />
+        <element name="origin" type="System.Quantity" />
         <element name="period" type="System.Decimal" />
         <element name="factor" type="System.Decimal" />
         <element name="lowerLimit" type="System.Decimal" />
@@ -9709,17 +9630,6 @@
         <element name="contentType" type="System.String" />
         <element name="blob" type="System.String" />
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Quantity" name="SimpleQuantity" label="SimpleQuantity" primaryCodePath="code">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="value" type="System.Decimal" />
-        <element name="comparator" type="System.String" />
-        <element name="unit" type="System.String" />
-        <element name="system" type="System.String" />
-        <element name="code" type="System.String" />
-    </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="Slot" label="Slot" retrievable="true">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
@@ -9808,7 +9718,7 @@
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
             </typeSpecifier>
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="method" type="System.Concept" />
         <element name="bodySite" type="System.Concept" />
     </typeInfo>
@@ -9825,8 +9735,8 @@
         </element>
         <element name="description" type="System.String" />
         <element name="type" type="System.Concept" />
-        <element name="capacity" type="QUICKFHIR.SimpleQuantity" />
-        <element name="specimenQuantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="capacity" type="System.Quantity" />
+        <element name="specimenQuantity" type="System.Quantity" />
         <element name="additive">
             <typeSpecifier xsi:type="ChoiceTypeSpecifier">
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Concept" />
@@ -10053,7 +9963,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Identifier" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Signature" />
@@ -10243,7 +10153,7 @@
         <element name="modifierExtension">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
         </element>
-        <element name="quantity" type="QUICKFHIR.Ratio" />
+        <element name="quantity" type="System.Ratio" />
         <element name="substance">
             <typeSpecifier xsi:type="ChoiceTypeSpecifier">
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Concept" />
@@ -10261,7 +10171,7 @@
         </element>
         <element name="identifier" type="QUICKFHIR.Identifier" />
         <element name="expiry" type="System.DateTime" />
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
     </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="SupplyDelivery" label="SupplyDelivery" retrievable="true" primaryCodePath="type">
         <element name="id" type="System.String" />
@@ -10310,7 +10220,7 @@
         <element name="modifierExtension">
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
         </element>
-        <element name="quantity" type="QUICKFHIR.SimpleQuantity" />
+        <element name="quantity" type="System.Quantity" />
         <element name="item">
             <typeSpecifier xsi:type="ChoiceTypeSpecifier">
                 <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Concept" />
@@ -10479,7 +10389,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Identifier" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Signature" />
@@ -10516,7 +10426,7 @@
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Identifier" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.DateTime" />
                 <choice xsi:type="IntervalTypeSpecifier" pointType="System.Quantity" />
-                <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Ratio" />
+                <choice xsi:type="NamedTypeSpecifier" modelName="System" name="Ratio" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Reference" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="SampledData" />
                 <choice xsi:type="NamedTypeSpecifier" modelName="QUICKFHIR" name="Signature" />
@@ -11388,7 +11298,7 @@
         <element name="power" type="System.Decimal" />
         <element name="backCurve" type="System.Decimal" />
         <element name="diameter" type="System.Decimal" />
-        <element name="duration" type="QUICKFHIR.SimpleQuantity" />
+        <element name="duration" type="System.Quantity" />
         <element name="color" type="System.String" />
         <element name="brand" type="System.String" />
         <element name="note">
