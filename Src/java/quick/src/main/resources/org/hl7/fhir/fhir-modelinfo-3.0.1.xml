@@ -59,34 +59,34 @@
     <element name="period" type="FHIR.Period" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AccountStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionCardinalityBehavior">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionConditionKind">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionGroupingBehavior">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionList">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionParticipantType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionPrecheckBehavior">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionRelationshipType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionRequiredBehavior">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActionSelectionBehavior">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ActivityDefinition" label="ActivityDefinition" retrievable="true" primaryCodePath="topic">
     <element name="id" type="FHIR.id" />
@@ -199,10 +199,10 @@
     <element name="role" type="FHIR.CodeableConcept" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActivityDefinitionKind">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ActivityParticipantType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Address" label="Address">
     <element name="id" type="FHIR.string" />
@@ -223,13 +223,13 @@
     <element name="period" type="FHIR.Period" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AddressType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AddressUse">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AdministrativeGender">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="AdverseEvent" label="AdverseEvent" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -285,10 +285,10 @@
     <element name="causality" type="FHIR.AdverseEventCausality" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AdverseEventCategory">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AdverseEventCausality">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Age" label="Age" primaryCodePath="code">
     <element name="id" type="FHIR.string" />
@@ -302,7 +302,7 @@
     <element name="code" type="FHIR.code" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AggregationMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="AllergyIntolerance" label="AllergyIntolerance" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -372,22 +372,22 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AllergyIntoleranceCategory">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AllergyIntoleranceClinicalStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AllergyIntoleranceCriticality">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AllergyIntoleranceSeverity">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AllergyIntoleranceType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AllergyIntoleranceVerificationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Annotation" label="Annotation">
     <element name="id" type="FHIR.string" />
@@ -503,16 +503,16 @@
     <element name="comment" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AppointmentStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AssertionDirectionType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AssertionOperatorType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AssertionResponseTypes">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Attachment" label="Attachment">
     <element name="id" type="FHIR.string" />
@@ -647,13 +647,13 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AuditEventAction">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AuditEventAgentNetworkType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AuditEventOutcome">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="BackboneElement" label="BackboneElement">
     <element name="id" type="FHIR.string" />
@@ -697,7 +697,7 @@
     <element name="content" type="FHIR.base64Binary" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="BindingStrength">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="BodySite" label="BodySite" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -815,7 +815,7 @@
     <element name="url" type="FHIR.uri" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="BundleType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="CapabilityStatement" label="CapabilityStatement" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -1113,7 +1113,7 @@
     <element name="releaseDate" type="FHIR.dateTime" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CapabilityStatementKind">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="CarePlan" label="CarePlan" retrievable="true" primaryCodePath="category">
     <element name="id" type="FHIR.id" />
@@ -1241,13 +1241,13 @@
     <element name="detail" type="FHIR.CarePlan.Activity.DetailComponent" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CarePlanActivityStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CarePlanIntent">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CarePlanStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="CareTeam" label="CareTeam" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -1305,7 +1305,7 @@
     <element name="period" type="FHIR.Period" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CareTeamStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ChargeItem" label="ChargeItem" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -1382,7 +1382,7 @@
     <element name="actor" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ChargeItemStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Claim" label="Claim" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -1936,10 +1936,10 @@
     <element name="language" type="FHIR.CodeableConcept" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ClaimResponseStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ClaimStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ClinicalImpression" label="ClinicalImpression" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -2029,7 +2029,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ClinicalImpressionStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="CodeSystem" label="CodeSystem" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -2168,10 +2168,10 @@
     <element name="type" type="FHIR.PropertyType" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CodeSystemContentMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CodeSystemHierarchyMeaning">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CodeableConcept" label="CodeableConcept">
     <element name="id" type="FHIR.string" />
@@ -2270,7 +2270,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CommunicationPriority">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="CommunicationRequest" label="CommunicationRequest" retrievable="true" primaryCodePath="category">
     <element name="id" type="FHIR.id" />
@@ -2363,13 +2363,13 @@
     <element name="onBehalfOf" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CommunicationRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CommunicationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CompartmentCode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="CompartmentDefinition" label="CompartmentDefinition" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -2425,7 +2425,7 @@
     <element name="documentation" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CompartmentType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Composition" label="Composition" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -2538,10 +2538,10 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CompositionAttestationMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CompositionStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ConceptMap" label="ConceptMap" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -2672,10 +2672,10 @@
     <element name="unmapped" type="FHIR.ConceptMap.Group.UnmappedComponent" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConceptMapEquivalence">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConceptMapGroupUnmappedMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Condition" label="Condition" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -2765,16 +2765,16 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConditionClinicalStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConditionVerificationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConditionalDeleteStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConditionalReadStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Consent" label="Consent" retrievable="true" primaryCodePath="category">
     <element name="id" type="FHIR.id" />
@@ -2925,16 +2925,16 @@
     <element name="Rule" type="FHIR.uri" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConsentDataMeaning">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConsentExceptType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConsentState">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ConstraintSeverity">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ContactDetail" label="ContactDetail">
     <element name="id" type="FHIR.string" />
@@ -2958,13 +2958,13 @@
     <element name="period" type="FHIR.Period" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ContactPointSystem">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ContactPointUse">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ContentType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Contract" label="Contract" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -3202,7 +3202,7 @@
     <element name="net" type="FHIR.Money" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ContractStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Contributor" label="Contributor">
     <element name="id" type="FHIR.string" />
@@ -3216,7 +3216,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ContributorType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Count" label="Count" primaryCodePath="code">
     <element name="id" type="FHIR.string" />
@@ -3282,7 +3282,7 @@
     <element name="subClass" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="CoverageStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DataElement" label="DataElement" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -3342,7 +3342,7 @@
     <element name="comment" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DataElementStringency">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DataRequirement" label="DataRequirement">
     <element name="id" type="FHIR.string" />
@@ -3364,10 +3364,10 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DayOfWeek">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DaysOfWeek">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DetectedIssue" label="DetectedIssue" retrievable="true" primaryCodePath="category">
     <element name="id" type="FHIR.id" />
@@ -3413,10 +3413,10 @@
     <element name="author" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DetectedIssueSeverity">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DetectedIssueStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Device" label="Device" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -3558,19 +3558,19 @@
     <element name="time" type="FHIR.instant" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DeviceMetricCalibrationState">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DeviceMetricCalibrationType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DeviceMetricCategory">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DeviceMetricColor">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DeviceMetricOperationalStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept">
     <element name="id" type="FHIR.id" />
@@ -3650,7 +3650,7 @@
     <element name="onBehalfOf" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DeviceRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DeviceUseStatement" label="DeviceUseStatement" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -3692,7 +3692,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DeviceUseStatementStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DiagnosticReport" label="DiagnosticReport" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -3773,13 +3773,13 @@
     <element name="actor" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DiagnosticReportStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DigitalMediaType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DiscriminatorType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Distance" label="Distance" primaryCodePath="code">
     <element name="id" type="FHIR.string" />
@@ -3793,7 +3793,7 @@
     <element name="code" type="FHIR.code" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DocumentConfidentiality">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DocumentManifest" label="DocumentManifest" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -3860,7 +3860,7 @@
     <element name="ref" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DocumentMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DocumentReference" label="DocumentReference" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -3959,10 +3959,10 @@
     <element name="target" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DocumentReferenceStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DocumentRelationshipType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Resource" name="DomainResource" label="DomainResource" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -4275,7 +4275,7 @@
     <element name="benefitSubCategory" type="FHIR.CodeableConcept" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EligibilityRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="EligibilityResponse" label="EligibilityResponse" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -4380,7 +4380,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EligibilityResponseStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Encounter" label="Encounter" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -4520,10 +4520,10 @@
     <element name="period" type="FHIR.Period" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EncounterLocationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EncounterStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Endpoint" label="Endpoint" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -4563,7 +4563,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EndpointStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="EnrollmentRequest" label="EnrollmentRequest" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -4592,7 +4592,7 @@
     <element name="coverage" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EnrollmentRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="EnrollmentResponse" label="EnrollmentResponse" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -4622,7 +4622,7 @@
     <element name="requestOrganization" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EnrollmentResponseStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="EpisodeOfCare" label="EpisodeOfCare" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -4687,13 +4687,13 @@
     <element name="period" type="FHIR.Period" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EpisodeOfCareStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EventCapabilityMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="EventTiming">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ExpansionProfile" label="ExpansionProfile" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -5308,7 +5308,7 @@
     <element name="reference" type="FHIR.Identifier" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ExplanationOfBenefitStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Extension" label="Extension">
     <element name="id" type="FHIR.string" />
@@ -5360,22 +5360,22 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ExtensionContext">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="FHIRAllTypes">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="FHIRDefinedType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="FHIRDeviceStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="FHIRSubstanceStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="FamilyHistoryStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="FamilyMemberHistory" label="FamilyMemberHistory" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -5465,7 +5465,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="FilterOperator">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Flag" label="Flag" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -5494,7 +5494,7 @@
     <element name="author" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="FlagStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Goal" label="Goal" retrievable="true" primaryCodePath="category">
     <element name="id" type="FHIR.id" />
@@ -5568,10 +5568,10 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="GoalStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="GraphCompartmentRule">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="GraphDefinition" label="GraphDefinition" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -5725,7 +5725,7 @@
     <element name="inactive" type="FHIR.boolean" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="GroupType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="GuidanceResponse" label="GuidanceResponse" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -5769,16 +5769,16 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="GuidanceResponseStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="GuideDependencyType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="GuidePageKind">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="HTTPVerb">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="HealthcareService" label="HealthcareService" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -5903,10 +5903,10 @@
     <element name="assigner" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="IdentifierUse">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="IdentityAssuranceLevel">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ImagingManifest" label="ImagingManifest" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -6238,7 +6238,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ImmunizationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ImplementationGuide" label="ImplementationGuide" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -6369,13 +6369,13 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="InstanceAvailability">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="IssueSeverity">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="IssueType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Library" label="Library" retrievable="true" primaryCodePath="topic">
     <element name="id" type="FHIR.id" />
@@ -6440,7 +6440,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="LinkType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Linkage" label="Linkage" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -6475,7 +6475,7 @@
     <element name="resource" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="LinkageType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="List" label="List" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -6526,10 +6526,10 @@
     <element name="item" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ListMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ListStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Location" label="Location" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -6583,13 +6583,13 @@
     <element name="altitude" type="FHIR.decimal" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="LocationMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="LocationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MeasmntPrinciple">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Measure" label="Measure" retrievable="true" primaryCodePath="topic">
     <element name="id" type="FHIR.id" />
@@ -6826,10 +6826,10 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MeasureReportStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MeasureReportType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Media" label="Media" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -7067,7 +7067,7 @@
     <element name="onBehalfOf" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationAdministrationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medicationCodeableConcept">
     <element name="id" type="FHIR.id" />
@@ -7162,7 +7162,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationDispenseStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medicationCodeableConcept">
     <element name="id" type="FHIR.id" />
@@ -7266,13 +7266,13 @@
     <element name="reason" type="FHIR.CodeableConcept" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationRequestIntent">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationRequestPriority">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medicationCodeableConcept">
     <element name="id" type="FHIR.id" />
@@ -7337,13 +7337,13 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationStatementStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationStatementTaken">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MessageDefinition" label="MessageDefinition" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -7493,7 +7493,7 @@
     <element name="endpoint" type="FHIR.uri" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MessageSignificanceCategory">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Meta" label="Meta">
     <element name="id" type="FHIR.string" />
@@ -7513,7 +7513,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MimeType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Money" label="Money" primaryCodePath="code">
     <element name="id" type="FHIR.string" />
@@ -7527,7 +7527,7 @@
     <element name="code" type="FHIR.code" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="NameUse">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="NamingSystem" label="NamingSystem" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -7582,10 +7582,10 @@
     <element name="period" type="FHIR.Period" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="NamingSystemIdentifierType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="NamingSystemType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Narrative" label="Narrative">
     <element name="id" type="FHIR.string" />
@@ -7596,7 +7596,7 @@
     <element name="div" type="FHIR.xhtml" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="NarrativeStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="NutritionOrder" label="NutritionOrder" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -7737,7 +7737,7 @@
     <element name="instruction" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="NutritionOrderStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Observation" label="Observation" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -7869,10 +7869,10 @@
     <element name="target" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ObservationRelationshipType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ObservationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="OperationDefinition" label="OperationDefinition" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -7978,7 +7978,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="OperationKind">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="OperationOutcome" label="OperationOutcome" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -8019,7 +8019,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="OperationParameterUse">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Organization" label="Organization" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -8090,7 +8090,7 @@
     <element name="profile" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ParameterUse">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Resource" name="Parameters" label="Parameters" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -8160,13 +8160,13 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ParticipantRequired">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ParticipantStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ParticipationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Patient" label="Patient" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -8312,7 +8312,7 @@
     <element name="paymentStatus" type="FHIR.CodeableConcept" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="PaymentNoticeStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="PaymentReconciliation" label="PaymentReconciliation" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -8378,7 +8378,7 @@
     <element name="text" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="PaymentReconciliationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Period" label="Period">
     <element name="id" type="FHIR.string" />
@@ -8975,16 +8975,16 @@
     <element name="onBehalfOf" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ProcedureRequestIntent">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ProcedureRequestPriority">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ProcedureRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ProcedureStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ProcessRequest" label="ProcessRequest" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9036,7 +9036,7 @@
     <element name="sequenceLinkId" type="FHIR.integer" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ProcessRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ProcessResponse" label="ProcessResponse" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9087,13 +9087,13 @@
     <element name="text" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ProcessResponseStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="PropertyRepresentation">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="PropertyType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Provenance" label="Provenance" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9181,10 +9181,10 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ProvenanceEntityRole">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="PublicationStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Quantity" label="Quantity" primaryCodePath="code">
     <element name="id" type="FHIR.string" />
@@ -9198,7 +9198,7 @@
     <element name="code" type="FHIR.code" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="QuantityComparator">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Questionnaire" label="Questionnaire" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9346,7 +9346,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="QuestionnaireItemType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="QuestionnaireResponse" label="QuestionnaireResponse" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9433,7 +9433,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="QuestionnaireResponseStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Range" label="Range">
     <element name="id" type="FHIR.string" />
@@ -9461,16 +9461,16 @@
     <element name="display" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ReferenceHandlingPolicy">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ReferenceVersionRules">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ReferralCategory">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ReferralPriority">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ReferralRequest" label="ReferralRequest" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -9550,10 +9550,10 @@
     <element name="onBehalfOf" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ReferralRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ReferredDocumentStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="RelatedArtifact" label="RelatedArtifact">
     <element name="id" type="FHIR.string" />
@@ -9568,7 +9568,7 @@
     <element name="resource" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="RelatedArtifactType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="RelatedPerson" label="RelatedPerson" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9735,13 +9735,13 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="RequestIntent">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="RequestPriority">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="RequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ResearchStudy" label="ResearchStudy" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9818,7 +9818,7 @@
     <element name="description" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ResearchStudyStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ResearchSubject" label="ResearchSubject" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9845,7 +9845,7 @@
     <element name="consent" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ResearchSubjectStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" name="Resource" label="Resource" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -9854,16 +9854,16 @@
     <element name="language" type="FHIR.code" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ResourceType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ResourceVersionPolicy">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ResponseType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="RestfulCapabilityMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="RiskAssessment" label="RiskAssessment" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -9937,7 +9937,7 @@
     <element name="rationale" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="RiskAssessmentStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SampledData" label="SampledData">
     <element name="id" type="FHIR.string" />
@@ -9985,16 +9985,16 @@
     <element name="comment" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SearchComparator">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SearchEntryMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SearchModifierCode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SearchParamType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="SearchParameter" label="SearchParameter" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -10065,7 +10065,7 @@
     <element name="expression" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SectionMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Sequence" label="Sequence" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -10273,7 +10273,7 @@
     <element name="code" type="FHIR.code" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SlicingRules">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Slot" label="Slot" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -10309,7 +10309,7 @@
     <element name="comment" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SlotStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Specimen" label="Specimen" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
@@ -10413,7 +10413,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SpecimenStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="StructureDefinition" label="StructureDefinition" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -10510,7 +10510,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="StructureDefinitionKind">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="StructureMap" label="StructureMap" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -10742,25 +10742,25 @@
     <element name="documentation" type="FHIR.string" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="StructureMapContextType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="StructureMapGroupTypeMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="StructureMapInputMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="StructureMapModelMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="StructureMapSourceListMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="StructureMapTargetListMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="StructureMapTransform">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Subscription" label="Subscription" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -10806,10 +10806,10 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SubscriptionChannelType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SubscriptionStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Substance" label="Substance" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -10926,7 +10926,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SupplyDeliveryStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="SupplyRequest" label="SupplyRequest" retrievable="true" primaryCodePath="category">
     <element name="id" type="FHIR.id" />
@@ -10997,13 +10997,13 @@
     <element name="onBehalfOf" type="FHIR.Reference" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SupplyRequestStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SystemRestfulInteraction">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SystemVersionProcessingMode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Task" label="Task" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
@@ -11198,13 +11198,13 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TaskIntent">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TaskPriority">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TaskStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="TestReport" label="TestReport" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -11345,16 +11345,16 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TestReportActionResult">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TestReportParticipantType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TestReportResult">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TestReportStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="TestScript" label="TestScript" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -11780,7 +11780,7 @@
     <element name="sourceId" type="FHIR.id" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TestScriptRequestMethodCode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Timing" label="Timing" primaryCodePath="code">
     <element name="id" type="FHIR.string" />
@@ -11811,22 +11811,22 @@
     <element name="eventData" type="FHIR.DataRequirement" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TriggerType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TypeDerivationRule">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="TypeRestfulInteraction">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="UDIEntryType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="UnitsOfTime">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="UnknownContentCode">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="UsageContext" label="UsageContext" primaryCodePath="code">
     <element name="id" type="FHIR.string" />
@@ -11843,7 +11843,7 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Use">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="ValueSet" label="ValueSet" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -12030,10 +12030,10 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="VisionBase">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="VisionEyes">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="VisionPrescription" label="VisionPrescription" retrievable="true">
     <element name="id" type="FHIR.id" />
@@ -12095,10 +12095,10 @@
     </element>
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="VisionStatus">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="XPathUsageType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="base64Binary" label="base64Binary">
     <element name="id" type="FHIR.string" />
@@ -12185,10 +12185,10 @@
     <element name="value" type="System.Integer" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="qualityType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="repositoryType">
-    <element name="Value" type="System.String" />
+    <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="string" label="string">
     <element name="id" type="FHIR.string" />
@@ -12240,8 +12240,8 @@
   <conversionInfo functionName="FHIRHelpers.ToInteger" fromType="unsignedInt" toType="System.Integer" />
   <conversionInfo functionName="FHIRHelpers.ToInteger" fromType="integer" toType="System.Integer" />
   <conversionInfo functionName="FHIRHelpers.ToTime" fromType="time" toType="System.Time" />
-
   <conversionInfo functionName="FHIRHelpers.ToConcept" fromType="CodeableConcept" toType="System.Concept" />
+  <conversionInfo functionName="FHIRHelpers.ToCode" fromType="CodeableConcept" toType="System.Concept" />
   <conversionInfo functionName="FHIRHelpers.ToCode" fromType="Coding" toType="System.Code" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="ActionCardinalityBehavior" toType="System.String" />
