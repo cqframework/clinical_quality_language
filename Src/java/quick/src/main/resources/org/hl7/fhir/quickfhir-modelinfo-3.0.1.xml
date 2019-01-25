@@ -2064,27 +2064,6 @@
         <element name="description" type="System.String" />
         <element name="type" type="System.String" />
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Element" name="CodeableConcept" label="CodeableConcept">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="coding">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="System.Code" />
-        </element>
-        <element name="text" type="System.String" />
-    </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.Element" name="Coding" label="Coding" primaryCodePath="code">
-        <element name="id" type="System.String" />
-        <element name="extension">
-            <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Extension" />
-        </element>
-        <element name="system" type="System.String" />
-        <element name="version" type="System.String" />
-        <element name="code" type="System.String" />
-        <element name="display" type="System.String" />
-        <element name="userSelected" type="System.Boolean" />
-    </typeInfo>
     <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="Communication" label="Communication" retrievable="true" primaryCodePath="category">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
