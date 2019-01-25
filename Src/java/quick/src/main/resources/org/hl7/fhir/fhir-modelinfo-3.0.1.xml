@@ -3572,7 +3572,7 @@
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DeviceMetricOperationalStatus">
     <element name="value" type="System.String" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept">
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="code">
     <element name="id" type="FHIR.id" />
     <element name="meta" type="FHIR.Meta" />
     <element name="implicitRules" type="FHIR.uri" />
@@ -7069,7 +7069,7 @@
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationAdministrationStatus">
     <element name="value" type="System.String" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medicationCodeableConcept">
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medication">
     <element name="id" type="FHIR.id" />
     <element name="meta" type="FHIR.Meta" />
     <element name="implicitRules" type="FHIR.uri" />
@@ -7164,7 +7164,7 @@
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationDispenseStatus">
     <element name="value" type="System.String" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medicationCodeableConcept">
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medication">
     <element name="id" type="FHIR.id" />
     <element name="meta" type="FHIR.Meta" />
     <element name="implicitRules" type="FHIR.uri" />
@@ -7274,7 +7274,7 @@
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MedicationRequestStatus">
     <element name="value" type="System.String" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medicationCodeableConcept">
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medication">
     <element name="id" type="FHIR.id" />
     <element name="meta" type="FHIR.Meta" />
     <element name="implicitRules" type="FHIR.uri" />

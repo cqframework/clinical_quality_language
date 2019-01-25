@@ -299,7 +299,7 @@
         <ns4:element name="availableStartTime" elementType="FHIR.time"/>
         <ns4:element name="availableEndTime" elementType="FHIR.time"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DeviceUseStatement" retrievable="true" baseType="FHIR.DomainResource" primaryCodePath="device.code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DeviceUseStatement" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -554,7 +554,7 @@
         <ns4:element name="name" elementType="FHIR.string"/>
         <ns4:element name="type" elementType="FHIR.DeviceNameType"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="MeasureReport" retrievable="true" baseType="FHIR.DomainResource" primaryCodePath="measure.topic">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="MeasureReport" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -2521,7 +2521,7 @@
         </ns4:element>
         <ns4:element name="role" elementType="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QuestionnaireResponse" retrievable="true" baseType="FHIR.DomainResource" primaryCodePath="questionnaire">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QuestionnaireResponse" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="basedOn">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
@@ -7698,7 +7698,7 @@
         <ns4:element name="carrierHRF" elementType="FHIR.string"/>
         <ns4:element name="entryType" elementType="FHIR.UDIEntryType"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DeviceRequest" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
