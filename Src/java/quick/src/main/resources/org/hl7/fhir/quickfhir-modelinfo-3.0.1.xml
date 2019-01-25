@@ -3382,7 +3382,7 @@
         <element name="state" type="System.String" />
         <element name="time" type="System.DateTime" />
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept">
+    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="code">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
         <element name="implicitRules" type="System.String" />
@@ -6603,7 +6603,7 @@
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Medication.Package.BatchComponent" />
         </element>
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="MedicationAdministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medicationCodeableConcept">
+    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="MedicationAdministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medication">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
         <element name="implicitRules" type="System.String" />
@@ -6702,7 +6702,7 @@
         <element name="actor" type="QUICKFHIR.Reference" />
         <element name="onBehalfOf" type="QUICKFHIR.Reference" />
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medicationCodeableConcept">
+    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medication">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
         <element name="implicitRules" type="System.String" />
@@ -6794,7 +6794,7 @@
             <typeSpecifier xsi:type="ListTypeSpecifier" elementType="QUICKFHIR.Reference" />
         </element>
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medicationCodeableConcept">
+    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medication">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
         <element name="implicitRules" type="System.String" />
@@ -6897,7 +6897,7 @@
         <element name="allowed" type="System.Boolean" />
         <element name="reason" type="System.Concept" />
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medicationCodeableConcept">
+    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medication">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
         <element name="implicitRules" type="System.String" />
