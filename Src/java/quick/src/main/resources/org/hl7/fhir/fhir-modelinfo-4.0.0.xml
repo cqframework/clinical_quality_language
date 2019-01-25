@@ -3782,7 +3782,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Coding"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="BodyStructure" retrievable="true" baseType="FHIR.DomainResource" primaryCodePath="morphology">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="BodyStructure" retrievable="true" baseType="FHIR.DomainResource" primaryCodePath="location">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>

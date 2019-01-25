@@ -6967,7 +6967,7 @@
       <typeSpecifier xsi:type="ListTypeSpecifier" elementType="FHIR.Medication.Package.BatchComponent" />
     </element>
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationAdministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medicationCodeableConcept">
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="MedicationAdministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medication">
     <element name="id" type="FHIR.id" />
     <element name="meta" type="FHIR.Meta" />
     <element name="implicitRules" type="FHIR.uri" />
