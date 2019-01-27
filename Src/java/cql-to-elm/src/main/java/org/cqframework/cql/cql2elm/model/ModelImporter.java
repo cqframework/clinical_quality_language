@@ -137,7 +137,9 @@ public class ModelImporter {
         if (typeSpecifier instanceof ListTypeSpecifier) {
             ListTypeSpecifier listTypeSpecifier = (ListTypeSpecifier)typeSpecifier;
             DataType elementType = resolveTypeNameOrSpecifier(listTypeSpecifier.getElementType(), listTypeSpecifier.getElementTypeSpecifier());
-            return new ListType(elementType);
+            if (elementType != null) {
+                return new ListType(elementType);
+            }
         }
 
         if (typeSpecifier instanceof ChoiceTypeSpecifier) {
@@ -286,7 +288,11 @@ public class ModelImporter {
     private Collection<ClassTypeElement> resolveClassTypeElements(Collection<ClassInfoElement> infoElements) {
         List<ClassTypeElement> elements = new ArrayList();
         for (ClassInfoElement e : infoElements) {
-            elements.add(new ClassTypeElement(e.getName(), resolveTypeNameOrSpecifier(e), e.isProhibited(), e.isOneBased()));
+            DataType elementType = resolveTypeNameOrSpecifier(e);
+            if (elementType == null) {
+                elementType = resolveTypeName("System.Any");
+            }
+            elements.add(new ClassTypeElement(e.getName(), elementType, e.isProhibited(), e.isOneBased()));
         }
         return elements;
     }

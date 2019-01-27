@@ -26,8 +26,11 @@ public class ModelInfoLoader {
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.6"), new FhirModelInfoProvider().withVersion("1.6"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.4"), new FhirModelInfoProvider().withVersion("1.4"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("3.0.0"), new FhirModelInfoProvider().withVersion("3.0.0"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("3.0.1"), new FhirModelInfoProvider().withVersion("3.0.1"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("3.2.0"), new FhirModelInfoProvider().withVersion("3.2.0"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("4.0.0"), new FhirModelInfoProvider().withVersion("4.0.0"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.0.2"), new FhirModelInfoProvider().withVersion("1.0.2"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("QUICKFHIR").withVersion("3.0.1"), new QuickFhirModelInfoProvider().withVersion("3.0.1"));
     }
 
     public static ModelInfoProvider getModelInfoProvider(VersionedIdentifier modelIdentifier) {
