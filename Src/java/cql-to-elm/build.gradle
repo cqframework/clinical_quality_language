@@ -7,7 +7,7 @@ dependencies {
     compile project(':cql')
     compile project(':model')
     compile project(':elm')
-    compile group: 'org.antlr', name: 'antlr4', version: '4.5'
+    compile group: 'org.antlr', name: 'antlr4', version: '4.7.2'
     compile group: 'com.fasterxml.jackson.core', name:'jackson-core', version:'2.4.1'
     compile group: 'com.fasterxml.jackson.core', name:'jackson-databind', version:'2.4.1'
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
