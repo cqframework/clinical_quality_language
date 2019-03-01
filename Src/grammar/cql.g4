@@ -435,27 +435,30 @@ conceptSelector
     : 'Concept' '{' codeSelector (',' codeSelector)* '}' displayClause?
     ;
 
+// NOTE: These keywords are commented out because of an issue with the ANTLR tooling. In 4.5, having these keywords
+// as identifiers results in unacceptable parsing performance. In 4.6+, having them as identifiers results in incorrect
+// parsing. See Github issue [#343](https://github.com/cqframework/clinical_quality_language/issues/343) for more detail
 identifier
     : IDENTIFIER
     | DELIMITEDIDENTIFIER
     | QUOTEDIDENTIFIER
-    | 'all'
+    //| 'all'
     | 'Code'
     | 'code'
     | 'Concept'
     | 'concept'
-    | 'contains'
+    //| 'contains'
     | 'date'
     | 'display'
-    | 'distinct'
+    //| 'distinct'
     | 'end'
-    // | 'exists' NOTE: This is excluded because including it causes a significant performance degradation in the ANTLR parser, still looking into a fix for this
-    | 'not'
+    //| 'exists'
+    //| 'not'
     | 'start'
     | 'time'
     | 'timezone'
     | 'version'
-    | 'where'
+    //| 'where'
     ;
 
 QUOTEDIDENTIFIER

@@ -190,6 +190,25 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/Query.cql", 0);
     }
 
+    // NOTE: This test is commented out to an issue with the ANTLR tooling. In 4.5, this test documents the
+    // unacceptable performance of the parser. In 4.6+, the parser does not correctly resolve some types of
+    // expressions (see TricksyParse and ShouldFail). See Github issue [#343](https://github.com/cqframework/clinical_quality_language/issues/343)
+    // for more detail.
+    //@Test
+    //public void testParserPerformance() throws IOException {
+    //    runSemanticTest("ParserPerformance.cql");
+    //}
+
+    @Test
+    public void tricksyParse() throws IOException {
+        runSemanticTest("TricksyParse.cql");
+    }
+
+    @Test
+    public void shouldFail() throws IOException {
+        runSemanticTest("ShouldFail.cql", 1);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }
