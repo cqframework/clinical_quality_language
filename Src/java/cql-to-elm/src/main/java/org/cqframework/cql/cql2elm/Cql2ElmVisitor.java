@@ -229,6 +229,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     }
                     else {
                         currentNarrative.getContent().addAll(chunkNarrative.getContent());
+                        if (currentNarrative.getR() == null) {
+                            currentNarrative.setR(chunkNarrative.getR());
+                        }
                     }
                 }
             }
