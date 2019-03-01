@@ -724,7 +724,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             .withName(identifier)
                             .withContext(currentContext)
                             .withExpression((Expression) visit(ctx.expression()));
-                    def.setResultType(def.getExpression().getResultType());
+                    if (def.getExpression() != null) {
+                        def.setResultType(def.getExpression().getResultType());
+                    }
                     libraryBuilder.addExpression(def);
                 } finally {
                     libraryBuilder.popExpressionDefinition();

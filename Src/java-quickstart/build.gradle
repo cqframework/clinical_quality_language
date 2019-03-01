@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.antlr', name: 'antlr4', version: '4.7.2'
+    compile group: 'org.antlr', name: 'antlr4', version: '4.5'
     testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
 }
 
