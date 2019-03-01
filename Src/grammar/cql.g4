@@ -439,23 +439,23 @@ identifier
     : IDENTIFIER
     | DELIMITEDIDENTIFIER
     | QUOTEDIDENTIFIER
-    | 'all'
+    //| 'all'
     | 'Code'
     | 'code'
     | 'Concept'
     | 'concept'
-    | 'contains'
+    //| 'contains'
     | 'date'
     | 'display'
-    | 'distinct'
+    //| 'distinct'
     | 'end'
-    // | 'exists' NOTE: This is excluded because including it causes a significant performance degradation in the ANTLR parser, still looking into a fix for this
-    | 'not'
+    //| 'exists' // NOTE: This is excluded because including it causes a significant performance degradation in the ANTLR parser, still looking into a fix for this
+    //| 'not'
     | 'start'
     | 'time'
     | 'timezone'
     | 'version'
-    | 'where'
+    //| 'where'
     ;
 
 QUOTEDIDENTIFIER

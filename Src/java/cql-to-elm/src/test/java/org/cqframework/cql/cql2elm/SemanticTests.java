@@ -190,6 +190,11 @@ public class SemanticTests {
         runSemanticTest("OperatorTests/Query.cql", 0);
     }
 
+    @Test
+    public void testParserPerformance() throws IOException {
+        runSemanticTest("ParserPerformance.cql");
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }

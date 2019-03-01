@@ -3447,11 +3447,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private Expression resolveFunction(String libraryName, @NotNull cqlParser.FunctionContext ctx) {
         String functionName = parseString(ctx.identifier());
-        if ((libraryName == null || libraryName.equals("System")) && functionName.equals("distinct")) {
-            // Because distinct can be both a keyword and the name of a method, it can be resolved by the
-            // parser as a function, instead of as an aggregateExpressionTerm. In this case, the function
+        if (libraryName == null || libraryName.equals("System")) {
+            // Because these functions can be both a keyword and the name of a method, they can be resolved by the
+            // parser as a function, instead of as the keyword-based parser rule. In this case, the function
             // name needs to be translated to the System function name in order to resolve.
-            functionName = "Distinct";
+            switch (functionName) {
+                case "distinct": functionName = "Distinct"; break;
+                case "contains": functionName = "Contains"; break;
+                case "not": functionName = "Not"; break;
+                case "exists": functionName = "Exists"; break;
+            }
+            //functionName = "Distinct";
         }
         return resolveFunction(libraryName, functionName, ctx.paramList());
     }

@@ -253,9 +253,6 @@ public class SystemFunctionResolver {
                 }
 
                 // Logical Functions
-                case "not": {
-                    return resolveUnary(fun.withName("Not"));
-                }
                 case "Not": {
                     return resolveUnary(fun);
                 }
