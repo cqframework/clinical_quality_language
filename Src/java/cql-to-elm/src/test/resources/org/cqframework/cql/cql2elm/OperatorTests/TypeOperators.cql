@@ -20,6 +20,14 @@ define DecimalConvertsToString: ConvertsToString(3.0)
 define QuantityToString: convert 3.0'm' to String
 define QuantityToStringFun: ToString(3.0'm')
 define QuantityConvertsToString: ConvertsToString(3.0'm')
+// ToString(Ratio) : String
+define RatioToString: convert 1:180 to String
+define RatioToStringFun: ToString(1:180)
+define RatioConvertsToString: ConvertsToString(1:180)
+// ToString(Date) : String
+define DateToString: convert @2014-01-01 to String
+define DateToStringFun: ToString(@2014-01-01)
+define DateConvertsToString: ConvertsToString(@2014-01-01)
 // ToString(DateTime) : String
 define DateTimeToString: convert @2014-01-01T00:00:00.0 to String
 define DateTimeToStringFun: ToString(@2014-01-01T00:00:00.0)
@@ -39,18 +47,39 @@ define StringConvertsToInteger: ConvertsToInteger('1')
 // ToDecimal(String) : Decimal
 define StringToDecimal: convert '3.0' to Decimal
 define StringToDecimalFun: ToDecimal('3.0')
+define StringConvertsToDecimal: ConvertsToDecimal('3.0')
 // ToDecimal(Integer) : Decimal
 define IntegerToDecimal: convert 1 to Decimal
 define IntegerToDecimalFun: ToDecimal(1)
 define IntegerConvertsToDecimal: ConvertsToDecimal(1)
+// ToDate(String) : Date
+define StringToDate: convert '2014-01-01' to Date
+define StringToDateFun: ToDate('2014-01-01')
+define StringConvertsToDate: ConvertsToDate('2014-01-01')
 // ToDateTime(String) : DateTime
 define StringToDateTime: convert '2014-01-01T00:00:00.0000+0700' to DateTime
 define StringToDateTimeFun: ToDateTime('2014-01-01T00:00:00.0000+0700')
-define StringConvertsToDateTime: ConvertsToDateTime('2014-01-01T00:00:00.00.0000+0700')
+define StringConvertsToDateTime: ConvertsToDateTime('2014-01-01T00:00:00.0000+0700')
 // ToTime(String) : Time
 define StringToTime: convert 'T00:00:00.0000+0700' to Time
 define StringToTimeFun: ToTime('T00:00:00.0000+0700')
 define StringConvertsToTime: ConvertsToTime('T00:00:00.0000+0700')
+// ToQuantity(Integer): Quantity
+define IntegerToQuantity: convert 1 to Quantity
+define IntegerToQuantityFun: ToQuantity(1)
+define IntegerConvertsToQuantity: ConvertsToQuantity(1)
+// ToQuantity(Decimal): Quantity
+define DecimalToQuantity: convert 1.0 to Quantity
+define DecimalToQuantityFun: ToQuantity(1.0)
+define DecimalConvertsToQuantity: ConvertsToQuantity(1.0)
+// ToQuantity(String): Quantity
+define StringToQuantity: convert '3.0 \'m\'' to Quantity
+define StringToQuantityFun: ToQuantity('3.0 \'m\'')
+define StringConvertsToQuantity: ConvertsToQuantity('3.0 \'m\'')
+// ToRatio(String): Ratio
+define StringToRatio: convert '1:180' to Ratio
+define StringToRatioFun: ToRatio('1:180')
+define StringConvertsToRatio: ConvertsToRatio('1:180')
 // ToConcept(Code) : Concept
 define MyCode: Code 'ABC' from "FAKECS" display 'ABC'
 define CodeToConcept: convert MyCode to Concept
