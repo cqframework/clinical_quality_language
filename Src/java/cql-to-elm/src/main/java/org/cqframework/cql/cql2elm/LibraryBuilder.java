@@ -1619,7 +1619,7 @@ public class LibraryBuilder {
 
     private TypeSpecifier choiceTypeToTypeSpecifier(ChoiceType type) {
         return (TypeSpecifier)of.createChoiceTypeSpecifier()
-                .withType(choiceTypeTypesToTypeSpecifiers(type))
+                .withChoice(choiceTypeTypesToTypeSpecifiers(type))
                 .withResultType(type);
     }
 
