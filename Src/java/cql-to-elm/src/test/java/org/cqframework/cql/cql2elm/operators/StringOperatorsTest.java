@@ -82,6 +82,15 @@ public class StringOperatorsTest {
     }
 
     @Test
+    public void testSplitOnMatches() {
+        ExpressionDef def = defs.get("StringSplitOnMatches");
+        assertThat(def, hasTypeAndResult(SplitOnMatches.class, "list<System.String>"));
+        SplitOnMatches splitOnMatches = (SplitOnMatches)def.getExpression();
+        assertThat(splitOnMatches.getStringToSplit(), literalFor("First,Second,Third,Fourth"));
+        assertThat(splitOnMatches.getSeparatorPattern(), literalFor(","));
+    }
+
+    @Test
     public void testUpper() {
         ExpressionDef def = defs.get("StringUpper");
         assertThat(def, hasTypeAndResult(Upper.class, "System.String"));

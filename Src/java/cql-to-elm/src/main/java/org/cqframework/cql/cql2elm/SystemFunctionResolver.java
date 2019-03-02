@@ -489,7 +489,7 @@ public class SystemFunctionResolver {
         checkNumberOfOperands(fun, 2);
         final SplitOnMatches splitOnMatches = of.createSplitOnMatches()
                 .withStringToSplit(fun.getOperand().get(0))
-                .withSeparatorPattern(fun.getOperand().get(12));
+                .withSeparatorPattern(fun.getOperand().get(1));
         builder.resolveCall("System", "SplitOnMatches", new SplitOnMatchesInvocation(splitOnMatches));
         return splitOnMatches;
     }
