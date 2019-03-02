@@ -37,6 +37,10 @@ public class LibraryManager {
       return librarySourceLoader;
     }
 
+    public Map<String, TranslatedLibrary> getTranslatedLibraries() {
+        return libraries;
+    }
+
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
