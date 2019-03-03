@@ -10,9 +10,9 @@ define SimpleEqTrueTrue : true = true
 define SimpleEqTrueFalse : true = false
 define SimpleEqFalseFalse : false = false
 define SimpleEqFalseTrue : false = true
-define SimpleEqNullNull : null = null
+//define SimpleEqNullNull : null = null
 //define SimpleEqTrueNull : true = null
-define SimpleEqNullTrue : null = true
+//define SimpleEqNullTrue : null = true
 define SimpleEqInt1Int1 : 1 = 1
 define SimpleEqInt1Int2 : 1 = 2
 define SimpleEqStringAStringA : 'a' = 'a'
@@ -151,9 +151,9 @@ define EquivTrueTrue                : true ~ true
 define EquivTrueFalse               : true ~ false
 define EquivFalseFalse              : false ~ false
 define EquivFalseTrue               : false ~ true
-define EquivNullNull                : null ~ null
+//define EquivNullNull                : null ~ null
 //define EquivTrueNull                : true ~ null
-define EquivNullTrue                : null ~ true
+//define EquivNullTrue                : null ~ true
 define EquivInt1Int1                : 1 ~ 1
 define EquivInt1Int2                : 1 ~ 2
 define EquivStringAStringA          : 'a' ~ 'a'
@@ -185,9 +185,9 @@ define SimpleNotEqTrueTrue : true != true
 define SimpleNotEqTrueFalse : true != false
 define SimpleNotEqFalseFalse : false != false
 define SimpleNotEqFalseTrue : false != true
-define SimpleNotEqNullNull : null != null
+//define SimpleNotEqNullNull : null != null
 // define SimpleNotEqTrueNull : true != null
-define SimpleNotEqNullTrue : null != true
+//define SimpleNotEqNullTrue : null != true
 define SimpleNotEqInt1Int1 : 1 != 1
 define SimpleNotEqInt1Int2 : 1 != 2
 define SimpleNotEqStringAStringA : 'a' != 'a'

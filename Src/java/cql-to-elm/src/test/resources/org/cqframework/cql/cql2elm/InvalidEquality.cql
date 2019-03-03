@@ -1,0 +1,1 @@
+define Invalid: 5 = '5'

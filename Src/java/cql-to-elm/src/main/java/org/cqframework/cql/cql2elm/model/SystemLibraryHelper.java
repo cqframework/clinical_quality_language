@@ -157,43 +157,81 @@ public class SystemLibraryHelper {
         system.add(convertsTo);
 
         // Comparison Operators
-        // Equal<T>(T, T) : Boolean
-        //system.add(new GenericOperator("Equal", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equal<T : value>(T, T) : Boolean
+        //TypeParameter T = new TypeParameter("T", TypeParameter.TypeParameterConstraint.VALUE, null);
+        //system.add(new GenericOperator("Equal", new Signature(T, T), systemModel.getBoolean(), T));
+        // Equal<C : class>(C, C) : Boolean
+        TypeParameter C = new TypeParameter("C", TypeParameter.TypeParameterConstraint.CLASS, null);
+        system.add(new GenericOperator("Equal", new Signature(C, C), systemModel.getBoolean(), C));
+        // Equal<R : tuple>(R, R) : Boolean
+        TypeParameter R = new TypeParameter("R", TypeParameter.TypeParameterConstraint.TUPLE, null);
+        system.add(new GenericOperator("Equal", new Signature(R, R), systemModel.getBoolean(), R));
+        // Equal<H : choice>(H, H) : Boolean
+        TypeParameter H = new TypeParameter("H", TypeParameter.TypeParameterConstraint.CHOICE, null);
+        system.add(new GenericOperator("Equal", new Signature(H, H), systemModel.getBoolean(), H));
         // Equal(Any, Any) : Boolean
-        system.add(new Operator("Equal", new Signature(systemModel.getAny(), systemModel.getAny()), systemModel.getBoolean()));
-        // Equivalent<T>(T, T) : Boolean
-        //system.add(new GenericOperator("Equivalent", new Signature(new TypeParameter("T"), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
+        //system.add(new Operator("Equal", new Signature(systemModel.getAny(), systemModel.getAny()), systemModel.getBoolean()));
+        // Equivalent<T : value>(T, T) : Boolean
+        //T = new TypeParameter("T", TypeParameter.TypeParameterConstraint.VALUE, null);
+        //system.add(new GenericOperator("Equivalent", new Signature(T, T), systemModel.getBoolean(), T));
+        // Equivalent<C : class>(C, C) : Boolean
+        C = new TypeParameter("C", TypeParameter.TypeParameterConstraint.CLASS, null);
+        system.add(new GenericOperator("Equivalent", new Signature(C, C), systemModel.getBoolean(), C));
+        // Equivalent<R : tuple>(R, R) : Boolean
+        R = new TypeParameter("R", TypeParameter.TypeParameterConstraint.TUPLE, null);
+        system.add(new GenericOperator("Equivalent", new Signature(R, R), systemModel.getBoolean(), R));
+        // Equivalent<H : choice>(H, H) : Boolean
+        H = new TypeParameter("H", TypeParameter.TypeParameterConstraint.CHOICE, null);
+        system.add(new GenericOperator("Equivalent", new Signature(H, H), systemModel.getBoolean(), H));
         // Equivalent(Any, Any) : Boolean
-        system.add(new Operator("Equivalent", new Signature(systemModel.getAny(), systemModel.getAny()), systemModel.getBoolean()));
+        //system.add(new Operator("Equivalent", new Signature(systemModel.getAny(), systemModel.getAny()), systemModel.getBoolean()));
 
+        system.add(new Operator("Equal", new Signature(systemModel.getBoolean(), systemModel.getBoolean()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getBoolean(), systemModel.getBoolean()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getRatio(), systemModel.getRatio()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getRatio(), systemModel.getRatio()), systemModel.getBoolean()));
 
         // Arithmetic Operators
         system.add(new Operator("Abs", new Signature(systemModel.getInteger()), systemModel.getInteger()));
@@ -359,12 +397,10 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("End", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Ends<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("Ends", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Handled by generic Equal
-        //// Equal<T>(interval<T>, interval<T>) : Boolean
-        //system.add(new GenericOperator("Equal", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Handled by generic Equivalent
-        //// Equivalent<T>(interval<T>, interval<T>) : Boolean
-        //system.add(new GenericOperator("Equivalent", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equal<T>(interval<T>, interval<T>) : Boolean
+        system.add(new GenericOperator("Equal", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equivalent<T>(interval<T>, interval<T>) : Boolean
+        system.add(new GenericOperator("Equivalent", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Except<T>(interval<T>, interval<T>) : interval<T>
         system.add(new GenericOperator("Except", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), new IntervalType(new TypeParameter("T")), new TypeParameter("T")));
         // Expand<T>(list<interval<T>>) : list<interval<T>>
@@ -421,12 +457,10 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("Contains", new Signature(new ListType(new TypeParameter("T")), new TypeParameter("T")), systemModel.getBoolean(), new TypeParameter("T")));
         // Distinct<T>(list<T>) : list<T>
         system.add(new GenericOperator("Distinct", new Signature(new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
-        // Handled by generic Equal
-        //// Equal<T>(list<T>, list<T>) : Boolean
-        //system.add(new GenericOperator("Equal", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
-        // Handled by generic Equivalent
-        //// Equivalent<T>(list<T>, list<T>) : Boolean
-        //system.add(new GenericOperator("Equivalent", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equal<T>(list<T>, list<T>) : Boolean
+        system.add(new GenericOperator("Equal", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Equivalent<T>(list<T>, list<T>) : Boolean
+        system.add(new GenericOperator("Equivalent", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // Except<T>(list<T>, list<T>) : list<T>
         system.add(new GenericOperator("Except", new Signature(new ListType(new TypeParameter("T")), new ListType(new TypeParameter("T"))), new ListType(new TypeParameter("T")), new TypeParameter("T")));
         // Exists<T>(list<T>) : Boolean
@@ -485,9 +519,9 @@ public class SystemLibraryHelper {
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Avg", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         // Count<T>(list<T>) : Integer
-        //system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
-        // Count(list<Any>) : Integer
-        system.add(new Operator("Count", new Signature(new ListType(systemModel.getAny())), systemModel.getInteger()));
+        system.add(new GenericOperator("Count", new Signature(new ListType(new TypeParameter("T"))), systemModel.getInteger(), new TypeParameter("T")));
+        //// Count(list<Any>) : Integer
+        //system.add(new Operator("Count", new Signature(new ListType(systemModel.getAny())), systemModel.getInteger()));
         system.add(new Operator("GeometricMean", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));

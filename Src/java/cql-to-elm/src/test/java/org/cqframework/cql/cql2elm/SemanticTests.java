@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -209,11 +210,20 @@ public class SemanticTests {
         runSemanticTest("ShouldFail.cql", 1);
     }
 
+    @Test
+    public void invalidEquality() throws IOException {
+        runSemanticTest("InvalidEquality.cql", 1, CqlTranslator.Options.DisableListPromotion);
+    }
+
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }
 
     private void runSemanticTest(String testFileName, int expectedErrors) throws IOException {
         TestUtils.runSemanticTest(testFileName, expectedErrors);
+    }
+
+    private void runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
+        TestUtils.runSemanticTest(testFileName, expectedErrors, options);
     }
 }

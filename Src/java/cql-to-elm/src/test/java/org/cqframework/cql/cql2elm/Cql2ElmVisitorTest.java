@@ -1085,6 +1085,18 @@ public class Cql2ElmVisitorTest {
     }
 
     @Test
+    public void testEqualityWithConversions() throws IOException {
+        TranslatedLibrary library = visitFileLibrary("EqualityWithConversions.cql");
+        ExpressionDef getGender = library.resolveExpressionRef("GetGender");
+        assertThat(getGender.getExpression(), instanceOf(Equal.class));
+        Equal equal = (Equal)getGender.getExpression();
+        assertThat(equal.getOperand().get(0), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef)equal.getOperand().get(0);
+        assertThat(functionRef.getName(), is("ToString"));
+        assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
+    }
+
+    @Test
     public void testIncludedIn() throws IOException {
         ExpressionDef def = (ExpressionDef) visitFile("TestIncludedIn.cql");
         // Query->

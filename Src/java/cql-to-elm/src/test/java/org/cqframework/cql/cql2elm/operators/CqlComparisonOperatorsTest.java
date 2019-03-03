@@ -44,9 +44,9 @@ public class CqlComparisonOperatorsTest {
         }
     }
 
-    @Test
-    public void testEqual() {
-        ExpressionDef def = defs.get("SimpleEqNullNull");
-        assertThat(def, hasTypeAndResult(Equal.class, "System.Boolean"));
-    }
+    //@Test
+    //public void testEqual() {
+    //    ExpressionDef def = defs.get("SimpleEqNullNull");
+    //    assertThat(def, hasTypeAndResult(Equal.class, "System.Boolean"));
+    //}
 }
