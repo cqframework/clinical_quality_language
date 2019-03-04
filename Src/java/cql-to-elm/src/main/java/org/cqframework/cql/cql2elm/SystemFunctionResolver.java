@@ -86,7 +86,15 @@ public class SystemFunctionResolver {
                 case "AgeInYearsAt":
                 case "AgeInMonthsAt":
                 case "AgeInWeeksAt":
-                case "AgeInDaysAt":
+                case "AgeInDaysAt": {
+                    checkNumberOfOperands(fun, 1);
+                    List<Expression> ops = new ArrayList<>();
+                    Expression op = fun.getOperand().get(0);
+                    ops.add(builder.enforceCompatible(getPatientBirthDateProperty(), op.getResultType()));
+                    ops.add(op);
+                    return resolveCalculateAgeAt(ops, resolveAgeRelatedFunctionPrecision(fun));
+                }
+
                 case "AgeInHoursAt":
                 case "AgeInMinutesAt":
                 case "AgeInSecondsAt":
