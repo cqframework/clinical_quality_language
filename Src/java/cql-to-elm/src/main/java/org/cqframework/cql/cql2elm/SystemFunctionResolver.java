@@ -265,6 +265,15 @@ public class SystemFunctionResolver {
                 }
 
                 // Type Functions
+                case "ConvertsToString":
+                case "ConvertsToBoolean":
+                case "ConvertsToInteger":
+                case "ConvertsToDecimal":
+                case "ConvertsToDateTime":
+                case "ConvertsToDate":
+                case "ConvertsToTime":
+                case "ConvertsToQuantity":
+                case "ConvertsToRatio":
                 case "ToString":
                 case "ToBoolean":
                 case "ToInteger":
@@ -273,6 +282,7 @@ public class SystemFunctionResolver {
                 case "ToDate":
                 case "ToTime":
                 case "ToQuantity":
+                case "ToRatio":
                 case "ToConcept": {
                     return resolveUnary(fun);
                 }
