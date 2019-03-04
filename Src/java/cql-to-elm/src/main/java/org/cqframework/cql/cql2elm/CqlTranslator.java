@@ -180,7 +180,7 @@ public class CqlTranslator {
         translateToELM(is, errorLevel, signatureLevel, options);
     }
 
-    public String toXml() {
+    private String toXml(Library library) {
         try {
             return convertToXml(library);
         }
@@ -189,13 +189,21 @@ public class CqlTranslator {
         }
     }
 
-    public String toJson() {
+    public String toXml() {
+        return toXml(library);
+    }
+
+    private String toJson(Library library) {
         try {
             return convertToJson(library);
         }
         catch (JAXBException e) {
             throw new IllegalArgumentException("Could not convert library to JSON.", e);
         }
+    }
+
+    public String toJson() {
+        return toJson(library);
     }
 
     public Library toELM() {
@@ -212,6 +220,34 @@ public class CqlTranslator {
 
     public List<Retrieve> toRetrieves() {
         return retrieves;
+    }
+
+    public Map<String, TranslatedLibrary> getTranslatedLibraries() {
+        return libraryManager.getTranslatedLibraries();
+    }
+
+    public Map<String, Library> getLibraries() {
+        Map<String, Library> result = new HashMap<String, Library>();
+        for (String libraryName : libraryManager.getTranslatedLibraries().keySet()) {
+            result.put(libraryName, libraryManager.getTranslatedLibraries().get(libraryName).getLibrary());
+        }
+        return result;
+    }
+
+    public Map<String, String> getLibrariesAsXML() {
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, TranslatedLibrary> entry : libraryManager.getTranslatedLibraries().entrySet()) {
+            result.put(entry.getKey(), toXml(entry.getValue().getLibrary()));
+        }
+        return result;
+    }
+
+    public Map<String, String> getLibrariesAsJSON() {
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, TranslatedLibrary> entry : libraryManager.getTranslatedLibraries().entrySet()) {
+            result.put(entry.getKey(), toJson(entry.getValue().getLibrary()));
+        }
+        return result;
     }
 
     public List<CqlTranslatorException> getExceptions() { return exceptions; }
