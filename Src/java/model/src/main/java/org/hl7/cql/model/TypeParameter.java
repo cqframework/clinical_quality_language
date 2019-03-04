@@ -18,6 +18,21 @@ public class TypeParameter extends DataType {
         VALUE,
 
         /**
+         * Indicates the type parameter can only be bound to tuple types
+         */
+        TUPLE,
+
+        /**
+         * Indicates the type parameter can only be bound to interval types
+         */
+        INTERVAL,
+
+        /**
+         * Indicates the type parameter can only be bound to choice types
+         */
+        CHOICE,
+
+        /**
          * Indicates the type parameter can only be bound to the constraint type or a type derived from the constraint type
          */
         TYPE
@@ -58,6 +73,12 @@ public class TypeParameter extends DataType {
      */
     public boolean canBind(DataType callType) {
         switch (constraint) {
+            case CHOICE:
+                return callType instanceof ChoiceType;
+            case TUPLE:
+                return callType instanceof TupleType;
+            case INTERVAL:
+                return callType instanceof IntervalType;
             case CLASS:
                 return callType instanceof ClassType;
             case VALUE:
