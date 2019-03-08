@@ -1337,13 +1337,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitElementExtractorExpressionTerm(@NotNull cqlParser.ElementExtractorExpressionTermContext ctx) {
         SingletonFrom result = of.createSingletonFrom().withOperand(parseExpression(ctx.expressionTerm()));
 
-        if (!(result.getOperand().getResultType() instanceof ListType)) {
-            // ERROR:
-            throw new IllegalArgumentException("List type expected.");
-        }
-
-        result.setResultType(((ListType)result.getOperand().getResultType()).getElementType());
-
         libraryBuilder.resolveUnaryCall("System", "SingletonFrom", result);
         return result;
     }
@@ -1351,13 +1344,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitPointExtractorExpressionTerm(@NotNull cqlParser.PointExtractorExpressionTermContext ctx) {
         PointFrom result = of.createPointFrom().withOperand(parseExpression(ctx.expressionTerm()));
-
-        if (!(result.getOperand().getResultType() instanceof IntervalType)) {
-            // ERROR:
-            throw new IllegalArgumentException("Interval type expected.");
-        }
-
-        result.setResultType(((IntervalType)result.getOperand().getResultType()).getPointType());
 
         libraryBuilder.resolveUnaryCall("System", "PointFrom", result);
         return result;
@@ -1393,13 +1379,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             result = of.createEnd().withOperand(parseExpression(ctx.expressionTerm()));
             operatorName = "End";
         }
-
-        if (!(result.getOperand().getResultType() instanceof IntervalType)) {
-            // ERROR:
-            throw new IllegalArgumentException("Interval type expected.");
-        }
-
-        result.setResultType(((IntervalType)result.getOperand().getResultType()).getPointType());
 
         libraryBuilder.resolveUnaryCall("System", operatorName, result);
         return result;
