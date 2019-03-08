@@ -260,7 +260,8 @@ public class ConversionMap {
         return null;
     }
 
-    public void ensureGenericConversionInstantiated(DataType fromType, DataType toType, boolean isImplicit, OperatorMap operatorMap) {
+    public boolean ensureGenericConversionInstantiated(DataType fromType, DataType toType, boolean isImplicit, OperatorMap operatorMap) {
+        boolean operatorsInstantiated = false;
         for (Conversion c : getGenericConversions()) {
             if (c.getOperator() != null) {
                 // instantiate the generic...
@@ -270,28 +271,33 @@ public class ConversionMap {
                     operatorMap.addOperator(operator);
                     Conversion conversion = new Conversion(operator, true);
                     this.add(conversion);
+                    operatorsInstantiated = true;
                 }
             }
         }
+
+        return operatorsInstantiated;
     }
 
     private Conversion internalFindConversion(DataType fromType, DataType toType, boolean isImplicit) {
         Conversion result = null;
         int score = Integer.MAX_VALUE;
         for (Conversion conversion : getConversions(fromType)) {
-            if ((!isImplicit || conversion.isImplicit()) && (conversion.getToType().isSuperTypeOf(toType) || conversion.getToType().isGeneric())) {
-                // Lower score is better. If the conversion matches the target type exactly, the score is 0.
-                // If the conversion is generic, the score is 1 (because that will be instantiated to an exact match)
-                // If the conversion is a super type, it should only be used if an exact match cannot be found.
-                // If the score is equal to an existing, it indicates a duplicate conversion
-                int newScore = conversion.getToType().equals(toType) ? 0 : (conversion.getToType().isGeneric() ? 1 : 2);
-                if (newScore < score) {
-                    result = conversion;
-                    score = newScore;
-                }
-                else if (newScore == score) {
-                    throw new IllegalArgumentException(String.format("Ambiguous implicit conversion from %s to %s or %s.",
-                            fromType.toString(), result.getToType().toString(), conversion.getToType().toString()));
+            if ((!isImplicit || conversion.isImplicit())) {
+                if (conversion.getToType().isSuperTypeOf(toType) || conversion.getToType().isGeneric()) {
+                    // Lower score is better. If the conversion matches the target type exactly, the score is 0.
+                    // If the conversion is generic, the score is 1 (because that will be instantiated to an exact match)
+                    // If the conversion is a super type, it should only be used if an exact match cannot be found.
+                    // If the score is equal to an existing, it indicates a duplicate conversion
+                    int newScore = conversion.getToType().equals(toType) ? 0 : (conversion.getToType().isGeneric() ? 1 : 2);
+                    if (newScore < score) {
+                        result = conversion;
+                        score = newScore;
+                    }
+                    else if (newScore == score) {
+                        throw new IllegalArgumentException(String.format("Ambiguous implicit conversion from %s to %s or %s.",
+                                fromType.toString(), result.getToType().toString(), conversion.getToType().toString()));
+                    }
                 }
             }
         }
@@ -306,8 +312,9 @@ public class ConversionMap {
         }
 
         if (result == null) {
-            ensureGenericConversionInstantiated(fromType, toType, isImplicit, operatorMap);
-            result = internalFindConversion(fromType, toType, isImplicit);
+            if (ensureGenericConversionInstantiated(fromType, toType, isImplicit, operatorMap)) {
+                result = internalFindConversion(fromType, toType, isImplicit);
+            }
         }
 
         if (result == null) {
