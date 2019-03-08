@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 
+import org.cqframework.cql.cql2elm.model.Conversion;
 import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.hl7.elm.r1.*;
@@ -90,6 +91,37 @@ public class SystemFunctionResolver {
                     checkNumberOfOperands(fun, 1);
                     List<Expression> ops = new ArrayList<>();
                     Expression op = fun.getOperand().get(0);
+                    // If the op is not a Date or DateTime, attempt to get it to convert it to a Date or DateTime
+                    // If the op can be converted to both a Date and a DateTime, throw an ambiguous error
+                    if (!(op.getResultType().isSubTypeOf(builder.resolveTypeName("System", "Date"))
+                        || op.getResultType().isSubTypeOf(builder.resolveTypeName("System", "DateTime")))) {
+                        Conversion dateConversion = builder.findConversion(op.getResultType(), builder.resolveTypeName("System", "Date"), true, false);
+                        Conversion dateTimeConversion = builder.findConversion(op.getResultType(), builder.resolveTypeName("System", "DateTime"), true, false);
+                        if (dateConversion != null && dateTimeConversion != null) {
+                            if (dateConversion.getScore() == dateTimeConversion.getScore()) {
+                                // ERROR
+                                throw new IllegalArgumentException(String.format("Ambiguous implicit conversion from %s to %s or %s.",
+                                        op.getResultType().toString(), dateConversion.getToType().toString(), dateTimeConversion.getToType().toString()));
+                            }
+                            else if (dateConversion.getScore() < dateTimeConversion.getScore()) {
+                                op = builder.convertExpression(op, dateConversion);
+                            }
+                            else {
+                                op = builder.convertExpression(op, dateTimeConversion);
+                            }
+                        }
+                        else if (dateConversion != null) {
+                            op = builder.convertExpression(op, dateConversion);
+                        }
+                        else if (dateTimeConversion != null) {
+                            op = builder.convertExpression(op, dateTimeConversion);
+                        }
+                        else {
+                            // ERROR
+                            throw new IllegalArgumentException(String.format("Could not resolve call to operator %s with argument of type %s.",
+                                    fun.getName(), op.getResultType().toString()));
+                        }
+                    }
                     ops.add(builder.enforceCompatible(getPatientBirthDateProperty(), op.getResultType()));
                     ops.add(op);
                     return resolveCalculateAgeAt(ops, resolveAgeRelatedFunctionPrecision(fun));
