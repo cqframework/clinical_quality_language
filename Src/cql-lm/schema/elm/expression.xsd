@@ -1,54 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- This file is a direct copy of the CDS KAS expression.xsd with the following changes:
-		namespace changed to urn:hl7-org:elm:r1
-		Added the context attribute to ExpressionDef
-		Added FunctionDef as an extension of ExpressionDef
-		Added FunctionRef as an extension of ExpressionRef
-		Added Element as an abstract base class for Expression, ExpressionDef, and ParameterDef
-		Made valueType attribute of Null optional
-		Added Query construct to support more direct mapping from CQL
-		Added Xor operator to support more direct mapping from CQL
-		Added structural type specifier support
-		Added a typeSpecifier element to the List selector.
-		Added YearOf, MonthOf, DayOf, etc. to replace DatePart
-		Added Width operator to replace Length(interval)
-		Added YearsBetween, MonthsBetween, etc. to replace DateDiff
-		Added SameAs operators to support precision-based timing
-		Added MeetsBefore/MeetsAfter and BegunBy/EndedBy
-
-The following changes were made since the initial informative ballot in September 2014:
-		Moved annotations from Expression to the new Element
-		Added ForEach and Define clauses to the Query construct
-		Renamed PropertyTypeSpecifier to TupleElementDefinition
-		Renamed ObjectTypeSpecifier to TupleTypeSpecifier
-		Made parameterType optional in the ParameterDef
-		Removed the ComplexLiteral type
-		Renamed PropertyExpression to TupleElement
-		Renamed ObjectExpression to Tuple
-		Removed ObjectDescriptor type
-		Removed ObjectRedefine type
-		Renamed begin/end to low/high and beginOpen/endOpen to lowClosed/highClosed in the Interval type
-		Removed the key attribute from the List type
-		Renamed the Condition type to If
-		Renamed DateGranularity to DateTimePrecision
-		Removed the DateAdd/DateDiff/DatePart types
-		Made month and day attributes optional in the Date type and added the timezone attribute
-		Renamed Difference to Except
-		Renamed IsNotEmpty to Exists
-		Removed IsEmpty type
-		Removed BegunBy and EndedBy types
-		Renamed Begin/Begins to Start/Starts
-		And/Or and Union are now BinaryExpressions, rather than NaryExpressions
-		Added QueryDefineRef for referencing query Define clauses
-		Added IdentifierRef type
-		Added SingletonFrom type
-		Renamed DateOf,TimeOf,YearOf,etc to DateFrom,TimeFrom,YearFrom,etc.
-		Collapsed YearFrom,MonthFrom,DayFrom,etc. to a single DateTimeComponentFrom operator
-		Collapsed YearsBetween,MonthsBetween,etc. to a single DurationBetween operator
-		Added precision attribute to the SameAs operator.
-		Added SameOrBefore/SameOrAfter operators
-		Removed SameYearAs,SameMonthAs,etc (replaced by precision attribute in SameAs operator)
--->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
 		<xs:documentation>This file defines the core expression components used throughout artifacts based on the Expression Logical Model. The core expression components defined here are intended to be general purpose, and do not reference anything specific to the clinical quality domain. This layering is intended to isolate the conceptual elements of a general purpose expression language from the clinically-focused operations relevant to the clinical quality domain.</xs:documentation>
@@ -1780,9 +1730,9 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="TimezoneFrom">
+	<xs:complexType name="TimezoneOffsetFrom">
 		<xs:annotation>
-			<xs:documentation>The TimezoneFrom operator returns the timezone offset of the argument.
+			<xs:documentation>The TimezoneOffsetFrom operator returns the timezone offset of the argument.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1874,9 +1824,7 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 		<xs:annotation>
 			<xs:documentation>The Time operator constructs a time value from the given components.
 			
-At least one component other than timezoneOffset must be specified, and no component may be specified at a precision below an unspecified precision. For example, minute may be null, but if it is, second, and millisecond must all be null as well.
-
-If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
+At least one component must be specified, and no component may be specified at a precision below an unspecified precision. For example, minute may be null, but if it is, second, and millisecond must all be null as well.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="OperatorExpression">
@@ -1885,7 +1833,6 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 					<xs:element name="minute" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="second" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="millisecond" type="Expression" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="timezoneOffset" type="Expression" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

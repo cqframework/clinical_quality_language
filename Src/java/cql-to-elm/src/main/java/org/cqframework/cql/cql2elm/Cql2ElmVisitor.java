@@ -1002,7 +1002,7 @@ DATETIME
                 )
                 | 'T'
             )?
-            ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone
+            ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone offset
         ;
 */
 
@@ -1475,9 +1475,9 @@ DATETIME
                 result = of.createTimeFrom().withOperand(parseExpression(ctx.expressionTerm()));
                 operatorName = "TimeFrom";
                 break;
-            case "timezone":
-                result = of.createTimezoneFrom().withOperand(parseExpression(ctx.expressionTerm()));
-                operatorName = "TimezoneFrom";
+            case "timezoneoffset":
+                result = of.createTimezoneOffsetFrom().withOperand(parseExpression(ctx.expressionTerm()));
+                operatorName = "TimezoneOffsetFrom";
                 break;
             case "year":
             case "month":

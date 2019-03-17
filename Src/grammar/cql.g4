@@ -292,7 +292,7 @@ dateTimeComponent
     : dateTimePrecision
     | 'date'
     | 'time'
-    | 'timezone'
+    | 'timezoneoffset'
     ;
 
 pluralDateTimePrecision
@@ -456,7 +456,7 @@ identifier
     //| 'not'
     | 'start'
     | 'time'
-    | 'timezone'
+    | 'timezoneoffset'
     | 'version'
     //| 'where'
     ;

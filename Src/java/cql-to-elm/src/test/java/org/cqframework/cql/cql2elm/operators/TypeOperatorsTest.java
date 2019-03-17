@@ -156,7 +156,6 @@ public class TypeOperatorsTest {
         assertThat(t.getMinute(), literalFor(0));
         assertThat(t.getSecond(), literalFor(0));
         assertThat(t.getMillisecond(), literalFor(0));
-        assertThat(t.getTimezoneOffset(), nullValue());
         //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "String"));
     }
 
@@ -241,7 +240,6 @@ public class TypeOperatorsTest {
         assertThat(t.getMinute(), literalFor(0));
         assertThat(t.getSecond(), literalFor(0));
         assertThat(t.getMillisecond(), literalFor(0));
-        assertThat(t.getTimezoneOffset(), nullValue());
         //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
         //assertThat(convert.getToTypeSpecifier(), nullValue());
     }
@@ -327,7 +325,6 @@ public class TypeOperatorsTest {
         assertThat(t.getMinute(), literalFor(0));
         assertThat(t.getSecond(), literalFor(0));
         assertThat(t.getMillisecond(), literalFor(0));
-        assertThat(t.getTimezoneOffset(), nullValue());
         //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "String")));
         //assertThat(convert.getToTypeSpecifier(), nullValue());
     }
