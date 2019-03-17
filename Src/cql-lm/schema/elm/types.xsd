@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- edited with XMLSpy v2013 sp1 (x64) (http://www.altova.com) by Bryn Rhodes (private) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm-types:r1" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:xml="http://www.w3.org/XML/1998/namespace" targetNamespace="urn:hl7-org:elm-types:r1" elementFormDefault="qualified">
 	<xs:complexType name="Any" abstract="true"/>
 	<xs:complexType name="Boolean">

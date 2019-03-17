@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<!-- This file defines the root library element and type for the ELM schema. -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
 		<xs:documentation> This file defines the root library type and element. </xs:documentation>
