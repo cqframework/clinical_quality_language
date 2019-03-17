@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- edited with XMLSpy v2013 sp1 (http://www.altova.com) by Bryn Rhodes (Database Consulting Group) -->
-<!-- This file is a direct copy of clinicalexpression.xsd from the CDS KAS with the following changes
-		Namespace changed to urn:hl7-org:elm:r1
-		dt namespace changed to http://hl7.org/fhir
-		EventType and DataEventType enum references removed
-		timeOffset element removed from RequestBase
-		triggerType attribute removed from RequestBase
-		ClinicalRequestDef type added
-		ValueSetDef added
-		ValueSetRef added
-		IsEquivalent added
-		Quantity added
-
-The following changes were made since the informative ballot in September 2014:
-		Collapsed RequestBase/DataRequest and ClinicalRequest into Retrieve
-		Removed RequestCardinality
-		Removed subjectProperty, isInitial, useValueSets and useSubsumption attributes from the Retrieve
-		Removed the ValueSet, IsEquivalent, Subsumes, and SetSubsumes operators
-		Added CalculateAge, CalculateAgeAt
-		Added dateLowProperty and dateHighProperty to the Retrieve
--->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
 		<xs:documentation>
