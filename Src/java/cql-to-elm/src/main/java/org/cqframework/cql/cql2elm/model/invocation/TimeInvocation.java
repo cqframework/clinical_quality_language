@@ -16,10 +16,10 @@ public class TimeInvocation extends OperatorExpressionInvocation {
     @Override
     public Iterable<Expression> getOperands() {
         Time t = (Time) expression;
-        List<Expression> opList = Arrays.asList(t.getHour(), t.getMinute(), t.getSecond(), t.getMillisecond(), t.getTimezoneOffset());
+        List<Expression> opList = Arrays.asList(t.getHour(), t.getMinute(), t.getSecond(), t.getMillisecond());
         // If the last expression is null, we should trim this down
         int i;
-        for (i = 4; i > 0 && opList.get(i) == null; i--);
+        for (i = 3; i > 0 && opList.get(i) == null; i--);
         return opList.subList(0, i + 1);
     }
 
@@ -33,9 +33,9 @@ public class TimeInvocation extends OperatorExpressionInvocation {
     }
 
     public static void setTimeFieldsFromOperands(Time t, List<Expression> operands) {
-        if (operands.isEmpty() || operands.size() > 5) {
+        if (operands.isEmpty() || operands.size() > 4) {
             throw new IllegalArgumentException(
-                    "Could not resolve call to system operator Time.  Expected 1 - 5 arguments.");
+                    "Could not resolve call to system operator Time.  Expected 1 - 4 arguments.");
         }
 
         t.setHour(operands.get(0));
@@ -47,9 +47,6 @@ public class TimeInvocation extends OperatorExpressionInvocation {
         }
         if (operands.size() > 3) {
             t.setMillisecond(operands.get(3));
-        }
-        if (operands.size() > 4) {
-            t.setTimezoneOffset(operands.get(4));
         }
     }
 }
