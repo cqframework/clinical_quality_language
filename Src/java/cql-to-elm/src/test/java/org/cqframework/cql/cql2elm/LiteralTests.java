@@ -46,15 +46,32 @@ public class LiteralTests {
         dateTime = (DateTime)def.getExpression();
         assertThat(dateTime.getTimezoneOffset(), literalFor(7.0));
 
-        def = defs.get("TimeZoneTimeLiteral");
-        assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
-        Time time = (Time)def.getExpression();
-        assertThat(time.getTimezoneOffset(), literalFor(-7.0));
+        def = defs.get("YearLiteral");
+        assertThat(def, hasTypeAndResult(Date.class, "System.Date"));
 
-        def = defs.get("TimeZonePositiveTimeLiteral");
-        assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
-        time = (Time)def.getExpression();
-        assertThat(time.getTimezoneOffset(), literalFor(7.0));
+        def = defs.get("DateTimeYearLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("UTCYearLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("YearMonthLiteral");
+        assertThat(def, hasTypeAndResult(Date.class, "System.Date"));
+
+        def = defs.get("DateTimeYearMonthLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("UTCYearMonthLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("DateLiteral");
+        assertThat(def, hasTypeAndResult(Date.class, "System.Date"));
+
+        def = defs.get("DateTimeDateLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("UTCDateLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
     }
 
     @Test

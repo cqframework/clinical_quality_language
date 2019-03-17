@@ -32,6 +32,7 @@ import java.util.jar.Pack200;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
@@ -924,16 +925,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             input = input.substring(1);
         }
 
-        Pattern dateTimePattern =
-                Pattern.compile("T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?");
-                               //-12-------3---4-------5---6-------7---8-------------91---11-----1-------1----1------------
-                               //-----------------------------------------------------0---12-----3-------4----5------------
+        Pattern timePattern =
+                Pattern.compile("T(\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?");
+                               //-1-------2---3-------4---5-------6---7-----------
 
-        Matcher matcher = dateTimePattern.matcher(input);
+        Matcher matcher = timePattern.matcher(input);
         if (matcher.matches()) {
             try {
                 Time result = of.createTime();
-                int hour = Integer.parseInt(matcher.group(2));
+                int hour = Integer.parseInt(matcher.group(1));
                 int minute = -1;
                 int second = -1;
                 int millisecond = -1;
@@ -942,69 +942,39 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 result.setHour(libraryBuilder.createLiteral(hour));
 
-                if (matcher.group(4) != null) {
-                    minute = Integer.parseInt(matcher.group(4));
+                if (matcher.group(3) != null) {
+                    minute = Integer.parseInt(matcher.group(3));
                     if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid minute in time literal (%s).", input));
                     }
                     result.setMinute(libraryBuilder.createLiteral(minute));
                 }
 
-                if (matcher.group(6) != null) {
-                    second = Integer.parseInt(matcher.group(6));
+                if (matcher.group(5) != null) {
+                    second = Integer.parseInt(matcher.group(5));
                     if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid second in time literal (%s).", input));
                     }
                     result.setSecond(libraryBuilder.createLiteral(second));
                 }
 
-                if (matcher.group(8) != null) {
-                    millisecond = Integer.parseInt(matcher.group(8));
+                if (matcher.group(7) != null) {
+                    millisecond = Integer.parseInt(matcher.group(7));
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid millisecond in time literal (%s).", input));
                     }
                     result.setMillisecond(libraryBuilder.createLiteral(millisecond));
                 }
 
-                if (matcher.group(10) != null && matcher.group(10).equals("Z")) {
-                    result.setTimezoneOffset(libraryBuilder.createLiteral(0.0));
-                }
-
-                if (matcher.group(12) != null) {
-                    int offsetPolarity = matcher.group(12).equals("+") ? 1 : -1;
-
-                    if (matcher.group(15) != null) {
-                        int hourOffset = Integer.parseInt(matcher.group(13));
-                        if (hourOffset < 0 || hourOffset > 14) {
-                            throw new IllegalArgumentException(String.format("Timezone hour offset out of range in time literal (%s).", input));
-                        }
-
-                        int minuteOffset = Integer.parseInt(matcher.group(15));
-                        if (minuteOffset < 0 || minuteOffset >= 60 || (hourOffset == 14 && minuteOffset > 0)) {
-                            throw new IllegalArgumentException(String.format("Timezone minute offset out of range in time literal (%s).", input));
-                        }
-                        result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
-                    }
-                    else {
-                        if (matcher.group(13) != null) {
-                            int hourOffset = Integer.parseInt(matcher.group(13));
-                            if (hourOffset < 0 || hourOffset > 14) {
-                                throw new IllegalArgumentException(String.format("Timezone hour offset out of range in time literal (%s).", input));
-                            }
-                            result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset * offsetPolarity)));
-                        }
-                    }
-                }
-
                 result.setResultType(libraryBuilder.resolveTypeName("System", "Time"));
                 return result;
             }
             catch (RuntimeException e) {
-                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input), e);
+                throw new IllegalArgumentException(String.format("Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).", input), e);
             }
         }
         else {
-            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input));
+            throw new IllegalArgumentException(String.format("Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).", input));
         }
     }
 
@@ -1015,10 +985,55 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             input = input.substring(1);
         }
 
+/*
+DATETIME
+        : '@'
+            [0-9][0-9][0-9][0-9] // year
+            (
+                (
+                    '-'[0-9][0-9] // month
+                    (
+                        (
+                            '-'[0-9][0-9] // day
+                            ('T' TIMEFORMAT?)?
+                        )
+                        | 'T'
+                    )?
+                )
+                | 'T'
+            )?
+            ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone
+        ;
+*/
+
+        Pattern dateTimePattern =
+                Pattern.compile("(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(\\:(\\d{2}))))?");
+                               //1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
+                               //----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
+
+        /*
+            year - group 1
+            month - group 5
+            day - group 9
+            day dateTime indicator - group 11
+            hour - group 13
+            minute - group 15
+            second - group 17
+            millisecond - group 19
+            month dateTime indicator - group 20
+            year dateTime indicator - group 21
+            utc indicator - group 23
+            timezone offset polarity - group 25
+            timezone offset hour - group 26
+            timezone offset minute - group 28
+         */
+
+/*
         Pattern dateTimePattern =
                 Pattern.compile("(\\d{4})(-(\\d{2}))?(-(\\d{2}))?((Z)|(T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?))?");
                                //1-------2-3---------4-5---------67---8-91-------1---1-------1---1-------1---1-------------11---12-----2-------2----2---------------
                                //----------------------------------------0-------1---2-------3---4-------5---6-------------78---90-----1-------2----3---------------
+*/
 
         Matcher matcher = dateTimePattern.matcher(input);
         if (matcher.matches()) {
@@ -1033,16 +1048,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 int second = -1;
                 int millisecond = -1;
                 result.setYear(libraryBuilder.createLiteral(year));
-                if (matcher.group(3) != null) {
-                    month = Integer.parseInt(matcher.group(3));
+                if (matcher.group(5) != null) {
+                    month = Integer.parseInt(matcher.group(5));
                     if (month < 0 || month > 12) {
                         throw new IllegalArgumentException(String.format("Invalid month in date/time literal (%s).", input));
                     }
                     result.setMonth(libraryBuilder.createLiteral(month));
                 }
 
-                if (matcher.group(5) != null) {
-                    day = Integer.parseInt(matcher.group(5));
+                if (matcher.group(9) != null) {
+                    day = Integer.parseInt(matcher.group(9));
                     int maxDay = 31;
                     switch (month) {
                         case 2: maxDay = calendar.isLeapYear(year) ? 29 : 28;
@@ -1063,53 +1078,52 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     result.setDay(libraryBuilder.createLiteral(day));
                 }
 
-                if (matcher.group(10) != null) {
-                    hour = Integer.parseInt(matcher.group(10));
+                if (matcher.group(13) != null) {
+                    hour = Integer.parseInt(matcher.group(13));
                     if (hour < 0 || hour > 24) {
                         throw new IllegalArgumentException(String.format("Invalid hour in date/time literal (%s).", input));
                     }
                     result.setHour(libraryBuilder.createLiteral(hour));
                 }
 
-                if (matcher.group(12) != null) {
-                    minute = Integer.parseInt(matcher.group(12));
+                if (matcher.group(15) != null) {
+                    minute = Integer.parseInt(matcher.group(15));
                     if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid minute in date/time literal (%s).", input));
                     }
                     result.setMinute(libraryBuilder.createLiteral(minute));
                 }
 
-                if (matcher.group(14) != null) {
-                    second = Integer.parseInt(matcher.group(14));
+                if (matcher.group(17) != null) {
+                    second = Integer.parseInt(matcher.group(17));
                     if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid second in date/time literal (%s).", input));
                     }
                     result.setSecond(libraryBuilder.createLiteral(second));
                 }
 
-                if (matcher.group(16) != null) {
-                    millisecond = Integer.parseInt(matcher.group(16));
+                if (matcher.group(19) != null) {
+                    millisecond = Integer.parseInt(matcher.group(19));
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid millisecond in date/time literal (%s).", input));
                     }
                     result.setMillisecond(libraryBuilder.createLiteral(millisecond));
                 }
 
-                if ((matcher.group(7) != null && matcher.group(7).equals("Z"))
-                        || ((matcher.group(18) != null) && matcher.group(18).equals("Z"))) {
+                if (matcher.group(23) != null && matcher.group(23).equals("Z")) {
                     result.setTimezoneOffset(libraryBuilder.createLiteral(0.0));
                 }
 
-                if (matcher.group(20) != null) {
-                    int offsetPolarity = matcher.group(20).equals("+") ? 1 : -1;
+                if (matcher.group(25) != null) {
+                    int offsetPolarity = matcher.group(25).equals("+") ? 1 : -1;
 
-                    if (matcher.group(23) != null) {
-                        int hourOffset = Integer.parseInt(matcher.group(21));
+                    if (matcher.group(28) != null) {
+                        int hourOffset = Integer.parseInt(matcher.group(26));
                         if (hourOffset < 0 || hourOffset > 14) {
                             throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
                         }
 
-                        int minuteOffset = Integer.parseInt(matcher.group(23));
+                        int minuteOffset = Integer.parseInt(matcher.group(28));
                         if (minuteOffset < 0 || minuteOffset >= 60 || (hourOffset == 14 && minuteOffset > 0)) {
                             throw new IllegalArgumentException(String.format("Timezone minute offset is out of range in date/time literal (%s).", input));
                         }
@@ -1117,8 +1131,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
                     }
                     else {
-                        if (matcher.group(21) != null) {
-                            int hourOffset = Integer.parseInt(matcher.group(21));
+                        if (matcher.group(26) != null) {
+                            int hourOffset = Integer.parseInt(matcher.group(26));
                             if (hourOffset < 0 || hourOffset > 14) {
                                 throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
                             }
@@ -1128,7 +1142,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     }
                 }
 
-                if (result.getHour() == null) {
+                if (result.getHour() == null && matcher.group(11) == null && matcher.group(20) == null && matcher.group(21) == null) {
                     org.hl7.elm.r1.Date date = of.createDate();
                     date.setYear(result.getYear());
                     date.setMonth(result.getMonth());
@@ -1141,11 +1155,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 return result;
             }
             catch (RuntimeException e) {
-                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input), e);
+                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|(+/-hh:mm)).", input), e);
             }
         }
         else {
-            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input));
+            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|+/-hh:mm)).", input));
         }
     }
 
