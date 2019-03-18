@@ -43,7 +43,9 @@
 					<xs:annotation>
 						<xs:documentation>The codeProperty attribute optionally specifies which property of the model contains the Code or Codes for the clinical statement.
 						
-Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing them at the retrieve expression level gives the most flexibility.</xs:documentation>
+Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing them at the retrieve expression level gives the most flexibility.
+
+In addition, this property may be a path, including qualifiers and constant indexers.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="dateProperty" type="xs:string" use="optional">
@@ -77,7 +79,7 @@ If the dateHighProperty is present, the dateLowProperty must also be present, an
 				</xs:attribute>
 				<xs:attribute name="scope" type="xs:string" use="optional">
 					<xs:annotation>
-						<xs:documentation>The scope attribute optionally specifies a name for the scope for this operator that can be used within expressions to reference the current element.</xs:documentation>
+						<xs:documentation>The scope attribute optionally specifies a name for the scope for this operator that can be used within expressions to reference the current iteration element.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
