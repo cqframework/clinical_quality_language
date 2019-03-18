@@ -303,7 +303,7 @@ expressionTerm
     : term                                                                          #termExpressionTerm
     | expressionTerm '.' invocation                                                 #invocationExpressionTerm
     | expressionTerm '[' expression ']'                                             #indexedExpressionTerm
-    | 'convert' expression 'to' typeSpecifier                                       #conversionExpressionTerm
+    | 'convert' expression 'to' (typeSpecifier | unit)                              #conversionExpressionTerm
     | ('+' | '-') expressionTerm                                                    #polarityExpressionTerm
     | ('start' | 'end') 'of' expressionTerm                                         #timeBoundaryExpressionTerm
     | dateTimeComponent 'from' expressionTerm                                       #timeUnitExpressionTerm

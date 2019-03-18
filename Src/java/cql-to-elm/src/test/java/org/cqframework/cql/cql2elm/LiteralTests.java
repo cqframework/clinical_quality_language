@@ -14,9 +14,7 @@ import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndRe
 import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isA;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Created by Bryn on 11/21/2017.
@@ -105,6 +103,28 @@ public class LiteralTests {
         quantity = (Quantity)def.getExpression();
         assertThat(quantity.getValue(), is(BigDecimal.valueOf(10)));
         assertThat(quantity.getUnit(), is("{shab-shab-shab}"));
+
+        def = defs.get("QuantityConversionTest");
+        assertThat(def, hasTypeAndResult(ConvertQuantity.class, "System.Quantity"));
+        ConvertQuantity convertQuantity = (ConvertQuantity)def.getExpression();
+        assertThat(convertQuantity.getOperand().get(0), instanceOf(Quantity.class));
+        quantity = (Quantity)convertQuantity.getOperand().get(0);
+        assertThat(quantity.getValue(), is(BigDecimal.valueOf(5)));
+        assertThat(quantity.getUnit(), is("mg"));
+        assertThat(convertQuantity.getOperand().get(1), instanceOf(Literal.class));
+        Literal literal = (Literal)convertQuantity.getOperand().get(1);
+        assertThat(literal.getValue(), is("g"));
+
+        def = defs.get("QuantityConversionWeekTest");
+        assertThat(def, hasTypeAndResult(ConvertQuantity.class, "System.Quantity"));
+        convertQuantity = (ConvertQuantity)def.getExpression();
+        assertThat(convertQuantity.getOperand().get(0), instanceOf(Quantity.class));
+        quantity = (Quantity)convertQuantity.getOperand().get(0);
+        assertThat(quantity.getValue(), is(BigDecimal.valueOf(28)));
+        assertThat(quantity.getUnit(), is("days"));
+        assertThat(convertQuantity.getOperand().get(1), instanceOf(Literal.class));
+        literal = (Literal)convertQuantity.getOperand().get(1);
+        assertThat(literal.getValue(), is("wk"));
     }
 
     @Test
