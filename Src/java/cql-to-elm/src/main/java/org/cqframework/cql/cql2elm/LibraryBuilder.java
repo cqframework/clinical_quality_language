@@ -1515,6 +1515,47 @@ public class LibraryBuilder {
         }
     }
 
+    public String ensureUcumUnit(String unit) {
+        switch (unit) {
+            case "year":
+            case "years":
+                return "a";
+            case "month":
+            case "months":
+                return "mo";
+            case "week":
+            case "weeks":
+                return "wk";
+            case "day":
+            case "days":
+                return "d";
+            case "hour":
+            case "hours":
+                return "h";
+            case "minute":
+            case "minutes":
+                return "min";
+            case "second":
+            case "seconds":
+                return "s";
+            case "millisecond":
+            case "milliseconds":
+                return "ms";
+
+            default:
+                if (ucumService != null) {
+                    String message = ucumService.validate(unit);
+                    if (message != null) {
+                        // ERROR:
+                        throw new IllegalArgumentException(message);
+                    }
+                }
+                break;
+        }
+
+        return unit;
+    }
+
     public Quantity createQuantity(BigDecimal value, String unit) {
         validateUnit(unit);
         Quantity result = of.createQuantity().withValue(value).withUnit(unit);

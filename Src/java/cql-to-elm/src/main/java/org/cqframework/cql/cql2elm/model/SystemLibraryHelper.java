@@ -156,6 +156,14 @@ public class SystemLibraryHelper {
         convertsTo = new Operator("ConvertsToRatio", new Signature(systemModel.getAny()), systemModel.getBoolean());
         system.add(convertsTo);
 
+        // CanConvertToQuantity
+        Operator canConvertToQuantity = new Operator("CanConvertQuantity", new Signature(systemModel.getQuantity(), systemModel.getString()), systemModel.getBoolean());
+        system.add(canConvertToQuantity);
+
+        // ConvertToQuantity
+        Operator convertToQuantity = new Operator("ConvertQuantity", new Signature(systemModel.getQuantity(), systemModel.getString()), systemModel.getQuantity());
+        system.add(convertToQuantity);
+
         // Comparison Operators
         // Equal<T : value>(T, T) : Boolean
         //TypeParameter T = new TypeParameter("T", TypeParameter.TypeParameterConstraint.VALUE, null);

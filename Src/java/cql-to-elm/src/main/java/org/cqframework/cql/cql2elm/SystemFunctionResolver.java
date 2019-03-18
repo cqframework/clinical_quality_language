@@ -327,6 +327,12 @@ public class SystemFunctionResolver {
                     return resolveUnary(fun);
                 }
 
+                // Quantity Conversion
+                case "CanConvertQuantity":
+                case "ConvertQuantity": {
+                    return resolveBinary(fun);
+                }
+
                 // Comparison Functions
                 case "Equal":
                 case "NotEqual":

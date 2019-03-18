@@ -1834,20 +1834,32 @@ DATETIME
 
     @Override
     public Object visitConversionExpressionTerm(@NotNull cqlParser.ConversionExpressionTermContext ctx) {
-        TypeSpecifier targetType = parseTypeSpecifier(ctx.typeSpecifier());
-        Expression operand = parseExpression(ctx.expression());
-        if (!DataTypes.equal(operand.getResultType(), targetType.getResultType())) {
-            Conversion conversion = libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false, true);
-            if (conversion == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
-                        operand.getResultType(), targetType.getResultType()));
+        if (ctx.typeSpecifier() != null) {
+            TypeSpecifier targetType = parseTypeSpecifier(ctx.typeSpecifier());
+            Expression operand = parseExpression(ctx.expression());
+            if (!DataTypes.equal(operand.getResultType(), targetType.getResultType())) {
+                Conversion conversion = libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false, true);
+                if (conversion == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
+                            operand.getResultType(), targetType.getResultType()));
+                }
+
+                return libraryBuilder.convertExpression(operand, conversion);
             }
 
-            return libraryBuilder.convertExpression(operand, conversion);
+            return operand;
         }
-
-        return operand;
+        else {
+            String targetUnit = parseString(ctx.unit());
+            targetUnit = libraryBuilder.ensureUcumUnit(targetUnit);
+            Expression operand = parseExpression(ctx.expression());
+            Expression unitOperand = libraryBuilder.createLiteral(targetUnit);
+            track(unitOperand, ctx.unit());
+            ConvertQuantity convertQuantity = of.createConvertQuantity().withOperand(operand, unitOperand);
+            track(convertQuantity, ctx);
+            return libraryBuilder.resolveBinaryCall("System", "ConvertQuantity", convertQuantity);
+        }
     }
 
     @Override
