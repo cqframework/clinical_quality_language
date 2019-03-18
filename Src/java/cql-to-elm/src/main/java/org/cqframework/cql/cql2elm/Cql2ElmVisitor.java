@@ -2785,7 +2785,8 @@ DATETIME
 
         if (ctx.terminology() != null) {
             if (ctx.codePath() != null) {
-                retrieve.setCodeProperty(parseString(ctx.codePath()));
+                List<String> identifiers = (List<String>)visit(ctx.codePath());
+                retrieve.setCodeProperty(String.join(".", identifiers));
             } else if (classType.getPrimaryCodePath() != null) {
                 retrieve.setCodeProperty(classType.getPrimaryCodePath());
             }

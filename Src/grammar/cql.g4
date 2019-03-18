@@ -209,7 +209,7 @@ retrieve
     ;
 
 codePath
-    : identifier
+    : qualifiedIdentifier
     ;
 
 terminology
