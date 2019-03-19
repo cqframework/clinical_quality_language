@@ -690,7 +690,7 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The ConvertsToDate operator returns true if the value of its argument can be converted to a Date value. 
 			
-Fro String values, The operator expects the string to be formatted using the ISO-8601 date representation: 
+For String values, The operator expects the string to be formatted using the ISO-8601 date representation: 
 
 YYYY-MM-DD
 
@@ -710,7 +710,7 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The ToDate operator converts the value of its argument to a Date value. 
 			
-Fro String values, The operator expects the string to be formatted using the ISO-8601 date representation: 
+For String values, The operator expects the string to be formatted using the ISO-8601 date representation: 
 
 YYYY-MM-DD
 
@@ -1049,6 +1049,8 @@ For simple types, this means that equality returns true if and only if the resul
 
 For quantities, this means that the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
+For ratios, this means that the numerator and denominator must be the same, using quantity equality semantics.
+
 For tuple types, this means that equality returns true if and only if the tuples are of the same type, and the values for all elements that have values, by name, are equal.
 
 For list types, this means that equality returns true if and only if the lists contain elements of the same type, have the same number of elements, and for each element in the lists, in order, the elements are equal using equality semantics.
@@ -1066,6 +1068,8 @@ If either argument is null, the result is null.</xs:documentation>
 	<xs:complexType name="Equivalent">
 		<xs:annotation>
 			<xs:documentation>The Equivalent operator returns true if the arguments are the same value, or if they are both null; and false otherwise.
+        
+For ratios, equivalent means that the numerator and denominator represent the same ratio (e.g. 1:100 ~ 10:1000).
 
 For tuple types, this means that two tuple values are equivalent if and only if the tuples are of the same type, and the values for all elements by name are equivalent.
 
