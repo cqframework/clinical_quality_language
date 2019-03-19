@@ -243,7 +243,9 @@ public class SystemFunctionResolver {
                 }
 
                 // Overloaded Functions
-                case "Length": {
+                case "Length":
+                case "Width":
+                case "Size": {
                     return resolveUnary(fun);
                 }
 
