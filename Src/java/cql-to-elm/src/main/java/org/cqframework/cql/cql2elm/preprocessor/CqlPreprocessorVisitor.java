@@ -6,6 +6,9 @@ import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     private LibraryInfo libraryInfo = new LibraryInfo();
     private boolean implicitPatientCreated = false;
@@ -17,7 +20,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
-        libraryInfo.setLibraryName((String)visit(ctx.identifier()));
+        libraryInfo.setLibraryName(String.join(".", (Iterable<String>)visit(ctx.qualifiedIdentifier())));
         if (ctx.versionSpecifier() != null) {
             libraryInfo.setVersion((String)visit(ctx.versionSpecifier()));
         }
@@ -27,13 +30,18 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         IncludeDefinitionInfo includeDefinition = new IncludeDefinitionInfo();
-        includeDefinition.setName((String)visit(ctx.identifier()));
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        includeDefinition.setName(String.join(".", identifiers));
         if (ctx.versionSpecifier() != null) {
             includeDefinition.setVersion((String)visit(ctx.versionSpecifier()));
         }
         if (ctx.localIdentifier() != null) {
-          includeDefinition.setLocalName((String)visit(ctx.localIdentifier()));
-        }        
+            includeDefinition.setLocalName((String)visit(ctx.localIdentifier()));
+        }
+        else if (identifiers.size() > 1) {
+            // If the library name is qualified, use only the unqualified name as the local name
+            includeDefinition.setLocalName(identifiers.get(identifiers.size() - 1));
+        }
         libraryInfo.addIncludeDefinition(includeDefinition);
         return includeDefinition;
     }
@@ -137,5 +145,19 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         }
 
         return text;
+    }
+
+    @Override
+    public Object visitQualifiedIdentifier(@NotNull cqlParser.QualifiedIdentifierContext ctx) {
+        // Return the list of qualified identifiers for resolution by the containing element
+        List<String> identifiers = new ArrayList<>();
+        for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
+            String qualifier = (String)visit(qualifierContext);
+            identifiers.add(qualifier);
+        }
+
+        String identifier = (String)visit(ctx.identifier());
+        identifiers.add(identifier);
+        return identifiers;
     }
 }
