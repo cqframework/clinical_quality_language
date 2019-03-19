@@ -52,7 +52,7 @@ In addition, this property may be a path, including qualifiers and constant inde
 					<xs:annotation>
 						<xs:documentation>The dateProperty attribute optionally specifies which property of the model contains the clinically relevant date for the clinical statement.
 						
-This property is expected to reference a property that is either a Date or DateTime, or an interval of Date or DateTime. In either case, the result set will only include instances where the value of the dateProperty is during the date range. For date/time values, this means the date is both the same or after the beginning of the range, and the same or before the end of the range. For date/time interval values, this means that the entire interval is included in the date range.
+This property is expected to reference a property that is either a Date or DateTime, or an interval of Date or DateTime. In either case, the result set will only include instances where the value of the dateProperty is during the date range. For Date, DateTime, or Time values, this means the date is both the same or after the beginning of the range, and the same or before the end of the range. For Date-, DateTime-, or Time-based interval values, this means that the entire interval is included in the date range.
 
 Instances with no value for the dateProperty will not be included in the result set if a date range is specified.
 
@@ -385,15 +385,13 @@ If either or both arguments are null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="CalculateAge">
 		<xs:annotation>
-			<xs:documentation>Calculates the age in the specified precision of a person born on the given Date or DateTime as of Today or Now.
+			<xs:documentation>Calculates the age in the specified precision of a person born on the given date.
 
 The CalculateAge operator is defined for Date and DateTime.
 
-For the Date overload, the calculation is performed using Today(), and the precision must be one of year, month, week, or day.
+For the Date overload, the calculation is performed using Today(), the precision must be one of year, month, week, or day, and the result is the number of whole calendar periods that have elapsed between the given date and today.
 
-For the DateTime overload, the calculation is performed using Now().
-
-The result of the calculation is always the number of whole calendar periods that have elapsed between the given date/time and today/now.</xs:documentation>
+For the DateTime overload, the calculation is performed using Now(), and the result is the number of whole calendar periods that have elapsed between the given datetime and now.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -403,15 +401,15 @@ The result of the calculation is always the number of whole calendar periods tha
 	</xs:complexType>
 	<xs:complexType name="CalculateAgeAt">
 		<xs:annotation>
-			<xs:documentation>Calculates the age in the specified precision of a person born on the first Date or DateTime as of the second Date or DateTime.
-      
+			<xs:documentation>Calculates the age in the specified precision of a person born on a given date, as of another given date.
+
 The CalculateAgeAt operator has two signatures:
   Date, Date
   DateTime, DateTime
-
-For the Date overload, precision must be one of year, month, week, or day.
-
-The result of the calculation is the number of whole calendar periods that have elapsed between the first date/time and the second.</xs:documentation>
+      
+For the Date overload, precision must be one of year, month, week, or day, and the result is the number of whole calendar periods that have elapsed between the first date and the second date.
+      
+For the DateTime overload, the result is the number of whole calendar periods that have elapsed between the first datetime and the second datetime.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
