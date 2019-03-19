@@ -1480,7 +1480,9 @@ If any argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Combine operator combines a list of strings, optionally separating each string with the given separator.
 
-If either argument is null, or any element in the source list of strings is null, the result is null.</xs:documentation>
+If either argument is null, or the source list is empty, the result is null.
+
+For consistency with aggregate operator behavior, null elements in the input list are ignored.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="OperatorExpression">
