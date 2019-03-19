@@ -732,15 +732,15 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The ConvertsToDateTime operator returns true if the value of its argument can be converted to a DateTime value. 
 				
-For String values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
+For String values, the operator expects the string to be formatted using the ISO-8601 datetime representation: 
 
 YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 
-In addition, the string must be interpretable as a valid date/time value.
+In addition, the string must be interpretable as a valid DateTime value.
 
-If the input string is not formatted correctly, or does not represent a valid date/time value, the result is false.
+If the input string is not formatted correctly, or does not represent a valid DateTime value, the result is false.
 
-As with date/time literals, date/time values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
+As with Date and Time literals, DateTime values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -752,15 +752,15 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The ToDateTime operator converts the value of its argument to a DateTime value. 
 				
-For String values, the operator expects the string to be formatted using the ISO-8601 date/time representation: 
+For String values, the operator expects the string to be formatted using the ISO-8601 datetime representation: 
 
 YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 
-In addition, the string must be interpretable as a valid date/time value.
+In addition, the string must be interpretable as a valid DateTime value.
 
-If the input string is not formatted correctly, or does not represent a valid date/time value, the result is null.
+If the input string is not formatted correctly, or does not represent a valid DateTime value, the result is null.
 
-As with date/time literals, date/time values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
+As with Date and Time literals, DateTime values may be specified to any precision. If no timezone offset is supplied, the timezone offset of the evaluation request timestamp is assumed.
 
 For Date values, the result is a DateTime with all time components set to 0, except the timezone offset, which is set to the timezone offset of the evaluation request timestamp.
 
@@ -1057,7 +1057,7 @@ For list types, this means that equality returns true if and only if the lists c
 
 For interval types, equality returns true if and only if the intervals are over the same point type, and they have the same value for the starting and ending points of the interval as determined by the Start and End operators.
 
-For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the values are different, the comparison stops and the result is false. If one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true. For the purposes of comparison, seconds and milliseconds are considered a single precision using a decimal, with decimal equality semantics.
+For Date, Time, and DateTime values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the values are different, the comparison stops and the result is false. If one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true. For the purposes of comparison, seconds and milliseconds are considered a single precision using a decimal, with decimal equality semantics.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1077,7 +1077,7 @@ For list types, this means that two lists are equivalent if and only if the list
 
 For interval types, this means that two intervals are equivalent if and only if the intervals are over the same point type, and the starting and ending points of the intervals as determined by the Start and End operators are equivalent.
 
-For date/time values, the comparison is performed in the same way as it is for equality, except that if one input has a value for a given precision and the other does not, the comparison stops and the result is false, rather than null. As with equality, the second and millisecond precisions are considered a single precision using a decimal, with decimal equivalence semantics.
+For Date, Time, and DateTime values, the comparison is performed in the same way as it is for equality, except that if one input has a value for a given precision and the other does not, the comparison stops and the result is false, rather than null. As with equality, the second and millisecond precisions are considered a single precision using a decimal, with decimal equivalence semantics.
 
 For Code values, equivalence is defined based on the code and system elements only. The display and version elements are ignored for the purposes of determining Code equivalence.
 
@@ -1105,7 +1105,7 @@ The NotEqual operator is a shorthand for invocation of logical negation of the E
 			
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
-For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is false.
+For Date, Time, and DateTime values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is false.
 
 If either argument is null, the result is null.
 
@@ -1121,7 +1121,7 @@ The Less operator is defined for the Integer, Decimal, String, Date, DateTime, T
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
-For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is false.
+For Date, Time, and DateTime values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is false.
 
 If either argument is null, the result is null.
 
@@ -1137,7 +1137,7 @@ The Greater operator is defined for the Integer, Decimal, String, Date, DateTime
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
-For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true.
+For Date, Time, and DateTime values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true.
 
 If either argument is null, the result is null.
 
@@ -1153,7 +1153,7 @@ The LessOrEqual operator is defined for the Integer, Decimal, String, Date, Date
 
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
-For date/time values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true.
+For Date, Time, and DateTime values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true.
 
 If either argument is null, the result is null.
 
@@ -1172,7 +1172,7 @@ When adding quantities, the dimensions of each quantity must be the same, but no
 			
 The Add operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be added to a Date, DateTime or Time using this operator.
 
-For Date, DateTime, and Time values, the operator returns the value of the given date/time, incremented by the time-valued quantity, respecting variable length periods for calendar years and months.
+For Date, DateTime, and Time values, the operator returns the value of the first argument, incremented by the time-valued quantity, respecting variable length periods for calendar years and months.
 
 For Date values, the quantity unit must be one of years, months, weeks, or days.
 
@@ -1180,9 +1180,9 @@ For DateTime values, the quantity unit must be one of years, months, weeks, days
 
 For Time values, the quantity unit must be one of hours, minutes, seconds, or milliseconds.
 
-Note that as with any date/time operations, temporal units may be specified with either singular, plural, or UCUM units.
+Note that as with any Date, Time, or DateTime operations, temporal units may be specified with either singular, plural, or UCUM units.
 
-The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
+The operation is performed by converting the time-based quantity to the highest specified granularity in the first argument (truncating any resulting decimal portion) and then adding it to the first argument.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1198,7 +1198,7 @@ When subtracting quantities, the dimensions of each quantity must be the same, b
 
 The Subtract operator is defined for the Integer, Decimal, and Quantity types. In addition, a time-valued Quantity can be subtracted from a Date, DateTime, or Time using this operator.
 
-For Date, DateTime, Time values, the operator returns the value of the given date/time, decremented by the time-valued quantity, respecting variable length periods for calendar years and months.
+For Date, DateTime, Time values, the operator returns the value of the first argument, decremented by the time-valued quantity, respecting variable length periods for calendar years and months.
 
 For Date values, the quantity unit must be one of years, months, weeks, or days.
 
@@ -1206,7 +1206,7 @@ For DateTime values, the quantity unit must be one of years, months, weeks, days
 
 For Time values, the quantity unit must be one of hours, minutes, seconds, or milliseconds.
 
-The operation is performed by converting the time-based quantity to the highest specified granularity in the date/time value (truncating any resulting decimal portion) and then adding it to the date/time value.
+The operation is performed by converting the time-based quantity to the highest specified granularity in the first argument (truncating any resulting decimal portion) and then adding it to the first argument.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1827,7 +1827,7 @@ At least one component must be specified, and no component may be specified at a
 	</xs:complexType>
 	<xs:complexType name="DateTime">
 		<xs:annotation>
-			<xs:documentation>The DateTime operator constructs a date/time value from the given components.
+			<xs:documentation>The DateTime operator constructs a DateTime value from the given components.
 			
 At least one component other than timezoneOffset must be specified, and no component may be specified at a precision below an unspecified precision. For example, hour may be null, but if it is, minute, second, and millisecond must all be null as well.
 
@@ -1871,7 +1871,7 @@ At least one component must be specified, and no component may be specified at a
 			
 For the Interval overloads, the SameAs operator returns true if the intervals start and end at the same value, using the semantics described in the Start and End operator to determine interval boundaries.
 
-The SameAs operator compares two date/time values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
+The SameAs operator compares two Date, Time, or DateTime values to the specified precision for equality. Individual component values are compared starting from the year component down to the specified precision. If all values are specified and have the same value for each component, then the result is true. If a compared component is specified in both dates, but the values are not the same, then the result is false. Otherwise the result is null, as there is not enough information to make a determination. 
 			
 If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
@@ -1883,7 +1883,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date/time calculations, comparisons are performed respecting the timezone offset.
+As with all date and time calculations, comparisons are performed respecting the timezone offset.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1899,7 +1899,7 @@ If either argument is null, the result is null.</xs:documentation>
 
 For the Interval overload, the SameOrBefore operator returns true if the first interval ends on or before the second one starts. In other words, if the ending point of the first interval is less than or equal to the starting point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-The SameOrBefore operator compares two date/time values to the specified precision to determine whether the first argument is the same or before the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is true.
+The SameOrBefore operator compares two Date, DateTime, or Time values to the specified precision to determine whether the first argument is the same or before the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is true.
 
 If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
@@ -1911,7 +1911,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date/time calculations, comparisons are performed respecting the timezone offset.
+As with all date and time calculations, comparisons are performed respecting the timezone offset.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -1927,7 +1927,7 @@ If either argument is null, the result is null.</xs:documentation>
 			
 For the Interval overload, the SameOrAfter operator returns true if the first interval starts on or after the second one ends. In other words, if the starting point of the first interval is greater than or equal to the ending point of the second interval, using the semantics described in the Start and End operators to determine interval boundaries.
 
-For the Date, DateTime, and Time overloads, this operator compares two date/time values to the specified precision to determine whether the first argument is the same or after the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is true.
+For the Date, DateTime, and Time overloads, this operator compares two Date, DateTime, or Time values to the specified precision to determine whether the first argument is the same or after the second argument. The comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if either input has no value for the precision, the comparison stops and the result is null; if the specified precision has been reached, the comparison stops and the result is true.
 
 If no precision is specified, the comparison is performed beginning with years (or hours for time values) and proceeding to the finest precision specified in either input.
 
@@ -1939,7 +1939,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date/time calculations, comparisons are performed respecting the timezone offset.
+As with all date and time calculations, comparisons are performed respecting the timezone offset.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2028,7 +2028,7 @@ There are two overloads of this operator:
 	
 For the List, T overload, this operator returns true if the given element is in the list, using equality semantics.
 
-For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, T overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2049,7 +2049,7 @@ There are two overloads of this operator:
 	
 For the List, T overload, this operator returns true if the given element is in the list, and it is not the only element in the list, using equality semantics.
 
-For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2070,7 +2070,7 @@ There are two overloads of this operator:
 	
 For the T, List overload, this operator returns true if the given element is in the given list, using equality semantics.
 
-For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the T, Interval overload, this operator returns true if the given point is greater than or equal to the starting point of the interval, and less than or equal to the ending point of the interval. For open interval boundaries, exclusive comparison operators are used. For closed interval boundaries, if the interval boundary is null, the result of the boundary comparison is considered true. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2091,7 +2091,7 @@ There are two overloads of this operator:
 	
 For the T, List overload, this operator returns if the given element is in the given list, and it is not the only element in the list, using equality semantics.
 
-For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2112,7 +2112,7 @@ There are two overloads of this operator:
 
 For the List, List overload, this operator returns true if the first operand includes every element of the second operand, using equality semantics.
 
-For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if starting point of the first interval is less than or equal to the starting point of the second interval, and the ending point of the first interval is greater than or equal to the ending point of the second interval. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
@@ -2135,7 +2135,7 @@ There are two overloads of this operator:
 	
 For the List, List overload, this operator returns true if every element in the first list is included in the second list, using equality semantics.
 
-For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the starting point of the first interval is greater than or equal to the starting point of the second interval, and the ending point of the first interval is less than or equal to the ending point of the second interval. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
@@ -2158,7 +2158,7 @@ There are two overloads of this operator:
 	
 For the List, List overload, this operator returns true if the first list includes every element of the second list, using equality semantics, and the first list is strictly larger.
 
-For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the first interval includes the second interval, and the intervals are not equal. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
@@ -2181,7 +2181,7 @@ There are two overloads of this operator:
 
 For the List, List overload, this operator returns true if every element of the first list is included in the second list, using equality semantics, and the first list is strictly smaller.
 
-For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+For the Interval, Interval overload, this operator returns true if the first interval is included in the second interval, and the intervals are not equal. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
@@ -2212,7 +2212,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date/time calculations, comparisons are performed respecting the timezone offset.
+As with all date and time calculations, comparisons are performed respecting the timezone offset.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2241,7 +2241,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date/time calculations, comparisons are performed respecting the timezone offset.
+As with all date and time calculations, comparisons are performed respecting the timezone offset.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2258,7 +2258,7 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
  
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2275,7 +2275,7 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
  
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2292,7 +2292,7 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
  
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2309,7 +2309,7 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
  
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2326,7 +2326,7 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2343,7 +2343,7 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
  
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2360,7 +2360,7 @@ If either argument is null, the result is null.</xs:documentation>
 
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
  
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2377,7 +2377,7 @@ If either argument is null, the result is null.</xs:documentation>
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
-If precision is specified and the point type is a date/time type, comparisons used in the operation are performed at the specified precision.
+If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
  
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2392,9 +2392,9 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Collapse operator returns the unique set of intervals that completely covers the ranges present in the given list of intervals.
 			
-The operation is performed by combining successive intervals in the input that either overlap or meet, using the semantics defined for the Overlaps and Meets operators. Note that because those operators are themselves defined in terms of interval successor and predecessor operators, sets of date/time-based intervals that are only defined to a particular precision will calculate meets and overlaps at that precision. For example, a list of DateTime-based intervals where the boundaries are all specified to the hour will collapse at the hour precision, unless the collapse precision is overridden with the per argument.
+The operation is performed by combining successive intervals in the input that either overlap or meet, using the semantics defined for the Overlaps and Meets operators. Note that because those operators are themselves defined in terms of interval successor and predecessor operators, sets of Date-, DateTime-, or Time-based intervals that are only defined to a particular precision will calculate meets and overlaps at that precision. For example, a list of DateTime-based intervals where the boundaries are all specified to the hour will collapse at the hour precision, unless the collapse precision is overridden with the per argument.
 
-The per argument determines the precision at which the collapse is computed and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
+The per argument determines the precision at which the collapse is computed and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for Date-, DateTime-, or Time-valued intervals, this means a temporal duration.
 
 If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. an interval with the same starting and ending boundary).
 
@@ -2410,7 +2410,7 @@ If the source argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Expand operator returns the set of intervals of size per for all the ranges present in the given list of intervals.
 				
-The per argument determines the size of the resulting intervals and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
+The per argument determines the size of the resulting intervals and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for Date-, DateTime-, or Time-valued intervals, this means a temporal duration.
 
 If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. an interval with the same starting and eding boundary).
 
