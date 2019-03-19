@@ -29,7 +29,7 @@ library
  */
 
 libraryDefinition
-    : 'library' identifier ('version' versionSpecifier)?
+    : 'library' qualifiedIdentifier ('version' versionSpecifier)?
     ;
 
 usingDefinition
@@ -37,7 +37,7 @@ usingDefinition
     ;
 
 includeDefinition
-    : 'include' identifier ('version' versionSpecifier)? ('called' localIdentifier)?
+    : 'include' qualifiedIdentifier ('version' versionSpecifier)? ('called' localIdentifier)?
     ;
 
 localIdentifier

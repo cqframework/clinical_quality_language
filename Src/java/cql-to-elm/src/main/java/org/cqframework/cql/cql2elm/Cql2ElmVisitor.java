@@ -339,7 +339,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public VersionedIdentifier visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
         VersionedIdentifier vid = of.createVersionedIdentifier()
-                .withId(parseString(ctx.identifier()))
+                .withId(String.join(".", (Iterable<String>)visit(ctx.qualifiedIdentifier())))
                 .withVersion(parseString(ctx.versionSpecifier()));
         libraryBuilder.setLibraryIdentifier(vid);
 
@@ -373,9 +373,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
-        String identifier = parseString(ctx.identifier());
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        String identifier = String.join(".", identifiers);
+        String unqualifiedIdentifier = identifiers.get(identifiers.size() - 1);
         IncludeDef library = of.createIncludeDef()
-                .withLocalIdentifier(ctx.localIdentifier() == null ? identifier : parseString(ctx.localIdentifier()))
+                .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
                 .withPath(identifier)
                 .withVersion(parseString(ctx.versionSpecifier()));
 

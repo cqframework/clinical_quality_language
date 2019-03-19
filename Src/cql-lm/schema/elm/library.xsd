@@ -6,10 +6,12 @@
 	<xs:include schemaLocation="clinicalexpression.xsd"/>
 	<xs:complexType name="VersionedIdentifier">
 		<xs:annotation>
-			<xs:documentation>VersionedIdentifier is composed of two parts: (1) an identifier which
-        identifies the set of all versions of a given resource. (2) the actual version of the
-        instance of interest in this set. The VersionedIdentifier therefore points to an individual
-        'versioned' instance of a resource such as the third version of a library.
+			<xs:documentation>VersionedIdentifier is composed of three parts: (1) an optional system, or
+        namespace, which provides a globally unique, stable scope for the identifier, 
+        (2) an identifier which identifies the set of all versions of a given resource, and 
+        (3) the actual version of the instance of interest in this set. The VersionedIdentifier 
+        therefore points to an individual 'versioned' instance of a resource such as the third
+        version of a library.
       </xs:documentation>
 		</xs:annotation>
 		<xs:attribute name="id" type="xs:string"/>
