@@ -1950,7 +1950,7 @@ If either argument is null, the result is null.</xs:documentation>
 	<!-- NotEqual (already defined) -->
 	<xs:complexType name="PointFrom">
 		<xs:annotation>
-			<xs:documentation>The PointFrom expression extracts the single point from the source interval. The source interval must be a unit interval (meaning an interval of width one (1)), otherwise, a run-time error is thrown. If the source interval is null, the result is null.</xs:documentation>
+			<xs:documentation>The PointFrom expression extracts the single point from the source interval. The source interval must be a unit interval (meaning an interval with the same starting and ending boundary), otherwise, a run-time error is thrown. If the source interval is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
@@ -1958,7 +1958,7 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Width">
 		<xs:annotation>
-			<xs:documentation>The Width operator returns the width of an interval. The result of this operator is equivalent to invoking: End(i) - Start(i) + point-size.
+			<xs:documentation>The Width operator returns the width of an interval. The result of this operator is equivalent to invoking: End(i) - Start(i)
 			
 Note that this operator is not defined for intervals of type Date, DateTime, and Time.
 
@@ -1968,6 +1968,21 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 		<!-- Width(i) = End(i) - Start(i) -->
+	</xs:complexType>
+	<xs:complexType name="Size">
+		<xs:annotation>
+			<xs:documentation>The Size operator returns the size of an interval. 
+
+The result of this operator is equivalent to invoking: End(i) - Start(i) + point-size, where the point-size for the point type of the interval is determined by: Successor(Minimum_T) - Minimum_T.
+			
+Note that this operator is not defined for intervals of type Date, DateTime, and Time.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+		<!-- Size(i) = End(i) - Start(i) + point-size -->
 	</xs:complexType>
 	<xs:complexType name="Start">
 		<xs:annotation>
@@ -2377,11 +2392,11 @@ The operation is performed by combining successive intervals in the input that e
 
 The per argument determines the precision at which the collapse is computed and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
 
-If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. the interval that has a width equal to the result of the successor function for the point type).
+If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. an interval with the same starting and ending boundary).
 
 If the list of intervals is empty, the result is empty. If the list of intervals contains a single interval, the result is a list with that interval. If the list of intervals contains nulls, they will be excluded from the resulting list.
 
-If the argument is null, the result is null.</xs:documentation>
+If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -2389,17 +2404,17 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Expand">
 		<xs:annotation>
-			<xs:documentation>The Expand operator returns the set of intervals of width per for all the ranges present in the given list of intervals.
+			<xs:documentation>The Expand operator returns the set of intervals of size per for all the ranges present in the given list of intervals.
 				
 The per argument determines the size of the resulting intervals and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for date/time-valued intervals, this means a temporal duration.
 
-If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. the interval that has a width equal to the result of the successor function for the point type).
+If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. an interval with the same starting and eding boundary).
 
 Note that if the values in the intervals have a higher precision than the per expression, the higher precision values will be truncated to the granularity specified by the per expression.
 
 If the list of intervals is empty, the result is empty. If the list of intervals contains nulls, they will be excluded from the resulting list.
 
-If the argument is null, the result is null.</xs:documentation>
+If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>

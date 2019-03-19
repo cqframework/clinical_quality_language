@@ -448,6 +448,8 @@ public class SystemLibraryHelper {
         system.add(new GenericOperator("SameOrAfter", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
         // SameOrBefore<T>(interval<T>, interval<T>) : Boolean
         system.add(new GenericOperator("SameOrBefore", new Signature(new IntervalType(new TypeParameter("T")), new IntervalType(new TypeParameter("T"))), systemModel.getBoolean(), new TypeParameter("T")));
+        // Size<T>(interval<T>) : T
+        system.add(new GenericOperator("Size", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Start<T>(interval<T>) : T
         system.add(new GenericOperator("Start", new Signature(new IntervalType(new TypeParameter("T"))), new TypeParameter("T"), new TypeParameter("T")));
         // Starts<T>(interval<T>, interval<T>) : Boolean
