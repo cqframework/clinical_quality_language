@@ -1068,7 +1068,9 @@ If either argument is null, the result is null.</xs:documentation>
 	<xs:complexType name="Equivalent">
 		<xs:annotation>
 			<xs:documentation>The Equivalent operator returns true if the arguments are the same value, or if they are both null; and false otherwise.
-        
+
+For string values, equivalence returns true if the strings are the same value while ignoring case and locale, and normalizing whitespace. Normalizing whitespace means that all whitespace characters are treated as equivalent, with whitespace characters as defined in the whitespace lexical category.
+
 For ratios, equivalent means that the numerator and denominator represent the same ratio (e.g. 1:100 ~ 10:1000).
 
 For tuple types, this means that two tuple values are equivalent if and only if the tuples are of the same type, and the values for all elements by name are equivalent.
