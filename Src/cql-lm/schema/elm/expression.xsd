@@ -1665,7 +1665,7 @@ If either argument is null, the result is null.</xs:documentation>
 		   
 If either argument is null, the result is null.
 
-Platforms will typically use native regular expression implementations. These are typically fairly similar, but there will always be small differences. As such, CQL does not prescribe a particular dialect, but recommends the use of the dialect defined as part of XML Schema 1.1 as the dialect most likely to be broadly supported and understood.</xs:documentation>
+Platforms will typically use native regular expression implementations. These are typically fairly similar, but there will always be small differences. As such, CQL does not prescribe a particular dialect, but recommends the use of the [PCRE](http://www.pcre.org) dialect.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1677,7 +1677,7 @@ Platforms will typically use native regular expression implementations. These ar
 		   
 If any argument is null, the result is null.
 
-Platforms will typically use native regular expression implementations. These are typically fairly similar, but there will always be small differences. As such, CQL does not prescribe a particular dialect, but recommends the use of the dialect defined as part of XML Schema 1.1 as the dialect most likely to be broadly supported and understood.</xs:documentation>
+Platforms will typically use native regular expression implementations. These are typically fairly similar, but there will always be small differences. As such, CQL does not prescribe a particular dialect, but recommends the use of the [PCRE](http://www.pcre.org) dialect.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="TernaryExpression"/>
