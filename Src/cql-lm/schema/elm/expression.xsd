@@ -2669,7 +2669,7 @@ If the element argument evaluates to null for some item in the source list, the 
 		<xs:annotation>
 			<xs:documentation>The Distinct operator takes a list of elements and returns a list containing only the unique elements within the input. For example, given the list of integers { 1, 1, 1, 2, 2, 3, 4, 4 }, the result of Distinct would be { 1, 2, 3, 4 }.
 			
-The operator uses equality comparison semantics as defined in the Equal operator.
+The operator uses equality comparison semantics as defined in the Equal operator. Because nulls compare unknown, this means that multiple nulls in the input list will be preserved in the output.
 
 If the source argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
