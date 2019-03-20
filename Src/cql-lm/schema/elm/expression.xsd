@@ -1465,7 +1465,9 @@ For DateTime, MinValue returns the minimum representable DateTime value, DateTim
 
 For Time, MinValue returns the minimum representable Time value, Time(0, 0, 0, 0).
 
-For any other type, attempting to invoke MinValue results in an error.</xs:documentation>
+For any other type, attempting to invoke MinValue results in an error.
+
+Note that implementations may choose to represent the minimum DateTime value using a constant offset such as UTC.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -1489,7 +1491,9 @@ For DateTime, MaxValue returns the maximum representable DateTime value, DateTim
 
 For Time, MaxValue returns the maximum representable Time value, Time(23, 59, 59, 999).
 
-For any other type, attempting to invoke MaxValue results in an error.</xs:documentation>
+For any other type, attempting to invoke MaxValue results in an error.
+
+Note that implementations may choose to represent the maximum DateTime value using a constant offset such as UTC.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
