@@ -1188,7 +1188,9 @@ Note that as with any Date, Time, or DateTime operations, temporal units may be 
 
 The operation is performed by converting the time-based quantity to the highest specified granularity in the first argument (truncating any resulting decimal portion) and then adding it to the first argument.
 
-If either argument is null, the result is null.</xs:documentation>
+If either argument is null, the result is null.
+
+If the result of the addition cannot be represented (i.e. arithmetic overflow), the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1212,7 +1214,9 @@ For Time values, the quantity unit must be one of hours, minutes, seconds, or mi
 
 The operation is performed by converting the time-based quantity to the highest specified granularity in the first argument (truncating any resulting decimal portion) and then adding it to the first argument.
 
-If either argument is null, the result is null.</xs:documentation>
+If either argument is null, the result is null.
+
+If the result of the operation cannot be represented, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1225,6 +1229,8 @@ If either argument is null, the result is null.</xs:documentation>
 For multiplication operations involving quantities, the resulting quantity will have the appropriate unit.
 
 If either argument is null, the result is null.
+
+If the result of the operation cannot be represented, the result is null.
 
 The Multiply operator is defined for the Integer, Decimal and Quantity types.</xs:documentation>
 		</xs:annotation>
@@ -1240,6 +1246,8 @@ For division operations involving quantities, the resulting quantity will have t
 
 If either argument is null, the result is null.
 
+If the result of the division cannot be represented, or the right argument is 0, the result is null.
+
 The Divide operator is defined for the Decimal and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1252,6 +1260,8 @@ The Divide operator is defined for the Decimal and Quantity types.</xs:documenta
 
 If either argument is null, the result is null.
 
+If the result of the operation cannot be represented, or the right argument is 0, the result is null.
+
 The TruncatedDivide operator is defined for the Integer and Decimal types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1263,6 +1273,8 @@ The TruncatedDivide operator is defined for the Integer and Decimal types.</xs:d
 			<xs:documentation>The Modulo operator computes the remainder of the division of its arguments.
 
 If either argument is null, the result is null.
+
+If the result of the modulo cannot be represented, or the right argument is 0, the result is null.
 
 The Modulo operator is defined for the Integer and Decimal types.</xs:documentation>
 		</xs:annotation>
@@ -1308,6 +1320,8 @@ When taking the absolute value of a quantity, the unit is unchanged.
 
 If the argument is null, the result is null.
 
+If the result of taking the absolute value of the argument cannot be represented (e.g. Abs(minimum Integer)), the result is null.
+
 The Abs operator is defined for the Integer, Decimal, and Quantity types.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1321,6 +1335,8 @@ The Abs operator is defined for the Integer, Decimal, and Quantity types.</xs:do
 When negating quantities, the unit is unchanged.
 
 If the argument is null, the result is null.
+
+If the result of negating the argument cannot be represented (e.g. -(minimum Integer)), the result is null.
 
 The Negate operator is defined for the Integer, Decimal, and Quantity types.</xs:documentation>
 		</xs:annotation>
@@ -1349,7 +1365,9 @@ Precision determines the decimal place at which the rounding will occur. If prec
 		<xs:annotation>
 			<xs:documentation>The Ln operator computes the natural logarithm of its argument.
 
-If the argument is null, the result is null.</xs:documentation>
+If the argument is null, the result is null.
+
+If the result of the operation cannot be represented, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
@@ -1359,7 +1377,9 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Exp operator returns e raised to the given power.
 
-If the argument is null, the result is null.</xs:documentation>
+If the argument is null, the result is null.
+
+If the result of the operation cannot be represented, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
@@ -1369,7 +1389,9 @@ If the argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Log operator computes the logarithm of its first argument, using the second argument as the base.
 
-If either argument is null, the result is null.</xs:documentation>
+If either argument is null, the result is null.
+
+If the result of the operation cannot be represented, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1379,7 +1401,9 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Power operator raises the first argument to the power given by the second argument.
 
-If either argument is null, the result is null.</xs:documentation>
+If either argument is null, the result is null.
+
+If the result of the operation cannot be represented, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1397,7 +1421,9 @@ For Decimal, Successor is equivalent to adding the minimum precision value for t
 
 For Date, DateTime, and Time values, Successor is equivalent to adding a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Successor is equivalent to adding 1 millisecond; if the DateTime is specified to the second, Successor is equivalent to adding one second, etc.
 
-If the argument is null, the result is null.</xs:documentation>
+If the argument is null, the result is null.
+
+If the result of the operation cannot be represented, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
@@ -1415,7 +1441,9 @@ For Decimal, Predecessor is equivalent to subtracting the minimum precision valu
 
 For Date, DateTime, and Time values, Predecessor is equivalent to subtracting a time-unit quantity for the lowest specified precision of the value. For example, if the DateTime is fully specified, Predecessor is equivalent to subtracting 1 millisecond; if the DateTime is specified to the second, Predecessor is equivalent to subtracting one second, etc.
 
-If the argument is null, the result is null.</xs:documentation>
+If the argument is null, the result is null.
+
+If the result of the operation cannot be represented, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression"/>
