@@ -2649,6 +2649,8 @@ If the argument is null, the result is null.</xs:documentation>
 	<xs:complexType name="Sort">
 		<xs:annotation>
 			<xs:documentation>The Sort operator returns a list with all the elements in source, sorted as described by the by element.
+
+When the sort elements do not provide a unique ordering (i.e. there is a possibility of duplicate sort values in the result), the order of duplicates is unspecified.
 			
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
