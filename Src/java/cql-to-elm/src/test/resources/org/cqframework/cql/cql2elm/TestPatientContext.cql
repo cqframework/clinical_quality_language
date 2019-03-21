@@ -6,6 +6,6 @@ context Patient
 
 define Patient: true
 
-context Population
+context Unspecified
 
 define Patients: Patient

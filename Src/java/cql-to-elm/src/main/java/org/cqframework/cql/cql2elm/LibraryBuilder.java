@@ -237,6 +237,38 @@ public class LibraryBuilder {
         return result;
     }
 
+    public ModelContext resolveContextName(String modelName, String contextName) {
+        // Attempt to resolve as a label first
+        ModelContext result = null;
+
+        if (modelName == null || modelName.equals("")) {
+            // Attempt to resolve in the default model if one is available
+            if (defaultModel != null) {
+                ModelContext modelResult = defaultModel.resolveContextName(contextName);
+                if (modelResult != null) {
+                    return modelResult;
+                }
+            }
+
+            // Otherwise, resolve across all models and throw for ambiguous resolution
+            for (Model model : models.values()) {
+                ModelContext modelResult = model.resolveContextName(contextName);
+                if (modelResult != null) {
+                    if (result != null) {
+                        throw new IllegalArgumentException(String.format("Context name %s is ambiguous between %s and %s.",
+                                contextName, result.getName(), modelResult.getName()));
+                    }
+
+                    result = modelResult;
+                }
+            }
+        } else {
+            result = getModel(modelName).resolveContextName(contextName);
+        }
+
+        return result;
+    }
+
     public DataType resolveTypeName(String typeName) {
         return resolveTypeName(null, typeName);
     }
@@ -2155,18 +2187,18 @@ public class LibraryBuilder {
             return expressionDef.getResultType();
         }
 
-        // If the current expression context is patient, a reference to a population context expression will indicate a full
+        // If the current expression context is specific, a reference to an unspecified context expression will indicate a full
         // evaluation of the population context expression, and the result type is the same.
-        if (inPatientContext()) {
+        if (inSpecificContext()) {
             return expressionDef.getResultType();
         }
 
-        // If the current expression context is population, a reference to a patient context expression will need to be
-        // performed for every patient in the population, so the result type is promoted to a list (if it is not already).
-        if (inPopulationContext()) {
+        // If the current expression context is unspecified, a reference to a specific context expression will need to be
+        // performed for every context in the system, so the result type is promoted to a list (if it is not already).
+        if (inUnspecifiedContext()) {
             // If we are in the source clause of a query, indicate that the source references patient context
             if (inQueryContext() && getScope().getQueries().peek().inSourceClause()) {
-                getScope().getQueries().peek().referencePatientContext();
+                getScope().getQueries().peek().referenceSpecificContext();
             }
 
             DataType resultType = expressionDef.getResultType();
@@ -2290,12 +2322,12 @@ public class LibraryBuilder {
         return expressionContext.peek();
     }
 
-    public boolean inPatientContext() {
-        return currentExpressionContext().equals("Patient");
+    public boolean inSpecificContext() {
+        return !currentExpressionContext().equals("Unspecified");
     }
 
-    public boolean inPopulationContext() {
-        return currentExpressionContext().equals("Population");
+    public boolean inUnspecifiedContext() {
+        return currentExpressionContext().equals("Unspecified");
     }
 
     public boolean inQueryContext() {

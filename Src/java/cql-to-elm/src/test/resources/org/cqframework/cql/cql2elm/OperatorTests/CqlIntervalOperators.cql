@@ -1,6 +1,6 @@
 library CqlIntervalOperatorsTest version '1'
 
-context Population
+context Unspecified
 
 //After
 //define TestAfterNull: null after IntegerIntervalTest // Could use the upcast, but do we really need to support this construct?

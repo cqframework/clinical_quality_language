@@ -5,6 +5,50 @@
 			<xs:documentation>The modelInfo element defines metadata associated with a particular model to allow it to be used by CQL.</xs:documentation>
 		</xs:annotation>
 	</xs:element>
+	<xs:complexType name="ContextInfo">
+		<xs:annotation>
+			<xs:documentation>Defines an available context type for the model.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="contextType" type="NamedTypeSpecifier" minOccurs="0" maxOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Specifies the type for the context.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="keyElement" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specifies the key elements, in order, of the context type that form the reference key for the context. The elements taken together must form a unique identifier for instances of the context.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="birthDateElement" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Specifies the name of the birthDateElement of the context type.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the name of the context. This is the name that will be referenced by context statements within CQL.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RelationshipInfo">
+		<xs:annotation>
+			<xs:documentation>Defines the relationship of a class to the context.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="relatedKeyElement" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>Specifies the related key elements, in order, of the type that contain the reference to the context. There must be the same number of elements, and in the same order, as the target context.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="context" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the target context of the relationship.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
 	<xs:complexType name="ModelInfo">
 		<xs:annotation>
 			<xs:documentation>The ModelInfo type defines the metadata associated with a particular model to enable it to be used by the CQL translator. Note that none of the information specified here is required, it just enables some convenient shorthands within the language.</xs:documentation>
@@ -13,6 +57,7 @@
 			<xs:element name="requiredModelInfo" type="ModelSpecifier" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="typeInfo" type="TypeInfo" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="conversionInfo" type="ConversionInfo" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="contextInfo" type="ContextInfo" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required">
 			<xs:annotation>
@@ -41,17 +86,17 @@
 		</xs:attribute>
 		<xs:attribute name="patientClassName" type="xs:string" use="optional">
 			<xs:annotation>
-				<xs:documentation>The patientClassName attribute specifies the name of the Patient class within the model.</xs:documentation>
+				<xs:documentation>DEPRECATED: The patientClassName attribute specifies the name of the Patient class within the model.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="patientClassIdentifier" type="xs:string" use="optional">
 			<xs:annotation>
-				<xs:documentation>The patientClassIdentifier attribute specifies a unique name for the Patient class that may be independent of the name. In FHIR, this corresponds to the Patient profile identifier.</xs:documentation>
+				<xs:documentation>DEPRECATED: The patientClassIdentifier attribute specifies a unique name for the Patient class that may be independent of the name. In FHIR, this corresponds to the Patient profile identifier.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="patientBirthDatePropertyName" type="xs:string" use="optional">
 			<xs:annotation>
-				<xs:documentation>The patientBirthDatePropertyName attribute specifies the name of the birthdate property on the Patient model.</xs:documentation>
+				<xs:documentation>DEPRECATED: The patientBirthDatePropertyName attribute specifies the name of the birthdate property on the Patient model.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 		<xs:attribute name="caseSensitive" type="xs:boolean" use="optional">
@@ -62,6 +107,11 @@
 		<xs:attribute name="strictRetrieveTyping" type="xs:boolean" use="optional">
 			<xs:annotation>
 				<xs:documentation>The strictRetrieveTyping attribute indicates whether or not retrieve expressions against the model should be semantically validated. If this attribute is not present or false, code and date range filters within the retrieve are not type validated, allowing the data access layer to perform late binding of content within the retrieve. If the attribute is true, code and date range filters within the retrieve are type validated.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="defaultContext" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the default context to be used by CQL expressions for this model.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -96,6 +146,7 @@
 			<xs:extension base="TypeInfo">
 				<xs:sequence>
 					<xs:element name="element" type="ClassInfoElement" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="contextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute name="namespace" type="xs:string" use="optional">
 					<xs:annotation>
@@ -125,6 +176,11 @@
 				<xs:attribute name="primaryCodePath" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The primaryCodePath attribute specifies the path relative to the class that should be used to perform code filtering when a retrieve does not specify a code path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="primaryValueSetPath" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The primaryValueSetPath attribute specifies the path relative to the class that should be used to perform alternative value set matching when source data does not have a code defined.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>

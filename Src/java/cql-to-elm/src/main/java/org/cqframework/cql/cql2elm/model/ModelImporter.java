@@ -12,6 +12,8 @@ public class ModelImporter {
     private Map<String, DataType> resolvedTypes;
     private List<DataType> dataTypes;
     private List<Conversion> conversions;
+    private List<ModelContext> contexts;
+    private ModelContext defaultContext;
 
     public ModelImporter(ModelInfo modelInfo, Iterable<DataType> systemTypes) {
         if (modelInfo == null) {
@@ -23,6 +25,7 @@ public class ModelImporter {
         this.resolvedTypes = new HashMap<>();
         this.dataTypes = new ArrayList<>();
         this.conversions = new ArrayList<>();
+        this.contexts = new ArrayList<>();
 
         // Import system types
         if (systemTypes != null) {
@@ -64,6 +67,27 @@ public class ModelImporter {
             conversions.add(conversion);
         }
 
+        // Import model contexts
+        for (ContextInfo c : this.modelInfo.getContextInfo()) {
+            DataType contextType = resolveTypeName(c.getName());
+            if (!(contextType instanceof ClassType)) {
+                // ERROR:
+                throw new IllegalArgumentException(String.format("Model context %s must be a class type.", c.getName()));
+            }
+            ModelContext modelContext = new ModelContext(c.getName(), (ClassType)contextType, c.getKeyElement(), c.getBirthDateElement());
+            contexts.add(modelContext);
+        }
+
+        // For backwards compatibility with model info files that don't specify contexts, create a default context based on the patient class information if it's present
+        if (contexts.size() == 0 && this.modelInfo.getPatientClassName() != null) {
+            DataType contextType = resolveTypeName(this.modelInfo.getPatientClassName());
+            if (contextType instanceof ClassType) {
+                ModelContext modelContext = new ModelContext(((ClassType)contextType).getSimpleName(), (ClassType)contextType, Arrays.asList("id"), this.modelInfo.getPatientBirthDatePropertyName());
+                contexts.add(modelContext);
+                defaultContext = modelContext;
+            }
+        }
+
         for (TypeInfo t: this.modelInfo.getTypeInfo()) {
             dataTypes.add(resolveTypeInfo(t));
         }
@@ -80,6 +104,19 @@ public class ModelImporter {
 
     public Map<String, DataType> getTypes() { return resolvedTypes; }
     public Iterable<Conversion> getConversions() { return conversions; }
+    public Iterable<ModelContext> getContexts() { return contexts; }
+
+    public String getDefaultContextName() {
+        if (this.modelInfo.getDefaultContext() != null) {
+            return this.modelInfo.getDefaultContext();
+        }
+
+        if (this.defaultContext != null) {
+            return this.defaultContext.getName();
+        }
+
+        return null;
+    }
 
     private String casify(String typeName) {
         return casify(typeName, this.modelInfo.isCaseSensitive() != null ? this.modelInfo.isCaseSensitive() : false);
