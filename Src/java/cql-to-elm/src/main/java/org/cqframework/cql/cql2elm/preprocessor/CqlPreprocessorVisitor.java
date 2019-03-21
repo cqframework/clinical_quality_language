@@ -9,10 +9,11 @@ import org.cqframework.cql.gen.cqlParser;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     private LibraryInfo libraryInfo = new LibraryInfo();
-    private boolean implicitPatientCreated = false;
-    private String currentContext = "Patient";
+    private boolean implicitContextCreated = false;
+    private String currentContext = "Unspecified";
 
     public LibraryInfo getLibraryInfo() {
         return libraryInfo;
@@ -104,13 +105,21 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
-        currentContext = (String)visit(ctx.identifier());
-        if (!implicitPatientCreated) {
+        String modelIdentifier = ctx.modelIdentifier() != null ? (String)visit(ctx.modelIdentifier()) : null;
+        String unqualifiedContext = (String)visit(ctx.identifier());
+        if (modelIdentifier != null && !modelIdentifier.equals("")) {
+            currentContext = modelIdentifier + "." + unqualifiedContext;
+        }
+        else {
+            currentContext = unqualifiedContext;
+        }
+
+        if (!implicitContextCreated && !unqualifiedContext.equals("Unspecified")) {
             ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
-            expressionDefinition.setName("Patient");
+            expressionDefinition.setName(unqualifiedContext);
             expressionDefinition.setContext(currentContext);
             libraryInfo.addExpressionDefinition(expressionDefinition);
-            implicitPatientCreated = true;
+            implicitContextCreated = true;
         }
         return currentContext;
     }

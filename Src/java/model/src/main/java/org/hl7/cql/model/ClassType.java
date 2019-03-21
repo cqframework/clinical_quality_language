@@ -75,7 +75,24 @@ public class ClassType extends DataType implements NamedType {
 
     private String primaryCodePath;
     public String getPrimaryCodePath() { return primaryCodePath; }
-    public void setPrimaryCodePath(String primaryCodePath) { this.primaryCodePath = primaryCodePath; }
+    public void setPrimaryCodePath(String primaryCodePath) {
+        this.primaryCodePath = primaryCodePath;
+    }
+
+    private String primaryValueSetPath;
+    public String getPrimaryValueSetPath() { return primaryValueSetPath; }
+    public void setPrimaryValueSetPath(String primaryValueSetPath) {
+        this.primaryValueSetPath = primaryValueSetPath;
+    }
+
+    private List<Relationship> relationships = new ArrayList<>();
+    public Iterable<Relationship> getRelationships() {
+        return relationships;
+    }
+
+    public void addRelationship(Relationship relationship) {
+        relationships.add(relationship);
+    }
 
     private List<ClassTypeElement> elements = new ArrayList<ClassTypeElement>();
     private List<ClassTypeElement> sortedElements = null;

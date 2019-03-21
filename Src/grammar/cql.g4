@@ -156,7 +156,7 @@ expressionDefinition
     ;
 
 contextDefinition
-    : 'context' identifier
+    : 'context' (modelIdentifier '.')? identifier
     ;
 
 functionDefinition
@@ -205,7 +205,11 @@ withoutClause
     ;
 
 retrieve
-    : '[' namedTypeSpecifier (':' (codePath 'in')? terminology)? ']'
+    : '[' (contextIdentifier '->')? namedTypeSpecifier (':' (codePath 'in')? terminology)? ']'
+    ;
+    
+contextIdentifier
+    : qualifiedIdentifier
     ;
 
 codePath

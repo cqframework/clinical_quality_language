@@ -69,8 +69,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private int nextLocalId = 1;
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
-    private boolean implicitPatientCreated = false;
-    private ExpressionDef implicitPatientExpressionDef = null;
+    private boolean implicitContextCreated = false;
+    private ExpressionDef implicitContextExpressionDef = null;
     private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
@@ -661,52 +661,53 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
-        currentContext = parseString(ctx.identifier());
+        String modelIdentifier = parseString(ctx.modelIdentifier());
+        String unqualifiedIdentifier = parseString(ctx.identifier());
 
-        if (!(currentContext.equals("Patient") || currentContext.equals("Population"))) {
-            throw new IllegalArgumentException(String.format("Unknown context %s.", currentContext));
-        }
+        currentContext = modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier;
 
-        // If this is the first time a context definition is encountered, output a patient definition:
-        // define Patient = element of [<Patient model type>]
-        if (!implicitPatientCreated) {
-            if (libraryBuilder.hasUsings()) {
-                ModelInfo modelInfo = libraryBuilder.getModel(libraryInfo.getDefaultModelName()).getModelInfo();
-                String patientTypeName = modelInfo.getPatientClassName();
-                if (patientTypeName == null || patientTypeName.equals("")) {
-                    throw new IllegalArgumentException("Model definition does not contain enough information to construct a patient context.");
+        if (!unqualifiedIdentifier.equals("Unspecified")) {
+            ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
+
+            // If this is the first time a context definition is encountered, output a patient definition:
+            // define Patient = element of [<Patient model type>]
+            if (!implicitContextCreated) {
+                if (libraryBuilder.hasUsings()) {
+                    ModelInfo modelInfo = modelIdentifier == null
+                            ? libraryBuilder.getModel(libraryInfo.getDefaultModelName()).getModelInfo()
+                            : libraryBuilder.getModel(modelIdentifier).getModelInfo();
+                    String contextTypeName = modelContext.getName();
+                    DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
+                    Retrieve contextRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(contextType));
+                    track(contextRetrieve, ctx);
+                    contextRetrieve.setResultType(new ListType(contextType));
+                    String contextClassIdentifier = ((ClassType) contextType).getIdentifier();
+                    if (contextClassIdentifier != null) {
+                        contextRetrieve.setTemplateId(contextClassIdentifier);
+                    }
+
+                    implicitContextExpressionDef = of.createExpressionDef()
+                            .withName(unqualifiedIdentifier)
+                            .withContext(currentContext)
+                            .withExpression(of.createSingletonFrom().withOperand(contextRetrieve));
+                    track(implicitContextExpressionDef, ctx);
+                    implicitContextExpressionDef.getExpression().setResultType(contextType);
+                    implicitContextExpressionDef.setResultType(contextType);
+                    libraryBuilder.addExpression(implicitContextExpressionDef);
+                } else {
+                    implicitContextExpressionDef = of.createExpressionDef()
+                            .withName(unqualifiedIdentifier)
+                            .withContext(currentContext)
+                            .withExpression(of.createNull());
+                    track(implicitContextExpressionDef, ctx);
+                    implicitContextExpressionDef.getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
+                    implicitContextExpressionDef.setResultType(implicitContextExpressionDef.getExpression().getResultType());
+                    libraryBuilder.addExpression(implicitContextExpressionDef);
                 }
-                DataType patientType = libraryBuilder.resolveTypeName(modelInfo.getName(), patientTypeName);
-                Retrieve patientRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(patientType));
-                track(patientRetrieve, ctx);
-                patientRetrieve.setResultType(new ListType(patientType));
-                String patientClassIdentifier = modelInfo.getPatientClassIdentifier();
-                if (patientClassIdentifier != null) {
-                    patientRetrieve.setTemplateId(patientClassIdentifier);
-                }
 
-                implicitPatientExpressionDef = of.createExpressionDef()
-                        .withName("Patient")
-                        .withContext(currentContext)
-                        .withExpression(of.createSingletonFrom().withOperand(patientRetrieve));
-                track(implicitPatientExpressionDef, ctx);
-                implicitPatientExpressionDef.getExpression().setResultType(patientType);
-                implicitPatientExpressionDef.setResultType(patientType);
-                libraryBuilder.addExpression(implicitPatientExpressionDef);
+                implicitContextCreated = true;
+                return currentContext;
             }
-            else {
-                implicitPatientExpressionDef = of.createExpressionDef()
-                        .withName("Patient")
-                        .withContext(currentContext)
-                        .withExpression(of.createNull());
-                track(implicitPatientExpressionDef, ctx);
-                implicitPatientExpressionDef.getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
-                implicitPatientExpressionDef.setResultType(implicitPatientExpressionDef.getExpression().getResultType());
-                libraryBuilder.addExpression(implicitPatientExpressionDef);
-            }
-
-            implicitPatientCreated = true;
-            return currentContext;
         }
 
         return currentContext;
@@ -715,10 +716,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public ExpressionDef internalVisitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
-        if (def == null || def == implicitPatientExpressionDef) {
-            if (def != null && def == implicitPatientExpressionDef) {
+        if (def == null || def == implicitContextExpressionDef) {
+            if (def != null && def == implicitContextExpressionDef) {
                 libraryBuilder.removeExpression(def);
-                implicitPatientExpressionDef = null;
+                implicitContextExpressionDef = null;
                 def = null;
             }
             libraryBuilder.pushExpressionContext(currentContext);
@@ -2913,10 +2914,12 @@ DATETIME
             // then references to patient context expressions within the iteration clauses of the query can be accessed
             // at the patient, rather than the population, context.
             boolean expressionContextPushed = false;
-            if (libraryBuilder.inPopulationContext() && queryContext.referencesPatientContext()) {
+            /* TODO: Address the issue of referencing multiple context expressions within a query (or even expression in general)
+            if (libraryBuilder.inUnspecifiedContext() && queryContext.referencesSpecificContext()) {
                 libraryBuilder.pushExpressionContext("Patient");
                 expressionContextPushed = true;
             }
+            */
             try {
 
                 List<LetClause> dfcx = ctx.letClause() != null ? (List<LetClause>) visit(ctx.letClause()) : null;

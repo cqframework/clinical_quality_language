@@ -23,6 +23,11 @@
 							<xs:documentation>The dateRange element optionally allows a date range to be provided. The clinical statements returned would be only those clinical statements whose date fell within the range specified.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
+					<xs:element name="context" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>If specified, references an expression that, when evaluated, provides the context for the retrieve.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 				</xs:sequence>
 				<xs:attribute name="dataType" type="xs:QName" use="required">
 					<xs:annotation>
@@ -43,6 +48,15 @@
 					<xs:annotation>
 						<xs:documentation>The codeProperty attribute optionally specifies which property of the model contains the Code or Codes for the clinical statement.
 						
+Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing them at the retrieve expression level gives the most flexibility.
+
+In addition, this property may be a path, including qualifiers and constant indexers.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="valueSetProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The valueSetProperty attribute optionally specifies which property of the model contains a value set identifier that can be used as an alternative mechanism for matching the value set of the retrieve, in the case when no code is specified in the source data.
+
 Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing them at the retrieve expression level gives the most flexibility.
 
 In addition, this property may be a path, including qualifiers and constant indexers.</xs:documentation>
