@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.cqframework.cql.elm.tracking.TrackBack;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
@@ -9,6 +10,7 @@ import java.util.Scanner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 public class TranslationTests {
     // TODO: sameXMLAs? Couldn't find such a thing in hamcrest, but I don't want this to run on the JSON, I want it to verify the actual XML.
@@ -30,5 +32,20 @@ public class TranslationTests {
         ModelManager modelManager = new ModelManager();
         String actualXml = CqlTranslator.fromFile(cqlFile, modelManager, new LibraryManager(modelManager)).toXml();
         assertThat(actualXml, is(expectedXml));
+    }
+
+    @Test
+    public void testIdentiferLocation() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslator("TranslatorTests/UnknownIdentifier.cql");
+        assertEquals(1, translator.getErrors().size());
+
+        CqlTranslatorException e = translator.getErrors().get(0);
+        TrackBack tb = e.getLocator();
+
+        assertEquals(6, tb.getStartLine());
+        assertEquals(6, tb.getEndLine());
+
+        assertEquals(5, tb.getStartChar());
+        assertEquals(10, tb.getEndChar());
     }
 }
