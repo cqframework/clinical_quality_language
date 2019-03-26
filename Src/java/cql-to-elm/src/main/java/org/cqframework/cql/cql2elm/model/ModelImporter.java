@@ -285,16 +285,122 @@ public class ModelImporter {
         return result;
     }
 
-    private Collection<ClassTypeElement> resolveClassTypeElements(Collection<ClassInfoElement> infoElements) {
+    /**
+     * Converts a list of GenericParameterInfo definitions into their corresponding TypeParameter representations.
+     *
+     * @param parameterInfoList
+     * @return
+     */
+    private List<TypeParameter> resolveGenericParameterDeclarations(List<GenericParameterInfo> parameterInfoList) {
+        List<TypeParameter> genericParameters = new ArrayList<>();
+        for (GenericParameterInfo parameterInfo : parameterInfoList) {
+            genericParameters.add(new TypeParameter(parameterInfo.getName(), TypeParameter.TypeParameterConstraint.TYPE, resolveTypeName(parameterInfo.getType())));
+        }
+        return genericParameters;
+    }
+
+    /**
+     * Method resolves the types associated with class elements (i.e., class fields).
+     * If the type is not resolved, the type System.Any is assigned to this element.
+     *
+     * @param classType
+     * @param infoElements
+     * @return
+     */
+    private Collection<ClassTypeElement> resolveClassTypeElements(ClassType classType, Collection<ClassInfoElement> infoElements) {
         List<ClassTypeElement> elements = new ArrayList();
         for (ClassInfoElement e : infoElements) {
-            DataType elementType = resolveTypeNameOrSpecifier(e);
+            DataType elementType = null;
+            if(isOpenType(e)) {
+                elementType = resolveOpenType(classType, e);
+            } else if(isBoundParameterType(e)) {
+                elementType = resolveBoundType(classType, e);
+            } else {
+                elementType = resolveTypeNameOrSpecifier(e);
+            }
             if (elementType == null) {
                 elementType = resolveTypeName("System.Any");
             }
             elements.add(new ClassTypeElement(e.getName(), elementType, e.isProhibited(), e.isOneBased()));
         }
         return elements;
+    }
+
+    /**
+     * Method returns true if class element is an open element bound to a specific type.
+     * For instance, if the generic class defines a field:
+     * <pre><code>T field1;</code></pre>
+     * A subclass my bind T to a specific type such as System.Quantity such that the definition above
+     * becomes:
+     * <pre><code>System.Quantity field1;</code></pre>
+     *
+     * @param element
+     * @return
+     */
+    private boolean isBoundParameterType(ClassInfoElement element) {
+        return element.getElementTypeSpecifier() instanceof BoundParameterizedTypeSpecifier;
+    }
+
+    /**
+     * Method resolves the bound type declaration and returns the type if valid. Method throws an exception
+     * if the type cannot be resolved (does not exist) or if the parameter that this type is bound to is not defined
+     * in the generic class. Types must be bound to existing generic parameters.
+     *
+     * @param classType
+     * @param e
+     * @return
+     */
+    private DataType resolveBoundType(ClassType classType, ClassInfoElement e) {
+        DataType boundType = null;
+
+        BoundParameterizedTypeSpecifier boundParameterizedTypeSpecifier = (BoundParameterizedTypeSpecifier)e.getElementTypeSpecifier();
+        String parameterName = boundParameterizedTypeSpecifier.getParameterName();
+        TypeParameter genericParameter = classType.getGenericParameterByIdentifier(parameterName);
+
+        if(genericParameter == null) {
+            throw new RuntimeException("Unknown symbol " + parameterName);
+        } else {
+            boundType = resolveTypeName(boundParameterizedTypeSpecifier.getBoundType());
+        }
+
+        return boundType;
+    }
+
+    /**
+     * Returns true if the element's type is a parameterized (non-bound, non-concrete) type
+     * such as
+     *
+     * <pre><code>T myField;</code></pre>
+     *
+     * @param element
+     * @return
+     */
+    private boolean isOpenType(ClassInfoElement element) {
+        return element.getElementTypeSpecifier() instanceof ParameterTypeSpecifier;
+    }
+
+    /**
+     * Method to validate open types. An open type must reference a parameter defined in the generic class by name
+     * and the generic parameter must exist.
+     *
+     * <p>
+     *     Open types are class attribute types that reference one of the generic parameter of the class
+     *     and that have not been bound to a concrete type.
+     * </p>
+     *
+     * @param classType
+     * @param e
+     * @return
+     */
+    private DataType resolveOpenType(ClassType classType, ClassInfoElement e) {
+        DataType elementType;
+        ParameterTypeSpecifier parameterTypeSpecifier = (ParameterTypeSpecifier) e.getElementTypeSpecifier();
+        String parameterName = parameterTypeSpecifier.getParameterName();
+        if(parameterName == null || parameterName.trim().length() == 0 || classType.getGenericParameterByIdentifier(parameterName) == null) {
+            throw new RuntimeException("Open types must reference a valid generic parameter and cannot be null or blank");
+        }
+        elementType = new TypeParameter(parameterTypeSpecifier.getParameterName(), TypeParameter.TypeParameterConstraint.TYPE, null);
+        return elementType;
     }
 
     private ClassType resolveClassType(ClassInfo t) {
@@ -304,15 +410,40 @@ public class ModelImporter {
 
         String qualifiedName = ensureQualified(t.getName());
         ClassType result = (ClassType)lookupType(qualifiedName);
+
         if (result == null) {
             if (t instanceof ProfileInfo) {
                 result = new ProfileType(qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
             }
             else {
-                result = new ClassType(qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
+                //Added to support generic notation in ModelInfo file for class type names (e.g., MyGeneric<T>) and base classes (e.g., Map<String,Person>).
+                if(t.getName().contains("<")) {
+                    result = handleGenericType(t.getName(), t.getBaseType());
+                } else {
+                    if(t.getBaseType() != null && t.getBaseType().contains("<")) {
+                        result = handleGenericType(t.getName(), t.getBaseType());
+                    } else {
+                        result = new ClassType(qualifiedName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
+                    }
+                }
             }
+
             resolvedTypes.put(casify(result.getName()), result);
-            result.addElements(resolveClassTypeElements(t.getElement()));
+
+            if(t.getParameters() != null) {
+                result.addGenericParameter(resolveGenericParameterDeclarations(t.getParameters().getParameter()));
+            }
+
+            if(t.getElements() != null) {
+                result.addElements(resolveClassTypeElements(result, t.getElements().getElement()));
+            }
+
+            //Here we handle the case when a type is not a generic but its base type is a generic type whose parameters
+            //have all been bound to concrete types (no remaining degrees of freedom) and is not expressed in generic notation in the model-info file.
+            if(isParentGeneric(result) && !t.getBaseType().contains("<")) {
+                validateFreeAndBoundParameters(result, t);
+            }
+
             result.setIdentifier(t.getIdentifier());
             result.setLabel(t.getLabel());
             result.setRetrievable(t.isRetrievable());
@@ -346,4 +477,99 @@ public class ModelImporter {
         }
         return new ChoiceType(types);
     }
+
+    /**
+     * Method checks to see if a class' parameters covers its parent parameters. These represent
+     * remaining degrees of freedom in the child class. For instance,
+     * <pre><code>MyGeneric&lt;T&gt; extends SomeOtherGeneric&lt;String,T&gt;</code></pre>
+     * All parameters in the parent class, not covered by the child class must be bound
+     * to a concrete type. In the above example, the parameter S is bound to the type String.
+     * <p>If a parameter in the parent type is not covered by a child parameter nor bound to
+     * a concrete type, an exception is thrown indicating that the symbol is not known. In the example
+     * below, T is neither covered nor bound and thus is an unknown symbol.</p>
+     * <code><pre>MyGeneric extends SomeOtherGeneric&lt;String,T&gt;</pre></code>
+     *
+     * @param type
+     * @param definition
+     */
+    public void validateFreeAndBoundParameters(ClassType type, ClassInfo definition) {
+        List<String> coveredParameters = new ArrayList<>();
+        List<String> boundParameters = new ArrayList<>();
+
+        ((ClassType)type.getBaseType()).getGenericParameters().forEach(typeParameter -> {
+            String parameterName = typeParameter.getIdentifier();
+            if(type.getGenericParameterByIdentifier(parameterName, true) != null) {
+                coveredParameters.add(parameterName);
+            } else {
+                boundParameters.add(parameterName);
+            }
+        });
+
+        if(boundParameters.size() > 0) {
+            if(definition.getElements() != null) {
+                definition.getElements().getElement().forEach(classInfoElement -> {
+                    if (classInfoElement.getElementTypeSpecifier() instanceof BoundParameterizedTypeSpecifier) {
+                        String name = ((BoundParameterizedTypeSpecifier)classInfoElement.getElementTypeSpecifier()).getParameterName();
+                        int paramIndex = boundParameters.indexOf(name);
+                        if(paramIndex >= 0) {
+                            boundParameters.remove(paramIndex);
+                        }
+                    }
+                });
+                if(boundParameters.size() > 0) {
+                    throw new RuntimeException("Unknown symbols " + boundParameters);
+                }
+            } else {
+                throw new RuntimeException("Unknown symbols " + boundParameters);
+            }
+        }
+    }
+
+    /**
+     * Method returns true if the class' base type is a generic type.
+     *
+     * @param type
+     * @return
+     */
+    public boolean isParentGeneric(ClassType type) {
+        DataType baseType = type.getBaseType();
+        return baseType != null && baseType instanceof ClassType && ((ClassType)baseType).isGeneric();
+    }
+
+    /**
+     * Converts a generic type declaration represented as a string into the corresponding
+     * generic ClassType (i.e., a class type that specifies generic parameters).
+     *
+     * @param baseType The base type for the generic class type.
+     * @param genericSignature The signature of the generic type such as Map&lt;K,V&gt;.
+     * @return
+     */
+    private ClassType handleGenericType(String genericSignature, String baseType) {
+        if (genericSignature == null) {
+            throw new IllegalArgumentException("genericSignature is null");
+        }
+
+        GenericClassSignatureParser parser = new GenericClassSignatureParser(genericSignature, baseType, null, resolvedTypes);
+        ClassType genericClassType = parser.parseGenericSignature();
+
+        return genericClassType;
+    }
+
+    /**
+     * Checks whether descendant is a valid subtype of ancestor.
+     *
+     * @param descendant
+     * @param ancestor
+     * @return
+     */
+    private boolean conformsTo(DataType descendant, DataType ancestor) {
+        boolean conforms = false;
+        if(descendant != null && ancestor != null && descendant.equals(ancestor)) {
+            conforms = true;
+        } else {
+            conforms = conformsTo(descendant.getBaseType(), ancestor);
+        }
+        return conforms;
+    }
+
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="urn:hl7-org:elm-modelinfo:r1 ../../../../../../../../../../cql-lm/schema/model/modelinfo.xsd"
+ targetQualifier="gentest" name="GENTEST" url="http://example.com/gentest">
+    <typeInfo xsi:type="ClassInfo" name="GENTEST.MyGeneric" baseType="System.Any">
+        <parameters>
+            <parameter name="T" type="System.Any"/> <!-- means T 'extends' System.Any -->
+        </parameters>
+        <elements>
+            <element name="field1">
+                <elementTypeSpecifier xsi:type="ParameterTypeSpecifier" parameterName="T"/> <!-- represents the class field declaration 'class MyGeneric {T field1;}' -->
+            </element>
+        </elements>
+    </typeInfo>
+    <typeInfo xsi:type="ClassInfo" name="GENTEST.MyQuantity" baseType="GENTEST.MyGeneric"> <!-- represents the class definition 'class MyQuantity extends MyGeneric<Quantity> {Quantity field1;} -->
+        <elements>
+            <element name="field1">
+                <elementTypeSpecifier xsi:type="BoundParameterizedTypeSpecifier" parameterName="T" boundType="System.Quantity"/>
+            </element>
+        </elements>
+    </typeInfo>
+    <typeInfo xsi:type="ClassInfo" name="GENTEST.Map&lt;S,T extends System.Integer&gt;" baseType="System.Any"/>
+    <typeInfo xsi:type="ClassInfo" name="GENTEST.MyInteger" baseType="GENTEST.MyGeneric&lt;System.Integer&gt;"/>
+    <typeInfo xsi:type="ClassInfo" name="GENTEST.MyOtherGeneric" baseType="System.Any">
+        <parameters>
+            <parameter name="S" type="System.Any"/><!-- Type needs to be optional for Parameter at some point -->
+            <parameter name="T" type="System.Any"/> <!-- means T 'extends' System.Any -->
+        </parameters>
+        <elements> <!-- represents the class field declaration 'class MyGeneric {S field1; T field2}' -->
+            <element name="field1">
+                <elementTypeSpecifier xsi:type="ParameterTypeSpecifier" parameterName="S"/>
+            </element>
+            <element name="field2">
+                <elementTypeSpecifier xsi:type="ParameterTypeSpecifier" parameterName="T"/>
+            </element>
+        </elements>
+    </typeInfo>
+    <typeInfo xsi:type="ClassInfo" name="GENTEST.MyOtherQuantity1" baseType="GENTEST.MyOtherGeneric"> <!-- represents the class definition 'class MyQuantity extends MyGeneric<Quantity> {Quantity field1;} -->
+        <parameters>
+            <parameter name="T" type="System.Any"/> <!-- means T 'extends' System.Any -->
+        </parameters>
+        <elements>
+            <element name="field1">
+                <elementTypeSpecifier xsi:type="BoundParameterizedTypeSpecifier" parameterName="S" boundType="System.Quantity"/>
+            </element>
+        </elements>
+    </typeInfo>
+    <typeInfo xsi:type="ClassInfo" name="GENTEST.MyOtherQuantity2" baseType="GENTEST.MyOtherGeneric"> <!-- represents the class definition 'class MyQuantity extends MyGeneric<Quantity> {Quantity field1;} -->
+        <parameters>
+            <parameter name="S" type="System.Any"/> <!-- means T 'extends' System.Any -->
+        </parameters>
+        <elements>
+            <element name="field1">
+                <elementTypeSpecifier xsi:type="BoundParameterizedTypeSpecifier" parameterName="T" boundType="System.Quantity"/>
+            </element>
+        </elements>
+    </typeInfo>
+    <typeInfo xsi:type="ClassInfo" name="GENTEST.MyOtherQuantity3" baseType="GENTEST.MyOtherGeneric"> <!-- represents the class definition 'class MyQuantity extends MyGeneric<Quantity> {Quantity field1;} -->
+        <elements>
+            <element name="field1">
+                <elementTypeSpecifier xsi:type="BoundParameterizedTypeSpecifier" parameterName="S" boundType="System.Quantity"/>
+            </element>
+            <element name="field2">
+                <elementTypeSpecifier xsi:type="BoundParameterizedTypeSpecifier" parameterName="T" boundType="System.Quantity"/>
+            </element>
+        </elements>
+    </typeInfo>
+    <!--<typeInfo xsi:type="ClassInfo" name="GENTEST.IntegerList" baseType="GENTEST.List">-->
+        <!--<parameterBinding name="T" boundType="System.Integer"/>-->
+    <!--</typeInfo>-->
+    <!--<typeInfo xsi:type="ClassInfo" name="GENTEST.ListOfListOfInteger" baseType="GENTEST.List">-->
+        <!--<parameterBinding name="T" boundType="GENTEST.IntegerList"/>-->
+    <!--</typeInfo>-->
+    <!--<typeInfo xsi:type="ClassInfo" name="GENTEST.BooleanList" baseType="GENTEST.List&lt;System.Boolean&gt;"/>-->
+</modelInfo>

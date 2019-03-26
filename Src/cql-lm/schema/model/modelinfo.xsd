@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm-modelinfo:r1" targetNamespace="urn:hl7-org:elm-modelinfo:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm-modelinfo:r1"
+	targetNamespace="urn:hl7-org:elm-modelinfo:r1" elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
 	<xs:element name="modelInfo" type="ModelInfo">
 		<xs:annotation>
 			<xs:documentation>The modelInfo element defines metadata associated with a particular model to allow it to be used by CQL.</xs:documentation>
@@ -10,9 +12,11 @@
 			<xs:documentation>The ModelInfo type defines the metadata associated with a particular model to enable it to be used by the CQL translator. Note that none of the information specified here is required, it just enables some convenient shorthands within the language.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="requiredModelInfo" type="ModelSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="requiredModelInfo" type="ModelSpecifier" minOccurs="0"
+				maxOccurs="unbounded"/>
 			<xs:element name="typeInfo" type="TypeInfo" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="conversionInfo" type="ConversionInfo" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="conversionInfo" type="ConversionInfo" minOccurs="0"
+				maxOccurs="unbounded"/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required">
 			<xs:annotation>
@@ -72,7 +76,8 @@
 					<xs:documentation>This element is deprecated. New implementations should use the new elementTypeSpecifier element.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"
+			/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="xs:string" use="optional">
@@ -94,9 +99,31 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
+
+				<!-- Added by Claude Nanjo -->
 				<xs:sequence>
-					<xs:element name="element" type="ClassInfoElement" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="parameters" minOccurs="0" maxOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="parameter" type="GenericParameterInfo" minOccurs="0" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>The generic parameters defined by a generic class. In generic class SomeClass&lt;S extends Type1, T>, 'S extends Type1' and 'T' are both generic parameters.</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="elements" minOccurs="0" maxOccurs="1">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="element" type="ClassInfoElement" minOccurs="0"
+									maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 				</xs:sequence>
+				<!-- End of Claude Nanjo section -->
+
 				<xs:attribute name="namespace" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>Namespace is the namespace of the class. This is typically just the name of the model, but can contain additional qualifiers.</xs:documentation>
@@ -156,7 +183,8 @@
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
 				<xs:sequence>
-					<xs:element name="pointTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="pointTypeSpecifier" type="TypeSpecifier" minOccurs="0"
+						maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="pointType" type="xs:string" use="optional"/>
 			</xs:extension>
@@ -166,7 +194,8 @@
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
 				<xs:sequence>
-					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0"
+						maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="elementType" type="xs:string" use="optional"/>
 			</xs:extension>
@@ -179,7 +208,8 @@
 					<xs:documentation>This element is deprecated. New implementations should use the new elementTypeSpecifier element.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
-			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"
+			/>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="xs:string" use="optional">
@@ -199,7 +229,8 @@
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
 				<xs:sequence>
-					<xs:element name="element" type="TupleTypeInfoElement" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="element" type="TupleTypeInfoElement" minOccurs="0"
+						maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -227,7 +258,8 @@
 							<xs:documentation>This element is deprecated. New implementations should use the new choice element.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
-					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="choice" type="TypeSpecifier" minOccurs="0"
+						maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -255,7 +287,8 @@
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
 				<xs:sequence>
-					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0"
+						maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="elementType" type="xs:string" use="optional"/>
 			</xs:extension>
@@ -265,7 +298,8 @@
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
 				<xs:sequence>
-					<xs:element name="pointTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="pointTypeSpecifier" type="TypeSpecifier" minOccurs="0"
+						maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="pointType" type="xs:string" use="optional"/>
 			</xs:extension>
@@ -275,9 +309,68 @@
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
 				<xs:sequence>
-					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="choice" type="TypeSpecifier" minOccurs="0"
+						maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<!-- Added by Claude Nanjo -->
+
+	<xs:complexType name="ParameterTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>A type which is generic class parameter such as T in MyGeneric&lt;T extends SomeType>.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:attribute name="parameterName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="BoundParameterizedTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>A type which is replacing a class parameter such as T in MyClass extends MyGeneric&lt;AValidType>.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0"
+								maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="parameterName" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name of the parameter that is bound to a valid type based on the parameter definition, such as 'T'.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="boundType" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The type bound to the parameter (e.g., 'T').</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="GenericParameterInfo">
+		<xs:annotation>
+			<xs:documentation>A generic class parameter such as T in MyGeneric&lt;T extends SomeType>.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name of the parameter such as T,K, etc...</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The type this parameter should be assignable from (i.e., extend).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
+	<!-- End Claude Nanjo Section -->
 </xs:schema>

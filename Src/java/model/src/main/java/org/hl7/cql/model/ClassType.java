@@ -4,7 +4,7 @@ import java.util.*;
 
 public class ClassType extends DataType implements NamedType {
 
-    public ClassType(String name, DataType baseType, Collection<ClassTypeElement> elements) {
+    public ClassType(String name, DataType baseType, Collection<ClassTypeElement> elements, Collection<TypeParameter> parameters) {
         super(baseType);
 
         if (name == null || name.equals("")) {
@@ -13,21 +13,29 @@ public class ClassType extends DataType implements NamedType {
 
         this.name = name;
 
+        if (parameters != null) {
+            this.genericParameters.addAll(parameters);
+        }
+
         if (elements != null) {
             this.elements.addAll(elements);
         }
     }
 
     public ClassType() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
     public ClassType(String name) {
-        this(name, null, null);
+        this(name, null, null, null);
     }
 
     public ClassType(String name, DataType baseType) {
-        this(name, baseType, null);
+        this(name, baseType, null, null);
+    }
+
+    public ClassType(String name, DataType baseType, Collection<ClassTypeElement> elements) {
+        this(name, baseType, elements, null);
     }
 
     private String name;
@@ -37,7 +45,7 @@ public class ClassType extends DataType implements NamedType {
 
     public String getNamespace() {
         if (this.name != null) {
-            int qualifierIndex = this.name.indexOf('.');
+            int qualifierIndex = this.name.indexOf('.');//TODO Should this not be the last occurrence rather than the first occurrence?
             if (qualifierIndex > 0) {
                 return this.name.substring(0, qualifierIndex);
             }
@@ -48,7 +56,7 @@ public class ClassType extends DataType implements NamedType {
 
     public String getSimpleName() {
         if (this.name != null) {
-            int qualifierIndex = this.name.indexOf('.');
+            int qualifierIndex = this.name.indexOf('.');//TODO Should this not be the last occurrence rather than the first occurrence?
             if (qualifierIndex > 0) {
                 return this.name.substring(qualifierIndex + 1);
             }
@@ -76,6 +84,93 @@ public class ClassType extends DataType implements NamedType {
     private String primaryCodePath;
     public String getPrimaryCodePath() { return primaryCodePath; }
     public void setPrimaryCodePath(String primaryCodePath) { this.primaryCodePath = primaryCodePath; }
+
+    /**
+     * Generic class parameters such 'S', 'T extends MyType'.
+     */
+    private List<TypeParameter> genericParameters = new ArrayList<>();
+
+    /**
+     * Returns the generic parameters for the generic type. For instance,
+     * for the generic type Map&lt;K,V extends Person&gt;, two generic parameters
+     * will be returned: K and V extends Person. The latter parameter has a constraint
+     * restricting the type of the bound type to be a valid subtype of Person.
+     *
+     * @return Class' generic parameters
+     */
+    public List<TypeParameter> getGenericParameters() {
+        return genericParameters;
+    }
+
+    /**
+     * Sets the generic parameters for the generic type. For instance,
+     * for the generic type Map&lt;K,V extends Person&gt;, two generic parameters
+     * should be set: K and V extends Person. The latter parameter has a constraint
+     * restricting the type of the bound type to be a valid subtype of Person.
+     *
+     * @param genericParameters
+     */
+    public void setGenericParameters(List<TypeParameter> genericParameters) {
+        this.genericParameters = genericParameters;
+    }
+
+    /**
+     * Adds a parameter declaration to the generic type.
+     *
+     * @param genericParameter
+     */
+    public void addGenericParameter(TypeParameter genericParameter) {
+        this.genericParameters.add(genericParameter);
+    }
+
+    /**
+     * Adds collection of type parameters to existing set.
+     * @param parameters
+     */
+    public void addGenericParameter(Collection<TypeParameter> parameters) {
+        for (TypeParameter parameter : parameters) {
+            internalAddParameter(parameter);
+        }
+
+        sortedElements = null;
+        tupleType = null;
+    }
+
+    /**
+     * Returns the parameter with the given parameter identifier.
+     * If not found in the given class, it looks in the parent class.
+     *
+     * @param identifier
+     * @return Generic parameter with the given name in the current class or in the base class. Null if none found.
+     */
+    public TypeParameter getGenericParameterByIdentifier(String identifier) {
+        return getGenericParameterByIdentifier(identifier, false);
+    }
+
+    /**
+     * Returns the parameter with the given parameter identifier.
+     * If inCurrentClassOnly is false, if not found in the given class, then it looks in the parent class.
+     * If inCurrentClassOnly is true, only looks for parameter in the given class.
+     *
+     * @param identifier
+     * @param inCurrentClassOnly
+     * @return Class' generic parameter
+     */
+    public TypeParameter getGenericParameterByIdentifier(String identifier, boolean inCurrentClassOnly) {
+        TypeParameter param = null;
+        for(TypeParameter genericParameter: genericParameters) {
+            if(identifier.equalsIgnoreCase(genericParameter.getIdentifier())) {
+                param = genericParameter;
+                break;
+            }
+        }
+        if(!inCurrentClassOnly && param == null) {
+            if (param == null && getBaseType() instanceof ClassType) {
+                param = ((ClassType) getBaseType()).getGenericParameterByIdentifier(identifier);
+            }
+        }
+        return param;
+    }
 
     private List<ClassTypeElement> elements = new ArrayList<ClassTypeElement>();
     private List<ClassTypeElement> sortedElements = null;
@@ -121,7 +216,7 @@ public class ClassType extends DataType implements NamedType {
     private void internalAddElement(ClassTypeElement element) {
         ClassTypeElement existingElement = getBaseElementMap().get(element.getName());
         if (
-            existingElement != null
+            existingElement != null && !(existingElement.getType() instanceof TypeParameter)
             && (
                 !(
                     element.getType().isSubTypeOf(existingElement.getType())
@@ -136,6 +231,12 @@ public class ClassType extends DataType implements NamedType {
         }
 
         this.elements.add(element);
+    }
+
+    private void internalAddParameter(TypeParameter parameter) {
+        //TODO Flesh out and retain method only if needed.
+
+        this.genericParameters.add(parameter);
     }
 
     public void addElement(ClassTypeElement element)
@@ -236,13 +337,7 @@ public class ClassType extends DataType implements NamedType {
 
     @Override
     public boolean isGeneric() {
-        for (ClassTypeElement e : elements) {
-            if (e.getType().isGeneric()) {
-                return true;
-            }
-        }
-
-        return false;
+        return genericParameters != null && genericParameters.size() > 0;
     }
 
     @Override
