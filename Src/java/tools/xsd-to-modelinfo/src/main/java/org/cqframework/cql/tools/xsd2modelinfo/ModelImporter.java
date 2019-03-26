@@ -147,8 +147,6 @@ public class ModelImporter {
 
     private ClassInfo toClassInfo(ClassType dataType) {
         ClassInfo result = new ClassInfo();
-        result.setElements(new ClassInfo.Elements());
-        result.setParameters(new ClassInfo.Parameters());
         result.setName(dataType.getSimpleName());
         if (dataType.getBaseType() != null) {
             setBaseType(result, dataType.getBaseType());
@@ -163,6 +161,13 @@ public class ModelImporter {
         result.setIdentifier(dataType.getIdentifier());
         result.setRetrievable(dataType.isRetrievable());
         result.setPrimaryCodePath(dataType.getPrimaryCodePath());
+
+        for(TypeParameter genericParameter : dataType.getGenericParameters()) {
+            GenericParameterInfo parameterInfo = new GenericParameterInfo();
+            parameterInfo.setName(genericParameter.getIdentifier());
+            parameterInfo.setType(getTypeName(genericParameter.getConstraintType()));
+            result.getParameter().add(parameterInfo);
+        }
 
         for (ClassTypeElement element : dataType.getElements()) {
             ClassInfoElement cie = new ClassInfoElement().withName(element.getName());
@@ -182,7 +187,7 @@ public class ModelImporter {
             if (element.isProhibited()) {
                 cie.setProhibited(true);
             }
-            result.getElements().getElement().add(cie);
+            result.getElement().add(cie);
         }
 
         return result;

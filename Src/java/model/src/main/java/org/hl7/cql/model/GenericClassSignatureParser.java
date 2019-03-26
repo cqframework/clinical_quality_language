@@ -168,7 +168,7 @@ public class GenericClassSignatureParser {
      * adds it to the resolved type index.
      *
      * @param boundGenericSignature
-     * @return
+     * @return The bound type created or resolved
      */
     protected DataType handleBoundType(String boundGenericSignature) {
         ClassType resolvedType = (ClassType)resolvedTypes.get(escapeNestedAngleBrackets(boundGenericSignature));
