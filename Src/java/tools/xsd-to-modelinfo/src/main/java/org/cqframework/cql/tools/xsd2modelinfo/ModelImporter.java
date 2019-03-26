@@ -147,6 +147,8 @@ public class ModelImporter {
 
     private ClassInfo toClassInfo(ClassType dataType) {
         ClassInfo result = new ClassInfo();
+        result.setElements(new ClassInfo.Elements());
+        result.setParameters(new ClassInfo.Parameters());
         result.setName(dataType.getSimpleName());
         if (dataType.getBaseType() != null) {
             setBaseType(result, dataType.getBaseType());
@@ -180,7 +182,7 @@ public class ModelImporter {
             if (element.isProhibited()) {
                 cie.setProhibited(true);
             }
-            result.getElement().add(cie);
+            result.getElements().getElement().add(cie);
         }
 
         return result;
