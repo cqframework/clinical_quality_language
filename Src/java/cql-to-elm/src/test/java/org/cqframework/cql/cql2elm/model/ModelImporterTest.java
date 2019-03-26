@@ -35,9 +35,9 @@ public class ModelImporterTest {
             //List<T extends System.Any>
             ClassInfo myGeneric = (ClassInfo)gentestModel.getTypeInfo().get(0);
             assertThat(myGeneric.getName(), is("GENTEST.MyGeneric"));
-            assertThat(myGeneric.getParameters().getParameter().size(), is(1));
-            assertThat(myGeneric.getParameters().getParameter().get(0).getName(), is("T"));
-            assertThat(myGeneric.getParameters().getParameter().get(0).getType(), is("System.Any"));
+            assertThat(myGeneric.getParameter().size(), is(1));
+            assertThat(myGeneric.getParameter().get(0).getName(), is("T"));
+            assertThat(myGeneric.getParameter().get(0).getType(), is("System.Any"));
 
             ClassType myGenericType = (ClassType)dataTypeMap.get("GENTEST.MyGeneric");
             assertNotNull(myGenericType);
@@ -66,7 +66,7 @@ public class ModelImporterTest {
             //Map<S,T extends System.Interval>
             ClassInfo map = (ClassInfo)gentestModel.getTypeInfo().get(2);
             assertThat(map.getName(), is("GENTEST.Map<S,T extends System.Integer>"));
-            assertNull(map.getParameters()); //No parameters since parameters defined in name.
+            assertThat(map.getParameter().size(), is(0)); //No parameters since parameters defined in name.
 
             ClassType mapType = (ClassType)dataTypeMap.get("GENTEST.Map");
             assertNotNull(mapType);

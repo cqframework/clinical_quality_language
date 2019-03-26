@@ -430,12 +430,12 @@ public class ModelImporter {
 
             resolvedTypes.put(casify(result.getName()), result);
 
-            if(t.getParameters() != null) {
-                result.addGenericParameter(resolveGenericParameterDeclarations(t.getParameters().getParameter()));
+            if(t.getParameter() != null) {
+                result.addGenericParameter(resolveGenericParameterDeclarations(t.getParameter()));
             }
 
-            if(t.getElements() != null) {
-                result.addElements(resolveClassTypeElements(result, t.getElements().getElement()));
+            if(t.getElement() != null) {
+                result.addElements(resolveClassTypeElements(result, t.getElement()));
             }
 
             //Here we handle the case when a type is not a generic but its base type is a generic type whose parameters
@@ -506,8 +506,8 @@ public class ModelImporter {
         });
 
         if(boundParameters.size() > 0) {
-            if(definition.getElements() != null) {
-                definition.getElements().getElement().forEach(classInfoElement -> {
+            if(definition.getElement() != null) {
+                definition.getElement().forEach(classInfoElement -> {
                     if (classInfoElement.getElementTypeSpecifier() instanceof BoundParameterizedTypeSpecifier) {
                         String name = ((BoundParameterizedTypeSpecifier)classInfoElement.getElementTypeSpecifier()).getParameterName();
                         int paramIndex = boundParameters.indexOf(name);
@@ -529,7 +529,7 @@ public class ModelImporter {
      * Method returns true if the class' base type is a generic type.
      *
      * @param type
-     * @return
+     * @return True if the parent of class 'type' is a generic class.
      */
     public boolean isParentGeneric(ClassType type) {
         DataType baseType = type.getBaseType();
