@@ -155,7 +155,7 @@
 							<xs:sequence>
 								<xs:element name="parameter" type="GenericParameterInfo" minOccurs="0" maxOccurs="unbounded">
 									<xs:annotation>
-										<xs:documentation>The generic parameters defined by a generic class. In generic class SomeClass&lt;S extends Type1, T>, 'S extends Type1' and 'T' are both generic parameters.</xs:documentation>
+										<xs:documentation>The generic parameters defined by a generic class. In generic class SomeClass&lt;S extends Type1, T&gt;, 'S extends Type1' and 'T' are both generic parameters.</xs:documentation>
 									</xs:annotation>
 								</xs:element>
 					<xs:element name="contextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
@@ -374,7 +374,7 @@
 
 	<xs:complexType name="ParameterTypeSpecifier">
 		<xs:annotation>
-			<xs:documentation>A type which is generic class parameter such as T in MyGeneric&lt;T extends SomeType>.</xs:documentation>
+			<xs:documentation>A type which is generic class parameter such as T in MyGeneric&lt;T extends SomeType&gt;.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
@@ -385,7 +385,7 @@
 
 	<xs:complexType name="BoundParameterizedTypeSpecifier">
 		<xs:annotation>
-			<xs:documentation>A type which is replacing a class parameter such as T in MyClass extends MyGeneric&lt;AValidType>.</xs:documentation>
+			<xs:documentation>A type which is replacing a class parameter such as T in MyClass extends MyGeneric&lt;AValidType&gt;.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="TypeSpecifier">
@@ -409,7 +409,7 @@
 
 	<xs:complexType name="GenericParameterInfo">
 		<xs:annotation>
-			<xs:documentation>A generic class parameter such as T in MyGeneric&lt;T extends SomeType>.</xs:documentation>
+			<xs:documentation>A generic class parameter such as T in MyGeneric&lt;T extends SomeType&gt;.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
