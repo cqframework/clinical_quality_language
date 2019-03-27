@@ -151,14 +151,19 @@ public class TestUtils {
     }
 
     public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
-        File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, new LibraryManager(modelManager), getUcumService(), options);
+        CqlTranslator translator = TestUtils.createTranslator(testFileName, options);
         for (CqlTranslatorException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
         }
         assertThat(translator.getErrors().size(), is(expectedErrors));
+        return translator;
+    }
+
+    public static CqlTranslator createTranslator(String testFileName, CqlTranslator.Options... options) throws IOException {
+        File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, new LibraryManager(modelManager), getUcumService(), options);
         return translator;
     }
 }
