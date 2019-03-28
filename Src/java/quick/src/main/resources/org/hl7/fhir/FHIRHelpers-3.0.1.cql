@@ -8,17 +8,53 @@ define function ToInterval(period FHIR.Period):
     else
         Interval[period."start".value, period."end".value]
 
+define function ToInterval(range FHIR.Range):
+    if range is null then
+        null
+    else
+        Interval[ToQuantity(range.low), ToQuantity(range.high)]
+
 define function ToQuantity(quantity FHIR.Quantity):
     if quantity is null then
         null
     else
         System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
 
-define function ToInterval(range FHIR.Range):
-    if range is null then
+define function ToQuantity(quantity FHIR.Age):
+    if quantity is null then
         null
     else
-        Interval[ToQuantity(range.low), ToQuantity(range.high)]
+        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+
+define function ToQuantity(quantity FHIR.Count):
+    if quantity is null then
+        null
+    else
+        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+
+define function ToQuantity(quantity FHIR.Distance):
+    if quantity is null then
+        null
+    else
+        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+
+define function ToQuantity(quantity FHIR.Duration):
+    if quantity is null then
+        null
+    else
+        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+
+define function ToQuantity(quantity FHIR.Money):
+    if quantity is null then
+        null
+    else
+        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+
+define function ToQuantity(quantity FHIR.SimpleQuantity):
+    if quantity is null then
+        null
+    else
+        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
 
 define function ToCode(coding FHIR.Coding):
     if coding is null then
