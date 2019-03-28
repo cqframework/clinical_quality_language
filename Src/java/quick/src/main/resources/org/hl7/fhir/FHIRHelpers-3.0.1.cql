@@ -51,6 +51,12 @@ define function ToInteger(value FHIR.unsignedInt): value.value
 define function ToInteger(value FHIR.integer): value.value
 define function ToTime(value FHIR.time): value.value
 
+define function ToString(value FHIR.id): value.value
+define function ToString(value FHIR.code): value.value
+define function ToString(value FHIR.oid): value.value
+define function ToString(value FHIR.uri): value.value
+define function ToString(value FHIR.uuid): value.value
+
 define function ToString(value AccountStatus): value.value
 define function ToString(value ActionCardinalityBehavior): value.value
 define function ToString(value ActionConditionKind): value.value

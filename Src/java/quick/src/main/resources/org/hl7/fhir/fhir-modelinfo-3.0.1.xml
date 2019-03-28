@@ -12243,6 +12243,11 @@
   <conversionInfo functionName="FHIRHelpers.ToConcept" fromType="CodeableConcept" toType="System.Concept" />
   <conversionInfo functionName="FHIRHelpers.ToCode" fromType="CodeableConcept" toType="System.Concept" />
   <conversionInfo functionName="FHIRHelpers.ToCode" fromType="Coding" toType="System.Code" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="id" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="code" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="oid" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="uri" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="uuid" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="ActionCardinalityBehavior" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="ActionConditionKind" toType="System.String" />
