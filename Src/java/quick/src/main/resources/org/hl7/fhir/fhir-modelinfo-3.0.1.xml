@@ -12241,7 +12241,6 @@
   <conversionInfo functionName="FHIRHelpers.ToInteger" fromType="integer" toType="System.Integer" />
   <conversionInfo functionName="FHIRHelpers.ToTime" fromType="time" toType="System.Time" />
   <conversionInfo functionName="FHIRHelpers.ToConcept" fromType="CodeableConcept" toType="System.Concept" />
-  <conversionInfo functionName="FHIRHelpers.ToCode" fromType="CodeableConcept" toType="System.Concept" />
   <conversionInfo functionName="FHIRHelpers.ToCode" fromType="Coding" toType="System.Code" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="id" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="code" toType="System.String" />

@@ -295,6 +295,7 @@ public class ConversionMap {
                         score = newScore;
                     }
                     else if (newScore == score) {
+                        // ERROR
                         throw new IllegalArgumentException(String.format("Ambiguous implicit conversion from %s to %s or %s.",
                                 fromType.toString(), result.getToType().toString(), conversion.getToType().toString()));
                     }
