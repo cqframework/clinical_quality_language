@@ -328,10 +328,27 @@ public class ModelImporter {
      * @param parameterInfoList
      * @return
      */
-    private List<TypeParameter> resolveGenericParameterDeclarations(List<GenericParameterInfo> parameterInfoList) {
+    private List<TypeParameter> resolveGenericParameterDeclarations(List<TypeParameterInfo> parameterInfoList) {
         List<TypeParameter> genericParameters = new ArrayList<>();
-        for (GenericParameterInfo parameterInfo : parameterInfoList) {
-            genericParameters.add(new TypeParameter(parameterInfo.getName(), TypeParameter.TypeParameterConstraint.TYPE, resolveTypeName(parameterInfo.getType())));
+        for (TypeParameterInfo parameterInfo : parameterInfoList) {
+            String constraint = parameterInfo.getConstraint();
+            TypeParameter.TypeParameterConstraint typeConstraint = null;
+            if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.NONE.name())) {
+                typeConstraint = TypeParameter.TypeParameterConstraint.NONE;
+            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.CLASS.name())) {
+                typeConstraint = TypeParameter.TypeParameterConstraint.CLASS;
+            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.TUPLE.name())) {
+                typeConstraint = TypeParameter.TypeParameterConstraint.TUPLE;
+            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.VALUE.name())) {
+                typeConstraint = TypeParameter.TypeParameterConstraint.VALUE;
+            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.CHOICE.name())) {
+                typeConstraint = TypeParameter.TypeParameterConstraint.CHOICE;
+            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.INTERVAL.name())) {
+                typeConstraint = TypeParameter.TypeParameterConstraint.INTERVAL;
+            } else if(constraint.equalsIgnoreCase(TypeParameter.TypeParameterConstraint.TYPE.name())) {
+                typeConstraint = TypeParameter.TypeParameterConstraint.TYPE;
+            }
+            genericParameters.add(new TypeParameter(parameterInfo.getName(), typeConstraint, resolveTypeName(parameterInfo.getConstraintType())));
         }
         return genericParameters;
     }
@@ -375,7 +392,7 @@ public class ModelImporter {
      * @return
      */
     private boolean isBoundParameterType(ClassInfoElement element) {
-        return element.getElementTypeSpecifier() instanceof BoundParameterizedTypeSpecifier;
+        return element.getElementTypeSpecifier() instanceof BoundParameterTypeSpecifier;
     }
 
     /**
@@ -390,14 +407,14 @@ public class ModelImporter {
     private DataType resolveBoundType(ClassType classType, ClassInfoElement e) {
         DataType boundType = null;
 
-        BoundParameterizedTypeSpecifier boundParameterizedTypeSpecifier = (BoundParameterizedTypeSpecifier)e.getElementTypeSpecifier();
-        String parameterName = boundParameterizedTypeSpecifier.getParameterName();
+        BoundParameterTypeSpecifier boundParameterTypeSpecifier = (BoundParameterTypeSpecifier)e.getElementTypeSpecifier();
+        String parameterName = boundParameterTypeSpecifier.getParameterName();
         TypeParameter genericParameter = classType.getGenericParameterByIdentifier(parameterName);
 
         if(genericParameter == null) {
             throw new RuntimeException("Unknown symbol " + parameterName);
         } else {
-            boundType = resolveTypeName(boundParameterizedTypeSpecifier.getBoundType());
+            boundType = resolveTypeName(boundParameterTypeSpecifier.getBoundType());
         }
 
         return boundType;
@@ -545,8 +562,8 @@ public class ModelImporter {
         if(boundParameters.size() > 0) {
             if(definition.getElement() != null) {
                 definition.getElement().forEach(classInfoElement -> {
-                    if (classInfoElement.getElementTypeSpecifier() instanceof BoundParameterizedTypeSpecifier) {
-                        String name = ((BoundParameterizedTypeSpecifier)classInfoElement.getElementTypeSpecifier()).getParameterName();
+                    if (classInfoElement.getElementTypeSpecifier() instanceof BoundParameterTypeSpecifier) {
+                        String name = ((BoundParameterTypeSpecifier)classInfoElement.getElementTypeSpecifier()).getParameterName();
                         int paramIndex = boundParameters.indexOf(name);
                         if(paramIndex >= 0) {
                             boundParameters.remove(paramIndex);

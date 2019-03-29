@@ -37,7 +37,7 @@ public class ModelImporterTest {
             assertThat(myGeneric.getName(), is("GENTEST.MyGeneric"));
             assertThat(myGeneric.getParameter().size(), is(1));
             assertThat(myGeneric.getParameter().get(0).getName(), is("T"));
-            assertThat(myGeneric.getParameter().get(0).getType(), is("System.Any"));
+            assertThat(myGeneric.getParameter().get(0).getConstraintType(), is("System.Any"));
 
             ClassType myGenericType = (ClassType)dataTypeMap.get("GENTEST.MyGeneric");
             assertNotNull(myGenericType);
