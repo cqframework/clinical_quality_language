@@ -190,7 +190,7 @@
 
             <!-- Added by Claude Nanjo -->
             <xs:sequence>
-                <xs:element name="parameter" type="GenericParameterInfo" minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="parameter" type="TypeParameterInfo" minOccurs="0" maxOccurs="unbounded">
                     <xs:annotation>
                         <xs:documentation>The generic parameters defined by a generic class. In generic class
                             SomeClass&lt;S extends Type1, T&gt;, 'S extends Type1' and 'T' are both generic
@@ -406,7 +406,7 @@
     </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="BoundParameterizedTypeSpecifier">
+<xs:complexType name="BoundParameterTypeSpecifier">
     <xs:annotation>
         <xs:documentation>A type which is replacing a class parameter such as T in MyClass extends MyGeneric&lt;AValidType&gt;.</xs:documentation>
     </xs:annotation>
@@ -432,7 +432,7 @@
     </xs:complexContent>
 </xs:complexType>
 
-<xs:complexType name="GenericParameterInfo">
+<xs:complexType name="TypeParameterInfo">
     <xs:annotation>
         <xs:documentation>A generic class parameter such as T in MyGeneric&lt;T extends SomeType&gt;.
         </xs:documentation>
@@ -445,7 +445,12 @@
             <xs:documentation>The name of the parameter such as T,K, etc...</xs:documentation>
         </xs:annotation>
     </xs:attribute>
-    <xs:attribute name="type" type="xs:string" use="required">
+    <xs:attribute name="constraint" type="xs:string" use="required">
+        <xs:annotation>
+            <xs:documentation>One of NONE, CLASS, VALUE, TUPLE, INTERVAL, CHOICE, TYPE</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="constraintType" type="xs:string" use="optional">
         <xs:annotation>
             <xs:documentation>The type this parameter should be assignable from (i.e., extend).</xs:documentation>
         </xs:annotation>
@@ -453,6 +458,5 @@
 </xs:complexType>
 
 <!-- End Claude Nanjo Section -->
-
 
 </xs:schema>
