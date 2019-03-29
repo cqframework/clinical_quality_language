@@ -163,9 +163,10 @@ public class ModelImporter {
         result.setPrimaryCodePath(dataType.getPrimaryCodePath());
 
         for(TypeParameter genericParameter : dataType.getGenericParameters()) {
-            GenericParameterInfo parameterInfo = new GenericParameterInfo();
+            TypeParameterInfo parameterInfo = new TypeParameterInfo();
             parameterInfo.setName(genericParameter.getIdentifier());
-            parameterInfo.setType(getTypeName(genericParameter.getConstraintType()));
+            parameterInfo.setConstraint(genericParameter.getConstraint().name());
+            parameterInfo.setConstraintType(getTypeName(genericParameter.getConstraintType()));
             result.getParameter().add(parameterInfo);
         }
 
