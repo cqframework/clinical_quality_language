@@ -290,17 +290,7 @@
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AdverseEventCausality">
     <element name="value" type="System.String" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Age" label="Age" primaryCodePath="code">
-    <element name="id" type="FHIR.string" />
-    <element name="extension">
-      <typeSpecifier xsi:type="ListTypeSpecifier" elementType="FHIR.Extension" />
-    </element>
-    <element name="value" type="FHIR.decimal" />
-    <element name="comparator" type="FHIR.QuantityComparator" />
-    <element name="unit" type="FHIR.string" />
-    <element name="system" type="FHIR.uri" />
-    <element name="code" type="FHIR.code" />
-  </typeInfo>
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Age"/>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="AggregationMode">
     <element name="value" type="System.String" />
   </typeInfo>
@@ -3218,17 +3208,7 @@
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="ContributorType">
     <element name="value" type="System.String" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Count" label="Count" primaryCodePath="code">
-    <element name="id" type="FHIR.string" />
-    <element name="extension">
-      <typeSpecifier xsi:type="ListTypeSpecifier" elementType="FHIR.Extension" />
-    </element>
-    <element name="value" type="FHIR.decimal" />
-    <element name="comparator" type="FHIR.QuantityComparator" />
-    <element name="unit" type="FHIR.string" />
-    <element name="system" type="FHIR.uri" />
-    <element name="code" type="FHIR.code" />
-  </typeInfo>
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Count"/>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Coverage" label="Coverage" retrievable="true" primaryCodePath="type">
     <element name="id" type="FHIR.id" />
     <element name="meta" type="FHIR.Meta" />
@@ -3781,17 +3761,7 @@
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DiscriminatorType">
     <element name="value" type="System.String" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Distance" label="Distance" primaryCodePath="code">
-    <element name="id" type="FHIR.string" />
-    <element name="extension">
-      <typeSpecifier xsi:type="ListTypeSpecifier" elementType="FHIR.Extension" />
-    </element>
-    <element name="value" type="FHIR.decimal" />
-    <element name="comparator" type="FHIR.QuantityComparator" />
-    <element name="unit" type="FHIR.string" />
-    <element name="system" type="FHIR.uri" />
-    <element name="code" type="FHIR.code" />
-  </typeInfo>
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Distance"/>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="DocumentConfidentiality">
     <element name="value" type="System.String" />
   </typeInfo>
@@ -4018,17 +3988,7 @@
       </typeSpecifier>
     </element>
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Duration" label="Duration" primaryCodePath="code">
-    <element name="id" type="FHIR.string" />
-    <element name="extension">
-      <typeSpecifier xsi:type="ListTypeSpecifier" elementType="FHIR.Extension" />
-    </element>
-    <element name="value" type="FHIR.decimal" />
-    <element name="comparator" type="FHIR.QuantityComparator" />
-    <element name="unit" type="FHIR.string" />
-    <element name="system" type="FHIR.uri" />
-    <element name="code" type="FHIR.code" />
-  </typeInfo>
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Duration"/>
   <typeInfo xsi:type="ClassInfo" name="Element" label="Element">
     <element name="id" type="FHIR.string" />
     <element name="extension">
@@ -7515,17 +7475,7 @@
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="MimeType">
     <element name="value" type="System.String" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Money" label="Money" primaryCodePath="code">
-    <element name="id" type="FHIR.string" />
-    <element name="extension">
-      <typeSpecifier xsi:type="ListTypeSpecifier" elementType="FHIR.Extension" />
-    </element>
-    <element name="value" type="FHIR.decimal" />
-    <element name="comparator" type="FHIR.QuantityComparator" />
-    <element name="unit" type="FHIR.string" />
-    <element name="system" type="FHIR.uri" />
-    <element name="code" type="FHIR.code" />
-  </typeInfo>
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="Money"/>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="NameUse">
     <element name="value" type="System.String" />
   </typeInfo>
@@ -10261,17 +10211,7 @@
     <element name="contentType" type="FHIR.MimeType" />
     <element name="blob" type="FHIR.base64Binary" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="SimpleQuantity" label="SimpleQuantity" primaryCodePath="code">
-    <element name="id" type="FHIR.string" />
-    <element name="extension">
-      <typeSpecifier xsi:type="ListTypeSpecifier" elementType="FHIR.Extension" />
-    </element>
-    <element name="value" type="FHIR.decimal" />
-    <element name="comparator" type="FHIR.QuantityComparator" />
-    <element name="unit" type="FHIR.string" />
-    <element name="system" type="FHIR.uri" />
-    <element name="code" type="FHIR.code" />
-  </typeInfo>
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.Quantity" name="SimpleQuantity"/>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="SlicingRules">
     <element name="value" type="System.String" />
   </typeInfo>
@@ -12243,6 +12183,11 @@
   <conversionInfo functionName="FHIRHelpers.ToConcept" fromType="CodeableConcept" toType="System.Concept" />
   <conversionInfo functionName="FHIRHelpers.ToCode" fromType="CodeableConcept" toType="System.Concept" />
   <conversionInfo functionName="FHIRHelpers.ToCode" fromType="Coding" toType="System.Code" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="id" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="ActionCardinalityBehavior" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="ActionConditionKind" toType="System.String" />
@@ -12469,6 +12414,12 @@
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="qualityType" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="repositoryType" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToInterval" fromType="Period" toType="Interval&lt;System.DateTime&gt;" />
-  <conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="Quantity" toType="System.Quantity" />
   <conversionInfo functionName="FHIRHelpers.ToInterval" fromType="Range" toType="Interval&lt;System.Quantity&gt;" />
+  <conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="Quantity" toType="System.Quantity" />
+  <conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="Age" toType="System.Quantity" />
+  <conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="Count" toType="System.Quantity" />
+  <conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="Distance" toType="System.Quantity" />
+  <conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="Duration" toType="System.Quantity" />
+  <conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="SimpleQuantity" toType="System.Quantity" />
+  <conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="Money" toType="System.Quantity" />
 </modelInfo>
