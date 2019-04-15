@@ -41,7 +41,7 @@
 				<xs:documentation>Specifies the target context of the relationship.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="relatedKeyElement" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+		<xs:attribute name="relatedKeyElement" type="xs:string">
 			<xs:annotation>
 				<xs:documentation>Specifies the related key elements, in order and semi-colon delimited, of the type that contain the reference to the context. There must be the same number of elements, and in the same order, as the target context.</xs:documentation>
 			</xs:annotation>
