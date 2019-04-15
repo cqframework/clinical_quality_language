@@ -74,7 +74,7 @@ public class ModelImporter {
                 // ERROR:
                 throw new IllegalArgumentException(String.format("Model context %s must be a class type.", c.getName()));
             }
-            ModelContext modelContext = new ModelContext(c.getName(), (ClassType)contextType, c.getKeyElement(), c.getBirthDateElement());
+            ModelContext modelContext = new ModelContext(c.getName(), (ClassType)contextType, Arrays.asList(c.getKeyElement().split(";")), c.getBirthDateElement());
             contexts.add(modelContext);
         }
 
