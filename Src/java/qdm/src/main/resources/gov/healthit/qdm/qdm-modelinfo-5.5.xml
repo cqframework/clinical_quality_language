@@ -950,7 +950,7 @@
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.NegativeLaboratoryTestRecommended" retrievable="true" baseType="QDM.LaboratoryTestRecommended" identifier="NegativeLaboratoryTestRecommended" label="Laboratory Test, Not Recommended" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.PositiveLaboratoryTestPerformed" retrievable="true" baseType="QDM.LaboratoryTestPerformed" identifier="PositiveLaboratoryTestPerformed" label="Laboratory Test, Performed" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.NegativeLaboratoryTestPerformed" retrievable="true" baseType="QDM.LaboratoryTestPerformed" identifier="NegativeLaboratoryTestPerformed" label="Laboratory Test, Not Performed" primaryCodePath="code"/>
-    <ns4:contextInfo name="Patient" keyPath="id" birthDatePath="birthDate">
+    <ns4:contextInfo name="Patient" keyElement="id" birthDateElement="birthDate">
         <ns4:contextType modelName="QDM" name="Patient"/>
     </ns4:contextInfo>
 </ns4:modelInfo>

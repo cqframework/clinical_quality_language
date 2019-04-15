@@ -162,6 +162,14 @@ public class ModelImporter {
         result.setRetrievable(dataType.isRetrievable());
         result.setPrimaryCodePath(dataType.getPrimaryCodePath());
 
+        for(TypeParameter genericParameter : dataType.getGenericParameters()) {
+            TypeParameterInfo parameterInfo = new TypeParameterInfo();
+            parameterInfo.setName(genericParameter.getIdentifier());
+            parameterInfo.setConstraint(genericParameter.getConstraint().name());
+            parameterInfo.setConstraintType(getTypeName(genericParameter.getConstraintType()));
+            result.getParameter().add(parameterInfo);
+        }
+
         for (ClassTypeElement element : dataType.getElements()) {
             ClassInfoElement cie = new ClassInfoElement().withName(element.getName());
             TypeSpecifier elementTypeSpecifier = toTypeSpecifier(element.getType());
