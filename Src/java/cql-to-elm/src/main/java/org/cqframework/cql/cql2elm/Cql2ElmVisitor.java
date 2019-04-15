@@ -2786,6 +2786,12 @@ DATETIME
                 .withDataType(libraryBuilder.dataTypeToQName((DataType)namedType))
                 .withTemplateId(classType.getIdentifier());
 
+        if (ctx.contextIdentifier() != null) {
+            List<String> identifiers = (List<String>)visit(ctx.contextIdentifier());
+            Expression contextExpression = resolveQualifiedIdentifier(identifiers);
+            retrieve.setContext(contextExpression);
+        }
+
         if (ctx.terminology() != null) {
             if (ctx.codePath() != null) {
                 List<String> identifiers = (List<String>)visit(ctx.codePath());

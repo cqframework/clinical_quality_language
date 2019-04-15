@@ -1,11 +1,14 @@
 package org.cqframework.cql.cql2elm;
 
+import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -213,6 +216,27 @@ public class SemanticTests {
     @Test
     public void invalidEquality() throws IOException {
         runSemanticTest("InvalidEquality.cql", 1, CqlTranslator.Options.DisableListPromotion);
+    }
+
+    @Test
+    public void testRelatedContextRetrieve() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("TestRelatedContextRetrieve.cql", 0);
+        org.hl7.elm.r1.Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("Estimated Due Date");
+        Last last = (Last)def.getExpression();
+        Query query = (Query)last.getSource();
+        AliasedQuerySource source = query.getSource().get(0);
+        Retrieve retrieve = (Retrieve)source.getExpression();
+        ExpressionRef mother = (ExpressionRef)retrieve.getContext();
+        assertThat(mother.getName(), is("Mother"));
     }
 
     // TODO: Support this test (add FHIRHelpers loading functionality to the test scaffolding)

@@ -19,6 +19,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.RelatedPerson" baseType="QDM.QDMBaseType" label="Related Person" retrievable="true" primaryCodePath="code">
         <ns4:element name="identifier" type="QDM.Identifier"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Practitioner" baseType="QDM.Entity" retrievable="false">
         <ns4:element name="role" type="System.Code"/>
@@ -41,6 +42,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Participation" retrievable="true" baseType="QDM.QDMBaseType" label="Participation" primaryCodePath="code">
         <ns4:element name="participationPeriod" type="interval&lt;System.DateTime&gt;"/>
@@ -52,8 +54,11 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicSex" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Sex" primaryCodePath="code"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicSex" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Sex" primaryCodePath="code">
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
+    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CareGoal" retrievable="true" baseType="QDM.QDMBaseType" label="Care Goal" primaryCodePath="code">
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="relatedTo" type="list&lt;System.String&gt;"/>
@@ -74,12 +79,18 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristic" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicEthnicity" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Ethnicity" primaryCodePath="code"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicRace" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Race" primaryCodePath="code"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicEthnicity" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Ethnicity" primaryCodePath="code">
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
+    </ns4:typeInfo>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicRace" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Race" primaryCodePath="code">
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
+    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
@@ -107,6 +118,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Symptom" retrievable="true" baseType="QDM.QDMBaseType" label="Symptom" primaryCodePath="code">
         <ns4:element name="prevalencePeriod" type="interval&lt;System.DateTime&gt;"/>
@@ -119,6 +131,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationAdministered" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -136,6 +149,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -151,6 +165,7 @@
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="negationRationale" type="System.Code"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -162,6 +177,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="lengthOfStay" type="System.Quantity"/>
         <ns4:element name="priority" type="System.Code"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Diagnosis" retrievable="true" baseType="QDM.QDMBaseType" label="Diagnosis" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -176,6 +192,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CommunicationPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -200,6 +217,7 @@
         <ns4:element name="relatedTo" type="list&lt;System.String&gt;"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="negationRationale" type="System.Code"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -228,10 +246,12 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicClinicalTrialParticipant" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Clinical Trial Participant" primaryCodePath="code">
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -245,6 +265,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -273,6 +294,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -286,6 +308,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FamilyHistory" retrievable="true" baseType="QDM.QDMBaseType" label="Family History" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -298,6 +321,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Component" retrievable="false" baseType="System.Any">
         <ns4:element name="code" type="System.Code"/>
@@ -312,18 +336,22 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Time"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosisComponent" retrievable="false" baseType="System.Any">
         <ns4:element name="code" type="System.Code"/>
-        <ns4:element name="presentOnAdmissionIndicator" type="dt:Code"/>
-        <ns4:element name="rank" type="dt:Integer"/>
+        <ns4:element name="presentOnAdmissionIndicator" type="System.Code"/>
+        <ns4:element name="rank" type="System.Integer"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ResultComponent" retrievable="false" baseType="QDM.Component">
         <ns4:element name="referenceRange" type="interval&lt;System.Quantity&gt;"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.FacilityLocation" retrievable="false" baseType="System.Any">
         <ns4:element name="code" type="System.Code"/>
         <ns4:element name="locationPeriod" type="interval&lt;System.DateTime&gt;"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationActive" retrievable="true" baseType="QDM.QDMBaseType" label="Medication, Active" primaryCodePath="code">
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
@@ -338,6 +366,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -351,6 +380,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -364,6 +394,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -382,13 +413,16 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicPayer" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Payer" primaryCodePath="code">
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicExpired" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Expired" primaryCodePath="code">
         <ns4:element name="expiredDatetime" type="System.DateTime"/>
         <ns4:element name="cause" type="System.Code"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -402,6 +436,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -415,6 +450,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationAdministered" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -431,6 +467,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceAdministered" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -447,6 +484,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -462,6 +500,7 @@
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="priority" type="System.Code"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.EncounterRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -476,6 +515,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedurePerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -506,6 +546,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AllergyIntolerance" retrievable="true" baseType="QDM.QDMBaseType" label="Allergy/Intolerance" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -520,6 +561,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -534,9 +576,11 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCharacteristicBirthdate" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Characteristic Birthdate" primaryCodePath="code">
         <ns4:element name="birthDatetime" type="System.DateTime"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AdverseEvent" retrievable="true" baseType="QDM.QDMBaseType" label="Adverse Event" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -552,11 +596,13 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.QDMBaseType" retrievable="false" baseType="System.Any">
         <ns4:element name="id" type="System.String"/>
         <ns4:element name="code" type="System.Code"/>
         <ns4:element name="patientId" type="System.String"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -570,6 +616,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceApplied" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -585,6 +632,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDischarge" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -611,6 +659,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -635,6 +684,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -648,6 +698,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDispensed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -675,6 +726,7 @@
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="negationRationale" type="System.Code"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -687,6 +739,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="activeDatetime" type="System.DateTime"/>
@@ -704,6 +757,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PatientCareExperience" retrievable="true" baseType="QDM.QDMBaseType" label="Patient Care Experience" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -715,6 +769,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProviderCareExperience" retrievable="true" baseType="QDM.QDMBaseType" label="Provider Care Experience" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -726,6 +781,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedureOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -742,6 +798,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
@@ -764,6 +821,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -781,6 +839,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionRecommended" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -794,6 +853,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
@@ -820,6 +880,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
             </ns4:typeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.PositiveAssessmentOrder" retrievable="true" baseType="QDM.AssessmentOrder" identifier="PositiveAssessmentOrder" label="Assessment, Order" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.NegativeAssessmentOrder" retrievable="true" baseType="QDM.AssessmentOrder" identifier="NegativeAssessmentOrder" label="Assessment, Not Ordered" primaryCodePath="code"/>
@@ -889,4 +950,7 @@
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.NegativeLaboratoryTestRecommended" retrievable="true" baseType="QDM.LaboratoryTestRecommended" identifier="NegativeLaboratoryTestRecommended" label="Laboratory Test, Not Recommended" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.PositiveLaboratoryTestPerformed" retrievable="true" baseType="QDM.LaboratoryTestPerformed" identifier="PositiveLaboratoryTestPerformed" label="Laboratory Test, Performed" primaryCodePath="code"/>
     <ns4:typeInfo xsi:type="ns4:ProfileInfo" name="QDM.NegativeLaboratoryTestPerformed" retrievable="true" baseType="QDM.LaboratoryTestPerformed" identifier="NegativeLaboratoryTestPerformed" label="Laboratory Test, Not Performed" primaryCodePath="code"/>
+    <ns4:contextInfo name="Patient" keyPath="id" birthDatePath="birthDate">
+        <ns4:contextType modelName="QDM" name="Patient"/>
+    </ns4:contextInfo>
 </ns4:modelInfo>

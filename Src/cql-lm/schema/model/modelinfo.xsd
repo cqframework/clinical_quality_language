@@ -10,19 +10,9 @@
 			<xs:documentation>Defines an available context type for the model.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="contextType" type="NamedTypeSpecifier" minOccurs="0" maxOccurs="0">
+			<xs:element name="contextType" type="NamedTypeSpecifier" minOccurs="1" maxOccurs="1">
 				<xs:annotation>
 					<xs:documentation>Specifies the type for the context.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="keyElement" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>Specifies the key elements, in order, of the context type that form the reference key for the context. The elements taken together must form a unique identifier for instances of the context.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-			<xs:element name="birthDateElement" type="xs:string" minOccurs="0" maxOccurs="1">
-				<xs:annotation>
-					<xs:documentation>Specifies the name of the birthDateElement of the context type.</xs:documentation>
 				</xs:annotation>
 			</xs:element>
 		</xs:sequence>
@@ -31,21 +21,29 @@
 				<xs:documentation>Specifies the name of the context. This is the name that will be referenced by context statements within CQL.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="keyElement" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Specifies the key elements, in order and semi-colon delimited, of the context type that form the reference key for the context. The elements taken together must form a unique identifier for instances of the context.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="birthDateElement" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Specifies the name of the birthDateElement of the context type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="RelationshipInfo">
 		<xs:annotation>
 			<xs:documentation>Defines the relationship of a class to the context.</xs:documentation>
 		</xs:annotation>
-		<xs:sequence>
-			<xs:element name="relatedKeyElement" type="xs:string" minOccurs="0" maxOccurs="unbounded">
-				<xs:annotation>
-					<xs:documentation>Specifies the related key elements, in order, of the type that contain the reference to the context. There must be the same number of elements, and in the same order, as the target context.</xs:documentation>
-				</xs:annotation>
-			</xs:element>
-		</xs:sequence>
 		<xs:attribute name="context" type="xs:string" use="required">
 			<xs:annotation>
 				<xs:documentation>Specifies the target context of the relationship.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relatedKeyElement" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+			<xs:annotation>
+				<xs:documentation>Specifies the related key elements, in order and semi-colon delimited, of the type that contain the reference to the context. There must be the same number of elements, and in the same order, as the target context.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
