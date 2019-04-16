@@ -143,6 +143,14 @@
 		<xs:complexContent>
 			<xs:extension base="TypeInfo">
 				<xs:sequence>
+					<xs:element name="parameter" type="TypeParameterInfo" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>The generic parameters defined by a generic class. In generic class
+                              SomeClass&lt;S extends Type1, T&gt;, 'S extends Type1' and 'T' are both generic
+                              parameters.
+                          </xs:documentation>
+						</xs:annotation>
+					</xs:element>
 					<xs:element name="element" type="ClassInfoElement" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="contextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
@@ -333,5 +341,65 @@
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ParameterTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>A type which is generic class parameter such as T in MyGeneric&lt;T extends
+            SomeType&gt;.
+        </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:attribute name="parameterName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BoundParameterTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>A type which is replacing a class parameter such as T in MyClass extends MyGeneric&lt;AValidType&gt;.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="parameterName" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name of the parameter that is bound to a valid type based on the parameter
+                        definition, such as 'T'.
+                    </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="boundType" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The type bound to the parameter (e.g., 'T').</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TypeParameterInfo">
+		<xs:annotation>
+			<xs:documentation>A generic class parameter such as T in MyGeneric&lt;T extends SomeType&gt;.
+        </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name of the parameter such as T,K, etc...</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="constraint" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>One of NONE, CLASS, VALUE, TUPLE, INTERVAL, CHOICE, TYPE</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="constraintType" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The type this parameter should be assignable from (i.e., extend).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 </xs:schema>
