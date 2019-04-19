@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class SemanticTests {
@@ -237,6 +238,25 @@ public class SemanticTests {
         Retrieve retrieve = (Retrieve)source.getExpression();
         ExpressionRef mother = (ExpressionRef)retrieve.getContext();
         assertThat(mother.getName(), is("Mother"));
+    }
+
+    @Test
+    public void testDoubleListPromotion() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("TestDoubleListPromotion.cql", 0);
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("Observations");
+        Retrieve retrieve = (Retrieve)def.getExpression();
+        Expression codes = retrieve.getCodes();
+        assertThat(codes, instanceOf(ToList.class));
+        assertThat(((ToList)codes).getOperand(), instanceOf(CodeRef.class));
     }
 
     // TODO: Support this test (add FHIRHelpers loading functionality to the test scaffolding)
