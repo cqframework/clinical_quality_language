@@ -495,6 +495,7 @@ public class SystemFunctionResolver {
         Slice slice = of.createSlice();
         slice.setSource(fun.getOperand().get(0));
         slice.setStartIndex(fun.getOperand().get(1));
+        slice.setEndIndex(builder.buildNull(fun.getOperand().get(1).getResultType()));
         builder.resolveCall("System", "Skip", new SkipInvocation(slice));
         return slice;
     }
@@ -516,6 +517,7 @@ public class SystemFunctionResolver {
         Slice slice = of.createSlice();
         slice.setSource(fun.getOperand().get(0));
         slice.setStartIndex(builder.createLiteral(1));
+        slice.setEndIndex(builder.buildNull(builder.resolveTypeName("System", "Integer")));
         builder.resolveCall("System", "Tail", new TailInvocation(slice));
         return slice;
     }
