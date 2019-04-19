@@ -2791,6 +2791,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (ctx.terminology().qualifiedIdentifier() != null) {
                 List<String> identifiers = (List<String>) visit(ctx.terminology());
                 terminology = resolveQualifiedIdentifier(identifiers);
+                track(terminology, ctx.terminology().qualifiedIdentifier());
             }
             else {
                 terminology = parseExpression(ctx.terminology().expression());
@@ -2824,7 +2825,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     libraryBuilder.resolveBinaryCall("System", "Equal", equal);
 
                     // Automatically promote to a list for use in the retrieve target
-                    retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
+                    if (!(equal.getOperand().get(1).getResultType() instanceof ListType)) {
+                        retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
+                    }
+                    else {
+                        retrieve.setCodes(equal.getOperand().get(1));
+                    }
                 }
             }
             catch (Exception e) {
