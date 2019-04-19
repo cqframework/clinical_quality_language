@@ -15,6 +15,7 @@ import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndRe
 import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 public class ListOperatorsTest {
@@ -69,6 +70,7 @@ public class ListOperatorsTest {
         Slice slice = (Slice)def.getExpression();
         assertThat(slice.getSource(), listOfLiterals(1, 2, 3));
         assertThat(slice.getStartIndex(), literalFor(1));
+        assertThat(slice.getEndIndex(), instanceOf(Null.class));
     }
 
     @Test
@@ -79,6 +81,7 @@ public class ListOperatorsTest {
         Slice slice = (Slice)def.getExpression();
         assertThat(slice.getSource(), listOfLiterals(1, 2, 3));
         assertThat(slice.getStartIndex(), literalFor(1));
+        assertThat(slice.getEndIndex(), instanceOf(Null.class));
     }
 
     @Test
