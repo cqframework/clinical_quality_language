@@ -135,6 +135,11 @@
 				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="target" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a path that can be used instead of the name of the element to access the value for this element in the underlying representation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="ClassInfo">
 		<xs:annotation>

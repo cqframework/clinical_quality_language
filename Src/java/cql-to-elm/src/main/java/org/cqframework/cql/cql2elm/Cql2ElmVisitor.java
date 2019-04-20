@@ -818,8 +818,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         for (cqlParser.InstanceElementSelectorContext elementContext : ctx.instanceElementSelector()) {
             InstanceElement element = (InstanceElement)visit(elementContext);
-            DataType propertyType = libraryBuilder.resolveProperty(classTypeSpecifier.getResultType(), element.getName());
-            element.setValue(libraryBuilder.ensureCompatible(element.getValue(), propertyType));
+            PropertyResolution resolution = libraryBuilder.resolveProperty(classTypeSpecifier.getResultType(), element.getName());
+            element.setValue(libraryBuilder.ensureCompatible(element.getValue(), resolution.getType()));
+            element.setName(resolution.getTarget());
             instance.getElement().add(element);
         }
 

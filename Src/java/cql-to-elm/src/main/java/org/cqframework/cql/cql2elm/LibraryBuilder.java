@@ -1710,18 +1710,22 @@ public class LibraryBuilder {
         // TODO: This is using a naive implementation for now... needs full path support (but not full FluentPath support...)
         String[] identifiers = path.split("\\.");
         for (int i = 0; i < identifiers.length; i++) {
-            sourceType = resolveProperty(sourceType, identifiers[i]);
+            PropertyResolution resolution = resolveProperty(sourceType, identifiers[i]);
+            sourceType = resolution.getType();
+            if (!resolution.getTarget().equals(identifiers[i])) {
+                throw new IllegalArgumentException(String.format("Identifier %s references an element with a target defined and cannot be resolved as part of a path", identifiers[i]));
+            }
         }
 
         return sourceType;
     }
 
-    public DataType resolveProperty(DataType sourceType, String identifier) {
+    public PropertyResolution resolveProperty(DataType sourceType, String identifier) {
         return resolveProperty(sourceType, identifier, true);
     }
 
     // TODO: Support case-insensitive models
-    public DataType resolveProperty(DataType sourceType, String identifier, boolean mustResolve) {
+    public PropertyResolution resolveProperty(DataType sourceType, String identifier, boolean mustResolve) {
         DataType currentType = sourceType;
         while (currentType != null) {
             if (currentType instanceof ClassType) {
@@ -1732,7 +1736,7 @@ public class LibraryBuilder {
                             throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
                         }
 
-                        return e.getType();
+                        return new PropertyResolution(e);
                     }
                 }
             }
@@ -1740,7 +1744,7 @@ public class LibraryBuilder {
                 TupleType tupleType = (TupleType)currentType;
                 for (TupleTypeElement e : tupleType.getElements()) {
                     if (e.getName().equals(identifier)) {
-                        return e.getType();
+                        return new PropertyResolution(e);
                     }
                 }
             }
@@ -1749,10 +1753,10 @@ public class LibraryBuilder {
                 switch (identifier) {
                     case "low":
                     case "high":
-                        return intervalType.getPointType();
+                        return new PropertyResolution(intervalType.getPointType(), identifier);
                     case "lowClosed":
                     case "highClosed":
-                        return resolveTypeName("System", "Boolean");
+                        return new PropertyResolution(resolveTypeName("System", "Boolean"), identifier);
                     default:
                         // ERROR:
                         throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
@@ -1764,21 +1768,30 @@ public class LibraryBuilder {
 
                 // Resolve the property against each type in the choice
                 Set<DataType> resultTypes = new HashSet<>();
+                String target = null;
                 for (DataType choice : choiceType.getTypes()) {
-                    DataType resultType = resolveProperty(choice, identifier, false);
-                    if (resultType != null) {
-                        resultTypes.add(resultType);
+                    PropertyResolution resolution  = resolveProperty(choice, identifier, false);
+                    if (resolution != null) {
+                        resultTypes.add(resolution.getType());
+                        if (target == null) {
+                            target = resolution.getTarget();
+                        }
+                        else {
+                            if (!target.equals(resolution.getTarget())) {
+                                throw new IllegalArgumentException("Cannot determine target for choices with targets specified.");
+                            }
+                        }
                     }
                 }
 
                 // The result type is a choice of all the resolved types
                 if (resultTypes.size() > 1) {
-                    return new ChoiceType(resultTypes);
+                    return new PropertyResolution(new ChoiceType(resultTypes), target);
                 }
 
                 if (resultTypes.size() == 1) {
                     for (DataType resultType : resultTypes) {
-                        return resultType;
+                        return new PropertyResolution(resultType, target);
                     }
                 }
             }
@@ -1786,9 +1799,8 @@ public class LibraryBuilder {
                 // NOTE: FHIRPath path traversal support
                 // Resolve property as a list of items of property of the element type
                 ListType listType = (ListType)currentType;
-                DataType resultType = resolveProperty(listType.getElementType(), identifier);
-                return new ListType(resultType);
-
+                PropertyResolution resolution = resolveProperty(listType.getElementType(), identifier);
+                return new PropertyResolution(new ListType(resolution.getType()), resolution.getTarget());
             }
 
             if (currentType.getBaseType() != null) {
@@ -2040,10 +2052,11 @@ public class LibraryBuilder {
                     memberIdentifier, referencedLibrary.getIdentifier().getId()));
         }
         else if (left instanceof AliasRef) {
+            PropertyResolution resolution = resolveProperty(left.getResultType(), memberIdentifier);
             Property result = of.createProperty()
                     .withScope(((AliasRef) left).getName())
-                    .withPath(memberIdentifier);
-            result.setResultType(resolveProperty(left.getResultType(), memberIdentifier));
+                    .withPath(resolution.getTarget());
+            result.setResultType(resolution.getType());
             return result;
         }
         else if (left.getResultType() instanceof ListType && listTraversal) {
@@ -2051,11 +2064,11 @@ public class LibraryBuilder {
             // Resolve property access of a list of items as a query:
             // listValue.property ::= listValue X where X.property is not null return X.property
             ListType listType = (ListType)left.getResultType();
-            DataType propertyType = resolveProperty(listType.getElementType(), memberIdentifier);
+            PropertyResolution resolution = resolveProperty(listType.getElementType(), memberIdentifier);
             Property accessor = of.createProperty()
                     .withSource(of.createAliasRef().withName("$this"))
-                    .withPath(memberIdentifier);
-            accessor.setResultType(propertyType);
+                    .withPath(resolution.getTarget());
+            accessor.setResultType(resolution.getType());
             IsNull isNull = of.createIsNull().withOperand(accessor);
             isNull.setResultType(resolveTypeName("System", "Boolean"));
             Not not = of.createNot().withOperand(isNull);
@@ -2065,7 +2078,7 @@ public class LibraryBuilder {
             accessor = of.createProperty()
                     .withSource(of.createAliasRef().withName("$this"))
                     .withPath(memberIdentifier);
-            accessor.setResultType(propertyType);
+            accessor.setResultType(resolution.getType());
 
             AliasedQuerySource source = of.createAliasedQuerySource().withExpression(left).withAlias("$this");
             source.setResultType(left.getResultType());
@@ -2084,10 +2097,11 @@ public class LibraryBuilder {
             return query;
         }
         else {
+            PropertyResolution resolution = resolveProperty(left.getResultType(), memberIdentifier);
             Property result = of.createProperty()
                     .withSource(left)
-                    .withPath(memberIdentifier);
-            result.setResultType(resolveProperty(left.getResultType(), memberIdentifier));
+                    .withPath(resolution.getTarget());
+            result.setResultType(resolution.getType());
             return result;
         }
     }
@@ -2102,10 +2116,10 @@ public class LibraryBuilder {
                     return result;
                 }
 
-                DataType sortColumnType = resolveProperty(query.getResultElementType(), identifier, false);
-                if (sortColumnType != null) {
-                    IdentifierRef result = new IdentifierRef().withName(identifier);
-                    result.setResultType(sortColumnType);
+                PropertyResolution resolution = resolveProperty(query.getResultElementType(), identifier, false);
+                if (resolution != null) {
+                    IdentifierRef result = new IdentifierRef().withName(resolution.getTarget());
+                    result.setResultType(resolution.getType());
                     return result;
                 }
             }
@@ -2142,8 +2156,8 @@ public class LibraryBuilder {
                         aliasRef.setResultType(source.getResultType());
                     }
 
-                    DataType resultType = resolveProperty(aliasRef.getResultType(), identifier, false);
-                    if (resultType != null) {
+                    PropertyResolution result = resolveProperty(aliasRef.getResultType(), identifier, false);
+                    if (result != null) {
                         return resolveAccessor(aliasRef, identifier);
                     }
                 }

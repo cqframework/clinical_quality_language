@@ -375,7 +375,7 @@ public class ModelImporter {
             if (elementType == null) {
                 elementType = resolveTypeName("System.Any");
             }
-            elements.add(new ClassTypeElement(e.getName(), elementType, e.isProhibited(), e.isOneBased()));
+            elements.add(new ClassTypeElement(e.getName(), elementType, e.isProhibited(), e.isOneBased(), e.getTarget()));
         }
         return elements;
     }

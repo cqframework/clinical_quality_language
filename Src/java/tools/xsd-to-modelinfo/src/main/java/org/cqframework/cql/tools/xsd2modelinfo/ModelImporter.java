@@ -485,7 +485,7 @@ public class ModelImporter {
                     XmlSchemaSimpleContentRestriction restrictionContent = (XmlSchemaSimpleContentRestriction)content;
 
                     DataType valueType = resolveType(restrictionContent.getBaseTypeName());
-                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false, false);
+                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false, false, null);
                     elements.add(valueElement);
 
                     attributeContent = restrictionContent.getAttributes();
@@ -497,7 +497,7 @@ public class ModelImporter {
                     particleContent = null;
 
                     DataType valueType = resolveType(extensionContent.getBaseTypeName());
-                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false, false);
+                    ClassTypeElement valueElement = new ClassTypeElement("value", valueType, false, false, null);
                     elements.add(valueElement);
                 }
                 else {
@@ -546,7 +546,7 @@ public class ModelImporter {
                                 name.append(tName.substring(1));
                             }
                             System.err.printf("%s. Renaming element to %s.%n", e.getMessage(), name.toString());
-                            classType.addElement(new ClassTypeElement(name.toString(), element.getType(), element.isProhibited(), element.isOneBased()));
+                            classType.addElement(new ClassTypeElement(name.toString(), element.getType(), element.isProhibited(), element.isOneBased(), null));
                     }
                 }
             }
@@ -648,7 +648,7 @@ public class ModelImporter {
 
                 if (elementName != null && !elementName.isEmpty()) {
                     ChoiceType choiceType = new ChoiceType(choices);
-                    ClassTypeElement element = new ClassTypeElement(elementName, choiceType, false, false);
+                    ClassTypeElement element = new ClassTypeElement(elementName, choiceType, false, false, null);
                     elements.add(element);
                     choiceCreated = true;
                 }
@@ -703,7 +703,7 @@ public class ModelImporter {
 
         boolean isProhibited = element.getMinOccurs() == 0L && element.getMaxOccurs() == 0L;
 
-        return new ClassTypeElement(element.getName(), elementType, isProhibited, false);
+        return new ClassTypeElement(element.getName(), elementType, isProhibited, false, null);
     }
 
     private ClassTypeElement resolveClassTypeElement(XmlSchemaAttribute attribute) {
@@ -728,7 +728,7 @@ public class ModelImporter {
             //throw new IllegalStateException(String.format("Unable to resolve type %s of attribute %s.", attribute.getSchemaTypeName(), attribute.getName()));
         }
 
-        return new ClassTypeElement(attribute.getName(), elementType, attribute.getUse() == XmlSchemaUse.PROHIBITED, false);
+        return new ClassTypeElement(attribute.getName(), elementType, attribute.getUse() == XmlSchemaUse.PROHIBITED, false, null);
     }
 
     private void resolveClassTypeElements(XmlSchemaAttributeOrGroupRef attribute, List<ClassTypeElement> elements) {
