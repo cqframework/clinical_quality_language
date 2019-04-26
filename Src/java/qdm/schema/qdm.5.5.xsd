@@ -297,6 +297,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="severity" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="facilityLocation" type="dt:Code" minOccurs="0" maxOccurs="1"/>
@@ -344,6 +345,7 @@
 					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="relatedTo" type="dt:String" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="performer" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -404,6 +406,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="statusDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relatedTo" type="dt:String" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="targetOutcome" type="dt:Any" minOccurs="0" maxOccurs="1"/>
@@ -428,7 +431,8 @@
 					<xs:element name="medium" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="sender" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="recipient" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="sentDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="receivedDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relatedTo" type="dt:String" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
@@ -453,6 +457,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
@@ -582,6 +587,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="result" type="dt:Any" minOccurs="0" maxOccurs="1"/>
@@ -737,6 +743,7 @@
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="performer" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
@@ -805,6 +812,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="result" type="dt:Any" minOccurs="0" maxOccurs="1"/>
@@ -876,6 +884,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="status" type="dt:Code" minOccurs="0"/>
 					<xs:element name="method" type="dt:Code" minOccurs="0"/>
@@ -933,6 +942,7 @@
 		<xs:complexContent>
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="dt:Code" minOccurs="0"/>
@@ -960,6 +970,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="dt:Code" minOccurs="0"/>
@@ -1027,6 +1038,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
@@ -1056,6 +1068,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
@@ -1145,6 +1158,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
 					<xs:element name="method" type="dt:Code" minOccurs="0"/>
@@ -1220,6 +1234,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
 					<xs:element name="method" type="dt:Code" minOccurs="0"/>
@@ -1282,6 +1297,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="dt:Code" minOccurs="0"/>

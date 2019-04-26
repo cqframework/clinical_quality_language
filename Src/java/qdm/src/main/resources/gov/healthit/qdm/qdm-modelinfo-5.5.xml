@@ -60,6 +60,7 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CareGoal" retrievable="true" baseType="QDM.QDMBaseType" label="Care Goal" primaryCodePath="code">
+        <ns4:element name="statusDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="relatedTo" type="list&lt;System.String&gt;"/>
         <ns4:element name="targetOutcome"> <!--type="System.Any">-->
@@ -93,6 +94,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.LaboratoryTestPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="status" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
@@ -135,6 +137,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationAdministered" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Code"/>
@@ -215,12 +218,14 @@
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="relatedTo" type="list&lt;System.String&gt;"/>
-        <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
+        <ns4:element name="sentDatetime" type="System.DateTime"/>
+        <ns4:element name="receivedDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AssessmentPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
@@ -269,6 +274,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DiagnosticStudyPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="result"> <!--type="System.Any">-->
@@ -354,6 +360,7 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationActive" retrievable="true" baseType="QDM.QDMBaseType" label="Medication, Active" primaryCodePath="code">
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Code"/>
@@ -454,6 +461,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationAdministered" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="dosage" type="System.Quantity"/>
@@ -471,6 +479,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceAdministered" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="frequency" type="System.Code"/>
@@ -519,6 +528,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ProcedurePerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
@@ -584,6 +594,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AdverseEvent" retrievable="true" baseType="QDM.QDMBaseType" label="Adverse Event" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="severity" type="System.Code"/>
         <ns4:element name="facilityLocation" type="System.Code"/>
@@ -620,6 +631,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.DeviceApplied" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
@@ -663,6 +675,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.InterventionPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="result"> <!-- type="System.Any">-->
@@ -702,6 +715,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationDispensed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="refills" type="System.Integer"/>
         <ns4:element name="dosage" type="System.Quantity"/>
@@ -801,6 +815,7 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationOrder" retrievable="false" baseType="QDM.QDMBaseType">
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="refills" type="System.Integer"/>
@@ -857,6 +872,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.PhysicalExamPerformed" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantDatetime" type="System.DateTime"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="method" type="System.Code"/>
