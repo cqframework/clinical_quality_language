@@ -9,11 +9,11 @@
 	</xs:complexType>
 	<xs:complexType name="QDMEntity">
 		<xs:sequence>
-			<xs:element name="id" type="dt:String" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="id" type="dt:String" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="identifier" type="Identifier" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="Patient">
+	<xs:complexType name="PatientEntity">
 		<xs:annotation>
 			<xs:documentation>an individual receiving health care services</xs:documentation>
 		</xs:annotation>
@@ -290,7 +290,7 @@
 			<xs:documentation>
 				Data elements that meet this criterion typically define any untoward medical occurrence associated
         with the delivery of clinical care, whether or not considered drug related.
-				Timing: The Relevant Period references the time from when the event began to when the event completed.
+				Timing: The Relevant Datetime references the time when the event occurred.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -298,7 +298,6 @@
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="severity" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="facilityLocation" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
@@ -744,7 +743,6 @@
 					<xs:element name="route" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="performer" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -1068,7 +1066,6 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="1"/>
-					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
@@ -1322,6 +1319,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="supply" type="dt:Quantity" minOccurs="0"/>

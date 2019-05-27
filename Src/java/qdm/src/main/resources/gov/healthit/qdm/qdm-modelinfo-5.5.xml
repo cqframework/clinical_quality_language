@@ -36,7 +36,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -48,7 +48,7 @@
         <ns4:element name="participationPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -74,7 +74,7 @@
         </ns4:element>
         <ns4:element name="expressedBy">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -114,7 +114,7 @@
         <ns4:element name="components" type="list&lt;QDM.ResultComponent&gt;"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -127,7 +127,7 @@
         <ns4:element name="severity" type="System.Code"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -146,7 +146,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -161,7 +161,7 @@
         <ns4:element name="rank" type="System.Integer"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -180,6 +180,14 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="lengthOfStay" type="System.Quantity"/>
         <ns4:element name="priority" type="System.Code"/>
+        <ns4:element name="participant">
+            <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
+            </ns4:typeSpecifier>
+        </ns4:element>
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Diagnosis" retrievable="true" baseType="QDM.QDMBaseType" label="Diagnosis" primaryCodePath="code">
@@ -189,7 +197,7 @@
         <ns4:element name="severity" type="System.Code"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -203,7 +211,7 @@
         <ns4:element name="medium" type="System.Code"/>
         <ns4:element name="sender">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -211,7 +219,7 @@
         </ns4:element>
         <ns4:element name="recipient">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -245,7 +253,7 @@
         <ns4:element name="relatedTo" type="list&lt;System.String&gt;"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -264,7 +272,7 @@
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -294,7 +302,7 @@
         <ns4:element name="components" type="list&lt;QDM.Component&gt;"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -308,7 +316,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -321,7 +329,7 @@
         <ns4:element name="relationship" type="System.Code"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -367,7 +375,7 @@
         <ns4:element name="route" type="System.Code"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -381,7 +389,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -395,7 +403,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -405,6 +413,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.SubstanceOrder" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
@@ -414,7 +423,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -435,9 +444,9 @@
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
-        <ns4:element name="recorder">
+        <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -451,7 +460,7 @@
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -462,14 +471,13 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.ImmunizationAdministered" retrievable="false" baseType="QDM.QDMBaseType">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="relevantDatetime" type="System.DateTime"/>
-        <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="route" type="System.Code"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -487,7 +495,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -502,7 +510,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -518,7 +526,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -550,7 +558,7 @@
         <ns4:element name="components" type="list&lt;QDM.Component&gt;"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -565,7 +573,7 @@
         <ns4:element name="severity" type="System.Code"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -580,7 +588,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -595,13 +603,12 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.AdverseEvent" retrievable="true" baseType="QDM.QDMBaseType" label="Adverse Event" primaryCodePath="code">
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="relevantDatetime" type="System.DateTime"/>
-        <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="severity" type="System.Code"/>
         <ns4:element name="facilityLocation" type="System.Code"/>
         <ns4:element name="type" type="System.Code"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -621,7 +628,7 @@
         <ns4:element name="reason" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -638,7 +645,7 @@
         <ns4:element name="anatomicalLocationSite" type="System.Code"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -657,7 +664,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="prescriber">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -665,7 +672,7 @@
         </ns4:element>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -691,7 +698,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -705,7 +712,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -725,7 +732,7 @@
         <ns4:element name="route" type="System.Code"/>
         <ns4:element name="prescriber">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -733,7 +740,7 @@
         </ns4:element>
         <ns4:element name="dispenser">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -747,7 +754,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -765,7 +772,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -777,7 +784,7 @@
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -789,7 +796,7 @@
         <ns4:element name="authorDatetime" type="System.DateTime"/>
         <ns4:element name="recorder">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -806,7 +813,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -815,9 +822,8 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.MedicationOrder" retrievable="false" baseType="QDM.QDMBaseType">
-        <ns4:element name="relevantDatetime" type="System.DateTime"/>
-        <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="authorDatetime" type="System.DateTime"/>
+        <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="refills" type="System.Integer"/>
         <ns4:element name="dosage" type="System.Quantity"/>
         <ns4:element name="supply" type="System.Quantity"/>
@@ -826,11 +832,10 @@
         <ns4:element name="route" type="System.Code"/>
         <ns4:element name="setting" type="System.Code"/>
         <ns4:element name="reason" type="System.Code"/>
-        <ns4:element name="prescriberId" type="System.String"/>
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="prescriber">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -848,7 +853,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -862,7 +867,7 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="requester">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
@@ -890,7 +895,7 @@
         <ns4:element name="components" type="list&lt;QDM.Component&gt;"/>
         <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Patient"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
