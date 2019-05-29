@@ -60,7 +60,7 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.CareGoal" retrievable="true" baseType="QDM.QDMBaseType" label="Care Goal" primaryCodePath="code">
-        <ns4:element name="statusDatetime" type="System.DateTime"/>
+        <ns4:element name="statusDate" type="System.Date"/>
         <ns4:element name="relevantPeriod" type="interval&lt;System.DateTime&gt;"/>
         <ns4:element name="relatedTo" type="list&lt;System.String&gt;"/>
         <ns4:element name="targetOutcome"> <!--type="System.Any">-->
@@ -72,7 +72,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
             </ns4:typeSpecifier>
         </ns4:element>
-        <ns4:element name="expressedBy">
+        <ns4:element name="performer">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
