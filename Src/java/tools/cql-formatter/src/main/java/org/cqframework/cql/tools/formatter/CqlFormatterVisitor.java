@@ -1417,7 +1417,9 @@ public class CqlFormatterVisitor extends cqlBaseVisitor {
     @Override
     public Object visitTerminal(TerminalNode node) {
         checkForComment(node);
-        appendTerminal(node.getText());
+        if (node.getSymbol().getType() != cqlLexer.EOF) {
+            appendTerminal(node.getText());
+        }
         return super.visitTerminal(node);
     }
 

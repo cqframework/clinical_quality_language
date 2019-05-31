@@ -325,7 +325,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         try {
             // Loop through and call visit on each child (to ensure they are tracked)
             for (int i = 0; i < ctx.getChildCount(); i++) {
-                lastResult = visit(ctx.getChild(i));
+                Object childResult = visit(ctx.getChild(i));
+                // Only set the last result if we received something useful
+                if (childResult != null) {
+                    lastResult = childResult;
+                }
             }
 
             // Return last result (consistent with super implementation and helps w/ testing)
@@ -453,7 +457,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public NamedTypeSpecifier visitNamedTypeSpecifier(@NotNull cqlParser.NamedTypeSpecifierContext ctx) {
         List<String> qualifiers = parseQualifiers(ctx);
         String modelIdentifier = getModelIdentifier(qualifiers);
-        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.identifier()));
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
 
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         NamedTypeSpecifier result = of.createNamedTypeSpecifier()
@@ -468,7 +472,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public TupleElementDefinition visitTupleElementDefinition(@NotNull cqlParser.TupleElementDefinitionContext ctx) {
         TupleElementDefinition result = of.createTupleElementDefinition()
-                .withName(parseString(ctx.identifier()))
+                .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
 
         if (includeDeprecatedElements) {
@@ -781,7 +785,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitTupleElementSelector(@NotNull cqlParser.TupleElementSelectorContext ctx) {
         TupleElement result = of.createTupleElement()
-                .withName(parseString(ctx.identifier()))
+                .withName(parseString(ctx.referentialIdentifier()))
                 .withValue(parseExpression(ctx.expression()));
         result.setResultType(result.getValue().getResultType());
         return result;
@@ -803,7 +807,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitInstanceElementSelector(@NotNull cqlParser.InstanceElementSelectorContext ctx) {
         InstanceElement result = of.createInstanceElement()
-                .withName(parseString(ctx.identifier()))
+                .withName(parseString(ctx.referentialIdentifier()))
                 .withValue(parseExpression(ctx.expression()));
         result.setResultType(result.getValue().getResultType());
         return result;
@@ -1805,6 +1809,20 @@ DATETIME
     }
 
     @Override
+    public List<String> visitQualifiedIdentifierExpression(@NotNull cqlParser.QualifiedIdentifierExpressionContext ctx) {
+        // Return the list of qualified identifiers for resolution by the containing element
+        List<String> identifiers = new ArrayList<>();
+        for (cqlParser.QualifierExpressionContext qualifierContext : ctx.qualifierExpression()) {
+            String qualifier = parseString(qualifierContext);
+            identifiers.add(qualifier);
+        }
+
+        String identifier = parseString(ctx.referentialIdentifier());
+        identifiers.add(identifier);
+        return identifiers;
+    }
+
+    @Override
     public Object visitTermExpression(@NotNull cqlParser.TermExpressionContext ctx) {
         Object result = super.visitTermExpression(ctx);
 
@@ -1820,6 +1838,11 @@ DATETIME
     public Object visitTerminal(@NotNull TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
+
+        if (cqlLexer.EOF == tokenType) {
+            return null;
+        }
+
         if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType || cqlLexer.DELIMITEDIDENTIFIER == tokenType) {
             // chop off leading and trailing ', ", or `
             text = text.substring(1, text.length() - 1);
@@ -2758,7 +2781,7 @@ DATETIME
         libraryBuilder.checkLiteralContext();
         List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
         String model = getModelIdentifier(qualifiers);
-        String label = getTypeIdentifier(qualifiers, parseString(ctx.namedTypeSpecifier().identifier()));
+        String label = getTypeIdentifier(qualifiers, parseString(ctx.namedTypeSpecifier().referentialOrTypeNameIdentifier()));
         DataType dataType = libraryBuilder.resolveTypeName(model, label);
         if (dataType == null) {
             // ERROR:
@@ -2825,10 +2848,10 @@ DATETIME
             }
 
             Expression terminology = null;
-            if (ctx.terminology().qualifiedIdentifier() != null) {
+            if (ctx.terminology().qualifiedIdentifierExpression() != null) {
                 List<String> identifiers = (List<String>) visit(ctx.terminology());
                 terminology = resolveQualifiedIdentifier(identifiers);
-                track(terminology, ctx.terminology().qualifiedIdentifier());
+                track(terminology, ctx.terminology().qualifiedIdentifierExpression());
             }
             else {
                 terminology = parseExpression(ctx.terminology().expression());
@@ -3372,7 +3395,7 @@ DATETIME
         } else if (ctx.retrieve() != null) {
             return visit(ctx.retrieve());
         } else {
-            List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
+            List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifierExpression());
             return resolveQualifiedIdentifier(identifiers);
         }
     }
@@ -3393,7 +3416,7 @@ DATETIME
         Expression left = parseExpression(ctx.expressionTerm());
         libraryBuilder.pushExpressionTarget(left);
         try {
-            return (Expression)visit(ctx.invocation());
+            return (Expression)visit(ctx.qualifiedInvocation());
         }
         finally {
             libraryBuilder.popExpressionTarget();
@@ -3412,18 +3435,14 @@ DATETIME
 
     @Override
     public Expression visitMemberInvocation(@NotNull cqlParser.MemberInvocationContext ctx) {
-        String identifier = parseString(ctx.identifier());
-        if (libraryBuilder.hasExpressionTarget()) {
-            Expression target = libraryBuilder.popExpressionTarget();
-            try {
-                return libraryBuilder.resolveAccessor(target, identifier);
-            }
-            finally {
-                libraryBuilder.pushExpressionTarget(target);
-            }
-        }
+        String identifier = parseString(ctx.referentialIdentifier());
+        return resolveMemberIdentifier(identifier);
+    }
 
-        return resolveIdentifier(identifier);
+    @Override
+    public Expression visitQualifiedMemberInvocation(@NotNull cqlParser.QualifiedMemberInvocationContext ctx) {
+        String identifier = parseString(ctx.referentialIdentifier());
+        return resolveMemberIdentifier(identifier);
     }
 
     public Expression resolveQualifiedIdentifier(List<String> identifiers) {
@@ -3437,6 +3456,20 @@ DATETIME
         }
 
         return current;
+    }
+
+    public Expression resolveMemberIdentifier(String identifier) {
+        if (libraryBuilder.hasExpressionTarget()) {
+            Expression target = libraryBuilder.popExpressionTarget();
+            try {
+                return libraryBuilder.resolveAccessor(target, identifier);
+            }
+            finally {
+                libraryBuilder.pushExpressionTarget(target);
+            }
+        }
+
+        return resolveIdentifier(identifier);
     }
 
     private Expression resolveIdentifier(String identifier) {
@@ -3474,25 +3507,26 @@ DATETIME
         return result;
     }
 
-    private Expression resolveFunction(String libraryName, @NotNull cqlParser.FunctionContext ctx) {
-        String functionName = parseString(ctx.identifier());
+    private String ensureSystemFunctionName(String libraryName, String functionName) {
         if (libraryName == null || libraryName.equals("System")) {
             // Because these functions can be both a keyword and the name of a method, they can be resolved by the
             // parser as a function, instead of as the keyword-based parser rule. In this case, the function
             // name needs to be translated to the System function name in order to resolve.
             switch (functionName) {
-                case "distinct": functionName = "Distinct"; break;
                 case "contains": functionName = "Contains"; break;
-                case "not": functionName = "Not"; break;
+                case "distinct": functionName = "Distinct"; break;
                 case "exists": functionName = "Exists"; break;
+                case "in": functionName = "In"; break;
+                case "not": functionName = "Not"; break;
             }
-            //functionName = "Distinct";
         }
-        return resolveFunction(libraryName, functionName, ctx.paramList());
+
+        return functionName;
     }
 
     private Expression resolveFunction(String libraryName, String functionName, cqlParser.ParamListContext paramList) {
         List<Expression> expressions = new ArrayList<Expression>();
+        functionName = ensureSystemFunctionName(libraryName, functionName);
 
         if (paramList != null && paramList.expression() != null) {
             for (cqlParser.ExpressionContext expressionContext : paramList.expression()) {
@@ -3533,20 +3567,19 @@ DATETIME
         return result;
     }
 
-    @Override
-    public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
+    public Expression resolveFunctionOrQualifiedFunction(@NotNull String identifier, cqlParser.ParamListContext paramListCtx) {
         if (libraryBuilder.hasExpressionTarget()) {
             Expression target = libraryBuilder.popExpressionTarget();
             try {
                 // If the target is a library reference, resolve as a standard qualified call
                 if (target instanceof LibraryRef) {
-                    return resolveFunction(((LibraryRef)target).getLibraryName(), ctx);
+                    return resolveFunction(((LibraryRef)target).getLibraryName(), identifier, paramListCtx);
                 }
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression && methodInvocation) {
-                    return systemMethodResolver.resolveMethod((Expression)target, ctx, true);
+                    return systemMethodResolver.resolveMethod((Expression)target, identifier, paramListCtx, true);
                 }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
@@ -3559,14 +3592,24 @@ DATETIME
         // If we are in an implicit $this context, the function may be resolved as a method invocation
         Expression thisRef = libraryBuilder.resolveIdentifier("$this", false);
         if (thisRef != null) {
-            Expression result = systemMethodResolver.resolveMethod(thisRef, ctx, false);
+            Expression result = systemMethodResolver.resolveMethod(thisRef, identifier, paramListCtx, false);
             if (result != null) {
                 return result;
             }
         }
 
         // If there is no target, resolve as a system function
-        return resolveFunction(null, ctx);
+        return resolveFunction(null, identifier, paramListCtx);
+    }
+
+    @Override
+    public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
+        return resolveFunctionOrQualifiedFunction(parseString(ctx.referentialIdentifier()), ctx.paramList());
+    }
+
+    @Override
+    public Expression visitQualifiedFunction(@NotNull cqlParser.QualifiedFunctionContext ctx) {
+        return resolveFunctionOrQualifiedFunction(parseString(ctx.identifierOrFunctionIdentifier()), ctx.paramList());
     }
 
     @Override
@@ -3577,13 +3620,13 @@ DATETIME
     public Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                .withName(parseString(ctx.identifier()));
+                .withName(parseString(ctx.identifierOrFunctionIdentifier()));
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
                 TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
                 fun.getOperand().add(
                         (OperandDef)of.createOperandDef()
-                                .withName(parseString(opdef.identifier()))
+                                .withName(parseString(opdef.referentialIdentifier()))
                                 .withOperandTypeSpecifier(typeSpecifier)
                                 .withResultType(typeSpecifier.getResultType())
                 );

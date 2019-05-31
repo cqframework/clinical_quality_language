@@ -33,11 +33,11 @@ public class SystemMethodResolver {
         this.builder = builder;
     }
 
-    private List<Expression> getParams(Expression target, @NotNull cqlParser.FunctionContext ctx) {
+    private List<Expression> getParams(Expression target, cqlParser.ParamListContext ctx) {
         List<Expression> params = new ArrayList<Expression>();
         params.add(target);
-        if (ctx.paramList() != null && ctx.paramList().expression() != null) {
-            for (cqlParser.ExpressionContext param : ctx.paramList().expression()) {
+        if (ctx != null && ctx.expression() != null) {
+            for (cqlParser.ExpressionContext param : ctx.expression()) {
                 params.add((Expression)visitor.visit(param));
             }
         }
@@ -45,10 +45,10 @@ public class SystemMethodResolver {
         return params;
     }
 
-    private void checkArgumentCount(@NotNull cqlParser.FunctionContext ctx, String functionName, int expectedCount) {
+    private void checkArgumentCount(cqlParser.ParamListContext ctx, String functionName, int expectedCount) {
         int actualCount = 0;
-        if (ctx.paramList() != null && ctx.paramList().expression() != null) {
-            actualCount = ctx.paramList().expression().size();
+        if (ctx != null && ctx.expression() != null) {
+            actualCount = ctx.expression().size();
         }
         if (actualCount != expectedCount) {
             throw new IllegalArgumentException(String.format("Expected %s argument for method %s.",
@@ -96,12 +96,12 @@ public class SystemMethodResolver {
         builder.popQueryContext();
     }
 
-    private Query createWhere(Expression target, String functionName, @NotNull cqlParser.FunctionContext ctx) {
+    private Query createWhere(Expression target, String functionName, cqlParser.ParamListContext ctx) {
         AliasedQuerySource source = enterQueryContext(target);
         try {
 
             checkArgumentCount(ctx, functionName, 1);
-            Expression where = (Expression)visitor.visit(ctx.paramList().expression(0));
+            Expression where = (Expression)visitor.visit(ctx.expression(0));
             if (visitor.getDateRangeOptimization()) {
                 where = visitor.optimizeDateRangeInQuery(where, source);
             }
@@ -114,11 +114,11 @@ public class SystemMethodResolver {
     }
 
     // X.ofType(T) === X $this where $this is T
-    private Expression createOfType(Expression target, String functionName, @NotNull cqlParser.FunctionContext ctx) {
+    private Expression createOfType(Expression target, String functionName, cqlParser.ParamListContext ctx) {
         AliasedQuerySource source = enterQueryContext(target);
         try {
             checkArgumentCount(ctx, functionName, 1);
-            Expression typeArgument = (Expression)visitor.visit(ctx.paramList().expression(0));
+            Expression typeArgument = (Expression)visitor.visit(ctx.expression(0));
             if (!(typeArgument instanceof Literal)) {
                 throw new IllegalArgumentException("Expected literal argument");
             }
@@ -152,12 +152,12 @@ public class SystemMethodResolver {
         }
     }
 
-    private Expression createRepeat(Expression target, String functionName, @NotNull cqlParser.FunctionContext ctx) {
+    private Expression createRepeat(Expression target, String functionName, cqlParser.ParamListContext ctx) {
         AliasedQuerySource source = enterQueryContext(target);
         try {
             boolean isSingular = !(source.getResultType() instanceof ListType);
             checkArgumentCount(ctx, functionName, 1);
-            Expression select = (Expression)visitor.visit(ctx.paramList().expression(0));
+            Expression select = (Expression)visitor.visit(ctx.expression(0));
             Repeat repeat = of.createRepeat();
             repeat.setSource(target);
             repeat.setElement(select);
@@ -177,14 +177,14 @@ public class SystemMethodResolver {
         }
     }
 
-    private Expression createSelect(Expression target, String functionName, @NotNull cqlParser.FunctionContext ctx) {
+    private Expression createSelect(Expression target, String functionName, cqlParser.ParamListContext ctx) {
         boolean isListResult = false;
         boolean isSingular = false;
         AliasedQuerySource source = enterQueryContext(target);
         try {
             isSingular = !(source.getResultType() instanceof ListType);
             checkArgumentCount(ctx, functionName, 1);
-            Expression select = (Expression)visitor.visit(ctx.paramList().expression(0));
+            Expression select = (Expression)visitor.visit(ctx.expression(0));
             QueryContext queryContext = builder.peekQueryContext();
             LetClause let = of.createLetClause().withExpression(select).withIdentifier("$a");
             let.setResultType(select.getResultType());
@@ -255,8 +255,7 @@ public class SystemMethodResolver {
         }
     }
 
-    public Expression resolveMethod(Expression target, @NotNull cqlParser.FunctionContext ctx, boolean mustResolve) {
-        String functionName = visitor.parseString(ctx.identifier());
+    public Expression resolveMethod(Expression target, String functionName, cqlParser.ParamListContext ctx, boolean mustResolve) {
         switch (functionName) {
             case "aggregate": return builder.resolveFunction(null, "Aggregate", getParams(target, ctx));
             case "all": {
@@ -298,7 +297,7 @@ public class SystemMethodResolver {
             case "combine": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> elements = new ArrayList<>();
-                Expression argument = (Expression)visitor.visit(ctx.paramList().expression(0));
+                Expression argument = (Expression)visitor.visit(ctx.expression(0));
                 elements.add(target);
                 elements.add(argument);
                 DataType elementType = builder.ensureCompatibleTypes(target.getResultType(), argument.getResultType());
@@ -313,7 +312,7 @@ public class SystemMethodResolver {
             case "contains": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> params = new ArrayList<Expression>();
-                Expression argument = (Expression)visitor.visit(ctx.paramList().expression(0));
+                Expression argument = (Expression)visitor.visit(ctx.expression(0));
                 params.add(argument);
                 params.add(target);
                 Expression result = builder.resolveFunction(null, "PositionOf", params);
@@ -347,7 +346,7 @@ public class SystemMethodResolver {
             }
             case "endsWith": return builder.resolveFunction(null, "EndsWith", getParams(target, ctx));
             case "exists": {
-                if (ctx.paramList() == null || ctx.paramList().expression() == null || ctx.paramList().expression().isEmpty()) {
+                if (ctx == null || ctx.expression() == null || ctx.expression().isEmpty()) {
                     List<Expression> params = getParams(target, ctx);
                     return builder.resolveFunction(null, "Exists", params);
                 }
@@ -375,15 +374,15 @@ public class SystemMethodResolver {
                     params.add(result);
                     result = builder.resolveFunction(null, "SingletonFrom", params);
                 }
-                Expression thenExpression = (Expression)visitor.visit(ctx.paramList().expression(0));
-                Expression elseExpression = ctx.paramList().expression().size() == 2 ? (Expression)visitor.visit(ctx.paramList().expression(1)) : of.createNull();
+                Expression thenExpression = (Expression)visitor.visit(ctx.expression(0));
+                Expression elseExpression = ctx.expression().size() == 2 ? (Expression)visitor.visit(ctx.expression(1)) : of.createNull();
                 result = of.createIf().withCondition(result).withThen(thenExpression).withElse(elseExpression);
                 return visitor.resolveIfThenElse((If)result);
             }
             case "indexOf": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> params = new ArrayList<Expression>();
-                Expression argument = (Expression)visitor.visit(ctx.paramList().expression(0));
+                Expression argument = (Expression)visitor.visit(ctx.expression(0));
                 params.add(argument);
                 params.add(target);
                 return builder.resolveFunction(null, "PositionOf", params);
@@ -393,7 +392,7 @@ public class SystemMethodResolver {
             case "lastIndexOf": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> params = new ArrayList<Expression>();
-                Expression argument = (Expression)visitor.visit(ctx.paramList().expression(0));
+                Expression argument = (Expression)visitor.visit(ctx.expression(0));
                 params.add(argument);
                 params.add(target);
                 return builder.resolveFunction(null, "LastPositionOf", params);
@@ -433,7 +432,7 @@ public class SystemMethodResolver {
                 params.add(builder.createLiteral(true));
                 params.add(builder.createLiteral("TRACE"));
                 params.add(builder.createLiteral("Trace"));
-                params.add((Expression)visitor.visit(ctx.paramList().expression(0)));
+                params.add((Expression)visitor.visit(ctx.expression(0)));
                 return builder.resolveFunction(null, "Message", params);
             }
             case "where": {

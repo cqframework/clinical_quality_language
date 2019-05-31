@@ -137,7 +137,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
-        functionDefinition.setName((String)visit(ctx.identifier()));
+        functionDefinition.setName((String)visit(ctx.identifierOrFunctionIdentifier()));
         functionDefinition.setContext(currentContext);
         functionDefinition.setDefinition(ctx);
         libraryInfo.addFunctionDefinition(functionDefinition);
@@ -166,6 +166,20 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         }
 
         String identifier = (String)visit(ctx.identifier());
+        identifiers.add(identifier);
+        return identifiers;
+    }
+
+    @Override
+    public Object visitQualifiedIdentifierExpression(@NotNull cqlParser.QualifiedIdentifierExpressionContext ctx) {
+        // Return the list of qualified identifiers for resolution by the containing element
+        List<String> identifiers = new ArrayList<>();
+        for (cqlParser.QualifierExpressionContext qualifierContext : ctx.qualifierExpression()) {
+            String qualifier = (String)visit(qualifierContext);
+            identifiers.add(qualifier);
+        }
+
+        String identifier = (String)visit(ctx.referentialIdentifier());
         identifiers.add(identifier);
         return identifiers;
     }

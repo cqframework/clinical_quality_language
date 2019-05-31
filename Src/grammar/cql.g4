@@ -22,6 +22,7 @@ library
     conceptDefinition*
     parameterDefinition*
     statement*
+    EOF
     ;
 
 /*
@@ -114,7 +115,7 @@ typeSpecifier
     ;
 
 namedTypeSpecifier
-    : (qualifier '.')* identifier
+    : (qualifier '.')* referentialOrTypeNameIdentifier
     ;
 
 modelIdentifier
@@ -134,7 +135,7 @@ tupleTypeSpecifier
     ;
 
 tupleElementDefinition
-    : identifier typeSpecifier
+    : referentialIdentifier typeSpecifier
     ;
 
 choiceTypeSpecifier
@@ -160,13 +161,13 @@ contextDefinition
     ;
 
 functionDefinition
-    : 'define' accessModifier? 'function' identifier '(' (operandDefinition (',' operandDefinition)*)? ')'
+    : 'define' accessModifier? 'function' identifierOrFunctionIdentifier '(' (operandDefinition (',' operandDefinition)*)? ')'
         ('returns' typeSpecifier)?
         ':' (functionBody | 'external')
     ;
 
 operandDefinition
-    : identifier typeSpecifier
+    : referentialIdentifier typeSpecifier
     ;
 
 functionBody
@@ -179,7 +180,7 @@ functionBody
 
 querySource
     : retrieve
-    | qualifiedIdentifier
+    | qualifiedIdentifierExpression
     | '(' expression ')'
     ;
 
@@ -209,15 +210,15 @@ retrieve
     ;
     
 contextIdentifier
-    : qualifiedIdentifier
+    : qualifiedIdentifierExpression
     ;
 
 codePath
-    : qualifiedIdentifier
+    : qualifiedIdentifierExpression
     ;
 
 terminology
-    : qualifiedIdentifier
+    : qualifiedIdentifierExpression
     | expression
     ;
 
@@ -266,6 +267,14 @@ qualifiedIdentifier
     : (qualifier '.')* identifier
     ;
 
+qualifiedIdentifierExpression
+    : (qualifierExpression '.')* referentialIdentifier
+    ;
+
+qualifierExpression
+    : referentialIdentifier
+    ;
+
 expression
     : expressionTerm                                                                                #termExpression
     | retrieve                                                                                      #retrieveExpression
@@ -305,7 +314,7 @@ pluralDateTimePrecision
 
 expressionTerm
     : term                                                                          #termExpressionTerm
-    | expressionTerm '.' invocation                                                 #invocationExpressionTerm
+    | expressionTerm '.' qualifiedInvocation                                        #invocationExpressionTerm
     | expressionTerm '[' expression ']'                                             #indexedExpressionTerm
     | 'convert' expression 'to' (typeSpecifier | unit)                              #conversionExpressionTerm
     | ('+' | '-') expressionTerm                                                    #polarityExpressionTerm
@@ -386,6 +395,27 @@ term
     | '(' expression ')'    #parenthesizedTerm
     ;
 
+qualifiedInvocation // Terms that can be used after the function/member invocation '.'
+    : referentialIdentifier             #qualifiedMemberInvocation
+    | qualifiedFunction                 #qualifiedFunctionInvocation
+    ;
+
+qualifiedFunction
+    : identifierOrFunctionIdentifier '(' paramList? ')'
+    ;
+
+invocation
+    : referentialIdentifier             #memberInvocation
+    | function                          #functionInvocation
+    | '$this'                           #thisInvocation
+    | '$index'                          #indexInvocation
+    | '$total'                          #totalInvocation
+    ;
+
+function
+    : referentialIdentifier '(' paramList? ')'
+    ;
+
 ratio
     : quantity ':' quantity
     ;
@@ -412,7 +442,7 @@ tupleSelector
     ;
 
 tupleElementSelector
-    : identifier ':' expression
+    : referentialIdentifier ':' expression
     ;
 
 instanceSelector
@@ -420,7 +450,7 @@ instanceSelector
     ;
 
 instanceElementSelector
-    : identifier ':' expression
+    : referentialIdentifier ':' expression
     ;
 
 listSelector
@@ -439,6 +469,415 @@ conceptSelector
     : 'Concept' '{' codeSelector (',' codeSelector)* '}' displayClause?
     ;
 
+keyword
+    : 'after'
+    | 'all'
+    | 'and'
+    | 'as'
+    | 'asc'
+    | 'ascending'
+    | 'before'
+    | 'between'
+    | 'by'
+    | 'called'
+    | 'case'
+    | 'cast'
+    | 'code'
+    | 'Code'
+    | 'codesystem'
+    | 'codesystems'
+    | 'collapse'
+    | 'concept'
+    | 'Concept'
+    | 'contains'
+    | 'context'
+    | 'convert'
+    | 'date'
+    | 'day'
+    | 'days'
+    | 'default'
+    | 'define'
+    | 'desc'
+    | 'descending'
+    | 'difference'
+    | 'display'
+    | 'distinct'
+    | 'div'
+    | 'duration'
+    | 'during'
+    | 'else'
+    | 'end'
+    | 'ends'
+    | 'except'
+    | 'exists'
+    | 'expand'
+    | 'false'
+    | 'flatten'
+    | 'from'
+    | 'function'
+    | 'hour'
+    | 'hours'
+    | 'if'
+    | 'implies'
+    | 'in'
+    | 'include'
+    | 'includes'
+    | 'included in'
+    | 'intersect'
+    | 'Interval'
+    | 'is'
+    | 'let'
+    | 'library'
+    | 'List'
+    | 'maximum'
+    | 'meets'
+    | 'millisecond'
+    | 'milliseconds'
+    | 'minimum'
+    | 'minute'
+    | 'minutes'
+    | 'mod'
+    | 'month'
+    | 'months'
+    | 'not'
+    | 'null'
+    | 'occurs'
+    | 'of'
+    | 'or'
+    | 'or after'
+    | 'or before'
+    | 'or less'
+    | 'or more'
+    | 'overlaps'
+    | 'parameter'
+    | 'per'
+    | 'predecessor'
+    | 'private'
+    | 'properly'
+    | 'public'
+    | 'return'
+    | 'same'
+    | 'second'
+    | 'seconds'
+    | 'singleton'
+    | 'start'
+    | 'starts'
+    | 'sort'
+    | 'successor'
+    | 'such that'
+    | 'then'
+    | 'time'
+    | 'timezoneoffset'
+    | 'to'
+    | 'true'
+    | 'Tuple'
+    | 'union'
+    | 'using'
+    | 'valueset'
+    | 'version'
+    | 'week'
+    | 'weeks'
+    | 'where'
+    | 'when'
+    | 'width'
+    | 'with'
+    | 'within'
+    | 'without'
+    | 'xor'
+    | 'year'
+    | 'years'
+    ;
+
+// NOTE: Not used, this is the set of reserved words that may not appear as identifiers in ambiguous contexts
+reservedWord
+    : 'all'
+    | 'case'
+    | 'cast'
+    | 'Code'
+    | 'collapse'
+    | 'Concept'
+    | 'convert'
+    | 'day'
+    | 'days'
+    | 'difference'
+    | 'distinct'
+    | 'duration'
+    | 'exists'
+    | 'expand'
+    | 'false'
+    | 'flatten'
+    | 'from'
+    | 'if'
+    | 'hour'
+    | 'hours'
+    | 'Interval'
+    | 'List'
+    | 'maximum'
+    | 'millisecond'
+    | 'milliseconds'
+    | 'minimum'
+    | 'minute'
+    | 'minutes'
+    | 'month'
+    | 'months'
+    | 'not'
+    | 'null'
+    | 'second'
+    | 'seconds'
+    | 'true'
+    | 'Tuple'
+    | 'week'
+    | 'weeks'
+    | 'year'
+    | 'years'
+    ;
+
+// Keyword identifiers are keywords that may be used as identifiers in a referential context
+// Effectively, keyword except reservedWord
+keywordIdentifier
+    : 'after'
+    | 'and'
+    | 'as'
+    | 'asc'
+    | 'ascending'
+    | 'before'
+    | 'between'
+    | 'by'
+    | 'called'
+    | 'code'
+    | 'codesystem'
+    | 'codesystems'
+    | 'concept'
+    | 'contains'
+    | 'context'
+    | 'date'
+    | 'default'
+    | 'define'
+    | 'desc'
+    | 'descending'
+    | 'display'
+    | 'div'
+    | 'during'
+    | 'else'
+    | 'end'
+    | 'ends'
+    | 'except'
+    | 'function'
+    | 'implies'
+    | 'in'
+    | 'include'
+    | 'includes'
+    | 'included in'
+    | 'intersect'
+    | 'is'
+    | 'let'
+    | 'library'
+    | 'meets'
+    | 'mod'
+    | 'occurs'
+    | 'of'
+    | 'or'
+    | 'or after'
+    | 'or before'
+    | 'or less'
+    | 'or more'
+    | 'overlaps'
+    | 'parameter'
+    | 'per'
+    | 'predecessor'
+    | 'private'
+    | 'properly'
+    | 'public'
+    | 'return'
+    | 'same'
+    | 'singleton'
+    | 'start'
+    | 'starts'
+    | 'sort'
+    | 'successor'
+    | 'such that'
+    | 'then'
+    | 'time'
+    | 'timezoneoffset'
+    | 'to'
+    | 'union'
+    | 'using'
+    | 'valueset'
+    | 'version'
+    | 'where'
+    | 'when'
+    | 'width'
+    | 'with'
+    | 'within'
+    | 'without'
+    | 'xor'
+    ;
+
+// Obsolete identifiers are keywords that could be used as identifiers in CQL 1.3
+// NOTE: Not currently used, this is the set of keywords that were defined as allowed identifiers as part of 1.3
+obsoleteIdentifier
+    : 'all'
+    | 'Code'
+    | 'code'
+    | 'Concept'
+    | 'concept'
+    | 'contains'
+    | 'date'
+    | 'display'
+    | 'distinct'
+    | 'end'
+    | 'exists'
+    | 'not'
+    | 'start'
+    | 'time'
+    | 'timezoneoffset'
+    | 'version'
+    | 'where'
+    ;
+
+// Function identifiers are keywords that may be used as identifiers for functions
+functionIdentifier
+    : 'after'
+    | 'all'
+    | 'and'
+    | 'as'
+    | 'asc'
+    | 'ascending'
+    | 'before'
+    | 'between'
+    | 'by'
+    | 'called'
+    | 'case'
+    | 'cast'
+    | 'code'
+    | 'Code'
+    | 'codesystem'
+    | 'codesystems'
+    | 'collapse'
+    | 'concept'
+    | 'Concept'
+    | 'contains'
+    | 'context'
+    | 'convert'
+    | 'date'
+    | 'day'
+    | 'days'
+    | 'default'
+    | 'define'
+    | 'desc'
+    | 'descending'
+    | 'difference'
+    | 'display'
+    | 'distinct'
+    | 'div'
+    | 'duration'
+    | 'during'
+    | 'else'
+    | 'end'
+    | 'ends'
+    | 'except'
+    | 'exists'
+    | 'expand'
+    | 'false'
+    | 'flatten'
+    | 'from'
+    | 'function'
+    | 'hour'
+    | 'hours'
+    | 'if'
+    | 'implies'
+    | 'in'
+    | 'include'
+    | 'includes'
+    | 'included in'
+    | 'intersect'
+    | 'Interval'
+    | 'is'
+    | 'let'
+    | 'library'
+    | 'List'
+    | 'maximum'
+    | 'meets'
+    | 'millisecond'
+    | 'milliseconds'
+    | 'minimum'
+    | 'minute'
+    | 'minutes'
+    | 'mod'
+    | 'month'
+    | 'months'
+    | 'not'
+    | 'null'
+    | 'occurs'
+    | 'of'
+    | 'or'
+    | 'or after'
+    | 'or before'
+    | 'or less'
+    | 'or more'
+    | 'overlaps'
+    | 'parameter'
+    | 'per'
+    | 'predecessor'
+    | 'private'
+    | 'properly'
+    | 'public'
+    | 'return'
+    | 'same'
+    | 'singleton'
+    | 'second'
+    | 'seconds'
+    | 'start'
+    | 'starts'
+    | 'sort'
+    | 'successor'
+    | 'such that'
+    | 'then'
+    | 'time'
+    | 'timezoneoffset'
+    | 'to'
+    | 'true'
+    | 'Tuple'
+    | 'union'
+    | 'using'
+    | 'valueset'
+    | 'version'
+    | 'week'
+    | 'weeks'
+    | 'where'
+    | 'when'
+    | 'width'
+    | 'with'
+    | 'within'
+    | 'without'
+    | 'xor'
+    | 'year'
+    | 'years'
+    ;
+
+// Reserved words that are also type names
+typeNameIdentifier
+    : 'Code'
+    | 'Concept'
+    | 'date'
+    | 'time'
+    ;
+
+referentialIdentifier
+    : identifier
+    | keywordIdentifier
+    ;
+
+referentialOrTypeNameIdentifier
+    : referentialIdentifier
+    | typeNameIdentifier
+    ;
+
+identifierOrFunctionIdentifier
+    : identifier
+    | functionIdentifier
+    ;
+
 // NOTE: These keywords are commented out because of an issue with the ANTLR tooling. In 4.5, having these keywords
 // as identifiers results in unacceptable parsing performance. In 4.6+, having them as identifiers results in incorrect
 // parsing. See Github issue [#343](https://github.com/cqframework/clinical_quality_language/issues/343) for more detail
@@ -446,23 +885,6 @@ identifier
     : IDENTIFIER
     | DELIMITEDIDENTIFIER
     | QUOTEDIDENTIFIER
-    //| 'all'
-    | 'Code'
-    | 'code'
-    | 'Concept'
-    | 'concept'
-    //| 'contains'
-    | 'date'
-    | 'display'
-    //| 'distinct'
-    | 'end'
-    //| 'exists'
-    //| 'not'
-    | 'start'
-    | 'time'
-    | 'timezoneoffset'
-    | 'version'
-    //| 'where'
     ;
 
 QUOTEDIDENTIFIER
