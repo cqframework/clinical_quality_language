@@ -19,6 +19,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.RelatedPerson" baseType="QDM.QDMBaseType" label="Related Person" retrievable="true" primaryCodePath="code">
         <ns4:element name="identifier" type="QDM.Identifier"/>
+        <ns4:element name="linkedPatientId" type="System.String"/>
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Practitioner" baseType="QDM.Entity" retrievable="false">

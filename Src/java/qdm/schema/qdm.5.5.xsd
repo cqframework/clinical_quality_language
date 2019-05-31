@@ -120,7 +120,6 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="identifier" type="Identifier" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relationship" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
