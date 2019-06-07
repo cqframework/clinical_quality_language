@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns4:modelInfo xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:quick="http://cimi.hl7.org" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="QUICK" patientBirthDatePropertyName="birthDate" patientClassName="Patient" targetQualifier="quick" url="http://cimi.hl7.org" version="3.0.0">
+<ns4:modelInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="urn:hl7-org:elm-modelinfo:r1 modelinfo.xsd" xmlns:quick="http://cimi.hl7.org"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" name="QUICK"
+ patientBirthDatePropertyName="birthDate" patientClassName="Patient" targetQualifier="quick"
+ url="http://cimi.hl7.org" version="3.0.0">
   <ns4:typeInfo baseType="QUICK.MedicationDoseQuantity" name="QUICK.DoseRange" retrievable="false" xsi:type="ns4:ClassInfo">
-    <ns4:element name="value" type="QUICK.Range"/>
+    <ns4:element name="value">
+      <ns4:typeSpecifier pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.DomainResource" name="QUICK.Goal" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="lifecycleStatus" type="System.String"/>
     <ns4:element name="description" type="System.Concept"/>
     <ns4:element name="start">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Concept" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Concept" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="addresses">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Condition" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Observation" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="MedicationStatement" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="NutritionRequest" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="ServiceRequest" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Condition" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Observation" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="MedicationStatement" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="NutritionRequest" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="ServiceRequest" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="target">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="expressedBy" type="QUICK.Party"/>
@@ -32,7 +38,9 @@
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.ProfessionalQualification" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="identifier" type="QUICK.Identifier"/>
     <ns4:element name="code" type="System.Concept"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="issuer" type="QUICK.Organization"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.CareRecipient" name="QUICK.Group" primaryCodePath="code" retrievable="true" xsi:type="ns4:ClassInfo">
@@ -49,7 +57,6 @@
   <ns4:typeInfo baseType="QUICK.DomainResource" name="QUICK.Finding" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="status" type="System.String"/>
   </ns4:typeInfo>
-  <ns4:typeInfo baseType="QUICK.Quantity" name="QUICK.Age" retrievable="false" xsi:type="ns4:ClassInfo"/>
   <ns4:typeInfo baseType="QUICK.Element" name="QUICK.Reference" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="reference" type="System.String"/>
     <ns4:element name="type" type="System.String"/>
@@ -62,7 +69,9 @@
     <ns4:element name="name" type="System.String"/>
     <ns4:element name="subject" type="QUICK.CareRecipient"/>
     <ns4:element name="encounter" type="QUICK.Encounter"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="participant" type="QUICK.Participation"/>
     <ns4:element name="reasonCode" type="System.Concept"/>
     <ns4:element name="reasonReference" type="QUICK.Condition"/>
@@ -94,14 +103,14 @@
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.Element" name="QUICK.Narrative" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="status" type="System.String"/>
-    <ns4:element name="div" type="QUICK.Xhtml"/>
+    <ns4:element name="div" type="System.String"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.Hospitalization" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="preAdmissionIdentifier" type="QUICK.Identifier"/>
     <ns4:element name="origin">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Location" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Organization" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Location" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Organization" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="admitSource" type="System.Concept"/>
@@ -111,8 +120,8 @@
     <ns4:element name="specialArrangement" type="System.Concept"/>
     <ns4:element name="destination">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Location" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Organization" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Location" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Organization" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="dischargeDisposition" type="System.Concept"/>
@@ -144,8 +153,8 @@
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.EncounterDiagnosisOrProcedure" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="reference">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Condition" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Procedure" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Condition" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Procedure" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="use" type="System.Concept"/>
@@ -178,7 +187,9 @@
     <ns4:element name="state" type="System.String"/>
     <ns4:element name="postalCode" type="System.String"/>
     <ns4:element name="country" type="System.String"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.IndividualCareRecipient" name="QUICK.Patient" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="active" type="System.Boolean"/>
@@ -188,16 +199,16 @@
     <ns4:element name="birthDate" type="System.DateTime"/>
     <ns4:element name="deceased">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="address" type="QUICK.Address"/>
     <ns4:element name="maritalStatus" type="System.Concept"/>
     <ns4:element name="multipleBirth">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Integer" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Integer" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="photo" type="QUICK.Attachment"/>
@@ -223,11 +234,15 @@
     <ns4:element name="comment" type="System.String"/>
     <ns4:element name="patientInstruction" type="System.String"/>
     <ns4:element name="participant" type="QUICK.Participation"/>
-    <ns4:element name="requestedPeriod" type="QUICK.Period"/>
+    <ns4:element name="requestedPeriod">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.IndividualCareGiver" name="QUICK.PractitionerRole" primaryCodePath="code" retrievable="true" xsi:type="ns4:ClassInfo">
     <ns4:element name="active" type="System.Boolean"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="practitioner" type="QUICK.Practitioner"/>
     <ns4:element name="organization" type="QUICK.Organization"/>
     <ns4:element name="code" type="System.Concept"/>
@@ -256,12 +271,10 @@
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.GroupMember" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="entity" type="QUICK.Party"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="inactive" type="System.Boolean"/>
-  </ns4:typeInfo>
-  <ns4:typeInfo baseType="QUICK.Element" name="QUICK.Period" retrievable="false" xsi:type="ns4:ClassInfo">
-    <ns4:element name="start" type="System.DateTime"/>
-    <ns4:element name="end" type="System.DateTime"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.AvailableTime" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="daysOfWeek" type="System.String"/>
@@ -272,8 +285,8 @@
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.Ingredient" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="item">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="DomainResource" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Concept" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="DomainResource" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Concept" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="isActive" type="System.Boolean"/>
@@ -326,30 +339,34 @@
     <ns4:element name="birthDate" type="System.DateTime"/>
     <ns4:element name="address" type="QUICK.Address"/>
     <ns4:element name="photo" type="QUICK.Attachment"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="communication" type="QUICK.LanguageCompetency"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.GroupCharacteristic" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="code" type="System.Concept"/>
     <ns4:element name="value">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Concept" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Integer" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Ratio" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Time" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Concept" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Integer" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Ratio" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Time" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="exclude" type="System.Boolean"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.Element" name="QUICK.SampledData" retrievable="false" xsi:type="ns4:ClassInfo">
-    <ns4:element name="origin" type="QUICK.SimpleQuantity"/>
+    <ns4:element name="origin" type="System.Quantity"/>
     <ns4:element name="period" type="System.Decimal"/>
     <ns4:element name="factor" type="System.Decimal"/>
     <ns4:element name="lowerLimit" type="System.Decimal"/>
@@ -400,13 +417,13 @@
     <ns4:element name="bodySite" type="System.Concept"/>
     <ns4:element name="performed">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Timing" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Age" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Timing" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="partOf" type="QUICK.Event"/>
@@ -419,16 +436,16 @@
     <ns4:element name="measure" type="System.Concept"/>
     <ns4:element name="detail">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Concept" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Integer" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Ratio" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Time" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Concept" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Integer" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Ratio" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Time" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
   </ns4:typeInfo>
@@ -437,7 +454,9 @@
     <ns4:element name="value" type="System.String"/>
     <ns4:element name="use" type="System.String"/>
     <ns4:element name="rank" type="System.Integer"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.Event" name="QUICK.MedicationDispense" primaryCodePath="medication.code" retrievable="true" xsi:type="ns4:ClassInfo">
     <ns4:element name="quantity" type="System.Quantity"/>
@@ -458,10 +477,10 @@
     <ns4:element name="encounter" type="QUICK.Encounter"/>
     <ns4:element name="effective">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Timing" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Timing" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="issued" type="System.DateTime"/>
@@ -474,24 +493,23 @@
     <ns4:element name="locationPerformed" type="QUICK.Location"/>
     <ns4:element name="code" type="System.Concept"/>
   </ns4:typeInfo>
-  <ns4:typeInfo baseType="QUICK.Quantity" name="QUICK.SimpleQuantity" retrievable="false" xsi:type="ns4:ClassInfo"/>
   <ns4:typeInfo baseType="QUICK.Finding" name="QUICK.Condition" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="onset">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Age" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="abatement">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Age" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="bodySite" type="System.Concept"/>
@@ -507,11 +525,11 @@
     <ns4:element name="contributedToDeath" type="System.Boolean"/>
     <ns4:element name="onset">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Age" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="note" type="QUICK.Annotation"/>
@@ -519,18 +537,20 @@
   <ns4:typeInfo name="QUICK.Element" retrievable="false" xsi:type="ns4:ClassInfo"/>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.NonAvailability" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="description" type="System.String"/>
-    <ns4:element name="during" type="QUICK.Period"/>
+    <ns4:element name="during">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.SuspectEntity" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="instance">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Immunization" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Procedure" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Medication" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="MedicationAdministration" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="MedicationStatement" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Device" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Substance" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Immunization" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Procedure" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Medication" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="MedicationAdministration" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="MedicationStatement" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Device" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Substance" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="causality" type="QUICK.Causality"/>
@@ -539,7 +559,9 @@
     <ns4:element name="location" type="QUICK.Location"/>
     <ns4:element name="status" type="System.String"/>
     <ns4:element name="physicalType" type="System.Concept"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.Request" name="QUICK.ServiceRequest" primaryCodePath="code" retrievable="true" xsi:type="ns4:ClassInfo">
     <ns4:element name="code" type="System.Concept"/>
@@ -559,7 +581,9 @@
     <ns4:element name="relationship" type="System.Concept"/>
     <ns4:element name="gender" type="System.String"/>
     <ns4:element name="organization" type="QUICK.Organization"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.Event" name="QUICK.DeviceUseStatement" primaryCodePath="device.code" retrievable="true" xsi:type="ns4:ClassInfo">
     <ns4:element name="bodySite" type="System.Concept"/>
@@ -577,7 +601,7 @@
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.SubstancePackage" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="identifier" type="QUICK.Identifier"/>
     <ns4:element name="expiry" type="System.DateTime"/>
-    <ns4:element name="quantity" type="QUICK.SimpleQuantity"/>
+    <ns4:element name="quantity" type="System.Quantity"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.Eligibility" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="code" type="System.Concept"/>
@@ -591,12 +615,14 @@
     <ns4:element name="priority" type="System.Concept"/>
     <ns4:element name="participant" type="QUICK.Participation"/>
     <ns4:element name="appointment" type="QUICK.Appointment"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="length" type="System.Quantity"/>
     <ns4:element name="diagnosisOrProcedure">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Condition" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Procedure" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Condition" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Procedure" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="hospitalization" type="QUICK.Hospitalization"/>
@@ -608,16 +634,16 @@
     <ns4:element name="code" type="System.Concept"/>
     <ns4:element name="value">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Concept" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Integer" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Ratio" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Time" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Concept" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Integer" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Ratio" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Time" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="method" type="System.Concept"/>
@@ -625,10 +651,10 @@
     <ns4:element name="performer" type="QUICK.Party"/>
     <ns4:element name="effective">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Timing" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Timing" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="issued" type="System.DateTime"/>
@@ -650,11 +676,11 @@
     <ns4:element name="patient" type="QUICK.Patient"/>
     <ns4:element name="onset">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="Age" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="recorder" type="QUICK.Party"/>
@@ -667,22 +693,20 @@
   <ns4:typeInfo baseType="QUICK.Request" name="QUICK.DeviceRequest" primaryCodePath="code" retrievable="true" xsi:type="ns4:ClassInfo">
     <ns4:element name="code">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="DomainResource" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Concept" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="DomainResource" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Concept" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.MedicationDoseRate" name="QUICK.RateRange" retrievable="false" xsi:type="ns4:ClassInfo">
-    <ns4:element name="value" type="QUICK.Range"/>
+    <ns4:element name="value">
+      <ns4:typeSpecifier pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.Timing" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="event" type="System.DateTime"/>
     <ns4:element name="repeat" type="QUICK.TimingRepeat"/>
     <ns4:element name="code" type="System.Concept"/>
-  </ns4:typeInfo>
-  <ns4:typeInfo baseType="QUICK.Element" name="QUICK.Range" retrievable="false" xsi:type="ns4:ClassInfo">
-    <ns4:element name="low" type="QUICK.SimpleQuantity"/>
-    <ns4:element name="high" type="QUICK.SimpleQuantity"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.Contact" name="QUICK.OrganizationalContact" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="purpose" type="System.Concept"/>
@@ -698,7 +722,9 @@
     <ns4:element name="given" type="System.String"/>
     <ns4:element name="prefix" type="System.String"/>
     <ns4:element name="suffix" type="System.String"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.Element" name="QUICK.Party" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="identifier" type="QUICK.Identifier"/>
@@ -743,14 +769,18 @@
     <ns4:element name="role" type="System.Concept"/>
     <ns4:element name="member" type="QUICK.Party"/>
     <ns4:element name="onBehalfOf" type="QUICK.Organization"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="required" type="System.String"/>
     <ns4:element name="status" type="System.String"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.DispenseRequest" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="initialFill" type="QUICK.InitialFill"/>
     <ns4:element name="dispenseInterval" type="System.Quantity"/>
-    <ns4:element name="validityPeriod" type="QUICK.Period"/>
+    <ns4:element name="validityPeriod">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="numberOfRepeatsAllowed" type="System.Integer"/>
     <ns4:element name="quantity" type="System.Quantity"/>
     <ns4:element name="expectedSupplyDuration" type="System.Quantity"/>
@@ -834,10 +864,10 @@
     <ns4:element name="reasonReference" type="QUICK.Condition"/>
     <ns4:element name="occurrence">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Timing" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Timing" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="basedOn" type="QUICK.Request"/>
@@ -848,23 +878,25 @@
     <ns4:element name="type" type="System.Concept"/>
     <ns4:element name="system" type="System.String"/>
     <ns4:element name="value" type="System.String"/>
-    <ns4:element name="period" type="QUICK.Period"/>
+    <ns4:element name="period">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="assigner" type="QUICK.Reference"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.ObservationComponent" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="code" type="System.Concept"/>
     <ns4:element name="value">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Concept" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Integer" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Ratio" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Time" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Concept" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Boolean" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Integer" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Ratio" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Time" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="DateTime" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="dataAbsentReason" type="System.Concept"/>
@@ -883,21 +915,20 @@
     <ns4:element name="numerator" type="System.Quantity"/>
     <ns4:element name="denominator" type="System.Quantity"/>
   </ns4:typeInfo>
-  <ns4:typeInfo baseType="QUICK.Quantity" name="QUICK.Count" retrievable="false" xsi:type="ns4:ClassInfo"/>
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.CommunicationPayload" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="content">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Attachment" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="DomainResource" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="Attachment" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="DomainResource" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.Element" name="QUICK.Annotation" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="author">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:QUICK" name="DomainResource" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:SYSTEM" name="System.String" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="QUICK" name="DomainResource" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="String" xsi:type="ns4:NamedTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="time" type="System.DateTime"/>
@@ -910,7 +941,9 @@
     <ns4:element name="serviceType" type="System.Concept"/>
     <ns4:element name="specialty" type="System.Concept"/>
     <ns4:element name="actor" type="QUICK.Party"/>
-    <ns4:element name="planningHorizon" type="QUICK.Period"/>
+    <ns4:element name="planningHorizon">
+      <ns4:typeSpecifier pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
+    </ns4:element>
     <ns4:element name="comment" type="System.String"/>
   </ns4:typeInfo>
   <ns4:typeInfo baseType="QUICK.DomainResource" name="QUICK.Substance" retrievable="false" xsi:type="ns4:ClassInfo">
@@ -935,9 +968,9 @@
   <ns4:typeInfo baseType="QUICK.BackboneElement" name="QUICK.TimingRepeat" retrievable="false" xsi:type="ns4:ClassInfo">
     <ns4:element name="bounds">
       <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-        <ns4:choice modelName="ns4:SYSTEM" name="System.Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Range" xsi:type="ns4:NamedTypeSpecifier"/>
-        <ns4:choice modelName="ns4:QUICK" name="Period" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice modelName="System" name="Quantity" xsi:type="ns4:NamedTypeSpecifier"/>
+        <ns4:choice pointType="System.Quantity" xsi:type="ns4:IntervalTypeSpecifier"/>
+        <ns4:choice pointType="System.DateTime" xsi:type="ns4:IntervalTypeSpecifier"/>
       </ns4:elementTypeSpecifier>
     </ns4:element>
     <ns4:element name="count" type="System.Integer"/>
