@@ -21,7 +21,7 @@ public class LibraryManager {
     private ModelManager modelManager;
     private final Map<String, TranslatedLibrary> libraries;
     private final Stack<String> translationStack;
-    private final DefaultLibrarySourceLoader librarySourceLoader;
+    private LibrarySourceLoader librarySourceLoader;
 
     public LibraryManager(ModelManager modelManager) {
         if (modelManager == null) {
@@ -30,11 +30,15 @@ public class LibraryManager {
         this.modelManager = modelManager;
         libraries = new HashMap<>();
         translationStack = new Stack<>();
-        this.librarySourceLoader = new DefaultLibrarySourceLoader();
+        this.librarySourceLoader = new PriorityLibrarySourceLoader();
     }
 
     public LibrarySourceLoader getLibrarySourceLoader() {
       return librarySourceLoader;
+    }
+
+    public void setLibrarySourceLoader(LibrarySourceLoader librarySourceLoader) {
+        this.librarySourceLoader = librarySourceLoader;
     }
 
     public Map<String, TranslatedLibrary> getTranslatedLibraries() {
