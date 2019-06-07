@@ -1823,6 +1823,21 @@ DATETIME
     }
 
     @Override
+    public String visitSimplePathReferentialIdentifier(@NotNull cqlParser.SimplePathReferentialIdentifierContext ctx) {
+        return (String)visit(ctx.referentialIdentifier());
+    }
+
+    @Override
+    public String visitSimplePathQualifiedIdentifier(@NotNull cqlParser.SimplePathQualifiedIdentifierContext ctx) {
+        return visit(ctx.simplePath()) + "." + visit(ctx.referentialIdentifier());
+    }
+
+    @Override
+    public String visitSimplePathIndexer(@NotNull cqlParser.SimplePathIndexerContext ctx) {
+        return visit(ctx.simplePath()) + "[" + visit(ctx.simpleLiteral()) + "]";
+    }
+
+    @Override
     public Object visitTermExpression(@NotNull cqlParser.TermExpressionContext ctx) {
         Object result = super.visitTermExpression(ctx);
 
@@ -2818,8 +2833,8 @@ DATETIME
 
         if (ctx.terminology() != null) {
             if (ctx.codePath() != null) {
-                List<String> identifiers = (List<String>)visit(ctx.codePath());
-                retrieve.setCodeProperty(String.join(".", identifiers));
+                String identifiers = (String)visit(ctx.codePath());
+                retrieve.setCodeProperty(identifiers);
             } else if (classType.getPrimaryCodePath() != null) {
                 retrieve.setCodeProperty(classType.getPrimaryCodePath());
             }

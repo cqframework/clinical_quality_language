@@ -214,7 +214,7 @@ contextIdentifier
     ;
 
 codePath
-    : qualifiedIdentifierExpression
+    : simplePath
     ;
 
 terminology
@@ -273,6 +273,17 @@ qualifiedIdentifierExpression
 
 qualifierExpression
     : referentialIdentifier
+    ;
+
+simplePath
+    : referentialIdentifier                            #simplePathReferentialIdentifier
+    | simplePath '.' referentialIdentifier             #simplePathQualifiedIdentifier
+    | simplePath '[' simpleLiteral ']'                 #simplePathIndexer
+    ;
+
+simpleLiteral
+    : STRING
+    | NUMBER
     ;
 
 expression
@@ -421,15 +432,15 @@ ratio
     ;
 
 literal
-        : ('true' | 'false')                                    #booleanLiteral
-        | 'null'                                                #nullLiteral
-        | STRING                                                #stringLiteral
-        | NUMBER                                                #numberLiteral
-        | DATETIME                                              #dateTimeLiteral
-        | TIME                                                  #timeLiteral
-        | quantity                                              #quantityLiteral
-        | ratio                                                 #ratioLiteral
-        ;
+    : ('true' | 'false')                                    #booleanLiteral
+    | 'null'                                                #nullLiteral
+    | STRING                                                #stringLiteral
+    | NUMBER                                                #numberLiteral
+    | DATETIME                                              #dateTimeLiteral
+    | TIME                                                  #timeLiteral
+    | quantity                                              #quantityLiteral
+    | ratio                                                 #ratioLiteral
+    ;
 
 intervalSelector
     : // TODO: Consider this as an alternative syntax for intervals... (would need to be moved up to expression to make it work)
@@ -888,10 +899,10 @@ identifier
     ;
 
 QUOTEDIDENTIFIER
-        : '"' (ESC | .)*? '"'
-        ;
+    : '"' (ESC | .)*? '"'
+    ;
 
 fragment ESC
-        : '\\' ([`'"\\/fnrt] | UNICODE)    // allow \`, \', \", \\, \/, \f, etc. and \uXXX
-        ;
+    : '\\' ([`'"\\/fnrt] | UNICODE)    // allow \`, \', \", \\, \/, \f, etc. and \uXXX
+    ;
 
