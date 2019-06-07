@@ -92,7 +92,7 @@ public class LibraryBuilder {
         return exceptions;
     }
 
-    private final Map<String, Model> models = new HashMap<>();
+    private final Map<VersionedIdentifier, Model> models = new HashMap<>();
     private final Map<String, TranslatedLibrary> libraries = new HashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
@@ -162,18 +162,13 @@ public class LibraryBuilder {
     }
 
     public Model getModel(VersionedIdentifier modelIdentifier) {
-        Model model = models.get(modelIdentifier.getId());
+        Model model = models.get(modelIdentifier);
         if (model == null) {
             model = loadModel(modelIdentifier);
             setDefaultModel(model);
-            models.put(modelIdentifier.getId(), model);
+            models.put(modelIdentifier, model);
             // Add the model using def to the output
             buildUsingDef(modelIdentifier, model);
-        }
-
-        if (modelIdentifier.getVersion() != null && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {
-            throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s because version %s is already loaded.",
-                    modelIdentifier.getId(), modelIdentifier.getVersion(), model.getModelInfo().getVersion()));
         }
 
         return model;

@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by Bryn on 12/29/2016.
  */
 public class ModelManager {
-    private final Map<String, Model> models = new HashMap<>();
+    private final Map<VersionedIdentifier, Model> models = new HashMap<>();
 
     private Model buildModel(VersionedIdentifier identifier) {
         Model model = null;
@@ -40,15 +40,10 @@ public class ModelManager {
     }
 
     public Model resolveModel(VersionedIdentifier modelIdentifier) {
-        Model model = models.get(modelIdentifier.getId());
+        Model model = models.get(modelIdentifier);
         if (model == null) {
             model = buildModel(modelIdentifier);
-            models.put(modelIdentifier.getId(), model);
-        }
-
-        if (modelIdentifier.getVersion() != null && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {
-            throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s because version %s is already loaded.",
-                    modelIdentifier.getId(), modelIdentifier.getVersion(), model.getModelInfo().getVersion()));
+            models.put(modelIdentifier, model);
         }
 
         return model;

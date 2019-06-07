@@ -222,30 +222,30 @@ public class CqlTranslator {
         return retrieves;
     }
 
-    public Map<String, TranslatedLibrary> getTranslatedLibraries() {
+    public Map<VersionedIdentifier, TranslatedLibrary> getTranslatedLibraries() {
         return libraryManager.getTranslatedLibraries();
     }
 
     public Map<String, Library> getLibraries() {
         Map<String, Library> result = new HashMap<String, Library>();
-        for (String libraryName : libraryManager.getTranslatedLibraries().keySet()) {
-            result.put(libraryName, libraryManager.getTranslatedLibraries().get(libraryName).getLibrary());
+        for (VersionedIdentifier libraryIdentifier: libraryManager.getTranslatedLibraries().keySet()) {
+            result.put(libraryIdentifier.getId(), libraryManager.getTranslatedLibraries().get(libraryIdentifier).getLibrary());
         }
         return result;
     }
 
     public Map<String, String> getLibrariesAsXML() {
         Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, TranslatedLibrary> entry : libraryManager.getTranslatedLibraries().entrySet()) {
-            result.put(entry.getKey(), toXml(entry.getValue().getLibrary()));
+        for (Map.Entry<VersionedIdentifier, TranslatedLibrary> entry : libraryManager.getTranslatedLibraries().entrySet()) {
+            result.put(entry.getKey().getId(), toXml(entry.getValue().getLibrary()));
         }
         return result;
     }
 
     public Map<String, String> getLibrariesAsJSON() {
         Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, TranslatedLibrary> entry : libraryManager.getTranslatedLibraries().entrySet()) {
-            result.put(entry.getKey(), toJson(entry.getValue().getLibrary()));
+        for (Map.Entry<VersionedIdentifier, TranslatedLibrary> entry : libraryManager.getTranslatedLibraries().entrySet()) {
+            result.put(entry.getKey().getId(), toJson(entry.getValue().getLibrary()));
         }
         return result;
     }

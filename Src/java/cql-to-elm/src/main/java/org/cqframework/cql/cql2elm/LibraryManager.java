@@ -19,7 +19,7 @@ import static org.cqframework.cql.cql2elm.CqlTranslatorException.HasErrors;
  */
 public class LibraryManager {
     private ModelManager modelManager;
-    private final Map<String, TranslatedLibrary> libraries;
+    private final Map<VersionedIdentifier, TranslatedLibrary> libraries;
     private final Stack<String> translationStack;
     private final DefaultLibrarySourceLoader librarySourceLoader;
 
@@ -37,7 +37,7 @@ public class LibraryManager {
       return librarySourceLoader;
     }
 
-    public Map<String, TranslatedLibrary> getTranslatedLibraries() {
+    public Map<VersionedIdentifier, TranslatedLibrary> getTranslatedLibraries() {
         return libraries;
     }
 
@@ -50,23 +50,16 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
-        TranslatedLibrary library = libraries.get(libraryIdentifier.getId());
+        TranslatedLibrary library = libraries.get(libraryIdentifier);
 
-        if (library != null
-                && libraryIdentifier.getVersion() != null
-                && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
-            throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
-                    libraryIdentifier.getId(), libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getId(), libraryIdentifier.getVersion());
-        }
-
-        else if (library != null) {
+        if (library != null) {
             return library;
         }
 
         else {
             library = translateLibrary(libraryIdentifier, errors);
             if (!HasErrors(errors)) {
-                libraries.put(libraryIdentifier.getId(), library);
+                libraries.put(libraryIdentifier, library);
             }
         }
 
