@@ -418,8 +418,8 @@ For the DateTime overload, the calculation is performed using Now(), and the res
 			<xs:documentation>Calculates the age in the specified precision of a person born on a given date, as of another given date.
 
 The CalculateAgeAt operator has two signatures:
-  Date, Date
-  DateTime, DateTime
+  (Date, Date)
+  (DateTime, DateTime)
       
 For the Date overload, precision must be one of year, month, week, or day, and the result is the number of whole calendar periods that have elapsed between the first date and the second date.
       
