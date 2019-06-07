@@ -2836,7 +2836,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
                 // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
-                retrieve.setCodes(terminology);
+                if (!(terminology.getResultType() instanceof ListType)) {
+                    retrieve.setCodes(libraryBuilder.resolveToList(terminology));
+                }
+                else {
+                    retrieve.setCodes(terminology);
+                }
                 // ERROR:
                 // WARNING:
                 libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
