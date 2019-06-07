@@ -2209,7 +2209,7 @@ public class LibraryBuilder {
 
         // If the current expression context is unspecified, a reference to a specific context expression will need to be
         // performed for every context in the system, so the result type is promoted to a list (if it is not already).
-        if (inUnspecifiedContext()) {
+        if (inUnfilteredContext()) {
             // If we are in the source clause of a query, indicate that the source references patient context
             if (inQueryContext() && getScope().getQueries().peek().inSourceClause()) {
                 getScope().getQueries().peek().referenceSpecificContext();
@@ -2337,11 +2337,11 @@ public class LibraryBuilder {
     }
 
     public boolean inSpecificContext() {
-        return !currentExpressionContext().equals("Unspecified");
+        return !currentExpressionContext().equals("Unfiltered");
     }
 
-    public boolean inUnspecifiedContext() {
-        return currentExpressionContext().equals("Unspecified");
+    public boolean inUnfilteredContext() {
+        return currentExpressionContext().equals("Unfiltered");
     }
 
     public boolean inQueryContext() {

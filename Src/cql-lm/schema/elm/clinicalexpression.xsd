@@ -91,11 +91,6 @@ Note that if the dateProperty is specified, the dateLowProperty and dateHighProp
 If the dateHighProperty is present, the dateLowProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
-				<xs:attribute name="scope" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:documentation>The scope attribute optionally specifies a name for the scope for this operator that can be used within expressions to reference the current iteration element.</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

@@ -206,7 +206,7 @@
 	<xs:complexType name="ExpressionDef">
 		<xs:annotation>
 			<xs:documentation>The ExpressionDef type defines an expression and an associated name that can be referenced by any expression in the artifact. The name must be unique within the artifact.
-			The context attribute specifies the scope of the execution and is used by the environment to determine when and how to evaluate the expression.</xs:documentation>
+			The context attribute specifies the context of the execution and is used by the environment to determine whether or not to filter the data returned from retrieves based on the current context.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
@@ -321,7 +321,7 @@ Note that the expression specified in the default element must be able to be eva
 	</xs:complexType>
 	<xs:complexType name="IdentifierRef">
 		<xs:annotation>
-			<xs:documentation>The IdentifierRef type defines an expression that references an identifier that is either unresolved, or has been resolved to an attribute in an unambiguous iteration context such as a sort. Implementations should attempt to resolve the identifier, only throwing an error at compile-time (or run-time for an interpretive system) if the identifier reference cannot be resolved.</xs:documentation>
+			<xs:documentation>The IdentifierRef type defines an expression that references an identifier that is either unresolved, or has been resolved to an attribute in an unambiguous iteration scope such as a sort. Implementations should attempt to resolve the identifier, only throwing an error at compile-time (or run-time for an interpretive system) if the identifier reference cannot be resolved.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -2717,7 +2717,7 @@ If the source argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Current expression returns the value of the object currently in scope. For example, within a ForEach expression, this returns the current element being considered in the iteration.
 			
-It is an error to invoke the Current operator outside the context of a scoped operation.</xs:documentation>
+It is an error to invoke the Current operator outside of a scoped operation.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -3034,7 +3034,7 @@ Property expressions can also be used to access the individual points and closed
 	<!-- Queries -->
 	<xs:complexType name="AliasedQuerySource">
 		<xs:annotation>
-			<xs:documentation>The AliasedQuerySource element defines a single source for inclusion in a query context. The type of the source is determined by the expression element, and the source can be accessed within the query context by the given alias.</xs:documentation>
+			<xs:documentation>The AliasedQuerySource element defines a single source for inclusion in a query scope. The type of the source is determined by the expression element, and the source can be accessed within the query scope by the given alias.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
@@ -3047,7 +3047,7 @@ Property expressions can also be used to access the individual points and closed
 	</xs:complexType>
 	<xs:complexType name="LetClause">
 		<xs:annotation>
-			<xs:documentation>The LetClause element allows any number of expression definitions to be introduced within a query context. Defined expressions can be referenced by name within the query context.</xs:documentation>
+			<xs:documentation>The LetClause element allows any number of expression definitions to be introduced within a query scope. Defined expressions can be referenced by name within the query scope.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
@@ -3060,7 +3060,7 @@ Property expressions can also be used to access the individual points and closed
 	</xs:complexType>
 	<xs:complexType name="RelationshipClause" abstract="true">
 		<xs:annotation>
-			<xs:documentation>The RelationshipClause element allows related sources to be used to restrict the elements included from another source in a query context. Note that the elements referenced by the relationship clause can only be accessed within the suchThat condition, and that elements of the related source are not included in the query context.</xs:documentation>
+			<xs:documentation>The RelationshipClause element allows related sources to be used to restrict the elements included from another source in a query scope. Note that the elements referenced by the relationship clause can only be accessed within the suchThat condition, and that elements of the related source are not included in the query scope.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="AliasedQuerySource">
@@ -3175,7 +3175,7 @@ Property expressions can also be used to access the individual points and closed
 	</xs:complexType>
 	<xs:complexType name="AliasRef">
 		<xs:annotation>
-			<xs:documentation>The AliasRef expression allows for the reference of a specific source within the context of a query.</xs:documentation>
+			<xs:documentation>The AliasRef expression allows for the reference of a specific source within the scope of a query.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
@@ -3185,7 +3185,7 @@ Property expressions can also be used to access the individual points and closed
 	</xs:complexType>
 	<xs:complexType name="QueryLetRef">
 		<xs:annotation>
-			<xs:documentation>The QueryLetRef expression allows for the reference of a specific let definition within the context of a query.</xs:documentation>
+			<xs:documentation>The QueryLetRef expression allows for the reference of a specific let definition within the scope of a query.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Expression">
