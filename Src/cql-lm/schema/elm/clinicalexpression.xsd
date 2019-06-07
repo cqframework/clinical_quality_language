@@ -25,7 +25,7 @@
 					</xs:element>
 					<xs:element name="context" type="Expression" minOccurs="0" maxOccurs="1">
 						<xs:annotation>
-							<xs:documentation>If specified, references an expression that, when evaluated, provides the context for the retrieve.</xs:documentation>
+							<xs:documentation>If specified, the context element references an expression that, when evaluated, provides the context for the retrieve. The expression evaluates to the instance id that will be used as the context for the retrieve.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
