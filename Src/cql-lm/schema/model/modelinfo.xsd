@@ -407,4 +407,25 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+	<xs:complexType name="TupleTypeSpecifierElement">
+		<xs:annotation>
+			<xs:documentation>TupleTypeSpecifierElement defines the name and type of a single element within a TupleTypeSpecifier.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="elementType" type="TypeSpecifier" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TupleTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>TupleTypeSpecifier defines the possible elements of a tuple.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="element" type="TupleTypeSpecifierElement" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>
