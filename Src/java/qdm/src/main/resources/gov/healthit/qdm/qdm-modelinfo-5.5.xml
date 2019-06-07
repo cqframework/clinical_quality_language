@@ -21,6 +21,7 @@
         <ns4:element name="identifier" type="QDM.Identifier"/>
         <ns4:element name="linkedPatientId" type="System.String"/>
         <ns4:contextRelationship context="Patient" relatedKeyElement="patientId"/>
+        <ns4:targetContextRelationship context="Patient" relatedKeyElement="linkedPatientId"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QDM.Practitioner" baseType="QDM.Entity" retrievable="false">
         <ns4:element name="role" type="System.Code"/>
@@ -885,10 +886,13 @@
         <ns4:element name="result"> <!--type="System.Any">-->
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Integer"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Code"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Date"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="DateTime"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Decimal"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Quantity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Ratio"/>
+                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="System" name="Time"/>
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="anatomicalLocationSite" type="System.Code"/>
