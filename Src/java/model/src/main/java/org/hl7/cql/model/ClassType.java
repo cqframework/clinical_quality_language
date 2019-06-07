@@ -102,6 +102,15 @@ public class ClassType extends DataType implements NamedType {
         relationships.add(relationship);
     }
 
+    private List<Relationship> targetRelationships = new ArrayList<>();
+    public Iterable<Relationship> getTargetRelationships() {
+        return targetRelationships;
+    }
+
+    public void addTargetRelationship(Relationship relationship) {
+        targetRelationships.add(relationship);
+    }
+
     /**
      * Generic class parameters such 'S', 'T extends MyType'.
      */

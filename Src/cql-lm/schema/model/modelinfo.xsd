@@ -158,6 +158,7 @@
 					</xs:element>
 					<xs:element name="element" type="ClassInfoElement" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="contextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="targetContextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute name="namespace" type="xs:string" use="optional">
 					<xs:annotation>

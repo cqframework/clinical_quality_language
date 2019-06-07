@@ -75,6 +75,7 @@ public class ModelImporter {
                 throw new IllegalArgumentException(String.format("Model context %s must be a class type.", c.getName()));
             }
             ModelContext modelContext = new ModelContext(c.getName(), (ClassType)contextType, Arrays.asList(c.getKeyElement().split(";")), c.getBirthDateElement());
+            // TODO: Validate key elements correspond to attributes of the class type
             contexts.add(modelContext);
         }
 
@@ -89,7 +90,12 @@ public class ModelImporter {
         }
 
         for (TypeInfo t: this.modelInfo.getTypeInfo()) {
-            dataTypes.add(resolveTypeInfo(t));
+            DataType type = resolveTypeInfo(t);
+            dataTypes.add(type);
+
+            if (t instanceof ClassInfo) {
+                importRelationships((ClassInfo)t, (ClassType)type);
+            }
         }
 
         if (systemTypes != null) {
@@ -176,6 +182,15 @@ public class ModelImporter {
             DataType elementType = resolveTypeNameOrSpecifier(listTypeSpecifier.getElementType(), listTypeSpecifier.getElementTypeSpecifier());
             if (elementType != null) {
                 return new ListType(elementType);
+            }
+        }
+
+        if (typeSpecifier instanceof TupleTypeSpecifier) {
+            TupleTypeSpecifier tupleTypeSpecifier = (TupleTypeSpecifier)typeSpecifier;
+            TupleType tupleType = new TupleType();
+            for (TupleTypeSpecifierElement specifierElement : tupleTypeSpecifier.getElement()) {
+                TupleTypeElement element = new TupleTypeElement(specifierElement.getName(), resolveTypeSpecifier(specifierElement.getElementType()));
+                tupleType.addElement(element);
             }
         }
 
@@ -505,6 +520,34 @@ public class ModelImporter {
         }
 
         return result;
+    }
+
+    private ModelContext resolveContext(String contextName) {
+        for (ModelContext context : this.contexts) {
+            if (context.getName().equals(contextName)) {
+                return context;
+            }
+        }
+
+        throw new IllegalArgumentException(String.format("Could not resolve context name %s.", contextName));
+
+    }
+
+    private Relationship resolveRelationship(RelationshipInfo relationshipInfo) {
+        ModelContext modelContext = resolveContext(relationshipInfo.getContext());
+        Relationship relationship = new Relationship(modelContext, Arrays.asList(relationshipInfo.getRelatedKeyElement().split(";")));
+        // TODO: Validate relatedKeyElements match keyElements of the referenced context
+        return relationship;
+    }
+
+    private void importRelationships(ClassInfo c, ClassType t) {
+        for (RelationshipInfo r : c.getContextRelationship()) {
+            t.addRelationship(resolveRelationship(r));
+        }
+
+        for (RelationshipInfo r : c.getTargetContextRelationship()) {
+            t.addTargetRelationship(resolveRelationship(r));
+        }
     }
 
     private IntervalType resolveIntervalType(IntervalTypeInfo t) {
