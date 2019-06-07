@@ -2,7 +2,7 @@ grammar cql;
 
 /*
  * Clinical Quality Language Grammar Specification
- * Version 1.4 - STU4 Ballot
+ * Version 1.4 - STU4
  */
 
 import fhirpath;
