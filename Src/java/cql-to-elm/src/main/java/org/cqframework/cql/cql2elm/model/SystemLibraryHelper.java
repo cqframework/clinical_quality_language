@@ -112,10 +112,14 @@ public class SystemLibraryHelper {
 
         // ToQuantity(String) : Quantity
         // ToQuantity(Integer) : Quantity
+        // ToQuantity(Ratio) : Quantity
         // ToQuantity(Decimal) : Quantity
         Operator stringToQuantity = new Operator("ToQuantity", new Signature(systemModel.getString()), systemModel.getQuantity());
         system.add(stringToQuantity);
         system.add(new Conversion(stringToQuantity, false));
+        Operator ratioToQuantity = new Operator("ToQuantity", new Signature(systemModel.getRatio()), systemModel.getQuantity());
+        system.add(ratioToQuantity);
+        system.add(new Conversion(ratioToQuantity, false));
         Operator integerToQuantity = new Operator("ToQuantity", new Signature(systemModel.getInteger()), systemModel.getQuantity());
         system.add(integerToQuantity);
         system.add(new Conversion(integerToQuantity, true));
@@ -156,11 +160,11 @@ public class SystemLibraryHelper {
         convertsTo = new Operator("ConvertsToRatio", new Signature(systemModel.getAny()), systemModel.getBoolean());
         system.add(convertsTo);
 
-        // CanConvertToQuantity
+        // CanConvertQuantity
         Operator canConvertToQuantity = new Operator("CanConvertQuantity", new Signature(systemModel.getQuantity(), systemModel.getString()), systemModel.getBoolean());
         system.add(canConvertToQuantity);
 
-        // ConvertToQuantity
+        // ConvertQuantity
         Operator convertToQuantity = new Operator("ConvertQuantity", new Signature(systemModel.getQuantity(), systemModel.getString()), systemModel.getQuantity());
         system.add(convertToQuantity);
 

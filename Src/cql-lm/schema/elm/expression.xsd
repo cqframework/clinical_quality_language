@@ -846,7 +846,9 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ConvertsToQuantity">
 		<xs:annotation>
-			<xs:documentation>The ConvertsToQuantity operator returns true if the value of its argument can be converted to a Quantity value. The operator accepts strings using the following format:
+			<xs:documentation>The ConvertsToQuantity operator returns true if the value of its argument can be converted to a Quantity value. The operator may be used with Integer, Decimal, Ratio, or String values.
+
+For String values, the operator accepts strings using the following format:
 
 (+|-)?#0(.0#)?('&lt;unit&gt;')?
 
@@ -856,6 +858,8 @@ Note that the decimal value of the quantity returned by this operator must be a 
 
 If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, the result is false.
 
+For Integer, Decimal, and Ratio values, the operator simply returns true.
+
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -864,7 +868,9 @@ If the argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="ToQuantity">
 		<xs:annotation>
-			<xs:documentation>The ToQuantity operator converts the value of its argument to a Quantity value. The operator accepts strings using the following format:
+			<xs:documentation>The ToQuantity operator converts the value of its argument to a Quantity value. The operator may be used with Integer, Decimal, Ratio, or String values.
+
+For String values, the operator accepts strings using the following format:
 
 (+|-)?#0(.0#)?('&lt;unit&gt;')?
 
@@ -873,6 +879,10 @@ Meaning an optional polarity indicator, followed by any number of digits (includ
 Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL. 
 
 If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, the result is null.
+
+For Integer and Decimal values, the result is a Quantity with the value of the integer or decimal input, and the default unit (`'1'`).
+
+For Ratio values, the operation is equivalent to the result of dividing the numerator of the ratio by the denominator.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
