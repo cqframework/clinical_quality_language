@@ -2193,9 +2193,9 @@ DATETIME
         // A starts 3 days or more after start B
         //* start of A >= start of B + 3 days
         // A starts 3 days or less before start B
-        //* start of A in [start of B - 3 days, start of B)
+        //* start of A in [start of B - 3 days, start of B) and B is not null
         // A starts 3 days or less after start B
-        //* start of A in (start of B, start of B + 3 days]
+        //* start of A in (start of B, start of B + 3 days] and B is not null
 
         // less/more than duration before/after
         // A starts more than 3 days before start B
@@ -2450,6 +2450,22 @@ DATETIME
                         }
                         track(in, ctx.quantityOffset());
                         libraryBuilder.resolveBinaryCall("System", "In", in);
+
+                        // if the offset or comparison is inclusive, add a null check for B to ensure correct interpretation
+                        if (isOffsetInclusive || isInclusive) {
+                            IsNull nullTest = of.createIsNull().withOperand(right);
+                            track(nullTest, ctx.quantityOffset());
+                            libraryBuilder.resolveUnaryCall("System", "IsNull", nullTest);
+                            Not notNullTest = of.createNot().withOperand(nullTest);
+                            track(notNullTest, ctx.quantityOffset());
+                            libraryBuilder.resolveUnaryCall("System", "Not", notNullTest);
+                            And and = of.createAnd().withOperand(in, notNullTest);
+                            track(and, ctx.quantityOffset());
+                            libraryBuilder.resolveBinaryCall("System", "And", and);
+                            return and;
+                        }
+
+                        // Otherwise, return the constructed in
                         return in;
                 }
             }
