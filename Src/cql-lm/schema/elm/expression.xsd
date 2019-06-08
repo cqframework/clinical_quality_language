@@ -880,7 +880,7 @@ Note that the decimal value of the quantity returned by this operator must be a 
 
 If the input string is not formatted correctly, or cannot be interpreted as a valid Quantity value, the result is null.
 
-For Integer and Decimal values, the result is a Quantity with the value of the integer or decimal input, and the default unit (`'1'`).
+For Integer and Decimal values, the result is a Quantity with the value of the integer or decimal input, and the default unit ('1').
 
 For Ratio values, the operation is equivalent to the result of dividing the numerator of the ratio by the denominator.
 
