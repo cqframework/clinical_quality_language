@@ -1511,6 +1511,67 @@ Note that implementations may choose to represent the maximum DateTime value usi
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Precision">
+		<xs:annotation>
+			<xs:documentation>The Precision operator returns the number of digits of precision in the input value.
+
+The operator can be used with Decimal, Date, DateTime, and Time values.
+
+For Decimal values, the operator returns the number of digits of precision after the decimal place in the input value.
+
+Precision(1.58700) // 5
+
+For Date and DateTime values, the operator returns the number of digits of precision in the input value.
+
+Precision(@2014) // 4
+Precision(@2014-01-05T10:30:00.000) // 17
+Precision(@T10:30) // 4
+Precision(@T10:30:00.000) // 9
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LowBoundary">
+		<xs:annotation>
+			<xs:documentation>The LowBoundary operator returns the least possible value of the input to the specified precision.
+			
+If no precision is specified, the precision of the input value is used.
+
+The operator can be used with Decimal, Date, DateTime, and Time values.
+
+LowBoundary(1.587, 8) // 1.58700000
+LowBoundary(@2014, 6) // @2014-01
+LowBoundary(@2014-01-01T08, 17) // @2014-01-01T08:00:00.000
+LowBoundary(@T10:30, 9) // @T10:30:00.000
+
+If the input value is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="HighBoundary">
+		<xs:annotation>
+			<xs:documentation>The HighBoundary operator returns the greatest possible value of the input to the specified precision.
+			
+If no precision is specified, the precision of the input value is used.
+
+The operator can be used with Decimal, Date, DateTime, and Time values.
+
+HighBoundary(1.587, 8) // 1.58799999
+HighBoundary(@2014, 6) // @2014-12
+HighBoundary(@2014-01-01T08, 17) // @2014-01-01T08:59:59.999
+HighBoundary(@T10:30, 9) // @T10:30:59.999
+
+If the input value is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="BinaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<!-- String Operators -->
 	<xs:complexType name="Concatenate">
 		<xs:annotation>

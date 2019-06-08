@@ -206,4 +206,49 @@ public class ArithmeticOperatorsTest {
         assertThat(round.getOperand(), literalFor(10.5555));
         assertThat(round.getPrecision(), literalFor(2));
     }
+
+    @Test
+    public void testPrecision() {
+        ExpressionDef def = defs.get("DecimalPrecision");
+        assertThat(def, hasTypeAndResult(Precision.class, "System.Integer"));
+
+        def = defs.get("DatePrecision");
+        assertThat(def, hasTypeAndResult(Precision.class, "System.Integer"));
+
+        def = defs.get("DateTimePrecision");
+        assertThat(def, hasTypeAndResult(Precision.class, "System.Integer"));
+
+        def = defs.get("TimePrecision");
+        assertThat(def, hasTypeAndResult(Precision.class, "System.Integer"));
+    }
+
+    @Test
+    public void testLowBoundary() {
+        ExpressionDef def = defs.get("DecimalLowBoundary");
+        assertThat(def, hasTypeAndResult(LowBoundary.class, "System.Decimal"));
+
+        def = defs.get("DateLowBoundary");
+        assertThat(def, hasTypeAndResult(LowBoundary.class, "System.Date"));
+        
+        def = defs.get("DateTimeLowBoundary");
+        assertThat(def, hasTypeAndResult(LowBoundary.class, "System.DateTime"));
+        
+        def = defs.get("TimeLowBoundary");
+        assertThat(def, hasTypeAndResult(LowBoundary.class, "System.Time"));
+    }
+
+    @Test
+    public void testHighBoundary() {
+        ExpressionDef def = defs.get("DecimalHighBoundary");
+        assertThat(def, hasTypeAndResult(HighBoundary.class, "System.Decimal"));
+
+        def = defs.get("DateHighBoundary");
+        assertThat(def, hasTypeAndResult(HighBoundary.class, "System.Date"));
+
+        def = defs.get("DateTimeHighBoundary");
+        assertThat(def, hasTypeAndResult(HighBoundary.class, "System.DateTime"));
+
+        def = defs.get("TimeHighBoundary");
+        assertThat(def, hasTypeAndResult(HighBoundary.class, "System.Time"));
+    }
 }

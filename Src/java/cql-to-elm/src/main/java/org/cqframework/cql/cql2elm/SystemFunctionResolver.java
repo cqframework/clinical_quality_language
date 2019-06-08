@@ -42,17 +42,20 @@ public class SystemFunctionResolver {
                 // Arithmetic Functions
                 case "Abs":
                 case "Ceiling":
+                case "Exp":
                 case "Floor":
                 case "Ln":
-                case "Exp":
-                case "Truncate":
                 case "Negate":
+                case "Precision":
                 case "Predecessor":
-                case "Successor": {
+                case "Successor":
+                case "Truncate": {
                     return resolveUnary(fun);
                 }
 
+                case "HighBoundary":
                 case "Log":
+                case "LowBoundary":
                 case "Modulo":
                 case "Power":
                 case "TruncatedDivide": {

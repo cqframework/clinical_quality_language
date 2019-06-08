@@ -260,13 +260,23 @@ public class SystemLibraryHelper {
         //system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
         system.add(new Operator("Divide", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
+        system.add(new Operator("Exp", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+
         system.add(new Operator("Floor", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
+
+        system.add(new Operator("HighBoundary", new Signature(systemModel.getDecimal(), systemModel.getInteger()), systemModel.getDecimal()));
+        system.add(new Operator("HighBoundary", new Signature(systemModel.getDate(), systemModel.getInteger()), systemModel.getDate()));
+        system.add(new Operator("HighBoundary", new Signature(systemModel.getDateTime(), systemModel.getInteger()), systemModel.getDateTime()));
+        system.add(new Operator("HighBoundary", new Signature(systemModel.getTime(), systemModel.getInteger()), systemModel.getTime()));
 
         system.add(new Operator("Log", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
 
-        system.add(new Operator("Ln", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+        system.add(new Operator("LowBoundary", new Signature(systemModel.getDecimal(), systemModel.getInteger()), systemModel.getDecimal()));
+        system.add(new Operator("LowBoundary", new Signature(systemModel.getDate(), systemModel.getInteger()), systemModel.getDate()));
+        system.add(new Operator("LowBoundary", new Signature(systemModel.getDateTime(), systemModel.getInteger()), systemModel.getDateTime()));
+        system.add(new Operator("LowBoundary", new Signature(systemModel.getTime(), systemModel.getInteger()), systemModel.getTime()));
 
-        system.add(new Operator("Exp", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
+        system.add(new Operator("Ln", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
 
         // MaxValue<T>() : T
         // MinValue<T>() : T
@@ -286,6 +296,11 @@ public class SystemLibraryHelper {
         system.add(new Operator("Negate", new Signature(systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Negate", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Negate", new Signature(systemModel.getQuantity()), systemModel.getQuantity()));
+
+        system.add(new Operator("Precision", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
+        system.add(new Operator("Precision", new Signature(systemModel.getDate()), systemModel.getInteger()));
+        system.add(new Operator("Precision", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
+        system.add(new Operator("Precision", new Signature(systemModel.getTime()), systemModel.getInteger()));
 
         system.add(new Operator("Predecessor", new Signature(systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
