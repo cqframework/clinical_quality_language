@@ -59,6 +59,8 @@ This property may be specified as a path, including qualifiers and constant inde
 					<xs:annotation>
 						<xs:documentation>The valueSetProperty attribute optionally specifies which property of the model contains a value set identifier that can be used as an alternative mechanism for matching the value set of the retrieve, in the case when no code is specified in the source data.
 
+This attribute is intended to address the case where systems representing negation rationale for an activity not performed do so by indicating a valueset identifier rather than a code. For example, when indicating that a medication was not administered, the value set identifier for the expected medication is used, rather than indicating a specific medication that was not administered. In this case, the valueSetProperty attribute allows the retrieve to specify where to look for the value set identifier without needing to change the conceptual data model or the CQL logic describing the negated activity.
+
 Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
 
 This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
