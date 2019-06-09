@@ -15,12 +15,12 @@
 				<xs:sequence>
 					<xs:element name="codes" type="Expression" minOccurs="0" maxOccurs="1">
 						<xs:annotation>
-							<xs:documentation>The codes element optionally allows a set of codes to be provided. The codes list restricts the set of clinical statements returned to only those clinical statements that matched some code in the set.</xs:documentation>
+							<xs:documentation>The codes element optionally specifies an expression that results in a List&lt;Code&gt; to match against. Only the clinical statements that match at least one of the specified codes will be returned.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 					<xs:element name="dateRange" type="Expression" minOccurs="0" maxOccurs="1">
 						<xs:annotation>
-							<xs:documentation>The dateRange element optionally allows a date range to be provided. The clinical statements returned would be only those clinical statements whose date fell within the range specified.</xs:documentation>
+							<xs:documentation>The dateRange element optionally specifies an expression that results in an Interval&lt;DateTime&gt; to match against. Only those clinical statements whose date falls within the specified date range will be returned.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 					<xs:element name="context" type="Expression" minOccurs="0" maxOccurs="1">
