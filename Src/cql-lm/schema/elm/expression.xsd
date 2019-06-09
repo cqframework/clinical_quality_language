@@ -2523,13 +2523,13 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="Collapse">
 		<xs:annotation>
-			<xs:documentation>The Collapse operator returns the unique set of intervals that completely covers the ranges present in the given list of intervals.
+			<xs:documentation>The Collapse operator returns the unique set of intervals that completely covers the ranges present in the given list of intervals. In other words, adjacent intervals within a sorted list are merged if they either overlap or meet.
 			
 The operation is performed by combining successive intervals in the input that either overlap or meet, using the semantics defined for the Overlaps and Meets operators. Note that because those operators are themselves defined in terms of interval successor and predecessor operators, sets of Date-, DateTime-, or Time-based intervals that are only defined to a particular precision will calculate meets and overlaps at that precision. For example, a list of DateTime-based intervals where the boundaries are all specified to the hour will collapse at the hour precision, unless the collapse precision is overridden with the per argument.
 
-The per argument determines the precision at which the collapse is computed and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for Date-, DateTime-, or Time-valued intervals, this means a temporal duration.
+The per argument determines the precision at which the collapse is computed and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a quantity with the default unit '1' (not to be confused with the quantity value, which may be any valid positive decimal). For Date-, DateTime-, and Time-valued intervals, this means a quantity with a temporal unit (e.g., 'year', 'month', etc).
 
-If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. an interval with the same starting and ending boundary).
+If the per argument is null, a per value will be constructed based on the coarsest precision of the boundaries of the intervals in the input set. For example, a list of DateTime-based intervals where the boundaries are a mixture of hours and minutes will collapse at the hour precision.
 
 If the list of intervals is empty, the result is empty. If the list of intervals contains a single interval, the result is a list with that interval. If the list of intervals contains nulls, they will be excluded from the resulting list.
 
@@ -2543,9 +2543,9 @@ If the source argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Expand operator returns the set of intervals of size per for all the ranges present in the given list of intervals.
 				
-The per argument determines the size of the resulting intervals and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a default unit ('1'), for Date-, DateTime-, or Time-valued intervals, this means a temporal duration.
+The per argument determines the size of the resulting intervals and must be a quantity-valued expression compatible with the interval point type. For numeric intervals, this means a quantity with the default unit '1' (not to be confused with the quantity value, which may be any valid positive decimal). For Date-, DateTime-, and Time-valued intervals, this means a quantity with a temporal unit (e.g., 'year', 'month', etc).
 
-If the per argument is null, the default unit interval for the point type of the intervals involved will be used (i.e. an interval with the same starting and eding boundary).
+If the per argument is null, a per value will be constructed based on the coarsest precision of the boundaries of the intervals in the input set. For example, a list of DateTime-based intervals where the boundaries are a mixture of hours and minutes will expand at the hour precision.
 
 Note that if the values in the intervals have a higher precision than the per expression, the higher precision values will be truncated to the granularity specified by the per expression.
 
