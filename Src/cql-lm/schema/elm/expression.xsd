@@ -2455,7 +2455,7 @@ If either argument is null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="OverlapsBefore">
 		<xs:annotation>
-			<xs:documentation>The OverlapsBefore operator returns true if the first interval starts before and overlaps the second. In other words, if the first interval properly contains the starting point of the second interval.
+			<xs:documentation>The OverlapsBefore operator returns true if the first interval starts before and overlaps the second. In other words, if the first interval starts before and ends on or after the start of the second interval.
 			
 This operator uses the semantics described in the Start and End operators to determine interval boundaries.
 
@@ -2468,7 +2468,7 @@ If either argument is null, the result is null.</xs:documentation>
 				<xs:attribute name="precision" type="DateTimePrecision" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
-		<!-- OverlapsBefore(i1, i2) = ProperlyContains(i1, Start(i2)) -->
+		<!-- OverlapsBefore(i1, i2) = Start(i1) < Start(i2) and End(i1) >= Start(i2) -->
 	</xs:complexType>
 	<xs:complexType name="OverlapsAfter">
 		<xs:annotation>
