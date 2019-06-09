@@ -1123,7 +1123,9 @@ For Date, Time, and DateTime values, the comparison is performed by considering 
 
 If either argument is null, the result is null.
 
-The Less operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
+The Less operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+
+Note that relative ratio comparisons are not directly supported due to the variance of uses within healthcare. See the discussion in Ratio Operators in the Author's Guide for more information.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1139,7 +1141,9 @@ For Date, Time, and DateTime values, the comparison is performed by considering 
 
 If either argument is null, the result is null.
 
-The Greater operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
+The Greater operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+
+Note that relative ratio comparisons are not directly supported due to the variance of uses within healthcare. See the discussion in Ratio Operators in the Author's Guide for more information.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1155,7 +1159,9 @@ For Date, Time, and DateTime values, the comparison is performed by considering 
 
 If either argument is null, the result is null.
 
-The LessOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
+The LessOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+
+Note that relative ratio comparisons are not directly supported due to the variance of uses within healthcare. See the discussion in Ratio Operators in the Author's Guide for more information.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1171,7 +1177,9 @@ For Date, Time, and DateTime values, the comparison is performed by considering 
 
 If either argument is null, the result is null.
 
-The GreaterOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.</xs:documentation>
+The GreaterOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+
+Note that relative ratio comparisons are not directly supported due to the variance of uses within healthcare. See the discussion in Ratio Operators in the Author's Guide for more information.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
