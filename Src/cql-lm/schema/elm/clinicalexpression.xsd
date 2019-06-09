@@ -41,7 +41,9 @@
 				</xs:attribute>
 				<xs:attribute name="idProperty" type="xs:string" use="optional">
 					<xs:annotation>
-						<xs:documentation>The idProperty attribute specifies which property of the model contains the Id for the clinical statement.</xs:documentation>
+						<xs:documentation>The idProperty attribute specifies which property of the model contains the Id for the clinical statement.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="codeProperty" type="xs:string" use="optional">
@@ -50,7 +52,7 @@
 						
 Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. Note also that even in the case of an implementation catalog, implementations would still need to respect codeProperty values in the ELM due to the possibility of the retrieve specifying alternate code filters. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
 
-In addition, this property may be a path, including qualifiers and constant indexers.</xs:documentation>
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="valueSetProperty" type="xs:string" use="optional">
@@ -59,7 +61,7 @@ In addition, this property may be a path, including qualifiers and constant inde
 
 Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
 
-In addition, this property may be a path, including qualifiers and constant indexers.</xs:documentation>
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="dateProperty" type="xs:string" use="optional">
@@ -70,7 +72,9 @@ This property is expected to reference a property that is either a Date or DateT
 
 Instances with no value for the dateProperty will not be included in the result set if a date range is specified.
 
-Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.</xs:documentation>
+Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="dateLowProperty" type="xs:string" use="optional">
@@ -79,7 +83,9 @@ Note that if the dateProperty is specified, the dateLowProperty and dateHighProp
 						
 Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
 
-If the dateLowProperty is present, the dateHighProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.</xs:documentation>
+If the dateLowProperty is present, the dateHighProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="dateHighProperty" type="xs:string" use="optional">
@@ -88,7 +94,9 @@ If the dateLowProperty is present, the dateHighProperty must also be present, an
 
 Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
 
-If the dateHighProperty is present, the dateLowProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.</xs:documentation>
+If the dateHighProperty is present, the dateLowProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
