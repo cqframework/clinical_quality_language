@@ -1135,13 +1135,15 @@ Note that relative ratio comparisons are not directly supported due to the varia
 		<xs:annotation>
 			<xs:documentation>The Greater operator returns true if the first argument is greater than the second argument.
 
+The Greater operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 For Date, Time, and DateTime values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is false. For the purposes of comparison, seconds and milliseconds are considered a single precision using a decimal, with decimal comparison semantics.
 
-If either argument is null, the result is null.
+When comparing DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
 
-The Greater operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+If either argument is null, the result is null.
 
 Note that relative ratio comparisons are not directly supported due to the variance of uses within healthcare. See the discussion in Ratio Operators in the Author's Guide for more information.</xs:documentation>
 		</xs:annotation>
@@ -1153,13 +1155,15 @@ Note that relative ratio comparisons are not directly supported due to the varia
 		<xs:annotation>
 			<xs:documentation>The LessOrEqual operator returns true if the first argument is less than or equal to the second argument.
 
+The LessOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 For Date, Time, and DateTime values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is less than the second, the result is true; if the first value is greater than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true. For the purposes of comparison, seconds and milliseconds are considered a single precision using a decimal, with decimal comparison semantics.
 
-If either argument is null, the result is null.
+When comparing DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
 
-The LessOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+If either argument is null, the result is null.
 
 Note that relative ratio comparisons are not directly supported due to the variance of uses within healthcare. See the discussion in Ratio Operators in the Author's Guide for more information.</xs:documentation>
 		</xs:annotation>
@@ -1171,13 +1175,15 @@ Note that relative ratio comparisons are not directly supported due to the varia
 		<xs:annotation>
 			<xs:documentation>The GreaterOrEqual operator returns true if the first argument is greater than or equal to the second argument.
 
+The GreaterOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+
 For comparisons involving quantities, the dimensions of each quantity must be the same, but not necessarily the unit. For example, units of 'cm' and 'm' are comparable, but units of 'cm2' and 'cm' are not. Attempting to operate on quantities with invalid units will result in a run-time error.
 
 For Date, Time, and DateTime values, the comparison is performed by considering each precision in order, beginning with years (or hours for time values). If the values are the same, comparison proceeds to the next precision; if the first value is greater than the second, the result is true; if the first value is less than the second, the result is false; if one input has a value for the precision and the other does not, the comparison stops and the result is null; if neither input has a value for the precision or the last precision has been reached, the comparison stops and the result is true. For the purposes of comparison, seconds and milliseconds are considered a single precision using a decimal, with decimal comparison semantics.
 
-If either argument is null, the result is null.
+When comparing DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
 
-The GreaterOrEqual operator is defined for the Integer, Decimal, String, Date, DateTime, Time, and Quantity types.
+If either argument is null, the result is null.
 
 Note that relative ratio comparisons are not directly supported due to the variance of uses within healthcare. See the discussion in Ratio Operators in the Author's Guide for more information.</xs:documentation>
 		</xs:annotation>
@@ -1825,6 +1831,8 @@ For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
 
 For calculations involving weeks, the duration of a week is equivalent to 7 days.
 			
+When calculating duration between DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
+
 If either argument is null, the result is null.
 
 Note that this operator can be implemented using Uncertainty as described in the CQL specification, Chapter 5, Precision-Based Timing.</xs:documentation>
@@ -1845,6 +1853,8 @@ For Time values, precision must be one of Hour, Minute, Second, or Millisecond.
 
 For calculations involving weeks, Sunday is considered to be the first day of the week for the purposes of determining boundaries.
 			
+When calculating difference between DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
+
 If either argument is null, the result is null.
 
 Note that this operator can be implemented using Uncertainty as described in the CQL specification, Chapter 5, Precision-Based Timing.</xs:documentation>
@@ -1868,6 +1878,8 @@ If the argument is null, the result is null.</xs:documentation>
 	<xs:complexType name="TimeFrom">
 		<xs:annotation>
 			<xs:documentation>The TimeFrom operator returns the Time of the argument.
+
+When extracting the time from a DateTime value, implementations should normalize to the timezone offset of the evaluation request timestamp.
 
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2000,7 +2012,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date and time calculations, comparisons are performed respecting the timezone offset.
+When comparing DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2028,7 +2040,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date and time calculations, comparisons are performed respecting the timezone offset.
+When comparing DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2056,7 +2068,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date and time calculations, comparisons are performed respecting the timezone offset.
+When comparing DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2329,7 +2341,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date and time calculations, comparisons are performed respecting the timezone offset.
+When comparing DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
@@ -2358,7 +2370,7 @@ For Time values, precision must be one of hour, minute, second, or millisecond.
 
 Note specifically that due to variability in the way week numbers are determined, comparisons involving weeks are not supported.
 
-As with all date and time calculations, comparisons are performed respecting the timezone offset.
+When comparing DateTime values with different timezone offsets, implementations should normalize to the timezone offset of the evaluation request timestamp, but only when the comparison precision is hours, minutes, seconds, or milliseconds.
 
 If either argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
