@@ -2547,7 +2547,7 @@ The per argument determines the size of the resulting intervals and must be a qu
 
 If the per argument is null, a per value will be constructed based on the coarsest precision of the boundaries of the intervals in the input set. For example, a list of DateTime-based intervals where the boundaries are a mixture of hours and minutes will expand at the hour precision.
 
-Note that if the values in the intervals have a higher precision than the per expression, the higher precision values will be truncated to the granularity specified by the per expression.
+Note that if the values in the intervals are more precise than the per quantity, the more precise values will be truncated to the precision specified by the per quantity.
 
 If the list of intervals is empty, the result is empty. If the list of intervals contains nulls, they will be excluded from the resulting list.
 
