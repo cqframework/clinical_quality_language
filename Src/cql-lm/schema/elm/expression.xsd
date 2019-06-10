@@ -1089,7 +1089,13 @@ If either argument is null, the result is null.</xs:documentation>
 		<xs:annotation>
 			<xs:documentation>The Equivalent operator returns true if the arguments are the same value, or if they are both null; and false otherwise.
 
+With the exception of null behavior and the semantics for specific types defined below, equivalence is the same as equality.
+
 For string values, equivalence returns true if the strings are the same value while ignoring case and locale, and normalizing whitespace. Normalizing whitespace means that all whitespace characters are treated as equivalent, with whitespace characters as defined in the whitespace lexical category.
+
+For decimals, equivalent means the values are the same with the comparison done on values rounded to the least precision of the least precise operand; trailing zeroes after the decimal are ignored in determining precision for equivalent comparison.
+
+For quantities, equivalent means the values are the same quantity when considering unit conversion (e.g. 100 'cm' ~ 1 'm') and using decimal equivalent semantics for the value. Note that implementations are not required to support unit conversion and so are allowed to return null for equivalence of quantities with different units.
 
 For ratios, equivalent means that the numerator and denominator represent the same ratio (e.g. 1:100 ~ 10:1000).
 
