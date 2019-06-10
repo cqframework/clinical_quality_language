@@ -86,7 +86,7 @@
 					<xs:element name="identifier" type="VersionedIdentifier">
 						<xs:annotation>
 							<xs:documentation>The identifier element defines a unique identifier for this library,
-                and optionally, a version. </xs:documentation>
+								and optionally, a system (or namespace) and version. </xs:documentation>
 						</xs:annotation>
 					</xs:element>
 					<xs:element name="schemaIdentifier" type="VersionedIdentifier">
