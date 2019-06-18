@@ -54,9 +54,4 @@ public class TranslationTests {
         CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslator.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
     }
-
-    public static void main(String[] args) throws IOException { 
-        TranslationTests tests = new TranslationTests();
-        tests.testIdentiferLocation();
-    }
 }
