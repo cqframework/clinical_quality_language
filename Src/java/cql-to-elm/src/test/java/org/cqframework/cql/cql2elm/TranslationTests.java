@@ -48,4 +48,15 @@ public class TranslationTests {
         assertEquals(5, tb.getStartChar());
         assertEquals(10, tb.getEndChar());
     }
+
+    @Test
+    public void testAnnotations() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslator.Options.EnableAnnotations);
+        assertEquals(0, translator.getErrors().size());
+    }
+
+    public static void main(String[] args) throws IOException { 
+        TranslationTests tests = new TranslationTests();
+        tests.testIdentiferLocation();
+    }
 }

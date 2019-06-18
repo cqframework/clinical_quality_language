@@ -325,7 +325,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         try {
             // Loop through and call visit on each child (to ensure they are tracked)
             for (int i = 0; i < ctx.getChildCount(); i++) {
-                Object childResult = visit(ctx.getChild(i));
+                ParseTree tree = ctx.getChild(i);
+                if (tree.getText() != null && tree.getText().startsWith("<EOF>") ) {
+                    continue;
+                }
+
+                Object childResult = visit(tree);
                 // Only set the last result if we received something useful
                 if (childResult != null) {
                     lastResult = childResult;
