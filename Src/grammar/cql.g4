@@ -730,6 +730,10 @@ keywordIdentifier
 
 // Obsolete identifiers are keywords that could be used as identifiers in CQL 1.3
 // NOTE: Not currently used, this is the set of keywords that were defined as allowed identifiers as part of 1.3
+// NOTE: Several keywords were commented out in this list (notably exists) because of an issue with the ANTLR tooling.
+// In 4.5, having these keywords as identifiers results in unacceptable parsing performance. In 4.6+, having them as
+// identifiers resulted in incorrect parsing. See Github issue [#343](https://github.com/cqframework/clinical_quality_language/issues/343) for more detail
+// This should no longer be an issue with 1.4 due to the introduction of reserved words
 obsoleteIdentifier
     : 'all'
     | 'Code'
@@ -893,9 +897,6 @@ identifierOrFunctionIdentifier
     | functionIdentifier
     ;
 
-// NOTE: These keywords are commented out because of an issue with the ANTLR tooling. In 4.5, having these keywords
-// as identifiers results in unacceptable parsing performance. In 4.6+, having them as identifiers results in incorrect
-// parsing. See Github issue [#343](https://github.com/cqframework/clinical_quality_language/issues/343) for more detail
 identifier
     : IDENTIFIER
     | DELIMITEDIDENTIFIER
