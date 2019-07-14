@@ -2201,13 +2201,13 @@ public class LibraryBuilder {
             return expressionDef.getResultType();
         }
 
-        // If the current expression context is specific, a reference to an unspecified context expression will indicate a full
+        // If the current expression context is specific, a reference to an unfiltered context expression will indicate a full
         // evaluation of the population context expression, and the result type is the same.
         if (inSpecificContext()) {
             return expressionDef.getResultType();
         }
 
-        // If the current expression context is unspecified, a reference to a specific context expression will need to be
+        // If the current expression context is unfiltered, a reference to a specific context expression will need to be
         // performed for every context in the system, so the result type is promoted to a list (if it is not already).
         if (inUnfilteredContext()) {
             // If we are in the source clause of a query, indicate that the source references patient context

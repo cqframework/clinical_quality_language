@@ -1,6 +1,6 @@
 library ComparisonOperator version '1'
 
-context Unspecified
+context Unfiltered
 
 //Between
 define BetweenIntTrue: 4 between 2 and 6

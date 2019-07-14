@@ -676,7 +676,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         currentContext = modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier;
 
-        if (!unqualifiedIdentifier.equals("Unspecified")) {
+        if (!unqualifiedIdentifier.equals("Unfiltered")) {
             ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
 
             // If this is the first time a context definition is encountered, output a patient definition:
@@ -2993,7 +2993,7 @@ DATETIME
             // at the patient, rather than the population, context.
             boolean expressionContextPushed = false;
             /* TODO: Address the issue of referencing multiple context expressions within a query (or even expression in general)
-            if (libraryBuilder.inUnspecifiedContext() && queryContext.referencesSpecificContext()) {
+            if (libraryBuilder.inUnfilteredContext() && queryContext.referencesSpecificContext()) {
                 libraryBuilder.pushExpressionContext("Patient");
                 expressionContextPushed = true;
             }

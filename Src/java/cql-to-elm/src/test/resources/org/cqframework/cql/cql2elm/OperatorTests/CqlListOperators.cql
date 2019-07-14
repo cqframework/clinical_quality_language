@@ -1,6 +1,6 @@
 library ListOperator version '1'
 
-context Unspecified
+context Unfiltered
 
 //Contains
 define ContainsABNullHasNull: { 'a', 'b', null } contains null

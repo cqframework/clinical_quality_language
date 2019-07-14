@@ -13,7 +13,7 @@ import java.util.List;
 public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     private LibraryInfo libraryInfo = new LibraryInfo();
     private boolean implicitContextCreated = false;
-    private String currentContext = "Unspecified";
+    private String currentContext = "Unfiltered";
 
     public LibraryInfo getLibraryInfo() {
         return libraryInfo;
@@ -114,7 +114,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
             currentContext = unqualifiedContext;
         }
 
-        if (!implicitContextCreated && !unqualifiedContext.equals("Unspecified")) {
+        if (!implicitContextCreated && !unqualifiedContext.equals("Unfiltered")) {
             ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
             expressionDefinition.setName(unqualifiedContext);
             expressionDefinition.setContext(currentContext);
