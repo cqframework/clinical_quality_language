@@ -4,7 +4,6 @@ allprojects {
 
     group = 'info.cqframework'
     version = '1.4.6'
-}
 
 subprojects {
     apply plugin: 'java'
