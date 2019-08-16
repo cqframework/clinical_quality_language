@@ -3283,11 +3283,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public SortDirection visitSortDirection(@NotNull cqlParser.SortDirectionContext ctx) {
-        if (ctx.getText().equals("desc")) {
-            return SortDirection.DESC;
-        }
-
-        return SortDirection.ASC;
+        return SortDirection.fromValue(ctx.getText());
     }
 
     private SortDirection parseSortDirection(cqlParser.SortDirectionContext ctx) {
