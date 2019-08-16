@@ -238,17 +238,20 @@ public class SemanticTests {
         assertThat(((ToList)codes).getOperand(), instanceOf(CodeRef.class));
     }
 
-    // TODO: Support this test (add FHIRHelpers loading functionality to the test scaffolding)
-    //@Test
-    //public void testIntervalImplicitConversion() throws IOException {
-    //    runSemanticTest("TestIntervalImplicitConversion.cql");
-    //}
+    @Test
+    public void testIntervalImplicitConversion() throws IOException {
+        runSemanticTest("TestIntervalImplicitConversion.cql");
+    }
 
-    // TODO: Support this test (add FHIRHelpers loading functionality to the test scaffolding)
-    //@Test
-    //public void testImplicitFHIRHelpers() throws IOException {
-    //    runSemanticTest("TestImplicitFHIRHelpers.cql");
-    //}
+    @Test
+    public void testImplicitFHIRHelpers() throws IOException {
+        runSemanticTest("TestImplicitFHIRHelpers.cql");
+    }
+
+    @Test
+    public void testImplicitFHIRHelpers_FHIR4() throws IOException {
+        runSemanticTest("TestImplicitFHIRHelpers_FHIR4.cql");
+    }
 
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
