@@ -13,12 +13,19 @@ public class Model {
         nameIndex = new HashMap<>();
         classIndex = new HashMap<>();
         conversions = new ArrayList<>();
+        contexts = new ArrayList<>();
 
         ModelImporter importer = new ModelImporter(info, systemModel != null ? systemModel.nameIndex.values() : null);
         index = importer.getTypes();
         for (Conversion c : importer.getConversions()) {
             conversions.add(c);
         }
+
+        for (ModelContext c : importer.getContexts()) {
+            contexts.add(c);
+        }
+
+        defaultContext = importer.getDefaultContextName();
 
         for (DataType t : index.values()) {
             if (t instanceof ClassType && ((ClassType)t).getLabel() != null) {
@@ -38,6 +45,11 @@ public class Model {
     private Map<String, ClassType> classIndex;
     private Map<String, DataType> nameIndex;
     private List<Conversion> conversions;
+    private List<ModelContext> contexts;
+    private String defaultContext;
+    public String getDefaultContext() {
+        return defaultContext;
+    }
 
     public Iterable<Conversion> getConversions() {
         return conversions;
@@ -51,6 +63,17 @@ public class Model {
         }
 
         return result;
+    }
+
+    public ModelContext resolveContextName(@NotNull String contextName) {
+        for (ModelContext context : contexts) {
+            if (context.getName().equals(contextName)) {
+                return context;
+            }
+        }
+
+        // ERROR:
+        throw new IllegalArgumentException(String.format("Could not resolve context name %s in model %s.", contextName, this.info.getName()));
     }
 
     public ClassType resolveLabel(@NotNull String label) {

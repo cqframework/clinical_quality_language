@@ -119,12 +119,12 @@ public class QueryContext {
         this.resultElementType = resultElementType;
     }
 
-    private boolean referencesPatientContextValue;
-    public boolean referencesPatientContext() {
-        return referencesPatientContextValue;
+    private boolean referencesSpecificContextValue;
+    public boolean referencesSpecificContext() {
+        return referencesSpecificContextValue;
     }
 
-    public void referencePatientContext() {
-        referencesPatientContextValue = true;
+    public void referenceSpecificContext() {
+        referencesSpecificContextValue = true;
     }
 }

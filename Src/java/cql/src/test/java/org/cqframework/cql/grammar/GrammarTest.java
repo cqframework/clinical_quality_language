@@ -32,7 +32,7 @@ public class GrammarTest {
         TermExpressionTermContext termExpressionTerm = (TermExpressionTermContext) termExpression.expressionTerm();
         InvocationTermContext invocationTerm = (InvocationTermContext)termExpressionTerm.term();
         FunctionInvocationContext functionInvocation = (FunctionInvocationContext)invocationTerm.invocation();
-        assertEquals("AgeAt", functionInvocation.function().identifier().IDENTIFIER().getText());
+        assertEquals("AgeAt", functionInvocation.function().referentialIdentifier().getText());
 
         TermExpressionContext argExpression = (TermExpressionContext) functionInvocation.function().paramList().expression(0);
         TimeBoundaryExpressionTermContext argExpressionTerm = (TimeBoundaryExpressionTermContext) argExpression.expressionTerm();

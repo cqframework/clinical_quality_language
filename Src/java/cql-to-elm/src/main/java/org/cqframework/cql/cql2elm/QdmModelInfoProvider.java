@@ -45,8 +45,11 @@ public class QdmModelInfoProvider implements ModelInfoProvider {
                 return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.3.xml"),
                         ModelInfo.class);
             case "5.4":
-            case "":
                 return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.4.xml"),
+                        ModelInfo.class);
+            case "5.5":
+            case "":
+                return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.5.xml"),
                         ModelInfo.class);
             default:
                 throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));

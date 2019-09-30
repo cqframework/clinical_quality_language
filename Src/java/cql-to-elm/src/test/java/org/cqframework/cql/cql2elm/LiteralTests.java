@@ -14,9 +14,7 @@ import static org.cqframework.cql.cql2elm.matchers.HasTypeAndResult.hasTypeAndRe
 import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals;
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isA;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Created by Bryn on 11/21/2017.
@@ -46,15 +44,32 @@ public class LiteralTests {
         dateTime = (DateTime)def.getExpression();
         assertThat(dateTime.getTimezoneOffset(), literalFor(7.0));
 
-        def = defs.get("TimeZoneTimeLiteral");
-        assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
-        Time time = (Time)def.getExpression();
-        assertThat(time.getTimezoneOffset(), literalFor(-7.0));
+        def = defs.get("YearLiteral");
+        assertThat(def, hasTypeAndResult(Date.class, "System.Date"));
 
-        def = defs.get("TimeZonePositiveTimeLiteral");
-        assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
-        time = (Time)def.getExpression();
-        assertThat(time.getTimezoneOffset(), literalFor(7.0));
+        def = defs.get("DateTimeYearLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("UTCYearLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("YearMonthLiteral");
+        assertThat(def, hasTypeAndResult(Date.class, "System.Date"));
+
+        def = defs.get("DateTimeYearMonthLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("UTCYearMonthLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("DateLiteral");
+        assertThat(def, hasTypeAndResult(Date.class, "System.Date"));
+
+        def = defs.get("DateTimeDateLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
+
+        def = defs.get("UTCDateLiteral");
+        assertThat(def, hasTypeAndResult(DateTime.class, "System.DateTime"));
     }
 
     @Test
@@ -88,6 +103,28 @@ public class LiteralTests {
         quantity = (Quantity)def.getExpression();
         assertThat(quantity.getValue(), is(BigDecimal.valueOf(10)));
         assertThat(quantity.getUnit(), is("{shab-shab-shab}"));
+
+        def = defs.get("QuantityConversionTest");
+        assertThat(def, hasTypeAndResult(ConvertQuantity.class, "System.Quantity"));
+        ConvertQuantity convertQuantity = (ConvertQuantity)def.getExpression();
+        assertThat(convertQuantity.getOperand().get(0), instanceOf(Quantity.class));
+        quantity = (Quantity)convertQuantity.getOperand().get(0);
+        assertThat(quantity.getValue(), is(BigDecimal.valueOf(5)));
+        assertThat(quantity.getUnit(), is("mg"));
+        assertThat(convertQuantity.getOperand().get(1), instanceOf(Literal.class));
+        Literal literal = (Literal)convertQuantity.getOperand().get(1);
+        assertThat(literal.getValue(), is("g"));
+
+        def = defs.get("QuantityConversionWeekTest");
+        assertThat(def, hasTypeAndResult(ConvertQuantity.class, "System.Quantity"));
+        convertQuantity = (ConvertQuantity)def.getExpression();
+        assertThat(convertQuantity.getOperand().get(0), instanceOf(Quantity.class));
+        quantity = (Quantity)convertQuantity.getOperand().get(0);
+        assertThat(quantity.getValue(), is(BigDecimal.valueOf(28)));
+        assertThat(quantity.getUnit(), is("days"));
+        assertThat(convertQuantity.getOperand().get(1), instanceOf(Literal.class));
+        literal = (Literal)convertQuantity.getOperand().get(1);
+        assertThat(literal.getValue(), is("wk"));
     }
 
     @Test

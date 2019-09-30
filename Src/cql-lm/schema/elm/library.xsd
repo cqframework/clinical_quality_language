@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-<!-- This file defines the root library element and type for the ELM schema. -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
 		<xs:documentation> This file defines the root library type and element. </xs:documentation>
@@ -7,10 +6,12 @@
 	<xs:include schemaLocation="clinicalexpression.xsd"/>
 	<xs:complexType name="VersionedIdentifier">
 		<xs:annotation>
-			<xs:documentation>VersionedIdentifier is composed of two parts: (1) an identifier which
-        identifies the set of all versions of a given resource. (2) the actual version of the
-        instance of interest in this set. The VersionedIdentifier therefore points to an individual
-        'versioned' instance of a resource such as the third version of a library.
+			<xs:documentation>VersionedIdentifier is composed of three parts: (1) an optional system, or
+        namespace, which provides a globally unique, stable scope for the identifier, 
+        (2) an identifier which identifies the set of all versions of a given resource, and 
+        (3) the actual version of the instance of interest in this set. The VersionedIdentifier 
+        therefore points to an individual 'versioned' instance of a resource such as the third
+        version of a library.
       </xs:documentation>
 		</xs:annotation>
 		<xs:attribute name="id" type="xs:string"/>
@@ -85,7 +86,7 @@
 					<xs:element name="identifier" type="VersionedIdentifier">
 						<xs:annotation>
 							<xs:documentation>The identifier element defines a unique identifier for this library,
-                and optionally, a version. </xs:documentation>
+								and optionally, a system (or namespace) and version. </xs:documentation>
 						</xs:annotation>
 					</xs:element>
 					<xs:element name="schemaIdentifier" type="VersionedIdentifier">

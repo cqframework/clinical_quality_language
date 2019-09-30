@@ -164,7 +164,6 @@ public class DateTimeOperatorsTest {
         assertThat(dt.getMinute(), nullValue());
         assertThat(dt.getSecond(), nullValue());
         assertThat(dt.getMillisecond(), nullValue());
-        assertThat(dt.getTimezoneOffset(), nullValue());
 
         def = defs.get("TimeMinute");
         assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
@@ -173,7 +172,6 @@ public class DateTimeOperatorsTest {
         assertThat(dt.getMinute(), literalFor(0));
         assertThat(dt.getSecond(), nullValue());
         assertThat(dt.getMillisecond(), nullValue());
-        assertThat(dt.getTimezoneOffset(), nullValue());
 
         def = defs.get("TimeSecond");
         assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
@@ -182,7 +180,6 @@ public class DateTimeOperatorsTest {
         assertThat(dt.getMinute(), literalFor(0));
         assertThat(dt.getSecond(), literalFor(0));
         assertThat(dt.getMillisecond(), nullValue());
-        assertThat(dt.getTimezoneOffset(), nullValue());
 
         def = defs.get("TimeMillisecond");
         assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
@@ -191,16 +188,6 @@ public class DateTimeOperatorsTest {
         assertThat(dt.getMinute(), literalFor(0));
         assertThat(dt.getSecond(), literalFor(0));
         assertThat(dt.getMillisecond(), literalFor(0));
-        assertThat(dt.getTimezoneOffset(), nullValue());
-
-        def = defs.get("TimeMillisecondOffset");
-        assertThat(def, hasTypeAndResult(Time.class, "System.Time"));
-        dt = (Time) def.getExpression();
-        assertThat(dt.getHour(), literalFor(0));
-        assertThat(dt.getMinute(), literalFor(0));
-        assertThat(dt.getSecond(), literalFor(0));
-        assertThat(dt.getMillisecond(), literalFor(0));
-        assertThat(dt.getTimezoneOffset(), literalFor(5.5));
     }
 
     @Test

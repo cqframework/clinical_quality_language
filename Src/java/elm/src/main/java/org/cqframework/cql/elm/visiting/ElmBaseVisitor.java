@@ -202,7 +202,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Start) return visitStart((Start)elm, context);
         else if (elm instanceof Successor) return visitSuccessor((Successor)elm, context);
         else if (elm instanceof TimeFrom) return visitTimeFrom((TimeFrom)elm, context);
-        else if (elm instanceof TimezoneFrom) return visitTimezoneFrom((TimezoneFrom)elm, context);
+        else if (elm instanceof TimezoneOffsetFrom) return visitTimezoneOffsetFrom((TimezoneOffsetFrom)elm, context);
         else if (elm instanceof ToBoolean) return visitToBoolean((ToBoolean)elm, context);
         else if (elm instanceof ToConcept) return visitToConcept((ToConcept)elm, context);
         else if (elm instanceof ToDateTime) return visitToDateTime((ToDateTime)elm, context);
@@ -1306,7 +1306,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    public T visitTimezoneFrom(TimezoneFrom elm, C context) {
+    public T visitTimezoneOffsetFrom(TimezoneOffsetFrom elm, C context) {
         return null;
     }
 

@@ -370,7 +370,6 @@ public class Cql2ElmVisitorTest {
         assertThat(request.getDataType(), quickDataType("Condition"));
         assertThat(request.getCodeProperty(), is(nullValue()));
         assertThat(request.getCodes(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
@@ -390,7 +389,6 @@ public class Cql2ElmVisitorTest {
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Acute Pharyngitis"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
@@ -410,7 +408,6 @@ public class Cql2ElmVisitorTest {
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Moderate or Severe"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
@@ -796,7 +793,6 @@ public class Cql2ElmVisitorTest {
         ValueSetRef code = (ValueSetRef) request.getCodes();
         assertThat(code.getName(), is("Inpatient"));
         assertThat(code.getLibraryName(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is("encounter-qicore-qicore-encounter"));
 
@@ -830,7 +826,6 @@ public class Cql2ElmVisitorTest {
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is("encounter-qicore-qicore-encounter"));
 
@@ -847,7 +842,6 @@ public class Cql2ElmVisitorTest {
         assertThat(withCode.getLibraryName(), is(nullValue()));
         assertThat(withRequest.getDateProperty(), is(nullValue()));
         assertThat(withRequest.getDateRange(), is(nullValue()));
-        assertThat(withRequest.getScope(), is(nullValue()));
         assertThat(withRequest.getIdProperty(), is(nullValue()));
         assertThat(withRequest.getTemplateId(), is("condition-qicore-qicore-condition"));
         OverlapsAfter withWhere = (OverlapsAfter) relationship.getSuchThat();
@@ -944,7 +938,6 @@ public class Cql2ElmVisitorTest {
         assertThat(code.getLibraryName(), is(nullValue()));
         assertThat(request.getDateProperty(), is(nullValue()));
         assertThat(request.getDateRange(), is(nullValue()));
-        assertThat(request.getScope(), is(nullValue()));
         assertThat(request.getIdProperty(), is(nullValue()));
         assertThat(request.getTemplateId(), is("encounter-qicore-qicore-encounter"));
 

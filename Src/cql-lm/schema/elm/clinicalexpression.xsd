@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- edited with XMLSpy v2013 sp1 (http://www.altova.com) by Bryn Rhodes (Database Consulting Group) -->
-<!-- This file is a direct copy of clinicalexpression.xsd from the CDS KAS with the following changes
-		Namespace changed to urn:hl7-org:elm:r1
-		dt namespace changed to http://hl7.org/fhir
-		EventType and DataEventType enum references removed
-		timeOffset element removed from RequestBase
-		triggerType attribute removed from RequestBase
-		ClinicalRequestDef type added
-		ValueSetDef added
-		ValueSetRef added
-		IsEquivalent added
-		Quantity added
-
-The following changes were made since the informative ballot in September 2014:
-		Collapsed RequestBase/DataRequest and ClinicalRequest into Retrieve
-		Removed RequestCardinality
-		Removed subjectProperty, isInitial, useValueSets and useSubsumption attributes from the Retrieve
-		Removed the ValueSet, IsEquivalent, Subsumes, and SetSubsumes operators
-		Added CalculateAge, CalculateAgeAt
-		Added dateLowProperty and dateHighProperty to the Retrieve
--->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
 	<xs:annotation>
 		<xs:documentation>
@@ -36,12 +15,17 @@ The following changes were made since the informative ballot in September 2014:
 				<xs:sequence>
 					<xs:element name="codes" type="Expression" minOccurs="0" maxOccurs="1">
 						<xs:annotation>
-							<xs:documentation>The codes element optionally allows a set of codes to be provided. The codes list restricts the set of clinical statements returned to only those clinical statements that matched some code in the set.</xs:documentation>
+							<xs:documentation>The codes element optionally specifies an expression that results in a List&lt;Code&gt; to match against. Only the clinical statements that match at least one of the specified codes will be returned.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 					<xs:element name="dateRange" type="Expression" minOccurs="0" maxOccurs="1">
 						<xs:annotation>
-							<xs:documentation>The dateRange element optionally allows a date range to be provided. The clinical statements returned would be only those clinical statements whose date fell within the range specified.</xs:documentation>
+							<xs:documentation>The dateRange element optionally specifies an expression that results in an Interval&lt;DateTime&gt; to match against. Only those clinical statements whose date falls within the specified date range will be returned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="context" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>If specified, the context element references an expression that, when evaluated, provides the context for the retrieve. The expression evaluates to the instance id that will be used as the context for the retrieve.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
@@ -57,25 +41,42 @@ The following changes were made since the informative ballot in September 2014:
 				</xs:attribute>
 				<xs:attribute name="idProperty" type="xs:string" use="optional">
 					<xs:annotation>
-						<xs:documentation>The idProperty attribute specifies which property of the model contains the Id for the clinical statement.</xs:documentation>
+						<xs:documentation>The idProperty attribute specifies which property of the model contains the Id for the clinical statement.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="codeProperty" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The codeProperty attribute optionally specifies which property of the model contains the Code or Codes for the clinical statement.
 						
-Note that this property could potentially be specified elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing them at the retrieve expression level gives the most flexibility.</xs:documentation>
+Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. Note also that even in the case of an implementation catalog, implementations would still need to respect codeProperty values in the ELM due to the possibility of the retrieve specifying alternate code filters. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="valueSetProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The valueSetProperty attribute optionally specifies which property of the model contains a value set identifier that can be used as an alternative mechanism for matching the value set of the retrieve, in the case when no code is specified in the source data.
+
+This attribute is intended to address the case where systems representing negation rationale for an activity not performed do so by indicating a valueset identifier rather than a code. For example, when indicating that a medication was not administered, the value set identifier for the expected medication is used, rather than indicating a specific medication that was not administered. In this case, the valueSetProperty attribute allows the retrieve to specify where to look for the value set identifier without needing to change the conceptual data model or the CQL logic describing the negated activity.
+
+Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="dateProperty" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The dateProperty attribute optionally specifies which property of the model contains the clinically relevant date for the clinical statement.
 						
-This property is expected to reference a property that is either a Date or DateTime, or an interval of Date or DateTime. In either case, the result set will only include instances where the value of the dateProperty is during the date range. For date/time values, this means the date is both the same or after the beginning of the range, and the same or before the end of the range. For date/time interval values, this means that the entire interval is included in the date range.
+This property is expected to reference a property that is either a Date or DateTime, or an interval of Date or DateTime. In either case, the result set will only include instances where the value of the dateProperty is during the date range. For Date or DateTime values, this means the date is both the same or after the beginning of the range, and the same or before the end of the range. For Date- or DateTime-based interval values, this means that the entire interval is included in the date range.
 
 Instances with no value for the dateProperty will not be included in the result set if a date range is specified.
 
-Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.</xs:documentation>
+Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present. If specified, the dateLowProperty and dateHighProperty values will be used to construct an interval with inclusive boundaries for the date range.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="dateLowProperty" type="xs:string" use="optional">
@@ -84,7 +85,7 @@ Note that if the dateProperty is specified, the dateLowProperty and dateHighProp
 						
 Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
 
-If the dateLowProperty is present, the dateHighProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.</xs:documentation>
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="dateHighProperty" type="xs:string" use="optional">
@@ -93,12 +94,7 @@ If the dateLowProperty is present, the dateHighProperty must also be present, an
 
 Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
 
-If the dateHighProperty is present, the dateLowProperty must also be present, and will be used to determine the date range value of instances. Filtering using the specified date range occurs as described in the dateProperty.</xs:documentation>
-					</xs:annotation>
-				</xs:attribute>
-				<xs:attribute name="scope" type="xs:string" use="optional">
-					<xs:annotation>
-						<xs:documentation>The scope attribute optionally specifies a name for the scope for this operator that can be used within expressions to reference the current element.</xs:documentation>
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
@@ -297,7 +293,9 @@ Note that the recommended approach to statically binding to an expansion set is 
 	<xs:complexType name="InCodeSystem">
 		<xs:annotation>
 			<xs:documentation>The InCodeSystem operator returns true if the given code is in the given code system.
-			
+
+The first argument is expected to be a String, Code, or Concept.
+
 Note that this operator explicitly requires a CodeSystemRef as its codesystem argument. This allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -312,7 +310,9 @@ Note that this operator explicitly requires a CodeSystemRef as its codesystem ar
 	<xs:complexType name="AnyInCodeSystem">
 		<xs:annotation>
 			<xs:documentation>The AnyInCodeSystem operator returns true if any of the given codes are in the given code system.
-			
+
+The first argument is expected to be a list of String, Code, or Concept.
+
 Note that this operator explicitly requires a CodeSystemRef as its codesystem argument. This allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -327,7 +327,9 @@ Note that this operator explicitly requires a CodeSystemRef as its codesystem ar
 	<xs:complexType name="InValueSet">
 		<xs:annotation>
 			<xs:documentation>The InValueSet operator returns true if the given code is in the given value set.
-			
+
+The first argument is expected to be a String, Code, or Concept.
+
 Note that this operator explicitly requires a ValueSetRef as its valueset argument. This allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -342,7 +344,9 @@ Note that this operator explicitly requires a ValueSetRef as its valueset argume
 	<xs:complexType name="AnyInValueSet">
 		<xs:annotation>
 			<xs:documentation>The AnyInValueSet operator returns true if any of the given codes are in the given value set.
-			
+
+The first argument is expected to be a list of String, Code, or Concept.
+
 Note that this operator explicitly requires a ValueSetRef as its valueset argument. This allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -404,15 +408,13 @@ If either or both arguments are null, the result is null.</xs:documentation>
 	</xs:complexType>
 	<xs:complexType name="CalculateAge">
 		<xs:annotation>
-			<xs:documentation>Calculates the age in the specified precision of a person born on the given Date or DateTime as of Today or Now.
+			<xs:documentation>Calculates the age in the specified precision of a person born on the given date.
 
 The CalculateAge operator is defined for Date and DateTime.
 
-For the Date overload, the calculation is performed using Today(), and the precision must be one of year, month, week, or day.
+For the Date overload, the calculation is performed using Today(), the precision must be one of year, month, week, or day, and the result is the number of whole calendar periods that have elapsed between the given date and today.
 
-For the DateTime overload, the calculation is performed using Now().
-
-The result of the calculation is always the number of whole calendar periods that have elapsed between the given date/time and today/now.</xs:documentation>
+For the DateTime overload, the calculation is performed using Now(), and the result is the number of whole calendar periods that have elapsed between the given datetime and now.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="UnaryExpression">
@@ -422,15 +424,15 @@ The result of the calculation is always the number of whole calendar periods tha
 	</xs:complexType>
 	<xs:complexType name="CalculateAgeAt">
 		<xs:annotation>
-			<xs:documentation>Calculates the age in the specified precision of a person born on the first Date or DateTime as of the second Date or DateTime.
-      
+			<xs:documentation>Calculates the age in the specified precision of a person born on a given date, as of another given date.
+
 The CalculateAgeAt operator has two signatures:
-  Date, Date
-  DateTime, DateTime
-
-For the Date overload, precision must be one of year, month, week, or day.
-
-The result of the calculation is the number of whole calendar periods that have elapsed between the first date/time and the second.</xs:documentation>
+  (Date, Date)
+  (DateTime, DateTime)
+      
+For the Date overload, precision must be one of year, month, week, or day, and the result is the number of whole calendar periods that have elapsed between the first date and the second date.
+      
+For the DateTime overload, the result is the number of whole calendar periods that have elapsed between the first datetime and the second datetime.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">

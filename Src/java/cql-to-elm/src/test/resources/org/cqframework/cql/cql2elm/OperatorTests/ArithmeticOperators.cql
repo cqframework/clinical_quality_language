@@ -71,3 +71,19 @@ define IntegerDiv: 100 div 10
 define RealDiv: 100.0 div 10.0
 //define QuantityIntegerDiv: 100'cm' div 10
 //define QuantityRealDiv: 100'cm' div 10.0
+
+define DecimalPrecision: Precision(1.58700)
+define DatePrecision: Precision(@2014)
+define DateTimePrecision: Precision(@2014-01-05T10:30:00.000)
+define TimePrecision: Precision(@T10:30)
+
+define DecimalLowBoundary: LowBoundary(1.587, 8) // 1.58700000
+define DateLowBoundary: LowBoundary(@2014, 6) // @2014-01
+define DateTimeLowBoundary: LowBoundary(@2014-01-01T08, 17) // @2014-01-01T08:00:00.000
+define TimeLowBoundary: LowBoundary(@T10:30, 9) // @T10:30:00.000
+
+define DecimalHighBoundary: HighBoundary(1.587, 8) // 1.58799999
+define DateHighBoundary: HighBoundary(@2014, 6) // @2014-12
+define DateTimeHighBoundary: HighBoundary(@2014-01-01T08, 17) // @2014-01-01T08:59:59.999
+define TimeHighBoundary: HighBoundary(@T10:30, 9) // @T10:30:59.999
+

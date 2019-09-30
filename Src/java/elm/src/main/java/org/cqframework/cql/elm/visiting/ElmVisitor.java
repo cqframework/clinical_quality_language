@@ -921,14 +921,14 @@ public interface ElmVisitor<T, C> {
     T visitTimeFrom(TimeFrom elm, C context);
 
     /**
-     * Visit a TimezoneFrom. This method will be called for
-     * every node in the tree that is a TimezoneFrom.
+     * Visit a TimezoneOffsetFrom. This method will be called for
+     * every node in the tree that is a TimezoneOffsetFrom.
      *
      * @param elm the ELM tree
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    T visitTimezoneFrom(TimezoneFrom elm, C context);
+    T visitTimezoneOffsetFrom(TimezoneOffsetFrom elm, C context);
 
     /**
      * Visit a DateTimeComponentFrom. This method will be called for

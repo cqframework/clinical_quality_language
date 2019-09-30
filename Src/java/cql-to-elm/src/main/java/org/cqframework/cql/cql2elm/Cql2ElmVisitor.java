@@ -32,6 +32,7 @@ import java.util.jar.Pack200;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final ObjectFactory of = new ObjectFactory();
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
@@ -68,8 +69,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private int nextLocalId = 1;
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
-    private boolean implicitPatientCreated = false;
-    private ExpressionDef implicitPatientExpressionDef = null;
+    private boolean implicitContextCreated = false;
+    private ExpressionDef implicitContextExpressionDef = null;
     private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
@@ -324,7 +325,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         try {
             // Loop through and call visit on each child (to ensure they are tracked)
             for (int i = 0; i < ctx.getChildCount(); i++) {
-                lastResult = visit(ctx.getChild(i));
+                ParseTree tree = ctx.getChild(i);
+                TerminalNode terminalNode = tree instanceof TerminalNode ? (TerminalNode)tree : null;
+                if (terminalNode != null && terminalNode.getSymbol().getType() == cqlLexer.EOF) {
+                    continue;
+                }
+
+                Object childResult = visit(tree);
+                // Only set the last result if we received something useful
+                if (childResult != null) {
+                    lastResult = childResult;
+                }
             }
 
             // Return last result (consistent with super implementation and helps w/ testing)
@@ -338,7 +349,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public VersionedIdentifier visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
         VersionedIdentifier vid = of.createVersionedIdentifier()
-                .withId(parseString(ctx.identifier()))
+                .withId(String.join(".", (Iterable<String>)visit(ctx.qualifiedIdentifier())))
                 .withVersion(parseString(ctx.versionSpecifier()));
         libraryBuilder.setLibraryIdentifier(vid);
 
@@ -372,9 +383,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
-        String identifier = parseString(ctx.identifier());
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        String identifier = String.join(".", identifiers);
+        String unqualifiedIdentifier = identifiers.get(identifiers.size() - 1);
         IncludeDef library = of.createIncludeDef()
-                .withLocalIdentifier(ctx.localIdentifier() == null ? identifier : parseString(ctx.localIdentifier()))
+                .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
                 .withPath(identifier)
                 .withVersion(parseString(ctx.versionSpecifier()));
 
@@ -450,7 +463,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public NamedTypeSpecifier visitNamedTypeSpecifier(@NotNull cqlParser.NamedTypeSpecifierContext ctx) {
         List<String> qualifiers = parseQualifiers(ctx);
         String modelIdentifier = getModelIdentifier(qualifiers);
-        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.identifier()));
+        String identifier = getTypeIdentifier(qualifiers, parseString(ctx.referentialOrTypeNameIdentifier()));
 
         DataType resultType = libraryBuilder.resolveTypeName(modelIdentifier, identifier);
         NamedTypeSpecifier result = of.createNamedTypeSpecifier()
@@ -465,7 +478,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public TupleElementDefinition visitTupleElementDefinition(@NotNull cqlParser.TupleElementDefinitionContext ctx) {
         TupleElementDefinition result = of.createTupleElementDefinition()
-                .withName(parseString(ctx.identifier()))
+                .withName(parseString(ctx.referentialIdentifier()))
                 .withElementType(parseTypeSpecifier(ctx.typeSpecifier()));
 
         if (includeDeprecatedElements) {
@@ -658,52 +671,53 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
-        currentContext = parseString(ctx.identifier());
+        String modelIdentifier = parseString(ctx.modelIdentifier());
+        String unqualifiedIdentifier = parseString(ctx.identifier());
 
-        if (!(currentContext.equals("Patient") || currentContext.equals("Population"))) {
-            throw new IllegalArgumentException(String.format("Unknown context %s.", currentContext));
-        }
+        currentContext = modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier;
 
-        // If this is the first time a context definition is encountered, output a patient definition:
-        // define Patient = element of [<Patient model type>]
-        if (!implicitPatientCreated) {
-            if (libraryBuilder.hasUsings()) {
-                ModelInfo modelInfo = libraryBuilder.getModel(libraryInfo.getDefaultModelName()).getModelInfo();
-                String patientTypeName = modelInfo.getPatientClassName();
-                if (patientTypeName == null || patientTypeName.equals("")) {
-                    throw new IllegalArgumentException("Model definition does not contain enough information to construct a patient context.");
+        if (!unqualifiedIdentifier.equals("Unfiltered")) {
+            ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
+
+            // If this is the first time a context definition is encountered, output a patient definition:
+            // define Patient = element of [<Patient model type>]
+            if (!implicitContextCreated) {
+                if (libraryBuilder.hasUsings()) {
+                    ModelInfo modelInfo = modelIdentifier == null
+                            ? libraryBuilder.getModel(libraryInfo.getDefaultModelName()).getModelInfo()
+                            : libraryBuilder.getModel(modelIdentifier).getModelInfo();
+                    String contextTypeName = modelContext.getName();
+                    DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
+                    Retrieve contextRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(contextType));
+                    track(contextRetrieve, ctx);
+                    contextRetrieve.setResultType(new ListType(contextType));
+                    String contextClassIdentifier = ((ClassType) contextType).getIdentifier();
+                    if (contextClassIdentifier != null) {
+                        contextRetrieve.setTemplateId(contextClassIdentifier);
+                    }
+
+                    implicitContextExpressionDef = of.createExpressionDef()
+                            .withName(unqualifiedIdentifier)
+                            .withContext(currentContext)
+                            .withExpression(of.createSingletonFrom().withOperand(contextRetrieve));
+                    track(implicitContextExpressionDef, ctx);
+                    implicitContextExpressionDef.getExpression().setResultType(contextType);
+                    implicitContextExpressionDef.setResultType(contextType);
+                    libraryBuilder.addExpression(implicitContextExpressionDef);
+                } else {
+                    implicitContextExpressionDef = of.createExpressionDef()
+                            .withName(unqualifiedIdentifier)
+                            .withContext(currentContext)
+                            .withExpression(of.createNull());
+                    track(implicitContextExpressionDef, ctx);
+                    implicitContextExpressionDef.getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
+                    implicitContextExpressionDef.setResultType(implicitContextExpressionDef.getExpression().getResultType());
+                    libraryBuilder.addExpression(implicitContextExpressionDef);
                 }
-                DataType patientType = libraryBuilder.resolveTypeName(modelInfo.getName(), patientTypeName);
-                Retrieve patientRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(patientType));
-                track(patientRetrieve, ctx);
-                patientRetrieve.setResultType(new ListType(patientType));
-                String patientClassIdentifier = modelInfo.getPatientClassIdentifier();
-                if (patientClassIdentifier != null) {
-                    patientRetrieve.setTemplateId(patientClassIdentifier);
-                }
 
-                implicitPatientExpressionDef = of.createExpressionDef()
-                        .withName("Patient")
-                        .withContext(currentContext)
-                        .withExpression(of.createSingletonFrom().withOperand(patientRetrieve));
-                track(implicitPatientExpressionDef, ctx);
-                implicitPatientExpressionDef.getExpression().setResultType(patientType);
-                implicitPatientExpressionDef.setResultType(patientType);
-                libraryBuilder.addExpression(implicitPatientExpressionDef);
+                implicitContextCreated = true;
+                return currentContext;
             }
-            else {
-                implicitPatientExpressionDef = of.createExpressionDef()
-                        .withName("Patient")
-                        .withContext(currentContext)
-                        .withExpression(of.createNull());
-                track(implicitPatientExpressionDef, ctx);
-                implicitPatientExpressionDef.getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
-                implicitPatientExpressionDef.setResultType(implicitPatientExpressionDef.getExpression().getResultType());
-                libraryBuilder.addExpression(implicitPatientExpressionDef);
-            }
-
-            implicitPatientCreated = true;
-            return currentContext;
         }
 
         return currentContext;
@@ -712,10 +726,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public ExpressionDef internalVisitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
-        if (def == null || def == implicitPatientExpressionDef) {
-            if (def != null && def == implicitPatientExpressionDef) {
+        if (def == null || def == implicitContextExpressionDef) {
+            if (def != null && def == implicitContextExpressionDef) {
                 libraryBuilder.removeExpression(def);
-                implicitPatientExpressionDef = null;
+                implicitContextExpressionDef = null;
                 def = null;
             }
             libraryBuilder.pushExpressionContext(currentContext);
@@ -777,7 +791,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitTupleElementSelector(@NotNull cqlParser.TupleElementSelectorContext ctx) {
         TupleElement result = of.createTupleElement()
-                .withName(parseString(ctx.identifier()))
+                .withName(parseString(ctx.referentialIdentifier()))
                 .withValue(parseExpression(ctx.expression()));
         result.setResultType(result.getValue().getResultType());
         return result;
@@ -799,7 +813,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitInstanceElementSelector(@NotNull cqlParser.InstanceElementSelectorContext ctx) {
         InstanceElement result = of.createInstanceElement()
-                .withName(parseString(ctx.identifier()))
+                .withName(parseString(ctx.referentialIdentifier()))
                 .withValue(parseExpression(ctx.expression()));
         result.setResultType(result.getValue().getResultType());
         return result;
@@ -814,8 +828,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         for (cqlParser.InstanceElementSelectorContext elementContext : ctx.instanceElementSelector()) {
             InstanceElement element = (InstanceElement)visit(elementContext);
-            DataType propertyType = libraryBuilder.resolveProperty(classTypeSpecifier.getResultType(), element.getName());
-            element.setValue(libraryBuilder.ensureCompatible(element.getValue(), propertyType));
+            PropertyResolution resolution = libraryBuilder.resolveProperty(classTypeSpecifier.getResultType(), element.getName());
+            element.setValue(libraryBuilder.ensureCompatible(element.getValue(), resolution.getType()));
+            element.setName(resolution.getTarget());
             instance.getElement().add(element);
         }
 
@@ -924,16 +939,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             input = input.substring(1);
         }
 
-        Pattern dateTimePattern =
-                Pattern.compile("T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?");
-                               //-12-------3---4-------5---6-------7---8-------------91---11-----1-------1----1------------
-                               //-----------------------------------------------------0---12-----3-------4----5------------
+        Pattern timePattern =
+                Pattern.compile("T(\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?");
+                               //-1-------2---3-------4---5-------6---7-----------
 
-        Matcher matcher = dateTimePattern.matcher(input);
+        Matcher matcher = timePattern.matcher(input);
         if (matcher.matches()) {
             try {
                 Time result = of.createTime();
-                int hour = Integer.parseInt(matcher.group(2));
+                int hour = Integer.parseInt(matcher.group(1));
                 int minute = -1;
                 int second = -1;
                 int millisecond = -1;
@@ -942,69 +956,39 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 result.setHour(libraryBuilder.createLiteral(hour));
 
-                if (matcher.group(4) != null) {
-                    minute = Integer.parseInt(matcher.group(4));
+                if (matcher.group(3) != null) {
+                    minute = Integer.parseInt(matcher.group(3));
                     if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid minute in time literal (%s).", input));
                     }
                     result.setMinute(libraryBuilder.createLiteral(minute));
                 }
 
-                if (matcher.group(6) != null) {
-                    second = Integer.parseInt(matcher.group(6));
+                if (matcher.group(5) != null) {
+                    second = Integer.parseInt(matcher.group(5));
                     if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid second in time literal (%s).", input));
                     }
                     result.setSecond(libraryBuilder.createLiteral(second));
                 }
 
-                if (matcher.group(8) != null) {
-                    millisecond = Integer.parseInt(matcher.group(8));
+                if (matcher.group(7) != null) {
+                    millisecond = Integer.parseInt(matcher.group(7));
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid millisecond in time literal (%s).", input));
                     }
                     result.setMillisecond(libraryBuilder.createLiteral(millisecond));
                 }
 
-                if (matcher.group(10) != null && matcher.group(10).equals("Z")) {
-                    result.setTimezoneOffset(libraryBuilder.createLiteral(0.0));
-                }
-
-                if (matcher.group(12) != null) {
-                    int offsetPolarity = matcher.group(12).equals("+") ? 1 : -1;
-
-                    if (matcher.group(15) != null) {
-                        int hourOffset = Integer.parseInt(matcher.group(13));
-                        if (hourOffset < 0 || hourOffset > 14) {
-                            throw new IllegalArgumentException(String.format("Timezone hour offset out of range in time literal (%s).", input));
-                        }
-
-                        int minuteOffset = Integer.parseInt(matcher.group(15));
-                        if (minuteOffset < 0 || minuteOffset >= 60 || (hourOffset == 14 && minuteOffset > 0)) {
-                            throw new IllegalArgumentException(String.format("Timezone minute offset out of range in time literal (%s).", input));
-                        }
-                        result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
-                    }
-                    else {
-                        if (matcher.group(13) != null) {
-                            int hourOffset = Integer.parseInt(matcher.group(13));
-                            if (hourOffset < 0 || hourOffset > 14) {
-                                throw new IllegalArgumentException(String.format("Timezone hour offset out of range in time literal (%s).", input));
-                            }
-                            result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset * offsetPolarity)));
-                        }
-                    }
-                }
-
                 result.setResultType(libraryBuilder.resolveTypeName("System", "Time"));
                 return result;
             }
             catch (RuntimeException e) {
-                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input), e);
+                throw new IllegalArgumentException(String.format("Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).", input), e);
             }
         }
         else {
-            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input));
+            throw new IllegalArgumentException(String.format("Invalid time input (%s). Use ISO 8601 time representation (hh:mm:ss.fff).", input));
         }
     }
 
@@ -1015,10 +999,55 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             input = input.substring(1);
         }
 
+/*
+DATETIME
+        : '@'
+            [0-9][0-9][0-9][0-9] // year
+            (
+                (
+                    '-'[0-9][0-9] // month
+                    (
+                        (
+                            '-'[0-9][0-9] // day
+                            ('T' TIMEFORMAT?)?
+                        )
+                        | 'T'
+                    )?
+                )
+                | 'T'
+            )?
+            ('Z' | ('+' | '-') [0-9][0-9]':'[0-9][0-9])? // timezone offset
+        ;
+*/
+
+        Pattern dateTimePattern =
+                Pattern.compile("(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(\\:(\\d{2}))))?");
+                               //1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
+                               //----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
+
+        /*
+            year - group 1
+            month - group 5
+            day - group 9
+            day dateTime indicator - group 11
+            hour - group 13
+            minute - group 15
+            second - group 17
+            millisecond - group 19
+            month dateTime indicator - group 20
+            year dateTime indicator - group 21
+            utc indicator - group 23
+            timezone offset polarity - group 25
+            timezone offset hour - group 26
+            timezone offset minute - group 28
+         */
+
+/*
         Pattern dateTimePattern =
                 Pattern.compile("(\\d{4})(-(\\d{2}))?(-(\\d{2}))?((Z)|(T((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?((Z)|(([+-])(\\d{2})(\\:?(\\d{2}))?))?))?");
                                //1-------2-3---------4-5---------67---8-91-------1---1-------1---1-------1---1-------------11---12-----2-------2----2---------------
                                //----------------------------------------0-------1---2-------3---4-------5---6-------------78---90-----1-------2----3---------------
+*/
 
         Matcher matcher = dateTimePattern.matcher(input);
         if (matcher.matches()) {
@@ -1033,16 +1062,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 int second = -1;
                 int millisecond = -1;
                 result.setYear(libraryBuilder.createLiteral(year));
-                if (matcher.group(3) != null) {
-                    month = Integer.parseInt(matcher.group(3));
+                if (matcher.group(5) != null) {
+                    month = Integer.parseInt(matcher.group(5));
                     if (month < 0 || month > 12) {
                         throw new IllegalArgumentException(String.format("Invalid month in date/time literal (%s).", input));
                     }
                     result.setMonth(libraryBuilder.createLiteral(month));
                 }
 
-                if (matcher.group(5) != null) {
-                    day = Integer.parseInt(matcher.group(5));
+                if (matcher.group(9) != null) {
+                    day = Integer.parseInt(matcher.group(9));
                     int maxDay = 31;
                     switch (month) {
                         case 2: maxDay = calendar.isLeapYear(year) ? 29 : 28;
@@ -1063,53 +1092,52 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     result.setDay(libraryBuilder.createLiteral(day));
                 }
 
-                if (matcher.group(10) != null) {
-                    hour = Integer.parseInt(matcher.group(10));
+                if (matcher.group(13) != null) {
+                    hour = Integer.parseInt(matcher.group(13));
                     if (hour < 0 || hour > 24) {
                         throw new IllegalArgumentException(String.format("Invalid hour in date/time literal (%s).", input));
                     }
                     result.setHour(libraryBuilder.createLiteral(hour));
                 }
 
-                if (matcher.group(12) != null) {
-                    minute = Integer.parseInt(matcher.group(12));
+                if (matcher.group(15) != null) {
+                    minute = Integer.parseInt(matcher.group(15));
                     if (minute < 0 || minute >= 60 || (hour == 24 && minute > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid minute in date/time literal (%s).", input));
                     }
                     result.setMinute(libraryBuilder.createLiteral(minute));
                 }
 
-                if (matcher.group(14) != null) {
-                    second = Integer.parseInt(matcher.group(14));
+                if (matcher.group(17) != null) {
+                    second = Integer.parseInt(matcher.group(17));
                     if (second < 0 || second >= 60 || (hour == 24 && second > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid second in date/time literal (%s).", input));
                     }
                     result.setSecond(libraryBuilder.createLiteral(second));
                 }
 
-                if (matcher.group(16) != null) {
-                    millisecond = Integer.parseInt(matcher.group(16));
+                if (matcher.group(19) != null) {
+                    millisecond = Integer.parseInt(matcher.group(19));
                     if (millisecond < 0 || (hour == 24 && millisecond > 0)) {
                         throw new IllegalArgumentException(String.format("Invalid millisecond in date/time literal (%s).", input));
                     }
                     result.setMillisecond(libraryBuilder.createLiteral(millisecond));
                 }
 
-                if ((matcher.group(7) != null && matcher.group(7).equals("Z"))
-                        || ((matcher.group(18) != null) && matcher.group(18).equals("Z"))) {
+                if (matcher.group(23) != null && matcher.group(23).equals("Z")) {
                     result.setTimezoneOffset(libraryBuilder.createLiteral(0.0));
                 }
 
-                if (matcher.group(20) != null) {
-                    int offsetPolarity = matcher.group(20).equals("+") ? 1 : -1;
+                if (matcher.group(25) != null) {
+                    int offsetPolarity = matcher.group(25).equals("+") ? 1 : -1;
 
-                    if (matcher.group(23) != null) {
-                        int hourOffset = Integer.parseInt(matcher.group(21));
+                    if (matcher.group(28) != null) {
+                        int hourOffset = Integer.parseInt(matcher.group(26));
                         if (hourOffset < 0 || hourOffset > 14) {
                             throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
                         }
 
-                        int minuteOffset = Integer.parseInt(matcher.group(23));
+                        int minuteOffset = Integer.parseInt(matcher.group(28));
                         if (minuteOffset < 0 || minuteOffset >= 60 || (hourOffset == 14 && minuteOffset > 0)) {
                             throw new IllegalArgumentException(String.format("Timezone minute offset is out of range in date/time literal (%s).", input));
                         }
@@ -1117,8 +1145,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         result.setTimezoneOffset(libraryBuilder.createLiteral((double)(hourOffset + (minuteOffset / 60)) * offsetPolarity));
                     }
                     else {
-                        if (matcher.group(21) != null) {
-                            int hourOffset = Integer.parseInt(matcher.group(21));
+                        if (matcher.group(26) != null) {
+                            int hourOffset = Integer.parseInt(matcher.group(26));
                             if (hourOffset < 0 || hourOffset > 14) {
                                 throw new IllegalArgumentException(String.format("Timezone hour offset is out of range in date/time literal (%s).", input));
                             }
@@ -1128,7 +1156,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     }
                 }
 
-                if (result.getHour() == null) {
+                if (result.getHour() == null && matcher.group(11) == null && matcher.group(20) == null && matcher.group(21) == null) {
                     org.hl7.elm.r1.Date date = of.createDate();
                     date.setYear(result.getYear());
                     date.setMonth(result.getMonth());
@@ -1141,11 +1169,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 return result;
             }
             catch (RuntimeException e) {
-                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input), e);
+                throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|(+/-hh:mm)).", input), e);
             }
         }
         else {
-            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).", input));
+            throw new IllegalArgumentException(String.format("Invalid date-time input (%s). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.fff(Z|+/-hh:mm)).", input));
         }
     }
 
@@ -1461,9 +1489,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 result = of.createTimeFrom().withOperand(parseExpression(ctx.expressionTerm()));
                 operatorName = "TimeFrom";
                 break;
-            case "timezone":
-                result = of.createTimezoneFrom().withOperand(parseExpression(ctx.expressionTerm()));
-                operatorName = "TimezoneFrom";
+            case "timezoneoffset":
+                result = of.createTimezoneOffsetFrom().withOperand(parseExpression(ctx.expressionTerm()));
+                operatorName = "TimezoneOffsetFrom";
                 break;
             case "year":
             case "month":
@@ -1787,6 +1815,35 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public List<String> visitQualifiedIdentifierExpression(@NotNull cqlParser.QualifiedIdentifierExpressionContext ctx) {
+        // Return the list of qualified identifiers for resolution by the containing element
+        List<String> identifiers = new ArrayList<>();
+        for (cqlParser.QualifierExpressionContext qualifierContext : ctx.qualifierExpression()) {
+            String qualifier = parseString(qualifierContext);
+            identifiers.add(qualifier);
+        }
+
+        String identifier = parseString(ctx.referentialIdentifier());
+        identifiers.add(identifier);
+        return identifiers;
+    }
+
+    @Override
+    public String visitSimplePathReferentialIdentifier(@NotNull cqlParser.SimplePathReferentialIdentifierContext ctx) {
+        return (String)visit(ctx.referentialIdentifier());
+    }
+
+    @Override
+    public String visitSimplePathQualifiedIdentifier(@NotNull cqlParser.SimplePathQualifiedIdentifierContext ctx) {
+        return visit(ctx.simplePath()) + "." + visit(ctx.referentialIdentifier());
+    }
+
+    @Override
+    public String visitSimplePathIndexer(@NotNull cqlParser.SimplePathIndexerContext ctx) {
+        return visit(ctx.simplePath()) + "[" + visit(ctx.simpleLiteral()) + "]";
+    }
+
+    @Override
     public Object visitTermExpression(@NotNull cqlParser.TermExpressionContext ctx) {
         Object result = super.visitTermExpression(ctx);
 
@@ -1802,6 +1859,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object visitTerminal(@NotNull TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
+
+        if (cqlLexer.EOF == tokenType) {
+            return null;
+        }
+
         if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType || cqlLexer.DELIMITEDIDENTIFIER == tokenType) {
             // chop off leading and trailing ', ", or `
             text = text.substring(1, text.length() - 1);
@@ -1820,20 +1882,32 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitConversionExpressionTerm(@NotNull cqlParser.ConversionExpressionTermContext ctx) {
-        TypeSpecifier targetType = parseTypeSpecifier(ctx.typeSpecifier());
-        Expression operand = parseExpression(ctx.expression());
-        if (!DataTypes.equal(operand.getResultType(), targetType.getResultType())) {
-            Conversion conversion = libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false, true);
-            if (conversion == null) {
-                // ERROR:
-                throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
-                        operand.getResultType(), targetType.getResultType()));
+        if (ctx.typeSpecifier() != null) {
+            TypeSpecifier targetType = parseTypeSpecifier(ctx.typeSpecifier());
+            Expression operand = parseExpression(ctx.expression());
+            if (!DataTypes.equal(operand.getResultType(), targetType.getResultType())) {
+                Conversion conversion = libraryBuilder.findConversion(operand.getResultType(), targetType.getResultType(), false, true);
+                if (conversion == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format("Could not resolve conversion from type %s to type %s.",
+                            operand.getResultType(), targetType.getResultType()));
+                }
+
+                return libraryBuilder.convertExpression(operand, conversion);
             }
 
-            return libraryBuilder.convertExpression(operand, conversion);
+            return operand;
         }
-
-        return operand;
+        else {
+            String targetUnit = parseString(ctx.unit());
+            targetUnit = libraryBuilder.ensureUcumUnit(targetUnit);
+            Expression operand = parseExpression(ctx.expression());
+            Expression unitOperand = libraryBuilder.createLiteral(targetUnit);
+            track(unitOperand, ctx.unit());
+            ConvertQuantity convertQuantity = of.createConvertQuantity().withOperand(operand, unitOperand);
+            track(convertQuantity, ctx);
+            return libraryBuilder.resolveBinaryCall("System", "ConvertQuantity", convertQuantity);
+        }
     }
 
     @Override
@@ -2125,9 +2199,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // A starts 3 days or more after start B
         //* start of A >= start of B + 3 days
         // A starts 3 days or less before start B
-        //* start of A in [start of B - 3 days, start of B)
+        //* start of A in [start of B - 3 days, start of B) and B is not null
         // A starts 3 days or less after start B
-        //* start of A in (start of B, start of B + 3 days]
+        //* start of A in (start of B, start of B + 3 days] and B is not null
 
         // less/more than duration before/after
         // A starts more than 3 days before start B
@@ -2382,6 +2456,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         }
                         track(in, ctx.quantityOffset());
                         libraryBuilder.resolveBinaryCall("System", "In", in);
+
+                        // if the offset or comparison is inclusive, add a null check for B to ensure correct interpretation
+                        if (isOffsetInclusive || isInclusive) {
+                            IsNull nullTest = of.createIsNull().withOperand(right);
+                            track(nullTest, ctx.quantityOffset());
+                            libraryBuilder.resolveUnaryCall("System", "IsNull", nullTest);
+                            Not notNullTest = of.createNot().withOperand(nullTest);
+                            track(notNullTest, ctx.quantityOffset());
+                            libraryBuilder.resolveUnaryCall("System", "Not", notNullTest);
+                            And and = of.createAnd().withOperand(in, notNullTest);
+                            track(and, ctx.quantityOffset());
+                            libraryBuilder.resolveBinaryCall("System", "And", and);
+                            return and;
+                        }
+
+                        // Otherwise, return the constructed in
                         return in;
                 }
             }
@@ -2728,7 +2818,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         libraryBuilder.checkLiteralContext();
         List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
         String model = getModelIdentifier(qualifiers);
-        String label = getTypeIdentifier(qualifiers, parseString(ctx.namedTypeSpecifier().identifier()));
+        String label = getTypeIdentifier(qualifiers, parseString(ctx.namedTypeSpecifier().referentialOrTypeNameIdentifier()));
         DataType dataType = libraryBuilder.resolveTypeName(model, label);
         if (dataType == null) {
             // ERROR:
@@ -2757,9 +2847,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withDataType(libraryBuilder.dataTypeToQName((DataType)namedType))
                 .withTemplateId(classType.getIdentifier());
 
+        if (ctx.contextIdentifier() != null) {
+            List<String> identifiers = (List<String>)visit(ctx.contextIdentifier());
+            Expression contextExpression = resolveQualifiedIdentifier(identifiers);
+            retrieve.setContext(contextExpression);
+        }
+
         if (ctx.terminology() != null) {
             if (ctx.codePath() != null) {
-                retrieve.setCodeProperty(parseString(ctx.codePath()));
+                String identifiers = (String)visit(ctx.codePath());
+                retrieve.setCodeProperty(identifiers);
             } else if (classType.getPrimaryCodePath() != null) {
                 retrieve.setCodeProperty(classType.getPrimaryCodePath());
             }
@@ -2788,10 +2885,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
 
             Expression terminology = null;
-            if (ctx.terminology().qualifiedIdentifier() != null) {
+            if (ctx.terminology().qualifiedIdentifierExpression() != null) {
                 List<String> identifiers = (List<String>) visit(ctx.terminology());
                 terminology = resolveQualifiedIdentifier(identifiers);
-                track(terminology, ctx.terminology().qualifiedIdentifier());
+                track(terminology, ctx.terminology().qualifiedIdentifierExpression());
             }
             else {
                 terminology = parseExpression(ctx.terminology().expression());
@@ -2895,10 +2992,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             // then references to patient context expressions within the iteration clauses of the query can be accessed
             // at the patient, rather than the population, context.
             boolean expressionContextPushed = false;
-            if (libraryBuilder.inPopulationContext() && queryContext.referencesPatientContext()) {
+            /* TODO: Address the issue of referencing multiple context expressions within a query (or even expression in general)
+            if (libraryBuilder.inUnfilteredContext() && queryContext.referencesSpecificContext()) {
                 libraryBuilder.pushExpressionContext("Patient");
                 expressionContextPushed = true;
             }
+            */
             try {
 
                 List<LetClause> dfcx = ctx.letClause() != null ? (List<LetClause>) visit(ctx.letClause()) : null;
@@ -3338,7 +3437,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         } else if (ctx.retrieve() != null) {
             return visit(ctx.retrieve());
         } else {
-            List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifier());
+            List<String> identifiers = (List<String>) visit(ctx.qualifiedIdentifierExpression());
             return resolveQualifiedIdentifier(identifiers);
         }
     }
@@ -3359,7 +3458,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         Expression left = parseExpression(ctx.expressionTerm());
         libraryBuilder.pushExpressionTarget(left);
         try {
-            return (Expression)visit(ctx.invocation());
+            return (Expression)visit(ctx.qualifiedInvocation());
         }
         finally {
             libraryBuilder.popExpressionTarget();
@@ -3378,18 +3477,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Expression visitMemberInvocation(@NotNull cqlParser.MemberInvocationContext ctx) {
-        String identifier = parseString(ctx.identifier());
-        if (libraryBuilder.hasExpressionTarget()) {
-            Expression target = libraryBuilder.popExpressionTarget();
-            try {
-                return libraryBuilder.resolveAccessor(target, identifier);
-            }
-            finally {
-                libraryBuilder.pushExpressionTarget(target);
-            }
-        }
+        String identifier = parseString(ctx.referentialIdentifier());
+        return resolveMemberIdentifier(identifier);
+    }
 
-        return resolveIdentifier(identifier);
+    @Override
+    public Expression visitQualifiedMemberInvocation(@NotNull cqlParser.QualifiedMemberInvocationContext ctx) {
+        String identifier = parseString(ctx.referentialIdentifier());
+        return resolveMemberIdentifier(identifier);
     }
 
     public Expression resolveQualifiedIdentifier(List<String> identifiers) {
@@ -3403,6 +3498,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         return current;
+    }
+
+    public Expression resolveMemberIdentifier(String identifier) {
+        if (libraryBuilder.hasExpressionTarget()) {
+            Expression target = libraryBuilder.popExpressionTarget();
+            try {
+                return libraryBuilder.resolveAccessor(target, identifier);
+            }
+            finally {
+                libraryBuilder.pushExpressionTarget(target);
+            }
+        }
+
+        return resolveIdentifier(identifier);
     }
 
     private Expression resolveIdentifier(String identifier) {
@@ -3440,25 +3549,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return result;
     }
 
-    private Expression resolveFunction(String libraryName, @NotNull cqlParser.FunctionContext ctx) {
-        String functionName = parseString(ctx.identifier());
+    private String ensureSystemFunctionName(String libraryName, String functionName) {
         if (libraryName == null || libraryName.equals("System")) {
             // Because these functions can be both a keyword and the name of a method, they can be resolved by the
             // parser as a function, instead of as the keyword-based parser rule. In this case, the function
             // name needs to be translated to the System function name in order to resolve.
             switch (functionName) {
-                case "distinct": functionName = "Distinct"; break;
                 case "contains": functionName = "Contains"; break;
-                case "not": functionName = "Not"; break;
+                case "distinct": functionName = "Distinct"; break;
                 case "exists": functionName = "Exists"; break;
+                case "in": functionName = "In"; break;
+                case "not": functionName = "Not"; break;
             }
-            //functionName = "Distinct";
         }
-        return resolveFunction(libraryName, functionName, ctx.paramList());
+
+        return functionName;
     }
 
     private Expression resolveFunction(String libraryName, String functionName, cqlParser.ParamListContext paramList) {
         List<Expression> expressions = new ArrayList<Expression>();
+        functionName = ensureSystemFunctionName(libraryName, functionName);
 
         if (paramList != null && paramList.expression() != null) {
             for (cqlParser.ExpressionContext expressionContext : paramList.expression()) {
@@ -3499,20 +3609,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return result;
     }
 
-    @Override
-    public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
+    public Expression resolveFunctionOrQualifiedFunction(@NotNull String identifier, cqlParser.ParamListContext paramListCtx) {
         if (libraryBuilder.hasExpressionTarget()) {
             Expression target = libraryBuilder.popExpressionTarget();
             try {
                 // If the target is a library reference, resolve as a standard qualified call
                 if (target instanceof LibraryRef) {
-                    return resolveFunction(((LibraryRef)target).getLibraryName(), ctx);
+                    return resolveFunction(((LibraryRef)target).getLibraryName(), identifier, paramListCtx);
                 }
 
                 // NOTE: FHIRPath method invocation
                 // If the target is an expression, resolve as a method invocation
                 if (target instanceof Expression && methodInvocation) {
-                    return systemMethodResolver.resolveMethod((Expression)target, ctx, true);
+                    return systemMethodResolver.resolveMethod((Expression)target, identifier, paramListCtx, true);
                 }
 
                 throw new IllegalArgumentException(String.format("Invalid invocation target: %s", target.getClass().getName()));
@@ -3525,14 +3634,24 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         // If we are in an implicit $this context, the function may be resolved as a method invocation
         Expression thisRef = libraryBuilder.resolveIdentifier("$this", false);
         if (thisRef != null) {
-            Expression result = systemMethodResolver.resolveMethod(thisRef, ctx, false);
+            Expression result = systemMethodResolver.resolveMethod(thisRef, identifier, paramListCtx, false);
             if (result != null) {
                 return result;
             }
         }
 
         // If there is no target, resolve as a system function
-        return resolveFunction(null, ctx);
+        return resolveFunction(null, identifier, paramListCtx);
+    }
+
+    @Override
+    public Expression visitFunction(@NotNull cqlParser.FunctionContext ctx) {
+        return resolveFunctionOrQualifiedFunction(parseString(ctx.referentialIdentifier()), ctx.paramList());
+    }
+
+    @Override
+    public Expression visitQualifiedFunction(@NotNull cqlParser.QualifiedFunctionContext ctx) {
+        return resolveFunctionOrQualifiedFunction(parseString(ctx.identifierOrFunctionIdentifier()), ctx.paramList());
     }
 
     @Override
@@ -3543,13 +3662,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     public Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                .withName(parseString(ctx.identifier()));
+                .withName(parseString(ctx.identifierOrFunctionIdentifier()));
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
                 TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
                 fun.getOperand().add(
                         (OperandDef)of.createOperandDef()
-                                .withName(parseString(opdef.identifier()))
+                                .withName(parseString(opdef.referentialIdentifier()))
                                 .withOperandTypeSpecifier(typeSpecifier)
                                 .withResultType(typeSpecifier.getResultType())
                 );

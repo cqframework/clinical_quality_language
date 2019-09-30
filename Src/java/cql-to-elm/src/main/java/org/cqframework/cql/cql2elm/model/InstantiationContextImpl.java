@@ -101,7 +101,7 @@ public class InstantiationContextImpl implements InstantiationContext {
 
                 // Find the first supertype that is a supertype of both types
                 /*
-                // This code doesn't play well with generic signatures... it ends up treating everything like an Any, resulting in all sorts of surprising resolution
+                // This code doesn't play well with generic signatures... it ends up treating everything like an Any, resulting in all sorts of surprising resolutions
                 DataType boundCommonSuperType = boundType.getCommonSuperTypeOf(callType);
                 DataType callCommonSuperType = callType.getCommonSuperTypeOf(boundType);
                 if (boundCommonSuperType != null && callCommonSuperType != null) {

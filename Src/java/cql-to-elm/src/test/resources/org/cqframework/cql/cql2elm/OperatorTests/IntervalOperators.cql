@@ -34,3 +34,4 @@ define IntervalStarts: Interval[1, 5] starts Interval[1, 10]
 define IntervalUnion: Interval[1, 7] union Interval [3, 10]
 define IntervalWidth: width of Interval[1, 10]
 define IntervalPointFrom: point from Interval[1, 1]
+define IntervalSize: Size(Interval[1, 1])

@@ -5,8 +5,9 @@ public class ClassTypeElement {
     private DataType type;
     private boolean prohibited;
     private boolean oneBased;
+    private String target;
 
-    public ClassTypeElement(String name, DataType type, Boolean prohibited, Boolean oneBased) {
+    public ClassTypeElement(String name, DataType type, Boolean prohibited, Boolean oneBased, String target) {
         if (name == null || name.equals("")) {
             throw new IllegalArgumentException("name");
         }
@@ -19,10 +20,11 @@ public class ClassTypeElement {
         this.type = type;
         this.prohibited = prohibited != null ? prohibited : false;
         this.oneBased = oneBased != null ? oneBased : false;
+        this.target = target;
     }
 
     public ClassTypeElement(String name, DataType type) {
-        this(name, type, false, false);
+        this(name, type, false, false, null);
     }
 
     public String getName() {
@@ -41,6 +43,10 @@ public class ClassTypeElement {
         return oneBased;
     }
 
+    public String getTarget() {
+        return target;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -52,6 +58,9 @@ public class ClassTypeElement {
 
         ClassTypeElement that = (ClassTypeElement) o;
 
+        if (target != null && !target.equals(that.target)) {
+            return false;
+        }
         if (oneBased != that.oneBased) {
             return false;
         }
@@ -74,6 +83,9 @@ public class ClassTypeElement {
         result = 31 * result + type.hashCode();
         result = 31 * result + (prohibited ? 1 : 0);
         result = 31 * result + (oneBased ? 1 : 0);
+        if (target != null) {
+            result = 31 * result + (target.hashCode());
+        }
         return result;
     }
 
@@ -87,6 +99,12 @@ public class ClassTypeElement {
 
     @Override
     public String toString() {
-        return String.format("%s:%s%s", this.name, this.type.toString(), this.prohibited ? " (prohibited)" : "");
+        return String.format("%s:%s%s%s%s",
+                this.name,
+                this.type.toString(),
+                this.prohibited ? " (prohibited)" : "",
+                this.oneBased ? " (one-based)" : "",
+                this.target != null ? " (target: " + this.target + ")" : ""
+        );
     }
 }

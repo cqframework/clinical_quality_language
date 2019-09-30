@@ -220,6 +220,27 @@ public class SemanticTests {
     }
 
     @Test
+    public void testRelatedContextRetrieve() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("TestRelatedContextRetrieve.cql", 0);
+        org.hl7.elm.r1.Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("Estimated Due Date");
+        Last last = (Last)def.getExpression();
+        Query query = (Query)last.getSource();
+        AliasedQuerySource source = query.getSource().get(0);
+        Retrieve retrieve = (Retrieve)source.getExpression();
+        ExpressionRef mother = (ExpressionRef)retrieve.getContext();
+        assertThat(mother.getName(), is("Mother"));
+    }
+
+    @Test
     public void testDoubleListPromotion() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestDoubleListPromotion.cql", 0);
         Library library = translator.toELM();
