@@ -111,6 +111,10 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm']}) {
         compile group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
         compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
         compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+        runtime group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
+        runtime group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.4.0-b180830.0438'
+        runtime group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+        runtime group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
     }
 
     ext.xjc = [
