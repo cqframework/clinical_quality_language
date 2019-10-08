@@ -4,6 +4,7 @@ allprojects {
 
     group = 'info.cqframework'
     version = '1.4.7-SNAPSHOT'
+}
 
 subprojects {
     apply plugin: 'java'
@@ -16,6 +17,7 @@ subprojects {
         maven {
             url "https://oss.sonatype.org/content/repositories/snapshots"
         }
+        jcenter()
     }
 
     dependencies {
@@ -29,7 +31,7 @@ subprojects {
     }
 
     jacoco {
-        toolVersion = "0.7.4.201502262128"
+        toolVersion = "0.8.4"
     }
 
     check.dependsOn(jacocoTestReport)
@@ -98,13 +100,17 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm']}) {
     }
 
     dependencies {
-        xjc group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.2.11'
-        xjc group: 'com.sun.xml.bind', name: 'jaxb-xjc', version: '2.2.11'
-        xjc group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.2.11'
-        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-ant', version: '0.9.4'
-        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.9.4'
+        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-ant', version: '0.12.0'
+        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.12.0'
         xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-fluent-api', version: '3.0'
-        compile group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.9.4'
+        xjc group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
+        xjc group: 'com.sun.xml.bind', name: 'jaxb-xjc', version: '2.4.0-b180830.0438'
+        xjc group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.4.0-b180830.0438'
+        xjc group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+        compile group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.12.0'
+        compile group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
+        compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+        compile group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
     }
 
     ext.xjc = [
@@ -224,10 +230,6 @@ configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-
     }
     uploadArchives.dependsOn javadocJar
     uploadArchives.dependsOn sourcesJar
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.1'
 }
 
 idea {

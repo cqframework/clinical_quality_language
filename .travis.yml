@@ -4,8 +4,8 @@ language: java
 jdk: oraclejdk11
 script:
 - export TERM=dumb
-- "./Src/java/gradlew --gradle-version=5.1.1 --version"
-- "./Src/java/gradlew --gradle-version=5.1.1 --no-daemon -b ./Src/java/build.gradle check"
+- "./Src/java/gradlew --version"
+- "./Src/java/gradlew --no-daemon -b ./Src/java/build.gradle check"
 branches:
   only:
   - master
