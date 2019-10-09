@@ -1,7 +1,7 @@
 sudo: false
 
 language: java
-jdk: oraclejdk11
+jdk: openjdk11
 script:
 - export TERM=dumb
 - "./Src/java/gradlew --version"
