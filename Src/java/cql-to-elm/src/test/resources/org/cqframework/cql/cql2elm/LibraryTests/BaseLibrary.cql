@@ -9,3 +9,5 @@ valueset "Pregnancy Test": '2.16.840.1.113883.3.464.1003.111.12.1011' codesystem
 
 define private PrivateExpression: Tuple { Id : '12345', Name : 'John Doe' }
 define BaseExpression: PrivateExpression
+
+define BaseLibSum: Sum({1,2,3})

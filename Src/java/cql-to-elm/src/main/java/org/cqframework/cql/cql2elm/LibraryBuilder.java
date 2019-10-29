@@ -504,7 +504,8 @@ public class LibraryBuilder {
                 .withVersion(includeDef.getVersion());
 
         ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
-        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, errors);
+        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier,
+            this.getErrorLevel(), this.getSignatureLevel(), errors);
         for (CqlTranslatorException error : errors) {
             this.addException(error);
         }
