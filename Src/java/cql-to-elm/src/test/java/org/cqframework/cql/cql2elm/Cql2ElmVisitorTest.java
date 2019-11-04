@@ -959,30 +959,6 @@ public class Cql2ElmVisitorTest {
     }
 
     @Test
-    public void testChoiceWithAlternativeConversion() throws IOException {
-        ExpressionDef def = (ExpressionDef) visitFile("TestChoiceTypes.cql");
-        Query query = (Query) def.getExpression();
-
-        // First check the source
-        AliasedQuerySource source = query.getSource().get(0);
-        assertThat(source.getAlias(), is("Q"));
-        Retrieve request = (Retrieve) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("QuestionnaireResponse"));
-
-        // Then check that the suchThat of the with is a greater with a Case as the left operand
-        RelationshipClause relationship = query.getRelationship().get(0);
-        assertThat(relationship.getSuchThat(), instanceOf(Greater.class));
-        Greater suchThat = (Greater)relationship.getSuchThat();
-        assertThat(suchThat.getOperand().get(0), instanceOf(Case.class));
-        Case caseExpression = (Case)suchThat.getOperand().get(0);
-        assertThat(caseExpression.getCaseItem(), hasSize(2));
-        assertThat(caseExpression.getCaseItem().get(0).getWhen(), instanceOf(Is.class));
-        assertThat(caseExpression.getCaseItem().get(0).getThen(), instanceOf(FunctionRef.class));
-        assertThat(caseExpression.getCaseItem().get(1).getWhen(), instanceOf(Is.class));
-        assertThat(caseExpression.getCaseItem().get(1).getThen(), instanceOf(FunctionRef.class));
-    }
-
-    @Test
     public void testChoiceAssignment() throws IOException {
         ExpressionDef def = (ExpressionDef)visitFile("TestChoiceAssignment.cql");
         Instance instance = (Instance)def.getExpression();
@@ -996,12 +972,6 @@ public class Cql2ElmVisitorTest {
         assertThat(def.getExpression(), instanceOf(FunctionRef.class));
         FunctionRef functionRef = (FunctionRef)def.getExpression();
         assertThat(functionRef.getName(), is("ToDate"));
-    }
-
-    @Test
-    public void testURIConversion() throws IOException {
-        // If this translates without errors, the test is successful
-        ExpressionDef def = (ExpressionDef) visitFile("TestURIConversion.cql");
     }
 
     @Test
@@ -1033,60 +1003,6 @@ public class Cql2ElmVisitorTest {
         assertThat(f.getName(), is("F"));
         assertThat(g.getName(), is("G"));
         assertThat(h.getName(), is("H"));
-    }
-
-    @Test
-    public void testFHIRTiming() throws IOException {
-        ExpressionDef def = (ExpressionDef) visitFile("TestFHIRTiming.cql");
-        // Query->
-        //  where->
-        //      IncludedIn->
-        //          left->
-        //              ToInterval()
-        //                  As(fhir:Period) ->
-        //                      Property(P.performed)
-        //          right-> MeasurementPeriod
-        Query query = (Query) def.getExpression();
-
-        // First check the source
-        AliasedQuerySource source = query.getSource().get(0);
-        assertThat(source.getAlias(), is("P"));
-        Retrieve request = (Retrieve) source.getExpression();
-        assertThat(request.getDataType(), quickDataType("Procedure"));
-
-        // Then check that the where an IncludedIn with a Case as the left operand
-        Expression where = query.getWhere();
-        assertThat(where, instanceOf(IncludedIn.class));
-        IncludedIn includedIn = (IncludedIn)where;
-        assertThat(includedIn.getOperand().get(0), instanceOf(FunctionRef.class));
-        FunctionRef functionRef = (FunctionRef)includedIn.getOperand().get(0);
-        assertThat(functionRef.getName(), is("ToInterval"));
-        assertThat(functionRef.getOperand().get(0), instanceOf(As.class));
-        As asExpression = (As)functionRef.getOperand().get(0);
-        assertThat(asExpression.getAsType().getLocalPart(), is("Period"));
-        assertThat(asExpression.getOperand(), instanceOf(Property.class));
-        Property property = (Property)asExpression.getOperand();
-        assertThat(property.getScope(), is("P"));
-        assertThat(property.getPath(), is("performed"));
-    }
-
-    @Test
-    public void testPatientContext() throws IOException {
-        TranslatedLibrary library = visitFileLibrary("TestPatientContext.cql");
-        ExpressionDef patient = library.resolveExpressionRef("Patient");
-        assertThat(patient.getExpression(), instanceOf(Literal.class));
-    }
-
-    @Test
-    public void testEqualityWithConversions() throws IOException {
-        TranslatedLibrary library = visitFileLibrary("EqualityWithConversions.cql");
-        ExpressionDef getGender = library.resolveExpressionRef("GetGender");
-        assertThat(getGender.getExpression(), instanceOf(Equal.class));
-        Equal equal = (Equal)getGender.getExpression();
-        assertThat(equal.getOperand().get(0), instanceOf(FunctionRef.class));
-        FunctionRef functionRef = (FunctionRef)equal.getOperand().get(0);
-        assertThat(functionRef.getName(), is("ToString"));
-        assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
     }
 
     @Test
@@ -1341,6 +1257,13 @@ public class Cql2ElmVisitorTest {
         assertThat(withVS.getName(), is("Acute Pharyngitis"));
         assertThat(withVS.getLibraryName(), is(nullValue()));
         return with.getSuchThat();
+    }
+
+    @Test
+    public void testPatientContext() throws IOException {
+        TranslatedLibrary library = visitFileLibrary("TestPatientContext.cql");
+        ExpressionDef patient = library.resolveExpressionRef("Patient");
+        assertThat(patient.getExpression(), instanceOf(Literal.class));
     }
 
     private void assertTrackable(Trackable t){

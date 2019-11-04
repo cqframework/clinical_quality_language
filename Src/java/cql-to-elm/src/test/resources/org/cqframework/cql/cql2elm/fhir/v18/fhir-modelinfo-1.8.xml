@@ -7734,7 +7734,7 @@
         <ns4:element name="value" type="FHIR.string"/>
     </ns4:typeInfo>
     <ns4:conversionInfo fromType="dateTime" toType="System.DateTime" functionName="FHIRHelpers.ToDateTime"/>
-    <ns4:conversionInfo fromType="date" toType="System.DateTime" functionName="FHIRHelpers.ToDateTime"/>
+    <ns4:conversionInfo fromType="date" toType="System.DateTime" functionName="FHIRHelpers.ToDate"/>
     <ns4:conversionInfo fromType="uuid" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="PlanActionPrecheckBehavior" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="ProvenanceEntityRole" toType="System.String" functionName="FHIRHelpers.ToString"/>

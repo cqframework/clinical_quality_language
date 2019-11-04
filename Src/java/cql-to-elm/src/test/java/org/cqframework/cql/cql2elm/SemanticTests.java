@@ -240,37 +240,6 @@ public class SemanticTests {
         assertThat(mother.getName(), is("Mother"));
     }
 
-    @Test
-    public void testDoubleListPromotion() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestDoubleListPromotion.cql", 0);
-        Library library = translator.toELM();
-        Map<String, ExpressionDef> defs = new HashMap<>();
-
-        if (library.getStatements() != null) {
-            for (ExpressionDef def : library.getStatements().getDef()) {
-                defs.put(def.getName(), def);
-            }
-        }
-
-        ExpressionDef def = defs.get("Observations");
-        Retrieve retrieve = (Retrieve)def.getExpression();
-        Expression codes = retrieve.getCodes();
-        assertThat(codes, instanceOf(ToList.class));
-        assertThat(((ToList)codes).getOperand(), instanceOf(CodeRef.class));
-    }
-
-    // TODO: Support this test (add FHIRHelpers loading functionality to the test scaffolding)
-    //@Test
-    //public void testIntervalImplicitConversion() throws IOException {
-    //    runSemanticTest("TestIntervalImplicitConversion.cql");
-    //}
-
-    // TODO: Support this test (add FHIRHelpers loading functionality to the test scaffolding)
-    //@Test
-    //public void testImplicitFHIRHelpers() throws IOException {
-    //    runSemanticTest("TestImplicitFHIRHelpers.cql");
-    //}
-
     private void runSemanticTest(String testFileName) throws IOException {
         runSemanticTest(testFileName, 0);
     }

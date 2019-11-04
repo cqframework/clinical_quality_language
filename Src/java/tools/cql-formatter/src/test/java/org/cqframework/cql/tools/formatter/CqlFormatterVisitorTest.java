@@ -76,18 +76,50 @@ public class CqlFormatterVisitorTest {
         runTest("DateTimeLiteralTest.cql");
         runTest("EscapeSequenceTests.cql");
         runTest("InTest.cql");
+        runTest("InvalidEquality.cql");
+        runTest("InValueSetTest.cql");
+        runTest("LocalFunctionResolutionTest.cql");
         runTest("ParameterTest.cql");
+        runTest("ParameterTestInvalid.cql");
+        //runTest("ParserPerformance.cql");
         runTest("PropertyTest.cql");
+        runTest("QuantityLiteralTest.cql");
+        runTest("RatioLiteralTest.cql");
+        runTest("SignatureOutputTests.cql");
         runTest("SignatureResolutionTest.cql");
+        runTest("TestChoiceAssignment.cql");
+        runTest("TestIncludedIn.cql");
+        runTest("TestPatientContext.cql");
+        runTest("TestPointIntervalSignatures.cql");
+        runTest("TestRelatedContextRetrieve.cql");
+        runTest("TestUnion.cql");
         runTest("TranslationTests.cql");
+        runTest("TricksyParse.cql");
+        runTest("fhir/r4/EqualityWithConversions.cql");
+        runTest("fhir/r4/TestChoiceTypes.cql");
+        runTest("fhir/r4/TestDoubleListPromotion.cql");
+        runTest("fhir/r4/TestFHIRTiming.cql");
+        runTest("fhir/r4/TestImplicitFHIRHelpers.cql");
+        runTest("fhir/r4/TestIntervalImplicitConversion.cql");
+        runTest("fhir/r4/TestURIConversion.cql");
+        runTest("fhir/stu3/EqualityWithConversions.cql");
+        runTest("fhir/stu3/TestChoiceTypes.cql");
+        runTest("fhir/stu3/TestDoubleListPromotion.cql");
+        runTest("fhir/stu3/TestFHIRTiming.cql");
+        runTest("fhir/stu3/TestImplicitFHIRHelpers.cql");
+        runTest("fhir/stu3/TestIntervalImplicitConversion.cql");
+        runTest("fhir/stu3/TestURIConversion.cql");
+        runTest("fhir/v18/PathTests.cql");
         runTest("LibraryTests/BaseLibrary.cql");
         runTest("LibraryTests/DuplicateExpressionLibrary.cql");
-        runTest("LibraryTests/FHIRHelpers-1.8.cql");
+        runTest("LibraryTests/InvalidBaseLibrary.cql");
         runTest("LibraryTests/InvalidLibraryReference.cql");
         runTest("LibraryTests/InvalidReferencingLibrary.cql");
         runTest("LibraryTests/MissingLibrary.cql");
+        runTest("LibraryTests/ReferencingInvalidBaseLibrary.cql");
         runTest("LibraryTests/ReferencingLibrary.cql");
         runTest("ModelTests/ModelTest.cql");
+        runTest("OperatorTests/AgeOperators.cql");
         runTest("OperatorTests/AggregateOperators.cql");
         runTest("OperatorTests/ArithmeticOperators.cql");
         runTest("OperatorTests/ComparisonOperators.cql");
@@ -108,6 +140,7 @@ public class CqlFormatterVisitorTest {
         runTest("OperatorTests/MultiSourceQuery.cql");
         runTest("OperatorTests/NameHiding.cql");
         runTest("OperatorTests/NullologicalOperators.cql");
+        runTest("OperatorTests/Query.cql");
         runTest("OperatorTests/RecursiveFunctions.cql");
         runTest("OperatorTests/Sorting.cql");
         runTest("OperatorTests/StringOperators.cql");
@@ -116,7 +149,6 @@ public class CqlFormatterVisitorTest {
         runTest("OperatorTests/TypeOperators.cql");
         runTest("OperatorTests/UndeclaredForward.cql");
         runTest("OperatorTests/UndeclaredSignature.cql");
-        runTest("PathTests/PathTests.cql");
     }
 
     private boolean inputMatchesOutput(String input, String output) {

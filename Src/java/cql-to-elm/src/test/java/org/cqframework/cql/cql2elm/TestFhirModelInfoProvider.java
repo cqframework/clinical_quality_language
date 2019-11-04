@@ -8,8 +8,14 @@ import javax.xml.bind.JAXB;
  * Created by Bryn on 12/11/2016.
  */
 public class TestFhirModelInfoProvider implements ModelInfoProvider {
+    private Class clazz;
+
+    public TestFhirModelInfoProvider(Class clazz) {
+        this.clazz = clazz;
+    }
+
     public ModelInfo load() {
-        return JAXB.unmarshal(TestFhirModelInfoProvider.class.getResourceAsStream("PathTests/fhir-modelinfo-1.8.xml"),
+        return JAXB.unmarshal(clazz.getResourceAsStream("fhir-modelinfo-1.8.xml"),
                 ModelInfo.class);
     }
 }

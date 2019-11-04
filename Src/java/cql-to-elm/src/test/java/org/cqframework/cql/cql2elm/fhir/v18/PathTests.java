@@ -1,5 +1,6 @@
-package org.cqframework.cql.cql2elm;
+package org.cqframework.cql.cql2elm.fhir.v18;
 
+import org.cqframework.cql.cql2elm.*;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.testng.annotations.AfterClass;
@@ -25,8 +26,9 @@ public class PathTests {
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().clearProviders();
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
         ModelInfoLoader.registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"),
-                new TestFhirModelInfoProvider());
+                new TestFhirModelInfoProvider(PathTests.class));
     }
 
     @AfterClass
@@ -38,7 +40,7 @@ public class PathTests {
     public void testPaths() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("PathTests/PathTests.cql"), modelManager, libraryManager);
+            translator = CqlTranslator.fromStream(PathTests.class.getResourceAsStream("PathTests.cql"), modelManager, libraryManager);
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
