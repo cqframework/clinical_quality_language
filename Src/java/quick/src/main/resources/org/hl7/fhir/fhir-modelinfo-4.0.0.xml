@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns4:modelInfo name="FHIR" version="4.0.0" url="http://hl7.org/fhir" targetQualifier="fhir" patientClassName="FHIR.Patient" patientBirthDatePropertyName="birthDate.value" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ns4:requiredModelInfo name="System" version="1.0.0"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Account" label="Account" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Account" identifier="http://hl7.org/fhir/StructureDefinition/Account" label="Account" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -58,7 +58,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ActionSelectionBehavior" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ActivityDefinition" label="ActivityDefinition" retrievable="true" primaryCodePath="topic" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ActivityDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ActivityDefinition" label="ActivityDefinition" retrievable="true" primaryCodePath="topic" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -175,7 +175,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ActivityParticipantType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Address" label="Address" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="use" elementType="FHIR.AddressUse"/>
         <ns4:element name="type" elementType="FHIR.AddressType"/>
         <ns4:element name="text" elementType="FHIR.string"/>
@@ -198,7 +198,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AdministrativeGender" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AdverseEvent" label="AdverseEvent" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AdverseEvent" identifier="http://hl7.org/fhir/StructureDefinition/AdverseEvent" label="AdverseEvent" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="actuality" elementType="FHIR.AdverseEventActuality"/>
         <ns4:element name="category">
@@ -249,11 +249,11 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AdverseEventActuality" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Age" label="Age" retrievable="false" baseType="FHIR.Quantity"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Age" identifier="http://hl7.org/fhir/StructureDefinition/Age" label="Age" retrievable="false" baseType="FHIR.Quantity"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AggregationMode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AllergyIntolerance" label="AllergyIntolerance" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AllergyIntolerance" identifier="http://hl7.org/fhir/StructureDefinition/AllergyIntolerance" label="AllergyIntolerance" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -312,7 +312,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AllergyIntoleranceType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Annotation" label="Annotation" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Annotation" identifier="http://hl7.org/fhir/StructureDefinition/Annotation" label="Annotation" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="author">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Reference"/>
@@ -322,7 +322,7 @@
         <ns4:element name="time" elementType="FHIR.dateTime"/>
         <ns4:element name="text" elementType="FHIR.markdown"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Appointment" label="Appointment" retrievable="true" primaryCodePath="serviceType" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Appointment" identifier="http://hl7.org/fhir/StructureDefinition/Appointment" label="Appointment" retrievable="true" primaryCodePath="serviceType" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -377,7 +377,7 @@
         <ns4:element name="status" elementType="FHIR.ParticipationStatus"/>
         <ns4:element name="period" elementType="FHIR.Period"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AppointmentResponse" label="AppointmentResponse" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AppointmentResponse" identifier="http://hl7.org/fhir/StructureDefinition/AppointmentResponse" label="AppointmentResponse" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -403,7 +403,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AssertionResponseTypes" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Attachment" label="Attachment" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="contentType" elementType="FHIR.MimeType"/>
         <ns4:element name="language" elementType="FHIR.code"/>
         <ns4:element name="data" elementType="FHIR.base64Binary"/>
@@ -413,7 +413,7 @@
         <ns4:element name="title" elementType="FHIR.string"/>
         <ns4:element name="creation" elementType="FHIR.dateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AuditEvent" label="AuditEvent" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AuditEvent" identifier="http://hl7.org/fhir/StructureDefinition/AuditEvent" label="AuditEvent" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="type" elementType="FHIR.Coding"/>
         <ns4:element name="subtype">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Coding"/>
@@ -497,12 +497,12 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AuditEventOutcome" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BackboneElement" label="BackboneElement" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BackboneElement" identifier="http://hl7.org/fhir/StructureDefinition/BackboneElement" label="BackboneElement" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="modifierExtension">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Extension"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Basic" label="Basic" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Basic" identifier="http://hl7.org/fhir/StructureDefinition/Basic" label="Basic" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -511,7 +511,7 @@
         <ns4:element name="created" elementType="FHIR.date"/>
         <ns4:element name="author" elementType="FHIR.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Binary" label="Binary" retrievable="true" baseType="FHIR.Resource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Binary" identifier="http://hl7.org/fhir/StructureDefinition/Binary" label="Binary" retrievable="true" baseType="FHIR.Resource">
         <ns4:element name="contentType" elementType="FHIR.MimeType"/>
         <ns4:element name="securityContext" elementType="FHIR.Reference"/>
         <ns4:element name="data" elementType="FHIR.base64Binary"/>
@@ -519,7 +519,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BindingStrength" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BiologicallyDerivedProduct" label="BiologicallyDerivedProduct" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BiologicallyDerivedProduct" identifier="http://hl7.org/fhir/StructureDefinition/BiologicallyDerivedProduct" label="BiologicallyDerivedProduct" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -587,7 +587,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BiologicallyDerivedProductStorageScale" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BodyStructure" label="BodyStructure" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BodyStructure" identifier="http://hl7.org/fhir/StructureDefinition/BodyStructure" label="BodyStructure" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -603,7 +603,7 @@
         </ns4:element>
         <ns4:element name="patient" elementType="FHIR.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Bundle" label="Bundle" retrievable="true" baseType="FHIR.Resource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Bundle" identifier="http://hl7.org/fhir/StructureDefinition/Bundle" label="Bundle" retrievable="true" baseType="FHIR.Resource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="type" elementType="FHIR.BundleType"/>
         <ns4:element name="timestamp" elementType="FHIR.instant"/>
@@ -654,7 +654,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="BundleType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CapabilityStatement" label="CapabilityStatement" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CapabilityStatement" identifier="http://hl7.org/fhir/StructureDefinition/CapabilityStatement" label="CapabilityStatement" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="version" elementType="FHIR.string"/>
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -823,7 +823,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CapabilityStatementKind" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CarePlan" label="CarePlan" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CarePlan" identifier="http://hl7.org/fhir/StructureDefinition/CarePlan" label="CarePlan" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -943,7 +943,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CarePlanStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CareTeam" label="CareTeam" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CareTeam" identifier="http://hl7.org/fhir/StructureDefinition/CareTeam" label="CareTeam" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -985,7 +985,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CareTeamStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CatalogEntry" label="CatalogEntry" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CatalogEntry" identifier="http://hl7.org/fhir/StructureDefinition/CatalogEntry" label="CatalogEntry" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -1019,7 +1019,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CatalogEntryRelationType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ChargeItem" label="ChargeItem" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ChargeItem" identifier="http://hl7.org/fhir/StructureDefinition/ChargeItem" label="ChargeItem" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -1084,7 +1084,7 @@
         <ns4:element name="function" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="actor" elementType="FHIR.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ChargeItemDefinition" label="ChargeItemDefinition" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ChargeItemDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ChargeItemDefinition" label="ChargeItemDefinition" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -1156,7 +1156,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ChargeItemStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Claim" label="Claim" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Claim" identifier="http://hl7.org/fhir/StructureDefinition/Claim" label="Claim" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -1384,7 +1384,7 @@
         </ns4:element>
         <ns4:element name="reason" elementType="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ClaimResponse" label="ClaimResponse" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ClaimResponse" identifier="http://hl7.org/fhir/StructureDefinition/ClaimResponse" label="ClaimResponse" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -1605,7 +1605,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ClaimStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ClinicalImpression" label="ClinicalImpression" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ClinicalImpression" identifier="http://hl7.org/fhir/StructureDefinition/ClinicalImpression" label="ClinicalImpression" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -1667,7 +1667,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CodeSearchSupport" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CodeSystem" label="CodeSystem" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CodeSystem" identifier="http://hl7.org/fhir/StructureDefinition/CodeSystem" label="CodeSystem" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -1764,20 +1764,20 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CodeSystemHierarchyMeaning" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CodeableConcept" label="CodeableConcept" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CodeableConcept" identifier="http://hl7.org/fhir/StructureDefinition/CodeableConcept" label="CodeableConcept" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="coding">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Coding"/>
         </ns4:element>
         <ns4:element name="text" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Coding" label="Coding" retrievable="false" primaryCodePath="code" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Coding" identifier="http://hl7.org/fhir/StructureDefinition/Coding" label="Coding" retrievable="false" primaryCodePath="code" baseType="FHIR.Element">
         <ns4:element name="system" elementType="FHIR.uri"/>
         <ns4:element name="version" elementType="FHIR.string"/>
         <ns4:element name="code" elementType="FHIR.code"/>
         <ns4:element name="display" elementType="FHIR.string"/>
         <ns4:element name="userSelected" elementType="FHIR.boolean"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Communication" label="Communication" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Communication" identifier="http://hl7.org/fhir/StructureDefinition/Communication" label="Communication" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -1842,7 +1842,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CommunicationPriority" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CommunicationRequest" label="CommunicationRequest" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CommunicationRequest" identifier="http://hl7.org/fhir/StructureDefinition/CommunicationRequest" label="CommunicationRequest" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -1911,7 +1911,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CompartmentCode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CompartmentDefinition" label="CompartmentDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CompartmentDefinition" identifier="http://hl7.org/fhir/StructureDefinition/CompartmentDefinition" label="CompartmentDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="version" elementType="FHIR.string"/>
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -1943,7 +1943,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CompartmentType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Composition" label="Composition" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Composition" identifier="http://hl7.org/fhir/StructureDefinition/Composition" label="Composition" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="status" elementType="FHIR.CompositionStatus"/>
         <ns4:element name="type" elementType="FHIR.CodeableConcept"/>
@@ -2021,7 +2021,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CompositionStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ConceptMap" label="ConceptMap" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ConceptMap" identifier="http://hl7.org/fhir/StructureDefinition/ConceptMap" label="ConceptMap" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="version" elementType="FHIR.string"/>
@@ -2108,7 +2108,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ConceptMapGroupUnmappedMode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Condition" label="Condition" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Condition" identifier="http://hl7.org/fhir/StructureDefinition/Condition" label="Condition" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -2176,7 +2176,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ConditionalReadStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Consent" label="Consent" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Consent" identifier="http://hl7.org/fhir/StructureDefinition/Consent" label="Consent" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -2268,13 +2268,13 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ConstraintSeverity" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ContactDetail" label="ContactDetail" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ContactDetail" identifier="http://hl7.org/fhir/StructureDefinition/ContactDetail" label="ContactDetail" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="name" elementType="FHIR.string"/>
         <ns4:element name="telecom">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ContactPoint"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ContactPoint" label="ContactPoint" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="system" elementType="FHIR.ContactPointSystem"/>
         <ns4:element name="value" elementType="FHIR.string"/>
         <ns4:element name="use" elementType="FHIR.ContactPointUse"/>
@@ -2287,7 +2287,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ContactPointUse" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Contract" label="Contract" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Contract" identifier="http://hl7.org/fhir/StructureDefinition/Contract" label="Contract" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -2628,7 +2628,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ContractStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Contributor" label="Contributor" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type" elementType="FHIR.ContributorType"/>
         <ns4:element name="name" elementType="FHIR.string"/>
         <ns4:element name="contact">
@@ -2638,8 +2638,8 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ContributorType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Count" label="Count" retrievable="false" baseType="FHIR.Quantity"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Coverage" label="Coverage" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Count" identifier="http://hl7.org/fhir/StructureDefinition/Count" label="Count" retrievable="false" baseType="FHIR.Quantity"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Coverage" identifier="http://hl7.org/fhir/StructureDefinition/Coverage" label="Coverage" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -2689,7 +2689,7 @@
         <ns4:element name="type" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="period" elementType="FHIR.Period"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CoverageEligibilityRequest" label="CoverageEligibilityRequest" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CoverageEligibilityRequest" identifier="http://hl7.org/fhir/StructureDefinition/CoverageEligibilityRequest" label="CoverageEligibilityRequest" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -2758,7 +2758,7 @@
         <ns4:element name="information" elementType="FHIR.Reference"/>
         <ns4:element name="appliesToAll" elementType="FHIR.boolean"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CoverageEligibilityResponse" label="CoverageEligibilityResponse" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CoverageEligibilityResponse" identifier="http://hl7.org/fhir/StructureDefinition/CoverageEligibilityResponse" label="CoverageEligibilityResponse" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -2844,7 +2844,8 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CurrencyCode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DataRequirement" label="DataRequirement" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DataElement constraint on ElementDefinition data type" identifier="http://hl7.org/fhir/StructureDefinition/elementdefinition-de" label="DataElement constraint on ElementDefinition data type" retrievable="false" baseType="FHIR.ElementDefinition"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type" elementType="FHIR.FHIRAllTypes"/>
         <ns4:element name="profile">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.canonical"/>
@@ -2875,8 +2876,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DaysOfWeek" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="De" label="DataElement constraint on ElementDefinition data type" retrievable="false" baseType="FHIR.ElementDefinition"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DetectedIssue" label="DetectedIssue" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DetectedIssue" identifier="http://hl7.org/fhir/StructureDefinition/DetectedIssue" label="DetectedIssue" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -2922,7 +2922,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DetectedIssueStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Device" label="Device" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Device" identifier="http://hl7.org/fhir/StructureDefinition/Device" label="Device" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3000,7 +3000,7 @@
         <ns4:element name="component" elementType="FHIR.Identifier"/>
         <ns4:element name="value" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceDefinition" label="DeviceDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceDefinition" identifier="http://hl7.org/fhir/StructureDefinition/DeviceDefinition" label="DeviceDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3088,7 +3088,7 @@
         <ns4:element name="issuer" elementType="FHIR.uri"/>
         <ns4:element name="jurisdiction" elementType="FHIR.uri"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceMetric" label="DeviceMetric" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceMetric" identifier="http://hl7.org/fhir/StructureDefinition/DeviceMetric" label="DeviceMetric" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3127,7 +3127,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceNameType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceRequest" identifier="http://hl7.org/fhir/StructureDefinition/DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3202,7 +3202,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceRequestStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceUseStatement" label="DeviceUseStatement" retrievable="true" primaryCodePath="device.code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceUseStatement" identifier="http://hl7.org/fhir/StructureDefinition/DeviceUseStatement" label="DeviceUseStatement" retrievable="true" primaryCodePath="device.code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3238,7 +3238,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceUseStatementStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DiagnosticReport" label="DiagnosticReport" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DiagnosticReport" identifier="http://hl7.org/fhir/StructureDefinition/DiagnosticReport" label="DiagnosticReport" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3295,11 +3295,11 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DiscriminatorType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Distance" label="Distance" retrievable="false" baseType="FHIR.Quantity"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Distance" identifier="http://hl7.org/fhir/StructureDefinition/Distance" label="Distance" retrievable="false" baseType="FHIR.Quantity"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentConfidentiality" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentManifest" label="DocumentManifest" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentManifest" identifier="http://hl7.org/fhir/StructureDefinition/DocumentManifest" label="DocumentManifest" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="masterIdentifier" elementType="FHIR.Identifier"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -3330,7 +3330,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentMode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentReference" label="DocumentReference" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentReference" identifier="http://hl7.org/fhir/StructureDefinition/DocumentReference" label="DocumentReference" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="masterIdentifier" elementType="FHIR.Identifier"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -3389,7 +3389,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentRelationshipType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DomainResource" label="DomainResource" retrievable="true" baseType="FHIR.Resource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="true" baseType="FHIR.Resource">
         <ns4:element name="text" elementType="FHIR.Narrative"/>
         <ns4:element name="contained">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Resource"/>
@@ -3401,7 +3401,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Extension"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Dosage" label="Dosage" retrievable="false" baseType="FHIR.BackboneElement">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Dosage" identifier="http://hl7.org/fhir/StructureDefinition/Dosage" label="Dosage" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="sequence" elementType="FHIR.integer"/>
         <ns4:element name="text" elementType="FHIR.string"/>
         <ns4:element name="additionalInstruction">
@@ -3425,8 +3425,8 @@
         <ns4:element name="maxDosePerAdministration" elementType="FHIR.SimpleQuantity"/>
         <ns4:element name="maxDosePerLifetime" elementType="FHIR.SimpleQuantity"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Duration" label="Duration" retrievable="false" baseType="FHIR.Quantity"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EffectEvidenceSynthesis" label="EffectEvidenceSynthesis" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Duration" identifier="http://hl7.org/fhir/StructureDefinition/Duration" label="Duration" retrievable="false" baseType="FHIR.Quantity"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EffectEvidenceSynthesis" identifier="http://hl7.org/fhir/StructureDefinition/EffectEvidenceSynthesis" label="EffectEvidenceSynthesis" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -3536,12 +3536,12 @@
         <ns4:element name="numberOfStudies" elementType="FHIR.integer"/>
         <ns4:element name="numberOfParticipants" elementType="FHIR.integer"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Element" label="Element" retrievable="false">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false">
         <ns4:element name="extension">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Extension"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ElementDefinition" label="ElementDefinition" retrievable="false" baseType="FHIR.BackboneElement">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ElementDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ElementDefinition" label="ElementDefinition" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="path" elementType="FHIR.string"/>
         <ns4:element name="representation">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.PropertyRepresentation"/>
@@ -3788,7 +3788,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EnableWhenBehavior" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Encounter" label="Encounter" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Encounter" identifier="http://hl7.org/fhir/StructureDefinition/Encounter" label="Encounter" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3888,7 +3888,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EncounterStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Endpoint" label="Endpoint" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Endpoint" identifier="http://hl7.org/fhir/StructureDefinition/Endpoint" label="Endpoint" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3914,7 +3914,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EndpointStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EnrollmentRequest" label="EnrollmentRequest" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EnrollmentRequest" identifier="http://hl7.org/fhir/StructureDefinition/EnrollmentRequest" label="EnrollmentRequest" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3928,7 +3928,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EnrollmentRequestStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EnrollmentResponse" label="EnrollmentResponse" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EnrollmentResponse" identifier="http://hl7.org/fhir/StructureDefinition/EnrollmentResponse" label="EnrollmentResponse" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3943,7 +3943,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EnrollmentResponseStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EpisodeOfCare" label="EpisodeOfCare" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EpisodeOfCare" identifier="http://hl7.org/fhir/StructureDefinition/EpisodeOfCare" label="EpisodeOfCare" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -3986,7 +3986,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EventCapabilityMode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EventDefinition" label="EventDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EventDefinition" identifier="http://hl7.org/fhir/StructureDefinition/EventDefinition" label="EventDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -4046,7 +4046,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EventTiming" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Evidence" label="Evidence" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Evidence" identifier="http://hl7.org/fhir/StructureDefinition/Evidence" label="Evidence" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -4102,7 +4102,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EvidenceVariable" label="EvidenceVariable" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EvidenceVariable" identifier="http://hl7.org/fhir/StructureDefinition/EvidenceVariable" label="EvidenceVariable" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -4185,7 +4185,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EvidenceVariableType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ExampleScenario" label="ExampleScenario" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ExampleScenario" identifier="http://hl7.org/fhir/StructureDefinition/ExampleScenario" label="ExampleScenario" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -4291,7 +4291,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ExampleScenarioActorType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ExplanationOfBenefit" label="ExplanationOfBenefit" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ExplanationOfBenefit" identifier="http://hl7.org/fhir/StructureDefinition/ExplanationOfBenefit" label="ExplanationOfBenefit" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -4719,14 +4719,14 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ExposureState" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Expression" label="Expression" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Expression" identifier="http://hl7.org/fhir/StructureDefinition/Expression" label="Expression" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="description" elementType="FHIR.string"/>
         <ns4:element name="name" elementType="FHIR.id"/>
         <ns4:element name="language" elementType="FHIR.code"/>
         <ns4:element name="expression" elementType="FHIR.string"/>
         <ns4:element name="reference" elementType="FHIR.uri"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Extension" label="Extension" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="base64Binary"/>
@@ -4805,7 +4805,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="FamilyHistoryStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="FamilyMemberHistory" label="FamilyMemberHistory" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="FamilyMemberHistory" identifier="http://hl7.org/fhir/StructureDefinition/FamilyMemberHistory" label="FamilyMemberHistory" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -4878,7 +4878,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="FilterOperator" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Flag" label="Flag" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Flag" identifier="http://hl7.org/fhir/StructureDefinition/Flag" label="Flag" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -4895,7 +4895,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="FlagStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Goal" label="Goal" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Goal" identifier="http://hl7.org/fhir/StructureDefinition/Goal" label="Goal" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -4961,7 +4961,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="GraphCompartmentUse" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="GraphDefinition" label="GraphDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="GraphDefinition" identifier="http://hl7.org/fhir/StructureDefinition/GraphDefinition" label="GraphDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="version" elementType="FHIR.string"/>
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -5016,7 +5016,7 @@
         <ns4:element name="expression" elementType="FHIR.string"/>
         <ns4:element name="description" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Group" label="Group" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Group" identifier="http://hl7.org/fhir/StructureDefinition/Group" label="Group" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5059,7 +5059,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="GroupType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="GuidanceResponse" label="GuidanceResponse" retrievable="true" primaryCodePath="module" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="GuidanceResponse" identifier="http://hl7.org/fhir/StructureDefinition/GuidanceResponse" label="GuidanceResponse" retrievable="true" primaryCodePath="module" baseType="FHIR.DomainResource">
         <ns4:element name="requestIdentifier" elementType="FHIR.Identifier"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -5106,7 +5106,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="HTTPVerb" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="HealthcareService" label="HealthcareService" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="HealthcareService" identifier="http://hl7.org/fhir/StructureDefinition/HealthcareService" label="HealthcareService" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5180,7 +5180,7 @@
         <ns4:element name="description" elementType="FHIR.string"/>
         <ns4:element name="during" elementType="FHIR.Period"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="HumanName" label="HumanName" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="use" elementType="FHIR.NameUse"/>
         <ns4:element name="text" elementType="FHIR.string"/>
         <ns4:element name="family" elementType="FHIR.string"/>
@@ -5195,7 +5195,7 @@
         </ns4:element>
         <ns4:element name="period" elementType="FHIR.Period"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Identifier" label="Identifier" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="use" elementType="FHIR.IdentifierUse"/>
         <ns4:element name="type" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="system" elementType="FHIR.uri"/>
@@ -5209,7 +5209,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="IdentityAssuranceLevel" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImagingStudy" label="ImagingStudy" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImagingStudy" identifier="http://hl7.org/fhir/StructureDefinition/ImagingStudy" label="ImagingStudy" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5286,7 +5286,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImagingStudyStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Immunization" label="Immunization" retrievable="true" primaryCodePath="vaccineCode" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Immunization" identifier="http://hl7.org/fhir/StructureDefinition/Immunization" label="Immunization" retrievable="true" primaryCodePath="vaccineCode" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5375,7 +5375,7 @@
         <ns4:element name="detail" elementType="FHIR.Reference"/>
         <ns4:element name="reported" elementType="FHIR.boolean"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImmunizationEvaluation" label="ImmunizationEvaluation" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImmunizationEvaluation" identifier="http://hl7.org/fhir/StructureDefinition/ImmunizationEvaluation" label="ImmunizationEvaluation" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5407,7 +5407,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImmunizationEvaluationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImmunizationRecommendation" label="ImmunizationRecommendation" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImmunizationRecommendation" identifier="http://hl7.org/fhir/StructureDefinition/ImmunizationRecommendation" label="ImmunizationRecommendation" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5461,7 +5461,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImmunizationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImplementationGuide" label="ImplementationGuide" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImplementationGuide" identifier="http://hl7.org/fhir/StructureDefinition/ImplementationGuide" label="ImplementationGuide" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="version" elementType="FHIR.string"/>
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -5594,7 +5594,7 @@
         </ns4:element>
         <ns4:element name="relativePath" elementType="FHIR.url"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="InsurancePlan" label="InsurancePlan" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="InsurancePlan" identifier="http://hl7.org/fhir/StructureDefinition/InsurancePlan" label="InsurancePlan" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5700,7 +5700,7 @@
         </ns4:element>
         <ns4:element name="value" elementType="FHIR.Quantity"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Invoice" label="Invoice" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Invoice" identifier="http://hl7.org/fhir/StructureDefinition/Invoice" label="Invoice" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5764,7 +5764,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="IssueType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Library" label="Library" retrievable="true" primaryCodePath="topic" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Library" identifier="http://hl7.org/fhir/StructureDefinition/Library" label="Library" retrievable="true" primaryCodePath="topic" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -5831,7 +5831,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="LinkType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Linkage" label="Linkage" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Linkage" identifier="http://hl7.org/fhir/StructureDefinition/Linkage" label="Linkage" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="active" elementType="FHIR.boolean"/>
         <ns4:element name="author" elementType="FHIR.Reference"/>
         <ns4:element name="item">
@@ -5845,7 +5845,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="LinkageType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="List" label="List" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="List" identifier="http://hl7.org/fhir/StructureDefinition/List" label="List" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5878,7 +5878,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ListStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Location" label="Location" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Location" identifier="http://hl7.org/fhir/StructureDefinition/Location" label="Location" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -5928,14 +5928,14 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="LocationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MarketingStatus" label="MarketingStatus" retrievable="false" baseType="FHIR.BackboneElement">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MarketingStatus" identifier="http://hl7.org/fhir/StructureDefinition/MarketingStatus" label="MarketingStatus" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="country" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="jurisdiction" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="status" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="dateRange" elementType="FHIR.Period"/>
         <ns4:element name="restoreDate" elementType="FHIR.dateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Measure" label="Measure" retrievable="true" primaryCodePath="topic" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Measure" identifier="http://hl7.org/fhir/StructureDefinition/Measure" label="Measure" retrievable="true" primaryCodePath="topic" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -6049,7 +6049,7 @@
         <ns4:element name="description" elementType="FHIR.string"/>
         <ns4:element name="criteria" elementType="FHIR.Expression"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MeasureReport" label="MeasureReport" retrievable="true" primaryCodePath="measure.topic" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MeasureReport" identifier="http://hl7.org/fhir/StructureDefinition/MeasureReport" label="MeasureReport" retrievable="true" primaryCodePath="measure.topic" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6116,7 +6116,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MeasureReportType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Media" label="Media" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Media" identifier="http://hl7.org/fhir/StructureDefinition/Media" label="Media" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6158,7 +6158,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MediaStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Medication" label="Medication" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Medication" identifier="http://hl7.org/fhir/StructureDefinition/Medication" label="Medication" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6186,7 +6186,7 @@
         <ns4:element name="isActive" elementType="FHIR.boolean"/>
         <ns4:element name="strength" elementType="FHIR.Ratio"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationAdministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationAdministration" identifier="http://hl7.org/fhir/StructureDefinition/MedicationAdministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6259,7 +6259,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationAdministrationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationDispense" identifier="http://hl7.org/fhir/StructureDefinition/MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6332,7 +6332,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationDispenseStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationKnowledge" label="MedicationKnowledge" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationKnowledge" identifier="http://hl7.org/fhir/StructureDefinition/MedicationKnowledge" label="MedicationKnowledge" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="status" elementType="FHIR.MedicationKnowledgeStatus"/>
         <ns4:element name="manufacturer" elementType="FHIR.Reference"/>
@@ -6500,7 +6500,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationKnowledgeStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationRequest" identifier="http://hl7.org/fhir/StructureDefinition/MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6601,7 +6601,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationRequestStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationStatement" identifier="http://hl7.org/fhir/StructureDefinition/MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6654,7 +6654,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProduct" label="MedicinalProduct" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProduct" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProduct" label="MedicinalProduct" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6748,7 +6748,7 @@
         <ns4:element name="date" elementType="FHIR.dateTime"/>
         <ns4:element name="species" elementType="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductAuthorization" label="MedicinalProductAuthorization" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductAuthorization" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductAuthorization" label="MedicinalProductAuthorization" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6800,7 +6800,7 @@
             </ns4:elementTypeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductContraindication" label="MedicinalProductContraindication" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductContraindication" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductContraindication" label="MedicinalProductContraindication" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="subject">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
@@ -6828,7 +6828,7 @@
             </ns4:elementTypeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductIndication" label="MedicinalProductIndication" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductIndication" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductIndication" label="MedicinalProductIndication" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="subject">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
@@ -6858,7 +6858,7 @@
             </ns4:elementTypeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductIngredient" label="MedicinalProductIngredient" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductIngredient" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductIngredient" label="MedicinalProductIngredient" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="role" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="allergenicIndicator" elementType="FHIR.boolean"/>
@@ -6908,7 +6908,7 @@
             </ns4:elementTypeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductInteraction" label="MedicinalProductInteraction" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductInteraction" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductInteraction" label="MedicinalProductInteraction" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="subject">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
@@ -6929,7 +6929,7 @@
             </ns4:elementTypeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductManufactured" label="MedicinalProductManufactured" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductManufactured" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductManufactured" label="MedicinalProductManufactured" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="manufacturedDoseForm" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="unitOfPresentation" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="quantity" elementType="FHIR.Quantity"/>
@@ -6944,7 +6944,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.CodeableConcept"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductPackaged" label="MedicinalProductPackaged" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductPackaged" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductPackaged" label="MedicinalProductPackaged" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7005,7 +7005,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductPharmaceutical" label="MedicinalProductPharmaceutical" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductPharmaceutical" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductPharmaceutical" label="MedicinalProductPharmaceutical" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7050,7 +7050,7 @@
         <ns4:element name="value" elementType="FHIR.Quantity"/>
         <ns4:element name="supportingInformation" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductUndesirableEffect" label="MedicinalProductUndesirableEffect" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicinalProductUndesirableEffect" identifier="http://hl7.org/fhir/StructureDefinition/MedicinalProductUndesirableEffect" label="MedicinalProductUndesirableEffect" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="subject">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
@@ -7061,7 +7061,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Population"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MessageDefinition" label="MessageDefinition" retrievable="true" primaryCodePath="event" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MessageDefinition" identifier="http://hl7.org/fhir/StructureDefinition/MessageDefinition" label="MessageDefinition" retrievable="true" primaryCodePath="event" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -7120,7 +7120,7 @@
         <ns4:element name="min" elementType="FHIR.unsignedInt"/>
         <ns4:element name="max" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MessageHeader" label="MessageHeader" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MessageHeader" identifier="http://hl7.org/fhir/StructureDefinition/MessageHeader" label="MessageHeader" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="event">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Coding"/>
@@ -7166,7 +7166,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Messageheader_Response_Request" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Meta" label="Meta" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Meta" identifier="http://hl7.org/fhir/StructureDefinition/Meta" label="Meta" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="versionId" elementType="FHIR.id"/>
         <ns4:element name="lastUpdated" elementType="FHIR.instant"/>
         <ns4:element name="source" elementType="FHIR.uri"/>
@@ -7183,7 +7183,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MimeType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MolecularSequence" label="MolecularSequence" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MolecularSequence" identifier="http://hl7.org/fhir/StructureDefinition/MolecularSequence" label="MolecularSequence" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7295,15 +7295,15 @@
         <ns4:element name="cigar" elementType="FHIR.string"/>
         <ns4:element name="variantPointer" elementType="FHIR.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Money" label="Money" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Money" identifier="http://hl7.org/fhir/StructureDefinition/Money" label="Money" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="FHIR.decimal"/>
         <ns4:element name="currency" elementType="FHIR.CurrencyCode"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MoneyQuantity" label="MoneyQuantity" retrievable="false" baseType="FHIR.Quantity"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MoneyQuantity" identifier="http://hl7.org/fhir/StructureDefinition/MoneyQuantity" label="MoneyQuantity" retrievable="false" baseType="FHIR.Quantity"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NameUse" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NamingSystem" label="NamingSystem" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NamingSystem" identifier="http://hl7.org/fhir/StructureDefinition/NamingSystem" label="NamingSystem" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="name" elementType="FHIR.string"/>
         <ns4:element name="status" elementType="FHIR.PublicationStatus"/>
         <ns4:element name="kind" elementType="FHIR.NamingSystemType"/>
@@ -7339,7 +7339,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NamingSystemType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Narrative" label="Narrative" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="status" elementType="FHIR.NarrativeStatus"/>
         <ns4:element name="div" elementType="FHIR.xhtml"/>
     </ns4:typeInfo>
@@ -7352,7 +7352,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NutritiionOrderIntent" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NutritionOrder" label="NutritionOrder" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NutritionOrder" identifier="http://hl7.org/fhir/StructureDefinition/NutritionOrder" label="NutritionOrder" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7450,7 +7450,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NutritionOrderStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Observation" label="Observation" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Observation" identifier="http://hl7.org/fhir/StructureDefinition/Observation" label="Observation" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7561,7 +7561,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ObservationDataType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ObservationDefinition" label="ObservationDefinition" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ObservationDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ObservationDefinition" label="ObservationDefinition" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="category">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.CodeableConcept"/>
         </ns4:element>
@@ -7608,7 +7608,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ObservationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OperationDefinition" label="OperationDefinition" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OperationDefinition" identifier="http://hl7.org/fhir/StructureDefinition/OperationDefinition" label="OperationDefinition" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="version" elementType="FHIR.string"/>
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -7686,7 +7686,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OperationKind" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OperationOutcome" label="OperationOutcome" retrievable="true" primaryCodePath="issue.code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OperationOutcome" identifier="http://hl7.org/fhir/StructureDefinition/OperationOutcome" label="OperationOutcome" retrievable="true" primaryCodePath="issue.code" baseType="FHIR.DomainResource">
         <ns4:element name="issue">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.OperationOutcome.Issue"/>
         </ns4:element>
@@ -7706,7 +7706,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OperationParameterUse" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Organization" label="Organization" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Organization" identifier="http://hl7.org/fhir/StructureDefinition/Organization" label="Organization" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7740,7 +7740,7 @@
         </ns4:element>
         <ns4:element name="address" elementType="FHIR.Address"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OrganizationAffiliation" label="OrganizationAffiliation" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OrganizationAffiliation" identifier="http://hl7.org/fhir/StructureDefinition/OrganizationAffiliation" label="OrganizationAffiliation" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7773,7 +7773,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="OrientationType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ParameterDefinition" label="ParameterDefinition" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ParameterDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ParameterDefinition" label="ParameterDefinition" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="name" elementType="FHIR.code"/>
         <ns4:element name="use" elementType="FHIR.ParameterUse"/>
         <ns4:element name="min" elementType="FHIR.integer"/>
@@ -7785,7 +7785,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ParameterUse" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Parameters" label="Parameters" retrievable="true" baseType="FHIR.Resource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Parameters" identifier="http://hl7.org/fhir/StructureDefinition/Parameters" label="Parameters" retrievable="true" baseType="FHIR.Resource">
         <ns4:element name="parameter">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Parameters.Parameter"/>
         </ns4:element>
@@ -7861,7 +7861,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ParticipationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Patient" label="Patient" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Patient" identifier="http://hl7.org/fhir/StructureDefinition/Patient" label="Patient" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7928,7 +7928,7 @@
         <ns4:element name="other" elementType="FHIR.Reference"/>
         <ns4:element name="type" elementType="FHIR.LinkType"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PaymentNotice" label="PaymentNotice" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PaymentNotice" identifier="http://hl7.org/fhir/StructureDefinition/PaymentNotice" label="PaymentNotice" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7947,7 +7947,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PaymentNoticeStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PaymentReconciliation" label="PaymentReconciliation" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PaymentReconciliation" identifier="http://hl7.org/fhir/StructureDefinition/PaymentReconciliation" label="PaymentReconciliation" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7989,11 +7989,11 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PaymentReconciliationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Period" label="Period" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Period" identifier="http://hl7.org/fhir/StructureDefinition/Period" label="Period" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="start" elementType="FHIR.dateTime"/>
         <ns4:element name="end" elementType="FHIR.dateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Person" label="Person" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Person" identifier="http://hl7.org/fhir/StructureDefinition/Person" label="Person" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -8019,7 +8019,7 @@
         <ns4:element name="target" elementType="FHIR.Reference"/>
         <ns4:element name="assurance" elementType="FHIR.IdentityAssuranceLevel"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PlanDefinition" label="PlanDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PlanDefinition" identifier="http://hl7.org/fhir/StructureDefinition/PlanDefinition" label="PlanDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -8205,7 +8205,7 @@
         </ns4:element>
         <ns4:element name="due" elementType="FHIR.Duration"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Population" label="Population" retrievable="false" baseType="FHIR.BackboneElement">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Population" identifier="http://hl7.org/fhir/StructureDefinition/Population" label="Population" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="age">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Range"/>
@@ -8216,7 +8216,7 @@
         <ns4:element name="race" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="physiologicalCondition" elementType="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Practitioner" label="Practitioner" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Practitioner" identifier="http://hl7.org/fhir/StructureDefinition/Practitioner" label="Practitioner" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -8250,7 +8250,7 @@
         <ns4:element name="period" elementType="FHIR.Period"/>
         <ns4:element name="issuer" elementType="FHIR.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PractitionerRole" label="PractitionerRole" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PractitionerRole" identifier="http://hl7.org/fhir/StructureDefinition/PractitionerRole" label="PractitionerRole" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -8296,7 +8296,7 @@
         <ns4:element name="description" elementType="FHIR.string"/>
         <ns4:element name="during" elementType="FHIR.Period"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Procedure" label="Procedure" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Procedure" identifier="http://hl7.org/fhir/StructureDefinition/Procedure" label="Procedure" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -8380,7 +8380,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ProcedureStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ProdCharacteristic" label="ProdCharacteristic" retrievable="false" baseType="FHIR.BackboneElement">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ProdCharacteristic" identifier="http://hl7.org/fhir/StructureDefinition/ProdCharacteristic" label="ProdCharacteristic" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="height" elementType="FHIR.Quantity"/>
         <ns4:element name="width" elementType="FHIR.Quantity"/>
         <ns4:element name="depth" elementType="FHIR.Quantity"/>
@@ -8399,7 +8399,7 @@
         </ns4:element>
         <ns4:element name="scoring" elementType="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ProductShelfLife" label="ProductShelfLife" retrievable="false" baseType="FHIR.BackboneElement">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ProductShelfLife" identifier="http://hl7.org/fhir/StructureDefinition/ProductShelfLife" label="ProductShelfLife" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="type" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="period" elementType="FHIR.Quantity"/>
@@ -8413,7 +8413,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PropertyType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Provenance" label="Provenance" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Provenance" identifier="http://hl7.org/fhir/StructureDefinition/Provenance" label="Provenance" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="target">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
@@ -8468,7 +8468,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="QualityType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Quantity" label="Quantity" retrievable="false" primaryCodePath="code" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Quantity" identifier="http://hl7.org/fhir/StructureDefinition/Quantity" label="Quantity" retrievable="false" primaryCodePath="code" baseType="FHIR.Element">
         <ns4:element name="value" elementType="FHIR.decimal"/>
         <ns4:element name="comparator" elementType="FHIR.QuantityComparator"/>
         <ns4:element name="unit" elementType="FHIR.string"/>
@@ -8478,7 +8478,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="QuantityComparator" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Questionnaire" label="Questionnaire" retrievable="true" primaryCodePath="name" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Questionnaire" identifier="http://hl7.org/fhir/StructureDefinition/Questionnaire" label="Questionnaire" retrievable="true" primaryCodePath="name" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -8603,7 +8603,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="QuestionnaireItemType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="QuestionnaireResponse" label="QuestionnaireResponse" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="QuestionnaireResponse" identifier="http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" label="QuestionnaireResponse" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="basedOn">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
@@ -8661,15 +8661,15 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="QuestionnaireResponseStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Range" label="Range" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Range" identifier="http://hl7.org/fhir/StructureDefinition/Range" label="Range" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="low" elementType="FHIR.SimpleQuantity"/>
         <ns4:element name="high" elementType="FHIR.SimpleQuantity"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Ratio" label="Ratio" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Ratio" identifier="http://hl7.org/fhir/StructureDefinition/Ratio" label="Ratio" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="numerator" elementType="FHIR.Quantity"/>
         <ns4:element name="denominator" elementType="FHIR.Quantity"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Reference" label="Reference" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Reference" identifier="http://hl7.org/fhir/StructureDefinition/Reference" label="Reference" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="reference" elementType="FHIR.string"/>
         <ns4:element name="type" elementType="FHIR.uri"/>
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
@@ -8684,7 +8684,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ReferredDocumentStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RelatedArtifact" label="RelatedArtifact" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type" elementType="FHIR.RelatedArtifactType"/>
         <ns4:element name="label" elementType="FHIR.string"/>
         <ns4:element name="display" elementType="FHIR.string"/>
@@ -8696,7 +8696,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RelatedArtifactType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RelatedPerson" label="RelatedPerson" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RelatedPerson" identifier="http://hl7.org/fhir/StructureDefinition/RelatedPerson" label="RelatedPerson" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -8734,7 +8734,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RepositoryType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RequestGroup" label="RequestGroup" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RequestGroup" identifier="http://hl7.org/fhir/StructureDefinition/RequestGroup" label="RequestGroup" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -8839,7 +8839,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RequestStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchDefinition" label="ResearchDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ResearchDefinition" label="ResearchDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -8904,7 +8904,7 @@
         <ns4:element name="exposureAlternative" elementType="FHIR.Reference"/>
         <ns4:element name="outcome" elementType="FHIR.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchElementDefinition" label="ResearchElementDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchElementDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ResearchElementDefinition" label="ResearchElementDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -9010,7 +9010,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchElementType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchStudy" label="ResearchStudy" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchStudy" identifier="http://hl7.org/fhir/StructureDefinition/ResearchStudy" label="ResearchStudy" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -9078,7 +9078,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchStudyStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchSubject" label="ResearchSubject" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchSubject" identifier="http://hl7.org/fhir/StructureDefinition/ResearchSubject" label="ResearchSubject" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -9093,7 +9093,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchSubjectStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Resource" label="Resource" retrievable="true">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true">
         <ns4:element name="id" elementType="FHIR.id"/>
         <ns4:element name="meta" elementType="FHIR.Meta"/>
         <ns4:element name="implicitRules" elementType="FHIR.uri"/>
@@ -9111,7 +9111,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RestfulCapabilityMode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RiskAssessment" label="RiskAssessment" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RiskAssessment" identifier="http://hl7.org/fhir/StructureDefinition/RiskAssessment" label="RiskAssessment" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -9168,7 +9168,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RiskAssessmentStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RiskEvidenceSynthesis" label="RiskEvidenceSynthesis" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RiskEvidenceSynthesis" identifier="http://hl7.org/fhir/StructureDefinition/RiskEvidenceSynthesis" label="RiskEvidenceSynthesis" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -9270,7 +9270,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SPDXLicense" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SampledData" label="SampledData" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SampledData" identifier="http://hl7.org/fhir/StructureDefinition/SampledData" label="SampledData" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="origin" elementType="FHIR.SimpleQuantity"/>
         <ns4:element name="period" elementType="FHIR.decimal"/>
         <ns4:element name="factor" elementType="FHIR.decimal"/>
@@ -9279,7 +9279,7 @@
         <ns4:element name="dimensions" elementType="FHIR.positiveInt"/>
         <ns4:element name="data" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Schedule" label="Schedule" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Schedule" identifier="http://hl7.org/fhir/StructureDefinition/Schedule" label="Schedule" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -9311,7 +9311,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SearchParamType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SearchParameter" label="SearchParameter" retrievable="true" primaryCodePath="target" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SearchParameter" identifier="http://hl7.org/fhir/StructureDefinition/SearchParameter" label="SearchParameter" retrievable="true" primaryCodePath="target" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="version" elementType="FHIR.string"/>
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -9367,7 +9367,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SequenceType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ServiceRequest" label="ServiceRequest" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ServiceRequest" identifier="http://hl7.org/fhir/StructureDefinition/ServiceRequest" label="ServiceRequest" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -9464,7 +9464,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ServiceRequestStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Signature" label="Signature" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Signature" identifier="http://hl7.org/fhir/StructureDefinition/Signature" label="Signature" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Coding"/>
         </ns4:element>
@@ -9475,11 +9475,11 @@
         <ns4:element name="sigFormat" elementType="FHIR.MimeType"/>
         <ns4:element name="data" elementType="FHIR.base64Binary"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SimpleQuantity" label="SimpleQuantity" retrievable="false" baseType="FHIR.Quantity"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SimpleQuantity" identifier="http://hl7.org/fhir/StructureDefinition/SimpleQuantity" label="SimpleQuantity" retrievable="false" baseType="FHIR.Quantity"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SlicingRules" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Slot" label="Slot" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Slot" identifier="http://hl7.org/fhir/StructureDefinition/Slot" label="Slot" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -9506,7 +9506,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SortDirection" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Specimen" label="Specimen" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Specimen" identifier="http://hl7.org/fhir/StructureDefinition/Specimen" label="Specimen" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -9585,7 +9585,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SpecimenContainedPreference" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SpecimenDefinition" label="SpecimenDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SpecimenDefinition" identifier="http://hl7.org/fhir/StructureDefinition/SpecimenDefinition" label="SpecimenDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="typeCollected" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="patientPreparation">
@@ -9653,7 +9653,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="StrandType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="StructureDefinition" label="StructureDefinition" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="StructureDefinition" identifier="http://hl7.org/fhir/StructureDefinition/StructureDefinition" label="StructureDefinition" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -9721,7 +9721,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="StructureDefinitionKind" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="StructureMap" label="StructureMap" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="StructureMap" identifier="http://hl7.org/fhir/StructureDefinition/StructureMap" label="StructureMap" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -9914,7 +9914,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="StructureMapTransform" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Subscription" label="Subscription" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Subscription" identifier="http://hl7.org/fhir/StructureDefinition/Subscription" label="Subscription" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="status" elementType="FHIR.SubscriptionStatus"/>
         <ns4:element name="contact">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ContactPoint"/>
@@ -9939,7 +9939,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubscriptionStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Substance" label="Substance" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Substance" identifier="http://hl7.org/fhir/StructureDefinition/Substance" label="Substance" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -9970,7 +9970,7 @@
         <ns4:element name="expiry" elementType="FHIR.dateTime"/>
         <ns4:element name="quantity" elementType="FHIR.SimpleQuantity"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceAmount" label="SubstanceAmount" retrievable="false" baseType="FHIR.BackboneElement">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceAmount" identifier="http://hl7.org/fhir/StructureDefinition/SubstanceAmount" label="SubstanceAmount" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="amount">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Quantity"/>
@@ -9982,7 +9982,7 @@
         <ns4:element name="amountText" elementType="FHIR.string"/>
         <ns4:element name="referenceRange" elementType="FHIR.Element"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceNucleicAcid" label="SubstanceNucleicAcid" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceNucleicAcid" identifier="http://hl7.org/fhir/StructureDefinition/SubstanceNucleicAcid" label="SubstanceNucleicAcid" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="sequenceType" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="numberOfSubunits" elementType="FHIR.integer"/>
         <ns4:element name="areaOfHybridisation" elementType="FHIR.string"/>
@@ -10016,7 +10016,7 @@
         <ns4:element name="name" elementType="FHIR.string"/>
         <ns4:element name="residueSite" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstancePolymer" label="SubstancePolymer" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstancePolymer" identifier="http://hl7.org/fhir/StructureDefinition/SubstancePolymer" label="SubstancePolymer" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="class" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="geometry" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="copolymerConnectivity">
@@ -10072,7 +10072,7 @@
         <ns4:element name="representation" elementType="FHIR.string"/>
         <ns4:element name="attachment" elementType="FHIR.Attachment"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceProtein" label="SubstanceProtein" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceProtein" identifier="http://hl7.org/fhir/StructureDefinition/SubstanceProtein" label="SubstanceProtein" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="sequenceType" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="numberOfSubunits" elementType="FHIR.integer"/>
         <ns4:element name="disulfideLinkage">
@@ -10092,7 +10092,7 @@
         <ns4:element name="cTerminalModificationId" elementType="FHIR.Identifier"/>
         <ns4:element name="cTerminalModification" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceReferenceInformation" label="SubstanceReferenceInformation" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceReferenceInformation" identifier="http://hl7.org/fhir/StructureDefinition/SubstanceReferenceInformation" label="SubstanceReferenceInformation" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="comment" elementType="FHIR.string"/>
         <ns4:element name="gene">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.SubstanceReferenceInformation.Gene"/>
@@ -10149,7 +10149,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceSourceMaterial" label="SubstanceSourceMaterial" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceSourceMaterial" identifier="http://hl7.org/fhir/StructureDefinition/SubstanceSourceMaterial" label="SubstanceSourceMaterial" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="sourceMaterialClass" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="sourceMaterialType" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="sourceMaterialState" elementType="FHIR.CodeableConcept"/>
@@ -10213,7 +10213,7 @@
         <ns4:element name="part" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="partLocation" elementType="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceSpecification" label="SubstanceSpecification" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SubstanceSpecification" identifier="http://hl7.org/fhir/StructureDefinition/SubstanceSpecification" label="SubstanceSpecification" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="type" elementType="FHIR.CodeableConcept"/>
         <ns4:element name="status" elementType="FHIR.CodeableConcept"/>
@@ -10382,7 +10382,7 @@
         <ns4:element name="representation" elementType="FHIR.string"/>
         <ns4:element name="attachment" elementType="FHIR.Attachment"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SupplyDelivery" label="SupplyDelivery" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SupplyDelivery" identifier="http://hl7.org/fhir/StructureDefinition/SupplyDelivery" label="SupplyDelivery" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -10421,7 +10421,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SupplyDeliveryStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SupplyRequest" label="SupplyRequest" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SupplyRequest" identifier="http://hl7.org/fhir/StructureDefinition/SupplyRequest" label="SupplyRequest" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -10476,7 +10476,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SystemRestfulInteraction" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Task" label="Task" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Task" identifier="http://hl7.org/fhir/StructureDefinition/Task" label="Task" retrievable="true" primaryCodePath="code" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -10655,7 +10655,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TaskStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TerminologyCapabilities" label="TerminologyCapabilities" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TerminologyCapabilities" identifier="http://hl7.org/fhir/StructureDefinition/TerminologyCapabilities" label="TerminologyCapabilities" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="version" elementType="FHIR.string"/>
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -10746,7 +10746,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TerminologyCapabilities.ValidateCode" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="translations" elementType="FHIR.boolean"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TestReport" label="TestReport" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TestReport" identifier="http://hl7.org/fhir/StructureDefinition/TestReport" label="TestReport" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="name" elementType="FHIR.string"/>
         <ns4:element name="status" elementType="FHIR.TestReportStatus"/>
@@ -10819,7 +10819,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TestReportStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TestScript" label="TestScript" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TestScript" identifier="http://hl7.org/fhir/StructureDefinition/TestScript" label="TestScript" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
         <ns4:element name="version" elementType="FHIR.string"/>
@@ -10991,14 +10991,14 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TestScriptRequestMethodCode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Timing" label="Timing" retrievable="false" primaryCodePath="code" baseType="FHIR.BackboneElement">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Timing" identifier="http://hl7.org/fhir/StructureDefinition/Timing" label="Timing" retrievable="false" primaryCodePath="code" baseType="FHIR.BackboneElement">
         <ns4:element name="event">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.dateTime"/>
         </ns4:element>
         <ns4:element name="repeat" elementType="FHIR.Element"/>
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TriggerDefinition" label="TriggerDefinition" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type" elementType="FHIR.TriggerType"/>
         <ns4:element name="name" elementType="FHIR.string"/>
         <ns4:element name="timing">
@@ -11029,7 +11029,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="UnitsOfTime" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code" baseType="FHIR.Element">
         <ns4:element name="code" elementType="FHIR.Coding"/>
         <ns4:element name="value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
@@ -11043,7 +11043,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Use" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ValueSet" label="ValueSet" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ValueSet" identifier="http://hl7.org/fhir/StructureDefinition/ValueSet" label="ValueSet" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="url" elementType="FHIR.uri"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
@@ -11160,7 +11160,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="VariableType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="VerificationResult" label="VerificationResult" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="VerificationResult" identifier="http://hl7.org/fhir/StructureDefinition/VerificationResult" label="VerificationResult" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="target">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
@@ -11222,7 +11222,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="VisionEyes" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="VisionPrescription" label="VisionPrescription" retrievable="true" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="VisionPrescription" identifier="http://hl7.org/fhir/StructureDefinition/VisionPrescription" label="VisionPrescription" retrievable="true" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -11266,46 +11266,46 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="XPathUsageType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="base64Binary" label="base64Binary" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="base64Binary" identifier="http://hl7.org/fhir/StructureDefinition/base64Binary" label="base64Binary" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="boolean" label="boolean" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="boolean" identifier="http://hl7.org/fhir/StructureDefinition/boolean" label="boolean" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.Boolean"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="canonical" label="canonical" retrievable="false" baseType="FHIR.uri"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="code" label="code" retrievable="false" baseType="FHIR.string"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="date" label="date" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="canonical" identifier="http://hl7.org/fhir/StructureDefinition/canonical" label="canonical" retrievable="false" baseType="FHIR.uri"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="code" identifier="http://hl7.org/fhir/StructureDefinition/code" label="code" retrievable="false" baseType="FHIR.string"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="date" identifier="http://hl7.org/fhir/StructureDefinition/date" label="date" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.Date"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="dateTime" label="dateTime" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="dateTime" identifier="http://hl7.org/fhir/StructureDefinition/dateTime" label="dateTime" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.DateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="decimal" label="decimal" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="decimal" identifier="http://hl7.org/fhir/StructureDefinition/decimal" label="decimal" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.Decimal"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="id" label="id" retrievable="false" baseType="FHIR.string"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="instant" label="instant" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="id" identifier="http://hl7.org/fhir/StructureDefinition/id" label="id" retrievable="false" baseType="FHIR.string"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="instant" identifier="http://hl7.org/fhir/StructureDefinition/instant" label="instant" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.DateTime"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="integer" label="integer" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="integer" identifier="http://hl7.org/fhir/StructureDefinition/integer" label="integer" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.Integer"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="markdown" label="markdown" retrievable="false" baseType="FHIR.string"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="oid" label="oid" retrievable="false" baseType="FHIR.uri"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="positiveInt" label="positiveInt" retrievable="false" baseType="FHIR.integer"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="string" label="string" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="markdown" identifier="http://hl7.org/fhir/StructureDefinition/markdown" label="markdown" retrievable="false" baseType="FHIR.string"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="oid" identifier="http://hl7.org/fhir/StructureDefinition/oid" label="oid" retrievable="false" baseType="FHIR.uri"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="positiveInt" identifier="http://hl7.org/fhir/StructureDefinition/positiveInt" label="positiveInt" retrievable="false" baseType="FHIR.integer"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="string" identifier="http://hl7.org/fhir/StructureDefinition/string" label="string" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="time" label="time" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="time" identifier="http://hl7.org/fhir/StructureDefinition/time" label="time" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.Time"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="unsignedInt" label="unsignedInt" retrievable="false" baseType="FHIR.integer"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="uri" label="uri" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="unsignedInt" identifier="http://hl7.org/fhir/StructureDefinition/unsignedInt" label="unsignedInt" retrievable="false" baseType="FHIR.integer"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="uri" identifier="http://hl7.org/fhir/StructureDefinition/uri" label="uri" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="url" label="url" retrievable="false" baseType="FHIR.uri"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="uuid" label="uuid" retrievable="false" baseType="FHIR.uri"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="xhtml" label="xhtml" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="url" identifier="http://hl7.org/fhir/StructureDefinition/url" label="url" retrievable="false" baseType="FHIR.uri"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="uuid" identifier="http://hl7.org/fhir/StructureDefinition/uuid" label="uuid" retrievable="false" baseType="FHIR.uri"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="xhtml" identifier="http://hl7.org/fhir/StructureDefinition/xhtml" label="xhtml" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
     <ns4:conversionInfo functionName="FHIRHelpers.ToCode" fromType="FHIR.Coding" toType="System.Code"/>
