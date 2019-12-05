@@ -1,16 +1,19 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Scanner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TranslationTests {
     // TODO: sameXMLAs? Couldn't find such a thing in hamcrest, but I don't want this to run on the JSON, I want it to verify the actual XML.
@@ -47,5 +50,22 @@ public class TranslationTests {
 
         assertEquals(5, tb.getStartChar());
         assertEquals(10, tb.getEndChar());
+    }
+
+    @Test
+    public void testFromVersionedIdentifier() throws IOException {
+
+        TestLibrarySourceProvider provider = new TestLibrarySourceProvider();
+        VersionedIdentifier libraryIdentifier = new VersionedIdentifier().withId("BaseLibrary");
+        InputStream stream = provider.getLibrarySource(libraryIdentifier);
+        assertNotNull(stream);
+
+        ModelManager modelManager = new ModelManager();
+        LibraryManager libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().registerProvider(provider);
+
+        String actualXml = CqlTranslator.fromVersionedIdentifier(libraryIdentifier, modelManager, libraryManager).toXml();
+        assertNotNull(actualXml);
+
     }
 }
