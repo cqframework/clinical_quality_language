@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.hl7.elm.r1.VersionedIdentifier;
@@ -47,7 +48,7 @@ public class LibraryManager {
     }
 
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier,
-        CqlTranslatorException.ErrorSeverity errorLevel, SignatureLevel signatureLevel, List<CqlTranslatorException> errors) {
+        CqlTranslatorException.ErrorSeverity errorLevel, SignatureLevel signatureLevel, CqlTranslator.Options[] options, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -70,7 +71,7 @@ public class LibraryManager {
         }
 
         else {
-            library = translateLibrary(libraryIdentifier, errorLevel, signatureLevel, errors);
+            library = translateLibrary(libraryIdentifier, errorLevel, signatureLevel, options, errors);
             if (!HasErrors(errors)) {
                 libraries.put(libraryIdentifier.getId(), library);
             }
@@ -80,7 +81,7 @@ public class LibraryManager {
     }
 
     private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier,
-        CqlTranslatorException.ErrorSeverity errorLevel, SignatureLevel signatureLevel, List<CqlTranslatorException> errors) {
+        CqlTranslatorException.ErrorSeverity errorLevel, SignatureLevel signatureLevel,  CqlTranslator.Options[] options, List<CqlTranslatorException> errors) {
         InputStream librarySource = null;
         try {
             librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
@@ -95,7 +96,7 @@ public class LibraryManager {
         }
 
         try {
-            CqlTranslator translator = CqlTranslator.fromStream(librarySource, modelManager, this, errorLevel, signatureLevel);
+            CqlTranslator translator = CqlTranslator.fromStream(librarySource, modelManager, this, errorLevel, signatureLevel, options);
             if (errors != null) {
                 errors.addAll(translator.getExceptions());
             }

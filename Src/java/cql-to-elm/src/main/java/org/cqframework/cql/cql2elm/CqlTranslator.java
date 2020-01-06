@@ -314,6 +314,7 @@ public class CqlTranslator {
         LibraryBuilder builder = new LibraryBuilder(modelManager, libraryManager, ucumService);
         builder.setErrorLevel(errorLevel);
         builder.setSignatureLevel(signatureLevel);
+        builder.setTranslatorOptions(options);
         List<CqlTranslator.Options> optionList = Arrays.asList(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         if (optionList.contains(CqlTranslator.Options.EnableDateRangeOptimization)) {
