@@ -84,7 +84,7 @@ public class ChoiceType extends DataType {
             // The other type is a subtype of one of the choice types
             // The other type is a choice type and all its component types are a subtype of some component of this choice type // Holding off on this more complex case for now...
         for (DataType type : types) {
-            if (other.isSubTypeOf(type)) {
+            if (other.isCompatibleWith(type)) {
                 return true;
             }
         }

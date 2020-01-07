@@ -73,7 +73,7 @@ public class BaseTest {
         Retrieve request = (Retrieve) source.getExpression();
         assertThat(request.getDataType(), quickDataType("Procedure"));
 
-        // Then check that the where an IncludedIn with a Case as the left operand
+        // Then check that the where an IncludedIn with a ToInterval as the left operand
         Expression where = query.getWhere();
         assertThat(where, instanceOf(IncludedIn.class));
         IncludedIn includedIn = (IncludedIn)where;

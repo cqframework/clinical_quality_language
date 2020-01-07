@@ -250,6 +250,14 @@ public class ClassType extends DataType implements NamedType {
                         existingElement.getType() instanceof ListType
                         && element.getType().isSubTypeOf(((ListType)existingElement.getType()).getElementType())
                     )
+                    || (
+                            existingElement.getType() instanceof IntervalType
+                        && element.getType().isSubTypeOf(((IntervalType)existingElement.getType()).getPointType())
+                    )
+                    || (
+                            existingElement.getType() instanceof ChoiceType
+                        && element.getType().isCompatibleWith(existingElement.getType())
+                    )
                 )
             )
         ) {
