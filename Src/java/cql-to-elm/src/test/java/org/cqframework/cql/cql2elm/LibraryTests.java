@@ -4,6 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -135,4 +139,55 @@ public class LibraryTests {
         }
     }
 
+    @Test
+    public void testTranslatorOptionsFlowDownWithAnnotations() {
+        try {
+            // Test Annotations are created for both libraries
+            CqlTranslator translator = null;
+            libraryManager = new LibraryManager(modelManager);
+            libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
+                modelManager,
+                libraryManager,
+                CqlTranslatorException.ErrorSeverity.Info,
+                SignatureLevel.All,
+                CqlTranslator.Options.EnableAnnotations);
+
+            assertThat(translator.getErrors().size(), is(0));
+            Map<String, Library> includedLibraries = translator.getLibraries();
+            includedLibraries.values().stream().forEach(includedLibrary -> {
+                // Ensure that some annotations are present.
+                assertTrue(includedLibrary.getStatements().getDef().stream().filter(x -> x.getAnnotation().size() > 0).count() > 0);
+            });
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testTranslatorOptionsFlowDownWithoutAnnotations() {
+
+        try {
+            // Test Annotations are created for both libraries
+            CqlTranslator translator = null;
+            libraryManager = new LibraryManager(modelManager);
+            libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
+                modelManager,
+                libraryManager,
+                CqlTranslatorException.ErrorSeverity.Info,
+                SignatureLevel.All);
+
+            assertThat(translator.getErrors().size(), is(0));
+            Map<String, Library> includedLibraries = translator.getLibraries();
+            includedLibraries.values().stream().forEach(includedLibrary -> {
+                // Ensure that no annotations are present.
+                assertTrue(includedLibrary.getStatements().getDef().stream().filter(x -> x.getAnnotation().size() > 0).count() == 0);
+            });
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
