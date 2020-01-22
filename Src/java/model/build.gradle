@@ -1,4 +1,3 @@
-// Most build configuration comes from the cql-all parent build!
 
 dependencies {
     runtime group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.0'

@@ -66,23 +66,57 @@ public class ChoiceType extends DataType {
 
     @Override
     public boolean isSubTypeOf(DataType other) {
-        // TODO: Determine isSubTypeOf semantics for choice types
-        // A choice type A is a subtype of a choice type B if each component type is a subtype of some copmonent type of B // Holding off on this more complex case for now
+        // A choice type A is a subtype of a choice type B if each component type is a subtype of some component type of B
+        if (other instanceof ChoiceType)
+        {
+            return this.isSubSetOf((ChoiceType)other);
+        }
+
         return super.isSubTypeOf(other);
+    }
+
+    public boolean isSubSetOf(ChoiceType other) {
+        for (DataType type : types) {
+            Boolean currentIsSubType = false;
+            for (DataType otherType : other.types) {
+                currentIsSubType = type.isSubTypeOf(otherType);
+                if (currentIsSubType) {
+                    break;
+                }
+            }
+            
+            if (!currentIsSubType) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public boolean isSuperTypeOf(DataType other) {
-        // TODO: Determine isSuperTypeOf semantics for choice types
-        // A choice type A is a supertype of a choice type B if B is a subtype of A
+
+        if (other instanceof ChoiceType)
+        {
+            return this.isSuperSetOf((ChoiceType)other);
+        }
+
         return super.isSuperTypeOf(other);
+    }
+
+    public boolean isSuperSetOf(ChoiceType other) {
+        return other.isSubSetOf(this);
     }
 
     @Override
     public boolean isCompatibleWith(DataType other) {
         // This type is compatible with the other type if
-            // The other type is a subtype of one of the choice types
-            // The other type is a choice type and all its component types are a subtype of some component of this choice type // Holding off on this more complex case for now...
+        // The other type is a subtype of one of the choice types
+        // The other type is a choice type and all its component types are a subtype of some component of this choice type
+        if (other instanceof ChoiceType) {
+            return other.isSubTypeOf(this);
+        }
+
         for (DataType type : types) {
             if (other.isSubTypeOf(type)) {
                 return true;
