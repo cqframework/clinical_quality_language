@@ -11451,16 +11451,16 @@
     </ns4:typeInfo>
     <ns4:conversionInfo fromType="FHIR.Coding" toType="System.Code" functionName="FHIRHelpers.ToCode"/>
     <ns4:conversionInfo fromType="FHIR.CodeableConcept" toType="System.Concept" functionName="FHIRHelpers.ToConcept"/>
-    <ns4:conversionInfo functionName="FHIRHelpers.Tobase64Binary" fromType="base64Binary" toType="System.String" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToBoolean" fromType="boolean" toType="System.Boolean" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToDate" fromType="date" toType="System.Date" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToDateTime" fromType="instant" toType="System.DateTime" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToDateTime" fromType="dateTime" toType="System.DateTime" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToDecimal" fromType="decimal" toType="System.Decimal" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToInteger" fromType="positiveInt" toType="System.Integer" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToInteger" fromType="unsignedInt" toType="System.Integer" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToInteger" fromType="integer" toType="System.Integer" />
-    <ns4:conversionInfo functionName="FHIRHelpers.ToTime" fromType="time" toType="System.Time" />
+    <ns4:conversionInfo functionName="FHIRHelpers.Tobase64Binary" fromType="FHIR.base64Binary" toType="System.String" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToBoolean" fromType="FHIR.boolean" toType="System.Boolean" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToDate" fromType="FHIR.date" toType="System.Date" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToDateTime" fromType="FHIR.instant" toType="System.DateTime" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToDateTime" fromType="FHIR.dateTime" toType="System.DateTime" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToDecimal" fromType="FHIR.decimal" toType="System.Decimal" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToInteger" fromType="FHIR.positiveInt" toType="System.Integer" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToInteger" fromType="FHIR.unsignedInt" toType="System.Integer" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToInteger" fromType="FHIR.integer" toType="System.Integer" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToTime" fromType="FHIR.time" toType="System.Time" />
     <ns4:conversionInfo fromType="FHIR.Quantity" toType="System.Quantity" functionName="FHIRHelpers.ToQuantity"/>
     <ns4:conversionInfo fromType="FHIR.Period" toType="Interval&lt;System.DateTime&gt;" functionName="FHIRHelpers.ToInterval"/>
     <ns4:conversionInfo fromType="FHIR.Range" toType="Interval&lt;System.Quantity&gt;" functionName="FHIRHelpers.ToInterval"/>
@@ -11523,7 +11523,6 @@
     <ns4:conversionInfo fromType="FHIR.ResearchSubjectStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.StructureMapTransform" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ResponseType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.decimal" toType="System.Decimal" functionName="FHIRHelpers.ToDecimal"/>
     <ns4:conversionInfo fromType="FHIR.AggregationMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.sequenceType" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.SystemRestfulInteraction" toType="System.String" functionName="FHIRHelpers.ToString"/>
@@ -11541,7 +11540,6 @@
     <ns4:conversionInfo fromType="FHIR.ResearchElementType" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ObservationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ResourceType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.boolean" toType="System.Boolean" functionName="FHIRHelpers.ToBoolean"/>
     <ns4:conversionInfo fromType="FHIR.StructureMapGroupTypeMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.SupplyRequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.EncounterLocationStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
@@ -11552,7 +11550,6 @@
     <ns4:conversionInfo fromType="FHIR.MedicationRequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.IdentityAssuranceLevel" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.DeviceMetricColor" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.time" toType="System.Time" functionName="FHIRHelpers.ToTime"/>
     <ns4:conversionInfo fromType="FHIR.ConditionalReadStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.AllergyIntoleranceSeverity" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.FinancialResourceStatusCodes" toType="System.String" functionName="FHIRHelpers.ToString"/>
@@ -11595,10 +11592,6 @@
     <ns4:conversionInfo fromType="FHIR.VariableType" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.TestReportResult" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ConceptMapGroupUnmappedMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.instant" toType="System.DateTime" functionName="FHIRHelpers.ToDateTime"/>
-    <ns4:conversionInfo fromType="FHIR.dateTime" toType="System.DateTime" functionName="FHIRHelpers.ToDateTime"/>
-    <ns4:conversionInfo fromType="FHIR.date" toType="System.Date" functionName="FHIRHelpers.ToDate"/>
-    <ns4:conversionInfo fromType="FHIR.positiveInt" toType="System.Integer" functionName="FHIRHelpers.ToInteger"/>
     <ns4:conversionInfo fromType="FHIR.ClinicalImpressionStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.EligibilityResponsePurpose" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.NarrativeStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
@@ -11658,7 +11651,6 @@
     <ns4:conversionInfo fromType="FHIR.FlagStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.SPDXLicense" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ListStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.base64Binary" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.DeviceUseStatementStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.AuditEventAgentNetworkType" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.ExpressionLanguage" toType="System.String" functionName="FHIRHelpers.ToString"/>
@@ -11669,10 +11661,8 @@
     <ns4:conversionInfo fromType="FHIR.ReferenceVersionRules" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.MeasureReportStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.SearchEntryMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.unsignedInt" toType="System.Integer" functionName="FHIRHelpers.ToInteger"/>
     <ns4:conversionInfo fromType="FHIR.NameUse" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.LocationMode" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.integer" toType="System.Integer" functionName="FHIRHelpers.ToInteger"/>
     <ns4:conversionInfo fromType="FHIR.FHIRSubstanceStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.QuestionnaireItemOperator" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.HTTPVerb" toType="System.String" functionName="FHIRHelpers.ToString"/>
