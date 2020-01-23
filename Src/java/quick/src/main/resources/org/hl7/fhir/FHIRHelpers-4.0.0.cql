@@ -125,7 +125,7 @@ define function ToString(value FHIR.ConditionalDeleteStatus): value.value
 define function ToString(value FHIR.url): value.value
 define function ToString(value FHIR.uri): value.value
 define function ToString(value FHIR.Use): value.value
-define function ToString(value FHIR.medicationRequestStatus): value.value
+define function ToString(value FHIR.MedicationRequestStatus): value.value
 define function ToString(value FHIR.IdentityAssuranceLevel): value.value
 define function ToString(value FHIR.DeviceMetricColor): value.value
 define function ToTime(value FHIR.time): value.value
@@ -151,7 +151,7 @@ define function ToString(value FHIR.GuidanceResponseStatus): value.value
 define function ToString(value FHIR.RelatedArtifactType): value.value
 define function ToString(value FHIR.oid): value.value
 define function ToString(value FHIR.CompartmentType): value.value
-define function ToString(value FHIR.medicationrequestStatus): value.value
+define function ToString(value FHIR.MedicationRequestIntent): value.value
 define function ToString(value FHIR.InvoicePriceComponentType): value.value
 define function ToString(value FHIR.DeviceMetricCalibrationState): value.value
 define function ToString(value FHIR.GroupType): value.value

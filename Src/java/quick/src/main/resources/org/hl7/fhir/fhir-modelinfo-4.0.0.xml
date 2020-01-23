@@ -3361,9 +3361,9 @@
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
-        <ns4:element name="status" elementType="FHIR.medicationrequestStatus"/>
+        <ns4:element name="status" elementType="FHIR.MedicationRequestStatus"/>
         <ns4:element name="statusReason" elementType="FHIR.CodeableConcept"/>
-        <ns4:element name="intent" elementType="FHIR.medicationRequestStatus"/>
+        <ns4:element name="intent" elementType="FHIR.MedicationRequestIntent"/>
         <ns4:element name="category">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.CodeableConcept"/>
         </ns4:element>
@@ -4531,7 +4531,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="medicationRequestStatus" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="MedicationRequestStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="IdentityAssuranceLevel" retrievable="false" baseType="FHIR.Element">
@@ -5513,7 +5513,7 @@
         <ns4:element name="use" elementType="FHIR.Coding"/>
         <ns4:element name="value" elementType="FHIR.string"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="medicationrequestStatus" retrievable="false" baseType="FHIR.Element">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="MedicationRequestIntent" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="InvoicePriceComponentType" retrievable="false" baseType="FHIR.Element">
@@ -11549,7 +11549,7 @@
     <ns4:conversionInfo fromType="FHIR.url" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.uri" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.Use" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.medicationRequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
+    <ns4:conversionInfo fromType="FHIR.MedicationRequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.IdentityAssuranceLevel" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.DeviceMetricColor" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.time" toType="System.Time" functionName="FHIRHelpers.ToTime"/>
@@ -11575,7 +11575,7 @@
     <ns4:conversionInfo fromType="FHIR.RelatedArtifactType" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.oid" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.CompartmentType" toType="System.String" functionName="FHIRHelpers.ToString"/>
-    <ns4:conversionInfo fromType="FHIR.medicationrequestStatus" toType="System.String" functionName="FHIRHelpers.ToString"/>
+    <ns4:conversionInfo fromType="FHIR.MedicationRequestIntent" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.InvoicePriceComponentType" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.DeviceMetricCalibrationState" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.GroupType" toType="System.String" functionName="FHIRHelpers.ToString"/>
