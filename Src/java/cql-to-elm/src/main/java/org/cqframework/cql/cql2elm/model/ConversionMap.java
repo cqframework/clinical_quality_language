@@ -354,7 +354,7 @@ public class ConversionMap {
             }
 
             // If the target type is a choice, attempt to find a conversion to one of the choice types
-            if (toType instanceof ChoiceType) {
+            if (!(fromType instanceof ChoiceType) && toType instanceof ChoiceType) {
                 result = findTargetChoiceConversion(fromType, (ChoiceType)toType, allowPromotionAndDemotion, operatorMap);
             }
 
