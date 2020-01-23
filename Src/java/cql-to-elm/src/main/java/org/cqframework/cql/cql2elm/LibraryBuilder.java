@@ -1298,6 +1298,13 @@ public class LibraryBuilder {
         if (conversion.isCast()
                 && (conversion.getFromType().isSuperTypeOf(conversion.getToType())
                 || conversion.getFromType().isCompatibleWith(conversion.getToType()))) {
+            if (conversion.getFromType() instanceof ChoiceType && conversion.getToType() instanceof ChoiceType) {
+                if (((ChoiceType)conversion.getFromType()).isSubSetOf((ChoiceType)conversion.getToType())) {
+                    // conversion between compatible choice types requires no cast (i.e. choice<Integer, String> can be safely passed to choice<Integer, String, DateTime>
+                    return expression;
+                }
+                // Otherwise, the choice is narrowing and a run-time As is required (to use only the expected target types)
+            }
             As castedOperand = buildAs(expression, conversion.getToType());
             return castedOperand;
         }
