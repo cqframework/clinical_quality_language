@@ -4101,7 +4101,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Ratio"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="dueD">
+        <ns4:element name="due">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="date"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Duration"/>
