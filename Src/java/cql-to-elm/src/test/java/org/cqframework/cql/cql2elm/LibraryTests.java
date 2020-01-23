@@ -4,10 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -133,6 +131,23 @@ public class LibraryTests {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingInvalidBaseLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(1));
             assertThat(translator.getErrors().get(0), instanceOf(CqlTranslatorException.class));
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // This test verifies that when a model load failure prevents proper creation of the context expression, that doesn't lead to internal translator errors.
+    @Test
+    public void testMixedVersionModelReferences() {
+        CqlTranslator translator = null;
+        try {
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/TestMeasure.cql"), modelManager, libraryManager);
+            assertThat(translator.getErrors().size(), is(3));
+
+            for (CqlTranslatorException error : translator.getErrors()) {
+                assertThat(error.getLocator(), notNullValue());
+            }
         }
         catch (IOException e) {
             e.printStackTrace();

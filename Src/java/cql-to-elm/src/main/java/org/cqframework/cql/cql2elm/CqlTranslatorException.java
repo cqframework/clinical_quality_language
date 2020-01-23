@@ -76,4 +76,7 @@ public class CqlTranslatorException extends RuntimeException {
     public TrackBack getLocator() {
         return locator;
     }
+    public void setLocator(TrackBack locator) {
+        this.locator = locator;
+    }
 }
