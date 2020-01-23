@@ -163,7 +163,9 @@ public class TestUtils {
     public static CqlTranslator createTranslator(String testFileName, CqlTranslator.Options... options) throws IOException {
         File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, new LibraryManager(modelManager), getUcumService(), options);
+        LibraryManager libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
+        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, libraryManager, getUcumService(), options);
         return translator;
     }
 }
