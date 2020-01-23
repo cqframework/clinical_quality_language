@@ -1,14 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
-import org.hl7.elm.r1.As;
-import org.hl7.elm.r1.Case;
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.FunctionRef;
-import org.hl7.elm.r1.Property;
-import org.hl7.elm.r1.Query;
-import org.hl7.elm.r1.ReturnClause;
+import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXBException;
@@ -97,9 +90,28 @@ public class TranslationTests {
         FunctionRef functionRef = (FunctionRef)returnClause.getExpression();
         assertEquals(1, functionRef.getOperand().size());
 
-        // The crux of the issue is that choice types that are compatible shouldn't create any conversion logic
-        // It should be a direct property access.
+        // For a widening cast, no As is required, it should be a direct property access.
         Expression operand = functionRef.getOperand().get(0);
         assertThat(operand, is(instanceOf(Property.class)));
+
+        // Gets the "NeedsACast" define
+        exp = translator.getTranslatedLibrary().getLibrary().getStatements().getDef().get(4).getExpression();
+        assertThat(exp, is(instanceOf(Query.class)));
+
+        query = (Query)exp;
+        returnClause = query.getReturn();
+        assertNotNull(returnClause);
+        assertNotNull(returnClause.getExpression());
+        assertThat(returnClause.getExpression(), is(instanceOf(FunctionRef.class)));
+
+        functionRef = (FunctionRef)returnClause.getExpression();
+        assertEquals(1, functionRef.getOperand().size());
+
+        // For narrowing choice casts, an As is expected
+        operand = functionRef.getOperand().get(0);
+        assertThat(operand, is(instanceOf(As.class)));
+
+        As as = (As)operand;
+        assertThat(as.getAsTypeSpecifier(), is(instanceOf(ChoiceTypeSpecifier.class)));
     }
 }

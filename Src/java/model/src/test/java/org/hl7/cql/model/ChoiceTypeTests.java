@@ -11,34 +11,6 @@ import java.util.Arrays;
 public class ChoiceTypeTests {
 
     @Test
-    public void testChoiceTypeIsSuperType() {
-        ChoiceType first = new ChoiceType(
-                Arrays.asList(new SimpleType("Period"), 
-                new SimpleType("Interval"), 
-                new SimpleType("DateTime")));
-
-        ChoiceType second = new ChoiceType(
-            Arrays.asList(new SimpleType("Period"), new SimpleType("DateTime")));
-
-        assertTrue(first.isSuperTypeOf(second));
-        assertFalse(second.isSuperTypeOf(first));
-    }
-
-    @Test
-    public void testChoiceTypeIsSubType() {
-        ChoiceType first = new ChoiceType(
-                Arrays.asList(new SimpleType("Period"), 
-                new SimpleType("Interval"), 
-                new SimpleType("DateTime")));
-
-        ChoiceType second = new ChoiceType(
-            Arrays.asList(new SimpleType("Period"), new SimpleType("DateTime")));
-
-        assertFalse(first.isSubTypeOf(second));
-        assertTrue(second.isSubTypeOf(first));
-    }
-
-    @Test
     public void testChoiceTypeIsCompatible() {
         ChoiceType first = new ChoiceType(
                 Arrays.asList(new SimpleType("Period"), 
@@ -49,6 +21,27 @@ public class ChoiceTypeTests {
             Arrays.asList(new SimpleType("Period"), new SimpleType("DateTime")));
 
         assertTrue(first.isCompatibleWith(second));
+        assertTrue(second.isCompatibleWith(first));
+
+        assertTrue(first.isSuperSetOf(second));
+        assertFalse(first.isSubSetOf(second));
+        assertTrue(second.isSubSetOf(first));
+        assertFalse(second.isSuperSetOf(first));
+    }
+
+    @Test
+    public void testChoiceTypeIsNotCompatible() {
+        ChoiceType first = new ChoiceType(
+                Arrays.asList(new SimpleType("Period"),
+                        new SimpleType("Interval"),
+                        new SimpleType("DateTime")));
+
+        ChoiceType second = new ChoiceType(
+                Arrays.asList(new SimpleType("Integer"), new SimpleType("String")));
+
+        assertFalse(first.isCompatibleWith(second));
         assertFalse(second.isCompatibleWith(first));
+        assertFalse(first.isSubSetOf(second));
+        assertFalse(first.isSuperSetOf(second));
     }
 }

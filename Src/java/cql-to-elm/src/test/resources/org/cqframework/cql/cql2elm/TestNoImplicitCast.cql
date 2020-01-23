@@ -11,6 +11,15 @@ context Patient
 define function "ChoiceFunction"(choice Choice<FHIR.dateTime, FHIR.Period, FHIR.Timing, FHIR.instant, FHIR.string, FHIR.Age, FHIR.Range>):
   choice
 
+// This call is a widening cast (all the choices in the argument are a subtype of the choices in the parameter) so no cast is required
 define "TooManyCasts":
   [DiagnosticReport: "Mammography"] Mammogram
   return "ChoiceFunction"(Mammogram.effective)
+
+define function "NarrowingChoiceFunction"(choice Choice<FHIR.dateTime, FHIR.Period>):
+  choice
+
+// This call is a narrowing cast (a proper subset of the choices in the argument are subtypes of the choices in the parameter), so a cast is required
+define "NeedsACast":
+  [Procedure: "Mammography"] Mammogram
+    return "NarrowingChoiceFunction"(Mammogram.performed)
