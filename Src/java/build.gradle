@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'eclipse'
 
     group = 'info.cqframework'
-    version = '1.4.8'
+    version = '1.4.9-SNAPSHOT'
 }
 
 subprojects {
