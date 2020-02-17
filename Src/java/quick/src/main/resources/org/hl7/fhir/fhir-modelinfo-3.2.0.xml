@@ -7334,7 +7334,7 @@
         <ns4:element name="comment" type="FHIR.string"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Extension" retrievable="false" baseType="FHIR.Element">
-        <ns4:element name="url" type="System.String"/>
+        <ns4:element name="url" type="FHIR.uri"/>
         <ns4:element name="value">
             <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="base64Binary"/>
