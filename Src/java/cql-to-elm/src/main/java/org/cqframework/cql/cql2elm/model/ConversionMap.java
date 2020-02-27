@@ -102,6 +102,16 @@ public class ConversionMap {
         return intervalPromotion;
     }
 
+    private boolean hasConversion(Conversion conversion, List<Conversion> conversions) {
+        for (Conversion c : conversions) {
+            if (conversion.getToType().equals(c.getToType())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void add(Conversion conversion) {
         if (conversion == null) {
             throw new IllegalArgumentException("conversion is null.");
@@ -113,7 +123,7 @@ public class ConversionMap {
         // are not added in the SystemLibraryHelper.
         if (conversion.isGeneric()) {
             List<Conversion> conversions = getGenericConversions();
-            if (conversions.contains(conversion)) {
+            if (hasConversion(conversion, conversions)) {
                 throw new IllegalArgumentException(String.format("Conversion from %s to %s is already defined.",
                         conversion.getFromType().toString(), conversion.getToType().toString()));
             }
@@ -122,7 +132,7 @@ public class ConversionMap {
         }
         else {
             List<Conversion> conversions = getConversions(conversion.getFromType());
-            if (conversions.contains(conversion)) {
+            if (hasConversion(conversion, conversions)) {
                 throw new IllegalArgumentException(String.format("Conversion from %s to %s is already defined.",
                         conversion.getFromType().toString(), conversion.getToType().toString()));
             }
@@ -344,7 +354,7 @@ public class ConversionMap {
             }
 
             // If the target type is a choice, attempt to find a conversion to one of the choice types
-            if (toType instanceof ChoiceType) {
+            if (!(fromType instanceof ChoiceType) && toType instanceof ChoiceType) {
                 result = findTargetChoiceConversion(fromType, (ChoiceType)toType, allowPromotionAndDemotion, operatorMap);
             }
 

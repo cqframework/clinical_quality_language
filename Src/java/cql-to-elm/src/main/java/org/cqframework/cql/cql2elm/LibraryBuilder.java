@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -118,6 +119,7 @@ public class LibraryBuilder {
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private UcumService ucumService = null;
+    private CqlTranslator.Options[] translatorOptions = null;
     private SignatureLevel signatureLevel = SignatureLevel.Differing;
 
     public void enableListTraversal() {
@@ -142,6 +144,14 @@ public class LibraryBuilder {
     }
     public void setErrorLevel(CqlTranslatorException.ErrorSeverity severity) {
         errorLevel = severity;
+    }
+
+    public void setTranslatorOptions(CqlTranslator.Options... options) {
+        this.translatorOptions = options;
+    }
+
+    public CqlTranslator.Options[] getTranslatorOptions() {
+        return this.translatorOptions;
     }
 
     private Model loadModel(VersionedIdentifier modelIdentifier) {
@@ -505,7 +515,7 @@ public class LibraryBuilder {
 
         ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
         TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier,
-            this.getErrorLevel(), this.getSignatureLevel(), errors);
+            this.getErrorLevel(), this.getSignatureLevel(), this.getTranslatorOptions(), errors);
         for (CqlTranslatorException error : errors) {
             this.addException(error);
         }
@@ -1288,6 +1298,13 @@ public class LibraryBuilder {
         if (conversion.isCast()
                 && (conversion.getFromType().isSuperTypeOf(conversion.getToType())
                 || conversion.getFromType().isCompatibleWith(conversion.getToType()))) {
+            if (conversion.getFromType() instanceof ChoiceType && conversion.getToType() instanceof ChoiceType) {
+                if (((ChoiceType)conversion.getFromType()).isSubSetOf((ChoiceType)conversion.getToType())) {
+                    // conversion between compatible choice types requires no cast (i.e. choice<Integer, String> can be safely passed to choice<Integer, String, DateTime>
+                    return expression;
+                }
+                // Otherwise, the choice is narrowing and a run-time As is required (to use only the expected target types)
+            }
             As castedOperand = buildAs(expression, conversion.getToType());
             return castedOperand;
         }

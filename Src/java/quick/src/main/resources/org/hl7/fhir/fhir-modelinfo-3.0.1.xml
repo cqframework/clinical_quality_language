@@ -5271,7 +5271,7 @@
     <element name="value" type="System.String" />
   </typeInfo>
   <typeInfo xsi:type="ClassInfo" baseType="FHIR.Element" name="Extension" label="Extension">
-    <element name="id" type="FHIR.string" />
+    <element name="id" type="FHIR.uri" />
     <element name="extension">
       <typeSpecifier xsi:type="ListTypeSpecifier" elementType="FHIR.Extension" />
     </element>

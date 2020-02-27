@@ -274,13 +274,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             try {
                 o = super.visit(tree);
             } catch (CqlTranslatorIncludeException e) {
-                libraryBuilder.recordParsingException(new CqlTranslatorException(e.getMessage(), getTrackBack(tree), e));
+                CqlTranslatorException translatorException = new CqlTranslatorException(e.getMessage(), getTrackBack(tree), e);
+                if (translatorException.getLocator() == null) {
+                    throw translatorException;
+                }
+                libraryBuilder.recordParsingException(translatorException);
             } catch (CqlTranslatorException e) {
+                if (e.getLocator() == null) {
+                    if (tree == null) {
+                        throw e;
+                    }
+                    e.setLocator(getTrackBack(tree));
+                }
                 libraryBuilder.recordParsingException(e);
             } catch (Exception e) {
                 CqlTranslatorException ex = null;
                 if (e.getMessage() == null) {
                     ex = new CqlInternalException("Internal translator error.", getTrackBack(tree), e);
+                    if (tree == null) {
+                        throw ex;
+                    }
                 }
                 else {
                     ex = new CqlSemanticException(e.getMessage(), getTrackBack(tree), e);
@@ -3382,11 +3395,7 @@ DATETIME
 
     @Override
     public SortDirection visitSortDirection(@NotNull cqlParser.SortDirectionContext ctx) {
-        if (ctx.getText().equals("desc")) {
-            return SortDirection.DESC;
-        }
-
-        return SortDirection.ASC;
+        return SortDirection.fromValue(ctx.getText());
     }
 
     private SortDirection parseSortDirection(cqlParser.SortDirectionContext ctx) {
@@ -3527,6 +3536,12 @@ DATETIME
                     chunks = new Stack<Chunk>();
                     forwards.push(expressionInfo);
                     try {
+                        if (expressionInfo.getDefinition() == null) {
+                            // ERROR:
+                            throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
+                                    expressionInfo.getName()));
+                        }
+
                         // Have to call the visit to get the outer processing to occur
                         visit(expressionInfo.getDefinition());
                     }

@@ -3,7 +3,7 @@ allprojects {
     apply plugin: 'eclipse'
 
     group = 'info.cqframework'
-    version = '1.4.7-SNAPSHOT'
+    version = '1.4.9-SNAPSHOT'
 }
 
 subprojects {
@@ -24,6 +24,7 @@ subprojects {
         testCompile group: 'org.testng', name: 'testng', version: '6.8.8'
         testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
         testCompile group: 'uk.co.datumedge', name: 'hamcrest-json', version: '0.2'
+        testCompile group: 'junit', name: 'junit', version: '4.12'
     }
 
     test {
