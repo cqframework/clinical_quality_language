@@ -20,6 +20,9 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load() {
         String localVersion = version == null ? "" : version;
         switch (localVersion) {
+            case "3.3.0":
+                return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.3.0.xml"),
+                        ModelInfo.class);
             case "3.0.0":
                 return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.0.0.xml"),
                         ModelInfo.class);

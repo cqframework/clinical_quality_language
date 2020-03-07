@@ -10072,6 +10072,7 @@
         <ns4:element name="amount" elementType="FHIR.Quantity"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="Distance" retrievable="false" baseType="FHIR.Quantity"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="MoneyQuantity" retrievable="false" baseType="FHIR.Quantity"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="ImplementationGuide.Definition" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="grouping">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ImplementationGuide.Grouping"/>

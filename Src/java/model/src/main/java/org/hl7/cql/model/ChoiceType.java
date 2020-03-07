@@ -107,7 +107,7 @@ public class ChoiceType extends DataType {
         }
 
         for (DataType type : types) {
-            if (other.isSubTypeOf(type)) {
+            if (other.isCompatibleWith(type)) {
                 return true;
             }
         }

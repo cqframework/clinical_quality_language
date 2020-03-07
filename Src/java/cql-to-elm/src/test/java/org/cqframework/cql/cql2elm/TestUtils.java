@@ -36,12 +36,23 @@ public class TestUtils {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
         try {
             ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
-
-        } catch (UcumException e) {
+        }
+        catch (UcumException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void tearDown() {
+        ucumService = null;
+        libraryManager = null;
+        modelManager = null;
+    }
+
+    public static void reset() {
+        tearDown();
     }
 
     private static ModelManager getModelManager() {
@@ -78,14 +89,14 @@ public class TestUtils {
     }
 
     public static Object visitFile(String fileName) throws IOException {
-        File file = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(fileName).getFile(), "UTF-8"));
+        File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
         CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager(), getUcumService());
         ensureValid(translator);
         return translator.toObject();
     }
 
     public static TranslatedLibrary visitFileLibrary(String fileName) throws IOException {
-        File file = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(fileName).getFile(), "UTF-8"));
+        File file = new File(URLDecoder.decode(TestUtils.class.getResource(fileName).getFile(), "UTF-8"));
         CqlTranslator translator = CqlTranslator.fromFile(file, getModelManager(), getLibraryManager(), getUcumService());
         ensureValid(translator);
         return translator.getTranslatedLibrary();
