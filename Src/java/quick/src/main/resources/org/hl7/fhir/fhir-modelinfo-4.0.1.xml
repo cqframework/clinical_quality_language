@@ -21,6 +21,9 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Account.Guarantor"/>
         </ns4:element>
         <ns4:element name="partOf" elementType="FHIR.Reference"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Account.Coverage" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="coverage" elementType="FHIR.Reference"/>
@@ -233,6 +236,9 @@
         <ns4:element name="study">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="recorder"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="recorder"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AdverseEvent.SuspectEntity" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="instance" elementType="FHIR.Reference"/>
@@ -286,6 +292,12 @@
         <ns4:element name="reaction">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.AllergyIntolerance.Reaction"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="recorder"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="asserter"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="recorder"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="asserter"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="asserter"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AllergyIntolerance.Reaction" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="substance" elementType="FHIR.CodeableConcept"/>
@@ -367,6 +379,10 @@
         <ns4:element name="requestedPeriod">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Period"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="actor"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Appointment.Participant" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type">
@@ -390,6 +406,10 @@
         <ns4:element name="actor" elementType="FHIR.Reference"/>
         <ns4:element name="participantStatus" elementType="FHIR.ParticipantStatus"/>
         <ns4:element name="comment" elementType="FHIR.string"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="actor"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AppointmentStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -433,6 +453,9 @@
         <ns4:element name="entity">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.AuditEvent.Entity"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="who"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="who"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="AuditEvent.Agent" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" elementType="FHIR.CodeableConcept"/>
@@ -510,6 +533,10 @@
         <ns4:element name="subject" elementType="FHIR.Reference"/>
         <ns4:element name="created" elementType="FHIR.date"/>
         <ns4:element name="author" elementType="FHIR.Reference"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="author"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Binary" identifier="http://hl7.org/fhir/StructureDefinition/Binary" label="Binary" retrievable="true" baseType="FHIR.Resource">
         <ns4:element name="contentType" elementType="FHIR.MimeType"/>
@@ -602,6 +629,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Attachment"/>
         </ns4:element>
         <ns4:element name="patient" elementType="FHIR.Reference"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Bundle" identifier="http://hl7.org/fhir/StructureDefinition/Bundle" label="Bundle" retrievable="true" baseType="FHIR.Resource">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
@@ -875,6 +903,11 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="performer"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CarePlan.Activity" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="outcomeCodeableConcept">
@@ -973,6 +1006,11 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="member"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="member"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="member"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CareTeam.Participant" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="role">
@@ -1079,6 +1117,14 @@
         <ns4:element name="supportingInformation">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="enterer"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="context"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="enterer"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="enterer"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="actor"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ChargeItem.Performer" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="function" elementType="FHIR.CodeableConcept"/>
@@ -1200,6 +1246,18 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Claim.Item"/>
         </ns4:element>
         <ns4:element name="total" elementType="FHIR.Money"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="enterer"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="provider"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="party"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="provider"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="party"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="udi"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="udi"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="udi"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="udi"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="party"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Claim.Accident" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="date" elementType="FHIR.date"/>
@@ -1432,6 +1490,8 @@
         <ns4:element name="error">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ClaimResponse.Error"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="requestor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ClaimResponse.AddItem" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="itemSequence">
@@ -1649,6 +1709,9 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="assessor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ClinicalImpression.Finding" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="itemCodeableConcept" elementType="FHIR.CodeableConcept"/>
@@ -1829,6 +1892,16 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="sender"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="sender"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="sender"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="sender"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="recipient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Communication.Payload" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="content">
@@ -1892,6 +1965,19 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="sender"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="sender"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="sender"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="sender"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="requester"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CommunicationRequest.Payload" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="content">
@@ -1971,6 +2057,15 @@
         <ns4:element name="section">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Composition.Section"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="party"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="party"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="author"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Composition.Attester" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="mode" elementType="FHIR.CompositionAttestationMode"/>
@@ -2154,6 +2249,11 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="asserter"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="asserter"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="asserter"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Condition.Evidence" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code">
@@ -2207,6 +2307,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Consent.Verification"/>
         </ns4:element>
         <ns4:element name="provision" elementType="FHIR.Consent.Provision"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Consent.Policy" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="authority" elementType="FHIR.uri"/>
@@ -2667,6 +2768,13 @@
         <ns4:element name="contract">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="policyHolder"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subscriber"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="beneficiary"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="payor"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="policyHolder"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="subscriber"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="payor"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Coverage.Class" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" elementType="FHIR.CodeableConcept"/>
@@ -2719,6 +2827,9 @@
         <ns4:element name="item">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.CoverageEligibilityRequest.Item"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="enterer"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="provider"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CoverageEligibilityRequest.Insurance" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="focal" elementType="FHIR.boolean"/>
@@ -2787,6 +2898,8 @@
         <ns4:element name="error">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.CoverageEligibilityResponse.Error"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="requestor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CoverageEligibilityResponse.Error" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
@@ -3047,6 +3160,9 @@
         <ns4:element name="mitigation">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.DetectedIssue.Mitigation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="author"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DetectedIssue.Evidence" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code">
@@ -3332,6 +3448,15 @@
         <ns4:element name="relevantHistory">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="code as Reference)"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="performer"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceRequest.Parameter" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
@@ -3379,6 +3504,8 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="device"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DeviceUseStatementStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -3429,6 +3556,10 @@
         <ns4:element name="presentedForm">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Attachment"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DiagnosticReport.Media" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="comment" elementType="FHIR.string"/>
@@ -3467,6 +3598,17 @@
         <ns4:element name="related">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.DocumentManifest.Related"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="ref"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="recipient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentManifest.Related" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
@@ -3504,6 +3646,15 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.DocumentReference.Content"/>
         </ns4:element>
         <ns4:element name="context" elementType="FHIR.DocumentReference.Context"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="authenticator"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="author"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DocumentReference.Content" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="attachment" elementType="FHIR.Attachment"/>
@@ -4104,6 +4255,10 @@
         </ns4:element>
         <ns4:element name="serviceProvider" elementType="FHIR.Reference"/>
         <ns4:element name="partOf" elementType="FHIR.Reference"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="where(resolve() is Practitioner)"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="individual"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="individual"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Encounter.ClassHistory" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="class" elementType="FHIR.Coding"/>
@@ -4190,6 +4345,7 @@
         <ns4:element name="provider" elementType="FHIR.Reference"/>
         <ns4:element name="candidate" elementType="FHIR.Reference"/>
         <ns4:element name="coverage" elementType="FHIR.Reference"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="candidate"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EnrollmentRequestStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -4236,6 +4392,8 @@
         <ns4:element name="account">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="where(resolve() is Practitioner)"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="EpisodeOfCare.Diagnosis" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="condition" elementType="FHIR.Reference"/>
@@ -4633,6 +4791,18 @@
         <ns4:element name="benefitBalance">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ExplanationOfBenefit.BenefitBalance"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="enterer"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="provider"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="party"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="provider"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="party"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="udi"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="udi"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="udi"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="udi"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="party"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ExplanationOfBenefit.Accident" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="date" elementType="FHIR.date"/>
@@ -5126,6 +5296,7 @@
         <ns4:element name="condition">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.FamilyMemberHistory.Condition"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="FamilyMemberHistory.Condition" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
@@ -5159,6 +5330,9 @@
         <ns4:element name="period" elementType="FHIR.Period"/>
         <ns4:element name="encounter" elementType="FHIR.Reference"/>
         <ns4:element name="author" elementType="FHIR.Reference"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="author"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="FlagStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -5199,6 +5373,7 @@
         <ns4:element name="outcomeReference">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Goal.Target" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="measure" elementType="FHIR.CodeableConcept"/>
@@ -5301,6 +5476,9 @@
         <ns4:element name="member">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Group.Member"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="entity"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="entity"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="entity"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Group.Characteristic" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
@@ -5518,6 +5696,7 @@
         <ns4:element name="series">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ImagingStudy.Series"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImagingStudy.Series" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="uid" elementType="FHIR.id"/>
@@ -5608,6 +5787,8 @@
         <ns4:element name="protocolApplied">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Immunization.ProtocolApplied"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Immunization.Education" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="documentType" elementType="FHIR.string"/>
@@ -5671,6 +5852,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="string"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImmunizationEvaluationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -5685,6 +5867,7 @@
         <ns4:element name="recommendation">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ImmunizationRecommendation.Recommendation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ImmunizationRecommendation.Recommendation" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="vaccineCode">
@@ -5997,6 +6180,12 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="recipient"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="recipient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Invoice.LineItem" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="sequence" elementType="FHIR.positiveInt"/>
@@ -6105,6 +6294,7 @@
         <ns4:element name="item">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Linkage.Item"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Linkage.Item" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" elementType="FHIR.LinkageType"/>
@@ -6133,6 +6323,11 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.List.Entry"/>
         </ns4:element>
         <ns4:element name="emptyReason" elementType="FHIR.CodeableConcept"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="source"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="source"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="source"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="List.Entry" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="flag" elementType="FHIR.CodeableConcept"/>
@@ -6335,6 +6530,7 @@
         <ns4:element name="evaluatedResource">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MeasureReport.Group" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
@@ -6422,6 +6618,11 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="operator"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MediaStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -6506,6 +6707,13 @@
         <ns4:element name="eventHistory">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="context"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="device"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="actor"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationAdministration.Dosage" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="text" elementType="FHIR.string"/>
@@ -6582,6 +6790,11 @@
         <ns4:element name="eventHistory">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="receiver"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="receiver"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationDispense.Performer" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="function" elementType="FHIR.CodeableConcept"/>
@@ -6837,6 +7050,9 @@
         <ns4:element name="eventHistory">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationRequest.DispenseRequest" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="initialFill" elementType="FHIR.MedicationRequest.DispenseRequest.InitialFill"/>
@@ -6915,6 +7131,9 @@
         <ns4:element name="dosage">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Dosage"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="informationSource"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="informationSource"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationStatementStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -7409,6 +7628,11 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
         <ns4:element name="definition" elementType="FHIR.canonical"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="receiver"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="responsible"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="enterer"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="target"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MessageHeader.Destination" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -7480,6 +7704,7 @@
         <ns4:element name="structureVariant">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.MolecularSequence.StructureVariant"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MolecularSequence.Quality" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" elementType="FHIR.QualityType"/>
@@ -7662,6 +7887,9 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="orderer"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="NutritionOrder.EnteralFormula" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="baseFormulaType" elementType="FHIR.CodeableConcept"/>
@@ -7794,6 +8022,13 @@
         <ns4:element name="component">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Observation.Component"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="device"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="performer"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Observation.Component" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
@@ -8181,6 +8416,9 @@
         <ns4:element name="link">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Patient.Link"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="generalPractitioner"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="other"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="other"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Patient.Communication" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="language" elementType="FHIR.CodeableConcept"/>
@@ -8218,6 +8456,7 @@
         <ns4:element name="recipient" elementType="FHIR.Reference"/>
         <ns4:element name="amount" elementType="FHIR.Money"/>
         <ns4:element name="paymentStatus" elementType="FHIR.CodeableConcept"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="provider"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PaymentNoticeStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -8244,6 +8483,7 @@
         <ns4:element name="processNote">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.PaymentReconciliation.ProcessNote"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="requestor"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PaymentReconciliation.Detail" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="identifier" elementType="FHIR.Identifier"/>
@@ -8289,6 +8529,9 @@
         <ns4:element name="link">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Person.Link"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="where(resolve() is Practitioner)"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="target"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Person.Link" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="target" elementType="FHIR.Reference"/>
@@ -8558,6 +8801,7 @@
         <ns4:element name="endpoint">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="practitioner"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="PractitionerRole.AvailableTime" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="daysOfWeek">
@@ -8642,6 +8886,11 @@
         <ns4:element name="usedCode">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.CodeableConcept"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="actor"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Procedure.FocalDevice" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="action" elementType="FHIR.CodeableConcept"/>
@@ -8716,6 +8965,10 @@
         <ns4:element name="signature">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Signature"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="who"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="who"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="who"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Provenance.Agent" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="type" elementType="FHIR.CodeableConcept"/>
@@ -8896,6 +9149,14 @@
         <ns4:element name="item">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.QuestionnaireResponse.Item"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="source"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="source"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="QuestionnaireResponse.Item" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="linkId" elementType="FHIR.string"/>
@@ -8998,6 +9259,7 @@
         <ns4:element name="communication">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.RelatedPerson.Communication"/>
         </ns4:element>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RelatedPerson.Communication" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="language" elementType="FHIR.CodeableConcept"/>
@@ -9046,6 +9308,13 @@
         <ns4:element name="action">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.RequestGroup.Action"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="participant"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="participant"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="author"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="participant"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RequestGroup.Action" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="prefix" elementType="FHIR.string"/>
@@ -9340,6 +9609,7 @@
         <ns4:element name="objective">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ResearchStudy.Objective"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="principalInvestigator"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchStudy.Arm" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="name" elementType="FHIR.string"/>
@@ -9364,6 +9634,7 @@
         <ns4:element name="assignedArm" elementType="FHIR.string"/>
         <ns4:element name="actualArm" elementType="FHIR.string"/>
         <ns4:element name="consent" elementType="FHIR.Reference"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="individual"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchSubjectStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -9421,6 +9692,9 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="performer"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="RiskAssessment.Prediction" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="outcome" elementType="FHIR.CodeableConcept"/>
@@ -9573,6 +9847,10 @@
         </ns4:element>
         <ns4:element name="planningHorizon" elementType="FHIR.Period"/>
         <ns4:element name="comment" elementType="FHIR.string"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="actor"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="actor"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SearchComparator" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -9729,6 +10007,14 @@
         <ns4:element name="relevantHistory">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="performer"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="performer"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ServiceRequestIntent" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
@@ -9814,6 +10100,9 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Annotation"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="collector"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="subject"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="subject"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Specimen.Collection" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="collector" elementType="FHIR.Reference"/>
@@ -10693,6 +10982,9 @@
         <ns4:element name="receiver">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Reference"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="supplier"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="receiver"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SupplyDelivery.SuppliedItem" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="quantity" elementType="FHIR.SimpleQuantity"/>
@@ -10743,6 +11035,10 @@
         </ns4:element>
         <ns4:element name="deliverFrom" elementType="FHIR.Reference"/>
         <ns4:element name="deliverTo" elementType="FHIR.Reference"/>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="deliverTo"/>
+        <ns4:contextRelationship context="Device" relatedKeyElement="requester"/>
+        <ns4:contextRelationship context="RelatedPerson" relatedKeyElement="requester"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="SupplyRequest.Parameter" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="code" elementType="FHIR.CodeableConcept"/>
@@ -11551,6 +11847,9 @@
         <ns4:element name="lensSpecification">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.VisionPrescription.LensSpecification"/>
         </ns4:element>
+        <ns4:contextRelationship context="Practitioner" relatedKeyElement="prescriber"/>
+        <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
+        <ns4:contextRelationship context="Encounter" relatedKeyElement="encounter"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="VisionPrescription.LensSpecification" retrievable="false" baseType="FHIR.BackboneElement">
         <ns4:element name="product" elementType="FHIR.CodeableConcept"/>
@@ -11900,4 +12199,19 @@
     <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.VisionBase" toType="System.String"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.BundleType" toType="System.String"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.DocumentConfidentiality" toType="System.String"/>
+    <ns4:contextInfo name="Practitioner" keyElement="id">
+        <ns4:contextType modelName="FHIR" name="Practitioner"/>
+    </ns4:contextInfo>
+    <ns4:contextInfo name="Device" keyElement="id">
+        <ns4:contextType modelName="FHIR" name="Device"/>
+    </ns4:contextInfo>
+    <ns4:contextInfo name="Patient" keyElement="id" birthDateElement="birthDate.value">
+        <ns4:contextType modelName="FHIR" name="Patient"/>
+    </ns4:contextInfo>
+    <ns4:contextInfo name="Encounter" keyElement="id">
+        <ns4:contextType modelName="FHIR" name="Encounter"/>
+    </ns4:contextInfo>
+    <ns4:contextInfo name="RelatedPerson" keyElement="id">
+        <ns4:contextType modelName="FHIR" name="RelatedPerson"/>
+    </ns4:contextInfo>
 </ns4:modelInfo>
