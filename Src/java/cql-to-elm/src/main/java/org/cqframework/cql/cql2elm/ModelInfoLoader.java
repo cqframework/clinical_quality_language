@@ -35,6 +35,7 @@ public class ModelInfoLoader {
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("4.0.1"), new FhirModelInfoProvider().withVersion("4.0.1"));
         registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.0.2"), new FhirModelInfoProvider().withVersion("1.0.2"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QUICKFHIR").withVersion("3.0.1"), new QuickFhirModelInfoProvider().withVersion("3.0.1"));
+        registerModelInfoProvider(new VersionedIdentifier().withId("USCore").withVersion("3.1.0"), new UsCoreModelInfoProvider().withVersion("3.1.0"));
     }
 
     public static ModelInfoProvider getModelInfoProvider(VersionedIdentifier modelIdentifier) {

@@ -69,7 +69,7 @@ public class ModelImporter {
 
         // Import model contexts
         for (ContextInfo c : this.modelInfo.getContextInfo()) {
-            DataType contextType = resolveTypeName(c.getName());
+            DataType contextType = resolveTypeSpecifier(c.getContextType());
             if (!(contextType instanceof ClassType)) {
                 // ERROR:
                 throw new IllegalArgumentException(String.format("Model context %s must be a class type.", c.getName()));
