@@ -699,8 +699,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     ModelInfo modelInfo = modelIdentifier == null
                             ? libraryBuilder.getModel(libraryInfo.getDefaultModelName()).getModelInfo()
                             : libraryBuilder.getModel(modelIdentifier).getModelInfo();
-                    String contextTypeName = modelContext.getName();
-                    DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
+                    //String contextTypeName = modelContext.getName();
+                    //DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
+                    DataType contextType = modelContext.getType();
                     Retrieve contextRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(contextType));
                     track(contextRetrieve, ctx);
                     contextRetrieve.setResultType(new ListType(contextType));
