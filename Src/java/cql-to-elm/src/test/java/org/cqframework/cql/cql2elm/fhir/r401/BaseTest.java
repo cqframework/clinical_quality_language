@@ -134,4 +134,9 @@ public class BaseTest {
     public void testContext() throws IOException {
         TestUtils.runSemanticTest("fhir/r401/TestContext.cql", 0);
     }
+
+    @Test
+    public void testFHIR() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestFHIR.cql", 0);
+    }
 }
