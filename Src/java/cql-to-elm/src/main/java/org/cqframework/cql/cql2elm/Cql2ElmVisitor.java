@@ -849,7 +849,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             InstanceElement element = (InstanceElement)visit(elementContext);
             PropertyResolution resolution = libraryBuilder.resolveProperty(classTypeSpecifier.getResultType(), element.getName());
             element.setValue(libraryBuilder.ensureCompatible(element.getValue(), resolution.getType()));
-            element.setName(resolution.getTarget());
+            element.setName(resolution.getName());
+            if (resolution.getTargetMap() != null) {
+                // TODO: Target mapping in instance selectors
+                throw new IllegalArgumentException("Target Mapping in instance selectors not yet supported");
+            }
             instance.getElement().add(element);
         }
 

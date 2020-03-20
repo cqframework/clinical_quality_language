@@ -62,20 +62,20 @@ define TestChoice:
     where P.deceased is false
       or P.deceased before Today()
 
+// TODO: Finish mapping translation and add tests
 define TestSlices:
   ["observation-bp"] BP
     where BP.SystolicBP.value < 140 'mm[Hg]'
       and BP.DiastolicBP.value < 90 'mm[Hg]'
 
-// TODO: This should not need the .value here
 define TestSimpleExtensions:
   Patient P
-    where P.birthsex.value = 'M'
+    where P.birthsex = 'M'
 
+// TODO: Finish mapping translation and add tests
 define TestComplexExtensions:
   Patient P
     where P.race.ombCategory contains "American Indian or Alaska Native"
       and P.race.detailed contains "Alaska Native"
-
 
 

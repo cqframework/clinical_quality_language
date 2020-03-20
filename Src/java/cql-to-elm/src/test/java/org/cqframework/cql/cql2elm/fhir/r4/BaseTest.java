@@ -129,4 +129,9 @@ public class BaseTest {
     public void testImplicitFHIRHelpers() throws IOException {
         TestUtils.runSemanticTest("fhir/r4/TestImplicitFHIRHelpers.cql", 0);
     }
+
+    @Test
+    public void testBundle() throws IOException {
+        TestUtils.runSemanticTest("fhir/r4/TestBundle.cql", 0);
+    }
 }

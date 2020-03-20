@@ -27,5 +27,7 @@ public class BaseTest {
     @Test
     public void testQICore() throws IOException {
         TestUtils.runSemanticTest("qicore/v400/TestQICore.cql", 0);
+
+        // TODO: Testing for QICore specific extensions
     }
 }
