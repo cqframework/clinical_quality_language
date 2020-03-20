@@ -139,4 +139,14 @@ public class BaseTest {
     public void testFHIR() throws IOException {
         TestUtils.runSemanticTest("fhir/r401/TestFHIR.cql", 0);
     }
+
+    @Test
+    public void testFHIRWithHelpers() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestFHIRWithHelpers.cql", 0);
+    }
+
+    @Test
+    public void testBundle() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestBundle.cql", 0);
+    }
 }

@@ -162,7 +162,10 @@ public class ModelImporter {
 
         if (typeSpecifier instanceof NamedTypeSpecifier) {
             NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier)typeSpecifier;
-            String qualifier = namedTypeSpecifier.getModelName();
+            String qualifier = namedTypeSpecifier.getNamespace();
+            if (qualifier == null || qualifier.isEmpty()) {
+                qualifier = namedTypeSpecifier.getModelName(); // For backwards compatibility, modelName is deprecated in favor of namespace
+            }
             if (qualifier == null || qualifier.isEmpty()) {
                 qualifier = this.modelInfo.getName();
             }
