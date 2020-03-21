@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.elm.tracking.TrackBack;
+import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
@@ -11,9 +12,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -71,6 +70,18 @@ public class TranslationTests {
         assertEquals(0, translator.getErrors().size());
         List<ExpressionDef> defs = translator.getTranslatedLibrary().getLibrary().getStatements().getDef();
         assertTrue(defs.get(1).getAnnotation().size() == 0);
+    }
+
+    @Test
+    public void testTranslatorOptionsPresent() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslator.Options.EnableAnnotations);
+        assertEquals(0, translator.getErrors().size());
+        Library library = translator.getTranslatedLibrary().getLibrary();
+        assertNotNull(library.getAnnotation());
+        assertThat(library.getAnnotation().size(), greaterThan(0));
+        assertThat(library.getAnnotation().get(0), instanceOf(CqlToElmInfo.class));
+        CqlToElmInfo info = (CqlToElmInfo)library.getAnnotation().get(0);
+        assertThat(info.getTranslatorOptions(), is("EnableAnnotations"));
     }
 
     @Test
