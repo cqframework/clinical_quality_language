@@ -7,6 +7,8 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="Locator">
+		<xs:attribute name="libraryId" type="xs:string" use="optional"/>
+		<xs:attribute name="libraryVersion" type="xs:string" use="optional"/>
 		<xs:attribute name="startLine" type="xs:int" use="optional"/>
 		<xs:attribute name="startChar" type="xs:int" use="optional"/>
 		<xs:attribute name="endLine" type="xs:int" use="optional"/>
