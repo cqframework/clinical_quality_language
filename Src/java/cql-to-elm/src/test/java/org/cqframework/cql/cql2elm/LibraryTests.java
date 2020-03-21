@@ -136,8 +136,14 @@ public class LibraryTests {
             assertThat(translator.toELM(), notNullValue());
             assertThat(translator.toELM().getAnnotation(), notNullValue());
             assertThat(translator.toELM().getAnnotation().size(), greaterThan(0));
-            assertThat(translator.toELM().getAnnotation().get(0), instanceOf(CqlToElmError.class));
-            CqlToElmError invalidBaseLibraryError = (CqlToElmError)translator.toELM().getAnnotation().get(0);
+            CqlToElmError invalidBaseLibraryError = null;
+            for (Object o : translator.toELM().getAnnotation()) {
+                if (o instanceof CqlToElmError) {
+                    invalidBaseLibraryError = (CqlToElmError)o;
+                    break;
+                }
+            }
+            assertThat(invalidBaseLibraryError, notNullValue());
             assertThat(invalidBaseLibraryError.getLibraryId(), is("InvalidBaseLibrary"));
         }
         catch (IOException e) {
