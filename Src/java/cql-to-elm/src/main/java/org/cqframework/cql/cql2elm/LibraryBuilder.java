@@ -452,6 +452,10 @@ public class LibraryBuilder {
             err.setErrorType(e instanceof CqlSyntaxException ? ErrorType.SYNTAX : (e instanceof CqlSemanticException ? ErrorType.SEMANTIC : ErrorType.INTERNAL));
             err.setErrorSeverity(toErrorSeverity(e.getSeverity()));
             if (e.getLocator() != null) {
+                if (e.getLocator().getLibrary() != null) {
+                    err.setLibraryId(e.getLocator().getLibrary().getId());
+                    err.setLibraryVersion(e.getLocator().getLibrary().getVersion());
+                }
                 err.setStartLine(e.getLocator().getStartLine());
                 err.setEndLine(e.getLocator().getEndLine());
                 err.setStartChar(e.getLocator().getStartChar());
@@ -517,7 +521,7 @@ public class LibraryBuilder {
         TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier,
             this.getErrorLevel(), this.getSignatureLevel(), this.getTranslatorOptions(), errors);
         for (CqlTranslatorException error : errors) {
-            this.addException(error);
+            this.recordParsingException(error);
         }
         libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
         loadConversionMap(referencedLibrary);

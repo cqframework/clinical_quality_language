@@ -1,16 +1,14 @@
 package org.cqframework.cql.cql2elm;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.AggregateExpression;
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
@@ -131,6 +129,16 @@ public class LibraryTests {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingInvalidBaseLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(1));
             assertThat(translator.getErrors().get(0), instanceOf(CqlTranslatorException.class));
+            assertThat(translator.getErrors().get(0).getLocator(), notNullValue());
+            assertThat(translator.getErrors().get(0).getLocator().getLibrary(), notNullValue());
+            assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), is("InvalidBaseLibrary"));
+
+            assertThat(translator.toELM(), notNullValue());
+            assertThat(translator.toELM().getAnnotation(), notNullValue());
+            assertThat(translator.toELM().getAnnotation().size(), greaterThan(0));
+            assertThat(translator.toELM().getAnnotation().get(0), instanceOf(CqlToElmError.class));
+            CqlToElmError invalidBaseLibraryError = (CqlToElmError)translator.toELM().getAnnotation().get(0);
+            assertThat(invalidBaseLibraryError.getLibraryId(), is("InvalidBaseLibrary"));
         }
         catch (IOException e) {
             e.printStackTrace();
