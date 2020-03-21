@@ -1,16 +1,19 @@
 {
-  "library" : {
-    "annotation" : [ {
-      "libraryId" : "CMS146",
-      "libraryVersion" : "2",
-      "startLine" : 22,
-      "startChar" : 5,
-      "endLine" : 22,
-      "endChar" : 54,
-      "message" : "Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription.",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning",
-      "type" : "CqlToElmError"
+"library" : {
+  "annotation" : [ {
+     "translatorOptions" : "",
+     "type" : "CqlToElmInfo"
+  }, {
+     "libraryId" : "CMS146",
+     "libraryVersion" : "2",
+     "startLine" : 22,
+     "startChar" : 5,
+     "endLine" : 22,
+     "endChar" : 54,
+     "message" : "Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription.",
+     "errorType" : "semantic",
+     "errorSeverity" : "warning",
+     "type" : "CqlToElmError"
     }, {
       "libraryId" : "CMS146",
       "libraryVersion" : "2",
