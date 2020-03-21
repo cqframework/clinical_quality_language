@@ -7,6 +7,7 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumService;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.CqlToElmError;
+import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
@@ -62,6 +63,10 @@ public class LibraryBuilder {
                 .withSchemaIdentifier(of.createVersionedIdentifier()
                         .withId("urn:hl7-org:elm") // TODO: Pull this from the ELM library namespace
                         .withVersion("r1"));
+
+        this.cqlToElmInfo = af.createCqlToElmInfo();
+        this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getSpecificationVersion());
+        this.library.getAnnotation().add(this.cqlToElmInfo);
 
         translatedLibrary = new TranslatedLibrary();
         translatedLibrary.setLibrary(library);
@@ -120,6 +125,7 @@ public class LibraryBuilder {
     private boolean listTraversal = true;
     private UcumService ucumService = null;
     private CqlTranslator.Options[] translatorOptions = null;
+    private CqlToElmInfo cqlToElmInfo = null;
     private SignatureLevel signatureLevel = SignatureLevel.Differing;
 
     public void enableListTraversal() {
@@ -148,6 +154,16 @@ public class LibraryBuilder {
 
     public void setTranslatorOptions(CqlTranslator.Options... options) {
         this.translatorOptions = options;
+        if (options != null) {
+            StringBuilder translatorOptions = new StringBuilder();
+            for (CqlTranslator.Options option : options) {
+                if (translatorOptions.length() > 0) {
+                    translatorOptions.append(",");
+                }
+                translatorOptions.append(option.name());
+            }
+            this.cqlToElmInfo.setTranslatorOptions(translatorOptions.toString());
+        }
     }
 
     public CqlTranslator.Options[] getTranslatorOptions() {
