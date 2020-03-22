@@ -34,8 +34,7 @@ define IntegerExp: Exp(1000)
 define IntegerModulo: 100 mod 10
 define LongModulo: 100L mod 10L
 define RealModulo: 100.0 mod 10.0
-//define QuantityIntegerModulo: 100'g/cm3' mod 10
-//define QuantityRealModulo: 100'g/cm3' mod 10.0
+define QuantityModulo: 100 'g/cm3' mod 10 'g/cm3'
 
 define IntegerMultiply: 10 * 10
 define LongMultiply: 10L * 10L
@@ -79,8 +78,7 @@ define IntegerTruncate: Truncate(5)
 define IntegerDiv: 100 div 10
 define LongDiv: 100L div 10L
 define RealDiv: 100.0 div 10.0
-//define QuantityIntegerDiv: 100'cm' div 10
-//define QuantityRealDiv: 100'cm' div 10.0
+define QuantityDiv: 100 'cm' div 10 'cm'
 
 define DecimalPrecision: Precision(1.58700)
 define DatePrecision: Precision(@2014)

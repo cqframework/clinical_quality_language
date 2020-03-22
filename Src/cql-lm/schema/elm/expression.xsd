@@ -1344,7 +1344,9 @@ If either argument is null, the result is null.
 
 If the result of the operation cannot be represented, or the right argument is 0, the result is null.
 
-The TruncatedDivide operator is defined for the Integer, Long, and Decimal types.</xs:documentation>
+The TruncatedDivide operator is defined for the Integer, Long, Decimal, and Quantity types.
+
+For TruncatedDivide operations involving quantities, the resulting quantity will have the appropriate unit.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>
@@ -1358,7 +1360,9 @@ If either argument is null, the result is null.
 
 If the result of the modulo cannot be represented, or the right argument is 0, the result is null.
 
-The Modulo operator is defined for the Integer, Long, and Decimal types.</xs:documentation>
+The Modulo operator is defined for the Integer, Long, Decimal, and Quantity types.
+
+For Modulo operations involving quantities, the resulting quantity will have the appropriate unit.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression"/>

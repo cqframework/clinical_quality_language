@@ -316,15 +316,11 @@ public class SystemLibraryHelper {
         system.add(new Operator("Modulo", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Modulo", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Modulo", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        // BTR -> Removed these, we should make sure we have a clear use case for this operator before adding these signatures
-        //system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getInteger()), systemModel.getQuantity()));
-        //system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Multiply", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("Multiply", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        //system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
-        //system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getQuantity()), systemModel.getQuantity()));
         system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Negate", new Signature(systemModel.getInteger()), systemModel.getInteger()));
@@ -370,9 +366,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("TruncatedDivide", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
         system.add(new Operator("TruncatedDivide", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("TruncatedDivide", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
-        // BTR -> Removed these, we should make sure we have a clear use case for this operator before adding these signatures
-        // system.add(new Operator("TruncatedDivide", new Signature(systemModel.getQuantity(), systemModel.getInteger()), systemModel.getQuantity()));
-        //system.add(new Operator("TruncatedDivide", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
+        system.add(new Operator("TruncatedDivide", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         // String operators
         system.add(new Operator("Add", new Signature(systemModel.getString(), systemModel.getString()), systemModel.getString()));
