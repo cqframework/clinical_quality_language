@@ -54,6 +54,13 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="Long">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="xs:long" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Quantity">
 		<xs:complexContent>
 			<xs:extension base="Any">

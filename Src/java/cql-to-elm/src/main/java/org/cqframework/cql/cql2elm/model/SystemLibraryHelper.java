@@ -32,6 +32,7 @@ public class SystemLibraryHelper {
         // Conversion Operators
         // ToString(Boolean) : String
         // ToString(Integer) : String
+        // ToString(Long) : String
         // ToString(Decimal) : String
         // ToString(DateTime) : String
         // ToString(Date) : String
@@ -44,6 +45,9 @@ public class SystemLibraryHelper {
         Operator integerToString = new Operator("ToString", new Signature(systemModel.getInteger()), systemModel.getString());
         system.add(integerToString);
         system.add(new Conversion(integerToString, false));
+        Operator longToString = new Operator("ToString", new Signature(systemModel.getLong()), systemModel.getString());
+        system.add(longToString);
+        system.add(new Conversion(longToString, false));
         Operator decimalToString = new Operator("ToString", new Signature(systemModel.getDecimal()), systemModel.getString());
         system.add(decimalToString);
         system.add(new Conversion(decimalToString, false));
@@ -74,18 +78,35 @@ public class SystemLibraryHelper {
         system.add(new Conversion(toChars, false));
 
         // ToInteger(String) : Integer
+        // ToInteger(Long) : Integer
         Operator stringToInteger = new Operator("ToInteger", new Signature(systemModel.getString()), systemModel.getInteger());
         system.add(stringToInteger);
         system.add(new Conversion(stringToInteger, false));
+        Operator longToInteger = new Operator("ToInteger", new Signature(systemModel.getLong()), systemModel.getInteger());
+        system.add(longToInteger);
+        system.add(new Conversion(longToInteger, false));
+
+        // ToLong(String) : Long
+        // ToLong(Integer) : Long
+        Operator stringToLong = new Operator("ToLong", new Signature(systemModel.getString()), systemModel.getLong());
+        system.add(stringToLong);
+        system.add(new Conversion(stringToLong, false));
+        Operator integerToLong = new Operator("ToLong", new Signature(systemModel.getInteger()), systemModel.getLong());
+        system.add(integerToLong);
+        system.add(new Conversion(integerToLong, true));
 
         // ToDecimal(String) : Decimal
         // ToDecimal(Integer) : Decimal
+        // ToDecimal(Long) : Decimal
         Operator stringToDecimal = new Operator("ToDecimal", new Signature(systemModel.getString()), systemModel.getDecimal());
         system.add(stringToDecimal);
         system.add(new Conversion(stringToDecimal, false));
         Operator integerToDecimal = new Operator("ToDecimal", new Signature(systemModel.getInteger()), systemModel.getDecimal());
         system.add(integerToDecimal);
         system.add(new Conversion(integerToDecimal, true));
+        Operator longToDecimal = new Operator("ToDecimal", new Signature(systemModel.getLong()), systemModel.getDecimal());
+        system.add(longToDecimal);
+        system.add(new Conversion(longToDecimal, true));
 
         // ToDateTime(String) : DateTime
         // ToDateTime(Date) : DateTime
@@ -137,6 +158,9 @@ public class SystemLibraryHelper {
         system.add(convertsTo);
         // ConvertsToInteger(Any): Boolean
         convertsTo = new Operator("ConvertsToInteger", new Signature(systemModel.getAny()), systemModel.getBoolean());
+        system.add(convertsTo);
+        // ConvertsToLong(Any): Boolean
+        convertsTo = new Operator("ConvertsToLong", new Signature(systemModel.getAny()), systemModel.getBoolean());
         system.add(convertsTo);
         // ConvertsToDecimal
         convertsTo = new Operator("ConvertsToDecimal", new Signature(systemModel.getAny()), systemModel.getBoolean());
@@ -206,6 +230,12 @@ public class SystemLibraryHelper {
         system.add(new Operator("LessOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("Greater", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getBoolean()));
+        system.add(new Operator("Less", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getBoolean()));
+        system.add(new Operator("LessOrEqual", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getBoolean()));
+        system.add(new Operator("Greater", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getBoolean()));
+        system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getBoolean()));
         system.add(new Operator("Equal", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
         system.add(new Operator("Equivalent", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
         system.add(new Operator("Less", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getBoolean()));
@@ -247,10 +277,12 @@ public class SystemLibraryHelper {
 
         // Arithmetic Operators
         system.add(new Operator("Abs", new Signature(systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Abs", new Signature(systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Abs", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Abs", new Signature(systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Add", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Add", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Add", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Add", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
@@ -282,18 +314,21 @@ public class SystemLibraryHelper {
         // MinValue<T>() : T
 
         system.add(new Operator("Modulo", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Modulo", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Modulo", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
         // BTR -> Removed these, we should make sure we have a clear use case for this operator before adding these signatures
         //system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getInteger()), systemModel.getQuantity()));
         //system.add(new Operator("Modulo", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
 
         system.add(new Operator("Multiply", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Multiply", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
         //system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getDecimal()), systemModel.getQuantity()));
         //system.add(new Operator("Multiply", new Signature(systemModel.getDecimal(), systemModel.getQuantity()), systemModel.getQuantity()));
         system.add(new Operator("Multiply", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Negate", new Signature(systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Negate", new Signature(systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Negate", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Negate", new Signature(systemModel.getQuantity()), systemModel.getQuantity()));
 
@@ -303,6 +338,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Precision", new Signature(systemModel.getTime()), systemModel.getInteger()));
 
         system.add(new Operator("Predecessor", new Signature(systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Predecessor", new Signature(systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getDate()), systemModel.getDate()));
         system.add(new Operator("Predecessor", new Signature(systemModel.getDateTime()), systemModel.getDateTime()));
@@ -310,16 +346,19 @@ public class SystemLibraryHelper {
         system.add(new Operator("Predecessor", new Signature(systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Power", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Power", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Power", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
 
         system.add(new Operator("Round", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Round", new Signature(systemModel.getDecimal(), systemModel.getInteger()), systemModel.getDecimal()));
 
         system.add(new Operator("Subtract", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Subtract", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Subtract", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Subtract", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getQuantity()));
 
         system.add(new Operator("Successor", new Signature(systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("Successor", new Signature(systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("Successor", new Signature(systemModel.getDecimal()), systemModel.getDecimal()));
         system.add(new Operator("Successor", new Signature(systemModel.getDate()), systemModel.getDate()));
         system.add(new Operator("Successor", new Signature(systemModel.getDateTime()), systemModel.getDateTime()));
@@ -329,6 +368,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Truncate", new Signature(systemModel.getDecimal()), systemModel.getInteger()));
 
         system.add(new Operator("TruncatedDivide", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getInteger()));
+        system.add(new Operator("TruncatedDivide", new Signature(systemModel.getLong(), systemModel.getLong()), systemModel.getLong()));
         system.add(new Operator("TruncatedDivide", new Signature(systemModel.getDecimal(), systemModel.getDecimal()), systemModel.getDecimal()));
         // BTR -> Removed these, we should make sure we have a clear use case for this operator before adding these signatures
         // system.add(new Operator("TruncatedDivide", new Signature(systemModel.getQuantity(), systemModel.getInteger()), systemModel.getQuantity()));
@@ -550,6 +590,7 @@ public class SystemLibraryHelper {
         //system.add(new Operator("Count", new Signature(new ListType(systemModel.getAny())), systemModel.getInteger()));
         system.add(new Operator("GeometricMean", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
+        system.add(new Operator("Max", new Signature(new ListType(systemModel.getLong())), systemModel.getLong()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getDateTime())), systemModel.getDateTime()));
@@ -557,6 +598,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getTime())), systemModel.getTime()));
         system.add(new Operator("Max", new Signature(new ListType(systemModel.getString())), systemModel.getString()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
+        system.add(new Operator("Min", new Signature(new ListType(systemModel.getLong())), systemModel.getLong()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Min", new Signature(new ListType(systemModel.getDateTime())), systemModel.getDateTime()));
@@ -572,11 +614,13 @@ public class SystemLibraryHelper {
         system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("PopulationVariance", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Product", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
+        system.add(new Operator("Product", new Signature(new ListType(systemModel.getLong())), systemModel.getLong()));
         system.add(new Operator("Product", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Product", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("StdDev", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getInteger())), systemModel.getInteger()));
+        system.add(new Operator("Sum", new Signature(new ListType(systemModel.getLong())), systemModel.getLong()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));
         system.add(new Operator("Sum", new Signature(new ListType(systemModel.getQuantity())), systemModel.getQuantity()));
         system.add(new Operator("Variance", new Signature(new ListType(systemModel.getDecimal())), systemModel.getDecimal()));

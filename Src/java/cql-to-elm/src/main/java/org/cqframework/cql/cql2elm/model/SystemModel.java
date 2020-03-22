@@ -22,6 +22,10 @@ public class SystemModel extends Model {
         return this.resolveTypeName("Integer");
     }
 
+    public DataType getLong() {
+        return this.resolveTypeName("Long");
+    }
+
     public DataType getDecimal() {
         return this.resolveTypeName("Decimal");
     }

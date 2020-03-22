@@ -2,7 +2,7 @@ grammar cql;
 
 /*
  * Clinical Quality Language Grammar Specification
- * Version 1.4 - STU4
+ * Version 1.5 - Normative
  */
 
 import fhirpath;
@@ -208,7 +208,7 @@ withoutClause
 retrieve
     : '[' (contextIdentifier '->')? namedTypeSpecifier (':' (codePath 'in')? terminology)? ']'
     ;
-    
+
 contextIdentifier
     : qualifiedIdentifierExpression
     ;
@@ -436,7 +436,9 @@ literal
     | 'null'                                                #nullLiteral
     | STRING                                                #stringLiteral
     | NUMBER                                                #numberLiteral
+    | LONGNUMBER                                            #longNumberLiteral
     | DATETIME                                              #dateTimeLiteral
+    | DATE                                                  #dateLiteral
     | TIME                                                  #timeLiteral
     | quantity                                              #quantityLiteral
     | ratio                                                 #ratioLiteral
@@ -907,7 +909,14 @@ QUOTEDIDENTIFIER
     : '"' (ESC | .)*? '"'
     ;
 
+DATETIME
+    : '@' DATEFORMAT 'T' TIMEFORMAT? TIMEZONEOFFSETFORMAT?
+    ;
+
+LONGNUMBER
+    : [0-9]+'L'
+    ;
+
 fragment ESC
     : '\\' ([`'"\\/fnrt] | UNICODE)    // allow \`, \', \", \\, \/, \f, etc. and \uXXX
     ;
-

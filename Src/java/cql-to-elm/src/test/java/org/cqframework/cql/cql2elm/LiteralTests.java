@@ -127,16 +127,21 @@ public class LiteralTests {
         assertThat(literal.getValue(), is("wk"));
     }
 
+    private Map<String, ExpressionDef> getDefs(Library library) {
+        Map<String, ExpressionDef> result = new HashMap<>();
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                result.put(def.getName(), def);
+            }
+        }
+        return result;
+    }
+
     @Test
     public void RatioLiteralTests() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("RatioLiteralTest.cql", 0);
         Library library = translator.toELM();
-        defs = new HashMap<>();
-        if (library.getStatements() != null) {
-            for (ExpressionDef def : library.getStatements().getDef()) {
-                defs.put(def.getName(), def);
-            }
-        }
+        defs = getDefs(library);
 
         ExpressionDef def = defs.get("SimpleRatio");
         assertThat(def, hasTypeAndResult(Ratio.class, "System.Ratio"));
@@ -151,5 +156,45 @@ public class LiteralTests {
         assertThat(ratio.getNumerator().getUnit(), is("mg"));
         assertThat(ratio.getDenominator().getValue(), is(BigDecimal.valueOf(100)));
         assertThat(ratio.getDenominator().getUnit(), is("mL"));
+    }
+
+    @Test
+    public void testDecimal() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestDecimal: 1.5");
+        Library library = translator.toELM();
+        defs = getDefs(library);
+
+        ExpressionDef def = defs.get("TestDecimal");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.Decimal"));
+    }
+
+    @Test
+    public void testString() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestString: '12345''");
+        Library library = translator.toELM();
+        defs = getDefs(library);
+
+        ExpressionDef def = defs.get("TestString");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+    }
+
+    @Test
+    public void testInteger() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestInteger: 12345");
+        Library library = translator.toELM();
+        defs = getDefs(library);
+
+        ExpressionDef def = defs.get("TestInteger");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.Integer"));
+    }
+
+    @Test
+    public void testLongInteger() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromText("define TestLongInteger: 12345L");
+        Library library = translator.toELM();
+        defs = getDefs(library);
+
+        ExpressionDef def = defs.get("TestLongInteger");
+        assertThat(def, hasTypeAndResult(Literal.class, "System.Long"));
     }
 }

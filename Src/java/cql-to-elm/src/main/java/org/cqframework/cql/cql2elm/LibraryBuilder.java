@@ -1382,6 +1382,9 @@ public class LibraryBuilder {
             else if (conversion.getToType().equals(resolveTypeName("System", "Integer"))) {
                 return (Expression)of.createToInteger().withOperand(expression).withResultType(conversion.getToType());
             }
+            else if (conversion.getToType().equals(resolveTypeName("System", "Long"))) {
+                return (Expression)of.createToLong().withOperand(expression).withResultType(conversion.getToType());
+            }
             else if (conversion.getToType().equals(resolveTypeName("System", "Decimal"))) {
                 return (Expression)of.createToDecimal().withOperand(expression).withResultType(conversion.getToType());
             }
@@ -1529,6 +1532,15 @@ public class LibraryBuilder {
 
     public Literal createNumberLiteral(String value) {
         DataType resultType = resolveTypeName("System", value.contains(".") ? "Decimal" : "Integer");
+        Literal result = of.createLiteral()
+                .withValue(value)
+                .withValueType(dataTypeToQName(resultType));
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public Literal createLongNumberLiteral(String value) {
+        DataType resultType = resolveTypeName("System", "Long");
         Literal result = of.createLiteral()
                 .withValue(value)
                 .withValueType(dataTypeToQName(resultType));

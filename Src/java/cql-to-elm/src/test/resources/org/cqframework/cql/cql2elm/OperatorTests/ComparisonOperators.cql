@@ -1,4 +1,5 @@
 define IntegerBetweenExpression: 1 between 4 and 5
+define LongBetweenExpression: 1L between 4L and 5L
 define RealBetweenExpression: 1.0 between 4.0 and 5.0
 define DateTimeBetweenExpression: DateTime(2014, 1, 1) between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
 define TimeBetweenExpression: Time(10, 0, 0, 0) between Time(11, 0, 0, 0) and Time(12, 0, 0, 0)
@@ -7,6 +8,7 @@ define QuantityBetweenExpression: 4'g/cm3' between 3'g/cm3' and 5'g/cm3'
 define IntervalBetweenExpression: Interval[DateTime(2014, 2, 1), DateTime(2015, 3, 1)) between DateTime(2014, 1, 1) and DateTime(2014, 12, 31)
 
 define IntegerEqual: 1 = 1
+define LongEqual: 1L = 1L
 define RealEqual: 1.0 = 1.0
 define StringEqual: 'Alpha' = 'Omega'
 define DateTimeEqual: DateTime(2014, 1, 1) = DateTime(2014, 1, 1)
@@ -17,6 +19,7 @@ define ListEqual: { 1, 2, 3 } = { 1, 2, 3 }
 define TupleEqual: Tuple { Id : 1, Name : 'Joe' } = Tuple { Id : 1, Name : 'Joe' }
 
 define IntegerLess: 4 < 5
+define LongLess: 4L < 5L
 define RealLess: 4.0 < 5.0
 define StringLess: 'Alpha' < 'Omega'
 define DateTimeLess: DateTime(2014, 1, 1) < DateTime(2015, 1, 1)
@@ -24,6 +27,7 @@ define TimeLess: Time(10, 0, 0) < Time(11, 0, 0)
 define QuantityLess: 4'g/cm3' < 5'g/cm3'
 
 define IntegerLessOrEqual: 4 <= 5
+define LongLessOrEqual: 4L <= 5L
 define RealLessOrEqual: 4.0 <= 5.0
 define StringLessOrEqual: 'Alpha' <= 'Omega'
 define DateTimeLessOrEqual: DateTime(2014, 1, 1) <= DateTime(2015, 1, 1)
@@ -31,6 +35,7 @@ define TimeLessOrEqual: Time(10, 0, 0) <= Time(11, 0, 0)
 define QuantityLessOrEqual: 4'g/cm3' <= 5'g/cm3'
 
 define IntegerGreater: 4 > 5
+define LongGreater: 4L > 5L
 define RealGreater: 4.0 > 5.0
 define StringGreater: 'Alpha' > 'Omega'
 define DateTimeGreater: DateTime(2014, 1, 1) > DateTime(2015, 1, 1)
@@ -38,6 +43,7 @@ define TimeGreater: Time(11, 0, 0) > Time(10, 0, 0)
 define QuantityGreater: 4'g/cm3' > 5'g/cm3'
 
 define IntegerGreaterOrEqual: 4 >= 5
+define LongGreaterOrEqual: 4L >= 5L
 define RealGreaterOrEqual: 4.0 >= 5.0
 define StringGreaterOrEqual: 'Alpha' >= 'Omega'
 define DateTimeGreaterOrEqual: DateTime(2014, 1, 1) >= DateTime(2015, 1, 1)
@@ -45,6 +51,7 @@ define TimeGreaterOrEqual: Time(11, 0, 0) > Time(10, 0, 0)
 define QuantityGreaterOrEqual: 4'g/cm3' >= 5'g/cm3'
 
 define IntegerNotEqual: 1 != 1
+define LongNotEqual: 1L != 1L
 define RealNotEqual: 1.0 != 1.0
 define StringNotEqual: 'Alpha' != 'Omega'
 define DateTimeNotEqual: DateTime(2014, 1, 1) != DateTime(2014, 1, 1)
@@ -55,6 +62,7 @@ define ListNotEqual: { 1, 2, 3 } != { 1, 2, 3 }
 define TupleNotEqual: Tuple { Id: 1, Name: 'Joe' } != Tuple { Id: 1, Name: 'Joe' }
 
 define IntegerEquivalent: 1 ~ 1
+define LongEquivalent: 1L ~ 1L
 define RealEquivalent: 1.0 ~ 1.0
 define StringEquivalent: 'Foo' ~ 'Foo'
 define DateTimeEquivalent: DateTime(2015) ~ DateTime(2015)
@@ -65,6 +73,7 @@ define ListEquivalent: { 1, 2, 3 } ~ { 1, 2, 3 }
 define TupleEquivalent: Tuple { Id: 1, Name: 'Joe' } ~ Tuple { Id: 1, Name: 'Joe' }
 
 define IntegerNotEquivalent: 1 !~ 1
+define LongNotEquivalent: 1L !~ 1L
 define RealNotEquivalent: 1.0 !~ 1.0
 define StringNotEquivalent: 'Foo' !~ 'Foo'
 define DateTimeNotEquivalent: DateTime(2015) !~ DateTime(2015)

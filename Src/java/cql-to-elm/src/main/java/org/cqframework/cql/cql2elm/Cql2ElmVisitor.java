@@ -1005,13 +1005,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
-    @Override
-    public Object visitDateTimeLiteral(@NotNull cqlParser.DateTimeLiteralContext ctx) {
-        String input = ctx.getText();
-        if (input.startsWith("@")) {
-            input = input.substring(1);
-        }
-
+    private Expression parseDateTimeLiteral(String input) {
 /*
 DATETIME
         : '@'
@@ -1035,8 +1029,8 @@ DATETIME
 
         Pattern dateTimePattern =
                 Pattern.compile("(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(\\:(\\d{2}))))?");
-                               //1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
-                               //----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
+        //1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
+        //----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
 
         /*
             year - group 1
@@ -1191,6 +1185,26 @@ DATETIME
     }
 
     @Override
+    public Object visitDateLiteral(@NotNull cqlParser.DateLiteralContext ctx) {
+        String input = ctx.getText();
+        if (input.startsWith("@")) {
+            input = input.substring(1);
+        }
+
+        return parseDateTimeLiteral(input);
+    }
+
+    @Override
+    public Object visitDateTimeLiteral(@NotNull cqlParser.DateTimeLiteralContext ctx) {
+        String input = ctx.getText();
+        if (input.startsWith("@")) {
+            input = input.substring(1);
+        }
+
+        return parseDateTimeLiteral(input);
+    }
+
+    @Override
     public Null visitNullLiteral(@NotNull cqlParser.NullLiteralContext ctx) {
         Null result = of.createNull();
         result.setResultType(libraryBuilder.resolveTypeName("System", "Any"));
@@ -1200,6 +1214,15 @@ DATETIME
     @Override
     public Expression visitNumberLiteral(@NotNull cqlParser.NumberLiteralContext ctx) {
         return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
+    }
+
+    @Override
+    public Literal visitLongNumberLiteral(@NotNull cqlParser.LongNumberLiteralContext ctx) {
+        String input = ctx.LONGNUMBER().getText();
+        if (input.endsWith("L")) {
+            input = input.substring(0, input.length() - 2);
+        }
+        return libraryBuilder.createLongNumberLiteral(input);
     }
 
     private BigDecimal parseDecimal(String value) {
