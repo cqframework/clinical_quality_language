@@ -2832,6 +2832,9 @@ DATETIME
 //                    per = subtract;
                 }
             }
+            else {
+                per = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Quantity"));
+            }
         }
 
         switch (ctx.getChild(0).getText()) {
