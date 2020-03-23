@@ -161,7 +161,7 @@ contextDefinition
     ;
 
 functionDefinition
-    : 'define' accessModifier? 'function' identifierOrFunctionIdentifier '(' (operandDefinition (',' operandDefinition)*)? ')'
+    : 'define' accessModifier? 'fluent'? 'function' identifierOrFunctionIdentifier '(' (operandDefinition (',' operandDefinition)*)? ')'
         ('returns' typeSpecifier)?
         ':' (functionBody | 'external')
     ;
@@ -535,6 +535,7 @@ keyword
     | 'expand'
     | 'false'
     | 'flatten'
+    | 'fluent'
     | 'from'
     | 'function'
     | 'hour'
@@ -710,6 +711,7 @@ keywordIdentifier
     | 'end'
     | 'ends'
     | 'except'
+    | 'fluent'
     | 'function'
     | 'implies'
     | 'include'
@@ -814,6 +816,7 @@ functionIdentifier
     | 'expand'
     | 'false'
     | 'flatten'
+    | 'fluent'
     | 'from'
     | 'function'
     | 'hour'

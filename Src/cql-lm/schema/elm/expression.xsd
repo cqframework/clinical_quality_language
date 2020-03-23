@@ -229,6 +229,7 @@
 					<xs:element name="operand" type="OperandDef" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute name="external" type="xs:boolean" use="optional"/>
+				<xs:attribute name="fluent" type="xs:boolean" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
