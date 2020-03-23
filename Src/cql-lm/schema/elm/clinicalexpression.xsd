@@ -6,6 +6,37 @@
 		</xs:documentation>
 	</xs:annotation>
 	<xs:include schemaLocation="expression.xsd"/>
+	<xs:complexType name="IncludeElement">
+		<xs:annotation>
+			<xs:documentation>The IncludeElement type specifies include information for an include within a retrieve.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:attribute name="relatedDataType" type="xs:QName" use="required">
+					<xs:annotation>
+						<xs:documentation>The relatedDataType attribute specifies the type of the related data being requested.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="relatedProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The relatedProperty attribute specifies which property of the relatedDataType contains the relatedId for the clinical statement.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="relatedSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The relatedSearch attribute specifies the name of the search path to use for searching for data of the relatedDataType.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="isReverse" type="xs:boolean" use="optional">
+					<xs:annotation>
+						<xs:documentation>The isReverse attribute indicates that the include is reverse, i.e. that the relatedDataType is referencing the data being retrieved, rather than the retrieved data referencing the relatedDataType.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Retrieve">
 		<xs:annotation>
 			<xs:documentation>The retrieve expression defines clinical data that will be used by the artifact. This expression allows clinically relevant filtering criteria to be provided in a well-defined and computable way. This operation defines the integration boundary for artifacts. The result of a retrieve is defined to return the same data for subsequent invocations within the same evaluation request. This means in particular that patient data updates made during the evaluation request are not visible to the artifact. In effect, the patient data is a snapshot of the data as of the start of the evaluation. This ensures strict deterministic and functional behavior of the artifact, and allows the implementation engine freedom to cache intermediate results in order to improve performance.</xs:documentation>
@@ -31,6 +62,11 @@
 					<xs:element name="context" type="Expression" minOccurs="0" maxOccurs="1">
 						<xs:annotation>
 							<xs:documentation>If specified, the context element references an expression that, when evaluated, provides the context for the retrieve. The expression evaluates to the instance id that will be used as the context for the retrieve.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="include" type="IncludeElement" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies a related data type to be included in the result as part of the retrieve.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
