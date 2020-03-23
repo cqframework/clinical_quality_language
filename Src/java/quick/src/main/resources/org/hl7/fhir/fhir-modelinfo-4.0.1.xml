@@ -6655,7 +6655,7 @@
         <ns4:element name="isActive" elementType="FHIR.boolean"/>
         <ns4:element name="strength" elementType="FHIR.Ratio"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationAdministration" identifier="http://hl7.org/fhir/StructureDefinition/MedicationAdministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationAdministration" identifier="http://hl7.org/fhir/StructureDefinition/MedicationAdministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medication" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6735,7 +6735,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationAdministrationStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationDispense" identifier="http://hl7.org/fhir/StructureDefinition/MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationDispense" identifier="http://hl7.org/fhir/StructureDefinition/MedicationDispense" label="MedicationDispense" retrievable="true" primaryCodePath="medication" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6981,7 +6981,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationKnowledgeStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationRequest" identifier="http://hl7.org/fhir/StructureDefinition/MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationRequest" identifier="http://hl7.org/fhir/StructureDefinition/MedicationRequest" label="MedicationRequest" retrievable="true" primaryCodePath="medication" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -7085,7 +7085,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationRequestStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationStatement" identifier="http://hl7.org/fhir/StructureDefinition/MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medicationCodeableConcept" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MedicationStatement" identifier="http://hl7.org/fhir/StructureDefinition/MedicationStatement" label="MedicationStatement" retrievable="true" primaryCodePath="medication" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
