@@ -791,6 +791,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    public Literal visitSimpleStringLiteral(@NotNull cqlParser.SimpleStringLiteralContext ctx) {
+        return libraryBuilder.createLiteral(parseString(ctx.STRING()));
+    }
+
+    @Override
     public Literal visitBooleanLiteral(@NotNull cqlParser.BooleanLiteralContext ctx) {
         return libraryBuilder.createLiteral(Boolean.valueOf(ctx.getText()));
     }
@@ -1213,6 +1218,11 @@ DATETIME
 
     @Override
     public Expression visitNumberLiteral(@NotNull cqlParser.NumberLiteralContext ctx) {
+        return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
+    }
+
+    @Override
+    public Expression visitSimpleNumberLiteral(@NotNull cqlParser.SimpleNumberLiteralContext ctx) {
         return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
     }
 
@@ -3056,7 +3066,9 @@ DATETIME
                 }
 
                 ReturnClause ret = ctx.returnClause() != null ? (ReturnClause) visit(ctx.returnClause()) : null;
-                if ((ret == null) && (sources.size() > 1)) {
+                AggregateClause agg = ctx.aggregateClause() != null ? (AggregateClause) visit(ctx.aggregateClause()) : null;
+
+                if ((agg == null) && (ret == null) && (sources.size() > 1)) {
                     ret = of.createReturnClause()
                             .withDistinct(true);
 
@@ -3084,29 +3096,46 @@ DATETIME
                     queryContext.removeLetClauses(dfcx);
                 }
 
-                DataType queryResultType = ret == null ? sources.get(0).getResultType() : ret.getResultType();
-                queryContext.setResultElementType(queryContext.isSingular() ? null : ((ListType)queryResultType).getElementType());
+                DataType queryResultType = null;
+                if (agg != null) {
+                    queryResultType = agg.getResultType();
+                }
+                else if (ret != null) {
+                    queryResultType = ret.getResultType();
+                }
+                else {
+                    queryResultType = sources.get(0).getResultType();
+                }
+
                 SortClause sort = null;
-                if (ctx.sortClause() != null) {
-                    if (queryContext.isSingular()) {
-                        // ERROR:
-                        throw new IllegalArgumentException("Sort clause cannot be used in a singular query.");
-                    }
-                    queryContext.enterSortClause();
-                    try {
-                        sort = (SortClause)visit(ctx.sortClause());
-                        // Validate that the sort can be performed based on the existence of comparison operators for all types involved
-                        for (SortByItem sortByItem : sort.getBy()) {
-                            if (sortByItem instanceof ByDirection) {
-                                // validate that there is a comparison operator defined for the result element type of the query context
-                                libraryBuilder.verifyComparable(queryContext.getResultElementType());		                    }
-                            else {
-                                libraryBuilder.verifyComparable(sortByItem.getResultType());
+                if (agg == null) {
+                    queryContext.setResultElementType(queryContext.isSingular() ? null : ((ListType) queryResultType).getElementType());
+                    if (ctx.sortClause() != null) {
+                        if (queryContext.isSingular()) {
+                            // ERROR:
+                            throw new IllegalArgumentException("Sort clause cannot be used in a singular query.");
+                        }
+                        queryContext.enterSortClause();
+                        try {
+                            sort = (SortClause) visit(ctx.sortClause());
+                            // Validate that the sort can be performed based on the existence of comparison operators for all types involved
+                            for (SortByItem sortByItem : sort.getBy()) {
+                                if (sortByItem instanceof ByDirection) {
+                                    // validate that there is a comparison operator defined for the result element type of the query context
+                                    libraryBuilder.verifyComparable(queryContext.getResultElementType());
+                                } else {
+                                    libraryBuilder.verifyComparable(sortByItem.getResultType());
+                                }
                             }
+                        } finally {
+                            queryContext.exitSortClause();
                         }
                     }
-                    finally {
-                        queryContext.exitSortClause();
+                }
+                else {
+                    if (ctx.sortClause() != null) {
+                        // ERROR:
+                        throw new IllegalArgumentException("Sort clause cannot be used in an aggregate query.");
                     }
                 }
 
@@ -3116,6 +3145,7 @@ DATETIME
                         .withRelationship(qicx)
                         .withWhere(where)
                         .withReturn(ret)
+                        .withAggregate(agg)
                         .withSort(sort);
 
                 query.setResultType(queryResultType);
@@ -3417,6 +3447,71 @@ DATETIME
                 : new ListType(returnClause.getExpression().getResultType()));
 
         return returnClause;
+    }
+
+    @Override
+    public Object visitStartingClause(@NotNull cqlParser.StartingClauseContext ctx) {
+        if (ctx.simpleLiteral() != null) {
+            return visit(ctx.simpleLiteral());
+        }
+
+        if (ctx.quantity() != null) {
+            return visit(ctx.quantity());
+        }
+
+        if (ctx.expression() != null) {
+            return visit(ctx.expression());
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitAggregateClause(@NotNull cqlParser.AggregateClauseContext ctx) {
+        AggregateClause aggregateClause = of.createAggregateClause();
+        if (ctx.getChild(1) instanceof TerminalNode) {
+            switch (ctx.getChild(1).getText()) {
+                case "all":
+                    aggregateClause.setDistinct(false);
+                    break;
+                case "distinct":
+                    aggregateClause.setDistinct(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (ctx.startingClause() != null) {
+            aggregateClause.setStarting(parseExpression(ctx.startingClause()));
+        }
+
+        // If there is a starting, that's the type of the var
+        // If there's not a starting, push an Any and then attempt to evaluate (might need a type hint here)
+        aggregateClause.setIdentifier(parseString(ctx.identifier()));
+
+        Expression accumulator = null;
+        if (aggregateClause.getStarting() != null) {
+            accumulator = libraryBuilder.buildNull(aggregateClause.getStarting().getResultType());
+        }
+        else {
+            accumulator = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Any"));
+        }
+
+        LetClause letClause = of.createLetClause().withExpression(accumulator)
+                .withIdentifier(aggregateClause.getIdentifier());
+        letClause.setResultType(letClause.getExpression().getResultType());
+        libraryBuilder.peekQueryContext().addLetClause(letClause);
+
+        aggregateClause.setExpression(parseExpression(ctx.expression()));
+        aggregateClause.setResultType(aggregateClause.getExpression().getResultType());
+
+        if (aggregateClause.getStarting() == null) {
+            accumulator.setResultType(aggregateClause.getResultType());
+            aggregateClause.setStarting(accumulator);
+        }
+
+        return aggregateClause;
     }
 
     @Override

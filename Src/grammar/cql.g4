@@ -227,7 +227,7 @@ qualifier
     ;
 
 query
-    : sourceClause letClause? queryInclusionClause* whereClause? returnClause? sortClause?
+    : sourceClause letClause? queryInclusionClause* whereClause? (aggregateClause | returnClause)? sortClause?
     ;
 
 sourceClause
@@ -248,6 +248,14 @@ whereClause
 
 returnClause
     : 'return' ('all' | 'distinct')? expression
+    ;
+
+aggregateClause
+    : 'aggregate' ('all' | 'distinct')? identifier startingClause? ':' expression
+    ;
+
+startingClause
+    : 'starting' (simpleLiteral | quantity | ('(' expression ')'))
     ;
 
 sortClause
@@ -282,8 +290,8 @@ simplePath
     ;
 
 simpleLiteral
-    : STRING
-    | NUMBER
+    : STRING                                           #simpleStringLiteral
+    | NUMBER                                           #simpleNumberLiteral
     ;
 
 expression
@@ -484,6 +492,7 @@ conceptSelector
 
 keyword
     : 'after'
+    | 'aggregate'
     | 'all'
     | 'and'
     | 'as'
@@ -576,6 +585,7 @@ keyword
     | 'seconds'
     | 'singleton'
     | 'start'
+    | 'starting'
     | 'starts'
     | 'sort'
     | 'successor'
@@ -605,7 +615,8 @@ keyword
 
 // NOTE: Not used, this is the set of reserved words that may not appear as identifiers in ambiguous contexts
 reservedWord
-    : 'all'
+    : 'aggregate'
+    | 'all'
     | 'and'
     | 'as'
     | 'after'
@@ -717,6 +728,7 @@ keywordIdentifier
     | 'private'
     | 'public'
     | 'start'
+    | 'starting'
     | 'starts'
     | 'successor'
     | 'time'
@@ -759,6 +771,7 @@ obsoleteIdentifier
 // Function identifiers are keywords that may be used as identifiers for functions
 functionIdentifier
     : 'after'
+    | 'aggregate'
     | 'all'
     | 'and'
     | 'as'
@@ -849,6 +862,7 @@ functionIdentifier
     | 'second'
     | 'seconds'
     | 'start'
+    | 'starting'
     | 'starts'
     | 'sort'
     | 'successor'

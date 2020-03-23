@@ -3323,6 +3323,21 @@ Property expressions can also be used to access the individual points and closed
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="AggregateClause">
+		<xs:annotation>
+			<xs:documentation>The AggregateClause element defines the result of the query in terms of an aggregation expression performed for each item in the query.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="expression" type="Expression" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="starting" type="Expression" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="identifier" type="xs:string" use="required"/>
+				<xs:attribute name="distinct" type="xs:boolean" use="optional" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Query">
 		<xs:annotation>
 			<xs:documentation>The Query operator represents a clause-based query. The result of the query is determined by the type of sources included, as well as the clauses used in the query.</xs:documentation>
@@ -3335,6 +3350,7 @@ Property expressions can also be used to access the individual points and closed
 					<xs:element name="relationship" type="RelationshipClause" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="where" type="Expression" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="return" type="ReturnClause" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="aggregate" type="AggregateClause" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="sort" type="SortClause" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
