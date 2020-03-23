@@ -13,6 +13,11 @@
 		<xs:complexContent>
 			<xs:extension base="Expression">
 				<xs:sequence>
+					<xs:element name="id" type="Expression" minOccurs="0" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>The id element optionally specifies an expression that results in a value that can be used to filter the retrieve to a specific id.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 					<xs:element name="codes" type="Expression" minOccurs="0" maxOccurs="1">
 						<xs:annotation>
 							<xs:documentation>The codes element optionally specifies an expression that results in a List&lt;Code&gt; to match against. Only the clinical statements that match at least one of the specified codes will be returned.</xs:documentation>
@@ -46,6 +51,11 @@
 This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="idSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The idSearch attribute specifies the name of the search path to use for searching for the values in the id element.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="codeProperty" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The codeProperty attribute optionally specifies which property of the model contains the Code or Codes for the clinical statement.
@@ -53,6 +63,11 @@ This property may be specified as a path, including qualifiers and constant inde
 Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. Note also that even in the case of an implementation catalog, implementations would still need to respect codeProperty values in the ELM due to the possibility of the retrieve specifying alternate code filters. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
 
 This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="codeSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The codeSearch attribute specifies the name of the search path to use for searching for the values in the code element.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="valueSetProperty" type="xs:string" use="optional">
@@ -95,6 +110,11 @@ This property may be specified as a path, including qualifiers and constant inde
 Note that if the dateProperty is specified, the dateLowProperty and dateHighProperty attributes must not be present. And conversely, if the dateLowProperty and dateHighProperty attributes are specified, the dateProperty must not be present.
 
 This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="dateSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateSearch attribute specifies the name of the search path to use for searching for values in the date range specified by the dateRange element.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
