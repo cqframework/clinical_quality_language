@@ -69,7 +69,7 @@ public class ModelImporter {
 
         // Import model contexts
         for (ContextInfo c : this.modelInfo.getContextInfo()) {
-            DataType contextType = resolveTypeName(c.getName());
+            DataType contextType = resolveTypeSpecifier(c.getContextType());
             if (!(contextType instanceof ClassType)) {
                 // ERROR:
                 throw new IllegalArgumentException(String.format("Model context %s must be a class type.", c.getName()));
@@ -162,7 +162,10 @@ public class ModelImporter {
 
         if (typeSpecifier instanceof NamedTypeSpecifier) {
             NamedTypeSpecifier namedTypeSpecifier = (NamedTypeSpecifier)typeSpecifier;
-            String qualifier = namedTypeSpecifier.getModelName();
+            String qualifier = namedTypeSpecifier.getNamespace();
+            if (qualifier == null || qualifier.isEmpty()) {
+                qualifier = namedTypeSpecifier.getModelName(); // For backwards compatibility, modelName is deprecated in favor of namespace
+            }
             if (qualifier == null || qualifier.isEmpty()) {
                 qualifier = this.modelInfo.getName();
             }

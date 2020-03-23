@@ -1750,9 +1750,10 @@ public class LibraryBuilder {
         for (int i = 0; i < identifiers.length; i++) {
             PropertyResolution resolution = resolveProperty(sourceType, identifiers[i]);
             sourceType = resolution.getType();
-            if (!resolution.getTarget().equals(identifiers[i])) {
-                throw new IllegalArgumentException(String.format("Identifier %s references an element with a target defined and cannot be resolved as part of a path", identifiers[i]));
-            }
+            // Actually, this doesn't matter for this call, we're just resolving the type...
+            //if (!resolution.getTargetMap().equals(identifiers[i])) {
+            //    throw new IllegalArgumentException(String.format("Identifier %s references an element with a target mapping defined and cannot be resolved as part of a path", identifiers[i]));
+            //}
         }
 
         return sourceType;
@@ -1806,30 +1807,42 @@ public class LibraryBuilder {
 
                 // Resolve the property against each type in the choice
                 Set<DataType> resultTypes = new HashSet<>();
-                String target = null;
+                Map<DataType, String> resultTargetMaps = new HashMap<DataType, String>();
+                String name = null;
                 for (DataType choice : choiceType.getTypes()) {
-                    PropertyResolution resolution  = resolveProperty(choice, identifier, false);
+                    PropertyResolution resolution = resolveProperty(choice, identifier, false);
                     if (resolution != null) {
                         resultTypes.add(resolution.getType());
-                        if (target == null) {
-                            target = resolution.getTarget();
-                        }
-                        else {
-                            if (!target.equals(resolution.getTarget())) {
-                                throw new IllegalArgumentException("Cannot determine target for choices with targets specified.");
+                        if (resolution.getTargetMap() != null) {
+                            if (resultTargetMaps.containsKey(resolution.getType())) {
+                                if (!resultTargetMaps.get(resolution.getType()).equals(resolution.getTargetMap())) {
+                                    throw new IllegalArgumentException(String.format("Inconsistent target maps %s and %s for choice type %s",
+                                            resultTargetMaps.get(resolution.getType()), resolution.getTargetMap(), resolution.getType().toString()));
+                                }
                             }
+                            else {
+                                resultTargetMaps.put(resolution.getType(), resolution.getTargetMap());
+                            }
+                        }
+
+                        if (name == null) {
+                            name = resolution.getName();
+                        }
+                        else if (!name.equals(resolution.getName())) {
+                            throw new IllegalArgumentException(String.format("Inconsistent property resolution for choice type %s (was %s, is %s)",
+                                    choice.toString(), name, resolution.getName()));
                         }
                     }
                 }
 
                 // The result type is a choice of all the resolved types
                 if (resultTypes.size() > 1) {
-                    return new PropertyResolution(new ChoiceType(resultTypes), target);
+                    return new PropertyResolution(new ChoiceType(resultTypes), name, resultTargetMaps);
                 }
 
                 if (resultTypes.size() == 1) {
                     for (DataType resultType : resultTypes) {
-                        return new PropertyResolution(resultType, target);
+                        return new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : null);
                     }
                 }
             }
@@ -1838,7 +1851,7 @@ public class LibraryBuilder {
                 // Resolve property as a list of items of property of the element type
                 ListType listType = (ListType)currentType;
                 PropertyResolution resolution = resolveProperty(listType.getElementType(), identifier);
-                return new PropertyResolution(new ListType(resolution.getType()), resolution.getTarget());
+                return new PropertyResolution(new ListType(resolution.getType()), resolution.getTargetMap());
             }
 
             if (currentType.getBaseType() != null) {
@@ -2008,6 +2021,77 @@ public class LibraryBuilder {
         return null;
     }
 
+    public Expression buildProperty(String scope, String path, DataType resultType) {
+        Property result = of.createProperty()
+                .withScope(scope)
+                .withPath(path);
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public Expression buildProperty(Expression source, String path, DataType resultType) {
+        Property result = of.createProperty().withSource(source).withPath(path);
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public Expression applyTargetMap(Expression source, String targetMap) {
+        if (targetMap == null || targetMap.equals("null")) {
+            return source;
+        }
+
+        // Supported target mapping syntax:
+          // %value.<property name>
+            // Resolves as a property accessor with the given source and <property name> as the path
+          // <qualified function name>(%value)
+            // Resolves as a function ref with the given function name and the source as an operand
+          // <type name>:<map>;<type name>:<map>...
+            // Semi-colon delimited list of type names and associated maps
+            // Resolves as a case with whens for each type, with target mapping applied per the target map for that type
+        // Any other target map results in an exception
+
+        if (targetMap.contains(";")) {
+            String[] typeCases = targetMap.split(";");
+            Case c = of.createCase();
+            for (String typeCase : typeCases) {
+                if (!typeCase.isEmpty()) {
+                    String[] caseElements = typeCase.split(":");
+                    if (caseElements.length != 2) {
+                        throw new IllegalArgumentException(String.format("Malformed type case in targetMap %s", targetMap));
+                    }
+                    CaseItem ci = of.createCaseItem().withWhen(of.createIs().withOperand(applyTargetMap(source, caseElements[1])).withIsType(dataTypeToQName(resolveTypeName(caseElements[0]))))
+                            .withThen(applyTargetMap(source, caseElements[1]));
+                    c.getCaseItem().add(ci);
+                }
+            }
+            c.setElse(this.buildNull(source.getResultType()));
+            c.setResultType(source.getResultType());
+            return c;
+        }
+        else if (targetMap.contains("(%value)")) {
+            int invocationStart = targetMap.indexOf("(");
+            String qualifiedFunctionName = targetMap.substring(0, invocationStart);
+            String[] nameParts = qualifiedFunctionName.split("\\.");
+            String libraryName = null;
+            String functionName = qualifiedFunctionName;
+            if (nameParts.length == 2) {
+                libraryName = nameParts[0];
+                functionName = nameParts[1];
+            }
+            FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(source);
+            fr.setResultType(source.getResultType());
+            return fr;
+        }
+        else if (targetMap.contains("%value.")) {
+            String propertyName = targetMap.substring(7);
+            Property p = of.createProperty().withSource(source).withPath(propertyName);
+            p.setResultType(source.getResultType());
+            return p;
+        }
+
+        throw new IllegalArgumentException(String.format("TargetMapping not implemented: %s", targetMap));
+    }
+
     public Expression resolveAccessor(Expression left, String memberIdentifier) {
         // if left is a LibraryRef
         // if right is an identifier
@@ -2091,11 +2175,8 @@ public class LibraryBuilder {
         }
         else if (left instanceof AliasRef) {
             PropertyResolution resolution = resolveProperty(left.getResultType(), memberIdentifier);
-            Property result = of.createProperty()
-                    .withScope(((AliasRef) left).getName())
-                    .withPath(resolution.getTarget());
-            result.setResultType(resolution.getType());
-            return result;
+            Expression result = buildProperty(((AliasRef)left).getName(), resolution.getName(), resolution.getType());
+            return applyTargetMap(result, resolution.getTargetMap());
         }
         else if (left.getResultType() instanceof ListType && listTraversal) {
             // NOTE: FHIRPath path traversal support
@@ -2103,20 +2184,16 @@ public class LibraryBuilder {
             // listValue.property ::= listValue X where X.property is not null return X.property
             ListType listType = (ListType)left.getResultType();
             PropertyResolution resolution = resolveProperty(listType.getElementType(), memberIdentifier);
-            Property accessor = of.createProperty()
-                    .withSource(of.createAliasRef().withName("$this"))
-                    .withPath(resolution.getTarget());
-            accessor.setResultType(resolution.getType());
+            Expression accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getType());
+            accessor = applyTargetMap(accessor, resolution.getTargetMap());
             IsNull isNull = of.createIsNull().withOperand(accessor);
             isNull.setResultType(resolveTypeName("System", "Boolean"));
             Not not = of.createNot().withOperand(isNull);
             not.setResultType(resolveTypeName("System", "Boolean"));
 
             // Recreate property, it needs to be accessed twice
-            accessor = of.createProperty()
-                    .withSource(of.createAliasRef().withName("$this"))
-                    .withPath(memberIdentifier);
-            accessor.setResultType(resolution.getType());
+            accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getType());
+            accessor = applyTargetMap(accessor, resolution.getTargetMap());
 
             AliasedQuerySource source = of.createAliasedQuerySource().withExpression(left).withAlias("$this");
             source.setResultType(left.getResultType());
@@ -2136,10 +2213,8 @@ public class LibraryBuilder {
         }
         else {
             PropertyResolution resolution = resolveProperty(left.getResultType(), memberIdentifier);
-            Property result = of.createProperty()
-                    .withSource(left)
-                    .withPath(resolution.getTarget());
-            result.setResultType(resolution.getType());
+            Expression result = buildProperty(left, resolution.getName(), resolution.getType());
+            result = applyTargetMap(result, resolution.getTargetMap());
             return result;
         }
     }
@@ -2156,8 +2231,11 @@ public class LibraryBuilder {
 
                 PropertyResolution resolution = resolveProperty(query.getResultElementType(), identifier, false);
                 if (resolution != null) {
-                    IdentifierRef result = new IdentifierRef().withName(resolution.getTarget());
+                    IdentifierRef result = new IdentifierRef().withName(resolution.getName());
                     result.setResultType(resolution.getType());
+                    if (resolution.getTargetMap() != null) {
+                        throw new IllegalArgumentException("Target mapping not supported in this context");
+                    }
                     return result;
                 }
             }

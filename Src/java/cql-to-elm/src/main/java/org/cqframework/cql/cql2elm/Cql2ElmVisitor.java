@@ -699,8 +699,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     ModelInfo modelInfo = modelIdentifier == null
                             ? libraryBuilder.getModel(libraryInfo.getDefaultModelName()).getModelInfo()
                             : libraryBuilder.getModel(modelIdentifier).getModelInfo();
-                    String contextTypeName = modelContext.getName();
-                    DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
+                    //String contextTypeName = modelContext.getName();
+                    //DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
+                    DataType contextType = modelContext.getType();
                     Retrieve contextRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(contextType));
                     track(contextRetrieve, ctx);
                     contextRetrieve.setResultType(new ListType(contextType));
@@ -843,7 +844,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             InstanceElement element = (InstanceElement)visit(elementContext);
             PropertyResolution resolution = libraryBuilder.resolveProperty(classTypeSpecifier.getResultType(), element.getName());
             element.setValue(libraryBuilder.ensureCompatible(element.getValue(), resolution.getType()));
-            element.setName(resolution.getTarget());
+            element.setName(resolution.getName());
+            if (resolution.getTargetMap() != null) {
+                // TODO: Target mapping in instance selectors
+                throw new IllegalArgumentException("Target Mapping in instance selectors not yet supported");
+            }
             instance.getElement().add(element);
         }
 

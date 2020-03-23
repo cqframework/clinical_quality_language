@@ -4,45 +4,66 @@ import org.hl7.cql.model.ClassTypeElement;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.TupleTypeElement;
 
+import java.util.Map;
+
 /**
  * Created by Bryn on 4/19/2019.
  */
 public class PropertyResolution {
     private DataType type;
-    private String target;
+    private String name;
+    private String targetMap;
 
     public PropertyResolution(ClassTypeElement e) {
         this.type = e.getType();
+        this.name = e.getName();
         if (e.getTarget() != null) {
-            this.target = e.getTarget();
-        }
-        else {
-            this.target = e.getName();
+            this.targetMap = e.getTarget();
         }
     }
 
     public PropertyResolution(TupleTypeElement e) {
         this.type = e.getType();
-        this.target = e.getName();
+        this.name = e.getName();
     }
 
-    public PropertyResolution(DataType type, String target) {
+    public PropertyResolution(DataType type, String name) {
+        this(type, name, null);
+    }
+
+    public PropertyResolution(DataType type, String name, Map<DataType, String> targetMaps) {
         if (type == null) {
             throw new IllegalArgumentException("type cannot be null");
         }
 
-        if (target == null) {
-            throw new IllegalArgumentException("target cannot be null");
+        if (name == null) {
+            throw new IllegalArgumentException("name cannot be null");
         }
         this.type = type;
-        this.target = target;
+        this.name = name;
+
+        if (targetMaps != null) {
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<DataType, String> entry : targetMaps.entrySet()) {
+                if (builder.length() > 0) {
+                    builder.append(";");
+                }
+                builder.append(entry.getKey().toString());
+                builder.append(":");
+                builder.append(entry.getValue());
+            }
+        }
     }
 
     public DataType getType() {
         return this.type;
     }
 
-    public String getTarget() {
-        return this.target;
+    public String getName() {
+        return this.name;
+    }
+
+    public String getTargetMap() {
+        return this.targetMap;
     }
 }

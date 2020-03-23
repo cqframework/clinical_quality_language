@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm.fhir.r4;
+package org.cqframework.cql.cql2elm.fhir.r401;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
@@ -26,7 +26,7 @@ public class BaseTest {
 
     @Test
     public void testChoiceWithAlternativeConversion() throws IOException {
-        ExpressionDef def = (ExpressionDef) visitFile("fhir/r4/TestChoiceTypes.cql");
+        ExpressionDef def = (ExpressionDef) visitFile("fhir/r401/TestChoiceTypes.cql");
         Query query = (Query) def.getExpression();
 
         // First check the source
@@ -51,12 +51,12 @@ public class BaseTest {
     @Test
     public void testURIConversion() throws IOException {
         // If this translates without errors, the test is successful
-        ExpressionDef def = (ExpressionDef) visitFile("fhir/r4/TestURIConversion.cql");
+        ExpressionDef def = (ExpressionDef) visitFile("fhir/r401/TestURIConversion.cql");
     }
 
     @Test
     public void testFHIRTiming() throws IOException {
-        ExpressionDef def = (ExpressionDef) visitFile("fhir/r4/TestFHIRTiming.cql");
+        ExpressionDef def = (ExpressionDef) visitFile("fhir/r401/TestFHIRTiming.cql");
         // Query->
         //  where->
         //      IncludedIn->
@@ -91,7 +91,7 @@ public class BaseTest {
 
     @Test
     public void testEqualityWithConversions() throws IOException {
-        TranslatedLibrary library = visitFileLibrary("fhir/r4/EqualityWithConversions.cql");
+        TranslatedLibrary library = visitFileLibrary("fhir/r401/EqualityWithConversions.cql");
         ExpressionDef getGender = library.resolveExpressionRef("GetGender");
         assertThat(getGender.getExpression(), instanceOf(Equal.class));
         Equal equal = (Equal)getGender.getExpression();
@@ -103,7 +103,7 @@ public class BaseTest {
 
     @Test
     public void testDoubleListPromotion() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r4/TestDoubleListPromotion.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestDoubleListPromotion.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
 
@@ -122,16 +122,31 @@ public class BaseTest {
 
     @Test
     public void testIntervalImplicitConversion() throws IOException {
-        TestUtils.runSemanticTest("fhir/r4/TestIntervalImplicitConversion.cql", 0);
+        TestUtils.runSemanticTest("fhir/r401/TestIntervalImplicitConversion.cql", 0);
     }
 
     @Test
     public void testImplicitFHIRHelpers() throws IOException {
-        TestUtils.runSemanticTest("fhir/r4/TestImplicitFHIRHelpers.cql", 0);
+        TestUtils.runSemanticTest("fhir/r401/TestImplicitFHIRHelpers.cql", 0);
+    }
+
+    @Test
+    public void testContext() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestContext.cql", 0);
+    }
+
+    @Test
+    public void testFHIR() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestFHIR.cql", 0);
+    }
+
+    @Test
+    public void testFHIRWithHelpers() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestFHIRWithHelpers.cql", 0);
     }
 
     @Test
     public void testBundle() throws IOException {
-        TestUtils.runSemanticTest("fhir/r4/TestBundle.cql", 0);
+        TestUtils.runSemanticTest("fhir/r401/TestBundle.cql", 0);
     }
 }
