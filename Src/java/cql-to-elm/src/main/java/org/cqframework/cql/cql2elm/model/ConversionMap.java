@@ -112,6 +112,16 @@ public class ConversionMap {
         return false;
     }
 
+    public Operator getConversionOperator(DataType fromType, DataType toType) {
+        for (Conversion c : this.getConversions(fromType)) {
+            if (c.getToType().equals(toType)) {
+                return c.getOperator();
+            }
+        }
+
+        return null;
+    }
+
     public void add(Conversion conversion) {
         if (conversion == null) {
             throw new IllegalArgumentException("conversion is null.");

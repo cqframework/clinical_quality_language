@@ -3270,6 +3270,8 @@ DATETIME
      * operands (or sub-operands) were modified; <code>false</code> otherwise.
      */
     private String getPropertyPath(Expression reference, String alias) {
+        reference = getConversionReference(reference);
+        reference = getChoiceSelection(reference);
         if (reference instanceof Property) {
             Property property = (Property)reference;
             if (alias.equals(property.getScope())) {
@@ -3284,6 +3286,46 @@ DATETIME
         }
 
         return null;
+    }
+
+    /**
+     * If this is a conversion operator, return the argument of the conversion, on the grounds that the date range optimization
+     * should apply through a conversion (i.e. it is an order-preserving conversion)
+     *
+     * @param reference the <code>Expression</code> to examine
+     * @return The argument to the conversion operator if there was one, otherwise, the given <code>reference</code>
+     */
+    private Expression getConversionReference(Expression reference) {
+        if (reference instanceof FunctionRef) {
+            FunctionRef functionRef = (FunctionRef)reference;
+            if (functionRef.getOperand().size() == 1 && functionRef.getResultType() != null && functionRef.getOperand().get(0).getResultType() != null) {
+                Operator o = this.libraryBuilder.getConversionMap().getConversionOperator(functionRef.getOperand().get(0).getResultType(), functionRef.getResultType());
+                if (o != null && o.getLibraryName() != null && o.getLibraryName().equals(functionRef.getLibraryName())
+                        && o.getName() != null && o.getName().equals(functionRef.getName())) {
+                    return functionRef.getOperand().get(0);
+                }
+            }
+        }
+
+        return reference;
+    }
+
+    /**
+     * If this is a choice selection, return the argument of the choice selection, on the grounds that the date range optimization
+     * should apply through the cast (i.e. it is an order-preserving cast)
+
+     * @param reference the <code>Expression</code> to examine
+     * @return The argument to the choice selection (i.e. As) if there was one, otherwise, the given <code>reference</code>
+     */
+    private Expression getChoiceSelection(Expression reference) {
+        if (reference instanceof As) {
+            As as = (As)reference;
+            if (as.getOperand() != null && as.getOperand().getResultType() instanceof ChoiceType) {
+                return as.getOperand();
+            }
+        }
+
+        return reference;
     }
 
     /**
