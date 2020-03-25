@@ -121,6 +121,83 @@ public class BaseTest {
     }
 
     @Test
+    public void testChoiceDateRangeOptimization() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestChoiceDateRangeOptimization.cql", 0, CqlTranslator.Options.EnableDateRangeOptimization);
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        /*
+         <expression localId="25" locator="10:23-10:81" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="20" locator="10:23-10:35" alias="C">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="19" locator="10:23-10:33" dataType="fhir:Condition" dateProperty="recordedDate" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <dateRange localId="23" locator="10:65-10:81" name="MeasurementPeriod" xsi:type="ParameterRef">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </dateRange>
+               </expression>
+            </source>
+         </expression>
+         */
+
+        ExpressionDef expressionDef = defs.get("DateCondition");
+        assertThat(expressionDef.getExpression(), instanceOf(Query.class));
+        Query query = (Query)expressionDef.getExpression();
+        assertThat(query.getSource().size(), is(1));
+        assertThat(query.getSource().get(0).getExpression(), instanceOf(Retrieve.class));
+        Retrieve retrieve = (Retrieve)query.getSource().get(0).getExpression();
+        assertThat(retrieve.getDateProperty(), is("recordedDate"));
+        assertThat(retrieve.getDateRange(), instanceOf(ParameterRef.class));
+
+        /*
+         <expression localId="35" locator="11:35-11:101" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="28" locator="11:35-11:47" alias="C">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="27" locator="11:35-11:45" dataType="fhir:Condition" dateProperty="onset" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <dateRange localId="33" locator="11:85-11:101" name="MeasurementPeriod" xsi:type="ParameterRef">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </dateRange>
+               </expression>
+            </source>
+         </expression>
+         */
+
+        expressionDef = defs.get("ChoiceTypePeriodCondition");
+        assertThat(expressionDef.getExpression(), instanceOf(Query.class));
+        query = (Query)expressionDef.getExpression();
+        assertThat(query.getSource().size(), is(1));
+        assertThat(query.getSource().get(0).getExpression(), instanceOf(Retrieve.class));
+        retrieve = (Retrieve)query.getSource().get(0).getExpression();
+        assertThat(retrieve.getDateProperty(), is("onset"));
+        assertThat(retrieve.getDateRange(), instanceOf(ParameterRef.class));
+    }
+
+    @Test
     public void testIntervalImplicitConversion() throws IOException {
         TestUtils.runSemanticTest("fhir/r401/TestIntervalImplicitConversion.cql", 0);
     }
