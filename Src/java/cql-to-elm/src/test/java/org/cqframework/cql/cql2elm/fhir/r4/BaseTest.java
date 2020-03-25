@@ -134,4 +134,91 @@ public class BaseTest {
     public void testBundle() throws IOException {
         TestUtils.runSemanticTest("fhir/r4/TestBundle.cql", 0);
     }
+
+    @Test
+    public void testConceptConversion() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r4/TestConceptConversion.cql", 0);
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+/*
+         <expression localId="18" locator="15:3-16:42" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="13" locator="15:3-15:17" alias="O">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="12" locator="15:3-15:15" dataType="fhir:Observation" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <where localId="17" locator="16:5-16:42" resultTypeName="t:Boolean" xsi:type="Equivalent">
+               <operand name="ToConcept" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                  <operand localId="15" locator="16:11-16:16" resultTypeName="fhir:CodeableConcept" path="code" scope="O" xsi:type="Property"/>
+               </operand>
+               <operand xsi:type="ToConcept">
+                  <operand localId="16" locator="16:20-16:42" resultTypeName="t:Code" name="ECOG performance code" xsi:type="CodeRef"/>
+               </operand>
+            </where>
+         </expression>
+ */
+
+        ExpressionDef expressionDef = defs.get("TestCodeComparison");
+
+        assertThat(expressionDef.getExpression(), instanceOf(Query.class));
+        Query query = (Query)expressionDef.getExpression();
+        assertThat(query.getWhere(), instanceOf(Equivalent.class));
+        Equivalent equivalent = (Equivalent)query.getWhere();
+        assertThat(equivalent.getOperand().get(0), instanceOf(FunctionRef.class));
+        FunctionRef functionRef = (FunctionRef)equivalent.getOperand().get(0);
+        assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
+        assertThat(functionRef.getName(), is("ToConcept"));
+        assertThat(equivalent.getOperand().get(1), instanceOf(ToConcept.class));
+
+        expressionDef = defs.get("TestConceptComparison");
+
+/*
+         <expression localId="26" locator="19:3-20:43" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="21" locator="19:3-19:17" alias="O">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="20" locator="19:3-19:15" dataType="fhir:Observation" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <where localId="25" locator="20:5-20:43" resultTypeName="t:Boolean" xsi:type="Equivalent">
+               <operand name="ToConcept" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                  <operand localId="23" locator="20:11-20:16" resultTypeName="fhir:CodeableConcept" path="code" scope="O" xsi:type="Property"/>
+               </operand>
+               <operand localId="24" locator="20:20-20:43" resultTypeName="t:Concept" name="ECOG performance score" xsi:type="ConceptRef"/>
+            </where>
+         </expression>
+ */
+
+        assertThat(expressionDef.getExpression(), instanceOf(Query.class));
+        query = (Query)expressionDef.getExpression();
+        assertThat(query.getWhere(), instanceOf(Equivalent.class));
+        equivalent = (Equivalent)query.getWhere();
+        assertThat(equivalent.getOperand().get(0), instanceOf(FunctionRef.class));
+        functionRef = (FunctionRef)equivalent.getOperand().get(0);
+        assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
+        assertThat(functionRef.getName(), is("ToConcept"));
+        assertThat(equivalent.getOperand().get(1), instanceOf(ConceptRef.class));
+    }
 }
