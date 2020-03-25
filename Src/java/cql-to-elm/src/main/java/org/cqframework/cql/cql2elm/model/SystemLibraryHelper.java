@@ -244,6 +244,10 @@ public class SystemLibraryHelper {
         system.add(new Operator("GreaterOrEqual", new Signature(systemModel.getQuantity(), systemModel.getQuantity()), systemModel.getBoolean()));
         system.add(new Operator("Equal", new Signature(systemModel.getRatio(), systemModel.getRatio()), systemModel.getBoolean()));
         system.add(new Operator("Equivalent", new Signature(systemModel.getRatio(), systemModel.getRatio()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getCode(), systemModel.getCode()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getCode(), systemModel.getCode()), systemModel.getBoolean()));
+        system.add(new Operator("Equal", new Signature(systemModel.getConcept(), systemModel.getConcept()), systemModel.getBoolean()));
+        system.add(new Operator("Equivalent", new Signature(systemModel.getConcept(), systemModel.getConcept()), systemModel.getBoolean()));
 
         // Arithmetic Operators
         system.add(new Operator("Abs", new Signature(systemModel.getInteger()), systemModel.getInteger()));
