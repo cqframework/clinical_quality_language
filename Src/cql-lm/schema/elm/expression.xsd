@@ -743,7 +743,7 @@ If the argument is null, the result is null.</xs:documentation>
 
 For String values, the operator expects the string to be formatted using the ISO-8601 datetime representation:
 
-YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+YYYY-MM-DDThh:mm:ss.fff(Z|((+|-)hh:mm))
 
 See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
@@ -765,7 +765,7 @@ If the argument is null, the result is null.</xs:documentation>
 
 For String values, the operator expects the string to be formatted using the ISO-8601 datetime representation:
 
-YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+YYYY-MM-DDThh:mm:ss.fff(Z|((+|-)hh:mm))
 
 See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
