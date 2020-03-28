@@ -719,6 +719,8 @@ For String values, The operator expects the string to be formatted using the ISO
 
 YYYY-MM-DD
 
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
+
 In addition, the string must be interpretable as a valid date value.
 
 Note that the operator can take datetime formatted strings and will ignore the time portions.
@@ -743,6 +745,8 @@ For String values, the operator expects the string to be formatted using the ISO
 
 YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
+
 In addition, the string must be interpretable as a valid DateTime value.
 
 If the input string is not formatted correctly, or does not represent a valid DateTime value, the result is false.
@@ -762,6 +766,8 @@ If the argument is null, the result is null.</xs:documentation>
 For String values, the operator expects the string to be formatted using the ISO-8601 datetime representation:
 
 YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
+
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
 In addition, the string must be interpretable as a valid DateTime value.
 
@@ -785,6 +791,8 @@ If the argument is null, the result is null.</xs:documentation>
 
 Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit, followed optionally by a decimal point, at least one digit, and any number of additional digits (including none).
 
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
+
 Note that the decimal value returned by this operator must be limited in precision and scale to the maximum precision and scale representable for Decimal values within CQL.
 
 If the input string is not formatted correctly, or cannot be interpreted as a valid Decimal value, the result is false.
@@ -802,6 +810,8 @@ If the argument is null, the result is null.</xs:documentation>
 (+|-)?#0(.0#)?
 
 Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit, followed optionally by a decimal point, at least one digit, and any number of additional digits (including none).
+
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
 Note that the decimal value returned by this operator must be limited in precision and scale to the maximum precision and scale representable for Decimal values within CQL.
 
@@ -821,6 +831,8 @@ If the argument is null, the result is null.</xs:documentation>
 
 Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit.
 
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
+
 Note that the integer value returned by this operator must be a valid value in the range representable for Integer values in CQL.
 
 If the input string is not formatted correctly, or cannot be interpreted as a valid Integer value, the result is false.
@@ -838,6 +850,8 @@ If the argument is null, the result is null.</xs:documentation>
 (+|-)?#0
 
 Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit.
+
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
 Note that the integer value returned by this operator must be a valid value in the range representable for Integer values in CQL.
 
@@ -857,6 +871,8 @@ If the argument is null, the result is null.</xs:documentation>
 
 Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit.
 
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
+
 Note that for this operator to return true, the input must be a valid value in the range representable for Long values in CQL.
 
 If the input string is not formatted correctly, or cannot be interpreted as a valid Long value, the result is false.
@@ -874,6 +890,8 @@ If the argument is null, the result is null.</xs:documentation>
 (+|-)?#0
 
 Meaning an optional polarity indicator, followed by any number of digits (including none), followed by at least one digit.
+
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
 Note that the long value returned by this operator must be a valid value in the range representable for Long values in CQL.
 
@@ -894,6 +912,8 @@ For String values, the operator accepts strings using the following format:
 (+|-)?#0(.0#)?('&lt;unit&gt;')?
 
 Meaning an optional polarity indicator, followed by any number of digits (including none) followed by at least one digit, optionally followed by a decimal point, at least one digit, and any number of additional digits, all optionally followed by a unit designator as a string literal specifying a valid UCUM unit of measure or calendar duration keyword, singular or plural. Spaces are allowed between the quantity value and the unit designator.
+
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
 Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL.
 
@@ -916,6 +936,8 @@ For String values, the operator accepts strings using the following format:
 (+|-)?#0(.0#)?('&lt;unit&gt;')?
 
 Meaning an optional polarity indicator, followed by any number of digits (including none) followed by at least one digit, optionally followed by a decimal point, at least one digit, and any number of additional digits, all optionally followed by a unit designator as a string literal specifying a valid UCUM unit of measure or calendar duration keyword, singular or plural. Spaces are allowed between the quantity value and the unit designator.
+
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
 Note that the decimal value of the quantity returned by this operator must be a valid value in the range representable for Decimal values in CQL.
 
@@ -1023,6 +1045,8 @@ DateTime YYYY-MM-DDThh:mm:ss.fff(+|-)hh:mm
 Time	hh:mm:ss.fff
 Ratio &lt;quantity&gt;:&lt;quantity&gt;
 
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
+
 If the argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -1036,6 +1060,8 @@ If the argument is null, the result is null.</xs:documentation>
 For String values, the operator expects the string to be formatted using ISO-8601 time representation:
 
 hh:mm:ss.fff
+
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
 In addition, the string must be interpretable as a valid time-of-day value.
 
@@ -1056,6 +1082,8 @@ If the argument is null, the result is null.</xs:documentation>
 For String values, the operator expects the string to be formatted using ISO-8601 time representation:
 
 hh:mm:ss.fff
+
+See the Formatting Strings topic in the CQL Reference (Appendix B) of the CQL Specification for a description of formatting strings.
 
 In addition, the string must be interpretable as a valid time-of-day value.
 
