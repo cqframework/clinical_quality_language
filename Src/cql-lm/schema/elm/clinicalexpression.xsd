@@ -108,7 +108,7 @@ This property may be specified as a path, including qualifiers and constant inde
 				</xs:attribute>
 				<xs:attribute name="codeComparator" type="xs:string" use="optional">
 					<xs:annotation>
-						<xs:documentation>The codeComparator attribute specifies how elements of the code property should be matched to the terminology. One of 'in', 'contains', '=', or '~'. Note that 'in' and 'contains' will resolve to the appropriate terminology matching operator, resulting in equivalence semantics for value set and code system membership testing.</xs:documentation>
+						<xs:documentation>The codeComparator attribute specifies how elements of the code property should be matched to the terminology. One of 'in', '=', or '~'. Note that 'in' will resolve to the appropriate terminology matching operator, resulting in equivalence semantics for value set and code system membership testing.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="valueSetProperty" type="xs:string" use="optional">

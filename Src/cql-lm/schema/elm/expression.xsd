@@ -2283,7 +2283,7 @@ For the List, T overload, this operator returns true if the given element is in 
 
 For the Interval, T overload, this operator returns true if the given point is greater than the starting point of the interval, and less than the ending point of the interval, as determined by the Start and End operators.  If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
-If either argument is null, the result is null.</xs:documentation>
+If the first argument is null, the result is false. If the second argument is null, the result is null.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
@@ -2325,7 +2325,7 @@ For the T, List overload, this operator returns if the given element is in the g
 
 For the T, Interval overload, this operator returns true if the given point is greater than the starting point, and less than the ending point of the interval, as determined by the Start and End operators. If precision is specified and the point type is a Date, DateTime, or Time type, comparisons used in the operation are performed at the specified precision.
 
-If either argument is null, the result is null.</xs:documentation>
+If the first argument is null, the result is null. If the second argument is null the result is false.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="BinaryExpression">
