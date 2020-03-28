@@ -206,7 +206,7 @@ withoutClause
     ;
 
 retrieve
-    : '[' (contextIdentifier '->')? namedTypeSpecifier (':' (codePath 'in')? terminology)? ']'
+    : '[' (contextIdentifier '->')? namedTypeSpecifier (':' (codePath codeComparator)? terminology)? ']'
     ;
 
 contextIdentifier
@@ -215,6 +215,12 @@ contextIdentifier
 
 codePath
     : simplePath
+    ;
+
+codeComparator
+    : 'in'
+    | '='
+    | '~'
     ;
 
 terminology

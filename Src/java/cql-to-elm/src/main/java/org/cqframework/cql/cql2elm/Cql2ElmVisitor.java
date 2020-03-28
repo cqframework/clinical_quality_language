@@ -2943,41 +2943,76 @@ DATETIME
                 terminology = parseExpression(ctx.terminology().expression());
             }
 
-            // Resolve the terminology target using an in or = operator
+            String codeComparator = ctx.codeComparator() != null ? (String)visit(ctx.codeComparator()) : null;
+
+            // Resolve the terminology target using an in or ~ operator
             try {
-                if (terminology.getResultType() instanceof ListType) {
-                    Expression in = libraryBuilder.resolveIn(property, terminology);
-                    if (in instanceof In) {
-                        retrieve.setCodes(((In) in).getOperand().get(1));
-                    } else if (in instanceof InValueSet) {
-                        retrieve.setCodes(((InValueSet) in).getValueset());
-                    } else if (in instanceof InCodeSystem) {
-                        retrieve.setCodes(((InCodeSystem) in).getCodesystem());
-                    } else if (in instanceof AnyInValueSet) {
-                        retrieve.setCodes(((AnyInValueSet) in).getValueset());
-                    } else if (in instanceof AnyInCodeSystem) {
-                        retrieve.setCodes(((AnyInCodeSystem) in).getCodesystem());
-                    } else {
+                if (codeComparator == null) {
+                    codeComparator = terminology.getResultType() instanceof ListType ? "in" : "~";
+                }
+
+                switch (codeComparator) {
+                    case "in": {
+                        Expression in = libraryBuilder.resolveIn(property, terminology);
+                        if (in instanceof In) {
+                            retrieve.setCodes(((In) in).getOperand().get(1));
+                        } else if (in instanceof InValueSet) {
+                            retrieve.setCodes(((InValueSet) in).getValueset());
+                        } else if (in instanceof InCodeSystem) {
+                            retrieve.setCodes(((InCodeSystem) in).getCodesystem());
+                        } else if (in instanceof AnyInValueSet) {
+                            retrieve.setCodes(((AnyInValueSet) in).getValueset());
+                        } else if (in instanceof AnyInCodeSystem) {
+                            retrieve.setCodes(((AnyInCodeSystem) in).getCodesystem());
+                        } else {
+                            // ERROR:
+                            // WARNING:
+                            libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
+                                    useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                    getTrackBack(ctx)));
+                        }
+                    }
+                    break;
+
+                    case "~": {
+                        // Resolve with equivalent to verify the type of the target
+                        BinaryExpression equivalent = of.createEquivalent().withOperand(property, terminology);
+                        libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+
+                        // Automatically promote to a list for use in the retrieve target
+                        if (!(equivalent.getOperand().get(1).getResultType() instanceof ListType)) {
+                            retrieve.setCodes(libraryBuilder.resolveToList(equivalent.getOperand().get(1)));
+                        }
+                        else {
+                            retrieve.setCodes(equivalent.getOperand().get(1));
+                        }
+                    }
+                    break;
+
+                    case "=": {
+                        // Resolve with equality to verify the type of the source and target
+                        BinaryExpression equal = of.createEqual().withOperand(property, terminology);
+                        libraryBuilder.resolveBinaryCall("System", "Equal", equal);
+
+                        // Automatically promote to a list for use in the retrieve target
+                        if (!(equal.getOperand().get(1).getResultType() instanceof ListType)) {
+                            retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
+                        }
+                        else {
+                            retrieve.setCodes(equal.getOperand().get(1));
+                        }
+                    }
+                    break;
+
+                    default:
                         // ERROR:
                         // WARNING:
-                        libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
+                        libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unknown code comparator % in retrieve", codeComparator),
                                 useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
-                                getTrackBack(ctx)));
-                    }
+                                getTrackBack(ctx.codeComparator())));
                 }
-                else {
-                    // Resolve with equality to verify the type of the target
-                    BinaryExpression equal = of.createEqual().withOperand(property, terminology);
-                    libraryBuilder.resolveBinaryCall("System", "Equal", equal);
 
-                    // Automatically promote to a list for use in the retrieve target
-                    if (!(equal.getOperand().get(1).getResultType() instanceof ListType)) {
-                        retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
-                    }
-                    else {
-                        retrieve.setCodes(equal.getOperand().get(1));
-                    }
-                }
+                retrieve.setCodeComparator(codeComparator);
             }
             catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
@@ -2988,6 +3023,7 @@ DATETIME
                 else {
                     retrieve.setCodes(terminology);
                 }
+                retrieve.setCodeComparator(codeComparator);
                 // ERROR:
                 // WARNING:
                 libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
