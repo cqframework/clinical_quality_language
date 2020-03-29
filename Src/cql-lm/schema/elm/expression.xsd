@@ -2065,6 +2065,8 @@ At least one component must be specified, and no component may be specified at a
 
 At least one component other than timezoneOffset must be specified, and no component may be specified at a precision below an unspecified precision. For example, hour may be null, but if it is, minute, second, and millisecond must all be null as well.
 
+Although the milliseconds are specified with a separate component, seconds and milliseconds are combined and represented as a Decimal for the purposes of comparison.
+
 If timezoneOffset is not specified, it is defaulted to the timezone offset of the evaluation request.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -2086,7 +2088,9 @@ If timezoneOffset is not specified, it is defaulted to the timezone offset of th
 		<xs:annotation>
 			<xs:documentation>The Time operator constructs a time value from the given components.
 
-At least one component must be specified, and no component may be specified at a precision below an unspecified precision. For example, minute may be null, but if it is, second, and millisecond must all be null as well.</xs:documentation>
+At least one component must be specified, and no component may be specified at a precision below an unspecified precision. For example, minute may be null, but if it is, second, and millisecond must all be null as well.
+
+Although the milliseconds are specified with a separate component, seconds and milliseconds are combined and represented as a [.id]#Decimal# for the purposes of comparison.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="OperatorExpression">
