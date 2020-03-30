@@ -54,5 +54,11 @@ public class SystemModel extends Model {
 
     public DataType getConcept() { return this.resolveTypeName("Concept"); }
 
+    public DataType getVocabulary() { return this.resolveTypeName("Vocabulary"); }
+
+    public DataType getCodeSystem() { return this.resolveTypeName("CodeSystem"); }
+
+    public DataType getValueSet() { return this.resolveTypeName("ValueSet"); }
+
     public DataType getVoid() { return new SimpleType("Void"); }
 }

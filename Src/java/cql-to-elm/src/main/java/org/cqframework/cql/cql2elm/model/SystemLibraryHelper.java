@@ -646,17 +646,33 @@ public class SystemLibraryHelper {
         system.add(new Operator("InValueSet", new Signature(systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("InValueSet", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
 
+        system.add(new Operator("InValueSet", new Signature(systemModel.getString(), systemModel.getValueSet()), systemModel.getBoolean()));
+        system.add(new Operator("InValueSet", new Signature(systemModel.getCode(), systemModel.getValueSet()), systemModel.getBoolean()));
+        system.add(new Operator("InValueSet", new Signature(systemModel.getConcept(), systemModel.getValueSet()), systemModel.getBoolean()));
+
         system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getString())), systemModel.getBoolean()));
         system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getCode())), systemModel.getBoolean()));
         system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getConcept())), systemModel.getBoolean()));
+
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getString()), systemModel.getValueSet()), systemModel.getBoolean()));
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getCode()), systemModel.getValueSet()), systemModel.getBoolean()));
+        system.add(new Operator("AnyInValueSet", new Signature(new ListType(systemModel.getConcept()), systemModel.getValueSet()), systemModel.getBoolean()));
 
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getString()), systemModel.getBoolean()));
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("InCodeSystem", new Signature(systemModel.getConcept()), systemModel.getBoolean()));
 
+        system.add(new Operator("InCodeSystem", new Signature(systemModel.getString(), systemModel.getCodeSystem()), systemModel.getBoolean()));
+        system.add(new Operator("InCodeSystem", new Signature(systemModel.getCode(), systemModel.getCodeSystem()), systemModel.getBoolean()));
+        system.add(new Operator("InCodeSystem", new Signature(systemModel.getConcept(), systemModel.getCodeSystem()), systemModel.getBoolean()));
+
         system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getString())), systemModel.getBoolean()));
         system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getCode())), systemModel.getBoolean()));
         system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getConcept())), systemModel.getBoolean()));
+
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getString()), systemModel.getCodeSystem()), systemModel.getBoolean()));
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getCode()), systemModel.getCodeSystem()), systemModel.getBoolean()));
+        system.add(new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getConcept()), systemModel.getCodeSystem()), systemModel.getBoolean()));
 
         system.add(new Operator("Subsumes", new Signature(systemModel.getCode(), systemModel.getCode()), systemModel.getBoolean()));
         system.add(new Operator("Subsumes", new Signature(systemModel.getConcept(), systemModel.getConcept()), systemModel.getBoolean()));

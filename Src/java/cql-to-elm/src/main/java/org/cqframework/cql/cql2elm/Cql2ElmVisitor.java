@@ -569,7 +569,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codesystemId()))
                 .withVersion(parseString(ctx.versionSpecifier()))
-                .withResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+                .withResultType(libraryBuilder.resolveTypeName("System", "CodeSystem"));
+                //.withResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
 
         libraryBuilder.addCodeSystem(cs);
         return cs;
@@ -636,7 +637,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 vs.getCodeSystem().add((CodeSystemRef)visit(codesystem));
             }
         }
-        vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+        vs.setResultType(libraryBuilder.resolveTypeName("System", "ValueSet"));
+        //vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         libraryBuilder.addValueSet(vs);
 
         return vs;
@@ -2922,12 +2924,14 @@ DATETIME
             }
 
             Property property = null;
+            CqlTranslatorException propertyException = null;
             if (retrieve.getCodeProperty() == null) {
                 // ERROR:
                 // WARNING:
-                libraryBuilder.recordParsingException(new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
+                propertyException = new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
                         useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
-                        getTrackBack(ctx)));
+                        getTrackBack(ctx));
+                libraryBuilder.recordParsingException(propertyException);
             }
             else {
                 try {
@@ -2936,11 +2940,12 @@ DATETIME
                     property.setResultType(codeType);
                 }
                 catch (Exception e) {
-                    libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            // ERROR:
-                            // WARNING:
+                    // ERROR:
+                    // WARNING:
+                    propertyException = new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
                             retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
-                            getTrackBack(ctx), e));
+                            getTrackBack(ctx), e);
+                    libraryBuilder.recordParsingException(propertyException);
                 }
             }
 
@@ -2959,7 +2964,11 @@ DATETIME
             // Resolve the terminology target using an in or ~ operator
             try {
                 if (codeComparator == null) {
-                    codeComparator = terminology.getResultType() instanceof ListType ? "in" : "~";
+                    codeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                }
+
+                if (property == null) {
+                    throw propertyException;
                 }
 
                 switch (codeComparator) {
@@ -3028,7 +3037,7 @@ DATETIME
             catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
                 // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
-                if (!(terminology.getResultType() instanceof ListType)) {
+                if (!(terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")))) {
                     retrieve.setCodes(libraryBuilder.resolveToList(terminology));
                 }
                 else {

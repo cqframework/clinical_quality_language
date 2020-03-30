@@ -793,33 +793,41 @@ public class LibraryBuilder {
     }
 
     public Expression resolveIn(Expression left, Expression right) {
-        if (right instanceof ValueSetRef) {
+        if (right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet"))) {
+        //if (right instanceof ValueSetRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
-                        .withValueset((ValueSetRef)right);
+                        .withValueset(right);
+                        //.withValueset((ValueSetRef)right);
+
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
             }
 
             InValueSet in = of.createInValueSet()
                     .withCode(left)
-                    .withValueset((ValueSetRef) right);
+                    .withValueset(right);
+                    //.withValueset((ValueSetRef) right);
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
         }
 
-        if (right instanceof CodeSystemRef) {
+        if (right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem"))) {
+        //if (right instanceof CodeSystemRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
-                        .withCodesystem((CodeSystemRef)right);
+                        .withCodesystem(right);
+                        //.withCodesystem((CodeSystemRef)right);
                 resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
             }
+
             InCodeSystem in = of.createInCodeSystem()
                     .withCode(left)
-                    .withCodesystem((CodeSystemRef)right);
+                    .withCodesystem(right);
+                    //.withCodesystem((CodeSystemRef)right);
             resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
         }

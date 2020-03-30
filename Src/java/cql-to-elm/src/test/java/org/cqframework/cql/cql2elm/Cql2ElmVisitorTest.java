@@ -256,7 +256,9 @@ public class Cql2ElmVisitorTest {
                 "define m : 'Value' in \"Acute Pharyngitis\"";
         ExpressionDef def = (ExpressionDef) visitData(cql);
         InValueSet ivs = (InValueSet)def.getExpression();
-        assertThat(ivs.getValueset().getName(), is("Acute Pharyngitis"));
+        assertThat(ivs.getValueset(), instanceOf(ValueSetRef.class));
+        ValueSetRef vsr = (ValueSetRef)ivs.getValueset();
+        assertThat(vsr.getName(), is("Acute Pharyngitis"));
     }
 
     // TODO: Fix when operator semantics are completed

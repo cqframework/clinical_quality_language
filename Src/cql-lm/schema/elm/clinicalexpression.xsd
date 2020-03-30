@@ -357,13 +357,13 @@ Note that the recommended approach to statically binding to an expansion set is 
 
 The first argument is expected to be a String, Code, or Concept.
 
-Note that this operator explicitly requires a CodeSystemRef as its codesystem argument. This allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+The second argument is expected to be of type CodeSystem. When this argument is statically a CodeSystemRef, this allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="code" type="Expression"/>
-					<xs:element name="codesystem" type="CodeSystemRef"/>
+					<xs:element name="codesystem" type="Expression"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -374,13 +374,13 @@ Note that this operator explicitly requires a CodeSystemRef as its codesystem ar
 
 The first argument is expected to be a list of String, Code, or Concept.
 
-Note that this operator explicitly requires a CodeSystemRef as its codesystem argument. This allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+The second argument is expected to be of type CodeSystem. When this argument is statically a CodeSystemRef, this allows for both static analysis of the code system references within an artifact, as well as the implementation of code system membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="codes" type="Expression"/>
-					<xs:element name="codesystem" type="CodeSystemRef"/>
+					<xs:element name="codesystem" type="Expression"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -391,13 +391,13 @@ Note that this operator explicitly requires a CodeSystemRef as its codesystem ar
 
 The first argument is expected to be a String, Code, or Concept.
 
-Note that this operator explicitly requires a ValueSetRef as its valueset argument. This allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+The second argument is expected to be of type ValueSet. When this argument is statically a ValueSetRef, this allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="code" type="Expression"/>
-					<xs:element name="valueset" type="ValueSetRef"/>
+					<xs:element name="valueset" type="Expression"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -408,13 +408,13 @@ Note that this operator explicitly requires a ValueSetRef as its valueset argume
 
 The first argument is expected to be a list of String, Code, or Concept.
 
-Note that this operator explicitly requires a ValueSetRef as its valueset argument. This allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
+The second argument is expected to be of type ValueSet. When this argument is statically a ValueSetRef, this allows for both static analysis of the value set references within an artifact, as well as the implementation of valueset membership by the target environment as a service call to a terminology server, if desired.</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="codes" type="Expression"/>
-					<xs:element name="valueset" type="ValueSetRef"/>
+					<xs:element name="valueset" type="Expression"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
