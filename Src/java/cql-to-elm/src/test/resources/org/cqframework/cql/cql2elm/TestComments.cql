@@ -24,18 +24,28 @@ code "Systolic Blood Pressure": '8480-6' from "LOINC" display 'Systolic blood pr
 code "Diastolic Blood Pressure": '8462-4' from "LOINC" display 'Diastolic blood pressure'
 
 // Test Comment
-parameter "Measurement Period" Interval<DateTime>
+parameter MeasurementPeriod Interval<DateTime>
 
 // Test Comment
 context Patient
 
-// Test Comment
+/*
+@author: Chopin
+@description: Defines whether the patient is included in the initial population
+*/
 define InInitialPopulation:
   AgeInYearsAt(start of MeasurementPeriod) >= 16
+    // Test in the middle
     and AgeInYearsAt(start of MeasurementPeriod) < 24
+    /* Test multi-line in the middle */
     and Patient.gender in "Female Administrative Sex"
 
-// Test Comment
+/*
+@author: Beethoven
+@description: Determines the cumulative duration of a list of intervals
+@comment: #This function collapses the input intervals prior to determining the cumulative duration
+to ensure overlapping intervals do not contribute multiple times to the result#
+ */
 define function CumulativeDuration(Intervals List<Interval<DateTime>>):
   Sum((collapse Intervals) X return all duration in days of X)
 

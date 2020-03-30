@@ -1,9 +1,9 @@
 {
   "library" : {
     "annotation" : [ {
-         "translatorOptions" : "",
-         "type" : "CqlToElmInfo"
-      }, {
+      "translatorOptions" : "",
+      "type" : "CqlToElmInfo"
+    }, {
       "libraryId" : "CMS146",
       "libraryVersion" : "2",
       "startLine" : 22,
@@ -151,6 +151,11 @@
         "name" : "Group A Streptococcus Test",
         "id" : "2.16.840.1.113883.3.464.1003.198.12.1012",
         "accessLevel" : "Public"
+      } ]
+    },
+    "contexts" : {
+      "def" : [ {
+        "name" : "Patient"
       } ]
     },
     "statements" : {

@@ -188,10 +188,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
             chunk.setElement(element);
 
-            if (element instanceof ExpressionDef && !(tree instanceof cqlParser.LibraryContext)) {
-                ExpressionDef expressionDef = (ExpressionDef)element;
-                if (expressionDef.getAnnotation().size() == 0) {
-                    expressionDef.getAnnotation().add(buildAnnotation(chunk));
+            if (!(tree instanceof cqlParser.LibraryContext)) {
+                if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef
+                        || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
+                        || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
+                    if (element.getAnnotation().size() == 0) {
+                        element.getAnnotation().add(buildAnnotation(chunk));
+                    }
                 }
             }
         }
@@ -730,9 +733,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
 
                 implicitContextCreated = true;
-                return currentContext;
             }
         }
+
+        ContextDef contextDef = of.createContextDef().withName(currentContext);
+        track(contextDef, ctx);
+        libraryBuilder.addContext(contextDef);
 
         return currentContext;
     }

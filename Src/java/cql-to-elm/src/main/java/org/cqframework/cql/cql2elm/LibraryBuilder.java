@@ -588,6 +588,13 @@ public class LibraryBuilder {
         translatedLibrary.add(cd);
     }
 
+    public void addContext(ContextDef cd) {
+        if (library.getContexts() == null) {
+            library.setContexts(of.createLibraryContexts());
+        }
+        library.getContexts().getDef().add(cd);
+    }
+
     public void addExpression(ExpressionDef expDef) {
         if (library.getStatements() == null) {
             library.setStatements(of.createLibraryStatements());
