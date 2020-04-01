@@ -92,6 +92,20 @@ This property may be specified as a path, including qualifiers and constant inde
 						<xs:documentation>The idSearch attribute specifies the name of the search path to use for searching for the values in the id element.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="contextProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The contextProperty attribute optionally specifies which property of the model contains the context value.
+
+Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. Note also that even in the case of an implementation catalog, implementations would still ned to respect contextProperty values in the ELM due to the possibility of the retrieve specifying alternate context paths. From the persepctive of ELM, the specification ensures that ELM can be processed without reference to the model information.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+				</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="contextSearch" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The contextSearch attribute specifies the name of the search path to use for searching for the context values.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="codeProperty" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The codeProperty attribute optionally specifies which property of the model contains the Code or Codes for the clinical statement.
