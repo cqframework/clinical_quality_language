@@ -1,9 +1,18 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
 public class IncludeDefinitionInfo {
+    private String namespaceName;
     private String name;
     private String version;
     private String localName;
+
+    public String getNamespaceName() {
+        return namespaceName;
+    }
+
+    public void setNamespaceName(String namespaceName) {
+        this.namespaceName = namespaceName;
+    }
 
     public String getName() {
         return name;
