@@ -298,4 +298,17 @@ public class BaseTest {
         assertThat(functionRef.getName(), is("ToConcept"));
         assertThat(equivalent.getOperand().get(1), instanceOf(ConceptRef.class));
     }
+
+    @Test
+    public void testRetrieveWithConcept() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r4/TestRetrieveWithConcept.cql", 0);
+        TranslatedLibrary library = translator.getTranslatedLibrary();
+        ExpressionDef expressionDef = library.resolveExpressionRef("Test Tobacco Smoking Status");
+
+        assertThat(expressionDef.getExpression(), instanceOf(Retrieve.class));
+        Retrieve retrieve = (Retrieve)expressionDef.getExpression();
+        assertThat(retrieve.getCodes(), instanceOf(ToList.class));
+        ToList toList = (ToList)retrieve.getCodes();
+        assertThat(toList.getOperand(), instanceOf(CodeRef.class));
+    }
 }

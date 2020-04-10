@@ -120,10 +120,8 @@ public class BaseTest {
         Expression codes = retrieve.getCodes();
         assertThat(codes, instanceOf(ToList.class));
         ToList toList = (ToList)codes;
-        assertThat(toList.getOperand(), instanceOf(ToConcept.class));
-        ToConcept toConcept = (ToConcept)toList.getOperand();
-        assertThat(toConcept.getOperand(), instanceOf(CodeRef.class));
-        CodeRef codeRef = (CodeRef)toConcept.getOperand();
+        assertThat(toList.getOperand(), instanceOf(CodeRef.class));
+        CodeRef codeRef = (CodeRef)toList.getOperand();
         assertThat(codeRef.getName(), is("T0"));
     }
 
