@@ -9,7 +9,6 @@ import org.cqframework.cql.gen.cqlParser;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     private LibraryInfo libraryInfo = new LibraryInfo();
     private boolean implicitContextCreated = false;
@@ -21,7 +20,11 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
-        libraryInfo.setLibraryName(String.join(".", (Iterable<String>)visit(ctx.qualifiedIdentifier())));
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        libraryInfo.setLibraryName(identifiers.remove(identifiers.size() - 1));
+        if (identifiers.size() > 0) {
+            libraryInfo.setNamespaceName(String.join(".", identifiers));
+        }
         if (ctx.versionSpecifier() != null) {
             libraryInfo.setVersion((String)visit(ctx.versionSpecifier()));
         }
@@ -32,7 +35,10 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         IncludeDefinitionInfo includeDefinition = new IncludeDefinitionInfo();
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
-        includeDefinition.setName(String.join(".", identifiers));
+        includeDefinition.setName(identifiers.remove(identifiers.size() - 1));
+        if (identifiers.size() > 0) {
+            includeDefinition.setNamespaceName(String.join(".", identifiers));
+        }
         if (ctx.versionSpecifier() != null) {
             includeDefinition.setVersion((String)visit(ctx.versionSpecifier()));
         }

@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm.preprocessor;
 import java.util.*;
 
 public class LibraryInfo {
+    private String namespaceName;
     private String libraryName;
     private String version;
 
@@ -27,6 +28,14 @@ public class LibraryInfo {
         parameterDefinitions = new LinkedHashMap<>();
         expressionDefinitions = new LinkedHashMap<>();
         functionDefinitions = new LinkedHashMap<>();
+    }
+
+    public String getNamespaceName() {
+        return namespaceName;
+    }
+
+    public void setNamespaceName(String namespaceName) {
+        this.namespaceName = namespaceName;
     }
 
     public String getLibraryName() {

@@ -19,8 +19,6 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
-
-
 /**
  * Created by Bryn on 12/29/2016.
  */
@@ -48,6 +46,10 @@ public class LibraryBuilder {
     }
 
     public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
+        this(null, modelManager, libraryManager, ucumService);
+    }
+
+    public LibraryBuilder(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
         }
@@ -56,6 +58,7 @@ public class LibraryBuilder {
             throw new IllegalArgumentException("libraryManager is null");
         }
 
+        this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
 
@@ -105,6 +108,7 @@ public class LibraryBuilder {
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
     private int literalContext = 0;
+    private NamespaceInfo namespaceInfo = null;
     private ModelManager modelManager = null;
     private Model defaultModel = null;
     private LibraryManager libraryManager = null;
@@ -168,6 +172,10 @@ public class LibraryBuilder {
 
     public CqlTranslator.Options[] getTranslatorOptions() {
         return this.translatorOptions;
+    }
+
+    public NamespaceInfo getNamespaceInfo() {
+        return this.namespaceInfo;
     }
 
     private Model loadModel(VersionedIdentifier modelIdentifier) {
@@ -407,6 +415,16 @@ public class LibraryBuilder {
         return result;
     }
 
+    public String resolveNamespaceUri(String namespaceName, boolean mustResolve) {
+        String namespaceUri = libraryManager.getNamespaceManager().resolveNamespaceUri(namespaceName);
+
+        if (namespaceUri == null && mustResolve) {
+            throw new IllegalArgumentException(String.format("Could not resolve namespace name %s", namespaceName));
+        }
+
+        return namespaceUri;
+    }
+
     private ErrorSeverity toErrorSeverity(CqlTranslatorException.ErrorSeverity severity) {
         if (severity == CqlTranslatorException.ErrorSeverity.Info) {
             return ErrorSeverity.INFO;
@@ -469,6 +487,7 @@ public class LibraryBuilder {
             err.setErrorSeverity(toErrorSeverity(e.getSeverity()));
             if (e.getLocator() != null) {
                 if (e.getLocator().getLibrary() != null) {
+                    err.setLibrarySystem(e.getLocator().getLibrary().getSystem());
                     err.setLibraryId(e.getLocator().getLibrary().getId());
                     err.setLibraryVersion(e.getLocator().getLibrary().getVersion());
                 }
@@ -480,6 +499,7 @@ public class LibraryBuilder {
 
             if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
                 CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException) e.getCause();
+                err.setTargetIncludeLibrarySystem(incEx.getLibrarySystem());
                 err.setTargetIncludeLibraryId(incEx.getLibraryId());
                 err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
                 err.setErrorType(ErrorType.INCLUDE);
@@ -492,6 +512,10 @@ public class LibraryBuilder {
         String libraryName = library.getIdentifier().getId();
         if (libraryName == null) {
             libraryName = "Anonymous";
+        }
+
+        if (library.getIdentifier().getSystem() != null) {
+            libraryName = library.getIdentifier().getSystem() + "/" + libraryName;
         }
 
         return libraryName;
@@ -530,7 +554,8 @@ public class LibraryBuilder {
         translatedLibrary.add(includeDef);
 
         VersionedIdentifier libraryIdentifier = new VersionedIdentifier()
-                .withId(includeDef.getPath())
+                .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
+                .withId(NamespaceManager.getNamePart(includeDef.getPath()))
                 .withVersion(includeDef.getVersion());
 
         ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();

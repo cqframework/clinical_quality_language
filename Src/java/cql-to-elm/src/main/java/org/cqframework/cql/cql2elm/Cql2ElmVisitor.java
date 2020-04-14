@@ -333,7 +333,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         Object lastResult = null;
         // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
-        libraryBuilder.setLibraryIdentifier(new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion()));
+        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
+        if (libraryInfo.getNamespaceName() != null) {
+            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
+        }
+        else if (libraryBuilder.getNamespaceInfo() != null) {
+            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
+        }
+        libraryBuilder.setLibraryIdentifier(identifier);
         libraryBuilder.beginTranslation();
         try {
             // Loop through and call visit on each child (to ensure they are tracked)
@@ -361,9 +368,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public VersionedIdentifier visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         VersionedIdentifier vid = of.createVersionedIdentifier()
-                .withId(String.join(".", (Iterable<String>)visit(ctx.qualifiedIdentifier())))
+                .withId(identifiers.remove(identifiers.size() - 1))
                 .withVersion(parseString(ctx.versionSpecifier()));
+        if (identifiers.size() > 0) {
+            vid.setSystem(libraryBuilder.resolveNamespaceUri(String.join(".", identifiers), true));
+        }
+        else if (libraryBuilder.getNamespaceInfo() != null) {
+            vid.setSystem(libraryBuilder.getNamespaceInfo().getUri());
+        }
         libraryBuilder.setLibraryIdentifier(vid);
 
         return vid;
@@ -397,11 +411,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
-        String identifier = String.join(".", identifiers);
-        String unqualifiedIdentifier = identifiers.get(identifiers.size() - 1);
+        String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
+        String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
+                (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+        String path = null;
+        if (namespaceName != null) {
+            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
+            path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
+        }
+        else {
+            path = unqualifiedIdentifier;
+        }
         IncludeDef library = of.createIncludeDef()
                 .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
-                .withPath(identifier)
+                .withPath(path)
                 .withVersion(parseString(ctx.versionSpecifier()));
 
         libraryBuilder.addInclude(library);
