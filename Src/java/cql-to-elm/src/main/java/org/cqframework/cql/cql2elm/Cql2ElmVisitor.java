@@ -2970,6 +2970,31 @@ DATETIME
                         retrieve.setCodes(equal.getOperand().get(1));
                     }
                 }
+
+                // Verify that the type of the terminology target is a List<Code>
+                // Due to implicit conversion defined by specific models, the resolution path above may result in a List<Concept>
+                // In that case, convert to a list of code (Union the Code elements of the Concepts in the list)
+                if (retrieve.getCodes() != null && retrieve.getCodes().getResultType() != null && retrieve.getCodes().getResultType() instanceof ListType
+                    && ((ListType)retrieve.getCodes().getResultType()).getElementType().equals(libraryBuilder.resolveTypeName("System", "Concept"))) {
+                    if (retrieve.getCodes() instanceof ToList) {
+                        // ToList will always have a single argument
+                        ToList toList = (ToList)retrieve.getCodes();
+                        // If that argument is a ToConcept, replace the ToList argument with the code (skip the implicit conversion, the data access layer is responsible for it)
+                        if (toList.getOperand() instanceof ToConcept) {
+                            toList.setOperand(((ToConcept)toList.getOperand()).getOperand());
+                        }
+                        else {
+                            // Otherwise, access the codes property of the resulting Concept
+                            Expression codesAccessor = libraryBuilder.buildProperty(toList.getOperand(), "codes", toList.getOperand().getResultType());
+                            retrieve.setCodes(codesAccessor);
+                        }
+                    }
+                    else {
+                        // WARNING:
+                        libraryBuilder.recordParsingException(new CqlSemanticException("Terminology target is a list of concepts, but expects a list of codes",
+                                CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                    }
+                }
             }
             catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
