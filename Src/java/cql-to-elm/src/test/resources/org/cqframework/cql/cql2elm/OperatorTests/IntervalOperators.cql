@@ -6,6 +6,7 @@ define PointIntervalBefore: 5 before Interval[10, 15]
 define IntervalPointBefore: Interval[1, 5] before 10
 define IntervalCollapse: collapse { Interval[1, 5], Interval[3, 7], Interval[5, 10], Interval[50, 100] }
 define IntervalCollapseWithPer: collapse { Interval[1, 5], Interval[3, 7], Interval[5, 10], Interval[50, 100] } per 1 '1'
+define IntervalCollapseNull: collapse null
 define IntervalContains: Interval[1, 5] contains 3
 define IntervalEnd: end of Interval[1, 5]
 define IntervalEnds: Interval[3, 5] ends Interval[1, 5]
@@ -17,6 +18,7 @@ define QuantityIntervalExpand: expand { Interval[1 'm', 2 'm'] } per 0.1 'm'
 define DateTimeIntervalExpand: expand { Interval[@2012-01-01T10:00:00, @2012-01-01T11:00:00] } per minute
 define DateIntervalExpand: expand { Interval[@2012-01-01, @2012-01-31] } per day
 define TimeIntervalExpand: expand { Interval[@T10:00:00, @T11:00:00] } per minute
+define ExpandNull: expand null as Interval<Integer>
 define IntervalIn: 5 in Interval[1, 10]
 define IntervalIncludes: Interval[1, 10] includes Interval[3, 7]
 define IntervalIncludedIn: Interval[3, 7] included in Interval[1, 10]

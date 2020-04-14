@@ -1,9 +1,12 @@
 define ListContains: { 1, 2, 3 } contains 2
 define ListDistinct: distinct { 1, 1, 2, 2, 3, 3, 4, 4, 5, 5 }
+define ListDistinctNull: distinct null
 define ListEqual: { 1, 2, 3 } = { 1, 2, 3 }
 define ListExcept: { 1, 2, 3, 4, 5 } except { 2, 3, 4 }
 define ListExists: exists { 1, 2, 3, 4, 5 }
+define ListExistsNull: exists null
 define ListFlatten: flatten { { 1, 2, 3 }, { 4, 5, 6 } }
+define ListFlattenNull: flatten null
 define ListFirst: First({ 1, 2, 3, 4, 5 })
 define ListIn: 2 in { 1, 2, 3 }
 define ListIncludes: { 1, 2, 3, 4, 5 } includes { 2, 3, 4 }
