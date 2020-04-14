@@ -18,7 +18,12 @@ public class FhirLibrarySourceProvider implements LibrarySourceProvider, Namespa
         // If the FHIRHelpers library is referenced in a namespace-enabled context,
         // set the namespace to the FHIR namespace URI
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            namespaceManager.ensureNamespaceRegistered(new NamespaceInfo(namespaceName, namespaceUri));
+            // If the context already has a namespace registered for FHIR, use that.
+            NamespaceInfo namespaceInfo = namespaceManager.getNamespaceInfoFromUri(namespaceUri);
+            if (namespaceInfo == null) {
+                namespaceInfo = new NamespaceInfo(namespaceName, namespaceUri);
+                namespaceManager.ensureNamespaceRegistered(namespaceInfo);
+            }
             libraryIdentifier.setSystem(namespaceUri);
         }
 
