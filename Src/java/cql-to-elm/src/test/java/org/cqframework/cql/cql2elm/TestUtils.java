@@ -162,7 +162,11 @@ public class TestUtils {
     }
 
     public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator(testFileName, options);
+        return runSemanticTest(null, testFileName, expectedErrors, options);
+    }
+
+    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
+        CqlTranslator translator = TestUtils.createTranslator(namespaceInfo, testFileName, options);
         for (CqlTranslatorException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
@@ -172,11 +176,15 @@ public class TestUtils {
     }
 
     public static CqlTranslator createTranslator(String testFileName, CqlTranslator.Options... options) throws IOException {
+        return createTranslator(null, testFileName, options);
+    }
+
+    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslator.Options... options) throws IOException {
         File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, libraryManager, getUcumService(), options);
+        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, modelManager, libraryManager, getUcumService(), options);
         return translator;
     }
 }

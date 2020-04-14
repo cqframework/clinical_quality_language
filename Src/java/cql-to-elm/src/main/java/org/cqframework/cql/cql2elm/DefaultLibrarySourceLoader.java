@@ -11,24 +11,28 @@ import java.util.List;
  * resolve library includes within CQL. Package private since its not intended
  * to be used outside the context of the instantiating LibraryManager instance.
  */
-class DefaultLibrarySourceLoader implements LibrarySourceLoader {
+class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware {
     private final List<LibrarySourceProvider> PROVIDERS = new ArrayList<>();
 
-  @Override
+    @Override
     public void registerProvider(LibrarySourceProvider provider) {
         if (provider == null) {
             throw new IllegalArgumentException("provider is null.");
         }
 
+        if (provider instanceof NamespaceAware) {
+            ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
+        }
+
         PROVIDERS.add(provider);
     }
 
-  @Override
+    @Override
     public void clearProviders() {
         PROVIDERS.clear();
     }
 
-  @Override
+    @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
@@ -57,5 +61,18 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader {
         }
 
         return source;
+    }
+
+    private NamespaceManager namespaceManager;
+
+    @Override
+    public void setNamespaceManager(NamespaceManager namespaceManager) {
+        this.namespaceManager = namespaceManager;
+
+        for (LibrarySourceProvider provider : PROVIDERS) {
+            if (provider instanceof NamespaceAware) {
+                ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
+            }
+        }
     }
 }

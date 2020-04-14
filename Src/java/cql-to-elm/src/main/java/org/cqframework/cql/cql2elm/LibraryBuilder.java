@@ -564,6 +564,15 @@ public class LibraryBuilder {
         for (CqlTranslatorException error : errors) {
             this.recordParsingException(error);
         }
+
+        // Note that translation of a referenced library may result in implicit specification of the namespace
+        // In this case, the referencedLibrary will have a namespaceUri different than the currently resolved namespaceUri
+        // of the IncludeDef.
+        String currentPath = NamespaceManager.getUriPart(includeDef.getPath());
+        if (currentPath != null && !currentPath.equals(libraryIdentifier.getSystem())) {
+            includeDef.setPath(NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId()));
+        }
+
         libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
         loadConversionMap(referencedLibrary);
     }
