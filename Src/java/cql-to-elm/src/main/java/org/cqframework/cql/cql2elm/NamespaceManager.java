@@ -12,6 +12,10 @@ public class NamespaceManager {
         reverseNamespaces = new HashMap<>();
     }
 
+    public boolean hasNamespaces() {
+        return namespaces.size() > 0;
+    }
+
     public void ensureNamespaceRegistered(NamespaceInfo namespaceInfo) {
         if (namespaceInfo == null) {
             throw new IllegalArgumentException("namespaceInfo is required");
