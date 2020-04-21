@@ -116,6 +116,10 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm']}) {
         runtime group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.4.0-b180830.0438'
         runtime group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
         runtime group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
+        runtime group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
+        runtime group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.1'
+        runtime group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.1'
+        runtime group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.10.1'
     }
 
     ext.xjc = [

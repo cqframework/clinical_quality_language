@@ -1,5 +1,10 @@
 package org.cqframework.cql.cql2elm;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
@@ -7,6 +12,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.serialization.LibraryWrapper;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
@@ -44,7 +50,7 @@ public class CqlTranslator {
         DisableMethodInvocation,
         RequireFromKeyword
     }
-    public static enum Format { XML, JSON, COFFEE }
+    public static enum Format { XML, JSON, JXSON, COFFEE }
     private static JAXBContext jaxbContext;
 
     private Library library = null;
@@ -325,8 +331,21 @@ public class CqlTranslator {
             return convertToJson(library);
         }
         catch (JAXBException e) {
-            throw new IllegalArgumentException("Could not convert library to JSON.", e);
+            throw new IllegalArgumentException("Could not convert library to JSON using JAXB serializer.", e);
         }
+    }
+
+    private String toJxson(Library library) {
+        try {
+            return convertToJxson(library);
+        }
+        catch (JsonProcessingException e) {
+            throw new IllegalArgumentException("Could not convert library to JSON using Jackson serializer.", e);
+        }
+    }
+
+    public String toJxson() {
+        return toJxson(library);
     }
 
     public String toJson() {
@@ -377,6 +396,14 @@ public class CqlTranslator {
         return result;
     }
 
+    public Map<String, String> getLibrariesAsJXSON() {
+        Map<String, String> result = new HashMap();
+        for (Map.Entry<String, TranslatedLibrary> entry : libraryManager.getTranslatedLibraries().entrySet()) {
+            result.put(entry.getKey(), toJxson(entry.getValue().getLibrary()));
+        }
+        return result;
+    }
+
     public List<CqlTranslatorException> getExceptions() { return exceptions; }
 
     public List<CqlTranslatorException> getErrors() { return errors; }
@@ -410,7 +437,6 @@ public class CqlTranslator {
         @Override
         public void syntaxError(@NotNull Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, RecognitionException e) {
             TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
-//            CqlTranslator.this.errors.add(new CqlTranslatorException(msg, trackback, e));
 
             if (detailedErrors) {
                 builder.recordParsingException(new CqlSyntaxException(msg, trackback, e));
@@ -519,6 +545,17 @@ public class CqlTranslator {
         return writer.getBuffer().toString();
     }
 
+    public String convertToJxson(Library library) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_DEFAULT);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        JaxbAnnotationModule annotationModule = new JaxbAnnotationModule();
+        mapper.registerModule(annotationModule);
+        LibraryWrapper wrapper = new LibraryWrapper();
+        wrapper.setLibrary(library);
+        return mapper.writeValueAsString(wrapper);
+    }
+
     public static void loadModelInfo(File modelInfoXML) {
         final ModelInfo modelInfo = JAXB.unmarshal(modelInfoXML, ModelInfo.class);
         final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
@@ -616,6 +653,9 @@ public class CqlTranslator {
                         pw.print("module.exports = ");
                         pw.println(translator.toJson());
                         break;
+                    case JXSON:
+                        pw.println(translator.toJxson());
+                        break;
                     case JSON:
                         pw.println(translator.toJson());
                         break;
@@ -700,6 +740,7 @@ public class CqlTranslator {
                 }
                 switch (outputFormat) {
                     case JSON:
+                    case JXSON:
                         name += ".json";
                         break;
                     case COFFEE:
