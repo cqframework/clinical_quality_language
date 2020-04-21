@@ -1876,7 +1876,7 @@ public class LibraryBuilder {
 
                 if (resultTypes.size() == 1) {
                     for (DataType resultType : resultTypes) {
-                        return new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : null);
+                        return new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name);
                     }
                 }
             }
