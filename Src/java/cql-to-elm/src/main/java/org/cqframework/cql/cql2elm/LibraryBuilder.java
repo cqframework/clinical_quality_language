@@ -128,50 +128,32 @@ public class LibraryBuilder {
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private UcumService ucumService = null;
-    private CqlTranslator.Options[] translatorOptions = null;
+    private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
-    private SignatureLevel signatureLevel = SignatureLevel.Differing;
 
-    public void enableListTraversal() {
-        listTraversal = true;
-    }
-
-    public void disableListTraversal() {
-        listTraversal = false;
-    }
-
-    public SignatureLevel getSignatureLevel() {
-        return this.signatureLevel;
-    }
-
-    public void setSignatureLevel(SignatureLevel signatureLevel) {
-        this.signatureLevel = signatureLevel;
-    }
-
-    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
-    public CqlTranslatorException.ErrorSeverity getErrorLevel() {
-        return errorLevel;
-    }
-    public void setErrorLevel(CqlTranslatorException.ErrorSeverity severity) {
-        errorLevel = severity;
-    }
-
-    public void setTranslatorOptions(CqlTranslator.Options... options) {
-        this.translatorOptions = options;
-        if (options != null) {
-            StringBuilder translatorOptions = new StringBuilder();
-            for (CqlTranslator.Options option : options) {
-                if (translatorOptions.length() > 0) {
-                    translatorOptions.append(",");
-                }
-                translatorOptions.append(option.name());
-            }
-            this.cqlToElmInfo.setTranslatorOptions(translatorOptions.toString());
+    public void setTranslatorOptions(CqlTranslatorOptions options) {
+        if (options == null) {
+            throw new IllegalArgumentException("Options cannot be null");
         }
-    }
 
-    public CqlTranslator.Options[] getTranslatorOptions() {
-        return this.translatorOptions;
+        this.options = options;
+        if (options.getOptions().contains(CqlTranslator.Options.DisableListTraversal)) {
+            this.listTraversal = false;
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.DisableListDemotion)) {
+            this.getConversionMap().disableListDemotion();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.DisableListPromotion)) {
+            this.getConversionMap().disableListPromotion();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalDemotion)) {
+            this.getConversionMap().enableIntervalDemotion();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalPromotion)) {
+            this.getConversionMap().enableIntervalPromotion();
+        }
+
+        this.cqlToElmInfo.setTranslatorOptions(options.toString());
     }
 
     public NamespaceInfo getNamespaceInfo() {
@@ -456,7 +438,7 @@ public class LibraryBuilder {
     }
 
     private boolean shouldReport(CqlTranslatorException.ErrorSeverity errorSeverity) {
-        switch (errorLevel) {
+        switch (options.getErrorLevel()) {
             case Info:
                 return
                         errorSeverity == CqlTranslatorException.ErrorSeverity.Info
@@ -559,8 +541,7 @@ public class LibraryBuilder {
                 .withVersion(includeDef.getVersion());
 
         ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
-        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier,
-            this.getErrorLevel(), this.getSignatureLevel(), this.getTranslatorOptions(), errors);
+        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
         for (CqlTranslatorException error : errors) {
             this.recordParsingException(error);
         }
@@ -1024,9 +1005,9 @@ public class LibraryBuilder {
                 invocation.setOperands(convertedOperands);
             }
 
-            if (signatureLevel == SignatureLevel.All || (signatureLevel == SignatureLevel.Differing
+            if (options.getSignatureLevel() == SignatureLevel.All || (options.getSignatureLevel() == SignatureLevel.Differing
                 && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
-                    || (signatureLevel == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
+                    || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
                 invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
             }
 

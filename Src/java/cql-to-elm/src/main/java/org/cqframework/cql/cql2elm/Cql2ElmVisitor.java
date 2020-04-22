@@ -153,6 +153,30 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         fromKeywordRequired = false;
     }
 
+    public void setTranslatorOptions(CqlTranslatorOptions options) {
+        if (options.getOptions().contains(CqlTranslator.Options.EnableDateRangeOptimization)) {
+            this.enableDateRangeOptimization();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableAnnotations)) {
+            this.enableAnnotations();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableLocators)) {
+            this.enableLocators();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableResultTypes)) {
+            this.enableResultTypes();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableDetailedErrors)) {
+            this.enableDetailedErrors();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.DisableMethodInvocation)) {
+            this.disableMethodInvocation();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.RequireFromKeyword)) {
+            this.enableFromKeywordRequired();
+        }
+    }
+
     public TokenStream getTokenStream() {
         return tokenStream;
     }

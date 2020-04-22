@@ -63,8 +63,7 @@ public class LibraryManager {
         return libraries;
     }
 
-    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier,
-        CqlTranslatorException.ErrorSeverity errorLevel, SignatureLevel signatureLevel, CqlTranslator.Options[] options, List<CqlTranslatorException> errors) {
+    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -88,7 +87,7 @@ public class LibraryManager {
         }
 
         else {
-            library = translateLibrary(libraryIdentifier, errorLevel, signatureLevel, options, errors);
+            library = translateLibrary(libraryIdentifier, options, errors);
             if (!HasErrors(errors)) {
                 libraries.put(libraryPath, library);
             }
@@ -97,8 +96,7 @@ public class LibraryManager {
         return library;
     }
 
-    private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier,
-        CqlTranslatorException.ErrorSeverity errorLevel, SignatureLevel signatureLevel,  CqlTranslator.Options[] options, List<CqlTranslatorException> errors) {
+    private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
         InputStream librarySource = null;
         try {
             librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
@@ -115,7 +113,7 @@ public class LibraryManager {
 
         try {
             CqlTranslator translator = CqlTranslator.fromStream(namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()),
-                    librarySource, modelManager, this, ucumService, errorLevel, signatureLevel, options);
+                    librarySource, modelManager, this, ucumService, options);
             if (errors != null) {
                 errors.addAll(translator.getExceptions());
             }

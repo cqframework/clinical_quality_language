@@ -291,12 +291,48 @@ public class CqlTranslator {
         return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
     }
 
+    public static CqlTranslator fromText(String cqlText, ModelManager modelManager,
+                                         LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) {
+        return new CqlTranslator(null, new ANTLRInputStream(cqlText), modelManager, libraryManager, ucumService, options);
+    }
+
+    public static CqlTranslator fromText(NamespaceInfo namespaceInfo, String cqlText, ModelManager modelManager,
+                                          LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) {
+        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(cqlText), modelManager, libraryManager, ucumService, options);
+    }
+
+    public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager,
+                                           LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
+        return new CqlTranslator(null, new ANTLRInputStream(cqlStream), modelManager, libraryManager, ucumService, options);
+    }
+
+    public static CqlTranslator fromStream(NamespaceInfo namespaceInfo, InputStream cqlStream, ModelManager modelManager,
+                                           LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
+        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(cqlStream), modelManager, libraryManager, ucumService, options);
+    }
+
+    public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager,
+                                         LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
+        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, options);
+    }
+
+    public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager,
+                                         LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
+        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, options);
+    }
+
     private CqlTranslator(NamespaceInfo namespaceInfo, ANTLRInputStream is, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                           CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) {
+        this(namespaceInfo, is, modelManager, libraryManager, ucumService, new CqlTranslatorOptions(errorLevel, signatureLevel, options));
+    }
+
+    private CqlTranslator(NamespaceInfo namespaceInfo, ANTLRInputStream is, ModelManager modelManager,
+                          LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) {
         this.namespaceInfo = namespaceInfo;
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
         this.ucumService = ucumService;
+        this.errorLevel = options.getErrorLevel();
 
         if (this.namespaceInfo != null) {
             libraryManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
@@ -310,7 +346,7 @@ public class CqlTranslator {
             libraryManager.setUcumService(this.ucumService);
         }
 
-        translateToELM(is, errorLevel, signatureLevel, options);
+        translateToELM(is, options);
     }
 
     private String toXml(Library library) {
@@ -453,8 +489,7 @@ public class CqlTranslator {
         }
     }
 
-    private void translateToELM(ANTLRInputStream is, CqlTranslatorException.ErrorSeverity errorLevel,
-                                LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) {
+    private void translateToELM(ANTLRInputStream is, CqlTranslatorOptions options) {
         cqlLexer lexer = new cqlLexer(is);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         cqlParser parser = new cqlParser(tokens);
@@ -465,47 +500,9 @@ public class CqlTranslator {
         warnings = new ArrayList<>();
         messages = new ArrayList<>();
         LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager, ucumService);
-        builder.setErrorLevel(errorLevel);
-        builder.setSignatureLevel(signatureLevel);
         builder.setTranslatorOptions(options);
-        List<CqlTranslator.Options> optionList = Arrays.asList(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
-        if (optionList.contains(CqlTranslator.Options.EnableDateRangeOptimization)) {
-            visitor.enableDateRangeOptimization();
-        }
-        if (optionList.contains(CqlTranslator.Options.EnableAnnotations)) {
-            visitor.enableAnnotations();
-        }
-        if (optionList.contains(CqlTranslator.Options.EnableLocators)) {
-            visitor.enableLocators();
-        }
-        if (optionList.contains(CqlTranslator.Options.EnableResultTypes)) {
-            visitor.enableResultTypes();
-        }
-        if (optionList.contains(CqlTranslator.Options.EnableDetailedErrors)) {
-            visitor.enableDetailedErrors();
-        }
-        if (optionList.contains(CqlTranslator.Options.DisableListTraversal)) {
-            builder.disableListTraversal();
-        }
-        if (optionList.contains(CqlTranslator.Options.DisableListDemotion)) {
-            builder.getConversionMap().disableListDemotion();
-        }
-        if (optionList.contains(CqlTranslator.Options.DisableListPromotion)) {
-            builder.getConversionMap().disableListPromotion();
-        }
-        if (optionList.contains(CqlTranslator.Options.EnableIntervalDemotion)) {
-            builder.getConversionMap().enableIntervalDemotion();
-        }
-        if (optionList.contains(CqlTranslator.Options.EnableIntervalPromotion)) {
-            builder.getConversionMap().enableIntervalPromotion();
-        }
-        if (optionList.contains(CqlTranslator.Options.DisableMethodInvocation)) {
-            visitor.disableMethodInvocation();
-        }
-        if (optionList.contains(CqlTranslator.Options.RequireFromKeyword)) {
-            visitor.enableFromKeywordRequired();
-        }
+        visitor.setTranslatorOptions(options);
 
         parser.removeErrorListeners(); // Clear the default console listener
         parser.addErrorListener(new CqlTranslator.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled()));
@@ -572,50 +569,7 @@ public class CqlTranslator {
         }
     }
 
-    private static void writeELM(Path inPath, Path outPath, CqlTranslator.Format format, boolean dateRangeOptimizations,
-                                 boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                                 boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
-                                 boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
-                                 boolean enableIntervalDemotion, boolean enableIntervalPromotion,
-                                 boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
-                                 LibraryBuilder.SignatureLevel signatureLevel) throws IOException {
-        ArrayList<CqlTranslator.Options> options = new ArrayList<>();
-        if (dateRangeOptimizations) {
-            options.add(CqlTranslator.Options.EnableDateRangeOptimization);
-        }
-        if (annotations) {
-            options.add(CqlTranslator.Options.EnableAnnotations);
-        }
-        if (locators) {
-            options.add(CqlTranslator.Options.EnableLocators);
-        }
-        if (resultTypes) {
-            options.add(CqlTranslator.Options.EnableResultTypes);
-        }
-        if (detailedErrors) {
-            options.add(CqlTranslator.Options.EnableDetailedErrors);
-        }
-        if (disableListTraversal) {
-            options.add(CqlTranslator.Options.DisableListTraversal);
-        }
-        if (disableListDemotion) {
-            options.add(CqlTranslator.Options.DisableListDemotion);
-        }
-        if (disableListPromotion) {
-            options.add(CqlTranslator.Options.DisableListPromotion);
-        }
-        if (enableIntervalDemotion) {
-            options.add(CqlTranslator.Options.EnableIntervalDemotion);
-        }
-        if (enableIntervalPromotion) {
-            options.add(CqlTranslator.Options.EnableIntervalPromotion);
-        }
-        if (disableMethodInvocation) {
-            options.add(CqlTranslator.Options.DisableMethodInvocation);
-        }
-        if (requireFromKeyword) {
-            options.add(CqlTranslator.Options.RequireFromKeyword);
-        }
+    private static void writeELM(Path inPath, Path outPath, CqlTranslator.Format format, CqlTranslatorOptions options) throws IOException {
 
         System.err.println("================================================================================");
         System.err.printf("TRANSLATE %s%n", inPath);
@@ -623,7 +577,7 @@ public class CqlTranslator {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         UcumService ucumService = null;
-        if (validateUnits) {
+        if (options.getValidateUnits()) {
             try {
                 ucumService = new UcumEssenceService(UcumEssenceService.class.getResourceAsStream("/ucum-essence.xml"));
             } catch (UcumException e) {
@@ -633,13 +587,13 @@ public class CqlTranslator {
         }
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options.toArray(new CqlTranslator.Options[options.size()]));
+        CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, ucumService, options);
         libraryManager.getLibrarySourceLoader().clearProviders();
 
         if (translator.getErrors().size() > 0) {
             System.err.println("Translation failed due to errors:");
             outputExceptions(translator.getExceptions());
-        } else if (! verifyOnly) {
+        } else if (!options.getVerifyOnly()) {
             if (translator.getExceptions().size() == 0) {
                 System.err.println("Translation completed successfully.");
             }
@@ -767,7 +721,7 @@ public class CqlTranslator {
                 loadModelInfo(modelFile);
             }
 
-            writeELM(in, out, outputFormat, options.has(optimization),
+            writeELM(in, out, outputFormat, new CqlTranslatorOptions(outputFormat, options.has(optimization),
                     options.has(debug) || options.has(annotations),
                     options.has(debug) || options.has(locators),
                     options.has(debug) || options.has(resultTypes),
@@ -784,7 +738,7 @@ public class CqlTranslator {
                     options.has(strict) || options.has(disableMethodInvocation),
                     options.has(requireFromKeyword),
                     options.has(validateUnits),
-                    signatureLevel);
+                    signatureLevel));
         }
     }
 }
