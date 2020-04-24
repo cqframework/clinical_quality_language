@@ -1,13 +1,14 @@
 package org.cqframework.cql.cql2elm;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
  * translation options for Cql source files
  */
 public class CqlTranslatorOptions {
-    private List<CqlTranslator.Options> options = new ArrayList<>();
+    private EnumSet<CqlTranslator.Options> options = EnumSet.noneOf(CqlTranslator.Options.class);
     private List<CqlTranslator.Format> formats = new ArrayList<>();
     private boolean validateUnits = true;
     private boolean verifyOnly = false;
@@ -104,7 +105,7 @@ public class CqlTranslatorOptions {
         }
     }
 
-    public List<CqlTranslator.Options> getOptions() {
+    public EnumSet<CqlTranslator.Options> getOptions() {
         return this.options;
     }
 
