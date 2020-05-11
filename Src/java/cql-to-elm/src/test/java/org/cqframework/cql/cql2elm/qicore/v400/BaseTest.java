@@ -26,8 +26,21 @@ public class BaseTest {
 
     @Test
     public void testQICore() throws IOException {
-        TestUtils.runSemanticTest("qicore/v400/TestQICore.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v400/TestQICore.cql", 0);
 
-        // TODO: Testing for QICore specific extensions
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("TestAdverseEvent");
+        assertThat(def.getExpression(), instanceOf(Retrieve.class));
+        Retrieve retrieve = (Retrieve)def.getExpression();
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent"));
+
     }
 }

@@ -26,17 +26,17 @@
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
-        <ns4:element name="clinicalStatus" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="verificationStatus" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="clinicalStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="verificationStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="type" elementType="USCore.AllergyIntoleranceType"/>
         <ns4:element name="category">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.AllergyIntoleranceCategory"/>
         </ns4:element>
         <ns4:element name="criticality" elementType="USCore.AllergyIntoleranceCriticality"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="patient" elementType="USCore.Reference"/>
         <ns4:element name="encounter" elementType="USCore.Reference"/>
-        <ns4:element name="onset" target="System.DateTime:%value.value;System.Quantity:USCoreHelpers.ToQuantity(%value);;;System.String:%value.value">
+        <ns4:element name="onset" target="System.DateTime:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);;;System.String:%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
@@ -64,14 +64,14 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="asserter"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="AllergyIntolerance.Reaction" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="substance" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="manifestation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="substance" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="manifestation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="description" elementType="System.String" target="%value.value"/>
         <ns4:element name="onset" elementType="System.DateTime" target="%value.value"/>
         <ns4:element name="severity" elementType="USCore.AllergyIntoleranceSeverity"/>
-        <ns4:element name="exposureRoute" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="exposureRoute" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
@@ -110,7 +110,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="BodyTempUnits" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="BodyWeightUnits" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="CarePlan.Activity" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="outcomeCodeableConcept" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="outcomeCodeableConcept" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="outcomeReference">
@@ -130,8 +130,8 @@
         <ns4:element name="instantiatesUri" target="%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.String"/>
         </ns4:element>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="reasonCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="reasonCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="reasonReference">
@@ -141,7 +141,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.CarePlanActivityStatus"/>
-        <ns4:element name="statusReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="doNotPerform" elementType="System.Boolean" target="%value.value"/>
         <ns4:element name="scheduled" target="USCore.Timing:null;;System.String:%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
@@ -156,14 +156,14 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="product" target="System.Concept:USCoreHelpers.ToConcept(%value);USCore.Reference:null">
+        <ns4:element name="product" target="System.Concept:FHIRHelpers.ToConcept(%value);USCore.Reference:null">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="USCore" name="Reference"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="dailyAmount" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="quantity" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dailyAmount" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
         <ns4:element name="description" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="CarePlanActivityKind" retrievable="false" baseType="System.String"/>
@@ -189,10 +189,10 @@
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
         <ns4:element name="intent" elementType="System.String" target="%value.value"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="AssessPlan" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="AssessPlan" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="title" elementType="System.String" target="%value.value"/>
         <ns4:element name="description" elementType="System.String" target="%value.value"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
@@ -231,7 +231,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="name" elementType="System.String" target="%value.value"/>
@@ -245,7 +245,7 @@
         <ns4:element name="participant">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.CareTeam.Participant"/>
         </ns4:element>
-        <ns4:element name="reasonCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="reasonCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="reasonReference">
@@ -264,7 +264,7 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="member"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="CareTeam.Participant" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="role" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="role" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="member" elementType="USCore.Reference"/>
         <ns4:element name="onBehalfOf" elementType="USCore.Reference"/>
         <ns4:element name="period">
@@ -277,19 +277,19 @@
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
-        <ns4:element name="clinicalStatus" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="verificationStatus" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="clinicalStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="verificationStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="severity" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="bodySite" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="severity" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="encounter" elementType="USCore.Reference"/>
-        <ns4:element name="onset" target="System.DateTime:%value.value;System.Quantity:USCoreHelpers.ToQuantity(%value);;;System.String:%value.value">
+        <ns4:element name="onset" target="System.DateTime:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);;;System.String:%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
@@ -302,7 +302,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="String"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="abatement" target="System.DateTime:%value.value;System.Quantity:USCoreHelpers.ToQuantity(%value);;;System.String:%value.value">
+        <ns4:element name="abatement" target="System.DateTime:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);;;System.String:%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
@@ -331,7 +331,7 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="asserter"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Condition.Evidence" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="code" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="code" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="detail">
@@ -339,11 +339,11 @@
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Condition.Stage" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="summary" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="summary" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="assessment">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ContactDetail" identifier="http://hl7.org/fhir/StructureDefinition/ContactDetail" label="ContactDetail" retrievable="false" baseType="USCore.Element">
         <ns4:element name="name" elementType="System.String" target="%value.value"/>
@@ -377,7 +377,7 @@
         <ns4:element name="profile" target="%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.String"/>
         </ns4:element>
-        <ns4:element name="subject" target="System.Concept:USCoreHelpers.ToConcept(%value);USCore.Reference:null">
+        <ns4:element name="subject" target="System.Concept:FHIRHelpers.ToConcept(%value);USCore.Reference:null">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="USCore" name="Reference"/>
@@ -401,14 +401,14 @@
         <ns4:element name="path" elementType="System.String" target="%value.value"/>
         <ns4:element name="searchParam" elementType="System.String" target="%value.value"/>
         <ns4:element name="valueSet" elementType="System.String" target="%value.value"/>
-        <ns4:element name="code" target="USCoreHelpers.ToCode(%value)">
+        <ns4:element name="code" target="FHIRHelpers.ToCode(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DataRequirement.DateFilter" retrievable="false" baseType="USCore.Element">
         <ns4:element name="path" elementType="System.String" target="%value.value"/>
         <ns4:element name="searchParam" elementType="System.String" target="%value.value"/>
-        <ns4:element name="value" target="System.DateTime:%value.value;;System.Quantity:USCoreHelpers.ToQuantity(%value)">
+        <ns4:element name="value" target="System.DateTime:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
                 <ns4:choice xsi:type="ns4:IntervalTypeSpecifier">
@@ -429,16 +429,16 @@
         <ns4:element name="type" elementType="USCore.DeviceNameType"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Device.Property" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="valueQuantity" target="USCoreHelpers.ToQuantity(%value)">
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="valueQuantity" target="FHIRHelpers.ToQuantity(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Quantity"/>
         </ns4:element>
-        <ns4:element name="valueCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="valueCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Device.Specialization" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="systemType" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="systemType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="version" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Device.UdiCarrier" retrievable="false" baseType="USCore.BackboneElement">
@@ -450,7 +450,7 @@
         <ns4:element name="entryType" elementType="USCore.UDIEntryType"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Device.Version" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="component" elementType="USCore.Identifier"/>
         <ns4:element name="value" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
@@ -467,11 +467,11 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="LaboratorySlice" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="LaboratorySlice" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="encounter" elementType="USCore.Reference"/>
         <ns4:element name="effective" target="System.DateTime:%value.value;">
@@ -502,7 +502,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.DiagnosticReport.Media"/>
         </ns4:element>
         <ns4:element name="conclusion" elementType="System.String" target="%value.value"/>
-        <ns4:element name="conclusionCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="conclusionCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="presentedForm">
@@ -517,10 +517,10 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="encounter" elementType="USCore.Reference"/>
         <ns4:element name="effective" target="System.DateTime:%value.value;">
@@ -551,7 +551,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.DiagnosticReport.Media"/>
         </ns4:element>
         <ns4:element name="conclusion" elementType="System.String" target="%value.value"/>
-        <ns4:element name="conclusionCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="conclusionCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="presentedForm">
@@ -560,11 +560,11 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DocumentReference.Content" retrievable="false" baseType="USCore.BackboneElement">
         <ns4:element name="attachment" elementType="USCore.Attachment"/>
-        <ns4:element name="format" elementType="System.Code" target="USCoreHelpers.ToCode(%value)"/>
+        <ns4:element name="format" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DocumentReference.Context" retrievable="false" baseType="USCore.BackboneElement">
         <ns4:element name="encounter" elementType="USCore.Reference"/>
-        <ns4:element name="event" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="event" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="period">
@@ -572,8 +572,8 @@
                 <ns4:pointTypeSpecifier xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="facilityType" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="practiceSetting" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="facilityType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="practiceSetting" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="sourcePatientInfo" elementType="USCore.Reference"/>
         <ns4:element name="related">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -590,8 +590,8 @@
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
         <ns4:element name="docStatus" elementType="USCore.ReferredDocumentStatus"/>
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="subject" elementType="USCore.Reference"/>
@@ -605,7 +605,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.DocumentReference.RelatesTo"/>
         </ns4:element>
         <ns4:element name="description" elementType="System.String" target="%value.value"/>
-        <ns4:element name="securityLabel" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="securityLabel" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="content" elementType="USCore.DocumentReference.Content"/>
@@ -627,30 +627,30 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Dosage" identifier="http://hl7.org/fhir/StructureDefinition/Dosage" label="Dosage" retrievable="false" baseType="USCore.BackboneElement">
         <ns4:element name="sequence" elementType="System.Integer" target="%value.value"/>
         <ns4:element name="text" elementType="System.String" target="%value.value"/>
-        <ns4:element name="additionalInstruction" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="additionalInstruction" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="patientInstruction" elementType="System.String" target="%value.value"/>
         <ns4:element name="timing" elementType="USCore.Timing"/>
-        <ns4:element name="asNeeded" target="System.Boolean:%value.value;System.Concept:USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="asNeeded" target="System.Boolean:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Boolean"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="site" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="route" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="site" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="route" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="doseAndRate">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Dosage.DoseAndRate"/>
         </ns4:element>
-        <ns4:element name="maxDosePerPeriod" elementType="System.Ratio" target="USCoreHelpers.ToRatio(%value)"/>
-        <ns4:element name="maxDosePerAdministration" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="maxDosePerLifetime" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
+        <ns4:element name="maxDosePerPeriod" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
+        <ns4:element name="maxDosePerAdministration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="maxDosePerLifetime" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Dosage.DoseAndRate" retrievable="false" baseType="USCore.Element">
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="dose" target="System.Quantity:USCoreHelpers.ToQuantity(%value)">
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="dose" target="System.Quantity:FHIRHelpers.ToQuantity(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:IntervalTypeSpecifier">
                     <ns4:pointTypeSpecifier xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
@@ -658,7 +658,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="rate" target="System.Ratio:USCoreHelpers.ToRatio(%value);;System.Quantity:USCoreHelpers.ToQuantity(%value)">
+        <ns4:element name="rate" target="System.Ratio:FHIRHelpers.ToRatio(%value);;System.Quantity:FHIRHelpers.ToQuantity(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Ratio"/>
                 <ns4:choice xsi:type="ns4:IntervalTypeSpecifier">
@@ -675,7 +675,7 @@
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Encounter.ClassHistory" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="class" elementType="System.Code" target="USCoreHelpers.ToCode(%value)"/>
+        <ns4:element name="class" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
         <ns4:element name="period">
             <ns4:elementTypeSpecifier xsi:type="ns4:IntervalTypeSpecifier">
                 <ns4:pointTypeSpecifier xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
@@ -684,30 +684,30 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Encounter.Diagnosis" retrievable="false" baseType="USCore.BackboneElement">
         <ns4:element name="condition" elementType="USCore.Reference"/>
-        <ns4:element name="use" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="use" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="rank" elementType="System.Integer" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Encounter.Hospitalization" retrievable="false" baseType="USCore.BackboneElement">
         <ns4:element name="preAdmissionIdentifier" elementType="USCore.Identifier"/>
         <ns4:element name="origin" elementType="USCore.Reference"/>
-        <ns4:element name="admitSource" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="reAdmission" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="dietPreference" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="admitSource" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="reAdmission" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="dietPreference" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="specialCourtesy" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="specialCourtesy" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="specialArrangement" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="specialArrangement" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="destination" elementType="USCore.Reference"/>
-        <ns4:element name="dischargeDisposition" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="dischargeDisposition" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Encounter.Location" retrievable="false" baseType="USCore.BackboneElement">
         <ns4:element name="location" elementType="USCore.Reference"/>
         <ns4:element name="status" elementType="USCore.EncounterLocationStatus"/>
-        <ns4:element name="physicalType" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="physicalType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="period">
             <ns4:elementTypeSpecifier xsi:type="ns4:IntervalTypeSpecifier">
                 <ns4:pointTypeSpecifier xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
@@ -715,7 +715,7 @@
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Encounter.Participant" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="type" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="type" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="period">
@@ -742,15 +742,15 @@
         <ns4:element name="statusHistory">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Encounter.StatusHistory"/>
         </ns4:element>
-        <ns4:element name="class" elementType="System.Code" target="USCoreHelpers.ToCode(%value)"/>
+        <ns4:element name="class" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
         <ns4:element name="classHistory">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Encounter.ClassHistory"/>
         </ns4:element>
-        <ns4:element name="type" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="type" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="serviceType" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="priority" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="serviceType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="priority" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="episodeOfCare">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -769,8 +769,8 @@
                 <ns4:pointTypeSpecifier xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="length" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="reasonCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="length" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="reasonCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="reasonReference">
@@ -791,11 +791,11 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="EncounterStatus" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="EthnicityExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity" label="US Core Ethnicity Extension" retrievable="false" baseType="USCore.Extension">
-        <ns4:element name="ombCategory" elementType="System.Code" target="USCoreHelpers.ToCode(%value.extension[url=ombCategory].value)"/>
-        <ns4:element name="detailed" target="USCoreHelpers.ToCode(%value.extension[url=detailed].value)">
+        <ns4:element name="ombCategory" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.extension[url='ombCategory'].value)"/>
+        <ns4:element name="detailed" target="FHIRHelpers.ToCode(%parent.extension[url='detailed'].value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
         </ns4:element>
-        <ns4:element name="text" elementType="System.String" target="%value.extension[url=text].value.value"/>
+        <ns4:element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
         <ns4:element name="url" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="EventTiming" retrievable="false" baseType="System.String"/>
@@ -808,7 +808,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false" baseType="USCore.Element">
         <ns4:element name="url" elementType="System.String" target="%value.value"/>
-        <ns4:element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;USCore.Address:null;System.Quantity:USCoreHelpers.ToQuantity(%value);USCore.Annotation:null;USCore.Attachment:null;System.Concept:USCoreHelpers.ToConcept(%value);System.Code:USCoreHelpers.ToCode(%value);USCore.ContactPoint:null;System.Quantity:USCoreHelpers.ToQuantity(%value);System.Quantity:USCoreHelpers.ToQuantity(%value);System.Quantity:USCoreHelpers.ToQuantity(%value);USCore.HumanName:null;USCore.Identifier:null;System.Decimal:%value.value;;System.Quantity:USCoreHelpers.ToQuantity(%value);;System.Ratio:USCoreHelpers.ToRatio(%value);USCore.Reference:null;USCore.SampledData:null;USCore.Signature:null;USCore.Timing:null;USCore.ContactDetail:null;USCore.Contributor:null;USCore.DataRequirement:null;USCore.Expression:null;USCore.ParameterDefinition:null;USCore.RelatedArtifact:null;USCore.TriggerDefinition:null;USCore.UsageContext:null;USCore.Dosage:null;USCore.Meta:null">
+        <ns4:element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;USCore.Address:null;System.Quantity:FHIRHelpers.ToQuantity(%value);USCore.Annotation:null;USCore.Attachment:null;System.Concept:FHIRHelpers.ToConcept(%value);System.Code:FHIRHelpers.ToCode(%value);USCore.ContactPoint:null;System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);USCore.HumanName:null;USCore.Identifier:null;System.Decimal:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Ratio:FHIRHelpers.ToRatio(%value);USCore.Reference:null;USCore.SampledData:null;USCore.Signature:null;USCore.Timing:null;USCore.ContactDetail:null;USCore.Contributor:null;USCore.DataRequirement:null;USCore.Expression:null;USCore.ParameterDefinition:null;USCore.RelatedArtifact:null;USCore.TriggerDefinition:null;USCore.UsageContext:null;USCore.Dosage:null;USCore.Meta:null">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="String"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Boolean"/>
@@ -870,8 +870,8 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="FHIRAllTypes" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="FHIRDeviceStatus" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Goal.Target" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="measure" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="detail" target="System.Quantity:USCoreHelpers.ToQuantity(%value);;System.Concept:USCoreHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;System.Ratio:USCoreHelpers.ToRatio(%value)">
+        <ns4:element name="measure" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="detail" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;System.Ratio:FHIRHelpers.ToRatio(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
                 <ns4:choice xsi:type="ns4:IntervalTypeSpecifier">
@@ -891,14 +891,14 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
         <ns4:element name="lifecycleStatus" elementType="System.String" target="%value.value"/>
-        <ns4:element name="achievementStatus" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="achievementStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="priority" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="description" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="priority" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="description" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
-        <ns4:element name="start" target="System.Date:%value.value;System.Concept:USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="start" target="System.Date:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Date"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
@@ -916,7 +916,7 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="outcomeCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="outcomeCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="outcomeReference">
@@ -944,7 +944,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false" baseType="USCore.Element">
         <ns4:element name="use" elementType="USCore.IdentifierUse"/>
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="system" elementType="System.String" target="%value.value"/>
         <ns4:element name="value" elementType="System.String" target="%value.value"/>
         <ns4:element name="period">
@@ -962,13 +962,13 @@
         <ns4:element name="presentationDate" elementType="System.DateTime" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Immunization.Performer" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="function" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="actor" elementType="USCore.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Immunization.ProtocolApplied" retrievable="false" baseType="USCore.BackboneElement">
         <ns4:element name="series" elementType="System.String" target="%value.value"/>
         <ns4:element name="authority" elementType="USCore.Reference"/>
-        <ns4:element name="targetDisease" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="targetDisease" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="doseNumber" target="System.Integer:%value.value;System.String:%value.value">
@@ -994,8 +994,8 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
-        <ns4:element name="statusReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="vaccineCode" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="vaccineCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="patient" elementType="USCore.Reference"/>
         <ns4:element name="encounter" elementType="USCore.Reference"/>
         <ns4:element name="occurrence" target="System.DateTime:%value.value;System.String:%value.value">
@@ -1006,37 +1006,37 @@
         </ns4:element>
         <ns4:element name="recorded" elementType="System.DateTime" target="%value.value"/>
         <ns4:element name="primarySource" elementType="System.Boolean" target="%value.value"/>
-        <ns4:element name="reportOrigin" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="reportOrigin" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="location" elementType="USCore.Reference"/>
         <ns4:element name="manufacturer" elementType="USCore.Reference"/>
         <ns4:element name="lotNumber" elementType="System.String" target="%value.value"/>
         <ns4:element name="expirationDate" elementType="System.Date" target="%value.value"/>
-        <ns4:element name="site" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="route" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="doseQuantity" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
+        <ns4:element name="site" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="route" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="doseQuantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Immunization.Performer"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="reasonCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="reasonCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="reasonReference">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="isSubpotent" elementType="System.Boolean" target="%value.value"/>
-        <ns4:element name="subpotentReason" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="subpotentReason" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="education">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Immunization.Education"/>
         </ns4:element>
-        <ns4:element name="programEligibility" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="programEligibility" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="fundingSource" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="fundingSource" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="reaction">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Immunization.Reaction"/>
         </ns4:element>
@@ -1051,7 +1051,7 @@
         <ns4:element name="definition" elementType="USCore.Reference"/>
         <ns4:element name="udiCarrier" elementType="USCore.Device.UdiCarrier"/>
         <ns4:element name="status" elementType="USCore.FHIRDeviceStatus"/>
-        <ns4:element name="statusReason" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="statusReason" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="distinctIdentifier" elementType="System.String" target="%value.value"/>
@@ -1065,7 +1065,7 @@
         </ns4:element>
         <ns4:element name="modelNumber" elementType="System.String" target="%value.value"/>
         <ns4:element name="partNumber" elementType="System.String" target="%value.value"/>
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specialization">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Device.Specialization"/>
         </ns4:element>
@@ -1085,7 +1085,7 @@
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="safety" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="safety" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="parent" elementType="USCore.Reference"/>
@@ -1101,11 +1101,11 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="Laboratory" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="Laboratory" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -1123,7 +1123,7 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" target="System.Quantity:USCoreHelpers.ToQuantity(%value);System.Concept:USCoreHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:USCoreHelpers.ToRatio(%value);USCore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
+        <ns4:element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:FHIRHelpers.ToRatio(%value);USCore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
@@ -1142,15 +1142,15 @@
                 </ns4:choice>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -1172,21 +1172,21 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.LocationStatus"/>
-        <ns4:element name="operationalStatus" elementType="System.Code" target="USCoreHelpers.ToCode(%value)"/>
+        <ns4:element name="operationalStatus" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
         <ns4:element name="name" elementType="System.String" target="%value.value"/>
         <ns4:element name="alias" target="%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.String"/>
         </ns4:element>
         <ns4:element name="description" elementType="System.String" target="%value.value"/>
         <ns4:element name="mode" elementType="USCore.LocationMode"/>
-        <ns4:element name="type" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="type" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="telecom">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.ContactPoint"/>
         </ns4:element>
         <ns4:element name="address" elementType="USCore.Address"/>
-        <ns4:element name="physicalType" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="physicalType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="position" elementType="USCore.Location.Position"/>
         <ns4:element name="managingOrganization" elementType="USCore.Reference"/>
         <ns4:element name="partOf" elementType="USCore.Reference"/>
@@ -1218,24 +1218,24 @@
         <ns4:element name="expirationDate" elementType="System.DateTime" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Medication.Ingredient" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="item" target="System.Concept:USCoreHelpers.ToConcept(%value);USCore.Reference:null">
+        <ns4:element name="item" target="System.Concept:FHIRHelpers.ToConcept(%value);USCore.Reference:null">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="USCore" name="Reference"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
         <ns4:element name="isActive" elementType="System.Boolean" target="%value.value"/>
-        <ns4:element name="strength" elementType="System.Ratio" target="USCoreHelpers.ToRatio(%value)"/>
+        <ns4:element name="strength" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="status" elementType="USCore.MedicationStatus"/>
         <ns4:element name="manufacturer" elementType="USCore.Reference"/>
-        <ns4:element name="form" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="amount" elementType="System.Ratio" target="USCoreHelpers.ToRatio(%value)"/>
+        <ns4:element name="form" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="amount" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
         <ns4:element name="ingredient">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Medication.Ingredient"/>
         </ns4:element>
@@ -1243,29 +1243,29 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationRequest.DispenseRequest" retrievable="false" baseType="USCore.BackboneElement">
         <ns4:element name="initialFill" elementType="USCore.MedicationRequest.DispenseRequest.InitialFill"/>
-        <ns4:element name="dispenseInterval" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dispenseInterval" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
         <ns4:element name="validityPeriod">
             <ns4:elementTypeSpecifier xsi:type="ns4:IntervalTypeSpecifier">
                 <ns4:pointTypeSpecifier xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
         <ns4:element name="numberOfRepeatsAllowed" elementType="System.Integer" target="%value.value"/>
-        <ns4:element name="quantity" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="expectedSupplyDuration" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
+        <ns4:element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="expectedSupplyDuration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
         <ns4:element name="performer" elementType="USCore.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationRequest.DispenseRequest.InitialFill" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="quantity" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="duration" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
+        <ns4:element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="duration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationRequest.Substitution" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="allowed" target="System.Boolean:%value.value;System.Concept:USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="allowed" target="System.Boolean:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Boolean"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="reason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="reason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationRequestPriority" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationRequestProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" retrievable="true" baseType="USCore.DomainResource">
@@ -1273,9 +1273,9 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
-        <ns4:element name="statusReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="intent" elementType="System.String" target="%value.value"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="priority" elementType="USCore.MedicationRequestPriority"/>
@@ -1286,7 +1286,7 @@
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="USCore" name="Reference"/>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="medication" target="System.Concept:USCoreHelpers.ToConcept(%value);USCore.Reference:null">
+        <ns4:element name="medication" target="System.Concept:FHIRHelpers.ToConcept(%value);USCore.Reference:null">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="USCore" name="Reference"/>
@@ -1300,9 +1300,9 @@
         <ns4:element name="authoredOn" elementType="System.DateTime" target="%value.value"/>
         <ns4:element name="requester" elementType="USCore.Reference"/>
         <ns4:element name="performer" elementType="USCore.Reference"/>
-        <ns4:element name="performerType" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="performerType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="recorder" elementType="USCore.Reference"/>
-        <ns4:element name="reasonCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="reasonCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="reasonReference">
@@ -1318,7 +1318,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="groupIdentifier" elementType="USCore.Identifier"/>
-        <ns4:element name="courseOfTherapyType" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="courseOfTherapyType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="insurance">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
@@ -1346,10 +1346,10 @@
         <ns4:element name="profile" target="%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.String"/>
         </ns4:element>
-        <ns4:element name="security" target="USCoreHelpers.ToCode(%value)">
+        <ns4:element name="security" target="FHIRHelpers.ToCode(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
         </ns4:element>
-        <ns4:element name="tag" target="USCoreHelpers.ToCode(%value)">
+        <ns4:element name="tag" target="FHIRHelpers.ToCode(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
         </ns4:element>
     </ns4:typeInfo>
@@ -1361,8 +1361,8 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="NarrativeStatus" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Observation.Component" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="value" target="System.Quantity:USCoreHelpers.ToQuantity(%value);System.Concept:USCoreHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:USCoreHelpers.ToRatio(%value);USCore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:FHIRHelpers.ToRatio(%value);USCore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
@@ -1381,8 +1381,8 @@
                 </ns4:choice>
             </ns4:elementTypeSpecifier>
         </ns4:element>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="referenceRange">
@@ -1396,10 +1396,10 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Observation.Component.FlowRate" retrievable="false" baseType="USCore.Observation.Component"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Observation.Component.SystolicBP" retrievable="false" baseType="USCore.Observation.Component"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Observation.ReferenceRange" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="low" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="high" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="appliesTo" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="low" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="high" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="appliesTo" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="age">
@@ -1410,7 +1410,7 @@
         <ns4:element name="text" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Organization.Contact" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="purpose" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="purpose" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="name" elementType="USCore.HumanName"/>
         <ns4:element name="telecom">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.ContactPoint"/>
@@ -1424,7 +1424,7 @@
         <ns4:element name="NPI" elementType="USCore.Identifier"/>
         <ns4:element name="CLIA" elementType="USCore.Identifier"/>
         <ns4:element name="active" elementType="System.Boolean" target="%value.value"/>
-        <ns4:element name="type" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="type" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="name" elementType="System.String" target="%value.value"/>
@@ -1456,11 +1456,11 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ParameterUse" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Patient.Communication" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="language" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="language" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="preferred" elementType="System.Boolean" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Patient.Contact" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="relationship" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="relationship" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="name" elementType="USCore.HumanName"/>
@@ -1481,9 +1481,9 @@
         <ns4:element name="type" elementType="USCore.LinkType"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PatientProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" retrievable="true" baseType="USCore.DomainResource">
-        <ns4:element name="race" elementType="USCore.RaceExtension" target="%value.extension[url=http://hl7.org/fhir/us/core/StructureDefinition/us-core-race]"/>
-        <ns4:element name="ethnicity" elementType="USCore.EthnicityExtension" target="%value.extension[url=http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity]"/>
-        <ns4:element name="birthsex" elementType="USCore.BirthSexExtension" target="%value.extension[url=http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex].value.value"/>
+        <ns4:element name="race" elementType="USCore.RaceExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-race']"/>
+        <ns4:element name="ethnicity" elementType="USCore.EthnicityExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity']"/>
+        <ns4:element name="birthsex" elementType="USCore.BirthSexExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'].value.value"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1505,7 +1505,7 @@
         <ns4:element name="address">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Address"/>
         </ns4:element>
-        <ns4:element name="maritalStatus" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="maritalStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="multipleBirth" target="System.Boolean:%value.value;System.Integer:%value.value">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Boolean"/>
@@ -1540,11 +1540,11 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -1562,16 +1562,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -1598,11 +1598,11 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -1620,16 +1620,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -1649,7 +1649,7 @@
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="period">
             <ns4:elementTypeSpecifier xsi:type="ns4:IntervalTypeSpecifier">
                 <ns4:pointTypeSpecifier xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="DateTime"/>
@@ -1680,7 +1680,7 @@
         <ns4:element name="qualification">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Practitioner.Qualification"/>
         </ns4:element>
-        <ns4:element name="communication" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="communication" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
     </ns4:typeInfo>
@@ -1712,10 +1712,10 @@
         </ns4:element>
         <ns4:element name="practitioner" elementType="USCore.Reference"/>
         <ns4:element name="organization" elementType="USCore.Reference"/>
-        <ns4:element name="code" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="code" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="specialty" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="specialty" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="location">
@@ -1739,11 +1739,11 @@
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Procedure.FocalDevice" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="action" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="action" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="manipulated" elementType="USCore.Reference"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Procedure.Performer" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="function" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="actor" elementType="USCore.Reference"/>
         <ns4:element name="onBehalfOf" elementType="USCore.Reference"/>
     </ns4:typeInfo>
@@ -1764,9 +1764,9 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
-        <ns4:element name="statusReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="category" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="encounter" elementType="USCore.Reference"/>
         <ns4:element name="performed" target="System.DateTime:%value.value;">
@@ -1783,26 +1783,26 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Procedure.Performer"/>
         </ns4:element>
         <ns4:element name="location" elementType="USCore.Reference"/>
-        <ns4:element name="reasonCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="reasonCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="reasonReference">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="bodySite" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="bodySite" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="outcome" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="outcome" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="report">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="complication" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="complication" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="complicationDetail">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="followUp" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="followUp" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
@@ -1814,7 +1814,7 @@
         <ns4:element name="usedReference">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="usedCode" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="usedCode" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
     </ns4:typeInfo>
@@ -1835,10 +1835,10 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.String"/>
         </ns4:element>
         <ns4:element name="location" elementType="USCore.Reference"/>
-        <ns4:element name="reason" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="reason" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="activity" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="activity" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="agent">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Provenance.Agent"/>
         </ns4:element>
@@ -1855,8 +1855,8 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Provenance.Agent" retrievable="false" baseType="USCore.BackboneElement">
-        <ns4:element name="type" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="role" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="role" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="who" elementType="USCore.Reference"/>
@@ -1885,13 +1885,13 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="OxygenSatCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=2708-6].value)"/>
-        <ns4:element name="PulseOx" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=59408-5].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'].value)"/>
+        <ns4:element name="PulseOx" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='59408-5'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -1909,16 +1909,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -1938,13 +1938,13 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="QuantityComparator" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="RaceExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-race" label="US Core Race Extension" retrievable="false" baseType="USCore.Extension">
-        <ns4:element name="ombCategory" target="USCoreHelpers.ToCode(%value.extension[url=ombCategory].value)">
+        <ns4:element name="ombCategory" target="FHIRHelpers.ToCode(%parent.extension[url='ombCategory'].value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
         </ns4:element>
-        <ns4:element name="detailed" target="USCoreHelpers.ToCode(%value.extension[url=detailed].value)">
+        <ns4:element name="detailed" target="FHIRHelpers.ToCode(%parent.extension[url='detailed'].value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
         </ns4:element>
-        <ns4:element name="text" elementType="System.String" target="%value.extension[url=text].value.value"/>
+        <ns4:element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
         <ns4:element name="url" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Reference" identifier="http://hl7.org/fhir/StructureDefinition/Reference" label="Reference" retrievable="false" baseType="USCore.Element">
@@ -1971,7 +1971,7 @@
         <ns4:element name="language" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="SampledData" identifier="http://hl7.org/fhir/StructureDefinition/SampledData" label="SampledData" retrievable="false" baseType="USCore.Element">
-        <ns4:element name="origin" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
+        <ns4:element name="origin" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
         <ns4:element name="period" elementType="System.Decimal" target="%value.value"/>
         <ns4:element name="factor" elementType="System.Decimal" target="%value.value"/>
         <ns4:element name="lowerLimit" elementType="System.Decimal" target="%value.value"/>
@@ -1980,7 +1980,7 @@
         <ns4:element name="data" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Signature" identifier="http://hl7.org/fhir/StructureDefinition/Signature" label="Signature" retrievable="false" baseType="USCore.Element">
-        <ns4:element name="type" target="USCoreHelpers.ToCode(%value)">
+        <ns4:element name="type" target="FHIRHelpers.ToCode(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
         </ns4:element>
         <ns4:element name="when" elementType="System.DateTime" target="%value.value"/>
@@ -2001,10 +2001,10 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="System.String" target="%value.value"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2024,16 +2024,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2056,10 +2056,10 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.DateTime"/>
         </ns4:element>
         <ns4:element name="repeat" elementType="USCore.Timing.Repeat"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Timing.Repeat" retrievable="false" baseType="USCore.Element">
-        <ns4:element name="bounds" target="System.Quantity:USCoreHelpers.ToQuantity(%value);;">
+        <ns4:element name="bounds" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
                 <ns4:choice xsi:type="ns4:IntervalTypeSpecifier">
@@ -2111,8 +2111,8 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="UDIEntryType" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="UnitsOfTime" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code" baseType="USCore.Element">
-        <ns4:element name="code" elementType="System.Code" target="USCoreHelpers.ToCode(%value)"/>
-        <ns4:element name="value" target="System.Concept:USCoreHelpers.ToConcept(%value);System.Quantity:USCoreHelpers.ToQuantity(%value);;USCore.Reference:null">
+        <ns4:element name="code" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
+        <ns4:element name="value" target="System.Concept:FHIRHelpers.ToConcept(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);;USCore.Reference:null">
             <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Concept"/>
                 <ns4:choice xsi:type="ns4:NamedTypeSpecifier" namespace="System" name="Quantity"/>
@@ -2134,12 +2134,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="BMICode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=39156-5].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="BMICode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='39156-5'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2157,16 +2157,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2193,12 +2193,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="BodyHeightCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=8302-2].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="BodyHeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8302-2'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2216,16 +2216,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2252,12 +2252,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="BodyTempCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=8310-5].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="BodyTempCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8310-5'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2275,16 +2275,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2311,12 +2311,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="BodyWeightCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=29463-7].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="BodyWeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='29463-7'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2334,16 +2334,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2370,12 +2370,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="BPCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=85354-9].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="BPCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85354-9'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2393,16 +2393,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2417,8 +2417,8 @@
         <ns4:element name="component">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Observation.Component"/>
         </ns4:element>
-        <ns4:element name="SystolicBP" elementType="USCore.Observation.Component" target="%value.component[code.coding.system=http://loinc.org,code.coding.code=8480-6]"/>
-        <ns4:element name="DiastolicBP" elementType="USCore.Observation.Component" target="%value.component[code.coding.system=http://loinc.org,code.coding.code=8462-4]"/>
+        <ns4:element name="SystolicBP" elementType="USCore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8480-6']"/>
+        <ns4:element name="DiastolicBP" elementType="USCore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8462-4']"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
@@ -2431,12 +2431,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="HeadCircumCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=9843-4].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="HeadCircumCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9843-4'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2454,16 +2454,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2490,12 +2490,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="HeartRateCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=8867-4].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="HeartRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8867-4'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2513,16 +2513,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2549,12 +2549,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="OxygenSatCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=2708-6].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2572,16 +2572,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2608,12 +2608,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="RespRateCode" elementType="System.Code" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=9279-1].value)"/>
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="RespRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9279-1'].value)"/>
         <ns4:element name="subject" elementType="USCore.Reference"/>
         <ns4:element name="focus">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
@@ -2631,16 +2631,16 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="value" elementType="System.Quantity" target="USCoreHelpers.ToQuantity(%value)"/>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="value" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">
@@ -2667,12 +2667,12 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
         <ns4:element name="status" elementType="USCore.Status"/>
-        <ns4:element name="category" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="category" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
-        <ns4:element name="VSCat" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value.category[coding.system=http://terminology.hl7.org/CodeSystem/observation-category,coding.code=vital-signs].value)"/>
-        <ns4:element name="code" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="VitalsPanelCode" target="USCoreHelpers.ToCode(%value.code.coding[system=http://loinc.org,code=85353-1].value)">
+        <ns4:element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+        <ns4:element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="VitalsPanelCode" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85353-1'].value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Code"/>
         </ns4:element>
         <ns4:element name="subject" elementType="USCore.Reference"/>
@@ -2692,15 +2692,15 @@
         <ns4:element name="performer">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Reference"/>
         </ns4:element>
-        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="interpretation" target="USCoreHelpers.ToConcept(%value)">
+        <ns4:element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="interpretation" target="FHIRHelpers.ToConcept(%value)">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="System.Concept"/>
         </ns4:element>
         <ns4:element name="note">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Annotation"/>
         </ns4:element>
-        <ns4:element name="bodySite" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
-        <ns4:element name="method" elementType="System.Concept" target="USCoreHelpers.ToConcept(%value)"/>
+        <ns4:element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
+        <ns4:element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="specimen" elementType="USCore.Reference"/>
         <ns4:element name="device" elementType="USCore.Reference"/>
         <ns4:element name="referenceRange">

@@ -2055,6 +2055,7 @@ public class LibraryBuilder {
             return source;
         }
 
+        // TODO: This only works for simple mappings, nested mappings will require the targetMap.g4 parser
         // Supported target mapping syntax:
           // %value.<property name>
             // Resolves as a property accessor with the given source and <property name> as the path
@@ -2063,6 +2064,11 @@ public class LibraryBuilder {
           // <type name>:<map>;<type name>:<map>...
             // Semi-colon delimited list of type names and associated maps
             // Resolves as a case with whens for each type, with target mapping applied per the target map for that type
+          // %parent.<qualified path>[<key path>=<key value>,<key path>=<key value>,...].<qualified path>
+            // Resolves as a replacement of the property on which it appears
+            // Replaces the path of the property on which it appears with the given qualified path, which then becomes the
+            // source of a query with a where clause with criteria built for each comparison in the indexer
+            // If there is a trailing qualified path, the query is wrapped in a singletonFrom and a property access
         // Any other target map results in an exception
 
         if (targetMap.contains(";")) {
@@ -2083,7 +2089,7 @@ public class LibraryBuilder {
             c.setResultType(source.getResultType());
             return c;
         }
-        else if (targetMap.contains("(%value)")) {
+        else if (targetMap.contains("(")) {
             int invocationStart = targetMap.indexOf("(");
             String qualifiedFunctionName = targetMap.substring(0, invocationStart);
             String[] nameParts = qualifiedFunctionName.split("\\.");
@@ -2092,10 +2098,100 @@ public class LibraryBuilder {
             if (nameParts.length == 2) {
                 libraryName = nameParts[0];
                 functionName = nameParts[1];
+
+                // TODO: Add an include for this library name with namespaceUri = modelUri and version = modelVersion
+                //ensureLibraryIncluded(libraryName);
             }
             FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(source);
             fr.setResultType(source.getResultType());
             return fr;
+        }
+        else if (targetMap.contains("[")) {
+            int indexerStart = targetMap.indexOf("[");
+            int indexerEnd = targetMap.indexOf("]");
+            String indexer = targetMap.substring(indexerStart + 1, indexerEnd);
+            String indexerPath = targetMap.substring(0, indexerStart);
+
+            Expression result = null;
+
+            // Apply sourcePaths to get to the indexer
+            String[] indexerPaths = indexerPath.split("\\.");
+            for (String path : indexerPaths) {
+                if (path.equals("%parent")) {
+                    if (!(source instanceof Property)) {
+                        throw new IllegalArgumentException(String.format("Cannot expand target map %s for non-property-accessor type %s",
+                                targetMap, source.getClass().getSimpleName()));
+                    }
+                    Property sourceProperty = (Property)source;
+                    if (sourceProperty.getSource() != null) {
+                        result = sourceProperty.getSource();
+                    }
+                    else if (sourceProperty.getScope() != null) {
+                        result = resolveIdentifier(sourceProperty.getScope(), true);
+                    }
+                    else {
+                        throw new IllegalArgumentException(String.format("Cannot resolve %parent reference in targetMap %s",
+                                targetMap));
+                    }
+                }
+                else {
+                    Property p = of.createProperty().withSource(result).withPath(path);
+                    result = p;
+                }
+            }
+
+            // Build a query with the current result as source and the indexer content as criteria in the where clause
+            AliasedQuerySource querySource = of.createAliasedQuerySource().withExpression(result).withAlias("$this");
+
+            Expression criteria = null;
+            for (String indexerItem : indexer.split(",")) {
+                String[] indexerItems = indexerItem.split("=");
+                if (indexerItems.length != 2) {
+                    throw new IllegalArgumentException(String.format("Invalid indexer item %s in targetMap %s", indexerItem, targetMap));
+                }
+
+                Expression left = null;
+                for (String path : indexerItems[0].split("\\.")) {
+                    if (left == null) {
+                        left = of.createProperty().withScope("$this").withPath(path);
+                    }
+                    else {
+                        left = of.createProperty().withSource(left).withPath(path);
+                    }
+                }
+
+                String rightValue = indexerItems[1].substring(1, indexerItems[1].length() - 1);
+                Expression right = this.createLiteral(StringEscapeUtils.unescapeCql(rightValue));
+
+                Expression criteriaItem = of.createEqual().withOperand(left, right);
+                if (criteria == null) {
+                    criteria = criteriaItem;
+                }
+                else {
+                    criteria = of.createAnd().withOperand(criteria, criteriaItem);
+                }
+            }
+
+            Query query = of.createQuery().withSource(querySource).withWhere(criteria);
+            result = query;
+
+            if (indexerEnd < targetMap.length()) {
+                // There are additional paths following the indexer, apply them
+                String targetPath = targetMap.substring(indexerEnd + 1);
+                if (targetPath.startsWith(".")) {
+                    targetPath = targetPath.substring(1);
+                }
+
+                // Use a singleton from since the source of the query is a list
+                result = of.createSingletonFrom().withOperand(result);
+
+                for (String path : targetPath.split("\\.")) {
+                    result = of.createProperty().withSource(result).withPath(path);
+                }
+            }
+
+            result.setResultType(source.getResultType());
+            return result;
         }
         else if (targetMap.contains("%value.")) {
             String propertyName = targetMap.substring(7);
