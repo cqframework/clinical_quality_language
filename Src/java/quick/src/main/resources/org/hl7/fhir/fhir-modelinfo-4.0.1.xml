@@ -2957,129 +2957,6 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="CurrencyCode" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DataElement constraint on ElementDefinition data type" identifier="http://hl7.org/fhir/StructureDefinition/elementdefinition-de" label="DataElement constraint on ElementDefinition data type" retrievable="false" baseType="FHIR.ElementDefinition">
-        <ns4:element name="Question">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.question"/>
-        </ns4:element>
-        <ns4:element name="AllowedUnits" elementType="FHIR.allowedUnits"/>
-        <ns4:element name="path" elementType="FHIR.string"/>
-        <ns4:element name="sliceName" elementType="FHIR.string"/>
-        <ns4:element name="sliceIsConstraining" elementType="FHIR.boolean"/>
-        <ns4:element name="label" elementType="FHIR.string"/>
-        <ns4:element name="code">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Coding"/>
-        </ns4:element>
-        <ns4:element name="definition" elementType="FHIR.markdown"/>
-        <ns4:element name="comment" elementType="FHIR.markdown"/>
-        <ns4:element name="requirements" elementType="FHIR.markdown"/>
-        <ns4:element name="alias">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.string"/>
-        </ns4:element>
-        <ns4:element name="min" elementType="FHIR.unsignedInt"/>
-        <ns4:element name="max" elementType="FHIR.string"/>
-        <ns4:element name="base" elementType="FHIR.ElementDefinition.Base"/>
-        <ns4:element name="type">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ElementDefinition.Type"/>
-        </ns4:element>
-        <ns4:element name="defaultValue">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="base64Binary"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="boolean"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="canonical"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="code"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="date"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="dateTime"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="decimal"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="id"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="instant"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="integer"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="markdown"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="oid"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="positiveInt"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="string"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="time"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="unsignedInt"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="uri"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="url"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="uuid"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Address"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Age"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Annotation"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Attachment"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="CodeableConcept"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Coding"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="ContactPoint"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Count"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Distance"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Duration"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="HumanName"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Identifier"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Money"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Period"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Quantity"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Range"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Ratio"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Reference"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="SampledData"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Signature"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Timing"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="ContactDetail"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Contributor"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="DataRequirement"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Expression"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="ParameterDefinition"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="RelatedArtifact"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="TriggerDefinition"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="UsageContext"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Dosage"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Meta"/>
-            </ns4:elementTypeSpecifier>
-        </ns4:element>
-        <ns4:element name="meaningWhenMissing" elementType="FHIR.markdown"/>
-        <ns4:element name="orderMeaning" elementType="FHIR.string"/>
-        <ns4:element name="example">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ElementDefinition.Example"/>
-        </ns4:element>
-        <ns4:element name="minValue">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="date"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="dateTime"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="instant"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="time"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="decimal"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="integer"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="positiveInt"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="unsignedInt"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Quantity"/>
-            </ns4:elementTypeSpecifier>
-        </ns4:element>
-        <ns4:element name="maxValue">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="date"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="dateTime"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="instant"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="time"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="decimal"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="integer"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="positiveInt"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="unsignedInt"/>
-                <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="Quantity"/>
-            </ns4:elementTypeSpecifier>
-        </ns4:element>
-        <ns4:element name="maxLength" elementType="FHIR.integer"/>
-        <ns4:element name="condition">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.id"/>
-        </ns4:element>
-        <ns4:element name="constraint">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ElementDefinition.Constraint"/>
-        </ns4:element>
-        <ns4:element name="mustSupport" elementType="FHIR.boolean"/>
-        <ns4:element name="isModifierReason" elementType="FHIR.string"/>
-        <ns4:element name="binding" elementType="FHIR.ElementDefinition.Binding"/>
-        <ns4:element name="mapping">
-            <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.ElementDefinition.Mapping"/>
-        </ns4:element>
-    </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="type" elementType="FHIR.FHIRAllTypes"/>
         <ns4:element name="profile">
@@ -3848,7 +3725,7 @@
         <ns4:element name="numberOfStudies" elementType="FHIR.integer"/>
         <ns4:element name="numberOfParticipants" elementType="FHIR.integer"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false" baseType="System.Any">
         <ns4:element name="id" elementType="System.String"/>
         <ns4:element name="extension">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Extension"/>
@@ -9639,8 +9516,8 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="ResearchSubjectStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true">
-        <ns4:element name="id" elementType="System.String"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true" baseType="System.Any">
+        <ns4:element name="id" elementType="FHIR.id"/>
         <ns4:element name="meta" elementType="FHIR.Meta"/>
         <ns4:element name="implicitRules" elementType="FHIR.uri"/>
         <ns4:element name="language" elementType="FHIR.code"/>
@@ -11881,7 +11758,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="XPathUsageType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="allowedUnits" identifier="http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits" label="allowedUnits" retrievable="false">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="allowedUnits" identifier="http://hl7.org/fhir/StructureDefinition/elementdefinition-allowedUnits" label="allowedUnits" retrievable="false" baseType="System.Any">
         <ns4:baseTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
             <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="CodeableConcept"/>
             <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="FHIR" name="canonical"/>
@@ -11914,7 +11791,6 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="markdown" identifier="http://hl7.org/fhir/StructureDefinition/markdown" label="markdown" retrievable="false" baseType="FHIR.string"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="oid" identifier="http://hl7.org/fhir/StructureDefinition/oid" label="oid" retrievable="false" baseType="FHIR.uri"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="positiveInt" identifier="http://hl7.org/fhir/StructureDefinition/positiveInt" label="positiveInt" retrievable="false" baseType="FHIR.integer"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="question" identifier="http://hl7.org/fhir/StructureDefinition/elementdefinition-question" label="question" retrievable="false" baseType="FHIR.string"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="string" identifier="http://hl7.org/fhir/StructureDefinition/string" label="string" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" elementType="System.String"/>
     </ns4:typeInfo>
