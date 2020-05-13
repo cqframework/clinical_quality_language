@@ -72,6 +72,11 @@
 				<xs:documentation>The url attribute specifies the xml namespace associated with the model, and is used by the CQL translator to establish the url used to reference types from the model schema within an ELM document.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="targetUrl" type="xs:anyURI" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a target url that identifies the xml namespace associated with the target model in the underlying representation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="schemaLocation" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>The schemaLocation attribute is used by the CQL translator to output the schemaLocation of the xsd for the data model in the resulting ELM document.</xs:documentation>
@@ -180,6 +185,11 @@
 						<xs:documentation>The label attribute specifies the name of the class as it is referenced from CQL. This is a user-friendly identifier for the class that can be used within CQL as an alternative way to reference the class.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+				<xs:attribute name="target" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Specifies the name of the type in the underlying representation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="retrievable" type="xs:boolean" use="optional" default="false">
 					<xs:annotation>
 						<xs:documentation>The retrievable attribute specifies whether the class can be used within a retrieve statement. This flag is intended to allow the implementation to control whether or not the class can be used as a data access point for the data model.</xs:documentation>
@@ -215,6 +225,11 @@
 				<xs:attribute name="name" type="xs:string" use="required">
 					<xs:annotation>
 						<xs:documentation>Name is the unqualified name of the type within this model.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="target" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Specifies the name of the type in the underlying representation.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>

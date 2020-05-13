@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns4:modelInfo name="USCore" version="3.1.0" url="http://hl7.org/fhir/us/core" targetQualifier="uscore" patientClassName="PatientProfile" patientBirthDatePropertyName="birthDate" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ns4:modelInfo name="USCore" version="3.1.0" url="http://hl7.org/fhir/us/core" targetUrl="http://hl7.org/fhir" targetQualifier="uscore" patientClassName="PatientProfile" patientBirthDatePropertyName="birthDate" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ns4:requiredModelInfo name="System" version="1.0.0"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" baseType="USCore.Element">
         <ns4:element name="use" elementType="USCore.AddressUse"/>
@@ -168,7 +168,7 @@
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="CarePlanActivityKind" retrievable="false" baseType="System.String"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="CarePlanActivityStatus" retrievable="false" baseType="System.String"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="CarePlanProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan" label="US Core CarePlan Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="CarePlanProfile" target="CarePlan" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan" label="US Core CarePlan Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -459,7 +459,7 @@
         <ns4:element name="comment" elementType="System.String" target="%value.value"/>
         <ns4:element name="link" elementType="USCore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DiagnosticReportProfileLaboratoryReporting" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab" label="US Core DiagnosticReport Profile for Laboratory Results Reporting" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DiagnosticReportProfileLaboratoryReporting" target="DiagnosticReport" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab" label="US Core DiagnosticReport Profile for Laboratory Results Reporting" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -509,7 +509,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Attachment"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DiagnosticReportProfileNoteExchange" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note" label="US Core DiagnosticReport Profile for Report and Note exchange" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DiagnosticReportProfileNoteExchange" target="DiagnosticReport" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note" label="US Core DiagnosticReport Profile for Report and Note exchange" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -583,7 +583,7 @@
         <ns4:element name="code" elementType="USCore.DocumentRelationshipType"/>
         <ns4:element name="target" elementType="USCore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DocumentReferenceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference" label="US Core DocumentReference Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="DocumentReferenceProfile" target="DocumentReference" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference" label="US Core DocumentReference Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="masterIdentifier" elementType="USCore.Identifier"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
@@ -734,7 +734,7 @@
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="EncounterLocationStatus" retrievable="false" baseType="System.String"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="EncounterProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter" label="US Core Encounter Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="EncounterProfile" target="Encounter" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter" label="US Core Encounter Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -886,7 +886,7 @@
         </ns4:element>
         <ns4:element name="due" elementType="System.Date" target="%value.value"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="GoalProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal" label="US Core Goal Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="GoalProfile" target="Goal" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal" label="US Core Goal Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -989,7 +989,7 @@
         <ns4:element name="detail" elementType="USCore.Reference"/>
         <ns4:element name="reported" elementType="System.Boolean" target="%value.value"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ImmunizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization" label="US Core Immunization Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ImmunizationProfile" target="Immunization" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization" label="US Core Immunization Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1044,7 +1044,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Immunization.ProtocolApplied"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ImplantableDeviceProfile" target="Device" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1090,7 +1090,7 @@
         </ns4:element>
         <ns4:element name="parent" elementType="USCore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="LaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="LaboratoryResultObservationProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1227,7 +1227,7 @@
         <ns4:element name="isActive" elementType="System.Boolean" target="%value.value"/>
         <ns4:element name="strength" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationProfile" target="Medication" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1268,7 +1268,7 @@
         <ns4:element name="reason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationRequestPriority" retrievable="false" baseType="System.String"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationRequestProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="MedicationRequestProfile" target="MedicationRequest" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1417,7 +1417,7 @@
         </ns4:element>
         <ns4:element name="address" elementType="USCore.Address"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="OrganizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" label="US Core Organization Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="OrganizationProfile" target="Organization" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" label="US Core Organization Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1480,7 +1480,7 @@
         <ns4:element name="other" elementType="USCore.Reference"/>
         <ns4:element name="type" elementType="USCore.LinkType"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PatientProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PatientProfile" target="Patient" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="race" elementType="USCore.RaceExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-race']"/>
         <ns4:element name="ethnicity" elementType="USCore.EthnicityExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity']"/>
         <ns4:element name="birthsex" elementType="USCore.BirthSexExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'].value.value"/>
@@ -1529,7 +1529,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Patient.Link"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PediatricBMIforAgeObservationProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1587,7 +1587,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PediatricWeightForHeightObservationProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1657,7 +1657,7 @@
         </ns4:element>
         <ns4:element name="issuer" elementType="USCore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PractitionerProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" label="US Core Practitioner Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PractitionerProfile" target="Practitioner" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" label="US Core Practitioner Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1700,7 +1700,7 @@
             </ns4:elementTypeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PractitionerRoleProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" label="US Core PractitionerRole Profile" retrievable="true" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PractitionerRoleProfile" target="PractitionerRole" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" label="US Core PractitionerRole Profile" retrievable="true" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1747,7 +1747,7 @@
         <ns4:element name="actor" elementType="USCore.Reference"/>
         <ns4:element name="onBehalfOf" elementType="USCore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ProcedureProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure" label="US Core Procedure Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ProcedureProfile" target="Procedure" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure" label="US Core Procedure Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>
@@ -1874,7 +1874,7 @@
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="ProvenanceEntityRole" retrievable="false" baseType="System.String"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="USCore" name="PulseOximetryProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" retrievable="true" primaryCodePath="code" baseType="USCore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="USCore.Identifier"/>
         </ns4:element>

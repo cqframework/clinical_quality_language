@@ -289,6 +289,7 @@ define function ToString(value VisionEyes): value.value
 define function ToString(value VisionStatus): value.value
 define function ToString(value XPathUsageType): value.value
 define function ToString(value base64Binary): value.value
+define function ToString(value id): value.value
 define function ToBoolean(value boolean): value.value
 define function ToDate(value date): value.value
 define function ToDateTime(value dateTime): value.value

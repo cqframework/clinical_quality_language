@@ -1676,7 +1676,8 @@ public class LibraryBuilder {
         if (type instanceof NamedType) {
             NamedType namedType = (NamedType)type;
             ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
-            return new QName(modelInfo.getUrl(), namedType.getSimpleName());
+            return new QName(modelInfo.getTargetUrl() != null ? modelInfo.getTargetUrl() : modelInfo.getUrl(),
+                    namedType.getTarget() != null ? namedType.getTarget() : namedType.getSimpleName());
         }
 
         // ERROR:

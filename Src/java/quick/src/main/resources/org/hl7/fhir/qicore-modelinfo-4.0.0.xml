@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns4:modelInfo name="QICore" version="4.0.0" url="http://hl7.org/fhir/us/qicore" targetQualifier="qicore" patientClassName="Patient" patientBirthDatePropertyName="birthDate" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ns4:modelInfo name="QICore" version="4.0.0" url="http://hl7.org/fhir/us/qicore" targetUrl="http://hl7.org/fhir" targetQualifier="qicore" patientClassName="Patient" patientBirthDatePropertyName="birthDate" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <ns4:requiredModelInfo name="System" version="1.0.0"/>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" baseType="QICore.Element">
         <ns4:element name="use" elementType="QICore.AddressUse"/>
@@ -671,7 +671,7 @@
             </ns4:elementTypeSpecifier>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="CommunicationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone" label="CommunicationNotDone" retrievable="true" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="CommunicationNotDone" target="Communication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone" label="CommunicationNotDone" retrievable="true" baseType="QICore.DomainResource">
         <ns4:element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
         <ns4:element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value.value"/>
         <ns4:element name="identifier">
@@ -1108,7 +1108,7 @@
         <ns4:element name="value" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="DeviceNameType" retrievable="false" baseType="System.String"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="DeviceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested" label="DeviceNotRequested" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="DeviceNotRequested" target="Device" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested" label="DeviceNotRequested" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="doNotPerformReason" elementType="QICore.DoNotPerformReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-doNotPerformReason'].value)"/>
         <ns4:element name="doNotPerform" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/StructureDefinition/request-doNotPerform'].value.value"/>
         <ns4:element name="identifier">
@@ -1298,7 +1298,7 @@
         <ns4:element name="comment" elementType="System.String" target="%value.value"/>
         <ns4:element name="link" elementType="QICore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="DiagnosticReportLab" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-lab" label="DiagnosticReportLab" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="DiagnosticReportLab" target="DiagnosticReport" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-lab" label="DiagnosticReportLab" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="locationPerformed" elementType="QICore.Reference" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/diagnosticReport-locationPerformed']"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
@@ -1349,7 +1349,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Attachment"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="DiagnosticReportNote" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-note" label="DiagnosticReportNote" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="DiagnosticReportNote" target="DiagnosticReport" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-note" label="DiagnosticReportNote" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="locationPerformed" elementType="QICore.Reference" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/diagnosticReport-locationPerformed']"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
@@ -2049,7 +2049,7 @@
         <ns4:contextRelationship context="Patient" relatedKeyElement="patient"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ImmunizationEvaluationStatus" retrievable="false" baseType="System.String"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ImmunizationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationnotdone" label="ImmunizationNotDone" retrievable="true" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ImmunizationNotDone" target="Immunization" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationnotdone" label="ImmunizationNotDone" retrievable="true" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -2312,7 +2312,7 @@
         <ns4:element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
         <ns4:element name="actor" elementType="QICore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="MedicationAdministrationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotadministered" label="MedicationAdministrationNotDone" retrievable="true" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" target="MedicationAdministration" name="MedicationAdministrationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotadministered" label="MedicationAdministrationNotDone" retrievable="true" baseType="QICore.DomainResource">
         <ns4:element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
@@ -2440,7 +2440,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Reference"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="MedicationDispenseNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotdispensed" label="MedicationDispenseNotDone" retrievable="true" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="MedicationDispenseNotDone" target="MedicationDispense" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotdispensed" label="MedicationDispenseNotDone" retrievable="true" baseType="QICore.DomainResource">
         <ns4:element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
@@ -2489,7 +2489,7 @@
         </ns4:element>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="MedicationDispenseStatus" retrievable="false" baseType="System.String"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="MedicationNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested" label="MedicationNotRequested" retrievable="true" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="MedicationNotRequested" target="MedicationRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested" label="MedicationNotRequested" retrievable="true" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -2868,7 +2868,7 @@
         </ns4:element>
         <ns4:element name="text" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ObservationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observationnotdone" label="ObservationNotDone" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ObservationNotDone" target="Observation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observationnotdone" label="ObservationNotDone" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="notDoneReason" elementType="QICore.NotDoneReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDoneReason'].value)"/>
         <ns4:element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value.value"/>
         <ns4:element name="identifier">
@@ -3263,7 +3263,7 @@
         <ns4:element name="actor" elementType="QICore.Reference"/>
         <ns4:element name="onBehalfOf" elementType="QICore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ProcedureNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedurenotdone" label="ProcedureNotDone" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ProcedureNotDone" target="Procedure" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedurenotdone" label="ProcedureNotDone" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
@@ -3604,7 +3604,7 @@
         <ns4:element name="dimensions" elementType="System.Integer" target="%value.value"/>
         <ns4:element name="data" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="ServiceNotRequested" target="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.approachBodyStructure"/>
         </ns4:element>
@@ -4193,7 +4193,7 @@
         <ns4:element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
         <ns4:element name="url" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCoreImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" retrievable="true" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCoreImplantableDeviceProfile" target="Device" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" retrievable="true" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4239,7 +4239,7 @@
         </ns4:element>
         <ns4:element name="parent" elementType="QICore.Reference"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCoreLaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCoreLaboratoryResultObservationProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4315,7 +4315,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCorePediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCorePediatricBMIforAgeObservationProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4373,7 +4373,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCorePediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCorePediatricWeightForHeightObservationProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4431,7 +4431,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCorePulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCorePulseOximetryProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4503,7 +4503,7 @@
         <ns4:element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
         <ns4:element name="url" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCoreSmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="USCoreSmokingStatusProfile" target="Observation" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4610,7 +4610,7 @@
         </ns4:element>
         <ns4:element name="url" elementType="System.String" target="%value.value"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bmi" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4669,7 +4669,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bodyheight" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4728,7 +4728,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bodytemp" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4787,7 +4787,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bodyweight" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4846,7 +4846,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-bp" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4907,7 +4907,7 @@
         <ns4:element name="SystolicBP" elementType="QICore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8480-6']"/>
         <ns4:element name="DiastolicBP" elementType="QICore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8462-4']"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-headcircum" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -4966,7 +4966,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-heartrate" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -5025,7 +5025,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-oxygensat" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -5084,7 +5084,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-resprate" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>
@@ -5143,7 +5143,7 @@
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Observation.Component"/>
         </ns4:element>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QICore" name="observation-vitalspanel" target="Observation" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" retrievable="true" primaryCodePath="code" baseType="QICore.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QICore.Identifier"/>
         </ns4:element>

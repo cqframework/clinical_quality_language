@@ -12075,6 +12075,7 @@
     <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.VisionBase" toType="System.String"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.BundleType" toType="System.String"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.DocumentConfidentiality" toType="System.String"/>
+    <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.id" toType="System.String"/>
     <ns4:contextInfo name="Practitioner" keyElement="id">
         <ns4:contextType modelName="FHIR" name="Practitioner"/>
     </ns4:contextInfo>
