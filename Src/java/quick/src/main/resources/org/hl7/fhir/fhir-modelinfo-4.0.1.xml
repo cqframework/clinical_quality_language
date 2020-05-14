@@ -11815,6 +11815,7 @@
     <ns4:conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="FHIR.Duration" toType="System.Quantity"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="FHIR.Count" toType="System.Quantity"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToQuantity" fromType="FHIR.MoneyQuantity" toType="System.Quantity"/>
+    <ns4:conversionInfo functionName="FHIRHelpers.ToRatio" fromType="FHIR.Ratio" toType="System.Ratio"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToInterval" fromType="FHIR.Period" toType="Interval&lt;System.DateTime&gt;"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToInterval" fromType="FHIR.Range" toType="Interval&lt;System.Quantity&gt;"/>
     <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.EnrollmentRequestStatus" toType="System.String"/>

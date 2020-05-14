@@ -77,6 +77,11 @@
 				<xs:documentation>Specifies a target url that identifies the xml namespace associated with the target model in the underlying representation.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="targetVersion" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a target version that identifies the version of the xml namespace associated with the target model in the underlying representation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="schemaLocation" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>The schemaLocation attribute is used by the CQL translator to output the schemaLocation of the xsd for the data model in the resulting ELM document.</xs:documentation>

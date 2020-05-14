@@ -365,6 +365,14 @@ public class LibraryBuilder {
             throw new IllegalArgumentException(String.format("Could not resolve model name %s", modelName));
         }
 
+        return getModel(usingDef);
+    }
+
+    public Model getModel(UsingDef usingDef) {
+        if (usingDef == null) {
+            throw new IllegalArgumentException("usingDef required");
+        }
+
         return getModel(new VersionedIdentifier().withId(usingDef.getLocalIdentifier()).withVersion(usingDef.getVersion()));
     }
 
@@ -520,6 +528,7 @@ public class LibraryBuilder {
     }
 
     public void endTranslation() {
+        applyTargetModelMaps();
         libraryManager.endTranslation(getLibraryName());
     }
 
@@ -2051,6 +2060,57 @@ public class LibraryBuilder {
         return result;
     }
 
+    private VersionedIdentifier getModelMapping(Expression sourceContext) {
+        VersionedIdentifier result = null;
+        if (library.getUsings() != null && library.getUsings().getDef() != null) {
+            for (UsingDef usingDef : library.getUsings().getDef()) {
+                Model model = getModel(usingDef);
+                if (model.getModelInfo().getTargetUrl() != null) {
+                    if (result != null) {
+                        this.reportWarning(String.format("Duplicate mapped model %s:%s%s", model.getModelInfo().getName(),
+                                model.getModelInfo().getTargetUrl(), model.getModelInfo().getTargetVersion() != null
+                                        ? ("|" + model.getModelInfo().getTargetVersion()) : ""),
+                                sourceContext
+                        );
+                    }
+                    result = of.createVersionedIdentifier().withId(model.getModelInfo().getName())
+                            .withSystem(model.getModelInfo().getTargetUrl())
+                            .withVersion(model.getModelInfo().getTargetVersion());
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void ensureLibraryIncluded(String libraryName, Expression sourceContext) {
+        IncludeDef includeDef = translatedLibrary.resolveIncludeRef(libraryName);
+        if (includeDef == null) {
+            VersionedIdentifier modelMapping = getModelMapping(sourceContext);
+            String path = libraryName;
+            if (this.getNamespaceInfo() != null && modelMapping != null && modelMapping.getSystem() != null) {
+                path = NamespaceManager.getPath(modelMapping.getSystem(), path);
+            }
+            includeDef = of.createIncludeDef().withLocalIdentifier(libraryName).withPath(path);
+            if (modelMapping != null) {
+                includeDef.setVersion(modelMapping.getVersion());
+            }
+            translatedLibrary.add(includeDef);
+        }
+    }
+
+    private void applyTargetModelMaps() {
+        if (library.getUsings() != null && library.getUsings().getDef() != null) {
+            for (UsingDef usingDef : library.getUsings().getDef()) {
+                Model model = getModel(usingDef);
+                if (model.getModelInfo().getTargetUrl() != null) {
+                    usingDef.setUri(model.getModelInfo().getTargetUrl());
+                    usingDef.setVersion(model.getModelInfo().getTargetVersion());
+                }
+            }
+        }
+    }
+
     public Expression applyTargetMap(Expression source, String targetMap) {
         if (targetMap == null || targetMap.equals("null")) {
             return source;
@@ -2100,8 +2160,7 @@ public class LibraryBuilder {
                 libraryName = nameParts[0];
                 functionName = nameParts[1];
 
-                // TODO: Add an include for this library name with namespaceUri = modelUri and version = modelVersion
-                //ensureLibraryIncluded(libraryName);
+                ensureLibraryIncluded(libraryName, source);
             }
             FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(source);
             fr.setResultType(source.getResultType());

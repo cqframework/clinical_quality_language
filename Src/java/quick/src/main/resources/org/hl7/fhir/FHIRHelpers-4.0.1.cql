@@ -14,6 +14,12 @@ define function ToQuantity(quantity FHIR.Quantity):
     else
         System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
 
+define function ToRatio(ratio FHIR.Ratio):
+    if ratio is null then
+        null
+    else
+        System.Ratio { numerator: ToQuantity(ratio.numerator), denominator: ToQuantity(ratio.denominator) }
+
 define function ToInterval(range FHIR.Range):
     if range is null then
         null
