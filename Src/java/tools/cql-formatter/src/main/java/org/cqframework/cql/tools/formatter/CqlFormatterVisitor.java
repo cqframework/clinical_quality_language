@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Bryn on 7/5/2017.
  */
-public class CqlFormatterVisitor extends cqlBaseVisitor {
+public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
 
     private static List<CommentToken> comments = new ArrayList<>();
 

@@ -4,8 +4,15 @@ apply plugin: 'antlr'
 mainClassName = 'org.cqframework.cql.Main'
 run.args = ["${projectDir}/../../../Examples/ChlamydiaScreening_CQM.cql"]
 
+configurations {
+    compile {
+        extendsFrom = extendsFrom.findAll { it != configurations.antlr }
+    }
+}
+
 dependencies {
-    antlr group: 'org.antlr', name: 'antlr4', version: '4.5'
+    antlr  group: "org.antlr", name: "antlr4", version: "4.5"
+    compile group: "org.antlr", name: "antlr4-runtime", version: "4.5"
 }
 
 ext.antlr = [
