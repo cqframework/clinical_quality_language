@@ -2218,6 +2218,11 @@ public class LibraryBuilder {
                     else {
                         left = of.createProperty().withSource(left).withPath(path);
                     }
+
+                    // HACK: Workaround the fact that we don't have type information for the mapping expansions...
+                    if (path.equals("coding")) {
+                        left = of.createFirst().withSource(left);
+                    }
                 }
 
                 String rightValue = indexerItems[1].substring(1, indexerItems[1].length() - 1);
