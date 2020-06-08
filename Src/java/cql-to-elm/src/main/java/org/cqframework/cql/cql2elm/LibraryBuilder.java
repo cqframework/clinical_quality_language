@@ -2223,6 +2223,15 @@ public class LibraryBuilder {
                     if (path.equals("coding")) {
                         left = of.createFirst().withSource(left);
                     }
+                    if (path.equals("url")) {
+                        left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                    }
+                }
+
+                // HACK: Workaround the fact that we don't have type information for the mapping expansions...
+                // These hacks will be removed when addressed by the model info
+                if (indexerItems[0].equals("code.coding.system") || indexerItems[0].equals("code.coding.code")) {
+                    left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
                 }
 
                 String rightValue = indexerItems[1].substring(1, indexerItems[1].length() - 1);
