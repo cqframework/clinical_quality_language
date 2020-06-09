@@ -433,7 +433,7 @@ public class CqlTranslator {
     }
 
     public Map<String, String> getLibrariesAsJXSON() {
-        Map<String, String> result = new HashMap();
+        Map<String, String> result = new HashMap<>();
         for (Map.Entry<String, TranslatedLibrary> entry : libraryManager.getTranslatedLibraries().entrySet()) {
             result.put(entry.getKey(), toJxson(entry.getValue().getLibrary()));
         }
@@ -625,6 +625,7 @@ public class CqlTranslator {
         System.err.println();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes"})
     public static void main(String[] args) throws IOException, InterruptedException {
         OptionParser parser = new OptionParser();
         OptionSpec<File> input = parser.accepts("input").withRequiredArg().ofType(File.class).required().describedAs("The name of the input file or directory. If a directory is given, all files ending in .cql will be processed");
