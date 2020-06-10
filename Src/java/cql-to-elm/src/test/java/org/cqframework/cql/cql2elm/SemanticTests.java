@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
@@ -83,7 +84,21 @@ public class SemanticTests {
 
     @Test
     public void testIntervalOperatorPhrases() throws IOException {
-        runSemanticTest("OperatorTests/IntervalOperatorPhrases.cql");
+        CqlTranslator translator = runSemanticTest("OperatorTests/IntervalOperatorPhrases.cql");
+        Library library = translator.toELM();
+        ExpressionDef pointWithin = getExpressionDef(library, "PointWithin");
+        assertThat(pointWithin.getExpression(), instanceOf(And.class));
+        ExpressionDef pointProperlyWithin = getExpressionDef(library, "PointProperlyWithin");
+        assertThat(pointProperlyWithin.getExpression(), instanceOf(In.class));
+    }
+
+    private ExpressionDef getExpressionDef(Library library, String name) {
+        for (ExpressionDef def : library.getStatements().getDef()) {
+            if (def.getName().equals(name)) {
+                return def;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Could not resolve name %s", name));
     }
 
     @Test
@@ -240,15 +255,15 @@ public class SemanticTests {
         assertThat(mother.getName(), is("Mother"));
     }
 
-    private void runSemanticTest(String testFileName) throws IOException {
-        runSemanticTest(testFileName, 0);
+    private CqlTranslator runSemanticTest(String testFileName) throws IOException {
+        return runSemanticTest(testFileName, 0);
     }
 
-    private void runSemanticTest(String testFileName, int expectedErrors) throws IOException {
-        TestUtils.runSemanticTest(testFileName, expectedErrors);
+    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors) throws IOException {
+        return TestUtils.runSemanticTest(testFileName, expectedErrors);
     }
 
-    private void runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
-        TestUtils.runSemanticTest(testFileName, expectedErrors, options);
+    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
+        return TestUtils.runSemanticTest(testFileName, expectedErrors, options);
     }
 }
