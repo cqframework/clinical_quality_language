@@ -219,4 +219,27 @@ public class LibraryTests {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void testSynaxErrorWithNoLibrary() throws IOException {
+        // Syntax errors in anonymous libraries are reported with the name of the source file as the library identifier
+        CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorWithNoLibrary.cql");
+        assertThat(translator.getErrors().size(), greaterThanOrEqualTo(1));
+        assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithNoLibrary"));
+    }
+
+    @Test
+    public void testSyntaxErrorWithLibrary() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorWithLibrary.cql");
+        assertThat(translator.getErrors().size(), greaterThanOrEqualTo(1));
+        assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+    }
+
+    @Test
+    public void testSyntaxErrorReferencingLibrary() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorReferencingLibrary.cql");
+        assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
+        assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorReferencingLibrary"));
+        assertThat(translator.getErrors().get(1).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+    }
 }

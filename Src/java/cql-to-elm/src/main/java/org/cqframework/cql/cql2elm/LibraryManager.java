@@ -113,7 +113,7 @@ public class LibraryManager {
 
         try {
             CqlTranslator translator = CqlTranslator.fromStream(namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()),
-                    librarySource, modelManager, this, ucumService, options);
+                    libraryIdentifier, librarySource, modelManager, this, ucumService, options);
             if (errors != null) {
                 errors.addAll(translator.getExceptions());
             }
