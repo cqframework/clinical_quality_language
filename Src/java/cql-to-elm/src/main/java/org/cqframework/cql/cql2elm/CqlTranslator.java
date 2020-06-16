@@ -362,7 +362,7 @@ public class CqlTranslator {
         this.errorLevel = options.getErrorLevel();
 
         if (this.sourceInfo == null) {
-            sourceInfo = new VersionedIdentifier().withId("Anonymous").withSystem("text/cql");
+            this.sourceInfo = new VersionedIdentifier().withId("Anonymous").withSystem("text/cql");
         }
 
         if (this.namespaceInfo != null) {
@@ -521,11 +521,40 @@ public class CqlTranslator {
             this.detailedErrors = detailedErrors;
         }
 
+        private VersionedIdentifier extractLibraryIdentifier(cqlParser parser) {
+            RuleContext context = parser.getContext();
+            while (!(context instanceof cqlParser.LibraryContext)) {
+                context = context.parent;
+                if (context == null) {
+                    break;
+                }
+            }
+
+            if (context instanceof cqlParser.LibraryContext) {
+                for (ParseTree pt : ((cqlParser.LibraryContext)context).children) {
+                    if (pt instanceof cqlParser.LibraryDefinitionContext) {
+                        cqlParser.LibraryDefinitionContext ldc = (cqlParser.LibraryDefinitionContext)pt;
+                        if (ldc.qualifiedIdentifier() != null && ldc.qualifiedIdentifier().identifier() != null) {
+                            return new VersionedIdentifier().withId(StringEscapeUtils.unescapeCql(ldc.qualifiedIdentifier().identifier().getText()));
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
         @Override
         public void syntaxError(@NotNull Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, RecognitionException e) {
             VersionedIdentifier libraryIdentifier = builder.getLibraryIdentifier();
             if (libraryIdentifier == null) {
-                libraryIdentifier = sourceInfo;
+                // Attempt to extract a libraryIdentifier from the currently parsed content
+                if (recognizer instanceof cqlParser) {
+                    libraryIdentifier = extractLibraryIdentifier((cqlParser)recognizer);
+                }
+                if (libraryIdentifier == null) {
+                    libraryIdentifier = sourceInfo;
+                }
             }
             TrackBack trackback = new TrackBack(libraryIdentifier, line, charPositionInLine, line, charPositionInLine);
 

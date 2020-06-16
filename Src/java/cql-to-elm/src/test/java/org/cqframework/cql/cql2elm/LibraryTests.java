@@ -236,6 +236,13 @@ public class LibraryTests {
     }
 
     @Test
+    public void testSyntaxErrorWithLibraryFromStream() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/SyntaxErrorWithLibrary.cql");
+        assertThat(translator.getErrors().size(), greaterThanOrEqualTo(1));
+        assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+    }
+
+    @Test
     public void testSyntaxErrorReferencingLibrary() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorReferencingLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));

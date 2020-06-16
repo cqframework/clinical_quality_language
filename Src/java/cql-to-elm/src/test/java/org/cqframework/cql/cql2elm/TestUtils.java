@@ -175,6 +175,20 @@ public class TestUtils {
         return translator;
     }
 
+    public static CqlTranslator createTranslatorFromStream(String testFileName, CqlTranslator.Options... options) throws IOException {
+        return createTranslatorFromStream(null, testFileName, options);
+    }
+
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, CqlTranslator.Options... options) throws IOException {
+        InputStream inputStream = Cql2ElmVisitorTest.class.getResourceAsStream(testFileName);
+        ModelManager modelManager = new ModelManager();
+        LibraryManager libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
+        CqlTranslator translator = CqlTranslator.fromStream(namespaceInfo, inputStream, modelManager, libraryManager, getUcumService(), options);
+        return translator;
+    }
+
     public static CqlTranslator createTranslator(String testFileName, CqlTranslator.Options... options) throws IOException {
         return createTranslator(null, testFileName, options);
     }
