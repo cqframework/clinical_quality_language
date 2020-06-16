@@ -229,6 +229,14 @@ public class LibraryTests {
     }
 
     @Test
+    public void testSynaxErrorWithNoLibraryFromStream() throws IOException {
+        // Syntax errors in anonymous libraries are reported with the name of the source file as the library identifier
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/SyntaxErrorWithNoLibrary.cql");
+        assertThat(translator.getErrors().size(), greaterThanOrEqualTo(1));
+        assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("Anonymous"));
+    }
+
+    @Test
     public void testSyntaxErrorWithLibrary() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorWithLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(1));
@@ -245,6 +253,14 @@ public class LibraryTests {
     @Test
     public void testSyntaxErrorReferencingLibrary() throws IOException {
         CqlTranslator translator = TestUtils.createTranslator("LibraryTests/SyntaxErrorReferencingLibrary.cql");
+        assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
+        assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorReferencingLibrary"));
+        assertThat(translator.getErrors().get(1).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+    }
+
+    @Test
+    public void testSyntaxErrorReferencingLibraryFromStream() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/SyntaxErrorReferencingLibrary.cql");
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorReferencingLibrary"));
         assertThat(translator.getErrors().get(1).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
