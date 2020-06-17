@@ -152,4 +152,10 @@ public class LiteralTests {
         assertThat(ratio.getDenominator().getValue(), is(BigDecimal.valueOf(100)));
         assertThat(ratio.getDenominator().getUnit(), is("mL"));
     }
+
+    @Test
+    public void TokenRecognitionErrorTest() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("TokenRecognitionError.cql", 1);
+        assertThat(translator.getErrors().size(), equalTo(1));
+    }
 }
