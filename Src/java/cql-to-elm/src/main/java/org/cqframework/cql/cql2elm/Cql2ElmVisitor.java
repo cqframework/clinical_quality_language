@@ -2558,7 +2558,7 @@ DATETIME
     public Object visitWithinIntervalOperatorPhrase(@NotNull cqlParser.WithinIntervalOperatorPhraseContext ctx) {
         // ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
         // A starts within 3 days of start B
-        //* start of A in [start of B - 3 days, start of B + 3 days]
+        //* start of A in [start of B - 3 days, start of B + 3 days] and start B is not null
         // A starts within 3 days of B
         //* start of A in [start of B - 3 days, end of B + 3 days]
 
@@ -2606,6 +2606,7 @@ DATETIME
         Quantity quantity = (Quantity)visit(ctx.quantity());
         Expression lowerBound = null;
         Expression upperBound = null;
+        Expression initialBound = null;
         if (timingOperator.getRight().getResultType() instanceof IntervalType) {
             lowerBound = of.createStart().withOperand(timingOperator.getRight());
             track(lowerBound, ctx.quantity());
@@ -2617,6 +2618,7 @@ DATETIME
         else {
             lowerBound = timingOperator.getRight();
             upperBound = timingOperator.getRight();
+            initialBound = lowerBound;
         }
 
         lowerBound = of.createSubtract().withOperand(lowerBound, quantity);
@@ -2632,6 +2634,22 @@ DATETIME
 
         In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
         libraryBuilder.resolveBinaryCall("System", "In", in);
+
+        // if the within is not proper and the interval is being constructed from a single point, add a null check for that point to ensure correct interpretation
+        if (!isProper && (initialBound != null)) {
+            IsNull nullTest = of.createIsNull().withOperand(initialBound);
+            track(nullTest, ctx.quantity());
+            libraryBuilder.resolveUnaryCall("System", "IsNull", nullTest);
+            Not notNullTest = of.createNot().withOperand(nullTest);
+            track(notNullTest, ctx.quantity());
+            libraryBuilder.resolveUnaryCall("System", "Not", notNullTest);
+            And and = of.createAnd().withOperand(in, notNullTest);
+            track(and, ctx.quantity());
+            libraryBuilder.resolveBinaryCall("System", "And", and);
+            return and;
+        }
+
+        // Otherwise, return the constructed in
         return in;
     }
 
