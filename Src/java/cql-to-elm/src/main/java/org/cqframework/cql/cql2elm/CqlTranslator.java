@@ -9,6 +9,8 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
@@ -490,11 +492,6 @@ public class CqlTranslator {
     }
 
     private void translateToELM(ANTLRInputStream is, CqlTranslatorOptions options) {
-        cqlLexer lexer = new cqlLexer(is);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        cqlParser parser = new cqlParser(tokens);
-        parser.setBuildParseTree(true);
-
         exceptions = new ArrayList<>();
         errors = new ArrayList<>();
         warnings = new ArrayList<>();
@@ -504,8 +501,17 @@ public class CqlTranslator {
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         visitor.setTranslatorOptions(options);
 
+        CqlTranslator.CqlErrorListener errorListener = new CqlTranslator.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
+
+        cqlLexer lexer = new cqlLexer(is);
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(errorListener);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        cqlParser parser = new cqlParser(tokens);
+        parser.setBuildParseTree(true);
+
         parser.removeErrorListeners(); // Clear the default console listener
-        parser.addErrorListener(new CqlTranslator.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled()));
+        parser.addErrorListener(errorListener);
         ParseTree tree = parser.library();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
