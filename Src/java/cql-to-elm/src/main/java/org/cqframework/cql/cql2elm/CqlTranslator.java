@@ -523,21 +523,14 @@ public class CqlTranslator {
 
         private VersionedIdentifier extractLibraryIdentifier(cqlParser parser) {
             RuleContext context = parser.getContext();
-            while (!(context instanceof cqlParser.LibraryContext)) {
+            while (context != null && !(context instanceof cqlParser.LibraryContext)) {
                 context = context.parent;
-                if (context == null) {
-                    break;
-                }
             }
 
             if (context instanceof cqlParser.LibraryContext) {
-                for (ParseTree pt : ((cqlParser.LibraryContext)context).children) {
-                    if (pt instanceof cqlParser.LibraryDefinitionContext) {
-                        cqlParser.LibraryDefinitionContext ldc = (cqlParser.LibraryDefinitionContext)pt;
-                        if (ldc.qualifiedIdentifier() != null && ldc.qualifiedIdentifier().identifier() != null) {
-                            return new VersionedIdentifier().withId(StringEscapeUtils.unescapeCql(ldc.qualifiedIdentifier().identifier().getText()));
-                        }
-                    }
+                cqlParser.LibraryDefinitionContext ldc = ((cqlParser.LibraryContext)context).libraryDefinition();
+                if (ldc != null && ldc.qualifiedIdentifier() != null && ldc.qualifiedIdentifier().identifier() != null) {
+                    return new VersionedIdentifier().withId(StringEscapeUtils.unescapeCql(ldc.qualifiedIdentifier().identifier().getText()));
                 }
             }
 
