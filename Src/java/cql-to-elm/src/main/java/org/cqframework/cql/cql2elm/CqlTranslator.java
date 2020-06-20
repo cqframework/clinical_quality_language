@@ -63,6 +63,7 @@ public class CqlTranslator {
     private List<CqlTranslatorException> errors = null;
     private List<CqlTranslatorException> warnings = null;
     private List<CqlTranslatorException> messages = null;
+    private VersionedIdentifier sourceInfo = null;
     private NamespaceInfo namespaceInfo = null;
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
@@ -182,115 +183,115 @@ public class CqlTranslator {
     }
 
     public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager,
                                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, String cqlFileName, ModelManager modelManager, LibraryManager libraryManager,
                                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager,
                                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, errorLevel, signatureLevel, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, errorLevel, signatureLevel, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, String cqlFileName, ModelManager modelManager, LibraryManager libraryManager,
                                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, errorLevel, signatureLevel, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, null, errorLevel, signatureLevel, options);
     }
 
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager,
                                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager, LibraryManager libraryManager,
                                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager,
                                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, errorLevel, signatureLevel, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, errorLevel, signatureLevel, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager, LibraryManager libraryManager,
                                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, errorLevel, signatureLevel, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, null, errorLevel, signatureLevel, options);
     }
 
     public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, String cqlFileName, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFileName), new ANTLRInputStream(new FileInputStream(cqlFileName)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
     }
 
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                                          CqlTranslatorException.ErrorSeverity errorLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, LibraryBuilder.SignatureLevel.None, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
                                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, errorLevel, signatureLevel, options);
     }
 
     public static CqlTranslator fromText(String cqlText, ModelManager modelManager,
@@ -303,6 +304,11 @@ public class CqlTranslator {
         return new CqlTranslator(namespaceInfo, new ANTLRInputStream(cqlText), modelManager, libraryManager, ucumService, options);
     }
 
+    public static CqlTranslator fromText(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, String cqlText, ModelManager modelManager,
+                                         LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) {
+        return new CqlTranslator(namespaceInfo, sourceInfo, new ANTLRInputStream(cqlText), modelManager, libraryManager, ucumService, options);
+    }
+
     public static CqlTranslator fromStream(InputStream cqlStream, ModelManager modelManager,
                                            LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
         return new CqlTranslator(null, new ANTLRInputStream(cqlStream), modelManager, libraryManager, ucumService, options);
@@ -313,14 +319,29 @@ public class CqlTranslator {
         return new CqlTranslator(namespaceInfo, new ANTLRInputStream(cqlStream), modelManager, libraryManager, ucumService, options);
     }
 
+    public static CqlTranslator fromStream(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, InputStream cqlStream, ModelManager modelManager,
+                                           LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
+        return new CqlTranslator(namespaceInfo, sourceInfo, new ANTLRInputStream(cqlStream), modelManager, libraryManager, ucumService, options);
+    }
+
     public static CqlTranslator fromFile(File cqlFile, ModelManager modelManager,
                                          LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
-        return new CqlTranslator(null, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, options);
+        return new CqlTranslator(null, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, options);
     }
 
     public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, File cqlFile, ModelManager modelManager,
                                          LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
-        return new CqlTranslator(namespaceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, options);
+        return new CqlTranslator(namespaceInfo, getSourceInfo(cqlFile), new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, options);
+    }
+
+    public static CqlTranslator fromFile(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, File cqlFile, ModelManager modelManager,
+                                         LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) throws IOException {
+        return new CqlTranslator(namespaceInfo, sourceInfo, new ANTLRInputStream(new FileInputStream(cqlFile)), modelManager, libraryManager, ucumService, options);
+    }
+
+    private CqlTranslator(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, ANTLRInputStream is, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
+                          CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) {
+        this(namespaceInfo, sourceInfo, is, modelManager, libraryManager, ucumService, new CqlTranslatorOptions(errorLevel, signatureLevel, options));
     }
 
     private CqlTranslator(NamespaceInfo namespaceInfo, ANTLRInputStream is, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService,
@@ -330,11 +351,21 @@ public class CqlTranslator {
 
     private CqlTranslator(NamespaceInfo namespaceInfo, ANTLRInputStream is, ModelManager modelManager,
                           LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) {
+        this(namespaceInfo, null, is, modelManager, libraryManager, ucumService, options);
+    }
+
+    private CqlTranslator(NamespaceInfo namespaceInfo, VersionedIdentifier sourceInfo, ANTLRInputStream is, ModelManager modelManager,
+                          LibraryManager libraryManager, UcumService ucumService, CqlTranslatorOptions options) {
+        this.sourceInfo = sourceInfo;
         this.namespaceInfo = namespaceInfo;
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
         this.ucumService = ucumService;
         this.errorLevel = options.getErrorLevel();
+
+        if (this.sourceInfo == null) {
+            this.sourceInfo = new VersionedIdentifier().withId("Anonymous").withSystem("text/cql");
+        }
 
         if (this.namespaceInfo != null) {
             libraryManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
@@ -349,6 +380,26 @@ public class CqlTranslator {
         }
 
         translateToELM(is, options);
+    }
+
+    private static VersionedIdentifier getSourceInfo(String cqlFileName) {
+        return getSourceInfo(new File(cqlFileName));
+    }
+
+    private static VersionedIdentifier getSourceInfo(File cqlFile) {
+        String name = cqlFile.getName();
+        int extensionIndex = name.lastIndexOf('.');
+        if (extensionIndex > 0) {
+            name = name.substring(0, extensionIndex);
+        }
+        String system = null;
+        try {
+            system = cqlFile.getCanonicalPath();
+        } catch (IOException e) {
+            system = cqlFile.getAbsolutePath();
+        }
+
+        return new VersionedIdentifier().withId(name).withSystem(system);
     }
 
     private String toXml(Library library) {
@@ -472,9 +523,35 @@ public class CqlTranslator {
             this.detailedErrors = detailedErrors;
         }
 
+        private VersionedIdentifier extractLibraryIdentifier(cqlParser parser) {
+            RuleContext context = parser.getContext();
+            while (context != null && !(context instanceof cqlParser.LibraryContext)) {
+                context = context.parent;
+            }
+
+            if (context instanceof cqlParser.LibraryContext) {
+                cqlParser.LibraryDefinitionContext ldc = ((cqlParser.LibraryContext)context).libraryDefinition();
+                if (ldc != null && ldc.qualifiedIdentifier() != null && ldc.qualifiedIdentifier().identifier() != null) {
+                    return new VersionedIdentifier().withId(StringEscapeUtils.unescapeCql(ldc.qualifiedIdentifier().identifier().getText()));
+                }
+            }
+
+            return null;
+        }
+
         @Override
         public void syntaxError(@NotNull Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, @NotNull String msg, RecognitionException e) {
-            TrackBack trackback = new TrackBack(new VersionedIdentifier().withId("unknown"), line, charPositionInLine, line, charPositionInLine);
+            VersionedIdentifier libraryIdentifier = builder.getLibraryIdentifier();
+            if (libraryIdentifier == null) {
+                // Attempt to extract a libraryIdentifier from the currently parsed content
+                if (recognizer instanceof cqlParser) {
+                    libraryIdentifier = extractLibraryIdentifier((cqlParser)recognizer);
+                }
+                if (libraryIdentifier == null) {
+                    libraryIdentifier = sourceInfo;
+                }
+            }
+            TrackBack trackback = new TrackBack(libraryIdentifier, line, charPositionInLine, line, charPositionInLine);
 
             if (detailedErrors) {
                 builder.recordParsingException(new CqlSyntaxException(msg, trackback, e));
