@@ -213,6 +213,16 @@ public class BaseTest {
     }
 
     @Test
+    public void testFHIR() throws IOException {
+        TestUtils.runSemanticTest("fhir/stu3/TestFHIR.cql", 0);
+    }
+
+    @Test
+    public void testFHIRWithHelpers() throws IOException {
+        TestUtils.runSemanticTest("fhir/stu3/TestFHIRWithHelpers.cql", 0);
+    }
+
+    @Test
     public void testConceptConversion() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r4/TestConceptConversion.cql", 0);
         Library library = translator.toELM();

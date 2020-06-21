@@ -302,6 +302,7 @@ public class ModelImporter {
             }
             else {
                 result = new SimpleType(qualifiedTypeName, resolveTypeNameOrSpecifier(t.getBaseType(), t.getBaseTypeSpecifier()));
+                result.setTarget(t.getTarget());
             }
             resolvedTypes.put(casify(result.getName()), result);
         }
@@ -518,6 +519,7 @@ public class ModelImporter {
 
             result.setIdentifier(t.getIdentifier());
             result.setLabel(t.getLabel());
+            result.setTarget(t.getTarget());
             result.setRetrievable(t.isRetrievable());
             result.setPrimaryCodePath(t.getPrimaryCodePath());
         }

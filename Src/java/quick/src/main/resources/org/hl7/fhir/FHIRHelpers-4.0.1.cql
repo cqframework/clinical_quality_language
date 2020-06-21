@@ -14,6 +14,12 @@ define function ToQuantity(quantity FHIR.Quantity):
     else
         System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
 
+define function ToRatio(ratio FHIR.Ratio):
+    if ratio is null then
+        null
+    else
+        System.Ratio { numerator: ToQuantity(ratio.numerator), denominator: ToQuantity(ratio.denominator) }
+
 define function ToInterval(range FHIR.Range):
     if range is null then
         null
@@ -289,6 +295,7 @@ define function ToString(value VisionEyes): value.value
 define function ToString(value VisionStatus): value.value
 define function ToString(value XPathUsageType): value.value
 define function ToString(value base64Binary): value.value
+define function ToString(value id): value.value
 define function ToBoolean(value boolean): value.value
 define function ToDate(value date): value.value
 define function ToDateTime(value dateTime): value.value
