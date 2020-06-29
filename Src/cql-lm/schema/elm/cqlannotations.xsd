@@ -2,9 +2,14 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:cql-annotations:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:cql-annotations:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:complexType name="Annotation">
 		<xs:sequence>
+			<xs:element name="t" type="Tag" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="s" type="Narrative" minOccurs="0" maxOccurs="1"/>
 			<xs:element name="locator" type="Locator" minOccurs="0" maxOccurs="1"/>
 		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Tag">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="value" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="Locator">
 		<xs:attribute name="libraryId" type="xs:string" use="optional"/>

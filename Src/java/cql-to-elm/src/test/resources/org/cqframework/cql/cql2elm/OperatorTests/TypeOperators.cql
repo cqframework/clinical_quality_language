@@ -12,6 +12,10 @@ define BooleanConvertsToString: ConvertsToString(false)
 define IntegerToString: convert 3 to String
 define IntegerToStringFun: ToString(3)
 define IntegerConvertsToString: ConvertsToString(3)
+// ToString(Long) : String
+define LongToString: convert 3L to String
+define LongToStringFun: ToString(3L)
+define LongConvertsToString: ConvertsToString(3L)
 // ToString(Decimal) : String
 define DecimalToString: convert 3.0 to String
 define DecimalToStringFun: ToString(3.0)
@@ -44,14 +48,26 @@ define StringConvertsToBoolean: ConvertsToBoolean('false')
 define StringToInteger: convert '1' to Integer
 define StringToIntegerFun: ToInteger('1')
 define StringConvertsToInteger: ConvertsToInteger('1')
+// ToLong(String) : Integer
+define StringToLong: convert '1' to Long
+define StringToLongFun: ToLong('1')
+define StringConvertsToLong: ConvertsToLong('1')
 // ToDecimal(String) : Decimal
 define StringToDecimal: convert '3.0' to Decimal
 define StringToDecimalFun: ToDecimal('3.0')
 define StringConvertsToDecimal: ConvertsToDecimal('3.0')
+// ToLong(Integer) : Long
+define IntegerToLong: convert 1 to Long
+define IntegerToLongFun: ToLong(1)
+define IntegerConvertsToLong: ConvertsToLong(1)
 // ToDecimal(Integer) : Decimal
 define IntegerToDecimal: convert 1 to Decimal
 define IntegerToDecimalFun: ToDecimal(1)
 define IntegerConvertsToDecimal: ConvertsToDecimal(1)
+// ToDecimal(Long) : Decimal
+define LongToDecimal: convert 1L to Decimal
+define LongToDecimalFun: ToDecimal(1L)
+define LongConvertsToDecimal: ConvertsToDecimal(1L)
 // ToDate(String) : Date
 define StringToDate: convert '2014-01-01' to Date
 define StringToDateFun: ToDate('2014-01-01')

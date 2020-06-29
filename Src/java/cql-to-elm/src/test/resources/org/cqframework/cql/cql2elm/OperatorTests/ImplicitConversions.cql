@@ -1,5 +1,15 @@
 codesystem "http://snomed.info/sct": 'http://snome.info/sct'
 
+// Integer to Long
+define IntegerToLongEqual: 5 = 5L
+define IntegerLongMultiplication: 5 * 5L
+define LongIntegerMultiplication: 5L * 5
+
+// Long to Decimal
+define LongToDecimalEqual: 5L = 5.0
+define LongToDecimalMultiplication: 5L * 5.0
+define DecimalToLongMultiplication: 5.0 * 5L
+
 // Integer to Decimal
 define ThisShouldWork: 5 = 5.5
 define IntegerDecimalMultiplication: 5 * 5.0
