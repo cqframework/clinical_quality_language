@@ -128,7 +128,7 @@ public class LibraryBuilder {
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private UcumService ucumService = null;
-    private CqlTranslator.Options[] translatorOptions = null;
+    private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
     private SignatureLevel signatureLevel = SignatureLevel.Differing;
 
@@ -157,19 +157,7 @@ public class LibraryBuilder {
         if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
-
-    public void setTranslatorOptions(CqlTranslator.Options... options) {
-        this.translatorOptions = options;
-        if (options != null) {
-            StringBuilder translatorOptions = new StringBuilder();
-            for (CqlTranslator.Options option : options) {
-                if (translatorOptions.length() > 0) {
-                    translatorOptions.append(",");
-                }
-                translatorOptions.append(option.name());
-            }
-            this.cqlToElmInfo.setTranslatorOptions(translatorOptions.toString());
-        }
+        this.cqlToElmInfo.setTranslatorOptions(options.toString());
     }
 
     public NamespaceInfo getNamespaceInfo() {
