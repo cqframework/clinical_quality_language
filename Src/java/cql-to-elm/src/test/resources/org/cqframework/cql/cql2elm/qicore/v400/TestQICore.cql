@@ -97,7 +97,6 @@ define TestSlices:
     where BP.SystolicBP.value < 140 'mm[Hg]'
       and BP.DiastolicBP.value < 90 'mm[Hg]'
 
-// TODO: This should not need the .value here
 define TestSimpleExtensions:
   Patient P
     where P.birthsex = 'M'

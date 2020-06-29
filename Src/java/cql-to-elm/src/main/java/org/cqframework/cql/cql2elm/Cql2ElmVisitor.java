@@ -28,7 +28,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.*;
 import java.util.List;
-import java.util.jar.Pack200;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -151,6 +150,30 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public void disableFromKeywordRequired() {
         fromKeywordRequired = false;
+    }
+
+    public void setTranslatorOptions(CqlTranslatorOptions options) {
+        if (options.getOptions().contains(CqlTranslator.Options.EnableDateRangeOptimization)) {
+            this.enableDateRangeOptimization();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableAnnotations)) {
+            this.enableAnnotations();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableLocators)) {
+            this.enableLocators();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableResultTypes)) {
+            this.enableResultTypes();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableDetailedErrors)) {
+            this.enableDetailedErrors();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.DisableMethodInvocation)) {
+            this.disableMethodInvocation();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.RequireFromKeyword)) {
+            this.enableFromKeywordRequired();
+        }
     }
 
     public TokenStream getTokenStream() {
@@ -336,7 +359,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         Object lastResult = null;
         // NOTE: Need to set the library identifier here so the builder can begin the translation appropriately
-        libraryBuilder.setLibraryIdentifier(new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion()));
+        VersionedIdentifier identifier = new VersionedIdentifier().withId(libraryInfo.getLibraryName()).withVersion(libraryInfo.getVersion());
+        if (libraryInfo.getNamespaceName() != null) {
+            identifier.setSystem(libraryBuilder.resolveNamespaceUri(libraryInfo.getNamespaceName(), true));
+        }
+        else if (libraryBuilder.getNamespaceInfo() != null) {
+            identifier.setSystem(libraryBuilder.getNamespaceInfo().getUri());
+        }
+        libraryBuilder.setLibraryIdentifier(identifier);
         libraryBuilder.beginTranslation();
         try {
             // Loop through and call visit on each child (to ensure they are tracked)
@@ -364,9 +394,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public VersionedIdentifier visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         VersionedIdentifier vid = of.createVersionedIdentifier()
-                .withId(String.join(".", (Iterable<String>)visit(ctx.qualifiedIdentifier())))
+                .withId(identifiers.remove(identifiers.size() - 1))
                 .withVersion(parseString(ctx.versionSpecifier()));
+        if (identifiers.size() > 0) {
+            vid.setSystem(libraryBuilder.resolveNamespaceUri(String.join(".", identifiers), true));
+        }
+        else if (libraryBuilder.getNamespaceInfo() != null) {
+            vid.setSystem(libraryBuilder.getNamespaceInfo().getUri());
+        }
         libraryBuilder.setLibraryIdentifier(vid);
 
         return vid;
@@ -400,11 +437,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     @Override
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
-        String identifier = String.join(".", identifiers);
-        String unqualifiedIdentifier = identifiers.get(identifiers.size() - 1);
+        String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
+        String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
+                (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+        String path = null;
+        if (namespaceName != null) {
+            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
+            path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
+        }
+        else {
+            path = unqualifiedIdentifier;
+        }
         IncludeDef library = of.createIncludeDef()
                 .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
-                .withPath(identifier)
+                .withPath(path)
                 .withVersion(parseString(ctx.versionSpecifier()));
 
         libraryBuilder.addInclude(library);
@@ -2553,7 +2599,7 @@ DATETIME
     public Object visitWithinIntervalOperatorPhrase(@NotNull cqlParser.WithinIntervalOperatorPhraseContext ctx) {
         // ('starts' | 'ends' | 'occurs')? 'properly'? 'within' quantityLiteral 'of' ('start' | 'end')?
         // A starts within 3 days of start B
-        //* start of A in [start of B - 3 days, start of B + 3 days]
+        //* start of A in [start of B - 3 days, start of B + 3 days] and start B is not null
         // A starts within 3 days of B
         //* start of A in [start of B - 3 days, end of B + 3 days]
 
@@ -2601,6 +2647,7 @@ DATETIME
         Quantity quantity = (Quantity)visit(ctx.quantity());
         Expression lowerBound = null;
         Expression upperBound = null;
+        Expression initialBound = null;
         if (timingOperator.getRight().getResultType() instanceof IntervalType) {
             lowerBound = of.createStart().withOperand(timingOperator.getRight());
             track(lowerBound, ctx.quantity());
@@ -2612,6 +2659,7 @@ DATETIME
         else {
             lowerBound = timingOperator.getRight();
             upperBound = timingOperator.getRight();
+            initialBound = lowerBound;
         }
 
         lowerBound = of.createSubtract().withOperand(lowerBound, quantity);
@@ -2627,6 +2675,22 @@ DATETIME
 
         In in = of.createIn().withOperand(timingOperator.getLeft(), interval);
         libraryBuilder.resolveBinaryCall("System", "In", in);
+
+        // if the within is not proper and the interval is being constructed from a single point, add a null check for that point to ensure correct interpretation
+        if (!isProper && (initialBound != null)) {
+            IsNull nullTest = of.createIsNull().withOperand(initialBound);
+            track(nullTest, ctx.quantity());
+            libraryBuilder.resolveUnaryCall("System", "IsNull", nullTest);
+            Not notNullTest = of.createNot().withOperand(nullTest);
+            track(notNullTest, ctx.quantity());
+            libraryBuilder.resolveUnaryCall("System", "Not", notNullTest);
+            And and = of.createAnd().withOperand(in, notNullTest);
+            track(and, ctx.quantity());
+            libraryBuilder.resolveBinaryCall("System", "And", and);
+            return and;
+        }
+
+        // Otherwise, return the constructed in
         return in;
     }
 
@@ -3033,6 +3097,31 @@ DATETIME
                 }
 
                 retrieve.setCodeComparator(codeComparator);
+
+                // Verify that the type of the terminology target is a List<Code>
+                // Due to implicit conversion defined by specific models, the resolution path above may result in a List<Concept>
+                // In that case, convert to a list of code (Union the Code elements of the Concepts in the list)
+                if (retrieve.getCodes() != null && retrieve.getCodes().getResultType() != null && retrieve.getCodes().getResultType() instanceof ListType
+                    && ((ListType)retrieve.getCodes().getResultType()).getElementType().equals(libraryBuilder.resolveTypeName("System", "Concept"))) {
+                    if (retrieve.getCodes() instanceof ToList) {
+                        // ToList will always have a single argument
+                        ToList toList = (ToList)retrieve.getCodes();
+                        // If that argument is a ToConcept, replace the ToList argument with the code (skip the implicit conversion, the data access layer is responsible for it)
+                        if (toList.getOperand() instanceof ToConcept) {
+                            toList.setOperand(((ToConcept)toList.getOperand()).getOperand());
+                        }
+                        else {
+                            // Otherwise, access the codes property of the resulting Concept
+                            Expression codesAccessor = libraryBuilder.buildProperty(toList.getOperand(), "codes", toList.getOperand().getResultType());
+                            retrieve.setCodes(codesAccessor);
+                        }
+                    }
+                    else {
+                        // WARNING:
+                        libraryBuilder.recordParsingException(new CqlSemanticException("Terminology target is a list of concepts, but expects a list of codes",
+                                CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                    }
+                }
             }
             catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,

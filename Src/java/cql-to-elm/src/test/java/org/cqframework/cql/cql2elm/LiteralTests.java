@@ -197,4 +197,10 @@ public class LiteralTests {
         ExpressionDef def = defs.get("TestLongInteger");
         assertThat(def, hasTypeAndResult(Literal.class, "System.Long"));
     }
+
+    @Test
+    public void TokenRecognitionErrorTest() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("TokenRecognitionError.cql", 1);
+        assertThat(translator.getErrors().size(), equalTo(1));
+    }
 }

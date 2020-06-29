@@ -73,6 +73,10 @@ public class ClassType extends DataType implements NamedType {
     public String getLabel() { return label; }
     public void setLabel(String label) { this.label = label; }
 
+    private String target;
+    public String getTarget() { return target; }
+    public void setTarget(String target) { this.target = target; }
+
     private boolean retrievable;
     public boolean isRetrievable() {
         return retrievable;

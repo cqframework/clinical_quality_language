@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.fhir.r401;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.hl7.elm.r1.*;
@@ -312,5 +313,38 @@ public class BaseTest {
         assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
         assertThat(functionRef.getName(), is("ToConcept"));
         assertThat(equivalent.getOperand().get(1), instanceOf(ConceptRef.class));
+    }
+
+    @Test
+    public void testRetrieveWithConcept() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestRetrieveWithConcept.cql", 0);
+        TranslatedLibrary library = translator.getTranslatedLibrary();
+        ExpressionDef expressionDef = library.resolveExpressionRef("Test Tobacco Smoking Status");
+
+        assertThat(expressionDef.getExpression(), instanceOf(Retrieve.class));
+        Retrieve retrieve = (Retrieve)expressionDef.getExpression();
+        assertThat(retrieve.getCodes(), instanceOf(ToList.class));
+        ToList toList = (ToList)retrieve.getCodes();
+        assertThat(toList.getOperand(), instanceOf(CodeRef.class));
+    }
+
+    @Test
+    public void testFHIRNamespaces() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest(new NamespaceInfo("Public", "http://cql.hl7.org/public"), "fhir/r401/TestFHIRNamespaces.cql", 0);
+        TranslatedLibrary library = translator.getTranslatedLibrary();
+        IncludeDef includeDef = library.resolveIncludeRef("FHIRHelpers");
+        assertThat(includeDef, notNullValue());
+        assertThat(includeDef.getPath(), is("http://hl7.org/fhir/FHIRHelpers"));
+        assertThat(includeDef.getVersion(), is("4.0.1"));
+    }
+
+    @Test
+    public void testFHIRWithoutNamespaces() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRNamespaces.cql", 0);
+        TranslatedLibrary library = translator.getTranslatedLibrary();
+        IncludeDef includeDef = library.resolveIncludeRef("FHIRHelpers");
+        assertThat(includeDef, notNullValue());
+        assertThat(includeDef.getPath(), is("FHIRHelpers"));
+        assertThat(includeDef.getVersion(), is("4.0.1"));
     }
 }

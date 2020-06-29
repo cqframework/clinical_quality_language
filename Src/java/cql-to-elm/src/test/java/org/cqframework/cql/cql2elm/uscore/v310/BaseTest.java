@@ -129,7 +129,7 @@ public class BaseTest {
         InValueSet inValueSet = (InValueSet)and2.getOperand().get(1);
         assertThat(inValueSet.getCode(), instanceOf(FunctionRef.class));
         FunctionRef functionRef = (FunctionRef)inValueSet.getCode();
-        assertThat(functionRef.getLibraryName(), is("USCoreHelpers"));
+        assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
         assertThat(functionRef.getName(), is("ToConcept"));
         assertThat(functionRef.getOperand().get(0), instanceOf(Property.class));
         property = (Property)functionRef.getOperand().get(0);
@@ -139,7 +139,7 @@ public class BaseTest {
         Equivalent equivalent = (Equivalent)and1.getOperand().get(1);
         assertThat(equivalent.getOperand().get(0), instanceOf(FunctionRef.class));
         functionRef = (FunctionRef)equivalent.getOperand().get(0);
-        assertThat(functionRef.getLibraryName(), is("USCoreHelpers"));
+        assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
         assertThat(functionRef.getName(), is("ToConcept"));
         assertThat(functionRef.getOperand().get(0), instanceOf(Property.class));
         property = (Property)functionRef.getOperand().get(0);

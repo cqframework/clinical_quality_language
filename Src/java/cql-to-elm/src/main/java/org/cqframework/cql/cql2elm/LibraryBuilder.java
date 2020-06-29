@@ -19,8 +19,6 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
-
-
 /**
  * Created by Bryn on 12/29/2016.
  */
@@ -48,6 +46,10 @@ public class LibraryBuilder {
     }
 
     public LibraryBuilder(ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
+        this(null, modelManager, libraryManager, ucumService);
+    }
+
+    public LibraryBuilder(NamespaceInfo namespaceInfo, ModelManager modelManager, LibraryManager libraryManager, UcumService ucumService) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
         }
@@ -56,6 +58,7 @@ public class LibraryBuilder {
             throw new IllegalArgumentException("libraryManager is null");
         }
 
+        this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
 
@@ -105,6 +108,7 @@ public class LibraryBuilder {
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
     private int literalContext = 0;
+    private NamespaceInfo namespaceInfo = null;
     private ModelManager modelManager = null;
     private Model defaultModel = null;
     private LibraryManager libraryManager = null;
@@ -132,25 +136,27 @@ public class LibraryBuilder {
         listTraversal = true;
     }
 
-    public void disableListTraversal() {
-        listTraversal = false;
-    }
+    public void setTranslatorOptions(CqlTranslatorOptions options) {
+        if (options == null) {
+            throw new IllegalArgumentException("Options cannot be null");
+        }
 
-    public SignatureLevel getSignatureLevel() {
-        return this.signatureLevel;
-    }
-
-    public void setSignatureLevel(SignatureLevel signatureLevel) {
-        this.signatureLevel = signatureLevel;
-    }
-
-    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
-    public CqlTranslatorException.ErrorSeverity getErrorLevel() {
-        return errorLevel;
-    }
-    public void setErrorLevel(CqlTranslatorException.ErrorSeverity severity) {
-        errorLevel = severity;
-    }
+        this.options = options;
+        if (options.getOptions().contains(CqlTranslator.Options.DisableListTraversal)) {
+            this.listTraversal = false;
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.DisableListDemotion)) {
+            this.getConversionMap().disableListDemotion();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.DisableListPromotion)) {
+            this.getConversionMap().disableListPromotion();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalDemotion)) {
+            this.getConversionMap().enableIntervalDemotion();
+        }
+        if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalPromotion)) {
+            this.getConversionMap().enableIntervalPromotion();
+        }
 
     public void setTranslatorOptions(CqlTranslator.Options... options) {
         this.translatorOptions = options;
@@ -166,8 +172,8 @@ public class LibraryBuilder {
         }
     }
 
-    public CqlTranslator.Options[] getTranslatorOptions() {
-        return this.translatorOptions;
+    public NamespaceInfo getNamespaceInfo() {
+        return this.namespaceInfo;
     }
 
     private Model loadModel(VersionedIdentifier modelIdentifier) {
@@ -375,6 +381,14 @@ public class LibraryBuilder {
             throw new IllegalArgumentException(String.format("Could not resolve model name %s", modelName));
         }
 
+        return getModel(usingDef);
+    }
+
+    public Model getModel(UsingDef usingDef) {
+        if (usingDef == null) {
+            throw new IllegalArgumentException("usingDef required");
+        }
+
         return getModel(new VersionedIdentifier().withId(usingDef.getLocalIdentifier()).withVersion(usingDef.getVersion()));
     }
 
@@ -405,6 +419,16 @@ public class LibraryBuilder {
             throw new IllegalArgumentException(String.format("Could not resolve library name %s.", identifier));
         }
         return result;
+    }
+
+    public String resolveNamespaceUri(String namespaceName, boolean mustResolve) {
+        String namespaceUri = libraryManager.getNamespaceManager().resolveNamespaceUri(namespaceName);
+
+        if (namespaceUri == null && mustResolve) {
+            throw new IllegalArgumentException(String.format("Could not resolve namespace name %s", namespaceName));
+        }
+
+        return namespaceUri;
     }
 
     private ErrorSeverity toErrorSeverity(CqlTranslatorException.ErrorSeverity severity) {
@@ -438,7 +462,7 @@ public class LibraryBuilder {
     }
 
     private boolean shouldReport(CqlTranslatorException.ErrorSeverity errorSeverity) {
-        switch (errorLevel) {
+        switch (options.getErrorLevel()) {
             case Info:
                 return
                         errorSeverity == CqlTranslatorException.ErrorSeverity.Info
@@ -469,6 +493,7 @@ public class LibraryBuilder {
             err.setErrorSeverity(toErrorSeverity(e.getSeverity()));
             if (e.getLocator() != null) {
                 if (e.getLocator().getLibrary() != null) {
+                    err.setLibrarySystem(e.getLocator().getLibrary().getSystem());
                     err.setLibraryId(e.getLocator().getLibrary().getId());
                     err.setLibraryVersion(e.getLocator().getLibrary().getVersion());
                 }
@@ -480,6 +505,7 @@ public class LibraryBuilder {
 
             if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
                 CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException) e.getCause();
+                err.setTargetIncludeLibrarySystem(incEx.getLibrarySystem());
                 err.setTargetIncludeLibraryId(incEx.getLibraryId());
                 err.setTargetIncludeLibraryVersionId(incEx.getVersionId());
                 err.setErrorType(ErrorType.INCLUDE);
@@ -492,6 +518,10 @@ public class LibraryBuilder {
         String libraryName = library.getIdentifier().getId();
         if (libraryName == null) {
             libraryName = "Anonymous";
+        }
+
+        if (library.getIdentifier().getSystem() != null) {
+            libraryName = library.getIdentifier().getSystem() + "/" + libraryName;
         }
 
         return libraryName;
@@ -514,6 +544,7 @@ public class LibraryBuilder {
     }
 
     public void endTranslation() {
+        applyTargetModelMaps();
         libraryManager.endTranslation(getLibraryName());
     }
 
@@ -530,15 +561,24 @@ public class LibraryBuilder {
         translatedLibrary.add(includeDef);
 
         VersionedIdentifier libraryIdentifier = new VersionedIdentifier()
-                .withId(includeDef.getPath())
+                .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
+                .withId(NamespaceManager.getNamePart(includeDef.getPath()))
                 .withVersion(includeDef.getVersion());
 
         ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
-        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier,
-            this.getErrorLevel(), this.getSignatureLevel(), this.getTranslatorOptions(), errors);
+        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
         for (CqlTranslatorException error : errors) {
             this.recordParsingException(error);
         }
+
+        // Note that translation of a referenced library may result in implicit specification of the namespace
+        // In this case, the referencedLibrary will have a namespaceUri different than the currently resolved namespaceUri
+        // of the IncludeDef.
+        String currentPath = NamespaceManager.getUriPart(includeDef.getPath());
+        if (currentPath != null && !currentPath.equals(libraryIdentifier.getSystem())) {
+            includeDef.setPath(NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId()));
+        }
+
         libraries.put(includeDef.getLocalIdentifier(), referencedLibrary);
         loadConversionMap(referencedLibrary);
     }
@@ -1005,9 +1045,9 @@ public class LibraryBuilder {
                 invocation.setOperands(convertedOperands);
             }
 
-            if (signatureLevel == SignatureLevel.All || (signatureLevel == SignatureLevel.Differing
+            if (options.getSignatureLevel() == SignatureLevel.All || (options.getSignatureLevel() == SignatureLevel.Differing
                 && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
-                    || (signatureLevel == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
+                    || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
                 invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
             }
 
@@ -1688,7 +1728,8 @@ public class LibraryBuilder {
         if (type instanceof NamedType) {
             NamedType namedType = (NamedType)type;
             ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
-            return new QName(modelInfo.getUrl(), namedType.getSimpleName());
+            return new QName(modelInfo.getTargetUrl() != null ? modelInfo.getTargetUrl() : modelInfo.getUrl(),
+                    namedType.getTarget() != null ? namedType.getTarget() : namedType.getSimpleName());
         }
 
         // ERROR:
@@ -1859,6 +1900,14 @@ public class LibraryBuilder {
                             throw new IllegalArgumentException(String.format("Inconsistent property resolution for choice type %s (was %s, is %s)",
                                     choice.toString(), name, resolution.getName()));
                         }
+
+                        if (name == null) {
+                            name = resolution.getName();
+                        }
+                        else if (!name.equals(resolution.getName())) {
+                            throw new IllegalArgumentException(String.format("Inconsistent property resolution for choice type %s (was %s, is %s)",
+                                    choice.toString(), name, resolution.getName()));
+                        }
                     }
                 }
 
@@ -1869,7 +1918,7 @@ public class LibraryBuilder {
 
                 if (resultTypes.size() == 1) {
                     for (DataType resultType : resultTypes) {
-                        return new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : null);
+                        return new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name);
                     }
                 }
             }
@@ -2062,11 +2111,63 @@ public class LibraryBuilder {
         return result;
     }
 
+    private VersionedIdentifier getModelMapping(Expression sourceContext) {
+        VersionedIdentifier result = null;
+        if (library.getUsings() != null && library.getUsings().getDef() != null) {
+            for (UsingDef usingDef : library.getUsings().getDef()) {
+                Model model = getModel(usingDef);
+                if (model.getModelInfo().getTargetUrl() != null) {
+                    if (result != null) {
+                        this.reportWarning(String.format("Duplicate mapped model %s:%s%s", model.getModelInfo().getName(),
+                                model.getModelInfo().getTargetUrl(), model.getModelInfo().getTargetVersion() != null
+                                        ? ("|" + model.getModelInfo().getTargetVersion()) : ""),
+                                sourceContext
+                        );
+                    }
+                    result = of.createVersionedIdentifier().withId(model.getModelInfo().getName())
+                            .withSystem(model.getModelInfo().getTargetUrl())
+                            .withVersion(model.getModelInfo().getTargetVersion());
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void ensureLibraryIncluded(String libraryName, Expression sourceContext) {
+        IncludeDef includeDef = translatedLibrary.resolveIncludeRef(libraryName);
+        if (includeDef == null) {
+            VersionedIdentifier modelMapping = getModelMapping(sourceContext);
+            String path = libraryName;
+            if (this.getNamespaceInfo() != null && modelMapping != null && modelMapping.getSystem() != null) {
+                path = NamespaceManager.getPath(modelMapping.getSystem(), path);
+            }
+            includeDef = of.createIncludeDef().withLocalIdentifier(libraryName).withPath(path);
+            if (modelMapping != null) {
+                includeDef.setVersion(modelMapping.getVersion());
+            }
+            translatedLibrary.add(includeDef);
+        }
+    }
+
+    private void applyTargetModelMaps() {
+        if (library.getUsings() != null && library.getUsings().getDef() != null) {
+            for (UsingDef usingDef : library.getUsings().getDef()) {
+                Model model = getModel(usingDef);
+                if (model.getModelInfo().getTargetUrl() != null) {
+                    usingDef.setUri(model.getModelInfo().getTargetUrl());
+                    usingDef.setVersion(model.getModelInfo().getTargetVersion());
+                }
+            }
+        }
+    }
+
     public Expression applyTargetMap(Expression source, String targetMap) {
         if (targetMap == null || targetMap.equals("null")) {
             return source;
         }
 
+        // TODO: This only works for simple mappings, nested mappings will require the targetMap.g4 parser
         // Supported target mapping syntax:
           // %value.<property name>
             // Resolves as a property accessor with the given source and <property name> as the path
@@ -2075,6 +2176,11 @@ public class LibraryBuilder {
           // <type name>:<map>;<type name>:<map>...
             // Semi-colon delimited list of type names and associated maps
             // Resolves as a case with whens for each type, with target mapping applied per the target map for that type
+          // %parent.<qualified path>[<key path>=<key value>,<key path>=<key value>,...].<qualified path>
+            // Resolves as a replacement of the property on which it appears
+            // Replaces the path of the property on which it appears with the given qualified path, which then becomes the
+            // source of a query with a where clause with criteria built for each comparison in the indexer
+            // If there is a trailing qualified path, the query is wrapped in a singletonFrom and a property access
         // Any other target map results in an exception
 
         if (targetMap.contains(";")) {
@@ -2095,7 +2201,7 @@ public class LibraryBuilder {
             c.setResultType(source.getResultType());
             return c;
         }
-        else if (targetMap.contains("(%value)")) {
+        else if (targetMap.contains("(")) {
             int invocationStart = targetMap.indexOf("(");
             String qualifiedFunctionName = targetMap.substring(0, invocationStart);
             String[] nameParts = qualifiedFunctionName.split("\\.");
@@ -2104,10 +2210,113 @@ public class LibraryBuilder {
             if (nameParts.length == 2) {
                 libraryName = nameParts[0];
                 functionName = nameParts[1];
+
+                ensureLibraryIncluded(libraryName, source);
             }
             FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(source);
             fr.setResultType(source.getResultType());
             return fr;
+        }
+        else if (targetMap.contains("[")) {
+            int indexerStart = targetMap.indexOf("[");
+            int indexerEnd = targetMap.indexOf("]");
+            String indexer = targetMap.substring(indexerStart + 1, indexerEnd);
+            String indexerPath = targetMap.substring(0, indexerStart);
+
+            Expression result = null;
+
+            // Apply sourcePaths to get to the indexer
+            String[] indexerPaths = indexerPath.split("\\.");
+            for (String path : indexerPaths) {
+                if (path.equals("%parent")) {
+                    if (!(source instanceof Property)) {
+                        throw new IllegalArgumentException(String.format("Cannot expand target map %s for non-property-accessor type %s",
+                                targetMap, source.getClass().getSimpleName()));
+                    }
+                    Property sourceProperty = (Property)source;
+                    if (sourceProperty.getSource() != null) {
+                        result = sourceProperty.getSource();
+                    }
+                    else if (sourceProperty.getScope() != null) {
+                        result = resolveIdentifier(sourceProperty.getScope(), true);
+                    }
+                    else {
+                        throw new IllegalArgumentException(String.format("Cannot resolve %parent reference in targetMap %s",
+                                targetMap));
+                    }
+                }
+                else {
+                    Property p = of.createProperty().withSource(result).withPath(path);
+                    result = p;
+                }
+            }
+
+            // Build a query with the current result as source and the indexer content as criteria in the where clause
+            AliasedQuerySource querySource = of.createAliasedQuerySource().withExpression(result).withAlias("$this");
+
+            Expression criteria = null;
+            for (String indexerItem : indexer.split(",")) {
+                String[] indexerItems = indexerItem.split("=");
+                if (indexerItems.length != 2) {
+                    throw new IllegalArgumentException(String.format("Invalid indexer item %s in targetMap %s", indexerItem, targetMap));
+                }
+
+                Expression left = null;
+                for (String path : indexerItems[0].split("\\.")) {
+                    if (left == null) {
+                        left = of.createProperty().withScope("$this").withPath(path);
+                    }
+                    else {
+                        left = of.createProperty().withSource(left).withPath(path);
+                    }
+
+                    // HACK: Workaround the fact that we don't have type information for the mapping expansions...
+                    if (path.equals("coding")) {
+                        left = of.createFirst().withSource(left);
+                    }
+                    if (path.equals("url")) {
+                        left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                    }
+                }
+
+                // HACK: Workaround the fact that we don't have type information for the mapping expansions...
+                // These hacks will be removed when addressed by the model info
+                if (indexerItems[0].equals("code.coding.system") || indexerItems[0].equals("code.coding.code")) {
+                    left = of.createFunctionRef().withLibraryName("FHIRHelpers").withName("ToString").withOperand(left);
+                }
+
+                String rightValue = indexerItems[1].substring(1, indexerItems[1].length() - 1);
+                Expression right = this.createLiteral(StringEscapeUtils.unescapeCql(rightValue));
+
+                Expression criteriaItem = of.createEqual().withOperand(left, right);
+                if (criteria == null) {
+                    criteria = criteriaItem;
+                }
+                else {
+                    criteria = of.createAnd().withOperand(criteria, criteriaItem);
+                }
+            }
+
+            Query query = of.createQuery().withSource(querySource).withWhere(criteria);
+            result = query;
+
+            if (indexerEnd < targetMap.length()) {
+                // There are additional paths following the indexer, apply them
+                String targetPath = targetMap.substring(indexerEnd + 1);
+                if (targetPath.startsWith(".")) {
+                    targetPath = targetPath.substring(1);
+                }
+
+                // Use a singleton from since the source of the query is a list
+                result = of.createSingletonFrom().withOperand(result);
+
+                for (String path : targetPath.split("\\.")) {
+                    result = of.createProperty().withSource(result).withPath(path);
+                }
+            }
+
+            result.setResultType(source.getResultType());
+            return result;
         }
         else if (targetMap.contains("%value.")) {
             String propertyName = targetMap.substring(7);

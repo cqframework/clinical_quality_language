@@ -3,7 +3,6 @@ package org.cqframework.cql.cql2elm.model;
 import org.hl7.cql.model.*;
 
 import java.util.*;
-import java.util.jar.Pack200;
 
 public class OperatorMap {
     private Map<String, OperatorEntry> operators = new HashMap<>();

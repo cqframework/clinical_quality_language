@@ -2,8 +2,6 @@
 
 dependencies {
     compile project(':model')
-    runtime group: 'org.eclipse.persistence', name: 'eclipselink', version: '2.6.0'
-    runtime group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
 }
 
 generateSources {

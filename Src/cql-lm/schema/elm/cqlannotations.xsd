@@ -12,6 +12,7 @@
 		<xs:attribute name="value" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="Locator">
+		<xs:attribute name="librarySystem" type="xs:string" use="optional"/>
 		<xs:attribute name="libraryId" type="xs:string" use="optional"/>
 		<xs:attribute name="libraryVersion" type="xs:string" use="optional"/>
 		<xs:attribute name="startLine" type="xs:int" use="optional"/>
@@ -99,6 +100,11 @@
 				<xs:attribute name="errorSeverity" type="ErrorSeverity" use="optional">
 					<xs:annotation>
 						<xs:documentation>The severity of the error: informational, warning, or an error that prevented translation of the content.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="targetIncludeLibrarySystem" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The namespace uri of the included library</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="targetIncludeLibraryId" type="xs:string" use="optional">

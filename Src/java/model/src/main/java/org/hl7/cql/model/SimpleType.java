@@ -38,6 +38,10 @@ public class SimpleType extends DataType implements NamedType {
         return this.name;
     }
 
+    private String target;
+    public String getTarget() { return target; }
+    public void setTarget(String target) { this.target = target; }
+
     @Override
     public int hashCode() {
         return name.hashCode();

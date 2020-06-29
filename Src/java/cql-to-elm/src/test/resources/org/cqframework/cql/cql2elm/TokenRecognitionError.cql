@@ -1,0 +1,1 @@
+define TimeOverload: ToString(@12:30:00.000)
