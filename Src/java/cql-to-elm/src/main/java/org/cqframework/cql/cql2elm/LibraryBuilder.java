@@ -130,7 +130,6 @@ public class LibraryBuilder {
     private UcumService ucumService = null;
     private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
-    private SignatureLevel signatureLevel = SignatureLevel.Differing;
 
     public void enableListTraversal() {
         listTraversal = true;

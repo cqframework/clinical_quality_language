@@ -15,7 +15,7 @@ public class SkipInvocation extends OperatorExpressionInvocation {
 
     @Override
     public Iterable<Expression> getOperands() {
-        ArrayList result = new ArrayList();
+        ArrayList<Expression> result = new ArrayList<>();
         result.add(((Slice)expression).getSource());
         result.add(((Slice)expression).getStartIndex());
         return result;

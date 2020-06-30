@@ -64,7 +64,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private Stack<Chunk> chunks = new Stack<>();
     private String currentContext = "Patient"; // default context to patient
-    private int currentToken = -1;
     private int nextLocalId = 1;
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
@@ -393,6 +392,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public VersionedIdentifier visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         VersionedIdentifier vid = of.createVersionedIdentifier()
@@ -435,6 +435,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
@@ -2940,6 +2941,7 @@ DATETIME
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Retrieve visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
         libraryBuilder.checkLiteralContext();
         List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
@@ -3166,6 +3168,7 @@ DATETIME
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
         libraryBuilder.pushQueryContext(queryContext);
@@ -3748,6 +3751,7 @@ DATETIME
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitQuerySource(@NotNull cqlParser.QuerySourceContext ctx) {
         if (ctx.expression() != null) {
             return visit(ctx.expression());

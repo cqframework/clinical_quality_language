@@ -152,7 +152,7 @@ public class OperatorEntry {
                 List<OperatorResolution> nodeResults = n.resolve(callContext, conversionMap, operatorMap);
                 if (nodeResults != null) {
                     if (results == null) {
-                        results = new ArrayList();
+                        results = new ArrayList<>();
                     }
                     results.addAll(nodeResults);
                 }

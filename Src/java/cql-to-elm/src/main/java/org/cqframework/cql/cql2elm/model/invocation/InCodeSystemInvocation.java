@@ -15,7 +15,7 @@ public class InCodeSystemInvocation extends OperatorExpressionInvocation {
 
     @Override
     public Iterable<Expression> getOperands() {
-        List<Expression> result = new ArrayList();
+        List<Expression> result = new ArrayList<>();
         result.add(((InCodeSystem)expression).getCode());
         result.add(((InCodeSystem)expression).getCodesystem());
         return result;

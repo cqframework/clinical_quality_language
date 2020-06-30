@@ -14,7 +14,7 @@ public class InValueSetInvocation extends OperatorExpressionInvocation {
 
     @Override
     public Iterable<Expression> getOperands() {
-        List<Expression> result = new ArrayList();
+        List<Expression> result = new ArrayList<>();
         result.add(((InValueSet)expression).getCode());
         result.add(((InValueSet)expression).getValueset());
         return result;
