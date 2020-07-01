@@ -656,9 +656,9 @@ public class SystemFunctionResolver {
     private UnaryExpression resolveUnary(FunctionRef fun) {
         UnaryExpression operator = null;
         try {
-            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
             if (UnaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (UnaryExpression) clazz.newInstance();
+                operator = (UnaryExpression) clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 1);
                 operator.setOperand(fun.getOperand().get(0));
                 builder.resolveUnaryCall("System", fun.getName(), operator);
@@ -673,9 +673,9 @@ public class SystemFunctionResolver {
     private BinaryExpression resolveBinary(FunctionRef fun) {
         BinaryExpression operator = null;
         try {
-            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
             if (BinaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (BinaryExpression) clazz.newInstance();
+                operator = (BinaryExpression) clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 2);
                 operator.getOperand().addAll(fun.getOperand());
                 builder.resolveBinaryCall("System", fun.getName(), operator);
@@ -690,9 +690,9 @@ public class SystemFunctionResolver {
     private TernaryExpression resolveTernary(FunctionRef fun) {
         TernaryExpression operator = null;
         try {
-            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
             if (TernaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (TernaryExpression)clazz.newInstance();
+                operator = (TernaryExpression)clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 3);
                 operator.getOperand().addAll(fun.getOperand());
                 builder.resolveTernaryCall("System", fun.getName(), operator);
@@ -708,9 +708,9 @@ public class SystemFunctionResolver {
     private NaryExpression resolveNary(FunctionRef fun) {
         NaryExpression operator = null;
         try {
-            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
             if (NaryExpression.class.isAssignableFrom(clazz)) {
-                operator = (NaryExpression) clazz.newInstance();
+                operator = (NaryExpression) clazz.getConstructor().newInstance();
                 operator.getOperand().addAll(fun.getOperand());
                 builder.resolveCall("System", fun.getName(), new NaryExpressionInvocation(operator));
                 return operator;
@@ -724,9 +724,9 @@ public class SystemFunctionResolver {
     private AggregateExpression resolveAggregate(FunctionRef fun) {
         AggregateExpression operator = null;
         try {
-            Class clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
+            Class<?> clazz = Class.forName("org.hl7.elm.r1." + fun.getName());
             if (AggregateExpression.class.isAssignableFrom(clazz)) {
-                operator = (AggregateExpression) clazz.newInstance();
+                operator = (AggregateExpression) clazz.getConstructor().newInstance();
                 checkNumberOfOperands(fun, 1);
                 operator.setSource(fun.getOperand().get(0));
                 builder.resolveAggregateCall("System", fun.getName(), operator);

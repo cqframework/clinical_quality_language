@@ -131,6 +131,10 @@ public class LibraryBuilder {
     private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
 
+    public void enableListTraversal() {
+        listTraversal = true;
+    }
+
     public void setTranslatorOptions(CqlTranslatorOptions options) {
         if (options == null) {
             throw new IllegalArgumentException("Options cannot be null");
@@ -152,7 +156,6 @@ public class LibraryBuilder {
         if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
-
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
     }
 
@@ -612,6 +615,13 @@ public class LibraryBuilder {
         translatedLibrary.add(cd);
     }
 
+    public void addContext(ContextDef cd) {
+        if (library.getContexts() == null) {
+            library.setContexts(of.createLibraryContexts());
+        }
+        library.getContexts().getDef().add(cd);
+    }
+
     public void addExpression(ExpressionDef expDef) {
         if (library.getStatements() == null) {
             library.setStatements(of.createLibraryStatements());
@@ -810,33 +820,41 @@ public class LibraryBuilder {
     }
 
     public Expression resolveIn(Expression left, Expression right) {
-        if (right instanceof ValueSetRef) {
+        if (right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet"))) {
+        //if (right instanceof ValueSetRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
-                        .withValueset((ValueSetRef)right);
+                        .withValueset(right);
+                        //.withValueset((ValueSetRef)right);
+
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
             }
 
             InValueSet in = of.createInValueSet()
                     .withCode(left)
-                    .withValueset((ValueSetRef) right);
+                    .withValueset(right);
+                    //.withValueset((ValueSetRef) right);
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
         }
 
-        if (right instanceof CodeSystemRef) {
+        if (right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem"))) {
+        //if (right instanceof CodeSystemRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
-                        .withCodesystem((CodeSystemRef)right);
+                        .withCodesystem(right);
+                        //.withCodesystem((CodeSystemRef)right);
                 resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
             }
+
             InCodeSystem in = of.createInCodeSystem()
                     .withCode(left)
-                    .withCodesystem((CodeSystemRef)right);
+                    .withCodesystem(right);
+                    //.withCodesystem((CodeSystemRef)right);
             resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
         }
@@ -1422,6 +1440,9 @@ public class LibraryBuilder {
             else if (conversion.getToType().equals(resolveTypeName("System", "Integer"))) {
                 return (Expression)of.createToInteger().withOperand(expression).withResultType(conversion.getToType());
             }
+            else if (conversion.getToType().equals(resolveTypeName("System", "Long"))) {
+                return (Expression)of.createToLong().withOperand(expression).withResultType(conversion.getToType());
+            }
             else if (conversion.getToType().equals(resolveTypeName("System", "Decimal"))) {
                 return (Expression)of.createToDecimal().withOperand(expression).withResultType(conversion.getToType());
             }
@@ -1569,6 +1590,15 @@ public class LibraryBuilder {
 
     public Literal createNumberLiteral(String value) {
         DataType resultType = resolveTypeName("System", value.contains(".") ? "Decimal" : "Integer");
+        Literal result = of.createLiteral()
+                .withValue(value)
+                .withValueType(dataTypeToQName(resultType));
+        result.setResultType(resultType);
+        return result;
+    }
+
+    public Literal createLongNumberLiteral(String value) {
+        DataType resultType = resolveTypeName("System", "Long");
         Literal result = of.createLiteral()
                 .withValue(value)
                 .withValueType(dataTypeToQName(resultType));
@@ -1848,6 +1878,14 @@ public class LibraryBuilder {
                             else {
                                 resultTargetMaps.put(resolution.getType(), resolution.getTargetMap());
                             }
+                        }
+
+                        if (name == null) {
+                            name = resolution.getName();
+                        }
+                        else if (!name.equals(resolution.getName())) {
+                            throw new IllegalArgumentException(String.format("Inconsistent property resolution for choice type %s (was %s, is %s)",
+                                    choice.toString(), name, resolution.getName()));
                         }
 
                         if (name == null) {

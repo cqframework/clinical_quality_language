@@ -18,6 +18,8 @@ define QuantityIntervalExpand: expand { Interval[1 'm', 2 'm'] } per 0.1 'm'
 define DateTimeIntervalExpand: expand { Interval[@2012-01-01T10:00:00, @2012-01-01T11:00:00] } per minute
 define DateIntervalExpand: expand { Interval[@2012-01-01, @2012-01-31] } per day
 define TimeIntervalExpand: expand { Interval[@T10:00:00, @T11:00:00] } per minute
+define SingleIntervalExpand: expand Interval[1, 10]
+define SingleIntervalExpandPer: expand Interval[1, 10] per 2 '1' // TODO: Should be able to take advantage of implicit conversion of integer to quantity here
 define ExpandNull: expand null as Interval<Integer>
 define IntervalIn: 5 in Interval[1, 10]
 define IntervalIncludes: Interval[1, 10] includes Interval[3, 7]

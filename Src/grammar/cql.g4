@@ -2,7 +2,7 @@ grammar cql;
 
 /*
  * Clinical Quality Language Grammar Specification
- * Version 1.4 - STU4
+ * Version 1.5 - Normative
  */
 
 import fhirpath;
@@ -161,7 +161,7 @@ contextDefinition
     ;
 
 functionDefinition
-    : 'define' accessModifier? 'function' identifierOrFunctionIdentifier '(' (operandDefinition (',' operandDefinition)*)? ')'
+    : 'define' accessModifier? 'fluent'? 'function' identifierOrFunctionIdentifier '(' (operandDefinition (',' operandDefinition)*)? ')'
         ('returns' typeSpecifier)?
         ':' (functionBody | 'external')
     ;
@@ -206,15 +206,21 @@ withoutClause
     ;
 
 retrieve
-    : '[' (contextIdentifier '->')? namedTypeSpecifier (':' (codePath 'in')? terminology)? ']'
+    : '[' (contextIdentifier '->')? namedTypeSpecifier (':' (codePath codeComparator)? terminology)? ']'
     ;
-    
+
 contextIdentifier
     : qualifiedIdentifierExpression
     ;
 
 codePath
     : simplePath
+    ;
+
+codeComparator
+    : 'in'
+    | '='
+    | '~'
     ;
 
 terminology
@@ -227,7 +233,7 @@ qualifier
     ;
 
 query
-    : sourceClause letClause? queryInclusionClause* whereClause? returnClause? sortClause?
+    : sourceClause letClause? queryInclusionClause* whereClause? (aggregateClause | returnClause)? sortClause?
     ;
 
 sourceClause
@@ -248,6 +254,14 @@ whereClause
 
 returnClause
     : 'return' ('all' | 'distinct')? expression
+    ;
+
+aggregateClause
+    : 'aggregate' ('all' | 'distinct')? identifier startingClause? ':' expression
+    ;
+
+startingClause
+    : 'starting' (simpleLiteral | quantity | ('(' expression ')'))
     ;
 
 sortClause
@@ -282,8 +296,8 @@ simplePath
     ;
 
 simpleLiteral
-    : STRING
-    | NUMBER
+    : STRING                                           #simpleStringLiteral
+    | NUMBER                                           #simpleNumberLiteral
     ;
 
 expression
@@ -436,7 +450,9 @@ literal
     | 'null'                                                #nullLiteral
     | STRING                                                #stringLiteral
     | NUMBER                                                #numberLiteral
+    | LONGNUMBER                                            #longNumberLiteral
     | DATETIME                                              #dateTimeLiteral
+    | DATE                                                  #dateLiteral
     | TIME                                                  #timeLiteral
     | quantity                                              #quantityLiteral
     | ratio                                                 #ratioLiteral
@@ -482,6 +498,7 @@ conceptSelector
 
 keyword
     : 'after'
+    | 'aggregate'
     | 'all'
     | 'and'
     | 'as'
@@ -524,6 +541,7 @@ keyword
     | 'expand'
     | 'false'
     | 'flatten'
+    | 'fluent'
     | 'from'
     | 'function'
     | 'hour'
@@ -564,6 +582,7 @@ keyword
     | 'overlaps'
     | 'parameter'
     | 'per'
+    | 'point'
     | 'predecessor'
     | 'private'
     | 'properly'
@@ -574,6 +593,7 @@ keyword
     | 'seconds'
     | 'singleton'
     | 'start'
+    | 'starting'
     | 'starts'
     | 'sort'
     | 'successor'
@@ -603,7 +623,8 @@ keyword
 
 // NOTE: Not used, this is the set of reserved words that may not appear as identifiers in ambiguous contexts
 reservedWord
-    : 'all'
+    : 'aggregate'
+    | 'all'
     | 'and'
     | 'as'
     | 'after'
@@ -652,6 +673,7 @@ reservedWord
     | 'or'
     | 'or on'
     | 'per'
+    | 'point'
     | 'properly'
     | 'return'
     | 'same'
@@ -697,6 +719,7 @@ keywordIdentifier
     | 'end'
     | 'ends'
     | 'except'
+    | 'fluent'
     | 'function'
     | 'implies'
     | 'include'
@@ -715,6 +738,7 @@ keywordIdentifier
     | 'private'
     | 'public'
     | 'start'
+    | 'starting'
     | 'starts'
     | 'successor'
     | 'time'
@@ -757,6 +781,7 @@ obsoleteIdentifier
 // Function identifiers are keywords that may be used as identifiers for functions
 functionIdentifier
     : 'after'
+    | 'aggregate'
     | 'all'
     | 'and'
     | 'as'
@@ -799,6 +824,7 @@ functionIdentifier
     | 'expand'
     | 'false'
     | 'flatten'
+    | 'fluent'
     | 'from'
     | 'function'
     | 'hour'
@@ -837,6 +863,7 @@ functionIdentifier
     | 'overlaps'
     | 'parameter'
     | 'per'
+    | 'point'
     | 'predecessor'
     | 'private'
     | 'properly'
@@ -847,6 +874,7 @@ functionIdentifier
     | 'second'
     | 'seconds'
     | 'start'
+    | 'starting'
     | 'starts'
     | 'sort'
     | 'successor'
@@ -907,7 +935,14 @@ QUOTEDIDENTIFIER
     : '"' (ESC | .)*? '"'
     ;
 
+DATETIME
+    : '@' DATEFORMAT 'T' TIMEFORMAT? TIMEZONEOFFSETFORMAT?
+    ;
+
+LONGNUMBER
+    : [0-9]+'L'
+    ;
+
 fragment ESC
     : '\\' ([`'"\\/fnrt] | UNICODE)    // allow \`, \', \", \\, \/, \f, etc. and \uXXX
     ;
-

@@ -33,6 +33,11 @@ public class SemanticTests {
     }
 
     @Test
+    public void testTerminologyReferences() throws IOException {
+        runSemanticTest("OperatorTests/TerminologyReferences.cql", 0);
+    }
+
+    @Test
     public void testProperties() throws IOException {
         runSemanticTest("PropertyTest.cql");
     }

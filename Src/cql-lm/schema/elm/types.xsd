@@ -21,10 +21,32 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Concept">
-		<xs:sequence>
-			<xs:element name="codes" type="Code" minOccurs="1" maxOccurs="unbounded"/>
-			<xs:element name="display" type="String" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:sequence>
+					<xs:element name="codes" type="Code" minOccurs="1" maxOccurs="unbounded"/>
+					<xs:element name="display" type="String" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			<xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Vocabulary" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:element name="id" type="String" minOccurs="1" maxOccurs="1"/>
+				<xs:element name="version" type="String" minOccurs="0" maxOccurs="1"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ValueSet">
+		<xs:complexContent>
+			<xs:extension base="Vocabulary"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CodeSystem">
+		<xs:complexContent>
+			<xs:extension base="Vocabulary"/>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Date">
 		<xs:complexContent>
@@ -51,6 +73,13 @@
 		<xs:complexContent>
 			<xs:extension base="Any">
 				<xs:attribute name="value" type="xs:int" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Long">
+		<xs:complexContent>
+			<xs:extension base="Any">
+				<xs:attribute name="value" type="xs:long" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

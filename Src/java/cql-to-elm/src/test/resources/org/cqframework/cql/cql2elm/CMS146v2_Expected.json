@@ -1,19 +1,19 @@
 {
-"library" : {
-  "annotation" : [ {
-     "translatorOptions" : "",
-     "type" : "CqlToElmInfo"
-  }, {
-     "libraryId" : "CMS146",
-     "libraryVersion" : "2",
-     "startLine" : 22,
-     "startChar" : 5,
-     "endLine" : 22,
-     "endChar" : 54,
-     "message" : "Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription.",
-     "errorType" : "semantic",
-     "errorSeverity" : "warning",
-     "type" : "CqlToElmError"
+  "library" : {
+    "annotation" : [ {
+      "translatorOptions" : "",
+      "type" : "CqlToElmInfo"
+    }, {
+      "libraryId" : "CMS146",
+      "libraryVersion" : "2",
+      "startLine" : 22,
+      "startChar" : 5,
+      "endLine" : 22,
+      "endChar" : 54,
+      "message" : "Could not resolve code path medication.code for the type of the retrieve QUICK.MedicationPrescription.",
+      "errorType" : "semantic",
+      "errorSeverity" : "warning",
+      "type" : "CqlToElmError"
     }, {
       "libraryId" : "CMS146",
       "libraryVersion" : "2",
@@ -153,6 +153,11 @@
         "accessLevel" : "Public"
       } ]
     },
+    "contexts" : {
+      "def" : [ {
+        "name" : "Patient"
+      } ]
+    },
     "statements" : {
       "def" : [ {
         "name" : "Patient",
@@ -231,6 +236,7 @@
             "dataType" : "{http://hl7.org/fhir}Condition",
             "templateId" : "condition-qicore-qicore-condition",
             "codeProperty" : "code",
+            "codeComparator" : "in",
             "type" : "Retrieve",
             "codes" : {
               "name" : "Acute Pharyngitis",
@@ -240,6 +246,7 @@
             "dataType" : "{http://hl7.org/fhir}Condition",
             "templateId" : "condition-qicore-qicore-condition",
             "codeProperty" : "code",
+            "codeComparator" : "in",
             "type" : "Retrieve",
             "codes" : {
               "name" : "Acute Tonsillitis",
@@ -255,6 +262,7 @@
           "dataType" : "{http://hl7.org/fhir}MedicationPrescription",
           "templateId" : "medicationprescription-qicore-qicore-medicationprescription",
           "codeProperty" : "medication.code",
+          "codeComparator" : "in",
           "type" : "Retrieve",
           "codes" : {
             "name" : "Antibiotic Medications",
@@ -273,6 +281,7 @@
               "dataType" : "{http://hl7.org/fhir}Encounter",
               "templateId" : "encounter-qicore-qicore-encounter",
               "codeProperty" : "type",
+              "codeComparator" : "in",
               "type" : "Retrieve",
               "codes" : {
                 "name" : "Ambulatory/ED Visit",
@@ -547,6 +556,7 @@
                 "dataType" : "{http://hl7.org/fhir}Observation",
                 "templateId" : "observation-qicore-qicore-observation",
                 "codeProperty" : "code",
+                "codeComparator" : "in",
                 "type" : "Retrieve",
                 "codes" : {
                   "name" : "Group A Streptococcus Test",

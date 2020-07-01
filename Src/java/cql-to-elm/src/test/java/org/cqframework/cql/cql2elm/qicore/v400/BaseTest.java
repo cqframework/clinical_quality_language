@@ -41,6 +41,5 @@ public class BaseTest {
         assertThat(def.getExpression(), instanceOf(Retrieve.class));
         Retrieve retrieve = (Retrieve)def.getExpression();
         assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent"));
-
     }
 }

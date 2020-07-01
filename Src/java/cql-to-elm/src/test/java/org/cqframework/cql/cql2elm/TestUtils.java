@@ -175,6 +175,14 @@ public class TestUtils {
         return translator;
     }
 
+    public static CqlTranslator createTranslatorFromText(String cqlText, CqlTranslator.Options... options) {
+        ModelManager modelManager = new ModelManager();
+        LibraryManager libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
+        CqlTranslator translator = CqlTranslator.fromText(cqlText, modelManager, libraryManager, getUcumService(), options);
+        return translator;
+    }
+
     public static CqlTranslator createTranslatorFromStream(String testFileName, CqlTranslator.Options... options) throws IOException {
         return createTranslatorFromStream(null, testFileName, options);
     }

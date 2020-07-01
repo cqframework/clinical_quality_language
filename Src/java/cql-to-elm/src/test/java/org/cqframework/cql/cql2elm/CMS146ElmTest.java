@@ -52,26 +52,31 @@ public class CMS146ElmTest {
                         .withDataType(quickDataType("Condition"))
                         .withTemplateId("condition-qicore-qicore-condition")
                         .withCodeProperty("code")
+                        .withCodeComparator("in")
                         .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
                         .withTemplateId("condition-qicore-qicore-condition")
                         .withCodeProperty("code")
+                        .withCodeComparator("in")
                         .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
                 of.createRetrieve()
                         .withDataType(quickDataType("MedicationPrescription"))
                         .withTemplateId("medicationprescription-qicore-qicore-medicationprescription")
                         .withCodeProperty("medication.code")
+                        .withCodeComparator("in")
                         .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Encounter"))
                         .withTemplateId("encounter-qicore-qicore-encounter")
                         .withCodeProperty("type")
+                        .withCodeComparator("in")
                         .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))
                         .withTemplateId("observation-qicore-qicore-observation")
                         .withCodeProperty("code")
+                        .withCodeComparator("in")
                         .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
         );
 

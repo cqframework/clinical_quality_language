@@ -320,7 +320,7 @@ public class ModelImporter {
     }
 
     private Collection<TupleTypeElement> resolveTupleTypeElements(Collection<TupleTypeInfoElement> infoElements) {
-        List<TupleTypeElement> elements = new ArrayList();
+        List<TupleTypeElement> elements = new ArrayList<>();
         for (TupleTypeInfoElement e : infoElements) {
             elements.add(new TupleTypeElement(e.getName(), resolveTypeNameOrSpecifier(e)));
         }
@@ -381,7 +381,7 @@ public class ModelImporter {
      * @return
      */
     private Collection<ClassTypeElement> resolveClassTypeElements(ClassType classType, Collection<ClassInfoElement> infoElements) {
-        List<ClassTypeElement> elements = new ArrayList();
+        List<ClassTypeElement> elements = new ArrayList<>();
         for (ClassInfoElement e : infoElements) {
             DataType elementType = null;
             if(isOpenType(e)) {

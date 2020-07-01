@@ -353,7 +353,7 @@ public class SystemMethodResolver {
                 else {
                     // .exists(criteria) resolves as a .where(criteria).exists()
                     Query query = createWhere(target, functionName, ctx);
-                    List<Expression> params = new ArrayList();
+                    List<Expression> params = new ArrayList<>();
                     params.add(query);
                     return builder.resolveFunction(null, "Exists", params);
                 }
@@ -370,7 +370,7 @@ public class SystemMethodResolver {
                 Expression result = target;
                 List<Expression> params = null;
                 if (result.getResultType() instanceof ListType) {
-                    params = new ArrayList();
+                    params = new ArrayList<>();
                     params.add(result);
                     result = builder.resolveFunction(null, "SingletonFrom", params);
                 }

@@ -64,7 +64,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final Stack<TimingOperatorContext> timingOperators = new Stack<>();
     private Stack<Chunk> chunks = new Stack<>();
     private String currentContext = "Patient"; // default context to patient
-    private int currentToken = -1;
     private int nextLocalId = 1;
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
@@ -211,10 +210,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
             chunk.setElement(element);
 
-            if (element instanceof ExpressionDef && !(tree instanceof cqlParser.LibraryContext)) {
-                ExpressionDef expressionDef = (ExpressionDef)element;
-                if (expressionDef.getAnnotation().size() == 0) {
-                    expressionDef.getAnnotation().add(buildAnnotation(chunk));
+            if (!(tree instanceof cqlParser.LibraryContext)) {
+                if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef
+                        || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
+                        || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
+                    if (element.getAnnotation().size() == 0) {
+                        element.getAnnotation().add(buildAnnotation(chunk));
+                    }
                 }
             }
         }
@@ -390,6 +392,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public VersionedIdentifier visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         VersionedIdentifier vid = of.createVersionedIdentifier()
@@ -432,6 +435,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
@@ -612,7 +616,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codesystemId()))
                 .withVersion(parseString(ctx.versionSpecifier()))
-                .withResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+                .withResultType(libraryBuilder.resolveTypeName("System", "CodeSystem"));
+                //.withResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
 
         libraryBuilder.addCodeSystem(cs);
         return cs;
@@ -679,7 +684,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 vs.getCodeSystem().add((CodeSystemRef)visit(codesystem));
             }
         }
-        vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+        vs.setResultType(libraryBuilder.resolveTypeName("System", "ValueSet"));
+        //vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
         libraryBuilder.addValueSet(vs);
 
         return vs;
@@ -776,9 +782,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
 
                 implicitContextCreated = true;
-                return currentContext;
             }
         }
+
+        ContextDef contextDef = of.createContextDef().withName(currentContext);
+        track(contextDef, ctx);
+        libraryBuilder.addContext(contextDef);
 
         return currentContext;
     }
@@ -834,6 +843,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Literal visitStringLiteral(@NotNull cqlParser.StringLiteralContext ctx) {
+        return libraryBuilder.createLiteral(parseString(ctx.STRING()));
+    }
+
+    @Override
+    public Literal visitSimpleStringLiteral(@NotNull cqlParser.SimpleStringLiteralContext ctx) {
         return libraryBuilder.createLiteral(parseString(ctx.STRING()));
     }
 
@@ -1056,13 +1070,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
-    @Override
-    public Object visitDateTimeLiteral(@NotNull cqlParser.DateTimeLiteralContext ctx) {
-        String input = ctx.getText();
-        if (input.startsWith("@")) {
-            input = input.substring(1);
-        }
-
+    private Expression parseDateTimeLiteral(String input) {
 /*
 DATETIME
         : '@'
@@ -1086,8 +1094,8 @@ DATETIME
 
         Pattern dateTimePattern =
                 Pattern.compile("(\\d{4})(((-(\\d{2}))(((-(\\d{2}))((T)((\\d{2})(\\:(\\d{2})(\\:(\\d{2})(\\.(\\d+))?)?)?)?)?)|(T))?)|(T))?((Z)|(([+-])(\\d{2})(\\:(\\d{2}))))?");
-                               //1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
-                               //----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
+        //1-------234-5--------678-9--------11--11-------1---1-------1---1-------1---1-----------------2------2----22---22-----2-------2---2-----------
+        //----------------------------------01--23-------4---5-------6---7-------8---9-----------------0------1----23---45-----6-------7---8-----------
 
         /*
             year - group 1
@@ -1242,6 +1250,26 @@ DATETIME
     }
 
     @Override
+    public Object visitDateLiteral(@NotNull cqlParser.DateLiteralContext ctx) {
+        String input = ctx.getText();
+        if (input.startsWith("@")) {
+            input = input.substring(1);
+        }
+
+        return parseDateTimeLiteral(input);
+    }
+
+    @Override
+    public Object visitDateTimeLiteral(@NotNull cqlParser.DateTimeLiteralContext ctx) {
+        String input = ctx.getText();
+        if (input.startsWith("@")) {
+            input = input.substring(1);
+        }
+
+        return parseDateTimeLiteral(input);
+    }
+
+    @Override
     public Null visitNullLiteral(@NotNull cqlParser.NullLiteralContext ctx) {
         Null result = of.createNull();
         result.setResultType(libraryBuilder.resolveTypeName("System", "Any"));
@@ -1251,6 +1279,20 @@ DATETIME
     @Override
     public Expression visitNumberLiteral(@NotNull cqlParser.NumberLiteralContext ctx) {
         return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
+    }
+
+    @Override
+    public Expression visitSimpleNumberLiteral(@NotNull cqlParser.SimpleNumberLiteralContext ctx) {
+        return libraryBuilder.createNumberLiteral(ctx.NUMBER().getText());
+    }
+
+    @Override
+    public Literal visitLongNumberLiteral(@NotNull cqlParser.LongNumberLiteralContext ctx) {
+        String input = ctx.LONGNUMBER().getText();
+        if (input.endsWith("L")) {
+            input = input.substring(0, input.length() - 2);
+        }
+        return libraryBuilder.createLongNumberLiteral(input);
     }
 
     private BigDecimal parseDecimal(String value) {
@@ -2899,6 +2941,7 @@ DATETIME
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Retrieve visitRetrieve(@NotNull cqlParser.RetrieveContext ctx) {
         libraryBuilder.checkLiteralContext();
         List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
@@ -2947,12 +2990,14 @@ DATETIME
             }
 
             Property property = null;
+            CqlTranslatorException propertyException = null;
             if (retrieve.getCodeProperty() == null) {
                 // ERROR:
                 // WARNING:
-                libraryBuilder.recordParsingException(new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
+                propertyException = new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
                         useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
-                        getTrackBack(ctx)));
+                        getTrackBack(ctx));
+                libraryBuilder.recordParsingException(propertyException);
             }
             else {
                 try {
@@ -2961,11 +3006,12 @@ DATETIME
                     property.setResultType(codeType);
                 }
                 catch (Exception e) {
-                    libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            // ERROR:
-                            // WARNING:
+                    // ERROR:
+                    // WARNING:
+                    propertyException = new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
                             retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
-                            getTrackBack(ctx), e));
+                            getTrackBack(ctx), e);
+                    libraryBuilder.recordParsingException(propertyException);
                 }
             }
 
@@ -2979,41 +3025,80 @@ DATETIME
                 terminology = parseExpression(ctx.terminology().expression());
             }
 
-            // Resolve the terminology target using an in or = operator
+            String codeComparator = ctx.codeComparator() != null ? (String)visit(ctx.codeComparator()) : null;
+
+            // Resolve the terminology target using an in or ~ operator
             try {
-                if (terminology.getResultType() instanceof ListType) {
-                    Expression in = libraryBuilder.resolveIn(property, terminology);
-                    if (in instanceof In) {
-                        retrieve.setCodes(((In) in).getOperand().get(1));
-                    } else if (in instanceof InValueSet) {
-                        retrieve.setCodes(((InValueSet) in).getValueset());
-                    } else if (in instanceof InCodeSystem) {
-                        retrieve.setCodes(((InCodeSystem) in).getCodesystem());
-                    } else if (in instanceof AnyInValueSet) {
-                        retrieve.setCodes(((AnyInValueSet) in).getValueset());
-                    } else if (in instanceof AnyInCodeSystem) {
-                        retrieve.setCodes(((AnyInCodeSystem) in).getCodesystem());
-                    } else {
+                if (codeComparator == null) {
+                    codeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                }
+
+                if (property == null) {
+                    throw propertyException;
+                }
+
+                switch (codeComparator) {
+                    case "in": {
+                        Expression in = libraryBuilder.resolveIn(property, terminology);
+                        if (in instanceof In) {
+                            retrieve.setCodes(((In) in).getOperand().get(1));
+                        } else if (in instanceof InValueSet) {
+                            retrieve.setCodes(((InValueSet) in).getValueset());
+                        } else if (in instanceof InCodeSystem) {
+                            retrieve.setCodes(((InCodeSystem) in).getCodesystem());
+                        } else if (in instanceof AnyInValueSet) {
+                            retrieve.setCodes(((AnyInValueSet) in).getValueset());
+                        } else if (in instanceof AnyInCodeSystem) {
+                            retrieve.setCodes(((AnyInCodeSystem) in).getCodesystem());
+                        } else {
+                            // ERROR:
+                            // WARNING:
+                            libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
+                                    useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                    getTrackBack(ctx)));
+                        }
+                    }
+                    break;
+
+                    case "~": {
+                        // Resolve with equivalent to verify the type of the target
+                        BinaryExpression equivalent = of.createEquivalent().withOperand(property, terminology);
+                        libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+
+                        // Automatically promote to a list for use in the retrieve target
+                        if (!(equivalent.getOperand().get(1).getResultType() instanceof ListType)) {
+                            retrieve.setCodes(libraryBuilder.resolveToList(equivalent.getOperand().get(1)));
+                        }
+                        else {
+                            retrieve.setCodes(equivalent.getOperand().get(1));
+                        }
+                    }
+                    break;
+
+                    case "=": {
+                        // Resolve with equality to verify the type of the source and target
+                        BinaryExpression equal = of.createEqual().withOperand(property, terminology);
+                        libraryBuilder.resolveBinaryCall("System", "Equal", equal);
+
+                        // Automatically promote to a list for use in the retrieve target
+                        if (!(equal.getOperand().get(1).getResultType() instanceof ListType)) {
+                            retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
+                        }
+                        else {
+                            retrieve.setCodes(equal.getOperand().get(1));
+                        }
+                    }
+                    break;
+
+                    default:
                         // ERROR:
                         // WARNING:
-                        libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
+                        libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unknown code comparator % in retrieve", codeComparator),
                                 useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
-                                getTrackBack(ctx)));
-                    }
+                                getTrackBack(ctx.codeComparator())));
                 }
-                else {
-                    // Resolve with equality to verify the type of the target
-                    BinaryExpression equal = of.createEqual().withOperand(property, terminology);
-                    libraryBuilder.resolveBinaryCall("System", "Equal", equal);
 
-                    // Automatically promote to a list for use in the retrieve target
-                    if (!(equal.getOperand().get(1).getResultType() instanceof ListType)) {
-                        retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
-                    }
-                    else {
-                        retrieve.setCodes(equal.getOperand().get(1));
-                    }
-                }
+                retrieve.setCodeComparator(codeComparator);
 
                 // Verify that the type of the terminology target is a List<Code>
                 // Due to implicit conversion defined by specific models, the resolution path above may result in a List<Concept>
@@ -3043,12 +3128,13 @@ DATETIME
             catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
                 // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
-                if (!(terminology.getResultType() instanceof ListType)) {
+                if (!(terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")))) {
                     retrieve.setCodes(libraryBuilder.resolveToList(terminology));
                 }
                 else {
                     retrieve.setCodes(terminology);
                 }
+                retrieve.setCodeComparator(codeComparator);
                 // ERROR:
                 // WARNING:
                 libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
@@ -3082,6 +3168,7 @@ DATETIME
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitQuery(@NotNull cqlParser.QueryContext ctx) {
         QueryContext queryContext = new QueryContext();
         libraryBuilder.pushQueryContext(queryContext);
@@ -3127,7 +3214,9 @@ DATETIME
                 }
 
                 ReturnClause ret = ctx.returnClause() != null ? (ReturnClause) visit(ctx.returnClause()) : null;
-                if ((ret == null) && (sources.size() > 1)) {
+                AggregateClause agg = ctx.aggregateClause() != null ? (AggregateClause) visit(ctx.aggregateClause()) : null;
+
+                if ((agg == null) && (ret == null) && (sources.size() > 1)) {
                     ret = of.createReturnClause()
                             .withDistinct(true);
 
@@ -3155,29 +3244,46 @@ DATETIME
                     queryContext.removeLetClauses(dfcx);
                 }
 
-                DataType queryResultType = ret == null ? sources.get(0).getResultType() : ret.getResultType();
-                queryContext.setResultElementType(queryContext.isSingular() ? null : ((ListType)queryResultType).getElementType());
+                DataType queryResultType = null;
+                if (agg != null) {
+                    queryResultType = agg.getResultType();
+                }
+                else if (ret != null) {
+                    queryResultType = ret.getResultType();
+                }
+                else {
+                    queryResultType = sources.get(0).getResultType();
+                }
+
                 SortClause sort = null;
-                if (ctx.sortClause() != null) {
-                    if (queryContext.isSingular()) {
-                        // ERROR:
-                        throw new IllegalArgumentException("Sort clause cannot be used in a singular query.");
-                    }
-                    queryContext.enterSortClause();
-                    try {
-                        sort = (SortClause)visit(ctx.sortClause());
-                        // Validate that the sort can be performed based on the existence of comparison operators for all types involved
-                        for (SortByItem sortByItem : sort.getBy()) {
-                            if (sortByItem instanceof ByDirection) {
-                                // validate that there is a comparison operator defined for the result element type of the query context
-                                libraryBuilder.verifyComparable(queryContext.getResultElementType());		                    }
-                            else {
-                                libraryBuilder.verifyComparable(sortByItem.getResultType());
+                if (agg == null) {
+                    queryContext.setResultElementType(queryContext.isSingular() ? null : ((ListType) queryResultType).getElementType());
+                    if (ctx.sortClause() != null) {
+                        if (queryContext.isSingular()) {
+                            // ERROR:
+                            throw new IllegalArgumentException("Sort clause cannot be used in a singular query.");
+                        }
+                        queryContext.enterSortClause();
+                        try {
+                            sort = (SortClause) visit(ctx.sortClause());
+                            // Validate that the sort can be performed based on the existence of comparison operators for all types involved
+                            for (SortByItem sortByItem : sort.getBy()) {
+                                if (sortByItem instanceof ByDirection) {
+                                    // validate that there is a comparison operator defined for the result element type of the query context
+                                    libraryBuilder.verifyComparable(queryContext.getResultElementType());
+                                } else {
+                                    libraryBuilder.verifyComparable(sortByItem.getResultType());
+                                }
                             }
+                        } finally {
+                            queryContext.exitSortClause();
                         }
                     }
-                    finally {
-                        queryContext.exitSortClause();
+                }
+                else {
+                    if (ctx.sortClause() != null) {
+                        // ERROR:
+                        throw new IllegalArgumentException("Sort clause cannot be used in an aggregate query.");
                     }
                 }
 
@@ -3187,6 +3293,7 @@ DATETIME
                         .withRelationship(qicx)
                         .withWhere(where)
                         .withReturn(ret)
+                        .withAggregate(agg)
                         .withSort(sort);
 
                 query.setResultType(queryResultType);
@@ -3533,6 +3640,71 @@ DATETIME
     }
 
     @Override
+    public Object visitStartingClause(@NotNull cqlParser.StartingClauseContext ctx) {
+        if (ctx.simpleLiteral() != null) {
+            return visit(ctx.simpleLiteral());
+        }
+
+        if (ctx.quantity() != null) {
+            return visit(ctx.quantity());
+        }
+
+        if (ctx.expression() != null) {
+            return visit(ctx.expression());
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitAggregateClause(@NotNull cqlParser.AggregateClauseContext ctx) {
+        AggregateClause aggregateClause = of.createAggregateClause();
+        if (ctx.getChild(1) instanceof TerminalNode) {
+            switch (ctx.getChild(1).getText()) {
+                case "all":
+                    aggregateClause.setDistinct(false);
+                    break;
+                case "distinct":
+                    aggregateClause.setDistinct(true);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        if (ctx.startingClause() != null) {
+            aggregateClause.setStarting(parseExpression(ctx.startingClause()));
+        }
+
+        // If there is a starting, that's the type of the var
+        // If there's not a starting, push an Any and then attempt to evaluate (might need a type hint here)
+        aggregateClause.setIdentifier(parseString(ctx.identifier()));
+
+        Expression accumulator = null;
+        if (aggregateClause.getStarting() != null) {
+            accumulator = libraryBuilder.buildNull(aggregateClause.getStarting().getResultType());
+        }
+        else {
+            accumulator = libraryBuilder.buildNull(libraryBuilder.resolveTypeName("System", "Any"));
+        }
+
+        LetClause letClause = of.createLetClause().withExpression(accumulator)
+                .withIdentifier(aggregateClause.getIdentifier());
+        letClause.setResultType(letClause.getExpression().getResultType());
+        libraryBuilder.peekQueryContext().addLetClause(letClause);
+
+        aggregateClause.setExpression(parseExpression(ctx.expression()));
+        aggregateClause.setResultType(aggregateClause.getExpression().getResultType());
+
+        if (aggregateClause.getStarting() == null) {
+            accumulator.setResultType(aggregateClause.getResultType());
+            aggregateClause.setStarting(accumulator);
+        }
+
+        return aggregateClause;
+    }
+
+    @Override
     public SortDirection visitSortDirection(@NotNull cqlParser.SortDirectionContext ctx) {
         return SortDirection.fromValue(ctx.getText());
     }
@@ -3579,6 +3751,7 @@ DATETIME
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitQuerySource(@NotNull cqlParser.QuerySourceContext ctx) {
         if (ctx.expression() != null) {
             return visit(ctx.expression());

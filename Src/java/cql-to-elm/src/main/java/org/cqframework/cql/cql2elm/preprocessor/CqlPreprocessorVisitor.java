@@ -19,6 +19,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         libraryInfo.setLibraryName(identifiers.remove(identifiers.size() - 1));
@@ -32,6 +33,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
         IncludeDefinitionInfo includeDefinition = new IncludeDefinitionInfo();
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());

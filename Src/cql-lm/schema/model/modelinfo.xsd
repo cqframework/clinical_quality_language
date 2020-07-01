@@ -47,6 +47,21 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+	<xs:complexType name="SearchInfo">
+		<xs:annotation>
+			<xs:documentation>Defines a possible search path for a ClassInfo within the model.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Defines the name of the search info</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="path" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Defines the path to search values within the ClassInfo. In the simplest case, this is the same as the name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
 	<xs:complexType name="ModelInfo">
 		<xs:annotation>
 			<xs:documentation>The ModelInfo type defines the metadata associated with a particular model to enable it to be used by the CQL translator. Note that none of the information specified here is required, it just enables some convenient shorthands within the language.</xs:documentation>
@@ -169,6 +184,7 @@
 					<xs:element name="element" type="ClassInfoElement" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="contextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="targetContextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="search" type="SearchInfo" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 				<xs:attribute name="namespace" type="xs:string" use="optional">
 					<xs:annotation>
