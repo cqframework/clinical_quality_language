@@ -1,5 +1,4 @@
 sudo: false
-
 language: java
 jdk: openjdk11
 script:
@@ -12,3 +11,5 @@ branches:
 notifications:
   slack:
     secure: YFL4p/a/xkz7/vd9zTcJ8ClLrKytGGNiGrT/wCYaqfNA92aXEC7oP8DbfloQj8Cq4ce/rQHq28fRoWrTJDLtl7RKtnrYG64WvAE6iYEgwXxlKCOdNYj/J9/HJF8zF2WKINLw/yCpXVDDSyEA+z+Gf6Y0mB3cXzW3IWg0XSwVN6s=
+    rooms:
+      secure: VuooUl/7i6mK61lNDUTZKoGzjPeSOs0xrsV7fjEX8OuNqZyByCAAL3UI3NhikmbDWsk0ZfW8lF/Clxvh8oMHsSgCdgcN+d77kUOwd2fsyCIZD5n4kVb57IXyyPkS+etzvjwbaTZ0GWMX+A1/kk118QOzWjPTrTB9az6PgkS1mK0=
