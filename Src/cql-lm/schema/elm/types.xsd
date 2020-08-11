@@ -27,7 +27,7 @@
 					<xs:element name="codes" type="Code" minOccurs="1" maxOccurs="unbounded"/>
 					<xs:element name="display" type="String" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
-			<xs:extension>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Vocabulary" abstract="true">
