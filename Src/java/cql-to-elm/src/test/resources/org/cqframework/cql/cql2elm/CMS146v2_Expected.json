@@ -18,6 +18,24 @@
          "errorType" : "semantic",
          "errorSeverity" : "warning",
          "type" : "CqlToElmError"
+      }, {
+         "startLine" : 27,
+         "startChar" : 52,
+         "endLine" : 27,
+         "endChar" : 65,
+         "message" : "Added null check for constructed interval comparison.",
+         "errorType" : "internal",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
+      }, {
+         "startLine" : 34,
+         "startChar" : 74,
+         "endLine" : 34,
+         "endChar" : 88,
+         "message" : "Added null check for constructed interval comparison.",
+         "errorType" : "internal",
+         "errorSeverity" : "warning",
+         "type" : "CqlToElmError"
       } ],
       "identifier" : {
          "id" : "CMS146",
@@ -310,37 +328,53 @@
                      "type" : "ExpressionRef"
                   },
                   "suchThat" : {
-                     "type" : "In",
+                     "type" : "And",
                      "operand" : [ {
-                        "path" : "dateWritten",
-                        "scope" : "A",
-                        "type" : "Property"
-                     }, {
-                        "lowClosed" : false,
-                        "highClosed" : true,
-                        "type" : "Interval",
-                        "low" : {
-                           "type" : "Start",
-                           "operand" : {
-                              "path" : "period",
-                              "scope" : "E",
-                              "type" : "Property"
-                           }
-                        },
-                        "high" : {
-                           "type" : "Add",
-                           "operand" : [ {
+                        "type" : "In",
+                        "operand" : [ {
+                           "path" : "dateWritten",
+                           "scope" : "A",
+                           "type" : "Property"
+                        }, {
+                           "lowClosed" : false,
+                           "highClosed" : true,
+                           "type" : "Interval",
+                           "low" : {
                               "type" : "Start",
                               "operand" : {
                                  "path" : "period",
                                  "scope" : "E",
                                  "type" : "Property"
                               }
-                           }, {
-                              "value" : 3,
-                              "unit" : "days",
-                              "type" : "Quantity"
-                           } ]
+                           },
+                           "high" : {
+                              "type" : "Add",
+                              "operand" : [ {
+                                 "type" : "Start",
+                                 "operand" : {
+                                    "path" : "period",
+                                    "scope" : "E",
+                                    "type" : "Property"
+                                 }
+                              }, {
+                                 "value" : 3,
+                                 "unit" : "days",
+                                 "type" : "Quantity"
+                              } ]
+                           }
+                        } ]
+                     }, {
+                        "type" : "Not",
+                        "operand" : {
+                           "type" : "IsNull",
+                           "operand" : {
+                              "type" : "Start",
+                              "operand" : {
+                                 "path" : "period",
+                                 "scope" : "E",
+                                 "type" : "Property"
+                              }
+                           }
                         }
                      } ]
                   }
@@ -424,31 +458,44 @@
                         "type" : "ExpressionRef"
                      },
                      "suchThat" : {
-                        "type" : "In",
+                        "type" : "And",
                         "operand" : [ {
-                           "path" : "dateWritten",
-                           "scope" : "A",
-                           "type" : "Property"
-                        }, {
-                           "lowClosed" : true,
-                           "highClosed" : false,
-                           "type" : "Interval",
-                           "low" : {
-                              "type" : "Subtract",
-                              "operand" : [ {
+                           "type" : "In",
+                           "operand" : [ {
+                              "path" : "dateWritten",
+                              "scope" : "A",
+                              "type" : "Property"
+                           }, {
+                              "lowClosed" : true,
+                              "highClosed" : false,
+                              "type" : "Interval",
+                              "low" : {
+                                 "type" : "Subtract",
+                                 "operand" : [ {
+                                    "path" : "onsetDateTime",
+                                    "scope" : "D",
+                                    "type" : "Property"
+                                 }, {
+                                    "value" : 30,
+                                    "unit" : "days",
+                                    "type" : "Quantity"
+                                 } ]
+                              },
+                              "high" : {
                                  "path" : "onsetDateTime",
                                  "scope" : "D",
                                  "type" : "Property"
-                              }, {
-                                 "value" : 30,
-                                 "unit" : "days",
-                                 "type" : "Quantity"
-                              } ]
-                           },
-                           "high" : {
-                              "path" : "onsetDateTime",
-                              "scope" : "D",
-                              "type" : "Property"
+                              }
+                           } ]
+                        }, {
+                           "type" : "Not",
+                           "operand" : {
+                              "type" : "IsNull",
+                              "operand" : {
+                                 "path" : "onsetDateTime",
+                                 "scope" : "D",
+                                 "type" : "Property"
+                              }
                            }
                         } ]
                      }
