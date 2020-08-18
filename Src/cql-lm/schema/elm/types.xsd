@@ -33,8 +33,10 @@
 	<xs:complexType name="Vocabulary" abstract="true">
 		<xs:complexContent>
 			<xs:extension base="Any">
-				<xs:element name="id" type="String" minOccurs="1" maxOccurs="1"/>
-				<xs:element name="version" type="String" minOccurs="0" maxOccurs="1"/>
+				<xs:sequence>
+					<xs:element name="id" type="String" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="version" type="String" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
