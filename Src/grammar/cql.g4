@@ -2,7 +2,7 @@ grammar cql;
 
 /*
  * Clinical Quality Language Grammar Specification
- * Version 1.5 - Normative
+ * Version 1.5 - Mixed Normative/Trial-Use
  */
 
 import fhirpath;
@@ -11,16 +11,20 @@ import fhirpath;
  * Parser Rules
  */
 
+definition
+    : usingDefinition
+    | includeDefinition
+    | codesystemDefinition
+    | valuesetDefinition
+    | codeDefinition
+    | conceptDefinition
+    | parameterDefinition
+    ;
+
 library
     :
     libraryDefinition?
-    usingDefinition*
-    includeDefinition*
-    codesystemDefinition*
-    valuesetDefinition*
-    codeDefinition*
-    conceptDefinition*
-    parameterDefinition*
+    definition*
     statement*
     EOF
     ;
