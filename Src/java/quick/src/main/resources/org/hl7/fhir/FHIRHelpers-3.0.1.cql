@@ -6,7 +6,10 @@ define function ToInterval(period FHIR.Period):
     if period is null then
         null
     else
-        Interval[period."start".value, period."end".value]
+        if period."start" is null then
+            Interval(period."start".value, period."end".value]
+        else
+            Interval[period."start".value, period."end".value]
 
 define function ToInterval(range FHIR.Range):
     if range is null then
@@ -21,40 +24,64 @@ define function ToQuantity(quantity FHIR.Quantity):
         System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
 
 define function ToQuantity(quantity FHIR.Age):
-    if quantity is null then
-        null
-    else
-        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+    case
+        when quantity is null then null
+        when quantity.value is null then null
+        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org' then
+            System.Quantity { value: quantity.value.value, unit: quantity.code.value }
+        else
+            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.code.value)
+    end
 
 define function ToQuantity(quantity FHIR.Count):
-    if quantity is null then
-        null
-    else
-        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+    case
+        when quantity is null then null
+        when quantity.value is null then null
+        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org' then
+            System.Quantity { value: quantity.value.value, unit: quantity.code.value }
+        else
+            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.code.value)
+    end
 
 define function ToQuantity(quantity FHIR.Distance):
-    if quantity is null then
-        null
-    else
-        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+    case
+        when quantity is null then null
+        when quantity.value is null then null
+        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org' then
+            System.Quantity { value: quantity.value.value, unit: quantity.code.value }
+        else
+            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.code.value)
+    end
 
 define function ToQuantity(quantity FHIR.Duration):
-    if quantity is null then
-        null
-    else
-        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+    case
+        when quantity is null then null
+        when quantity.value is null then null
+        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org' then
+            System.Quantity { value: quantity.value.value, unit: quantity.code.value }
+        else
+            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.code.value)
+    end
 
 define function ToQuantity(quantity FHIR.Money):
-    if quantity is null then
-        null
-    else
-        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+    case
+        when quantity is null then null
+        when quantity.value is null then null
+        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org' then
+            System.Quantity { value: quantity.value.value, unit: quantity.code.value }
+        else
+            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.code.value)
+    end
 
 define function ToQuantity(quantity FHIR.SimpleQuantity):
-    if quantity is null then
-        null
-    else
-        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+    case
+        when quantity is null then null
+        when quantity.value is null then null
+        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org' then
+            System.Quantity { value: quantity.value.value, unit: quantity.code.value }
+        else
+            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.code.value)
+    end
 
 define function ToCode(coding FHIR.Coding):
     if coding is null then
