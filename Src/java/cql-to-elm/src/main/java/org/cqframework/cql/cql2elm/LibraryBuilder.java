@@ -108,6 +108,7 @@ public class LibraryBuilder {
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
     private int literalContext = 0;
+    private int typeSpecifierContext = 0;
     private NamespaceInfo namespaceInfo = null;
     private ModelManager modelManager = null;
     private Model defaultModel = null;
@@ -1944,7 +1945,13 @@ public class LibraryBuilder {
         // 7: The name of a code
         // 8: The name of a concept
         // 9: The name of a library
-        // 10: An unresolved identifier error is thrown
+        // 10: The name of a property on a specific context
+        // 11: An unresolved identifier error is thrown
+
+        // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
+        if (inTypeSpecifierContext()) {
+            return this.createLiteral(identifier);
+        }
 
         // In the sort clause of a plural query, names may be resolved based on the result type of the query
         IdentifierRef resultElement = resolveQueryResultElement(identifier);
@@ -2074,6 +2081,31 @@ public class LibraryBuilder {
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
             return libraryRef;
+        }
+
+        // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
+        // the identifier may be resolved as an implicit property reference on that context.
+        if (!inLiteralContext() && inSpecificContext()) {
+            Element contextElement = resolve(currentExpressionContext());
+            if (contextElement instanceof ParameterDef) {
+                ParameterDef contextParameter = (ParameterDef)contextElement;
+
+                checkLiteralContext();
+                ParameterRef parameterRef = of.createParameterRef().withName(contextParameter.getName());
+                parameterRef.setResultType(contextParameter.getResultType());
+                if (parameterRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
+                            parameterRef.getName()));
+                }
+
+                PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
+                if (resolution != null) {
+                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.getType());
+                    contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
+                    return contextAccessor;
+                }
+            }
         }
 
         if (mustResolve) {
@@ -2404,7 +2436,7 @@ public class LibraryBuilder {
         else if (left.getResultType() instanceof ListType && listTraversal) {
             // NOTE: FHIRPath path traversal support
             // Resolve property access of a list of items as a query:
-            // listValue.property ::= listValue X where X.property is not null return X.property
+            // listValue.property ::= listValue X where X.property is not null return all X.property
             ListType listType = (ListType)left.getResultType();
             PropertyResolution resolution = resolveProperty(listType.getElementType(), memberIdentifier);
             Expression accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getType());
@@ -2423,7 +2455,7 @@ public class LibraryBuilder {
             Query query = of.createQuery()
                     .withSource(source)
                     .withWhere(not)
-                    .withReturn(of.createReturnClause().withExpression(accessor));
+                    .withReturn(of.createReturnClause().withDistinct(false).withExpression(accessor));
             query.setResultType(new ListType(accessor.getResultType()));
 
             if (accessor.getResultType() instanceof ListType) {
@@ -2740,5 +2772,21 @@ public class LibraryBuilder {
             // ERROR:
             throw new IllegalStateException("Expressions in this context must be able to be evaluated at compile-time.");
         }
+    }
+
+    public void pushTypeSpecifierContext() {
+        typeSpecifierContext++;
+    }
+
+    public void popTypeSpecifierContext() {
+        if (!inTypeSpecifierContext()) {
+            throw new IllegalStateException("Not in type specifier context");
+        }
+
+        typeSpecifierContext--;
+    }
+
+    public boolean inTypeSpecifierContext() {
+        return typeSpecifierContext > 0;
     }
 }

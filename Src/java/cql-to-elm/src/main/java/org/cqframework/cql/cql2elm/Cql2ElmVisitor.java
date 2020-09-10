@@ -67,8 +67,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private int nextLocalId = 1;
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
-    private boolean implicitContextCreated = false;
-    private ExpressionDef implicitContextExpressionDef = null;
+    private final Map<String, Element> contextDefinitions = new HashMap<>();
     private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
@@ -744,9 +743,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (!unqualifiedIdentifier.equals("Unfiltered")) {
             ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
 
-            // If this is the first time a context definition is encountered, output a patient definition:
-            // define Patient = element of [<Patient model type>]
-            if (!implicitContextCreated) {
+            // If this is the first time a context definition is encountered, construct a context definition:
+            // define <Context> = element of [<Context model type>]
+            Element modelContextDefinition = contextDefinitions.get(modelContext.getName());
+            if (modelContextDefinition == null) {
                 if (libraryBuilder.hasUsings()) {
                     ModelInfo modelInfo = modelIdentifier == null
                             ? libraryBuilder.getModel(libraryInfo.getDefaultModelName()).getModelInfo()
@@ -754,34 +754,41 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                     //String contextTypeName = modelContext.getName();
                     //DataType contextType = libraryBuilder.resolveTypeName(modelInfo.getName(), contextTypeName);
                     DataType contextType = modelContext.getType();
-                    Retrieve contextRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(contextType));
-                    track(contextRetrieve, ctx);
-                    contextRetrieve.setResultType(new ListType(contextType));
-                    String contextClassIdentifier = ((ClassType) contextType).getIdentifier();
-                    if (contextClassIdentifier != null) {
-                        contextRetrieve.setTemplateId(contextClassIdentifier);
+                    modelContextDefinition = libraryBuilder.resolveParameterRef(modelContext.getName());
+                    if (modelContextDefinition != null) {
+                        contextDefinitions.put(modelContext.getName(), modelContextDefinition);
                     }
+                    else {
+                        Retrieve contextRetrieve = of.createRetrieve().withDataType(libraryBuilder.dataTypeToQName(contextType));
+                        track(contextRetrieve, ctx);
+                        contextRetrieve.setResultType(new ListType(contextType));
+                        String contextClassIdentifier = ((ClassType) contextType).getIdentifier();
+                        if (contextClassIdentifier != null) {
+                            contextRetrieve.setTemplateId(contextClassIdentifier);
+                        }
 
-                    implicitContextExpressionDef = of.createExpressionDef()
-                            .withName(unqualifiedIdentifier)
-                            .withContext(currentContext)
-                            .withExpression(of.createSingletonFrom().withOperand(contextRetrieve));
-                    track(implicitContextExpressionDef, ctx);
-                    implicitContextExpressionDef.getExpression().setResultType(contextType);
-                    implicitContextExpressionDef.setResultType(contextType);
-                    libraryBuilder.addExpression(implicitContextExpressionDef);
-                } else {
-                    implicitContextExpressionDef = of.createExpressionDef()
+                        modelContextDefinition = of.createExpressionDef()
+                                .withName(unqualifiedIdentifier)
+                                .withContext(currentContext)
+                                .withExpression(of.createSingletonFrom().withOperand(contextRetrieve));
+                        track(modelContextDefinition, ctx);
+                        ((ExpressionDef)modelContextDefinition).getExpression().setResultType(contextType);
+                        modelContextDefinition.setResultType(contextType);
+                        libraryBuilder.addExpression((ExpressionDef)modelContextDefinition);
+                        contextDefinitions.put(modelContext.getName(), modelContextDefinition);
+                    }
+                }
+                else {
+                    modelContextDefinition = of.createExpressionDef()
                             .withName(unqualifiedIdentifier)
                             .withContext(currentContext)
                             .withExpression(of.createNull());
-                    track(implicitContextExpressionDef, ctx);
-                    implicitContextExpressionDef.getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
-                    implicitContextExpressionDef.setResultType(implicitContextExpressionDef.getExpression().getResultType());
-                    libraryBuilder.addExpression(implicitContextExpressionDef);
+                    track(modelContextDefinition, ctx);
+                    ((ExpressionDef)modelContextDefinition).getExpression().setResultType(libraryBuilder.resolveTypeName("System", "Any"));
+                    modelContextDefinition.setResultType(((ExpressionDef)modelContextDefinition).getExpression().getResultType());
+                    libraryBuilder.addExpression((ExpressionDef)modelContextDefinition);
+                    contextDefinitions.put(modelContext.getName(), modelContextDefinition);
                 }
-
-                implicitContextCreated = true;
             }
         }
 
@@ -792,13 +799,32 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return currentContext;
     }
 
+    private boolean isImplicitContextExpressionDef(ExpressionDef def) {
+        for (Element e : contextDefinitions.values()) {
+            if (def == e) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void removeImplicitContextExpressionDef(ExpressionDef def) {
+        for (Map.Entry<String, Element> e : contextDefinitions.entrySet()) {
+            if (def == e.getValue()) {
+                contextDefinitions.remove(e.getKey());
+                break;
+            }
+        }
+    }
+
     public ExpressionDef internalVisitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
         String identifier = parseString(ctx.identifier());
         ExpressionDef def = libraryBuilder.resolveExpressionRef(identifier);
-        if (def == null || def == implicitContextExpressionDef) {
-            if (def != null && def == implicitContextExpressionDef) {
+        if (def == null || isImplicitContextExpressionDef(def)) {
+            if (def != null && isImplicitContextExpressionDef(def)) {
                 libraryBuilder.removeExpression(def);
-                implicitContextExpressionDef = null;
+                removeImplicitContextExpressionDef(def);
                 def = null;
             }
             libraryBuilder.pushExpressionContext(currentContext);

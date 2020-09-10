@@ -214,6 +214,16 @@ public class BaseTest {
     }
 
     @Test
+    public void testImplicitContext() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestImplicitContext.cql", 0);
+    }
+
+    @Test
+    public void testParameterContext() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestParameterContext.cql", 0);
+    }
+
+    @Test
     public void testFHIR() throws IOException {
         TestUtils.runSemanticTest("fhir/r401/TestFHIR.cql", 0);
     }

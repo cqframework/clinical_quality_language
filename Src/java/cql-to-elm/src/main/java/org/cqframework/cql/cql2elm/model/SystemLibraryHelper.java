@@ -39,6 +39,7 @@ public class SystemLibraryHelper {
         // ToString(Time) : String
         // ToString(Quantity) : String
         // ToString(Ratio) : String
+        // ToString(String) : String
         Operator booleanToString = new Operator("ToString", new Signature(systemModel.getBoolean()), systemModel.getString());
         system.add(booleanToString);
         system.add(new Conversion(booleanToString, false));
@@ -66,11 +67,30 @@ public class SystemLibraryHelper {
         Operator ratioToString = new Operator("ToString", new Signature(systemModel.getRatio()), systemModel.getString());
         system.add(ratioToString);
         system.add(new Conversion(ratioToString, false));
+        //Operator stringToString = new Operator("ToString", new Signature(systemModel.getString()), systemModel.getString());
+        //system.add(stringToString);
+        //system.add(new Conversion(stringToString, false));
 
+        // ToBoolean(Boolean) : Boolean
+        // ToBoolean(Integer) : Boolean
+        // ToBoolean(Decimal) : Boolean
+        // ToBoolean(Long) : Boolean
         // ToBoolean(String) : Boolean
         Operator stringToBoolean = new Operator("ToBoolean", new Signature(systemModel.getString()), systemModel.getBoolean());
         system.add(stringToBoolean);
         system.add(new Conversion(stringToBoolean, false));
+        Operator integerToBoolean = new Operator("ToBoolean", new Signature(systemModel.getInteger()), systemModel.getBoolean());
+        system.add(integerToBoolean);
+        system.add(new Conversion(integerToBoolean, false));
+        Operator decimalToBoolean = new Operator("ToBoolean", new Signature(systemModel.getDecimal()), systemModel.getBoolean());
+        system.add(decimalToBoolean);
+        system.add(new Conversion(decimalToBoolean, false));
+        Operator longToBoolean = new Operator("ToBoolean", new Signature(systemModel.getLong()), systemModel.getBoolean());
+        system.add(longToBoolean);
+        system.add(new Conversion(longToBoolean, false));
+        //Operator booleanToBoolean = new Operator("ToBoolean", new Signature(systemModel.getBoolean()), systemModel.getBoolean());
+        //system.add(booleanToBoolean);
+        //system.add(new Conversion(booleanToBoolean, false));
 
         // ToChars(String) : List(String)
         Operator toChars = new Operator("ToChars", new Signature(systemModel.getString()), new ListType(systemModel.getString()));
@@ -78,26 +98,44 @@ public class SystemLibraryHelper {
         system.add(new Conversion(toChars, false));
 
         // ToInteger(String) : Integer
+        // ToInteger(Boolean) : Integer
         // ToInteger(Long) : Integer
+        // ToInteger(Integer) : Integer
         Operator stringToInteger = new Operator("ToInteger", new Signature(systemModel.getString()), systemModel.getInteger());
         system.add(stringToInteger);
         system.add(new Conversion(stringToInteger, false));
         Operator longToInteger = new Operator("ToInteger", new Signature(systemModel.getLong()), systemModel.getInteger());
         system.add(longToInteger);
         system.add(new Conversion(longToInteger, false));
+        Operator booleanToInteger = new Operator("ToInteger", new Signature(systemModel.getBoolean()), systemModel.getInteger());
+        system.add(booleanToInteger);
+        system.add(new Conversion(booleanToInteger, false));
+        //Operator integerToInteger = new Operator("ToInteger", new Signature(systemModel.getInteger()), systemModel.getInteger());
+        //system.add(integerToInteger);
+        //system.add(new Conversion(integerToInteger, false));
 
+        // ToLong(Boolean) : Long
         // ToLong(String) : Long
         // ToLong(Integer) : Long
+        // ToLong(Long) : Long
         Operator stringToLong = new Operator("ToLong", new Signature(systemModel.getString()), systemModel.getLong());
         system.add(stringToLong);
         system.add(new Conversion(stringToLong, false));
         Operator integerToLong = new Operator("ToLong", new Signature(systemModel.getInteger()), systemModel.getLong());
         system.add(integerToLong);
         system.add(new Conversion(integerToLong, true));
+        //Operator longToLong = new Operator("ToLong", new Signature(systemModel.getLong()), systemModel.getLong());
+        //system.add(longToLong);
+        //system.add(new Conversion(longToLong, false));
+        Operator booleanToLong = new Operator("ToLong", new Signature(systemModel.getBoolean()), systemModel.getLong());
+        system.add(booleanToLong);
+        system.add(new Conversion(booleanToLong, false));
 
+        // ToDecimal(Boolean) : Decimal
         // ToDecimal(String) : Decimal
         // ToDecimal(Integer) : Decimal
         // ToDecimal(Long) : Decimal
+        // ToDecimal(Decimal) : Decimal
         Operator stringToDecimal = new Operator("ToDecimal", new Signature(systemModel.getString()), systemModel.getDecimal());
         system.add(stringToDecimal);
         system.add(new Conversion(stringToDecimal, false));
@@ -107,34 +145,53 @@ public class SystemLibraryHelper {
         Operator longToDecimal = new Operator("ToDecimal", new Signature(systemModel.getLong()), systemModel.getDecimal());
         system.add(longToDecimal);
         system.add(new Conversion(longToDecimal, true));
+        //Operator decimalToDecimal = new Operator("ToDecimal", new Signature(systemModel.getDecimal()), systemModel.getDecimal());
+        //system.add(decimalToDecimal);
+        //system.add(new Conversion(decimalToDecimal, false));
+        Operator booleanToDecimal = new Operator("ToDecimal", new Signature(systemModel.getBoolean()), systemModel.getDecimal());
+        system.add(booleanToDecimal);
+        system.add(new Conversion(booleanToDecimal, false));
 
         // ToDateTime(String) : DateTime
         // ToDateTime(Date) : DateTime
+        // ToDateTime(DateTime) : DateTime
         Operator stringToDateTime = new Operator("ToDateTime", new Signature(systemModel.getString()), systemModel.getDateTime());
         system.add(stringToDateTime);
         system.add(new Conversion(stringToDateTime, false));
         Operator dateToDateTime = new Operator("ToDateTime", new Signature(systemModel.getDate()), systemModel.getDateTime());
         system.add(dateToDateTime);
         system.add(new Conversion(dateToDateTime, true));
+        //Operator dateTimeToDateTime = new Operator("ToDateTime", new Signature(systemModel.getDateTime()), systemModel.getDateTime());
+        //system.add(dateTimeToDateTime);
+        //system.add(new Conversion(dateTimeToDateTime, false));
 
         // ToDate(DateTime) : Date
         // ToDate(String) : Date
+        // ToDate(Date) : Date
         Operator stringToDate = new Operator("ToDate", new Signature(systemModel.getString()), systemModel.getDate());
         system.add(stringToDate);
         system.add(new Conversion(stringToDate, false));
         Operator dateTimeToDate = new Operator("ToDate", new Signature(systemModel.getDateTime()), systemModel.getDate());
         system.add(dateTimeToDate);
         system.add(new Conversion(dateTimeToDate, false));
+        //Operator dateToDate = new Operator("ToDate", new Signature(systemModel.getDate()), systemModel.getDate());
+        //system.add(dateToDate);
+        //system.add(new Conversion(dateToDate, false));
 
         // ToTime(String) : Time
+        // ToTime(Time) : Time
         Operator stringToTime = new Operator("ToTime", new Signature(systemModel.getString()), systemModel.getTime());
         system.add(stringToTime);
         system.add(new Conversion(stringToTime, false));
+        //Operator timeToTime = new Operator("ToTime", new Signature(systemModel.getTime()), systemModel.getTime());
+        //system.add(timeToTime);
+        //system.add(new Conversion(timeToTime, false));
 
         // ToQuantity(String) : Quantity
         // ToQuantity(Integer) : Quantity
         // ToQuantity(Ratio) : Quantity
         // ToQuantity(Decimal) : Quantity
+        // ToQuantity(Quantity) : Quantity
         Operator stringToQuantity = new Operator("ToQuantity", new Signature(systemModel.getString()), systemModel.getQuantity());
         system.add(stringToQuantity);
         system.add(new Conversion(stringToQuantity, false));
@@ -147,11 +204,18 @@ public class SystemLibraryHelper {
         Operator decimalToQuantity = new Operator("ToQuantity", new Signature(systemModel.getDecimal()), systemModel.getQuantity());
         system.add(decimalToQuantity);
         system.add(new Conversion(decimalToQuantity, true));
+        //Operator quantityToQuantity = new Operator("ToQuantity", new Signature(systemModel.getQuantity()), systemModel.getQuantity());
+        //system.add(quantityToQuantity);
+        //system.add(new Conversion(quantityToQuantity, false));
 
         // ToRatio(String) : Ratio
+        // ToRatio(Ratio) : Ratio
         Operator stringToRatio = new Operator("ToRatio", new Signature(systemModel.getString()), systemModel.getRatio());
         system.add(stringToRatio);
         system.add(new Conversion(stringToRatio, false));
+        //Operator ratioToRatio = new Operator("ToRatio", new Signature(systemModel.getRatio()), systemModel.getRatio());
+        //system.add(ratioToRatio);
+        //system.add(new Conversion(ratioToRatio, false));
 
         // ConvertsToBoolean(Any): Boolean
         Operator convertsTo = new Operator("ConvertsToBoolean", new Signature(systemModel.getAny()), systemModel.getBoolean());

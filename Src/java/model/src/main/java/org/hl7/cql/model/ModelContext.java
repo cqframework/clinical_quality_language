@@ -10,8 +10,10 @@ public class ModelContext {
         this.name = name;
         this.type = type;
         this.birthDateElement = birthDateElement;
-        for (String key : keys) {
-            this.keys.add(key);
+        if (keys != null) {
+            for (String key : keys) {
+                this.keys.add(key);
+            }
         }
     }
 

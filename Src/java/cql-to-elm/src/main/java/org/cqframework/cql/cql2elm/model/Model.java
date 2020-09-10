@@ -66,14 +66,37 @@ public class Model {
     }
 
     public ModelContext resolveContextName(@NotNull String contextName) {
+        return resolveContextName(contextName, true);
+    }
+
+    public ModelContext resolveContextName(@NotNull String contextName, boolean mustResolve) {
         for (ModelContext context : contexts) {
             if (context.getName().equals(contextName)) {
                 return context;
             }
         }
 
-        // ERROR:
-        throw new IllegalArgumentException(String.format("Could not resolve context name %s in model %s.", contextName, this.info.getName()));
+        // Resolve to a "default" context definition if the context name matches a type name exactly
+        DataType contextType = resolveTypeName(contextName);
+        if (contextType != null && contextType instanceof ClassType) {
+            ClassType contextClassType = (ClassType)contextType;
+            String keyName = null;
+            for (ClassTypeElement cte : ((ClassType)contextType).getElements()) {
+                if (cte.getName().equals("id")) {
+                    keyName = cte.getName();
+                    break;
+                }
+            }
+            ModelContext modelContext = new ModelContext(contextName, (ClassType)contextType, keyName != null ? Arrays.asList(keyName) : null, null);
+            return modelContext;
+        }
+
+        if (mustResolve) {
+            // ERROR:
+            throw new IllegalArgumentException(String.format("Could not resolve context name %s in model %s.", contextName, this.info.getName()));
+        }
+
+        return null;
     }
 
     public ClassType resolveLabel(@NotNull String label) {
