@@ -612,7 +612,8 @@ public class CqlTranslator {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         StringWriter writer = new StringWriter();
         marshaller.marshal(new ObjectFactory().createLibrary(library), writer);
-        return writer.getBuffer().toString();
+        // The marshaller is for some reason not encoding the form feed character. Don't know why, but also don't want to dink around with JAXB encoding schemes
+        return writer.getBuffer().toString().replace("\f", "&#xc;");
     }
 
     public String convertToJson(Library library) throws JAXBException {

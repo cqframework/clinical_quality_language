@@ -357,4 +357,42 @@ public class BaseTest {
         assertThat(includeDef.getPath(), is("FHIRHelpers"));
         assertThat(includeDef.getVersion(), is("4.0.1"));
     }
+
+    @Test
+    public void testFHIRPathLiteralStringEscapes() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRPathLiteralStringEscapes.cql", 0);
+        TranslatedLibrary library = translator.getTranslatedLibrary();
+        ExpressionDef expressionDef = library.resolveExpressionRef("Test");
+        assertThat(expressionDef, notNullValue());
+        String xml = translator.toXml();
+        assertThat(xml, notNullValue());
+        /*
+        // Doesn't work because this literal adds carriage returns
+        assertThat(xml, is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<library xmlns=\"urn:hl7-org:elm:r1\" xmlns:t=\"urn:hl7-org:elm-types:r1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:fhir=\"http://hl7.org/fhir\" xmlns:qdm43=\"urn:healthit-gov:qdm:v4_3\" xmlns:qdm53=\"urn:healthit-gov:qdm:v5_3\" xmlns:a=\"urn:hl7-org:cql-annotations:r1\">\n" +
+                "   <annotation translatorOptions=\"\" xsi:type=\"a:CqlToElmInfo\"/>\n" +
+                "   <identifier id=\"TestFHIRPath\"/>\n" +
+                "   <schemaIdentifier id=\"urn:hl7-org:elm\" version=\"r1\"/>\n" +
+                "   <usings>\n" +
+                "      <def localIdentifier=\"System\" uri=\"urn:hl7-org:elm-types:r1\"/>\n" +
+                "      <def localIdentifier=\"FHIR\" uri=\"http://hl7.org/fhir\" version=\"4.0.0\"/>\n" +
+                "   </usings>\n" +
+                "   <includes>\n" +
+                "      <def localIdentifier=\"FHIRHelpers\" path=\"FHIRHelpers\" version=\"4.0.0\"/>\n" +
+                "   </includes>\n" +
+                "   <parameters>\n" +
+                "      <def name=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <parameterTypeSpecifier name=\"fhir:Patient\" xsi:type=\"NamedTypeSpecifier\"/>\n" +
+                "      </def>\n" +
+                "   </parameters>\n" +
+                "   <statements>\n" +
+                "      <def name=\"Test\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"ConvertsToString\">\n" +
+                "            <operand valueType=\"t:String\" value=\"\\/\f&#xd;&#xa;\t&quot;`'*\" xsi:type=\"Literal\"/>\n" +
+                "         </expression>\n" +
+                "      </def>\n" +
+                "   </statements>\n" +
+                "</library>\n"));
+        */
+    }
 }
