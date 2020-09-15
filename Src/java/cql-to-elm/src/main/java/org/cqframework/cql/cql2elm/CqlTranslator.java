@@ -30,6 +30,9 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.bind.*;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -610,10 +613,30 @@ public class CqlTranslator {
     public String convertToXml(Library library) throws JAXBException {
         Marshaller marshaller = getJaxbContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+
         StringWriter writer = new StringWriter();
         marshaller.marshal(new ObjectFactory().createLibrary(library), writer);
-        // The marshaller is for some reason not encoding the form feed character. Don't know why, but also don't want to dink around with JAXB encoding schemes
-        return writer.getBuffer().toString().replace("\f", "&#xc;");
+        // The marshaller is not encoding the form feed character (presumably because it's not valid in XML 1.0 at all (even encoded)).
+        // Tried to get it to write 1.1 XML, but JAXB can't apparently? ()
+        // So hacking it after the fact...
+        // NOTE: Even after doing this and getting a valid XML 1.1 document with the form feed as a character reference, the JAXB unmarshaller still complains
+        // So... basically, form feeds are not supported in ELM XML
+        return writer.getBuffer().toString().replace("<xml version=\"1.0\"", "<xml version=\"1.1\"").replace("\f", "&#xc;");
+
+        /*
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+        XMLOutputFactory xof = XMLOutputFactory.newFactory();
+        try {
+            XMLStreamWriter xsr = xof.createXMLStreamWriter(writer);
+            xsr.writeStartDocument("1.1");
+            marshaller.marshal(new ObjectFactory().createLibrary(library), xsr);
+            xsr.writeEndDocument();
+            return writer.getBuffer().toString();
+        }
+        catch (XMLStreamException e) {
+            throw new RuntimeException(String.format("Errors occurred attempting to serialize library: %s", e.getMessage()));
+        }
+        */
     }
 
     public String convertToJson(Library library) throws JAXBException {
