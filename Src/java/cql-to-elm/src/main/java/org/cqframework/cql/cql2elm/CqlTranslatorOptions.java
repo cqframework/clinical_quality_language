@@ -12,6 +12,7 @@ public class CqlTranslatorOptions {
     private List<CqlTranslator.Format> formats = new ArrayList<>();
     private boolean validateUnits = true;
     private boolean verifyOnly = false;
+    private String compatibilityLevel = "1.5";
     private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
     private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
 
@@ -43,12 +44,12 @@ public class CqlTranslatorOptions {
     public CqlTranslatorOptions() {
     }
 
+    public CqlTranslatorOptions(CqlTranslator.Options... options) {
+        this(CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+    }
+
     public CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) {
-        if (options != null) {
-            for (CqlTranslator.Options option : options) {
-                this.options.add(option);
-            }
-        }
+        this.setOptions(options);
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
     }
@@ -59,13 +60,14 @@ public class CqlTranslatorOptions {
                                 boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
                                 boolean enableIntervalDemotion, boolean enableIntervalPromotion,
                                 boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
-                                LibraryBuilder.SignatureLevel signatureLevel) {
+                                LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel) {
 
         formats.add(format);
         this.verifyOnly = verifyOnly;
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
         this.validateUnits = validateUnits;
+        this.compatibilityLevel = compatibilityLevel;
 
         if (dateRangeOptimizations) {
             options.add(CqlTranslator.Options.EnableDateRangeOptimization);
@@ -109,12 +111,52 @@ public class CqlTranslatorOptions {
         return this.options;
     }
 
+    public void setOptions(CqlTranslator.Options... options) {
+        if (options != null) {
+            for (CqlTranslator.Options option : options) {
+                this.options.add(option);
+            }
+        }
+    }
+
+    public CqlTranslatorOptions withOptions(CqlTranslator.Options... options) {
+        setOptions(options);
+        return this;
+    }
+
     public List<CqlTranslator.Format> getFormats() {
         return this.formats;
     }
 
+    public CqlTranslatorOptions withFormat(CqlTranslator.Format format) {
+        formats.add(format);
+        return this;
+    }
+
+    public String getCompatibilityLevel() {
+        return this.compatibilityLevel;
+    }
+
+    public void setCompatibilityLevel(String compatibilityLevel) {
+        this.compatibilityLevel = compatibilityLevel;
+    }
+
+    public CqlTranslatorOptions withCompatibilityLevel(String compatibilityLevel) {
+        setCompatibilityLevel(compatibilityLevel);
+        return this;
+    }
+
     public boolean getVerifyOnly() {
         return this.verifyOnly;
+    }
+
+    public void setVerifyOnly(boolean verifyOnly) {
+        this.verifyOnly = verifyOnly;
+    }
+
+    public CqlTranslatorOptions withVerifyOnly(boolean verifyOnly) {
+        setVerifyOnly(verifyOnly);
+        return this;
     }
 
     public boolean getValidateUnits() {
@@ -125,6 +167,11 @@ public class CqlTranslatorOptions {
         this.validateUnits = validateUnits;
     }
 
+    public CqlTranslatorOptions withValidateUnits(boolean validateUnits) {
+        setValidateUnits(validateUnits);
+        return this;
+    }
+
     public CqlTranslatorException.ErrorSeverity getErrorLevel() {
         return this.errorLevel;
     }
@@ -133,12 +180,22 @@ public class CqlTranslatorOptions {
         this.errorLevel = errorLevel;
     }
 
+    public CqlTranslatorOptions withErrorLevel(CqlTranslatorException.ErrorSeverity errorLevel) {
+        setErrorLevel(errorLevel);
+        return this;
+    }
+
     public LibraryBuilder.SignatureLevel getSignatureLevel() {
         return this.signatureLevel;
     }
 
     public void setSignatureLevel(LibraryBuilder.SignatureLevel signatureLevel) {
         this.signatureLevel = signatureLevel;
+    }
+
+    public CqlTranslatorOptions withSignatureLevel(LibraryBuilder.SignatureLevel signatureLevel) {
+        setSignatureLevel(signatureLevel);
+        return this;
     }
 
     @Override

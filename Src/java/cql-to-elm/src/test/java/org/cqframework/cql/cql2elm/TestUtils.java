@@ -165,7 +165,15 @@ public class TestUtils {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
+        return runSemanticTest(null, testFileName, expectedErrors, options);
+    }
+
     public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
+        return runSemanticTest(namespaceInfo, testFileName, expectedErrors, new CqlTranslatorOptions(options));
+    }
+
+    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
         CqlTranslator translator = TestUtils.createTranslator(namespaceInfo, testFileName, options);
         for (CqlTranslatorException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
@@ -198,10 +206,18 @@ public class TestUtils {
     }
 
     public static CqlTranslator createTranslator(String testFileName, CqlTranslator.Options... options) throws IOException {
+        return createTranslator(null, testFileName, new CqlTranslatorOptions(options));
+    }
+
+    public static CqlTranslator createTranslator(String testFileName, CqlTranslatorOptions options) throws IOException {
         return createTranslator(null, testFileName, options);
     }
 
     public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslator.Options... options) throws IOException {
+        return createTranslator(namespaceInfo, testFileName, new CqlTranslatorOptions(options));
+    }
+
+    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslatorOptions options) throws IOException {
         File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);

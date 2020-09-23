@@ -235,6 +235,12 @@ public class SemanticTests {
     }
 
     @Test
+    public void testCompatibilityLevel3() throws IOException {
+        runSemanticTest("TestCompatibilityLevel3.cql", 1);
+        runSemanticTest("TestCompatibilityLevel3.cql", 0, new CqlTranslatorOptions().withCompatibilityLevel("1.3"));
+    }
+
+    @Test
     public void invalidEquality() throws IOException {
         runSemanticTest("InvalidEquality.cql", 1, CqlTranslator.Options.DisableListPromotion);
     }
@@ -269,6 +275,10 @@ public class SemanticTests {
     }
 
     private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
+        return TestUtils.runSemanticTest(testFileName, expectedErrors, options);
+    }
+
+    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
         return TestUtils.runSemanticTest(testFileName, expectedErrors, options);
     }
 }

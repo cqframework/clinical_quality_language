@@ -479,6 +479,7 @@ public class SystemLibraryHelper {
         system.add(new Operator("Date", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getDate()));
         system.add(new Operator("DateFrom", new Signature(systemModel.getDateTime()), systemModel.getDate()));
         system.add(new Operator("TimeFrom", new Signature(systemModel.getDateTime()), systemModel.getTime()));
+        system.add(new Operator("TimezoneFrom", new Signature(systemModel.getDateTime()), systemModel.getDecimal()));
         system.add(new Operator("TimezoneOffsetFrom", new Signature(systemModel.getDateTime()), systemModel.getDecimal()));
         system.add(new Operator("DateTimeComponentFrom", new Signature(systemModel.getDateTime()), systemModel.getInteger()));
         system.add(new Operator("DateTimeComponentFrom", new Signature(systemModel.getDate()), systemModel.getInteger()));
