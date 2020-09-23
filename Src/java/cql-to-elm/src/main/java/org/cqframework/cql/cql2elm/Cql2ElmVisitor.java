@@ -43,6 +43,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean methodInvocation = true;
     private boolean includeDeprecatedElements = false;
     private boolean fromKeywordRequired = false;
+    private String compatibilityLevel = null;
     private TokenStream tokenStream;
 
     private final LibraryBuilder libraryBuilder;
@@ -150,6 +151,21 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         fromKeywordRequired = false;
     }
 
+    public boolean isCompatibilityLevel3() {
+        return "1.3".equals(compatibilityLevel);
+    }
+
+    public boolean isCompatibilityLevel4() {
+        return "1.4".equals(compatibilityLevel);
+    }
+
+    public String getCompatibilityLevel() {
+        return this.compatibilityLevel;
+    }
+    public void setCompatibilityLevel(String compatibilityLevel) {
+        this.compatibilityLevel = compatibilityLevel;
+    }
+
     public void setTranslatorOptions(CqlTranslatorOptions options) {
         if (options.getOptions().contains(CqlTranslator.Options.EnableDateRangeOptimization)) {
             this.enableDateRangeOptimization();
@@ -172,6 +188,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (options.getOptions().contains(CqlTranslator.Options.RequireFromKeyword)) {
             this.enableFromKeywordRequired();
         }
+        setCompatibilityLevel(options.getCompatibilityLevel());
     }
 
     public TokenStream getTokenStream() {
@@ -1620,6 +1637,14 @@ DATETIME
             case "time":
                 result = of.createTimeFrom().withOperand(parseExpression(ctx.expressionTerm()));
                 operatorName = "TimeFrom";
+                break;
+            case "timezone":
+                if (!this.isCompatibilityLevel3()) {
+                    // ERROR:
+                    throw new IllegalArgumentException("Timezone keyword is only valid in 1.3 or lower");
+                }
+                result = of.createTimezoneFrom().withOperand(parseExpression(ctx.expressionTerm()));
+                operatorName = "TimezoneFrom";
                 break;
             case "timezoneoffset":
                 result = of.createTimezoneOffsetFrom().withOperand(parseExpression(ctx.expressionTerm()));

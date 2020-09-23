@@ -2023,6 +2023,16 @@ If the argument is null, the result is null.</xs:documentation>
 			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="TimezoneFrom">
+		<xs:annotation>
+			<xs:documentation>DEPRECATED (as of 1.4): The TimezoneFrom operator returns the timezone offset of the argument.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="TimezoneOffsetFrom">
 		<xs:annotation>
 			<xs:documentation>The TimezoneOffsetFrom operator returns the timezone offset of the argument.

@@ -757,6 +757,7 @@ public class CqlTranslator {
         OptionSpec debug = parser.accepts("debug");
         OptionSpec validateUnits = parser.accepts("validate-units");
         OptionSpec<LibraryBuilder.SignatureLevel> signatures = parser.accepts("signatures").withRequiredArg().ofType(LibraryBuilder.SignatureLevel.class).defaultsTo(LibraryBuilder.SignatureLevel.None).describedAs("Indicates whether signatures should be included for invocations in the output ELM. Differing will include invocation signatures that differ from the declared signature. Overloads will include declaration signatures when the operator or function has more than one overload with the same number of arguments as the invocation");
+        OptionSpec<String> compatibilityLevel = parser.accepts("compatibility-level").withRequiredArg().ofType(String.class).describedAs("Compatibility level for the translator, valid values are 1.3, 1.4, and 1.5");
 
         OptionSet options = parser.parse(args);
 
@@ -846,7 +847,8 @@ public class CqlTranslator {
                     options.has(strict) || options.has(disableMethodInvocation),
                     options.has(requireFromKeyword),
                     options.has(validateUnits),
-                    signatureLevel));
+                    signatureLevel,
+                    options.has(compatibilityLevel) ? options.valueOf(compatibilityLevel) : null));
         }
     }
 }
