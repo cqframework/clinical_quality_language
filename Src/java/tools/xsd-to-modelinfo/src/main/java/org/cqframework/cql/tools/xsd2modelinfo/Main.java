@@ -88,7 +88,7 @@ public class Main {
         File outputfile;
         if (! options.has(outputOpt) || outputOpt.value(options).isDirectory()) {
             // construct output filename using modelinfo
-            String name = String.format("%s-modelinfo.xml", modelInfo.getTargetQualifier().getLocalPart());
+            String name = String.format("%s-modelinfo.xml", modelInfo.getTargetQualifier());
             String basePath = options.has(outputOpt) ? outputOpt.value(options).getAbsolutePath() : schemaFile.getParent();
             outputfile = new File(basePath + File.separator + name);
         } else {

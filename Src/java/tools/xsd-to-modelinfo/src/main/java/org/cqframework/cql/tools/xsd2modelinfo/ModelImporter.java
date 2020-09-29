@@ -88,7 +88,7 @@ public class ModelImporter {
 
         return new ModelInfo()
                 .withName(options.getModel())
-                .withTargetQualifier(new QName(options.getModel().toLowerCase()))
+                .withTargetQualifier(options.getModel().toLowerCase())
                 .withUrl(schema.getTargetNamespace())
                 .withPatientClassName(config != null ? config.getPatientClassName() : null)
                 .withPatientClassIdentifier(config != null ? config.getPatientClassIdentifier() : null)

@@ -102,7 +102,7 @@
 				<xs:documentation>The schemaLocation attribute is used by the CQL translator to output the schemaLocation of the xsd for the data model in the resulting ELM document.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="targetQualifier" type="xs:QName" use="optional">
+		<xs:attribute name="targetQualifier" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>The targetQualifier attribute is used to specify the namespace qualifier that should be used when referencing types of the model within the ELM document.</xs:documentation>
 			</xs:annotation>
