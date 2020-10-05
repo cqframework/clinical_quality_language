@@ -70,7 +70,6 @@ public class CqlTranslator {
     private NamespaceInfo namespaceInfo = null;
     private ModelManager modelManager = null;
     private LibraryManager libraryManager = null;
-    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
     private UcumService ucumService = null;
 
     public static CqlTranslator fromText(String cqlText, ModelManager modelManager, LibraryManager libraryManager, CqlTranslator.Options... options) {
@@ -364,7 +363,6 @@ public class CqlTranslator {
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
         this.ucumService = ucumService;
-        this.errorLevel = options.getErrorLevel();
 
         if (this.sourceInfo == null) {
             this.sourceInfo = new VersionedIdentifier().withId("Anonymous").withSystem("text/cql");
