@@ -207,6 +207,12 @@ public class BaseTest {
         TestUtils.runSemanticTest("fhir/stu3/TestIntervalImplicitConversion.cql", 0);
     }
 
+    //@Test
+    // Backing out of these changes, needs more time due to different behavior in the STU3 engine
+    public void testFHIRHelpers() throws IOException {
+        TestUtils.runSemanticTest("fhir/stu3/TestFHIRHelpers.cql", 0);
+    }
+
     @Test
     public void testImplicitFHIRHelpers() throws IOException {
         TestUtils.runSemanticTest("fhir/stu3/TestImplicitFHIRHelpers.cql", 0);
