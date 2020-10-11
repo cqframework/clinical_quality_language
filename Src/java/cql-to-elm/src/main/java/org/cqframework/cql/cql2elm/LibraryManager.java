@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.fhir.ucum.UcumService;
 import org.hl7.elm.r1.VersionedIdentifier;
@@ -37,6 +35,10 @@ public class LibraryManager {
         libraries = new HashMap<>();
         translationStack = new Stack<>();
         this.librarySourceLoader = new PriorityLibrarySourceLoader();
+    }
+
+    public ModelManager getModelManager(){
+        return this.modelManager;
     }
 
     public NamespaceManager getNamespaceManager() {
