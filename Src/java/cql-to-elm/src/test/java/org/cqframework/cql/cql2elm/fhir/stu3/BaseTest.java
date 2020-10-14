@@ -229,8 +229,13 @@ public class BaseTest {
     }
 
     @Test
+    public void testBundle() throws IOException {
+        TestUtils.runSemanticTest("fhir/stu3/TestBundle.cql", 0);
+    }
+
+    @Test
     public void testConceptConversion() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r4/TestConceptConversion.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/stu3/TestConceptConversion.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
 

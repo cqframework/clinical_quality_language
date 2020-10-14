@@ -9964,6 +9964,7 @@
     <ns4:conversionInfo fromType="FHIR.Quantity" toType="System.Quantity" functionName="FHIRHelpers.ToQuantity"/>
     <ns4:conversionInfo fromType="FHIR.Period" toType="Interval&lt;System.DateTime&gt;" functionName="FHIRHelpers.ToInterval"/>
     <ns4:conversionInfo fromType="FHIR.Range" toType="Interval&lt;System.Quantity&gt;" functionName="FHIRHelpers.ToInterval"/>
+    <ns4:conversionInfo functionName="FHIRHelpers.ToRatio" fromType="FHIR.Ratio" toType="System.Ratio"/>
     <ns4:conversionInfo fromType="FHIR.dateTime" toType="System.DateTime" functionName="FHIRHelpers.ToDateTime"/>
     <ns4:conversionInfo fromType="FHIR.date" toType="System.Date" functionName="FHIRHelpers.ToDate"/>
     <ns4:conversionInfo fromType="FHIR.uuid" toType="System.String" functionName="FHIRHelpers.ToString"/>

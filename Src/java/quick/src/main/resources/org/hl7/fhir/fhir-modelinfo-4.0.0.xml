@@ -11452,7 +11452,7 @@
     </ns4:typeInfo>
     <ns4:conversionInfo fromType="FHIR.Coding" toType="System.Code" functionName="FHIRHelpers.ToCode"/>
     <ns4:conversionInfo fromType="FHIR.CodeableConcept" toType="System.Concept" functionName="FHIRHelpers.ToConcept"/>
-    <ns4:conversionInfo functionName="FHIRHelpers.Tobase64Binary" fromType="FHIR.base64Binary" toType="System.String" />
+    <ns4:conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.base64Binary" toType="System.String" />
     <ns4:conversionInfo functionName="FHIRHelpers.ToBoolean" fromType="FHIR.boolean" toType="System.Boolean" />
     <ns4:conversionInfo functionName="FHIRHelpers.ToDate" fromType="FHIR.date" toType="System.Date" />
     <ns4:conversionInfo functionName="FHIRHelpers.ToDateTime" fromType="FHIR.instant" toType="System.DateTime" />
@@ -11465,6 +11465,7 @@
     <ns4:conversionInfo fromType="FHIR.Quantity" toType="System.Quantity" functionName="FHIRHelpers.ToQuantity"/>
     <ns4:conversionInfo fromType="FHIR.Period" toType="Interval&lt;System.DateTime&gt;" functionName="FHIRHelpers.ToInterval"/>
     <ns4:conversionInfo fromType="FHIR.Range" toType="Interval&lt;System.Quantity&gt;" functionName="FHIRHelpers.ToInterval"/>
+    <ns4:conversionInfo functionName="FHIRHelpers.ToRatio" fromType="FHIR.Ratio" toType="System.Ratio"/>
     <ns4:conversionInfo fromType="FHIR.uuid" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.TestScriptRequestMethodCode" toType="System.String" functionName="FHIRHelpers.ToString"/>
     <ns4:conversionInfo fromType="FHIR.SortDirection" toType="System.String" functionName="FHIRHelpers.ToString"/>
