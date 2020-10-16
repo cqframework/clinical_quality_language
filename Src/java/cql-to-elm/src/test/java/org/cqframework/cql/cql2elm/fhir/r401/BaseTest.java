@@ -204,6 +204,11 @@ public class BaseTest {
     }
 
     @Test
+    public void testFHIRHelpers() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestFHIRHelpers.cql", 0);
+    }
+
+    @Test
     public void testImplicitFHIRHelpers() throws IOException {
         TestUtils.runSemanticTest("fhir/r401/TestImplicitFHIRHelpers.cql", 0);
     }

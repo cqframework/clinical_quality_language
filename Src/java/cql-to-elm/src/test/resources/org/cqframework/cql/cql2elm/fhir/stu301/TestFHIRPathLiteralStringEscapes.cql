@@ -1,0 +1,1 @@
+library TestFHIRPath using FHIR version '3.0.1' include FHIRHelpers version '3.0.1' called FHIRHelpers parameter Patient Patient define Test: '\\\/\f\r\n\t\"\`\'\u002a'.convertsToString()

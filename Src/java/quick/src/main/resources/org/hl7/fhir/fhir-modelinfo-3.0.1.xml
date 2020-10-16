@@ -12170,7 +12170,6 @@
     <element name="extension" type="FHIR.Extension" />
     <element name="value" type="System.String" />
   </typeInfo>
-  <conversionInfo functionName="FHIRHelpers.Tobase64Binary" fromType="base64Binary" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToBoolean" fromType="boolean" toType="System.Boolean" />
   <conversionInfo functionName="FHIRHelpers.ToDate" fromType="date" toType="System.Date" />
   <conversionInfo functionName="FHIRHelpers.ToDateTime" fromType="instant" toType="System.DateTime" />
@@ -12182,11 +12181,15 @@
   <conversionInfo functionName="FHIRHelpers.ToTime" fromType="time" toType="System.Time" />
   <conversionInfo functionName="FHIRHelpers.ToConcept" fromType="CodeableConcept" toType="System.Concept" />
   <conversionInfo functionName="FHIRHelpers.ToCode" fromType="Coding" toType="System.Code" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="string" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="id" toType="System.String" />
-  <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
-  <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
-  <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
-  <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="code" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="markdown" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="uri" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="oid" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="uuid" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToString" fromType="base64Binary" toType="System.String" />
+  <conversionInfo functionName="FHIRHelpers.ToRatio" fromType="Ratio" toType="System.Ratio"/>
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="AccountStatus" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="ActionCardinalityBehavior" toType="System.String" />
   <conversionInfo functionName="FHIRHelpers.ToString" fromType="ActionConditionKind" toType="System.String" />

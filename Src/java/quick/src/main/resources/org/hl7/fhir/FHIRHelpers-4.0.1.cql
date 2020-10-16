@@ -11,15 +11,69 @@ define function ToInterval(period FHIR.Period):
         else
             Interval[period."start".value, period."end".value]
 
+define function ToCalendarUnit(unit System.String):
+    case unit
+        when 'ms' then 'millisecond'
+        when 's' then 'second'
+        when 'min' then 'minute'
+        when 'h' then 'hour'
+        when 'd' then 'day'
+        when 'wk' then 'week'
+        when 'mo' then 'month'
+        when 'a' then 'year'
+        else unit
+    end
+
 define function ToQuantity(quantity FHIR.Quantity):
     case
         when quantity is null then null
         when quantity.value is null then null
-        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org' then
-            System.Quantity { value: quantity.value.value, unit: quantity.code.value }
+        when quantity.comparator is not null then
+            Message(null, true, 'FHIRHelpers.ToQuantity.ComparatorQuantityNotSupported', 'Error', 'FHIR Quantity value has a comparator and cannot be converted to a System.Quantity value.')
+        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org'
+              or quantity.system.value = 'http://hl7.org/fhirpath/CodeSystem/calendar-units' then
+            System.Quantity { value: quantity.value.value, unit: ToCalendarUnit(Coalesce(quantity.code.value, quantity.unit.value, '1')) }
         else
-            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.code.value)
+            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.unit.value & ' (' & quantity.system.value & '|' & quantity.code.value & ')')
     end
+
+define function ToQuantityIgnoringComparator(quantity FHIR.Quantity):
+    case
+        when quantity is null then null
+        when quantity.value is null then null
+        when quantity.system is null or quantity.system.value = 'http://unitsofmeasure.org'
+              or quantity.system.value = 'http://hl7.org/fhirpath/CodeSystem/calendar-units' then
+            System.Quantity { value: quantity.value.value, unit: ToCalendarUnit(Coalesce(quantity.code.value, quantity.unit.value, '1')) }
+        else
+            Message(null, true, 'FHIRHelpers.ToQuantity.InvalidFHIRQuantity', 'Error', 'Invalid FHIR Quantity code: ' & quantity.unit.value & ' (' & quantity.system.value & '|' & quantity.code.value & ')')
+    end
+
+define function ToInterval(quantity FHIR.Quantity):
+    if quantity is null then null else
+        case quantity.comparator.value
+            when '<' then
+                Interval[
+                    null,
+                    ToQuantityIgnoringComparator(quantity)
+                )
+            when '<=' then
+                Interval[
+                    null,
+                    ToQuantityIgnoringComparator(quantity)
+                ]
+            when '>=' then
+                Interval[
+                    ToQuantityIgnoringComparator(quantity),
+                    null
+                ]
+            when '>' then
+                Interval(
+                    ToQuantityIgnoringComparator(quantity),
+                    null
+                ]
+            else
+                Interval[ToQuantity(quantity), ToQuantity(quantity)]
+        end
 
 define function ToRatio(ratio FHIR.Ratio):
     if ratio is null then
@@ -302,7 +356,6 @@ define function ToString(value VisionEyes): value.value
 define function ToString(value VisionStatus): value.value
 define function ToString(value XPathUsageType): value.value
 define function ToString(value base64Binary): value.value
-define function ToString(value id): value.value
 define function ToBoolean(value boolean): value.value
 define function ToDate(value date): value.value
 define function ToDateTime(value dateTime): value.value
