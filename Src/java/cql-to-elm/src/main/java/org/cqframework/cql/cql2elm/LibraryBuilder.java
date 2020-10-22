@@ -2232,7 +2232,11 @@ public class LibraryBuilder {
 
                 ensureLibraryIncluded(libraryName, source);
             }
-            FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(source);
+            
+            String functionArgument = targetMap.substring(invocationStart + 1, targetMap.indexOf(")"));
+            FunctionRef fr = of.createFunctionRef()
+                    .withLibraryName(libraryName).withName(functionName)
+                    .withOperand(functionArgument.equals("%value") ? source : applyTargetMap(source, functionArgument));
             fr.setResultType(source.getResultType());
             return fr;
         }
