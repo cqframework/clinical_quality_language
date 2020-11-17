@@ -256,6 +256,10 @@ public class BaseTest {
         assertThat(property.getPath(), is("deceased"));
         assertThat(caseItem.getThen(), instanceOf(Property.class));
         
+ /*
+        Handling a target with a complex argument to a function call.
+        target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"
+ */
         def = defs.get("TestComplexFHIRHelpers");
         assertThat(def.getExpression(), instanceOf(Query.class));
         query = (Query)def.getExpression();
