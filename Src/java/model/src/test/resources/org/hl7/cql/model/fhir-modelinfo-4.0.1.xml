@@ -201,7 +201,7 @@
    <typeInfo baseType="FHIR.Element" namespace="FHIR" name="AdministrativeGender" retrievable="false" xsi:type="ClassInfo">
       <element name="value" elementType="System.String"/>
    </typeInfo>
-   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="AdverseEvent" identifier="http://hl7.org/fhir/StructureDefinition/AdverseEvent" label="AdverseEvent" retrievable="true" primaryCodePath="event" xsi:type="ClassInfo">
+   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="AdverseEvent" identifier="http://hl7.org/fhir/StructureDefinition/AdverseEvent" label="AdverseEvent" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
       <element name="identifier" elementType="FHIR.Identifier"/>
       <element name="actuality" elementType="FHIR.AdverseEventActuality"/>
       <element name="category">
@@ -614,7 +614,7 @@
    <typeInfo baseType="FHIR.Element" namespace="FHIR" name="BiologicallyDerivedProductStorageScale" retrievable="false" xsi:type="ClassInfo">
       <element name="value" elementType="System.String"/>
    </typeInfo>
-   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="BodyStructure" identifier="http://hl7.org/fhir/StructureDefinition/BodyStructure" label="BodyStructure" retrievable="true" primaryCodePath="location" xsi:type="ClassInfo">
+   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="BodyStructure" identifier="http://hl7.org/fhir/StructureDefinition/BodyStructure" label="BodyStructure" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3011,7 +3011,7 @@
    <typeInfo baseType="FHIR.Element" namespace="FHIR" name="DaysOfWeek" retrievable="false" xsi:type="ClassInfo">
       <element name="value" elementType="System.String"/>
    </typeInfo>
-   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="DetectedIssue" identifier="http://hl7.org/fhir/StructureDefinition/DetectedIssue" label="DetectedIssue" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="DetectedIssue" identifier="http://hl7.org/fhir/StructureDefinition/DetectedIssue" label="DetectedIssue" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3265,7 +3265,7 @@
    <typeInfo baseType="FHIR.Element" namespace="FHIR" name="DeviceNameType" retrievable="false" xsi:type="ClassInfo">
       <element name="value" elementType="System.String"/>
    </typeInfo>
-   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="DeviceRequest" identifier="http://hl7.org/fhir/StructureDefinition/DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="DeviceRequest" identifier="http://hl7.org/fhir/StructureDefinition/DeviceRequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -6218,7 +6218,7 @@
    <typeInfo baseType="FHIR.Element" namespace="FHIR" name="ListStatus" retrievable="false" xsi:type="ClassInfo">
       <element name="value" elementType="System.String"/>
    </typeInfo>
-   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="Location" identifier="http://hl7.org/fhir/StructureDefinition/Location" label="Location" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
+   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="Location" identifier="http://hl7.org/fhir/StructureDefinition/Location" label="Location" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -8645,7 +8645,7 @@
       <element name="period" elementType="FHIR.Period"/>
       <element name="issuer" elementType="FHIR.Reference"/>
    </typeInfo>
-   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="PractitionerRole" identifier="http://hl7.org/fhir/StructureDefinition/PractitionerRole" label="PractitionerRole" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="PractitionerRole" identifier="http://hl7.org/fhir/StructureDefinition/PractitionerRole" label="PractitionerRole" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -9109,7 +9109,7 @@
    <typeInfo baseType="FHIR.Element" namespace="FHIR" name="RelatedArtifactType" retrievable="false" xsi:type="ClassInfo">
       <element name="value" elementType="System.String"/>
    </typeInfo>
-   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="RelatedPerson" identifier="http://hl7.org/fhir/StructureDefinition/RelatedPerson" label="RelatedPerson" retrievable="true" primaryCodePath="relationship" xsi:type="ClassInfo">
+   <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="RelatedPerson" identifier="http://hl7.org/fhir/StructureDefinition/RelatedPerson" label="RelatedPerson" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
