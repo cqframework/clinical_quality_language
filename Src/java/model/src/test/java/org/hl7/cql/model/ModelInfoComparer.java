@@ -32,6 +32,34 @@ public class ModelInfoComparer {
         //assertThat(differences.length(), is(0));
     }
 
+    //@Test
+    // Not an actual test, Used to determine differences between current and updated model info from the MAT team
+    public void compareMATModelInfo() {
+        ModelInfo a = JAXB.unmarshal(ModelInfoComparer.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+        ModelInfo b = JAXB.unmarshal(ModelInfoComparer.class.getResourceAsStream("mat-fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+
+        ModelInfoCompareContext differences = new ModelInfoCompareContext();
+        compareModelInfo(differences, a, b);
+        assertThat(differences.length(), is(0));
+    }
+
+    @Test
+    public void compareNewModelInfo() {
+        ModelInfo a = JAXB.unmarshal(ModelInfoComparer.class.getResourceAsStream("fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+        ModelInfo b = JAXB.unmarshal(ModelInfoComparer.class.getResourceAsStream("new-fhir-modelinfo-4.0.1.xml"), ModelInfo.class);
+
+        ModelInfoCompareContext differences = new ModelInfoCompareContext();
+        compareModelInfo(differences, a, b);
+        assertThat(differences.toString(), is(String.format("ModelInfo.DeviceRequest.primaryCodePath: codeCodeableConcept <> code%n" +
+                "ModelInfo.DetectedIssue.primaryCodePath: category <> code%n" +
+                "ModelInfo.BodyStructure.primaryCodePath: null <> location%n" +
+                "ModelInfo.PractitionerRole.primaryCodePath: null <> code%n" +
+                "ModelInfo.RelatedPerson.primaryCodePath: null <> relationship%n" +
+                "ModelInfo.AdverseEvent.primaryCodePath: type <> event%n" +
+                "ModelInfo.Location.primaryCodePath: null <> type%n")));
+        //assertThat(differences.length(), is(0));
+    }
+
     public class ModelInfoCompareContext {
         private StringBuilder differences = new StringBuilder();
         private List<String> focusList = new ArrayList<String>();
