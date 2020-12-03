@@ -2442,8 +2442,7 @@
         <ns4:element name="rate" type="QUICK.Ratio"/>
         <ns4:element name="maxDosePerPeriod" type="QUICK.Ratio"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Claim" baseType="QUICK.DomainResource">
-        <ns4:element name="type" type="QUICK.ClaimType"/>
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="QUICK.Claim" retrievable="true" baseType="QUICK.DomainResource" identifier="claim-qicore-qicore-claim">        <ns4:element name="type" type="QUICK.ClaimType"/>
         <ns4:element name="identifier" type="list&lt;QUICK.Identifier&gt;"/>
         <ns4:element name="ruleset" type="System.Code"/>
         <ns4:element name="originalRuleset" type="System.Code"/>
