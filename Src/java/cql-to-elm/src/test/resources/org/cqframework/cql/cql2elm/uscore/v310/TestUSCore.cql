@@ -76,4 +76,6 @@ define TestComplexExtensions:
     where P.race.ombCategory contains "American Indian or Alaska Native"
       and P.race.detailed contains "Alaska Native"
 
-
+define TestComplexFHIRHelpers:
+  ["PediatricBMIforAgeObservationProfile"] PB
+    return PB.VSCat

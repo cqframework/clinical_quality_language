@@ -17,6 +17,8 @@ import static org.cqframework.cql.cql2elm.matchers.Quick2DataType.quick2DataType
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
+
 public class BaseTest {
     @BeforeClass
     public void Setup() {
@@ -253,5 +255,39 @@ public class BaseTest {
         property = (Property)property.getSource();
         assertThat(property.getPath(), is("deceased"));
         assertThat(caseItem.getThen(), instanceOf(Property.class));
+        
+ /*
+        Handling a target with a complex argument to a function call.
+        target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"
+ */
+        def = defs.get("TestComplexFHIRHelpers");
+        assertThat(def.getExpression(), instanceOf(Query.class));
+        query = (Query)def.getExpression();
+        ReturnClause returnClause = query.getReturn();
+        assertThat(returnClause.getExpression(), instanceOf(FunctionRef.class));
+        // Verify FHIRHelpers function in use
+        functionRef = (FunctionRef)returnClause.getExpression();
+        assertThat(functionRef.getName(), is("ToConcept"));
+        assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
+        // Verify that return expression contains complex logic from the modelinfo
+        property = (Property)functionRef.getOperand().get(0);
+        assertThat(property.getPath(), is("value"));
+        and1 = (And)((Query) ((SingletonFrom) property.getSource()).getOperand()).getWhere();
+        assertThat(and1.getOperand().get(0), instanceOf(Equal.class));
+        assertThat(and1.getOperand().get(1), instanceOf(Equal.class));
+        equal = (Equal) and1.getOperand().get(0);
+        assertThat(equal.getOperand().get(0), instanceOf(Property.class));
+        property = (Property)equal.getOperand().get(0);
+        assertThat(property.getPath(), is("system"));
+        assertThat(equal.getOperand().get(1), instanceOf(Literal.class));
+        Literal literal = (Literal)equal.getOperand().get(1);
+        assertThat(literal.getValue(), is("http://terminology.hl7.org/CodeSystem/observation-category"));
+        equal = (Equal) and1.getOperand().get(1);
+        assertThat(equal.getOperand().get(0), instanceOf(Property.class));
+        property = (Property)equal.getOperand().get(0);
+        assertThat(property.getPath(), is("code"));
+        assertThat(equal.getOperand().get(1), instanceOf(Literal.class));
+        literal = (Literal)equal.getOperand().get(1);
+        assertThat(literal.getValue(), is("vital-signs"));
     }
 }
