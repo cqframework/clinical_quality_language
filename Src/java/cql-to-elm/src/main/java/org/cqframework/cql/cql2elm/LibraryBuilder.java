@@ -1778,7 +1778,7 @@ public class LibraryBuilder {
         for (TupleTypeElement element : elements) {
             definitions.add(of.createTupleElementDefinition()
                     .withName(element.getName())
-                    .withType(dataTypeToTypeSpecifier(element.getType())));
+                    .withElementType(dataTypeToTypeSpecifier(element.getType())));
         }
 
         return definitions.toArray(new TupleElementDefinition[definitions.size()]);
