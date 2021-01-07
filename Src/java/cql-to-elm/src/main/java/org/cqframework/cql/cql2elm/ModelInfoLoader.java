@@ -16,6 +16,7 @@ public class ModelInfoLoader {
         registerModelInfoProvider(new VersionedIdentifier().withId("QUICK").withVersion("3.0.0"), new QuickModelInfoProvider().withVersion("3.0.0"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QUICK").withVersion("3.3.0"), new QuickModelInfoProvider().withVersion("3.3.0"));
         //registerModelInfoProvider(new VersionedIdentifier().withId("ADL").withVersion("1"), new AdlModelInfoProvider());
+        registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.6"), new QdmModelInfoProvider().withVersion("5.6"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.5"), new QdmModelInfoProvider().withVersion("5.5"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.4"), new QdmModelInfoProvider().withVersion("5.4"));
         registerModelInfoProvider(new VersionedIdentifier().withId("QDM").withVersion("5.3"), new QdmModelInfoProvider().withVersion("5.3"));
