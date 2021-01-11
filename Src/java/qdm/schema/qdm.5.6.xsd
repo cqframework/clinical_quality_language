@@ -274,7 +274,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -293,7 +293,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -313,7 +313,7 @@
 					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="severity" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="facilityLocation" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -334,7 +334,7 @@
 					<xs:element name="prevalencePeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="type" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="severity" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -379,7 +379,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -399,7 +399,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -442,8 +442,8 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="category" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="medium" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="sender" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recipient" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="sender" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="recipient" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="sentDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="receivedDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
@@ -494,7 +494,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -515,7 +515,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -542,7 +542,7 @@
 					<xs:element name="prevalencePeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="severity" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -578,7 +578,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -636,7 +636,7 @@
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -659,7 +659,7 @@
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="facilityLocation" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="priority" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -715,7 +715,7 @@
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="facilityLocation" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -736,7 +736,7 @@
 				<xs:sequence>
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relationship" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -785,7 +785,7 @@
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -806,7 +806,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -856,7 +856,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -877,7 +877,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -934,7 +934,7 @@
 					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -966,7 +966,7 @@
 					<xs:element name="dosage" type="dt:Quantity" minOccurs="0"/>
 					<xs:element name="frequency" type="dt:Code" minOccurs="0"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1024,8 +1024,8 @@
 					<xs:element name="daysSupplied" type="dt:Integer" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="prescriber" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="prescriber" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1065,8 +1065,8 @@
 					<xs:element name="frequency" type="dt:Code" minOccurs="0"/>
 					<xs:element name="daysSupplied" type="dt:Integer" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
-					<xs:element name="prescriber" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="dispenser" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="prescriber" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="dispenser" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relatedTo" type="dt:String" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
@@ -1097,7 +1097,7 @@
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
 					<xs:element name="setting" type="dt:Code" minOccurs="0"/>
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
-					<xs:element name="prescriber" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="prescriber" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relatedTo" type="dt:String" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
@@ -1129,7 +1129,7 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="participationPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1156,7 +1156,7 @@
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
 					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1209,7 +1209,7 @@
 					<xs:element name="reason" type="dt:Code" minOccurs="0"/>
 					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1232,7 +1232,7 @@
 					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0"/>
 					<xs:element name="rank" type="dt:Integer" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="priority" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
@@ -1291,7 +1291,7 @@
 					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0"/>
 					<xs:element name="rank" type="dt:Integer" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1352,7 +1352,7 @@
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1377,7 +1377,7 @@
 					<xs:element name="refills" type="xs:integer" minOccurs="0"/>
 					<xs:element name="route" type="dt:Code" minOccurs="0"/>
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="requester" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1402,7 +1402,7 @@
 				<xs:sequence>
 					<xs:element name="prevalencePeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="severity" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

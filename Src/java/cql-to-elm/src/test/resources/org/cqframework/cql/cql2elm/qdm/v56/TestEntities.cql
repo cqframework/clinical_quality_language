@@ -5,7 +5,7 @@ using QDM version '5.6'
 valueset "Office Visit": 'TBD'
 valueset "Inpatient": 'TBD'
 valueset "Ambulatory Clinical Practice": 'TBD'
-valueset "Opthalmology": 'TBD'
+valueset "Ophthalmology": 'TBD'
 valueset "Family": 'TBD'
 valueset "ED": 'TBD'
 valueset "Blood Pressure": 'TBD'
@@ -24,7 +24,6 @@ define "Qualifying Encounters (1)":
       Encounter.participant Participant
         where Participant is "Organization"
           and Participant.organizationType in "Ambulatory Clinical Practice"
-
     )
 
 /*
@@ -86,8 +85,11 @@ define "Qualifying Encounters (4)":
 define "Eye Exam Order":
   ["Intervention, Order": "Diabetic Eye Exam"] ExamOrder
     with "Qualifying Encounters (4)" Encounter
-      such that ExamOrder.requester is Organization
-        and ExamOrder.requester.id in Encounter.participant.id
+      such that exists (
+        ExamOrder.requester Requester
+          where Requester is Organization
+            and Requester.id in Encounter.participant.id
+      )
 
 define "Eye Exam Complete":
   ["Intervention, Performed": "Diabetic Eye Exam"] EyeExam
@@ -97,3 +99,9 @@ define "Eye Exam Complete":
           where Performer is Organization
             and Performer.id in Encounter.participant.id
       )
+        and exists (
+          EyeExam.performer Performer
+            where Performer is "Practitioner"
+              and Performer.specialty in "Ophthalmology"
+        )
+
