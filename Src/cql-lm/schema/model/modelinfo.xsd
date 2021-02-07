@@ -138,6 +138,42 @@
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
+	<xs:simpleType name="BindingStrength">
+		<xs:annotation>
+			<xs:documentation>The BindingStrength type describes possible strengths of a binding specification, Required, Extensible, Preferred, and Example.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Required"/>
+			<xs:enumeration value="Extensible"/>
+			<xs:enumeration value="Preferred"/>
+			<xs:enumeration value="Example"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="BindingInfo">
+		<xs:annotation>
+			<xs:documentation>Specifies binding information for an element</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a formal name for the binding, suitable for use as a class name in generated targets</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a user-friendly description of the the binding, suitable for use as a display description for possible values of the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="strength" type="BindingStrength" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the strength of the binding, required, extensible, preferred, or example</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="valueSet" type="xs:anyURI" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the target value set for the binding (i.e. the value set that specifies thes et of possible values for the element)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
 	<xs:complexType name="ClassInfoElement">
 		<xs:sequence>
 			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
@@ -146,6 +182,12 @@
 				</xs:annotation>
 			</xs:element>
 			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="binding" type="BindingInfo" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="constraint" type="ConstraintInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A constraint that applies to this class element. The evaluation context for the constraint is an instance of the class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="type" type="xs:string" use="optional">
@@ -163,6 +205,83 @@
 		<xs:attribute name="target" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>Specifies a path that can be used instead of the name of the element to access the value for this element in the underlying representation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="label" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a user-friendly label for the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="definition" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides a complete, detailed, markdown-capable definition of the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="comment" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides markdown-capable additional comments on the use of the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="min" type="xs:int" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the minimum cardinality of the element. For non-list-valued elements, this is 0 or 1, indicating whether a value is required (1). For list-valued elements, this is an integer defining the minimum cardinality of the list value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="max" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the maximum cardinality of the element. For non-list-valued elements, this is 0 or 1, indicating where a value is prohibited (0). For list-valued elements, this is an integer definined the maximum cardinality of the list, or a '*' indicating the list has no maximum number of elements. If this value is an integer, it must be greater than or equal to the value of the min attribute.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="mustSupport" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies whether this element is relevant for the use case the class in which it appears is supporting</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ExpressionInfo">
+		<xs:annotation>
+			<xs:documentation>The ExpressionInfo type models an expression in some language.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="language" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the language of the expression as a media type (e.g. text/cql-expression)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="expression" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The expression in the language specified by the language attribute</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ConstraintInfo">
+		<xs:annotation>
+			<xs:documentation>The ConstraintInfo type models the definition of a constraint which can then be associated with a class info, class info element, or other model element.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="expression" type="ExpressionInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The formal expression of the constraint in some formal language. Multiple expressions are considered equivalent formulations in alternate languages (i.e. there can be only one expression of a given language for the constraint).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name of the constraint, unique within the context of use for the constraint.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="severity" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The severity of the constraint, one of Info, Warning, or Error.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>A description of the constraint.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="message" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The message that is returned as a result of this constraint being violated. The message may be templatized through the use of double-braces ({{ }}).</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -185,6 +304,16 @@
 					<xs:element name="contextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="targetContextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="search" type="SearchInfo" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="inferenceExpression" type="ExpressionInfo" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>An expression that describes values of this class if they can be inferred from other data elements. If multiple expressions are provided, they must be isopragmatic (i.e. only one expression of each language is allowed)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="constraint" type="ConstraintInfo" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>A constraint that applies to the class. The evaluation context for the constraint is an instance of the class.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
 				</xs:sequence>
 				<xs:attribute name="namespace" type="xs:string" use="optional">
 					<xs:annotation>
