@@ -58,9 +58,20 @@ The CQL-to-ELM Translator supports all normative language constructs of the late
 
 ## Roadmap
 
+### 1.5 Maintenance
+
 * Enhanced model info to support advanced authoring capabilities
 * Improved profile-informed model info to support logical content authoring
 * Improved support for include/reverseInclude and searchPath elements in retrieve
+* Support comment tags as annotations on elm
+* Improved data-requirements inference capabilities
+* Fluent function support (extension methods)
+* Improve retrieve filtering
+* Choice function invocation (if multiple overloads of a method support the different types of a choice, the return value is a choice of the results of the function invocation)
+* Inferred expression support for case features.
+* Aggregate support
+* Multi-filter data-requirements
+* Dynamic model info
 
 See the [1.5 Maintenance](https://github.com/cqframework/clinical_quality_language/milestone/11) milestone for details.
 
