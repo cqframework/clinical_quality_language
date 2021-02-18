@@ -347,6 +347,11 @@ public class BaseTest {
     public void testFHIRNamespaces() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest(new NamespaceInfo("Public", "http://cql.hl7.org/public"), "fhir/r401/TestFHIRNamespaces.cql", 0);
         TranslatedLibrary library = translator.getTranslatedLibrary();
+        UsingDef usingDef = library.resolveUsingRef("FHIR");
+        assertThat(usingDef, notNullValue());
+        assertThat(usingDef.getLocalIdentifier(), is("FHIR"));
+        assertThat(usingDef.getUri(), is ("http://hl7.org/fhir"));
+        assertThat(usingDef.getVersion(), is("4.0.1"));
         IncludeDef includeDef = library.resolveIncludeRef("FHIRHelpers");
         assertThat(includeDef, notNullValue());
         assertThat(includeDef.getPath(), is("http://hl7.org/fhir/FHIRHelpers"));
@@ -357,6 +362,11 @@ public class BaseTest {
     public void testFHIRWithoutNamespaces() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRNamespaces.cql", 0);
         TranslatedLibrary library = translator.getTranslatedLibrary();
+        UsingDef usingDef = library.resolveUsingRef("FHIR");
+        assertThat(usingDef, notNullValue());
+        assertThat(usingDef.getLocalIdentifier(), is("FHIR"));
+        assertThat(usingDef.getUri(), is ("http://hl7.org/fhir"));
+        assertThat(usingDef.getVersion(), is("4.0.1"));
         IncludeDef includeDef = library.resolveIncludeRef("FHIRHelpers");
         assertThat(includeDef, notNullValue());
         assertThat(includeDef.getPath(), is("FHIRHelpers"));

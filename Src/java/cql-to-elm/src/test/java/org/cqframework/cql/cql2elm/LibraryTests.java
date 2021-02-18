@@ -9,9 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.hl7.cql_annotations.r1.CqlToElmError;
-import org.hl7.elm.r1.AggregateExpression;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -264,5 +262,69 @@ public class LibraryTests {
         assertThat(translator.getErrors().size(), greaterThanOrEqualTo(2));
         assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), equalTo("SyntaxErrorReferencingLibrary"));
         assertThat(translator.getErrors().get(1).getLocator().getLibrary().getId(), equalTo("SyntaxErrorWithLibrary"));
+    }
+
+    private ExpressionDef getExpressionDef(Library library, String name) {
+        for (ExpressionDef def : library.getStatements().getDef()) {
+            if (def.getName().equals(name)) {
+                return def;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Could not resolve name %s", name));
+    }
+
+    @Test
+    public void testFluentFunctions1() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent3.cql");
+        assertThat(translator.getErrors().size(), equalTo(0));
+        Library library = translator.toELM();
+        ExpressionDef def = getExpressionDef(library, "Test");
+        assertThat(def, notNullValue());
+        Expression e = def.getExpression();
+        assertThat(e, notNullValue());
+        assertThat(e, instanceOf(Equal.class));
+        Equal eq = (Equal)e;
+        assertThat(eq.getOperand(), notNullValue());
+        assertThat(eq.getOperand().size(), equalTo(2));
+        assertThat(eq.getOperand().get(0), instanceOf(FunctionRef.class));
+        assertThat(((FunctionRef)eq.getOperand().get(0)).getLibraryName(), equalTo("TestFluent1"));
+    }
+
+    @Test
+    public void testFluentFunctions2() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent4.cql");
+        assertThat(translator.getErrors().size(), equalTo(0));
+        Library library = translator.toELM();
+        ExpressionDef def = getExpressionDef(library, "Test");
+        assertThat(def, notNullValue());
+        Expression e = def.getExpression();
+        assertThat(e, notNullValue());
+        assertThat(e, instanceOf(Equal.class));
+        Equal eq = (Equal)e;
+        assertThat(eq.getOperand(), notNullValue());
+        assertThat(eq.getOperand().size(), equalTo(2));
+        assertThat(eq.getOperand().get(0), instanceOf(FunctionRef.class));
+        assertThat(((FunctionRef)eq.getOperand().get(0)).getLibraryName(), equalTo("TestFluent2"));
+    }
+
+    @Test
+    public void testFluentFunctions5() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent5.cql");
+        assertThat(translator.getErrors().size(), equalTo(1)); // Expects invalid invocation
+        assertThat(translator.getErrors().get(0).getMessage(), equalTo("Operator invalidInvocation with signature (System.String) is a fluent function and can only be invoked with fluent syntax."));
+    }
+
+    @Test
+    public void testFluentFunctions6() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent6.cql");
+        assertThat(translator.getErrors().size(), equalTo(1)); // Expects invalid fluent invocation
+        assertThat(translator.getErrors().get(0).getMessage(), equalTo("Invocation of operator invalidInvocation with signature (System.String) uses fluent syntax, but the operator is not defined as a fluent function."));
+    }
+
+    @Test
+    public void testInvalidInvocation() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestInvalidFunction.cql");
+        assertThat(translator.getErrors().size(), equalTo(1));
+        assertThat(translator.getErrors().get(0).getMessage(), equalTo("Could not resolve call to operator invalidInvocation with signature ()."));
     }
 }

@@ -319,7 +319,7 @@ public class SystemMethodResolver {
                 params.add(list);
                 return builder.resolveFunction(null, "Flatten", params);
             }
-            case "conformsTo": return builder.resolveFunction("FHIRSupport", "ConformsTo", getParams(target, ctx));
+            //case "conformsTo": return builder.resolveFunction("FHIRSupport", "ConformsTo", getParams(target, ctx));
             case "contains": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> params = new ArrayList<Expression>();
@@ -508,11 +508,13 @@ public class SystemMethodResolver {
             }
 
             default: {
-                if (mustResolve) {
-                    throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
-                }
+                return visitor.resolveFunction(null, functionName, getParams(target, ctx), mustResolve, false, true);
+                //return builder.resolveFunction(null, functionName, getParams(target, ctx), mustResolve, false, true);
+                //if (mustResolve) {
+                //    throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
+                //}
 
-                return null;
+                //return null;
             }
         }
     }

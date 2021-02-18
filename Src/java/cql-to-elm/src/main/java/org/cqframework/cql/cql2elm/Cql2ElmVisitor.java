@@ -426,9 +426,33 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public UsingDef visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
-        Model model = getModel(parseString(ctx.modelIdentifier()), parseString(ctx.versionSpecifier()));
-        return libraryBuilder.resolveUsingRef(model.getModelInfo().getName());
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
+        String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
+                libraryBuilder.getWellKnownNamespaceName(unqualifiedIdentifier);
+
+        String path = null;
+        NamespaceInfo modelNamespace = null;
+        if (namespaceName != null) {
+            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
+            path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
+            modelNamespace = new NamespaceInfo(namespaceName, namespaceUri);
+        }
+        else {
+            path = unqualifiedIdentifier;
+        }
+
+        String localIdentifier = ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier());
+        if (!localIdentifier.equals(unqualifiedIdentifier)) {
+            throw new IllegalArgumentException(
+                    String.format("Local identifiers for models must be the same as the name of the model in this release of the translator (Model %s, Called %s)",
+                            unqualifiedIdentifier, localIdentifier));
+        }
+
+        Model model = getModel(modelNamespace, unqualifiedIdentifier, parseString(ctx.versionSpecifier()), localIdentifier);
+        return libraryBuilder.resolveUsingRef(localIdentifier);
     }
 
     public Model getModel() {
@@ -436,10 +460,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     public Model getModel(String modelName) {
-        return getModel(modelName, null);
+        return getModel(null, modelName, null, null);
     }
 
-    public Model getModel(String modelName, String version) {
+    public Model getModel(NamespaceInfo modelNamespace, String modelName, String version, String localIdentifier) {
         if (modelName == null) {
             UsingDefinitionInfo defaultUsing = libraryInfo.getDefaultUsingDefinition();
             modelName = defaultUsing.getName();
@@ -447,7 +471,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         VersionedIdentifier modelIdentifier = new VersionedIdentifier().withId(modelName).withVersion(version);
-        return libraryBuilder.getModel(modelIdentifier);
+        if (modelNamespace != null) {
+            modelIdentifier.setSystem(modelNamespace.getUri());
+        }
+        return libraryBuilder.getModel(modelIdentifier, localIdentifier);
     }
 
     @Override
@@ -3946,18 +3973,21 @@ DATETIME
 
     private Expression resolveFunction(String libraryName, String functionName, cqlParser.ParamListContext paramList) {
         List<Expression> expressions = new ArrayList<Expression>();
-        functionName = ensureSystemFunctionName(libraryName, functionName);
-
         if (paramList != null && paramList.expression() != null) {
             for (cqlParser.ExpressionContext expressionContext : paramList.expression()) {
                 expressions.add((Expression)visit(expressionContext));
             }
         }
+        return resolveFunction(libraryName, functionName, expressions, true, false, false);
+    }
+
+    public Expression resolveFunction(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
+        functionName = ensureSystemFunctionName(libraryName, functionName);
 
         // If the function cannot be resolved in the builder and the call is to a function in the current library,
         // check for forward declarations of functions
         boolean checkForward = libraryName == null || libraryName.equals("") || libraryName.equals(this.libraryInfo.getLibraryName());
-        Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward);
+        Expression result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, !checkForward, allowPromotionAndDemotion, allowFluent);
         if (result == null) {
             Iterable<FunctionDefinitionInfo> functionInfos = libraryInfo.resolveFunctionReference(functionName);
             if (functionInfos != null) {
@@ -3981,7 +4011,7 @@ DATETIME
                     }
                 }
             }
-            result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, true);
+            result = libraryBuilder.resolveFunction(libraryName, functionName, expressions, mustResolve, allowPromotionAndDemotion, allowFluent);
         }
 
         return result;
@@ -4040,6 +4070,7 @@ DATETIME
     public Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
+                .withFluent(ctx.fluentModifier() != null)
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()));
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {

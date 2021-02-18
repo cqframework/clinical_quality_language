@@ -12,22 +12,25 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public class ModelTests {
+    private ModelManager modelManager;
+    private ModelInfoProvider modelInfoProvider;
+
     @BeforeClass
     public void setup() {
-        ModelInfoLoader.registerModelInfoProvider(new VersionedIdentifier().withId("Test").withVersion("1"),
-                new TestModelInfoProvider());
+        modelManager = new ModelManager();
+        modelInfoProvider = new TestModelInfoProvider();
+        modelManager.getModelInfoLoader().registerModelInfoProvider(modelInfoProvider);
     }
 
     @AfterClass
     public void tearDown() {
-        ModelInfoLoader.unregisterModelInfoProvider(new VersionedIdentifier().withId("Test").withVersion("1"));
+        modelManager.getModelInfoLoader().unregisterModelInfoProvider(modelInfoProvider);
     }
 
     @Test
     public void testModelInfo() {
         CqlTranslator translator = null;
         try {
-            ModelManager modelManager = new ModelManager();
             translator = CqlTranslator.fromStream(ModelTests.class.getResourceAsStream("ModelTests/ModelTest.cql"), modelManager, new LibraryManager(modelManager));
             Library library = translator.toELM();
             assertThat(translator.getErrors().size(), is(0));

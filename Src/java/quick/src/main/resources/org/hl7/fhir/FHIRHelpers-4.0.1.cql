@@ -107,6 +107,30 @@ define function ToConcept(concept FHIR.CodeableConcept):
             display: concept.text.value
         }
 
+define function resolve(reference Reference) returns Resource: external
+define function references(reference Reference, resource Resource) returns Boolean: external
+define function extension(element Element, url String) returns List<Element>: external
+define function extension(resource Resource, url String) returns List<Element>: external
+define function hasValue(element Element) returns Boolean: external
+define function getValue(element Element) returns Any: external
+define function ofType(identifier String) returns List<Any>: external
+define function is(identifier String) returns Boolean: external
+define function as(identifier String) returns Any: external
+define function elementDefinition(element Element) returns ElementDefinition: external
+define function slice(element Element, url String, name String) returns List<Element>: external
+define function checkModifiers(resource Resource) returns Resource: external
+define function checkModifiers(resource Resource, modifier String) returns Resource: external
+define function checkModifiers(element Element) returns Element: external
+define function checkModifiers(element Element, modifier String) returns Element: external
+define function conformsTo(resource Resource, structure String) returns Boolean: external
+define function memberOf(code code, valueSet String) returns Boolean: external
+define function memberOf(coding Coding, valueSet String) returns Boolean: external
+define function memberOf(concept CodeableConcept, valueSet String) returns Boolean: external
+define function subsumes(coding Coding, subsumedCoding Coding) returns Boolean: external
+define function subsumes(concept CodeableConcept, subsumedConcept CodeableConcept) returns Boolean: external
+define function subsumedBy(coding Coding, subsumingCoding Coding) returns Boolean: external
+define function subsumedBy(concept CodeableConcept, subsumingConcept CodeableConcept) returns Boolean: external
+define function htmlChecks(element Element) returns Boolean: external
 
 define function ToString(value AccountStatus): value.value
 define function ToString(value ActionCardinalityBehavior): value.value

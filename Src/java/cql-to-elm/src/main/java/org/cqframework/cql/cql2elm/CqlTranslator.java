@@ -369,7 +369,12 @@ public class CqlTranslator {
         }
 
         if (this.namespaceInfo != null) {
+            modelManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
             libraryManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
+        }
+
+        if (modelManager.getNamespaceManager().hasNamespaces()) {
+            modelManager.registerWellKnownNamespaces();
         }
 
         if (libraryManager.getNamespaceManager().hasNamespaces() && libraryManager.getLibrarySourceLoader() instanceof NamespaceAware) {
@@ -661,8 +666,9 @@ public class CqlTranslator {
     public static void loadModelInfo(File modelInfoXML) {
         final ModelInfo modelInfo = JAXB.unmarshal(modelInfoXML, ModelInfo.class);
         final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
-        final ModelInfoProvider modelProvider = () -> modelInfo;
-        ModelInfoLoader.registerModelInfoProvider(modelId, modelProvider);
+        final ModelInfoProvider modelProvider = (VersionedIdentifier modelIdentifier) -> modelInfo;
+        final ModelInfoLoader modelInfoLoader = new ModelInfoLoader();
+        modelInfoLoader.registerModelInfoProvider(modelProvider);
     }
 
     private static void outputExceptions(Iterable<CqlTranslatorException> exceptions) {
@@ -690,6 +696,7 @@ public class CqlTranslator {
                 e.printStackTrace();
             }
         }
+        modelManager.getModelInfoLoader().registerModelInfoProvider(new DefaultModelInfoProvider(inPath.getParent()), true);
         libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(inPath.getParent()));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
         CqlTranslator translator = fromFile(inPath.toFile(), modelManager, libraryManager, ucumService, options);

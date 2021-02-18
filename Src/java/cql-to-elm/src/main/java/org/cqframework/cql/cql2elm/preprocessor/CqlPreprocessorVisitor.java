@@ -47,9 +47,8 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         if (ctx.localIdentifier() != null) {
             includeDefinition.setLocalName((String)visit(ctx.localIdentifier()));
         }
-        else if (identifiers.size() > 1) {
-            // If the library name is qualified, use only the unqualified name as the local name
-            includeDefinition.setLocalName(identifiers.get(identifiers.size() - 1));
+        else {
+            includeDefinition.setLocalName(includeDefinition.getName());
         }
         libraryInfo.addIncludeDefinition(includeDefinition);
         return includeDefinition;
@@ -58,9 +57,19 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     @Override
     public Object visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
-        usingDefinition.setName((String)visit(ctx.modelIdentifier()));
+        List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
+        usingDefinition.setName(identifiers.remove(identifiers.size() - 1));
+        if (identifiers.size() > 0) {
+            usingDefinition.setNamespaceName(String.join(".", identifiers));
+        }
         if (ctx.versionSpecifier() != null) {
             usingDefinition.setVersion((String)visit(ctx.versionSpecifier()));
+        }
+        if (ctx.localIdentifier() != null) {
+            usingDefinition.setLocalName((String)visit(ctx.localIdentifier()));
+        }
+        else {
+            usingDefinition.setLocalName(usingDefinition.getName());
         }
         libraryInfo.addUsingDefinition(usingDefinition);
         return usingDefinition;

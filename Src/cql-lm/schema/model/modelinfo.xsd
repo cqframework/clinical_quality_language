@@ -212,6 +212,11 @@
 				<xs:documentation>Specifies a user-friendly label for the element</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a short description of the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="definition" type="xs:string" use="optional">
 			<xs:annotation>
 				<xs:documentation>Provides a complete, detailed, markdown-capable definition of the element</xs:documentation>
@@ -232,7 +237,7 @@
 				<xs:documentation>Specifies the maximum cardinality of the element. For non-list-valued elements, this is 0 or 1, indicating where a value is prohibited (0). For list-valued elements, this is an integer definined the maximum cardinality of the list, or a '*' indicating the list has no maximum number of elements. If this value is an integer, it must be greater than or equal to the value of the min attribute.</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
-		<xs:attribute name="mustSupport" type="xs:string" use="optional">
+		<xs:attribute name="mustSupport" type="xs:boolean" use="optional">
 			<xs:annotation>
 				<xs:documentation>Specifies whether this element is relevant for the use case the class in which it appears is supporting</xs:documentation>
 			</xs:annotation>
@@ -466,6 +471,11 @@
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ModelSpecifier">
+		<xs:attribute name="url" type="xs:anyURI" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the globally unique url for the model, this is equivalent to the url element of the referenced model info.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
 		<xs:attribute name="name" type="xs:string" use="required"/>
 		<xs:attribute name="version" type="xs:string" use="optional"/>
 	</xs:complexType>

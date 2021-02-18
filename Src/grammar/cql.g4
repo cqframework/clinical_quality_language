@@ -38,7 +38,7 @@ libraryDefinition
     ;
 
 usingDefinition
-    : 'using' modelIdentifier ('version' versionSpecifier)?
+    : 'using' qualifiedIdentifier ('version' versionSpecifier)? ('called' localIdentifier)?
     ;
 
 includeDefinition
@@ -164,8 +164,12 @@ contextDefinition
     : 'context' (modelIdentifier '.')? identifier
     ;
 
+fluentModifier
+    : 'fluent'
+    ;
+
 functionDefinition
-    : 'define' accessModifier? 'fluent'? 'function' identifierOrFunctionIdentifier '(' (operandDefinition (',' operandDefinition)*)? ')'
+    : 'define' accessModifier? fluentModifier? 'function' identifierOrFunctionIdentifier '(' (operandDefinition (',' operandDefinition)*)? ')'
         ('returns' typeSpecifier)?
         ':' (functionBody | 'external')
     ;

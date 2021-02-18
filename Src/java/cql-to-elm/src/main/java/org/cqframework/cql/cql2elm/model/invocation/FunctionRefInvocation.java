@@ -37,4 +37,13 @@ public class FunctionRefInvocation extends AbstractExpressionInvocation {
             ((FunctionRef)expression).getSignature().add(typeSpecifier);
         }
     }
+
+    @Override
+    public void setResolution(OperatorResolution resolution) {
+        super.setResolution(resolution);
+        FunctionRef fr = (FunctionRef)expression;
+        if (resolution.getOperator().getLibraryName() != null && !resolution.getOperator().getLibraryName().equals(fr.getLibraryName())) {
+            fr.setLibraryName(resolution.getOperator().getLibraryName());
+        }
+    }
 }

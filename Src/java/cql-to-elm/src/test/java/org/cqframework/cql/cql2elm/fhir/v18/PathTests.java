@@ -19,6 +19,7 @@ public class PathTests {
 
     private static LibraryManager libraryManager;
     private static ModelManager modelManager;
+    private static ModelInfoProvider modelInfoProvider;
 
     @BeforeClass
     public void setup() {
@@ -27,13 +28,13 @@ public class PathTests {
         libraryManager.getLibrarySourceLoader().clearProviders();
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
-        ModelInfoLoader.registerModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"),
-                new TestFhirModelInfoProvider(PathTests.class));
+        modelInfoProvider = new TestFhirModelInfoProvider(PathTests.class);
+        modelManager.getModelInfoLoader().registerModelInfoProvider(modelInfoProvider, true);
     }
 
     @AfterClass
     public void tearDown() {
-        ModelInfoLoader.unregisterModelInfoProvider(new VersionedIdentifier().withId("FHIR").withVersion("1.8"));
+        modelManager.getModelInfoLoader().unregisterModelInfoProvider(modelInfoProvider);
     }
 
     @Test

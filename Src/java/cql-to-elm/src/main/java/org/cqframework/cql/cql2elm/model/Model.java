@@ -1,13 +1,14 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.antlr.v4.runtime.misc.NotNull;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.util.*;
 
 public class Model {
-    public Model(@NotNull ModelInfo modelInfo, Model systemModel) throws ClassNotFoundException {
+    public Model(@NotNull ModelInfo modelInfo, ModelManager modelManager) throws ClassNotFoundException {
         info = modelInfo;
         index = new HashMap<>();
         nameIndex = new HashMap<>();
@@ -15,7 +16,7 @@ public class Model {
         conversions = new ArrayList<>();
         contexts = new ArrayList<>();
 
-        ModelImporter importer = new ModelImporter(info, systemModel != null ? systemModel.nameIndex.values() : null);
+        ModelImporter importer = new ModelImporter(info, modelManager);
         index = importer.getTypes();
         for (Conversion c : importer.getConversions()) {
             conversions.add(c);
@@ -44,6 +45,9 @@ public class Model {
     private Map<String, DataType> index;
     private Map<String, ClassType> classIndex;
     private Map<String, DataType> nameIndex;
+    protected Map<String, DataType> getNameIndex() {
+        return nameIndex;
+    }
     private List<Conversion> conversions;
     private List<ModelContext> contexts;
     private String defaultContext;

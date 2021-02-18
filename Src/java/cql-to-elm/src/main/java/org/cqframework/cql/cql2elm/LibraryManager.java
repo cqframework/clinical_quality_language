@@ -31,7 +31,12 @@ public class LibraryManager {
             throw new IllegalArgumentException("modelManager is null");
         }
         this.modelManager = modelManager;
-        this.namespaceManager = new NamespaceManager();
+        if (this.modelManager.getNamespaceManager() != null) {
+            this.namespaceManager = modelManager.getNamespaceManager();
+        }
+        else {
+            this.namespaceManager = new NamespaceManager();
+        }
         libraries = new HashMap<>();
         translationStack = new Stack<>();
         this.librarySourceLoader = new PriorityLibrarySourceLoader();
