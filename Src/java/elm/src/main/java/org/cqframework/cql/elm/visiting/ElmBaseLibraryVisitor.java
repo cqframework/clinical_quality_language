@@ -1,9 +1,6 @@
 package org.cqframework.cql.elm.visiting;
 
-import org.hl7.elm.r1.Element;
-import org.hl7.elm.r1.IncludeDef;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.UsingDef;
+import org.hl7.elm.r1.*;
 
 /**
  * Created by Bryn on 4/14/2016.
@@ -21,6 +18,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
     @Override
     public T visitElement(Element elm, C context) {
         if (elm instanceof IncludeDef) return visitIncludeDef((IncludeDef)elm, context);
+        else if (elm instanceof ContextDef) return visitContextDef((ContextDef)elm, context);
         else if (elm instanceof Library) return visitLibrary((Library)elm, context);
         else if (elm instanceof UsingDef) return visitUsingDef((UsingDef)elm, context);
         else return super.visitElement(elm, context);
@@ -59,6 +57,18 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitIncludeDef(IncludeDef elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a ContextDef. This method will be called for
+     * every node in the tree that is a ContextDef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitContextDef(ContextDef elm, C context) {
         return null;
     }
 }

@@ -26,6 +26,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof OperandDef) return visitOperandDef((OperandDef)elm, context);
         else if (elm instanceof ParameterDef) return visitParameterDef((ParameterDef)elm, context);
         else if (elm instanceof ReturnClause) return visitReturnClause((ReturnClause)elm, context);
+        else if (elm instanceof AggregateClause) return visitAggregateClause((AggregateClause)elm, context);
         else if (elm instanceof SortByItem) return visitSortByItem((SortByItem)elm, context);
         else if (elm instanceof TupleElementDefinition) return visitTupleElementDefinition((TupleElementDefinition)elm, context);
         else if (elm instanceof TypeSpecifier) return visitTypeSpecifier((TypeSpecifier)elm, context);
@@ -767,7 +768,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @param context the context passed to the visitor
      * @return the visitor result
      */
-    private T visitToLong(ToLong elm, C context) { return null; }
+    public T visitToLong(ToLong elm, C context) { return null; }
 
     /**
      * Visit a ToDecimal. This method will be called for
@@ -2170,6 +2171,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSortClause(SortClause elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a AggregateClause. This method will be called for
+     * every node in the tree that is an AggregateClause.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitAggregateClause(AggregateClause elm, C context) {
         return null;
     }
 

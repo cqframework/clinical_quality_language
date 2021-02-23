@@ -39,4 +39,14 @@ public interface ElmLibraryVisitor<T, C> extends ElmClinicalVisitor<T, C> {
      * @return the visitor result
      */
     T visitIncludeDef(IncludeDef elm, C context);
+
+    /**
+     * Visit a ContextDef. This method will be called for
+     * every node in the tree that is a ContextDef.
+     *
+     * @param elm the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitContextDef(ContextDef elm, C context);
 }
