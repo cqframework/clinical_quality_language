@@ -1,0 +1,3404 @@
+{
+   "library" : {
+      "annotation" : [ {
+         "translatorOptions" : "EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation",
+         "type" : "CqlToElmInfo"
+      } ],
+      "identifier" : {
+         "id" : "TestEntities"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localId" : "1",
+            "locator" : "3:1-3:23",
+            "localIdentifier" : "QDM",
+            "uri" : "urn:healthit-gov:qdm:v5_6",
+            "version" : "5.6",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "1",
+                  "s" : [ {
+                     "value" : [ "using ","QDM"," version ","'5.6'" ]
+                  } ]
+               }
+            } ]
+         } ]
+      },
+      "valueSets" : {
+         "def" : [ {
+            "localId" : "2",
+            "locator" : "5:1-5:30",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+            "name" : "Office Visit",
+            "id" : "TBD",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "2",
+                  "s" : [ {
+                     "value" : [ "valueset ","\"Office Visit\"",": ","'TBD'" ]
+                  } ]
+               }
+            } ]
+         }, {
+            "localId" : "3",
+            "locator" : "6:1-6:27",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+            "name" : "Inpatient",
+            "id" : "TBD",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "3",
+                  "s" : [ {
+                     "value" : [ "valueset ","\"Inpatient\"",": ","'TBD'" ]
+                  } ]
+               }
+            } ]
+         }, {
+            "localId" : "4",
+            "locator" : "7:1-7:46",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+            "name" : "Ambulatory Clinical Practice",
+            "id" : "TBD",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "4",
+                  "s" : [ {
+                     "value" : [ "valueset ","\"Ambulatory Clinical Practice\"",": ","'TBD'" ]
+                  } ]
+               }
+            } ]
+         }, {
+            "localId" : "5",
+            "locator" : "8:1-8:31",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+            "name" : "Ophthalmology",
+            "id" : "TBD",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "5",
+                  "s" : [ {
+                     "value" : [ "valueset ","\"Ophthalmology\"",": ","'TBD'" ]
+                  } ]
+               }
+            } ]
+         }, {
+            "localId" : "6",
+            "locator" : "9:1-9:24",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+            "name" : "Family",
+            "id" : "TBD",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "6",
+                  "s" : [ {
+                     "value" : [ "valueset ","\"Family\"",": ","'TBD'" ]
+                  } ]
+               }
+            } ]
+         }, {
+            "localId" : "7",
+            "locator" : "10:1-10:20",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+            "name" : "ED",
+            "id" : "TBD",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "7",
+                  "s" : [ {
+                     "value" : [ "valueset ","\"ED\"",": ","'TBD'" ]
+                  } ]
+               }
+            } ]
+         }, {
+            "localId" : "8",
+            "locator" : "11:1-11:32",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+            "name" : "Blood Pressure",
+            "id" : "TBD",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "8",
+                  "s" : [ {
+                     "value" : [ "valueset ","\"Blood Pressure\"",": ","'TBD'" ]
+                  } ]
+               }
+            } ]
+         }, {
+            "localId" : "9",
+            "locator" : "12:1-12:35",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+            "name" : "Diabetic Eye Exam",
+            "id" : "TBD",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "9",
+                  "s" : [ {
+                     "value" : [ "valueset ","\"Diabetic Eye Exam\"",": ","'TBD'" ]
+                  } ]
+               }
+            } ]
+         } ]
+      },
+      "contexts" : {
+         "def" : [ {
+            "locator" : "14:1-14:15",
+            "name" : "Patient"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "locator" : "14:1-14:15",
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "locator" : "14:1-14:15",
+                  "dataType" : "{urn:healthit-gov:qdm:v5_6}Patient",
+                  "templateId" : "Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "localId" : "25",
+            "locator" : "21:1-27:5",
+            "name" : "Qualifying Encounters (1)",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "25",
+                  "s" : [ {
+                     "value" : [ "define ","\"Qualifying Encounters (1)\"",":\r\n  " ]
+                  }, {
+                     "r" : "24",
+                     "s" : [ {
+                        "s" : [ {
+                           "r" : "11",
+                           "s" : [ {
+                              "r" : "10",
+                              "s" : [ {
+                                 "r" : "10",
+                                 "s" : [ {
+                                    "value" : [ "[","\"Encounter, Performed\"",": " ]
+                                 }, {
+                                    "s" : [ {
+                                       "value" : [ "\"Office Visit\"" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "]" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","Encounter" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\r\n    " ]
+                     }, {
+                        "r" : "23",
+                        "s" : [ {
+                           "value" : [ "where " ]
+                        }, {
+                           "r" : "23",
+                           "s" : [ {
+                              "value" : [ "exists " ]
+                           }, {
+                              "r" : "22",
+                              "s" : [ {
+                                 "value" : [ "(\r\n      " ]
+                              }, {
+                                 "r" : "22",
+                                 "s" : [ {
+                                    "s" : [ {
+                                       "r" : "13",
+                                       "s" : [ {
+                                          "r" : "12",
+                                          "s" : [ {
+                                             "s" : [ {
+                                                "value" : [ "Encounter",".","participant" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ " ","Participant" ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "\r\n        " ]
+                                 }, {
+                                    "r" : "21",
+                                    "s" : [ {
+                                       "value" : [ "where " ]
+                                    }, {
+                                       "r" : "21",
+                                       "s" : [ {
+                                          "r" : "16",
+                                          "s" : [ {
+                                             "r" : "14",
+                                             "s" : [ {
+                                                "value" : [ "Participant" ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " is " ]
+                                          }, {
+                                             "r" : "15",
+                                             "s" : [ {
+                                                "value" : [ "\"Organization\"" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ "\r\n          and " ]
+                                       }, {
+                                          "r" : "20",
+                                          "s" : [ {
+                                             "r" : "18",
+                                             "s" : [ {
+                                                "r" : "17",
+                                                "s" : [ {
+                                                   "value" : [ "Participant" ]
+                                                } ]
+                                             }, {
+                                                "value" : [ "." ]
+                                             }, {
+                                                "r" : "18",
+                                                "s" : [ {
+                                                   "value" : [ "organizationType" ]
+                                                } ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " in " ]
+                                          }, {
+                                             "r" : "19",
+                                             "s" : [ {
+                                                "value" : [ "\"Ambulatory Clinical Practice\"" ]
+                                             } ]
+                                          } ]
+                                       } ]
+                                    } ]
+                                 } ]
+                              }, {
+                                 "value" : [ "\r\n    )" ]
+                              } ]
+                           } ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "resultTypeSpecifier" : {
+               "type" : "ListTypeSpecifier",
+               "elementType" : {
+                  "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                  "type" : "NamedTypeSpecifier"
+               }
+            },
+            "expression" : {
+               "localId" : "24",
+               "locator" : "22:3-27:5",
+               "type" : "Query",
+               "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                     "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               },
+               "source" : [ {
+                  "localId" : "11",
+                  "locator" : "22:3-22:52",
+                  "alias" : "Encounter",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "10",
+                     "locator" : "22:3-22:42",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "templateId" : "PositiveEncounterPerformed",
+                     "codeProperty" : "code",
+                     "codeComparator" : "in",
+                     "type" : "Retrieve",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "codes" : {
+                        "locator" : "22:28-22:41",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                        "name" : "Office Visit",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "localId" : "23",
+                  "locator" : "23:5-27:5",
+                  "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                  "type" : "Exists",
+                  "operand" : {
+                     "localId" : "22",
+                     "locator" : "23:18-27:5",
+                     "type" : "Query",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "type" : "ChoiceTypeSpecifier",
+                           "choice" : [ {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                              "type" : "NamedTypeSpecifier"
+                           } ]
+                        }
+                     },
+                     "source" : [ {
+                        "localId" : "13",
+                        "locator" : "24:7-24:39",
+                        "alias" : "Participant",
+                        "resultTypeSpecifier" : {
+                           "type" : "ListTypeSpecifier",
+                           "elementType" : {
+                              "type" : "ChoiceTypeSpecifier",
+                              "choice" : [ {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                 "type" : "NamedTypeSpecifier"
+                              } ]
+                           }
+                        },
+                        "expression" : {
+                           "localId" : "12",
+                           "locator" : "24:7-24:27",
+                           "path" : "participant",
+                           "scope" : "Encounter",
+                           "type" : "Property",
+                           "resultTypeSpecifier" : {
+                              "type" : "ListTypeSpecifier",
+                              "elementType" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           }
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "where" : {
+                        "localId" : "21",
+                        "locator" : "25:9-26:76",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "And",
+                        "operand" : [ {
+                           "localId" : "16",
+                           "locator" : "25:15-25:43",
+                           "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                           "type" : "Is",
+                           "operand" : {
+                              "localId" : "14",
+                              "locator" : "25:15-25:25",
+                              "name" : "Participant",
+                              "type" : "AliasRef",
+                              "resultTypeSpecifier" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           },
+                           "isTypeSpecifier" : {
+                              "localId" : "15",
+                              "locator" : "25:30-25:43",
+                              "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                              "type" : "NamedTypeSpecifier"
+                           }
+                        }, {
+                           "localId" : "20",
+                           "locator" : "26:15-26:76",
+                           "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                           "type" : "InValueSet",
+                           "code" : {
+                              "localId" : "18",
+                              "locator" : "26:15-26:42",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Code",
+                              "path" : "organizationType",
+                              "scope" : "Participant",
+                              "type" : "Property"
+                           },
+                           "valueset" : {
+                              "localId" : "19",
+                              "locator" : "26:47-26:76",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                              "name" : "Ambulatory Clinical Practice",
+                              "type" : "ValueSetRef"
+                           }
+                        } ]
+                     }
+                  }
+               }
+            }
+         }, {
+            "localId" : "41",
+            "locator" : "35:1-41:5",
+            "name" : "Qualifying Encounters (2)",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "41",
+                  "s" : [ {
+                     "value" : [ "define ","\"Qualifying Encounters (2)\"",":\r\n  " ]
+                  }, {
+                     "r" : "40",
+                     "s" : [ {
+                        "s" : [ {
+                           "r" : "27",
+                           "s" : [ {
+                              "r" : "26",
+                              "s" : [ {
+                                 "r" : "26",
+                                 "s" : [ {
+                                    "value" : [ "[","\"Encounter, Performed\"",": " ]
+                                 }, {
+                                    "s" : [ {
+                                       "value" : [ "\"Office Visit\"" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "]" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","Encounter" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\r\n    " ]
+                     }, {
+                        "r" : "39",
+                        "s" : [ {
+                           "value" : [ "where " ]
+                        }, {
+                           "r" : "39",
+                           "s" : [ {
+                              "value" : [ "exists " ]
+                           }, {
+                              "r" : "38",
+                              "s" : [ {
+                                 "value" : [ "(\r\n        " ]
+                              }, {
+                                 "r" : "38",
+                                 "s" : [ {
+                                    "s" : [ {
+                                       "r" : "29",
+                                       "s" : [ {
+                                          "r" : "28",
+                                          "s" : [ {
+                                             "s" : [ {
+                                                "value" : [ "Encounter",".","participant" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ " ","Participant" ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "\r\n          " ]
+                                 }, {
+                                    "r" : "37",
+                                    "s" : [ {
+                                       "value" : [ "where " ]
+                                    }, {
+                                       "r" : "37",
+                                       "s" : [ {
+                                          "r" : "32",
+                                          "s" : [ {
+                                             "r" : "30",
+                                             "s" : [ {
+                                                "value" : [ "Participant" ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " is " ]
+                                          }, {
+                                             "r" : "31",
+                                             "s" : [ {
+                                                "value" : [ "\"Practitioner\"" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ "\r\n            and " ]
+                                       }, {
+                                          "r" : "36",
+                                          "s" : [ {
+                                             "r" : "34",
+                                             "s" : [ {
+                                                "r" : "33",
+                                                "s" : [ {
+                                                   "value" : [ "Participant" ]
+                                                } ]
+                                             }, {
+                                                "value" : [ "." ]
+                                             }, {
+                                                "r" : "34",
+                                                "s" : [ {
+                                                   "value" : [ "specialty" ]
+                                                } ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " in " ]
+                                          }, {
+                                             "r" : "35",
+                                             "s" : [ {
+                                                "value" : [ "\"Ophthalmology\"" ]
+                                             } ]
+                                          } ]
+                                       } ]
+                                    } ]
+                                 } ]
+                              }, {
+                                 "value" : [ "\r\n    )" ]
+                              } ]
+                           } ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "resultTypeSpecifier" : {
+               "type" : "ListTypeSpecifier",
+               "elementType" : {
+                  "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                  "type" : "NamedTypeSpecifier"
+               }
+            },
+            "expression" : {
+               "localId" : "40",
+               "locator" : "36:3-41:5",
+               "type" : "Query",
+               "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                     "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               },
+               "source" : [ {
+                  "localId" : "27",
+                  "locator" : "36:3-36:52",
+                  "alias" : "Encounter",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "26",
+                     "locator" : "36:3-36:42",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "templateId" : "PositiveEncounterPerformed",
+                     "codeProperty" : "code",
+                     "codeComparator" : "in",
+                     "type" : "Retrieve",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "codes" : {
+                        "locator" : "36:28-36:41",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                        "name" : "Office Visit",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "localId" : "39",
+                  "locator" : "37:5-41:5",
+                  "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                  "type" : "Exists",
+                  "operand" : {
+                     "localId" : "38",
+                     "locator" : "37:18-41:5",
+                     "type" : "Query",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "type" : "ChoiceTypeSpecifier",
+                           "choice" : [ {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                              "type" : "NamedTypeSpecifier"
+                           } ]
+                        }
+                     },
+                     "source" : [ {
+                        "localId" : "29",
+                        "locator" : "38:9-38:41",
+                        "alias" : "Participant",
+                        "resultTypeSpecifier" : {
+                           "type" : "ListTypeSpecifier",
+                           "elementType" : {
+                              "type" : "ChoiceTypeSpecifier",
+                              "choice" : [ {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                 "type" : "NamedTypeSpecifier"
+                              } ]
+                           }
+                        },
+                        "expression" : {
+                           "localId" : "28",
+                           "locator" : "38:9-38:29",
+                           "path" : "participant",
+                           "scope" : "Encounter",
+                           "type" : "Property",
+                           "resultTypeSpecifier" : {
+                              "type" : "ListTypeSpecifier",
+                              "elementType" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           }
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "where" : {
+                        "localId" : "37",
+                        "locator" : "39:11-40:56",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "And",
+                        "operand" : [ {
+                           "localId" : "32",
+                           "locator" : "39:17-39:45",
+                           "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                           "type" : "Is",
+                           "operand" : {
+                              "localId" : "30",
+                              "locator" : "39:17-39:27",
+                              "name" : "Participant",
+                              "type" : "AliasRef",
+                              "resultTypeSpecifier" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           },
+                           "isTypeSpecifier" : {
+                              "localId" : "31",
+                              "locator" : "39:32-39:45",
+                              "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                              "type" : "NamedTypeSpecifier"
+                           }
+                        }, {
+                           "localId" : "36",
+                           "locator" : "40:17-40:56",
+                           "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                           "type" : "InValueSet",
+                           "code" : {
+                              "localId" : "34",
+                              "locator" : "40:17-40:37",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Code",
+                              "path" : "specialty",
+                              "scope" : "Participant",
+                              "type" : "Property"
+                           },
+                           "valueset" : {
+                              "localId" : "35",
+                              "locator" : "40:42-40:56",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                              "name" : "Ophthalmology",
+                              "type" : "ValueSetRef"
+                           }
+                        } ]
+                     }
+                  }
+               }
+            }
+         }, {
+            "localId" : "68",
+            "locator" : "55:1-56:88",
+            "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+            "name" : "CCNOf",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "type" : "FunctionDef",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "68",
+                  "s" : [ {
+                     "value" : [ "define function ","CCNOf","(","identifiers"," " ]
+                  }, {
+                     "r" : "57",
+                     "s" : [ {
+                        "value" : [ "List<" ]
+                     }, {
+                        "r" : "56",
+                        "s" : [ {
+                           "value" : [ "Identifier" ]
+                        } ]
+                     }, {
+                        "value" : [ ">" ]
+                     } ]
+                  }, {
+                     "value" : [ "):\r\n  " ]
+                  }, {
+                     "r" : "67",
+                     "s" : [ {
+                        "r" : "67",
+                        "s" : [ {
+                           "value" : [ "singleton from " ]
+                        }, {
+                           "r" : "66",
+                           "s" : [ {
+                              "value" : [ "(" ]
+                           }, {
+                              "r" : "66",
+                              "s" : [ {
+                                 "s" : [ {
+                                    "r" : "59",
+                                    "s" : [ {
+                                       "r" : "58",
+                                       "s" : [ {
+                                          "s" : [ {
+                                             "value" : [ "identifiers" ]
+                                          } ]
+                                       } ]
+                                    }, {
+                                       "value" : [ " ","I" ]
+                                    } ]
+                                 } ]
+                              }, {
+                                 "value" : [ " " ]
+                              }, {
+                                 "r" : "63",
+                                 "s" : [ {
+                                    "value" : [ "where " ]
+                                 }, {
+                                    "r" : "63",
+                                    "s" : [ {
+                                       "r" : "61",
+                                       "s" : [ {
+                                          "r" : "60",
+                                          "s" : [ {
+                                             "value" : [ "I" ]
+                                          } ]
+                                       }, {
+                                          "value" : [ "." ]
+                                       }, {
+                                          "r" : "61",
+                                          "s" : [ {
+                                             "value" : [ "namingSystem" ]
+                                          } ]
+                                       } ]
+                                    }, {
+                                       "value" : [ " ","="," " ]
+                                    }, {
+                                       "r" : "62",
+                                       "s" : [ {
+                                          "value" : [ "'CCN Identifier System'" ]
+                                       } ]
+                                    } ]
+                                 } ]
+                              }, {
+                                 "value" : [ " " ]
+                              }, {
+                                 "r" : "65",
+                                 "s" : [ {
+                                    "value" : [ "return " ]
+                                 }, {
+                                    "r" : "64",
+                                    "s" : [ {
+                                       "value" : [ "I" ]
+                                    } ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ ")" ]
+                           } ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "67",
+               "locator" : "56:3-56:88",
+               "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "localId" : "66",
+                  "locator" : "56:18-56:88",
+                  "type" : "Query",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "source" : [ {
+                     "localId" : "59",
+                     "locator" : "56:19-56:31",
+                     "alias" : "I",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "expression" : {
+                        "localId" : "58",
+                        "locator" : "56:19-56:29",
+                        "name" : "identifiers",
+                        "type" : "OperandRef",
+                        "resultTypeSpecifier" : {
+                           "type" : "ListTypeSpecifier",
+                           "elementType" : {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                              "type" : "NamedTypeSpecifier"
+                           }
+                        }
+                     }
+                  } ],
+                  "relationship" : [ ],
+                  "where" : {
+                     "localId" : "63",
+                     "locator" : "56:33-56:78",
+                     "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                     "type" : "Equal",
+                     "operand" : [ {
+                        "localId" : "61",
+                        "locator" : "56:39-56:52",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}String",
+                        "path" : "namingSystem",
+                        "scope" : "I",
+                        "type" : "Property"
+                     }, {
+                        "localId" : "62",
+                        "locator" : "56:56-56:78",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}String",
+                        "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                        "value" : "CCN Identifier System",
+                        "type" : "Literal"
+                     } ]
+                  },
+                  "return" : {
+                     "localId" : "65",
+                     "locator" : "56:80-56:87",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "expression" : {
+                        "localId" : "64",
+                        "locator" : "56:87",
+                        "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                        "name" : "I",
+                        "type" : "AliasRef"
+                     }
+                  }
+               }
+            },
+            "operand" : [ {
+               "name" : "identifiers",
+               "operandTypeSpecifier" : {
+                  "localId" : "57",
+                  "locator" : "55:35-55:50",
+                  "type" : "ListTypeSpecifier",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "elementType" : {
+                     "localId" : "56",
+                     "locator" : "55:40-55:49",
+                     "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                     "name" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               }
+            } ]
+         }, {
+            "localId" : "78",
+            "locator" : "49:1-53:83",
+            "name" : "Qualifying Encounters (3)",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "78",
+                  "s" : [ {
+                     "value" : [ "define ","\"Qualifying Encounters (3)\"",":\r\n " ]
+                  }, {
+                     "r" : "77",
+                     "s" : [ {
+                        "s" : [ {
+                           "r" : "43",
+                           "s" : [ {
+                              "r" : "42",
+                              "s" : [ {
+                                 "r" : "42",
+                                 "s" : [ {
+                                    "value" : [ "[","\"Encounter, Performed\"",": " ]
+                                 }, {
+                                    "s" : [ {
+                                       "value" : [ "\"Inpatient\"" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "]" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","Encounter" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\r\n   " ]
+                     }, {
+                        "r" : "76",
+                        "s" : [ {
+                           "value" : [ "with " ]
+                        }, {
+                           "r" : "45",
+                           "s" : [ {
+                              "r" : "44",
+                              "s" : [ {
+                                 "r" : "44",
+                                 "s" : [ {
+                                    "value" : [ "[","\"Encounter, Performed\"",": " ]
+                                 }, {
+                                    "s" : [ {
+                                       "value" : [ "\"ED\"" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "]" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","ED" ]
+                           } ]
+                        }, {
+                           "value" : [ "\r\n    such that " ]
+                        }, {
+                           "r" : "75",
+                           "s" : [ {
+                              "r" : "52",
+                              "s" : [ {
+                                 "r" : "47",
+                                 "s" : [ {
+                                    "r" : "46",
+                                    "s" : [ {
+                                       "value" : [ "ED" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "." ]
+                                 }, {
+                                    "r" : "47",
+                                    "s" : [ {
+                                       "value" : [ "relevantPeriod" ]
+                                    } ]
+                                 } ]
+                              }, {
+                                 "value" : [ " " ]
+                              }, {
+                                 "r" : "52",
+                                 "s" : [ {
+                                    "value" : [ "ends " ]
+                                 }, {
+                                    "r" : "51",
+                                    "s" : [ {
+                                       "value" : [ "1 ","hour" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ " or less on or before" ]
+                                 } ]
+                              }, {
+                                 "value" : [ " " ]
+                              }, {
+                                 "r" : "50",
+                                 "s" : [ {
+                                    "value" : [ "start of " ]
+                                 }, {
+                                    "r" : "49",
+                                    "s" : [ {
+                                       "r" : "48",
+                                       "s" : [ {
+                                          "value" : [ "Encounter" ]
+                                       } ]
+                                    }, {
+                                       "value" : [ "." ]
+                                    }, {
+                                       "r" : "49",
+                                       "s" : [ {
+                                          "value" : [ "relevantPeriod" ]
+                                       } ]
+                                    } ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ "\r\n     and " ]
+                           }, {
+                              "r" : "74",
+                              "s" : [ {
+                                 "r" : "69",
+                                 "s" : [ {
+                                    "value" : [ "CCNOf","(" ]
+                                 }, {
+                                    "r" : "55",
+                                    "s" : [ {
+                                       "r" : "54",
+                                       "s" : [ {
+                                          "r" : "53",
+                                          "s" : [ {
+                                             "value" : [ "ED" ]
+                                          } ]
+                                       }, {
+                                          "value" : [ "." ]
+                                       }, {
+                                          "r" : "54",
+                                          "s" : [ {
+                                             "value" : [ "participant" ]
+                                          } ]
+                                       } ]
+                                    }, {
+                                       "value" : [ "." ]
+                                    }, {
+                                       "r" : "55",
+                                       "s" : [ {
+                                          "value" : [ "identifier" ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ ")" ]
+                                 } ]
+                              }, {
+                                 "value" : [ " ","="," " ]
+                              }, {
+                                 "r" : "73",
+                                 "s" : [ {
+                                    "value" : [ "CCNOf","(" ]
+                                 }, {
+                                    "r" : "72",
+                                    "s" : [ {
+                                       "r" : "71",
+                                       "s" : [ {
+                                          "r" : "70",
+                                          "s" : [ {
+                                             "value" : [ "Encounter" ]
+                                          } ]
+                                       }, {
+                                          "value" : [ "." ]
+                                       }, {
+                                          "r" : "71",
+                                          "s" : [ {
+                                             "value" : [ "participant" ]
+                                          } ]
+                                       } ]
+                                    }, {
+                                       "value" : [ "." ]
+                                    }, {
+                                       "r" : "72",
+                                       "s" : [ {
+                                          "value" : [ "identifier" ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ ")" ]
+                                 } ]
+                              } ]
+                           } ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "resultTypeSpecifier" : {
+               "type" : "ListTypeSpecifier",
+               "elementType" : {
+                  "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                  "type" : "NamedTypeSpecifier"
+               }
+            },
+            "expression" : {
+               "localId" : "77",
+               "locator" : "50:2-53:83",
+               "type" : "Query",
+               "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                     "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               },
+               "source" : [ {
+                  "localId" : "43",
+                  "locator" : "50:2-50:48",
+                  "alias" : "Encounter",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "42",
+                     "locator" : "50:2-50:38",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "templateId" : "PositiveEncounterPerformed",
+                     "codeProperty" : "code",
+                     "codeComparator" : "in",
+                     "type" : "Retrieve",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "codes" : {
+                        "locator" : "50:27-50:37",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                        "name" : "Inpatient",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ {
+                  "localId" : "76",
+                  "locator" : "51:4-53:83",
+                  "alias" : "ED",
+                  "type" : "With",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "44",
+                     "locator" : "51:9-51:38",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "templateId" : "PositiveEncounterPerformed",
+                     "codeProperty" : "code",
+                     "codeComparator" : "in",
+                     "type" : "Retrieve",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "codes" : {
+                        "locator" : "51:34-51:37",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                        "name" : "ED",
+                        "type" : "ValueSetRef"
+                     }
+                  },
+                  "suchThat" : {
+                     "localId" : "75",
+                     "locator" : "52:15-53:83",
+                     "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                     "type" : "And",
+                     "operand" : [ {
+                        "localId" : "52",
+                        "locator" : "52:15-52:98",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "And",
+                        "operand" : [ {
+                           "locator" : "52:38-52:51",
+                           "type" : "In",
+                           "operand" : [ {
+                              "locator" : "52:33-52:36",
+                              "type" : "End",
+                              "operand" : {
+                                 "localId" : "47",
+                                 "locator" : "52:15-52:31",
+                                 "path" : "relevantPeriod",
+                                 "scope" : "ED",
+                                 "type" : "Property",
+                                 "resultTypeSpecifier" : {
+                                    "type" : "IntervalTypeSpecifier",
+                                    "pointType" : {
+                                       "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                                       "type" : "NamedTypeSpecifier"
+                                    }
+                                 }
+                              }
+                           }, {
+                              "locator" : "52:38-52:51",
+                              "lowClosed" : true,
+                              "highClosed" : true,
+                              "type" : "Interval",
+                              "resultTypeSpecifier" : {
+                                 "type" : "IntervalTypeSpecifier",
+                                 "pointType" : {
+                                    "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              },
+                              "low" : {
+                                 "locator" : "52:66-52:98",
+                                 "type" : "Subtract",
+                                 "operand" : [ {
+                                    "localId" : "50",
+                                    "locator" : "52:66-52:98",
+                                    "resultTypeName" : "{urn:hl7-org:elm-types:r1}DateTime",
+                                    "type" : "Start",
+                                    "operand" : {
+                                       "localId" : "49",
+                                       "locator" : "52:75-52:98",
+                                       "path" : "relevantPeriod",
+                                       "scope" : "Encounter",
+                                       "type" : "Property",
+                                       "resultTypeSpecifier" : {
+                                          "type" : "IntervalTypeSpecifier",
+                                          "pointType" : {
+                                             "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                                             "type" : "NamedTypeSpecifier"
+                                          }
+                                       }
+                                    }
+                                 }, {
+                                    "localId" : "51",
+                                    "locator" : "52:38-52:43",
+                                    "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+                                    "value" : 1,
+                                    "unit" : "hour",
+                                    "type" : "Quantity"
+                                 } ]
+                              },
+                              "high" : {
+                                 "localId" : "50",
+                                 "locator" : "52:66-52:98",
+                                 "resultTypeName" : "{urn:hl7-org:elm-types:r1}DateTime",
+                                 "type" : "Start",
+                                 "operand" : {
+                                    "localId" : "49",
+                                    "locator" : "52:75-52:98",
+                                    "path" : "relevantPeriod",
+                                    "scope" : "Encounter",
+                                    "type" : "Property",
+                                    "resultTypeSpecifier" : {
+                                       "type" : "IntervalTypeSpecifier",
+                                       "pointType" : {
+                                          "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                                          "type" : "NamedTypeSpecifier"
+                                       }
+                                    }
+                                 }
+                              }
+                           } ]
+                        }, {
+                           "locator" : "52:38-52:51",
+                           "type" : "Not",
+                           "operand" : {
+                              "locator" : "52:38-52:51",
+                              "type" : "IsNull",
+                              "operand" : {
+                                 "localId" : "50",
+                                 "locator" : "52:66-52:98",
+                                 "resultTypeName" : "{urn:hl7-org:elm-types:r1}DateTime",
+                                 "type" : "Start",
+                                 "operand" : {
+                                    "localId" : "49",
+                                    "locator" : "52:75-52:98",
+                                    "path" : "relevantPeriod",
+                                    "scope" : "Encounter",
+                                    "type" : "Property",
+                                    "resultTypeSpecifier" : {
+                                       "type" : "IntervalTypeSpecifier",
+                                       "pointType" : {
+                                          "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+                                          "type" : "NamedTypeSpecifier"
+                                       }
+                                    }
+                                 }
+                              }
+                           }
+                        } ]
+                     }, {
+                        "localId" : "74",
+                        "locator" : "53:10-53:83",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "Equal",
+                        "operand" : [ {
+                           "localId" : "69",
+                           "locator" : "53:10-53:41",
+                           "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                           "name" : "CCNOf",
+                           "type" : "FunctionRef",
+                           "operand" : [ {
+                              "localId" : "55",
+                              "locator" : "53:16-53:40",
+                              "type" : "Query",
+                              "resultTypeSpecifier" : {
+                                 "type" : "ListTypeSpecifier",
+                                 "elementType" : {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              },
+                              "source" : [ {
+                                 "alias" : "$this",
+                                 "expression" : {
+                                    "localId" : "54",
+                                    "locator" : "53:16-53:29",
+                                    "path" : "participant",
+                                    "scope" : "ED",
+                                    "type" : "Property",
+                                    "resultTypeSpecifier" : {
+                                       "type" : "ListTypeSpecifier",
+                                       "elementType" : {
+                                          "type" : "ChoiceTypeSpecifier",
+                                          "choice" : [ {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                             "type" : "NamedTypeSpecifier"
+                                          }, {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                             "type" : "NamedTypeSpecifier"
+                                          }, {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                             "type" : "NamedTypeSpecifier"
+                                          }, {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                             "type" : "NamedTypeSpecifier"
+                                          }, {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                             "type" : "NamedTypeSpecifier"
+                                          } ]
+                                       }
+                                    }
+                                 }
+                              } ],
+                              "where" : {
+                                 "type" : "Not",
+                                 "operand" : {
+                                    "type" : "IsNull",
+                                    "operand" : {
+                                       "path" : "identifier",
+                                       "type" : "Property",
+                                       "source" : {
+                                          "name" : "$this",
+                                          "type" : "AliasRef"
+                                       }
+                                    }
+                                 }
+                              },
+                              "return" : {
+                                 "distinct" : false,
+                                 "expression" : {
+                                    "path" : "identifier",
+                                    "type" : "Property",
+                                    "source" : {
+                                       "name" : "$this",
+                                       "type" : "AliasRef"
+                                    }
+                                 }
+                              }
+                           } ]
+                        }, {
+                           "localId" : "73",
+                           "locator" : "53:45-53:83",
+                           "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                           "name" : "CCNOf",
+                           "type" : "FunctionRef",
+                           "operand" : [ {
+                              "localId" : "72",
+                              "locator" : "53:51-53:82",
+                              "type" : "Query",
+                              "resultTypeSpecifier" : {
+                                 "type" : "ListTypeSpecifier",
+                                 "elementType" : {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Identifier",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              },
+                              "source" : [ {
+                                 "alias" : "$this",
+                                 "expression" : {
+                                    "localId" : "71",
+                                    "locator" : "53:51-53:71",
+                                    "path" : "participant",
+                                    "scope" : "Encounter",
+                                    "type" : "Property",
+                                    "resultTypeSpecifier" : {
+                                       "type" : "ListTypeSpecifier",
+                                       "elementType" : {
+                                          "type" : "ChoiceTypeSpecifier",
+                                          "choice" : [ {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                             "type" : "NamedTypeSpecifier"
+                                          }, {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                             "type" : "NamedTypeSpecifier"
+                                          }, {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                             "type" : "NamedTypeSpecifier"
+                                          }, {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                             "type" : "NamedTypeSpecifier"
+                                          }, {
+                                             "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                             "type" : "NamedTypeSpecifier"
+                                          } ]
+                                       }
+                                    }
+                                 }
+                              } ],
+                              "where" : {
+                                 "type" : "Not",
+                                 "operand" : {
+                                    "type" : "IsNull",
+                                    "operand" : {
+                                       "path" : "identifier",
+                                       "type" : "Property",
+                                       "source" : {
+                                          "name" : "$this",
+                                          "type" : "AliasRef"
+                                       }
+                                    }
+                                 }
+                              },
+                              "return" : {
+                                 "distinct" : false,
+                                 "expression" : {
+                                    "path" : "identifier",
+                                    "type" : "Property",
+                                    "source" : {
+                                       "name" : "$this",
+                                       "type" : "AliasRef"
+                                    }
+                                 }
+                              }
+                           } ]
+                        } ]
+                     } ]
+                  }
+               } ]
+            }
+         }, {
+            "localId" : "97",
+            "locator" : "64:1-70:7",
+            "name" : "Family-measured Blood Pressure Exams",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "97",
+                  "s" : [ {
+                     "value" : [ "define ","\"Family-measured Blood Pressure Exams\"",":\r\n    " ]
+                  }, {
+                     "r" : "96",
+                     "s" : [ {
+                        "s" : [ {
+                           "r" : "83",
+                           "s" : [ {
+                              "r" : "82",
+                              "s" : [ {
+                                 "r" : "82",
+                                 "s" : [ {
+                                    "value" : [ "[","\"Physical Exam, Performed\"",": " ]
+                                 }, {
+                                    "s" : [ {
+                                       "value" : [ "\"Blood Pressure\"" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "]" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","BloodPressure" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\r\n      " ]
+                     }, {
+                        "r" : "95",
+                        "s" : [ {
+                           "value" : [ "where " ]
+                        }, {
+                           "r" : "95",
+                           "s" : [ {
+                              "value" : [ "exists " ]
+                           }, {
+                              "r" : "94",
+                              "s" : [ {
+                                 "value" : [ "(\r\n        " ]
+                              }, {
+                                 "r" : "94",
+                                 "s" : [ {
+                                    "s" : [ {
+                                       "r" : "85",
+                                       "s" : [ {
+                                          "r" : "84",
+                                          "s" : [ {
+                                             "s" : [ {
+                                                "value" : [ "BloodPressure",".","performer" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ " ","Performer" ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "\r\n          " ]
+                                 }, {
+                                    "r" : "93",
+                                    "s" : [ {
+                                       "value" : [ "where " ]
+                                    }, {
+                                       "r" : "93",
+                                       "s" : [ {
+                                          "r" : "88",
+                                          "s" : [ {
+                                             "r" : "86",
+                                             "s" : [ {
+                                                "value" : [ "Performer" ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " is " ]
+                                          }, {
+                                             "r" : "87",
+                                             "s" : [ {
+                                                "value" : [ "CarePartner" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ "\r\n            and " ]
+                                       }, {
+                                          "r" : "92",
+                                          "s" : [ {
+                                             "r" : "90",
+                                             "s" : [ {
+                                                "r" : "89",
+                                                "s" : [ {
+                                                   "value" : [ "Performer" ]
+                                                } ]
+                                             }, {
+                                                "value" : [ "." ]
+                                             }, {
+                                                "r" : "90",
+                                                "s" : [ {
+                                                   "value" : [ "relationship" ]
+                                                } ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " in " ]
+                                          }, {
+                                             "r" : "91",
+                                             "s" : [ {
+                                                "value" : [ "\"Family\"" ]
+                                             } ]
+                                          } ]
+                                       } ]
+                                    } ]
+                                 } ]
+                              }, {
+                                 "value" : [ "\r\n      )" ]
+                              } ]
+                           } ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "resultTypeSpecifier" : {
+               "type" : "ListTypeSpecifier",
+               "elementType" : {
+                  "name" : "{urn:healthit-gov:qdm:v5_6}PositivePhysicalExamPerformed",
+                  "type" : "NamedTypeSpecifier"
+               }
+            },
+            "expression" : {
+               "localId" : "96",
+               "locator" : "65:5-70:7",
+               "type" : "Query",
+               "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                     "name" : "{urn:healthit-gov:qdm:v5_6}PositivePhysicalExamPerformed",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               },
+               "source" : [ {
+                  "localId" : "83",
+                  "locator" : "65:5-65:64",
+                  "alias" : "BloodPressure",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositivePhysicalExamPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "82",
+                     "locator" : "65:5-65:50",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_6}PositivePhysicalExamPerformed",
+                     "templateId" : "PositivePhysicalExamPerformed",
+                     "codeProperty" : "code",
+                     "codeComparator" : "in",
+                     "type" : "Retrieve",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositivePhysicalExamPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "codes" : {
+                        "locator" : "65:34-65:49",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                        "name" : "Blood Pressure",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "localId" : "95",
+                  "locator" : "66:7-70:7",
+                  "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                  "type" : "Exists",
+                  "operand" : {
+                     "localId" : "94",
+                     "locator" : "66:20-70:7",
+                     "type" : "Query",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "type" : "ChoiceTypeSpecifier",
+                           "choice" : [ {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                              "type" : "NamedTypeSpecifier"
+                           } ]
+                        }
+                     },
+                     "source" : [ {
+                        "localId" : "85",
+                        "locator" : "67:9-67:41",
+                        "alias" : "Performer",
+                        "resultTypeSpecifier" : {
+                           "type" : "ListTypeSpecifier",
+                           "elementType" : {
+                              "type" : "ChoiceTypeSpecifier",
+                              "choice" : [ {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                 "type" : "NamedTypeSpecifier"
+                              } ]
+                           }
+                        },
+                        "expression" : {
+                           "localId" : "84",
+                           "locator" : "67:9-67:31",
+                           "path" : "performer",
+                           "scope" : "BloodPressure",
+                           "type" : "Property",
+                           "resultTypeSpecifier" : {
+                              "type" : "ListTypeSpecifier",
+                              "elementType" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           }
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "where" : {
+                        "localId" : "93",
+                        "locator" : "68:11-69:50",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "And",
+                        "operand" : [ {
+                           "localId" : "88",
+                           "locator" : "68:17-68:40",
+                           "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                           "type" : "Is",
+                           "operand" : {
+                              "localId" : "86",
+                              "locator" : "68:17-68:25",
+                              "name" : "Performer",
+                              "type" : "AliasRef",
+                              "resultTypeSpecifier" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           },
+                           "isTypeSpecifier" : {
+                              "localId" : "87",
+                              "locator" : "68:30-68:40",
+                              "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                              "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                              "type" : "NamedTypeSpecifier"
+                           }
+                        }, {
+                           "localId" : "92",
+                           "locator" : "69:17-69:50",
+                           "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                           "type" : "InValueSet",
+                           "code" : {
+                              "localId" : "90",
+                              "locator" : "69:17-69:38",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Code",
+                              "path" : "relationship",
+                              "scope" : "Performer",
+                              "type" : "Property"
+                           },
+                           "valueset" : {
+                              "localId" : "91",
+                              "locator" : "69:43-69:50",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                              "name" : "Family",
+                              "type" : "ValueSetRef"
+                           }
+                        } ]
+                     }
+                  }
+               }
+            }
+         }, {
+            "localId" : "108",
+            "locator" : "78:1-83:5",
+            "name" : "Qualifying Encounters (4)",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "108",
+                  "s" : [ {
+                     "value" : [ "define ","\"Qualifying Encounters (4)\"",":\r\n  " ]
+                  }, {
+                     "r" : "107",
+                     "s" : [ {
+                        "s" : [ {
+                           "r" : "99",
+                           "s" : [ {
+                              "r" : "98",
+                              "s" : [ {
+                                 "r" : "98",
+                                 "s" : [ {
+                                    "value" : [ "[","\"Encounter, Performed\"",": " ]
+                                 }, {
+                                    "s" : [ {
+                                       "value" : [ "\"Inpatient\"" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "]" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","Encounter" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\r\n    " ]
+                     }, {
+                        "r" : "106",
+                        "s" : [ {
+                           "value" : [ "where " ]
+                        }, {
+                           "r" : "106",
+                           "s" : [ {
+                              "value" : [ "exists " ]
+                           }, {
+                              "r" : "105",
+                              "s" : [ {
+                                 "value" : [ "(\r\n      " ]
+                              }, {
+                                 "r" : "105",
+                                 "s" : [ {
+                                    "s" : [ {
+                                       "r" : "101",
+                                       "s" : [ {
+                                          "r" : "100",
+                                          "s" : [ {
+                                             "s" : [ {
+                                                "value" : [ "Encounter",".","participant" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ " ","Participant" ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "\r\n        " ]
+                                 }, {
+                                    "r" : "104",
+                                    "s" : [ {
+                                       "value" : [ "where " ]
+                                    }, {
+                                       "r" : "104",
+                                       "s" : [ {
+                                          "r" : "102",
+                                          "s" : [ {
+                                             "value" : [ "Participant" ]
+                                          } ]
+                                       }, {
+                                          "value" : [ " is " ]
+                                       }, {
+                                          "r" : "103",
+                                          "s" : [ {
+                                             "value" : [ "\"Organization\"" ]
+                                          } ]
+                                       } ]
+                                    } ]
+                                 } ]
+                              }, {
+                                 "value" : [ "\r\n    )" ]
+                              } ]
+                           } ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "resultTypeSpecifier" : {
+               "type" : "ListTypeSpecifier",
+               "elementType" : {
+                  "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                  "type" : "NamedTypeSpecifier"
+               }
+            },
+            "expression" : {
+               "localId" : "107",
+               "locator" : "79:3-83:5",
+               "type" : "Query",
+               "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                     "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               },
+               "source" : [ {
+                  "localId" : "99",
+                  "locator" : "79:3-79:49",
+                  "alias" : "Encounter",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "98",
+                     "locator" : "79:3-79:39",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                     "templateId" : "PositiveEncounterPerformed",
+                     "codeProperty" : "code",
+                     "codeComparator" : "in",
+                     "type" : "Retrieve",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "codes" : {
+                        "locator" : "79:28-79:38",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                        "name" : "Inpatient",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ ],
+               "where" : {
+                  "localId" : "106",
+                  "locator" : "80:5-83:5",
+                  "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                  "type" : "Exists",
+                  "operand" : {
+                     "localId" : "105",
+                     "locator" : "80:18-83:5",
+                     "type" : "Query",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "type" : "ChoiceTypeSpecifier",
+                           "choice" : [ {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                              "type" : "NamedTypeSpecifier"
+                           }, {
+                              "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                              "type" : "NamedTypeSpecifier"
+                           } ]
+                        }
+                     },
+                     "source" : [ {
+                        "localId" : "101",
+                        "locator" : "81:7-81:39",
+                        "alias" : "Participant",
+                        "resultTypeSpecifier" : {
+                           "type" : "ListTypeSpecifier",
+                           "elementType" : {
+                              "type" : "ChoiceTypeSpecifier",
+                              "choice" : [ {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                 "type" : "NamedTypeSpecifier"
+                              } ]
+                           }
+                        },
+                        "expression" : {
+                           "localId" : "100",
+                           "locator" : "81:7-81:27",
+                           "path" : "participant",
+                           "scope" : "Encounter",
+                           "type" : "Property",
+                           "resultTypeSpecifier" : {
+                              "type" : "ListTypeSpecifier",
+                              "elementType" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           }
+                        }
+                     } ],
+                     "relationship" : [ ],
+                     "where" : {
+                        "localId" : "104",
+                        "locator" : "82:9-82:43",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "Is",
+                        "operand" : {
+                           "localId" : "102",
+                           "locator" : "82:15-82:25",
+                           "name" : "Participant",
+                           "type" : "AliasRef",
+                           "resultTypeSpecifier" : {
+                              "type" : "ChoiceTypeSpecifier",
+                              "choice" : [ {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                 "type" : "NamedTypeSpecifier"
+                              } ]
+                           }
+                        },
+                        "isTypeSpecifier" : {
+                           "localId" : "103",
+                           "locator" : "82:30-82:43",
+                           "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                           "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }
+                  }
+               }
+            }
+         }, {
+            "localId" : "129",
+            "locator" : "85:1-92:7",
+            "name" : "Eye Exam Order",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "129",
+                  "s" : [ {
+                     "value" : [ "define ","\"Eye Exam Order\"",":\r\n  " ]
+                  }, {
+                     "r" : "128",
+                     "s" : [ {
+                        "s" : [ {
+                           "r" : "110",
+                           "s" : [ {
+                              "r" : "109",
+                              "s" : [ {
+                                 "r" : "109",
+                                 "s" : [ {
+                                    "value" : [ "[","\"Intervention, Order\"",": " ]
+                                 }, {
+                                    "s" : [ {
+                                       "value" : [ "\"Diabetic Eye Exam\"" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "]" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","ExamOrder" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\r\n    " ]
+                     }, {
+                        "r" : "127",
+                        "s" : [ {
+                           "value" : [ "with " ]
+                        }, {
+                           "r" : "112",
+                           "s" : [ {
+                              "r" : "111",
+                              "s" : [ {
+                                 "s" : [ {
+                                    "value" : [ "\"Qualifying Encounters (4)\"" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","Encounter" ]
+                           } ]
+                        }, {
+                           "value" : [ "\r\n      such that " ]
+                        }, {
+                           "r" : "126",
+                           "s" : [ {
+                              "value" : [ "exists " ]
+                           }, {
+                              "r" : "125",
+                              "s" : [ {
+                                 "value" : [ "(\r\n        " ]
+                              }, {
+                                 "r" : "125",
+                                 "s" : [ {
+                                    "s" : [ {
+                                       "r" : "114",
+                                       "s" : [ {
+                                          "r" : "113",
+                                          "s" : [ {
+                                             "s" : [ {
+                                                "value" : [ "ExamOrder",".","requester" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ " ","Requester" ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "\r\n          " ]
+                                 }, {
+                                    "r" : "124",
+                                    "s" : [ {
+                                       "value" : [ "where " ]
+                                    }, {
+                                       "r" : "124",
+                                       "s" : [ {
+                                          "r" : "117",
+                                          "s" : [ {
+                                             "r" : "115",
+                                             "s" : [ {
+                                                "value" : [ "Requester" ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " is " ]
+                                          }, {
+                                             "r" : "116",
+                                             "s" : [ {
+                                                "value" : [ "Organization" ]
+                                             } ]
+                                          } ]
+                                       }, {
+                                          "value" : [ "\r\n            and " ]
+                                       }, {
+                                          "r" : "123",
+                                          "s" : [ {
+                                             "r" : "119",
+                                             "s" : [ {
+                                                "r" : "118",
+                                                "s" : [ {
+                                                   "value" : [ "Requester" ]
+                                                } ]
+                                             }, {
+                                                "value" : [ "." ]
+                                             }, {
+                                                "r" : "119",
+                                                "s" : [ {
+                                                   "value" : [ "id" ]
+                                                } ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " in " ]
+                                          }, {
+                                             "r" : "122",
+                                             "s" : [ {
+                                                "r" : "121",
+                                                "s" : [ {
+                                                   "r" : "120",
+                                                   "s" : [ {
+                                                      "value" : [ "Encounter" ]
+                                                   } ]
+                                                }, {
+                                                   "value" : [ "." ]
+                                                }, {
+                                                   "r" : "121",
+                                                   "s" : [ {
+                                                      "value" : [ "participant" ]
+                                                   } ]
+                                                } ]
+                                             }, {
+                                                "value" : [ "." ]
+                                             }, {
+                                                "r" : "122",
+                                                "s" : [ {
+                                                   "value" : [ "id" ]
+                                                } ]
+                                             } ]
+                                          } ]
+                                       } ]
+                                    } ]
+                                 } ]
+                              }, {
+                                 "value" : [ "\r\n      )" ]
+                              } ]
+                           } ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "resultTypeSpecifier" : {
+               "type" : "ListTypeSpecifier",
+               "elementType" : {
+                  "name" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionOrder",
+                  "type" : "NamedTypeSpecifier"
+               }
+            },
+            "expression" : {
+               "localId" : "128",
+               "locator" : "86:3-92:7",
+               "type" : "Query",
+               "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                     "name" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionOrder",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               },
+               "source" : [ {
+                  "localId" : "110",
+                  "locator" : "86:3-86:56",
+                  "alias" : "ExamOrder",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionOrder",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "109",
+                     "locator" : "86:3-86:46",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionOrder",
+                     "templateId" : "PositiveInterventionOrder",
+                     "codeProperty" : "code",
+                     "codeComparator" : "in",
+                     "type" : "Retrieve",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionOrder",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "codes" : {
+                        "locator" : "86:27-86:45",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                        "name" : "Diabetic Eye Exam",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ {
+                  "localId" : "127",
+                  "locator" : "87:5-92:7",
+                  "alias" : "Encounter",
+                  "type" : "With",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "111",
+                     "locator" : "87:10-87:36",
+                     "name" : "Qualifying Encounters (4)",
+                     "type" : "ExpressionRef",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }
+                  },
+                  "suchThat" : {
+                     "localId" : "126",
+                     "locator" : "88:17-92:7",
+                     "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                     "type" : "Exists",
+                     "operand" : {
+                        "localId" : "125",
+                        "locator" : "88:24-92:7",
+                        "type" : "Query",
+                        "resultTypeSpecifier" : {
+                           "type" : "ListTypeSpecifier",
+                           "elementType" : {
+                              "type" : "ChoiceTypeSpecifier",
+                              "choice" : [ {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                 "type" : "NamedTypeSpecifier"
+                              }, {
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                 "type" : "NamedTypeSpecifier"
+                              } ]
+                           }
+                        },
+                        "source" : [ {
+                           "localId" : "114",
+                           "locator" : "89:9-89:37",
+                           "alias" : "Requester",
+                           "resultTypeSpecifier" : {
+                              "type" : "ListTypeSpecifier",
+                              "elementType" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           },
+                           "expression" : {
+                              "localId" : "113",
+                              "locator" : "89:9-89:27",
+                              "path" : "requester",
+                              "scope" : "ExamOrder",
+                              "type" : "Property",
+                              "resultTypeSpecifier" : {
+                                 "type" : "ListTypeSpecifier",
+                                 "elementType" : {
+                                    "type" : "ChoiceTypeSpecifier",
+                                    "choice" : [ {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                       "type" : "NamedTypeSpecifier"
+                                    } ]
+                                 }
+                              }
+                           }
+                        } ],
+                        "relationship" : [ ],
+                        "where" : {
+                           "localId" : "124",
+                           "locator" : "90:11-91:56",
+                           "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                           "type" : "And",
+                           "operand" : [ {
+                              "localId" : "117",
+                              "locator" : "90:17-90:41",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                              "type" : "Is",
+                              "operand" : {
+                                 "localId" : "115",
+                                 "locator" : "90:17-90:25",
+                                 "name" : "Requester",
+                                 "type" : "AliasRef",
+                                 "resultTypeSpecifier" : {
+                                    "type" : "ChoiceTypeSpecifier",
+                                    "choice" : [ {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                       "type" : "NamedTypeSpecifier"
+                                    } ]
+                                 }
+                              },
+                              "isTypeSpecifier" : {
+                                 "localId" : "116",
+                                 "locator" : "90:30-90:41",
+                                 "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                 "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                 "type" : "NamedTypeSpecifier"
+                              }
+                           }, {
+                              "localId" : "123",
+                              "locator" : "91:17-91:56",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                              "type" : "In",
+                              "operand" : [ {
+                                 "localId" : "119",
+                                 "locator" : "91:17-91:28",
+                                 "resultTypeName" : "{urn:hl7-org:elm-types:r1}String",
+                                 "path" : "id",
+                                 "scope" : "Requester",
+                                 "type" : "Property"
+                              }, {
+                                 "localId" : "122",
+                                 "locator" : "91:33-91:56",
+                                 "type" : "Query",
+                                 "resultTypeSpecifier" : {
+                                    "type" : "ListTypeSpecifier",
+                                    "elementType" : {
+                                       "name" : "{urn:hl7-org:elm-types:r1}String",
+                                       "type" : "NamedTypeSpecifier"
+                                    }
+                                 },
+                                 "source" : [ {
+                                    "alias" : "$this",
+                                    "expression" : {
+                                       "localId" : "121",
+                                       "locator" : "91:33-91:53",
+                                       "path" : "participant",
+                                       "scope" : "Encounter",
+                                       "type" : "Property",
+                                       "resultTypeSpecifier" : {
+                                          "type" : "ListTypeSpecifier",
+                                          "elementType" : {
+                                             "type" : "ChoiceTypeSpecifier",
+                                             "choice" : [ {
+                                                "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                                "type" : "NamedTypeSpecifier"
+                                             }, {
+                                                "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                                "type" : "NamedTypeSpecifier"
+                                             }, {
+                                                "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                                "type" : "NamedTypeSpecifier"
+                                             }, {
+                                                "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                                "type" : "NamedTypeSpecifier"
+                                             }, {
+                                                "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                                "type" : "NamedTypeSpecifier"
+                                             } ]
+                                          }
+                                       }
+                                    }
+                                 } ],
+                                 "where" : {
+                                    "type" : "Not",
+                                    "operand" : {
+                                       "type" : "IsNull",
+                                       "operand" : {
+                                          "path" : "id",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "name" : "$this",
+                                             "type" : "AliasRef"
+                                          }
+                                       }
+                                    }
+                                 },
+                                 "return" : {
+                                    "distinct" : false,
+                                    "expression" : {
+                                       "path" : "id",
+                                       "type" : "Property",
+                                       "source" : {
+                                          "name" : "$this",
+                                          "type" : "AliasRef"
+                                       }
+                                    }
+                                 }
+                              } ]
+                           } ]
+                        }
+                     }
+                  }
+               } ]
+            }
+         }, {
+            "localId" : "163",
+            "locator" : "94:1-106:9",
+            "name" : "Eye Exam Complete",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "163",
+                  "s" : [ {
+                     "value" : [ "define ","\"Eye Exam Complete\"",":\r\n  " ]
+                  }, {
+                     "r" : "162",
+                     "s" : [ {
+                        "s" : [ {
+                           "r" : "131",
+                           "s" : [ {
+                              "r" : "130",
+                              "s" : [ {
+                                 "r" : "130",
+                                 "s" : [ {
+                                    "value" : [ "[","\"Intervention, Performed\"",": " ]
+                                 }, {
+                                    "s" : [ {
+                                       "value" : [ "\"Diabetic Eye Exam\"" ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "]" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","EyeExam" ]
+                           } ]
+                        } ]
+                     }, {
+                        "value" : [ "\r\n    " ]
+                     }, {
+                        "r" : "161",
+                        "s" : [ {
+                           "value" : [ "with " ]
+                        }, {
+                           "r" : "133",
+                           "s" : [ {
+                              "r" : "132",
+                              "s" : [ {
+                                 "s" : [ {
+                                    "value" : [ "\"Qualifying Encounters (4)\"" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ " ","Encounter" ]
+                           } ]
+                        }, {
+                           "value" : [ "\r\n      such that " ]
+                        }, {
+                           "r" : "160",
+                           "s" : [ {
+                              "r" : "147",
+                              "s" : [ {
+                                 "value" : [ "exists " ]
+                              }, {
+                                 "r" : "146",
+                                 "s" : [ {
+                                    "value" : [ "(\r\n        " ]
+                                 }, {
+                                    "r" : "146",
+                                    "s" : [ {
+                                       "s" : [ {
+                                          "r" : "135",
+                                          "s" : [ {
+                                             "r" : "134",
+                                             "s" : [ {
+                                                "s" : [ {
+                                                   "value" : [ "EyeExam",".","performer" ]
+                                                } ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " ","Performer" ]
+                                          } ]
+                                       } ]
+                                    }, {
+                                       "value" : [ "\r\n          " ]
+                                    }, {
+                                       "r" : "145",
+                                       "s" : [ {
+                                          "value" : [ "where " ]
+                                       }, {
+                                          "r" : "145",
+                                          "s" : [ {
+                                             "r" : "138",
+                                             "s" : [ {
+                                                "r" : "136",
+                                                "s" : [ {
+                                                   "value" : [ "Performer" ]
+                                                } ]
+                                             }, {
+                                                "value" : [ " is " ]
+                                             }, {
+                                                "r" : "137",
+                                                "s" : [ {
+                                                   "value" : [ "Organization" ]
+                                                } ]
+                                             } ]
+                                          }, {
+                                             "value" : [ "\r\n            and " ]
+                                          }, {
+                                             "r" : "144",
+                                             "s" : [ {
+                                                "r" : "140",
+                                                "s" : [ {
+                                                   "r" : "139",
+                                                   "s" : [ {
+                                                      "value" : [ "Performer" ]
+                                                   } ]
+                                                }, {
+                                                   "value" : [ "." ]
+                                                }, {
+                                                   "r" : "140",
+                                                   "s" : [ {
+                                                      "value" : [ "id" ]
+                                                   } ]
+                                                } ]
+                                             }, {
+                                                "value" : [ " in " ]
+                                             }, {
+                                                "r" : "143",
+                                                "s" : [ {
+                                                   "r" : "142",
+                                                   "s" : [ {
+                                                      "r" : "141",
+                                                      "s" : [ {
+                                                         "value" : [ "Encounter" ]
+                                                      } ]
+                                                   }, {
+                                                      "value" : [ "." ]
+                                                   }, {
+                                                      "r" : "142",
+                                                      "s" : [ {
+                                                         "value" : [ "participant" ]
+                                                      } ]
+                                                   } ]
+                                                }, {
+                                                   "value" : [ "." ]
+                                                }, {
+                                                   "r" : "143",
+                                                   "s" : [ {
+                                                      "value" : [ "id" ]
+                                                   } ]
+                                                } ]
+                                             } ]
+                                          } ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "\r\n      )" ]
+                                 } ]
+                              } ]
+                           }, {
+                              "value" : [ "\r\n        and " ]
+                           }, {
+                              "r" : "159",
+                              "s" : [ {
+                                 "value" : [ "exists " ]
+                              }, {
+                                 "r" : "158",
+                                 "s" : [ {
+                                    "value" : [ "(\r\n          " ]
+                                 }, {
+                                    "r" : "158",
+                                    "s" : [ {
+                                       "s" : [ {
+                                          "r" : "149",
+                                          "s" : [ {
+                                             "r" : "148",
+                                             "s" : [ {
+                                                "s" : [ {
+                                                   "value" : [ "EyeExam",".","performer" ]
+                                                } ]
+                                             } ]
+                                          }, {
+                                             "value" : [ " ","Performer" ]
+                                          } ]
+                                       } ]
+                                    }, {
+                                       "value" : [ "\r\n            " ]
+                                    }, {
+                                       "r" : "157",
+                                       "s" : [ {
+                                          "value" : [ "where " ]
+                                       }, {
+                                          "r" : "157",
+                                          "s" : [ {
+                                             "r" : "152",
+                                             "s" : [ {
+                                                "r" : "150",
+                                                "s" : [ {
+                                                   "value" : [ "Performer" ]
+                                                } ]
+                                             }, {
+                                                "value" : [ " is " ]
+                                             }, {
+                                                "r" : "151",
+                                                "s" : [ {
+                                                   "value" : [ "\"Practitioner\"" ]
+                                                } ]
+                                             } ]
+                                          }, {
+                                             "value" : [ "\r\n              and " ]
+                                          }, {
+                                             "r" : "156",
+                                             "s" : [ {
+                                                "r" : "154",
+                                                "s" : [ {
+                                                   "r" : "153",
+                                                   "s" : [ {
+                                                      "value" : [ "Performer" ]
+                                                   } ]
+                                                }, {
+                                                   "value" : [ "." ]
+                                                }, {
+                                                   "r" : "154",
+                                                   "s" : [ {
+                                                      "value" : [ "specialty" ]
+                                                   } ]
+                                                } ]
+                                             }, {
+                                                "value" : [ " in " ]
+                                             }, {
+                                                "r" : "155",
+                                                "s" : [ {
+                                                   "value" : [ "\"Ophthalmology\"" ]
+                                                } ]
+                                             } ]
+                                          } ]
+                                       } ]
+                                    } ]
+                                 }, {
+                                    "value" : [ "\r\n        )" ]
+                                 } ]
+                              } ]
+                           } ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "resultTypeSpecifier" : {
+               "type" : "ListTypeSpecifier",
+               "elementType" : {
+                  "name" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionPerformed",
+                  "type" : "NamedTypeSpecifier"
+               }
+            },
+            "expression" : {
+               "localId" : "162",
+               "locator" : "95:3-106:9",
+               "type" : "Query",
+               "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                     "name" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionPerformed",
+                     "type" : "NamedTypeSpecifier"
+                  }
+               },
+               "source" : [ {
+                  "localId" : "131",
+                  "locator" : "95:3-95:58",
+                  "alias" : "EyeExam",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "130",
+                     "locator" : "95:3-95:50",
+                     "dataType" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionPerformed",
+                     "templateId" : "PositiveInterventionPerformed",
+                     "codeProperty" : "code",
+                     "codeComparator" : "in",
+                     "type" : "Retrieve",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveInterventionPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     },
+                     "codes" : {
+                        "locator" : "95:31-95:49",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                        "name" : "Diabetic Eye Exam",
+                        "type" : "ValueSetRef"
+                     }
+                  }
+               } ],
+               "relationship" : [ {
+                  "localId" : "161",
+                  "locator" : "96:5-106:9",
+                  "alias" : "Encounter",
+                  "type" : "With",
+                  "resultTypeSpecifier" : {
+                     "type" : "ListTypeSpecifier",
+                     "elementType" : {
+                        "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                        "type" : "NamedTypeSpecifier"
+                     }
+                  },
+                  "expression" : {
+                     "localId" : "132",
+                     "locator" : "96:10-96:36",
+                     "name" : "Qualifying Encounters (4)",
+                     "type" : "ExpressionRef",
+                     "resultTypeSpecifier" : {
+                        "type" : "ListTypeSpecifier",
+                        "elementType" : {
+                           "name" : "{urn:healthit-gov:qdm:v5_6}PositiveEncounterPerformed",
+                           "type" : "NamedTypeSpecifier"
+                        }
+                     }
+                  },
+                  "suchThat" : {
+                     "localId" : "160",
+                     "locator" : "97:17-106:9",
+                     "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                     "type" : "And",
+                     "operand" : [ {
+                        "localId" : "147",
+                        "locator" : "97:17-101:7",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "Exists",
+                        "operand" : {
+                           "localId" : "146",
+                           "locator" : "97:24-101:7",
+                           "type" : "Query",
+                           "resultTypeSpecifier" : {
+                              "type" : "ListTypeSpecifier",
+                              "elementType" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           },
+                           "source" : [ {
+                              "localId" : "135",
+                              "locator" : "98:9-98:35",
+                              "alias" : "Performer",
+                              "resultTypeSpecifier" : {
+                                 "type" : "ListTypeSpecifier",
+                                 "elementType" : {
+                                    "type" : "ChoiceTypeSpecifier",
+                                    "choice" : [ {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                       "type" : "NamedTypeSpecifier"
+                                    } ]
+                                 }
+                              },
+                              "expression" : {
+                                 "localId" : "134",
+                                 "locator" : "98:9-98:25",
+                                 "path" : "performer",
+                                 "scope" : "EyeExam",
+                                 "type" : "Property",
+                                 "resultTypeSpecifier" : {
+                                    "type" : "ListTypeSpecifier",
+                                    "elementType" : {
+                                       "type" : "ChoiceTypeSpecifier",
+                                       "choice" : [ {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                          "type" : "NamedTypeSpecifier"
+                                       } ]
+                                    }
+                                 }
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "localId" : "145",
+                              "locator" : "99:11-100:56",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                              "type" : "And",
+                              "operand" : [ {
+                                 "localId" : "138",
+                                 "locator" : "99:17-99:41",
+                                 "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "Is",
+                                 "operand" : {
+                                    "localId" : "136",
+                                    "locator" : "99:17-99:25",
+                                    "name" : "Performer",
+                                    "type" : "AliasRef",
+                                    "resultTypeSpecifier" : {
+                                       "type" : "ChoiceTypeSpecifier",
+                                       "choice" : [ {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                          "type" : "NamedTypeSpecifier"
+                                       } ]
+                                    }
+                                 },
+                                 "isTypeSpecifier" : {
+                                    "localId" : "137",
+                                    "locator" : "99:30-99:41",
+                                    "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              }, {
+                                 "localId" : "144",
+                                 "locator" : "100:17-100:56",
+                                 "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "In",
+                                 "operand" : [ {
+                                    "localId" : "140",
+                                    "locator" : "100:17-100:28",
+                                    "resultTypeName" : "{urn:hl7-org:elm-types:r1}String",
+                                    "path" : "id",
+                                    "scope" : "Performer",
+                                    "type" : "Property"
+                                 }, {
+                                    "localId" : "143",
+                                    "locator" : "100:33-100:56",
+                                    "type" : "Query",
+                                    "resultTypeSpecifier" : {
+                                       "type" : "ListTypeSpecifier",
+                                       "elementType" : {
+                                          "name" : "{urn:hl7-org:elm-types:r1}String",
+                                          "type" : "NamedTypeSpecifier"
+                                       }
+                                    },
+                                    "source" : [ {
+                                       "alias" : "$this",
+                                       "expression" : {
+                                          "localId" : "142",
+                                          "locator" : "100:33-100:53",
+                                          "path" : "participant",
+                                          "scope" : "Encounter",
+                                          "type" : "Property",
+                                          "resultTypeSpecifier" : {
+                                             "type" : "ListTypeSpecifier",
+                                             "elementType" : {
+                                                "type" : "ChoiceTypeSpecifier",
+                                                "choice" : [ {
+                                                   "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                                   "type" : "NamedTypeSpecifier"
+                                                }, {
+                                                   "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                                   "type" : "NamedTypeSpecifier"
+                                                }, {
+                                                   "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                                   "type" : "NamedTypeSpecifier"
+                                                }, {
+                                                   "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                                   "type" : "NamedTypeSpecifier"
+                                                }, {
+                                                   "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                                   "type" : "NamedTypeSpecifier"
+                                                } ]
+                                             }
+                                          }
+                                       }
+                                    } ],
+                                    "where" : {
+                                       "type" : "Not",
+                                       "operand" : {
+                                          "type" : "IsNull",
+                                          "operand" : {
+                                             "path" : "id",
+                                             "type" : "Property",
+                                             "source" : {
+                                                "name" : "$this",
+                                                "type" : "AliasRef"
+                                             }
+                                          }
+                                       }
+                                    },
+                                    "return" : {
+                                       "distinct" : false,
+                                       "expression" : {
+                                          "path" : "id",
+                                          "type" : "Property",
+                                          "source" : {
+                                             "name" : "$this",
+                                             "type" : "AliasRef"
+                                          }
+                                       }
+                                    }
+                                 } ]
+                              } ]
+                           }
+                        }
+                     }, {
+                        "localId" : "159",
+                        "locator" : "102:13-106:9",
+                        "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                        "type" : "Exists",
+                        "operand" : {
+                           "localId" : "158",
+                           "locator" : "102:20-106:9",
+                           "type" : "Query",
+                           "resultTypeSpecifier" : {
+                              "type" : "ListTypeSpecifier",
+                              "elementType" : {
+                                 "type" : "ChoiceTypeSpecifier",
+                                 "choice" : [ {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                    "type" : "NamedTypeSpecifier"
+                                 }, {
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                    "type" : "NamedTypeSpecifier"
+                                 } ]
+                              }
+                           },
+                           "source" : [ {
+                              "localId" : "149",
+                              "locator" : "103:11-103:37",
+                              "alias" : "Performer",
+                              "resultTypeSpecifier" : {
+                                 "type" : "ListTypeSpecifier",
+                                 "elementType" : {
+                                    "type" : "ChoiceTypeSpecifier",
+                                    "choice" : [ {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                       "type" : "NamedTypeSpecifier"
+                                    }, {
+                                       "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                       "type" : "NamedTypeSpecifier"
+                                    } ]
+                                 }
+                              },
+                              "expression" : {
+                                 "localId" : "148",
+                                 "locator" : "103:11-103:27",
+                                 "path" : "performer",
+                                 "scope" : "EyeExam",
+                                 "type" : "Property",
+                                 "resultTypeSpecifier" : {
+                                    "type" : "ListTypeSpecifier",
+                                    "elementType" : {
+                                       "type" : "ChoiceTypeSpecifier",
+                                       "choice" : [ {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                          "type" : "NamedTypeSpecifier"
+                                       } ]
+                                    }
+                                 }
+                              }
+                           } ],
+                           "relationship" : [ ],
+                           "where" : {
+                              "localId" : "157",
+                              "locator" : "104:13-105:56",
+                              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                              "type" : "And",
+                              "operand" : [ {
+                                 "localId" : "152",
+                                 "locator" : "104:19-104:45",
+                                 "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "Is",
+                                 "operand" : {
+                                    "localId" : "150",
+                                    "locator" : "104:19-104:27",
+                                    "name" : "Performer",
+                                    "type" : "AliasRef",
+                                    "resultTypeSpecifier" : {
+                                       "type" : "ChoiceTypeSpecifier",
+                                       "choice" : [ {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}PatientEntity",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}CarePartner",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Organization",
+                                          "type" : "NamedTypeSpecifier"
+                                       }, {
+                                          "name" : "{urn:healthit-gov:qdm:v5_6}Location",
+                                          "type" : "NamedTypeSpecifier"
+                                       } ]
+                                    }
+                                 },
+                                 "isTypeSpecifier" : {
+                                    "localId" : "151",
+                                    "locator" : "104:32-104:45",
+                                    "resultTypeName" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "name" : "{urn:healthit-gov:qdm:v5_6}Practitioner",
+                                    "type" : "NamedTypeSpecifier"
+                                 }
+                              }, {
+                                 "localId" : "156",
+                                 "locator" : "105:19-105:56",
+                                 "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean",
+                                 "type" : "InValueSet",
+                                 "code" : {
+                                    "localId" : "154",
+                                    "locator" : "105:19-105:37",
+                                    "resultTypeName" : "{urn:hl7-org:elm-types:r1}Code",
+                                    "path" : "specialty",
+                                    "scope" : "Performer",
+                                    "type" : "Property"
+                                 },
+                                 "valueset" : {
+                                    "localId" : "155",
+                                    "locator" : "105:42-105:56",
+                                    "resultTypeName" : "{urn:hl7-org:elm-types:r1}ValueSet",
+                                    "name" : "Ophthalmology",
+                                    "type" : "ValueSetRef"
+                                 }
+                              } ]
+                           }
+                        }
+                     } ]
+                  }
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

@@ -1,0 +1,236 @@
+{
+   "library" : {
+      "annotation" : [ {
+         "translatorOptions" : "EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation",
+         "type" : "CqlToElmInfo"
+      } ],
+      "identifier" : {
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "localId" : "2",
+            "locator" : "1:1-1:40",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+            "name" : "ValidQuantityLiteral",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "2",
+                  "s" : [ {
+                     "value" : [ "define ","ValidQuantityLiteral",": " ]
+                  }, {
+                     "r" : "1",
+                     "s" : [ {
+                        "value" : [ "10 ","'mm[Hg]'" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "1",
+               "locator" : "1:30-1:40",
+               "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "value" : 10,
+               "unit" : "mm[Hg]",
+               "type" : "Quantity"
+            }
+         }, {
+            "localId" : "4",
+            "locator" : "2:1-2:50",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+            "name" : "InvalidQuantityLiteral",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "4",
+                  "s" : [ {
+                     "value" : [ "define ","InvalidQuantityLiteral",": " ]
+                  }, {
+                     "r" : "3",
+                     "s" : [ {
+                        "value" : [ "10 ","'shab-shab-shab'" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "3",
+               "locator" : "2:32-2:50",
+               "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "value" : 10,
+               "unit" : "shab-shab-shab",
+               "type" : "Quantity"
+            }
+         }, {
+            "localId" : "6",
+            "locator" : "3:1-3:34",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+            "name" : "UnitQuantityLiteral",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "6",
+                  "s" : [ {
+                     "value" : [ "define ","UnitQuantityLiteral",": " ]
+                  }, {
+                     "r" : "5",
+                     "s" : [ {
+                        "value" : [ "10 ","'1'" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "5",
+               "locator" : "3:29-3:34",
+               "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "value" : 10,
+               "unit" : "1",
+               "type" : "Quantity"
+            }
+         }, {
+            "localId" : "8",
+            "locator" : "4:1-4:55",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+            "name" : "AnnotationQuantityLiteral",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "8",
+                  "s" : [ {
+                     "value" : [ "define ","AnnotationQuantityLiteral",": " ]
+                  }, {
+                     "r" : "7",
+                     "s" : [ {
+                        "value" : [ "10 ","'{shab-shab-shab}'" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "7",
+               "locator" : "4:35-4:55",
+               "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "value" : 10,
+               "unit" : "{shab-shab-shab}",
+               "type" : "Quantity"
+            }
+         }, {
+            "localId" : "11",
+            "locator" : "5:1-5:52",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+            "name" : "QuantityConversionTest",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "11",
+                  "s" : [ {
+                     "value" : [ "define ","QuantityConversionTest",": " ]
+                  }, {
+                     "r" : "10",
+                     "s" : [ {
+                        "value" : [ "convert " ]
+                     }, {
+                        "r" : "9",
+                        "s" : [ {
+                           "value" : [ "5 ","'mg'" ]
+                        } ]
+                     }, {
+                        "value" : [ " to ","'g'" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "10",
+               "locator" : "5:32-5:52",
+               "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "type" : "ConvertQuantity",
+               "operand" : [ {
+                  "localId" : "9",
+                  "locator" : "5:40-5:45",
+                  "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+                  "value" : 5,
+                  "unit" : "mg",
+                  "type" : "Quantity"
+               }, {
+                  "locator" : "5:50-5:52",
+                  "resultTypeName" : "{urn:hl7-org:elm-types:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                  "value" : "g",
+                  "type" : "Literal"
+               } ]
+            }
+         }, {
+            "localId" : "14",
+            "locator" : "6:1-6:59",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+            "name" : "QuantityConversionWeekTest",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "14",
+                  "s" : [ {
+                     "value" : [ "define ","QuantityConversionWeekTest",": " ]
+                  }, {
+                     "r" : "13",
+                     "s" : [ {
+                        "value" : [ "convert " ]
+                     }, {
+                        "r" : "12",
+                        "s" : [ {
+                           "value" : [ "28 ","days" ]
+                        } ]
+                     }, {
+                        "value" : [ " to ","weeks" ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "13",
+               "locator" : "6:36-6:59",
+               "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+               "type" : "ConvertQuantity",
+               "operand" : [ {
+                  "localId" : "12",
+                  "locator" : "6:44-6:50",
+                  "resultTypeName" : "{urn:hl7-org:elm-types:r1}Quantity",
+                  "value" : 28,
+                  "unit" : "days",
+                  "type" : "Quantity"
+               }, {
+                  "locator" : "6:55-6:59",
+                  "resultTypeName" : "{urn:hl7-org:elm-types:r1}String",
+                  "valueType" : "{urn:hl7-org:elm-types:r1}String",
+                  "value" : "wk",
+                  "type" : "Literal"
+               } ]
+            }
+         } ]
+      }
+   }
+}
+

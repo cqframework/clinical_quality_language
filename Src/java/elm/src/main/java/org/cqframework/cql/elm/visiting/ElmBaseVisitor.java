@@ -206,6 +206,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof ToBoolean) return visitToBoolean((ToBoolean)elm, context);
         else if (elm instanceof ToConcept) return visitToConcept((ToConcept)elm, context);
         else if (elm instanceof ToDateTime) return visitToDateTime((ToDateTime)elm, context);
+        else if (elm instanceof ToLong) return visitToLong((ToLong)elm, context);
         else if (elm instanceof ToDecimal) return visitToDecimal((ToDecimal)elm, context);
         else if (elm instanceof ToInteger) return visitToInteger((ToInteger)elm, context);
         else if (elm instanceof ToQuantity) return visitToQuantity((ToQuantity)elm, context);
@@ -757,6 +758,16 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitToDateTime(ToDateTime elm, C context) {
         return null;
     }
+
+    /**
+     * Visit a ToLong. This method will be called for
+     * every node in the tree that is a ToLong.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    private T visitToLong(ToLong elm, C context) { return null; }
 
     /**
      * Visit a ToDecimal. This method will be called for

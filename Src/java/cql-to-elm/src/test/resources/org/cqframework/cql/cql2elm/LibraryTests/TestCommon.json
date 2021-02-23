@@ -1,0 +1,104 @@
+{
+   "library" : {
+      "annotation" : [ {
+         "translatorOptions" : "EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation",
+         "type" : "CqlToElmInfo"
+      } ],
+      "identifier" : {
+         "id" : "TestCommon"
+      },
+      "schemaIdentifier" : {
+         "id" : "urn:hl7-org:elm",
+         "version" : "r1"
+      },
+      "usings" : {
+         "def" : [ {
+            "localIdentifier" : "System",
+            "uri" : "urn:hl7-org:elm-types:r1"
+         }, {
+            "localId" : "1",
+            "locator" : "3:1-3:23",
+            "localIdentifier" : "QDM",
+            "uri" : "urn:healthit-gov:qdm:v5_4",
+            "version" : "5.4",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "1",
+                  "s" : [ {
+                     "value" : [ "using ","QDM"," version ","'5.4'" ]
+                  } ]
+               }
+            } ]
+         } ]
+      },
+      "contexts" : {
+         "def" : [ {
+            "locator" : "5:1-5:15",
+            "name" : "Patient"
+         } ]
+      },
+      "statements" : {
+         "def" : [ {
+            "locator" : "5:1-5:15",
+            "name" : "Patient",
+            "context" : "Patient",
+            "expression" : {
+               "type" : "SingletonFrom",
+               "operand" : {
+                  "locator" : "5:1-5:15",
+                  "dataType" : "{urn:healthit-gov:qdm:v5_4}Patient",
+                  "templateId" : "Patient",
+                  "type" : "Retrieve"
+               }
+            }
+         }, {
+            "localId" : "4",
+            "locator" : "7:1-7:50",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}DateTime",
+            "name" : "TestPatientBirthdate",
+            "context" : "Patient",
+            "accessLevel" : "Public",
+            "annotation" : [ {
+               "type" : "Annotation",
+               "s" : {
+                  "r" : "4",
+                  "s" : [ {
+                     "value" : [ "define ","TestPatientBirthdate",": " ]
+                  }, {
+                     "r" : "3",
+                     "s" : [ {
+                        "r" : "2",
+                        "s" : [ {
+                           "value" : [ "Patient" ]
+                        } ]
+                     }, {
+                        "value" : [ "." ]
+                     }, {
+                        "r" : "3",
+                        "s" : [ {
+                           "value" : [ "birthDatetime" ]
+                        } ]
+                     } ]
+                  } ]
+               }
+            } ],
+            "expression" : {
+               "localId" : "3",
+               "locator" : "7:30-7:50",
+               "resultTypeName" : "{urn:hl7-org:elm-types:r1}DateTime",
+               "path" : "birthDatetime",
+               "type" : "Property",
+               "source" : {
+                  "localId" : "2",
+                  "locator" : "7:30-7:36",
+                  "resultTypeName" : "{urn:healthit-gov:qdm:v5_4}Patient",
+                  "name" : "Patient",
+                  "type" : "ExpressionRef"
+               }
+            }
+         } ]
+      }
+   }
+}
+
