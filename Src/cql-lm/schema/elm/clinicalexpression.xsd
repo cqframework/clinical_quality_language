@@ -6,6 +6,135 @@
 		</xs:documentation>
 	</xs:annotation>
 	<xs:include schemaLocation="expression.xsd"/>
+	<xs:complexType name="CodeFilterElement">
+		<xs:annotation>
+			<xs:documentation>The CodeFilterElement type specifies a terminology filter criteria for use within a retrieve, specified as either [property] [comparator] [value] or [search] [comparator] [value].</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="value" type="Expression" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>An expression that provides the comparison value for the filter. The expression is expected to result in a List&lt;Code&gt; to match against. Only the clinical statements that match at least one of the specified codes will be returned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="property" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The property attribute specifies which property the filter applies to.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="valueSetProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The valueSetProperty attribute optionally specifies which property of the model contains a value set identifier that can be used as an alternative mechanism for matching the value set of the retrieve, in the case when no code is specified in the source data.
+
+This attribute is intended to address the case where systems representing negation rationale for an activity not performed do so by indicating a valueset identifier rather than a code. For example, when indicating that a medication was not administered, the value set identifier for the expected medication is used, rather than indicating a specific medication that was not administered. In this case, the valueSetProperty attribute allows the retrieve to specify where to look for the value set identifier without needing to change the conceptual data model or the CQL logic describing the negated activity.
+
+Note that implementers could also specify this information elsewhere as part of an implementation catalog, rather than on each Retrieve expression, but allowing it to be specified in the retrieve expression gives the most flexibility. From the perspective of ELM, the specification ensures that ELM can be processed without reference to the model information.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="search" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The search attribute specifies the name of a search path for the filter.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="comparator" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The codeComparator attribute specifies how elements of the code property should be matched to the terminology. One of 'in', '=', or '~'. Note that 'in' will resolve to the appropriate terminology matching operator, resulting in equivalence semantics for value set and code system membership testing.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DateFilterElement">
+		<xs:annotation>
+			<xs:documentation>The DateFilterElement type specifies a date-valued filter criteria for use within a retrieve, specified as either a date-valued [property], a date-value [lowProperty] and [highProperty] or a [search], and an expression that evaluates to a date or time type, an interval of a date or time type, or a time-valued Quantity.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="value" type="Expression" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>An expression that provides the comparison value for the filter. The expression is expected to result in a date or time type, an interval of a date or time type, or a time-valued quantity. Only the clinical statements that match at least one of the specified codes will be returned.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="property" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The dateProperty attribute optionally specifies which property of the model contains the clinically relevant date for the clinical statement.
+
+This property is expected to reference a property that is either a Date or DateTime, or an interval of Date or DateTime. In either case, the result set will only include instances where the value of the dateProperty is during the date range. For Date or DateTime values, this means the date is both the same or after the beginning of the range, and the same or before the end of the range. For Date- or DateTime-based interval values, this means that the entire interval is included in the date range.
+
+Instances with no value for the dateProperty will not be included in the result set if a date range is specified.
+
+Note that if the property is specified, the lowProperty and highProperty attributes must not be present. And conversely, if the lowProperty and highProperty attributes are specified, the dateProperty must not be present. If specified, the lowProperty and highProperty values will be used to construct an interval with inclusive boundaries for the date range.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="lowProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The lowProperty attribute optionally specifies which property of the model contains the low component of the clinically relevant date for the clinical statement.
+
+Note that if the property is specified, the lowProperty and highProperty attributes must not be present. And conversely, if the lowProperty and highProperty attributes are specified, the property must not be present.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="highProperty" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The highProperty attribute optionally specifies which property of the model contains the high component of the clinically relevant date for the clinical statement.
+
+Note that if the property is specified, the lowProperty and highProperty attributes must not be present. And conversely, if the lowProperty and highProperty attributes are specified, the property must not be present.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="search" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The search attribute specifies the name of the search path to use for searching for values in the date range specified by the dateRange element.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="OtherFilterElement">
+		<xs:annotation>
+			<xs:documentation>The OtherFilterElement type specifies an arbitrarily-typed filter criteria for use within a retrieve, specified as either [property] [comparator] [value] or [search] [comparator] [value].</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Element">
+				<xs:sequence>
+					<xs:element name="value" type="Expression" minOccurs="1" maxOccurs="1">
+						<xs:annotation>
+							<xs:documentation>An expression that provides the comparison value for the filter.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="property" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The property attribute specifies which property the filter applies to.
+
+This property may be specified as a path, including qualifiers and constant indexers. The &lt;simplePath&gt; production rule in the CQL grammar provides the formal semantics for this path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="search" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The search attribute specifies the name of a search path for the filter.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="comparator" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The comparator attribute specifies the comparison operation for the filter.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="IncludeElement">
 		<xs:annotation>
 			<xs:documentation>The IncludeElement type specifies include information for an include within a retrieve.</xs:documentation>
@@ -67,6 +196,21 @@ This property may be specified as a path, including qualifiers and constant inde
 					<xs:element name="include" type="IncludeElement" minOccurs="0" maxOccurs="unbounded">
 						<xs:annotation>
 							<xs:documentation>Specifies a related data type to be included in the result as part of the retrieve.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="codeFilter" type="CodeFilterElement" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies a terminology filter to be applied as part of the retrieve. Each codeFilter is specified as [property] [comparator] [value] or [search] [comparator] [value]. When multiple codeFilters are present, they are all applied (i.e. ANDed). For simplicity, if this element is specified at all, it will include the code filter established by the attributes of the retrieve, as well as any additional filtering criteria as determined by optimization strategies.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="dateFilter" type="DateFilterElement" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies a date filter to be applied as part of the retrieve. Each dateFilter is specifies as a [property], or a [lowProperty]-[highProperty], or a [search], and a [value] that is an expression that evaluates to an interval of a date or time value. When multiple dateFilters are present, they are all applied (i.e. ANDed). For simplicity, if this element is specified at all, it will include the date filter established by the attributes of the retrieve, as well as any additional filtering criteria as determined by optimization strategies.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="otherFilter" type="OtherFilterElement" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>Specifies other, non-id, -context, -terminology, or -date valued filter criteria to be applied as part of the retrieve. Each other Filter is specified as [property] [comparator] [value] or [search] [comparator] [value]. When multiple otherFilters are present, they are all applied (i.e. ANDed). This element is included to allow for additional filtering criteria as determined by optimization strategies.</xs:documentation>
 						</xs:annotation>
 					</xs:element>
 				</xs:sequence>
@@ -172,6 +316,15 @@ This property may be specified as a path, including qualifiers and constant inde
 						<xs:documentation>The dateSearch attribute specifies the name of the search path to use for searching for values in the date range specified by the dateRange element.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Search">
+		<xs:annotation>
+			<xs:documentation>The Search operation provides an operator that returns the result of an indexing expression on an instance. It is effectively the same as a property access, but uses the name of a defined search on the type, rather than the name of a property on the class.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Property">
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

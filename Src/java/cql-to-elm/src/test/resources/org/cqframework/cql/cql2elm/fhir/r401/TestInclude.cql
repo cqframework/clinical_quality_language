@@ -14,13 +14,32 @@ code "HIV Negative": '165815009' from "SNOMED" display 'HIV Negative'
 context Patient
 
 // Search Parameters
-// Resolve as search parameter first, then element name
-// TODO: Allow search parameters in arbitrary where clause?...
 
-define TestEncounterSearch1:
-  [Practitioner: name = 'ABC']
+define TestPractitionerSearch1:
+  [Practitioner: "?name" = 'ABC']
+
+define TestPractitionerSearch1A:
+  [Practitioner] P
+    where P."?name" = 'ABC'
 
 // [base]/Practitioner?name='ABC'
+
+define TestObservationEncounterSearch1:
+  [Observation: encounter = FHIRHelpers.reference('XYZ')]
+
+// Expected FHIR URL for the retrieve
+// [base]/Observation?subject=123&encounter=XYZ
+
+define TestMedicationSearch1:
+  [MedicationRequest: medication = FHIRHelpers.reference('XYZ')]
+
+// Expected FHIR URL for the retrieve
+// [base]/MedicationRequest?subject=123&medication=XYZ
+
+// TODO: Optimize to a search
+define TestMedicationSearch2:
+  [MedicationRequest] MR
+    with [Medication] M such that MR.medication = M.reference()
 
 // Chaining
 
@@ -57,6 +76,16 @@ define TestMedicationRequest1:
 define TestMedicationRequest1A:
   [MedicationRequest] MR
     with [Medication] M such that MR.medication.references(M) and M.code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
+
+//X.<reference>.references(Y) <=> X.<reference> = Y.reference()
+
+// [base]/MedicationRequest?patient=123&_include=MedicationRequest:medication
+// TODO: Optimize to a chaining request if supported:
+// [base]/MedicationRequest?patient=123&medication.code=http://www.nlm.nih.gov/research/umls/rxnorm|848768
+
+define TestMedicationRequest1A1:
+  [MedicationRequest] MR
+    with [Medication] M such that MR.medication = M.reference() and M.code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
 
 // [base]/MedicationRequest?patient=123&_include=MedicationRequest:medication
 // TODO: Optimize to a chaining request if supported:

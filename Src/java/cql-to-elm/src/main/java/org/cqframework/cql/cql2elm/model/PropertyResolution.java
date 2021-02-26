@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.model;
 
 import org.hl7.cql.model.ClassTypeElement;
 import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.SearchType;
 import org.hl7.cql.model.TupleTypeElement;
 
 import java.util.Map;
@@ -13,6 +14,7 @@ public class PropertyResolution {
     private DataType type;
     private String name;
     private String targetMap;
+    private boolean isSearch = false;
 
     public PropertyResolution(ClassTypeElement e) {
         this.type = e.getType();
@@ -25,6 +27,12 @@ public class PropertyResolution {
     public PropertyResolution(TupleTypeElement e) {
         this.type = e.getType();
         this.name = e.getName();
+    }
+
+    public PropertyResolution(SearchType s) {
+        this.type = s.getType();
+        this.name = s.getName();
+        this.isSearch = true;
     }
 
     public PropertyResolution(DataType type, String name) {
@@ -65,5 +73,9 @@ public class PropertyResolution {
 
     public String getTargetMap() {
         return this.targetMap;
+    }
+
+    public boolean getIsSearch() {
+        return this.isSearch;
     }
 }

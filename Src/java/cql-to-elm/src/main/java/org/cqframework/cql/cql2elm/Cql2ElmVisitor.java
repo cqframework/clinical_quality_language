@@ -159,11 +159,37 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return "1.4".equals(compatibilityLevel);
     }
 
+    private Version compatibilityVersion;
     public String getCompatibilityLevel() {
         return this.compatibilityLevel;
     }
     public void setCompatibilityLevel(String compatibilityLevel) {
         this.compatibilityLevel = compatibilityLevel;
+        this.compatibilityVersion = new Version(compatibilityLevel);
+    }
+
+    public boolean isCompatibleWith(String sinceCompatibilityLevel) {
+        if (compatibilityVersion == null) {
+            // No compatibility version is specified, assume latest functionality
+            return true;
+        }
+
+        if (sinceCompatibilityLevel == null || sinceCompatibilityLevel.isEmpty()) {
+            throw new IllegalArgumentException("Internal Translator Error: compatbility level is required to determine a compatibility check");
+        }
+
+        Version sinceVersion = new Version(sinceCompatibilityLevel);
+        return compatibilityVersion.compatibleWith(sinceVersion);
+    }
+
+    public void checkCompatibilityLevel(String featureName, String sinceCompatibilityLevel) {
+        if (featureName == null || featureName.isEmpty()) {
+            throw new IllegalArgumentException("Internal Translator Error: feature name is required to perform a compatibility check");
+        }
+
+        if (!isCompatibleWith(sinceCompatibilityLevel)) {
+            throw new IllegalArgumentException(String.format("Feature %s was introduced in version %s and so cannot be used at compatibility level %s", featureName, sinceCompatibilityLevel, compatibilityLevel));
+        }
     }
 
     public void setTranslatorOptions(CqlTranslatorOptions options) {
@@ -3060,10 +3086,12 @@ DATETIME
         }
 
         if (ctx.terminology() != null) {
+            String codePath = null;
             if (ctx.codePath() != null) {
                 String identifiers = (String)visit(ctx.codePath());
                 retrieve.setCodeProperty(identifiers);
-            } else if (classType.getPrimaryCodePath() != null) {
+            }
+            else if (classType.getPrimaryCodePath() != null) {
                 retrieve.setCodeProperty(classType.getPrimaryCodePath());
             }
 
@@ -3192,7 +3220,7 @@ DATETIME
                         }
                         else {
                             // Otherwise, access the codes property of the resulting Concept
-                            Expression codesAccessor = libraryBuilder.buildProperty(toList.getOperand(), "codes", toList.getOperand().getResultType());
+                            Expression codesAccessor = libraryBuilder.buildProperty(toList.getOperand(), "codes", false, toList.getOperand().getResultType());
                             retrieve.setCodes(codesAccessor);
                         }
                     }
@@ -3982,6 +4010,10 @@ DATETIME
     }
 
     public Expression resolveFunction(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
+        if (allowFluent) {
+            checkCompatibilityLevel("Fluent functions", "1.5");
+        }
+
         functionName = ensureSystemFunctionName(libraryName, functionName);
 
         // If the function cannot be resolved in the builder and the call is to a function in the current library,
@@ -4068,6 +4100,10 @@ DATETIME
     }
 
     public Object internalVisitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
+        if (ctx.fluentModifier() != null) {
+            checkCompatibilityLevel("Fluent functions", "1.5");
+        }
+
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withFluent(ctx.fluentModifier() != null)

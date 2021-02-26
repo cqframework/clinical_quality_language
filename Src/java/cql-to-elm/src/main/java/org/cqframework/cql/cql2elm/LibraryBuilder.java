@@ -157,7 +157,50 @@ public class LibraryBuilder {
         if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
+        setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
+    }
+
+    private String compatibilityLevel = null;
+    public boolean isCompatibilityLevel3() {
+        return "1.3".equals(compatibilityLevel);
+    }
+
+    public boolean isCompatibilityLevel4() {
+        return "1.4".equals(compatibilityLevel);
+    }
+
+    private Version compatibilityVersion;
+    public String getCompatibilityLevel() {
+        return this.compatibilityLevel;
+    }
+    public void setCompatibilityLevel(String compatibilityLevel) {
+        this.compatibilityLevel = compatibilityLevel;
+        this.compatibilityVersion = new Version(compatibilityLevel);
+    }
+
+    public boolean isCompatibleWith(String sinceCompatibilityLevel) {
+        if (compatibilityVersion == null) {
+            // No compatibility version is specified, assume latest functionality
+            return true;
+        }
+
+        if (sinceCompatibilityLevel == null || sinceCompatibilityLevel.isEmpty()) {
+            throw new IllegalArgumentException("Internal Translator Error: compatbility level is required to determine a compatibility check");
+        }
+
+        Version sinceVersion = new Version(sinceCompatibilityLevel);
+        return compatibilityVersion.compatibleWith(sinceVersion);
+    }
+
+    public void checkCompatibilityLevel(String featureName, String sinceCompatibilityLevel) {
+        if (featureName == null || featureName.isEmpty()) {
+            throw new IllegalArgumentException("Internal Translator Error: feature name is required to perform a compatibility check");
+        }
+
+        if (!isCompatibleWith(sinceCompatibilityLevel)) {
+            throw new IllegalArgumentException(String.format("Feature %s was introduced in version %s and so cannot be used at compatibility level %s", featureName, sinceCompatibilityLevel, compatibilityLevel));
+        }
     }
 
     public String getWellKnownNamespaceName(String unqualifiedIdentifier) {
@@ -1864,13 +1907,23 @@ public class LibraryBuilder {
         while (currentType != null) {
             if (currentType instanceof ClassType) {
                 ClassType classType = (ClassType)currentType;
-                for (ClassTypeElement e : classType.getElements()) {
-                    if (e.getName().equals(identifier)) {
-                        if (e.isProhibited()) {
-                            throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
+                if (identifier.startsWith("?") && isCompatibleWith("1.5")) {
+                    String searchPath = identifier.substring(1);
+                    for (SearchType s : classType.getSearches()) {
+                        if (s.getName().equals(searchPath)) {
+                            return new PropertyResolution(s);
                         }
+                    }
+                }
+                else {
+                    for (ClassTypeElement e : classType.getElements()) {
+                        if (e.getName().equals(identifier)) {
+                            if (e.isProhibited()) {
+                                throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
+                            }
 
-                        return new PropertyResolution(e);
+                            return new PropertyResolution(e);
+                        }
                     }
                 }
             }
@@ -2140,7 +2193,7 @@ public class LibraryBuilder {
 
                 PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
                 if (resolution != null) {
-                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.getType());
+                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.getIsSearch(), resolution.getType());
                     contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
                     return contextAccessor;
                 }
@@ -2155,18 +2208,34 @@ public class LibraryBuilder {
         return null;
     }
 
-    public Expression buildProperty(String scope, String path, DataType resultType) {
-        Property result = of.createProperty()
-                .withScope(scope)
-                .withPath(path);
-        result.setResultType(resultType);
-        return result;
+    public Property buildProperty(String scope, String path, boolean isSearch, DataType resultType) {
+        if (isSearch) {
+            Search result = of.createSearch()
+                    .withScope(scope)
+                    .withPath(path);
+            result.setResultType(resultType);
+            return result;
+        }
+        else {
+            Property result = of.createProperty()
+                    .withScope(scope)
+                    .withPath(path);
+            result.setResultType(resultType);
+            return result;
+        }
     }
 
-    public Expression buildProperty(Expression source, String path, DataType resultType) {
-        Property result = of.createProperty().withSource(source).withPath(path);
-        result.setResultType(resultType);
-        return result;
+    public Property buildProperty(Expression source, String path, boolean isSearch, DataType resultType) {
+        if (isSearch) {
+            Search result = of.createSearch().withSource(source).withPath(path);
+            result.setResultType(resultType);
+            return result;
+        }
+        else {
+            Property result = of.createProperty().withSource(source).withPath(path);
+            result.setResultType(resultType);
+            return result;
+        }
     }
 
     private VersionedIdentifier getModelMapping(Expression sourceContext) {
@@ -2473,7 +2542,7 @@ public class LibraryBuilder {
         }
         else if (left instanceof AliasRef) {
             PropertyResolution resolution = resolveProperty(left.getResultType(), memberIdentifier);
-            Expression result = buildProperty(((AliasRef)left).getName(), resolution.getName(), resolution.getType());
+            Expression result = buildProperty(((AliasRef)left).getName(), resolution.getName(), resolution.getIsSearch(), resolution.getType());
             return applyTargetMap(result, resolution.getTargetMap());
         }
         else if (left.getResultType() instanceof ListType && listTraversal) {
@@ -2482,7 +2551,7 @@ public class LibraryBuilder {
             // listValue.property ::= listValue X where X.property is not null return all X.property
             ListType listType = (ListType)left.getResultType();
             PropertyResolution resolution = resolveProperty(listType.getElementType(), memberIdentifier);
-            Expression accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getType());
+            Expression accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getIsSearch(), resolution.getType());
             accessor = applyTargetMap(accessor, resolution.getTargetMap());
             IsNull isNull = of.createIsNull().withOperand(accessor);
             isNull.setResultType(resolveTypeName("System", "Boolean"));
@@ -2490,7 +2559,7 @@ public class LibraryBuilder {
             not.setResultType(resolveTypeName("System", "Boolean"));
 
             // Recreate property, it needs to be accessed twice
-            accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getType());
+            accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getIsSearch(), resolution.getType());
             accessor = applyTargetMap(accessor, resolution.getTargetMap());
 
             AliasedQuerySource source = of.createAliasedQuerySource().withExpression(left).withAlias("$this");
@@ -2511,7 +2580,7 @@ public class LibraryBuilder {
         }
         else {
             PropertyResolution resolution = resolveProperty(left.getResultType(), memberIdentifier);
-            Expression result = buildProperty(left, resolution.getName(), resolution.getType());
+            Expression result = buildProperty(left, resolution.getName(), resolution.getIsSearch(), resolution.getType());
             result = applyTargetMap(result, resolution.getTargetMap());
             return result;
         }

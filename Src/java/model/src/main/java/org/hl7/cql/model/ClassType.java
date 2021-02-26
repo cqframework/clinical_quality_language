@@ -86,10 +86,22 @@ public class ClassType extends DataType implements NamedType {
     }
 
     private String primaryCodePath;
-    public String getPrimaryCodePath() { return primaryCodePath; }
+    public String getPrimaryCodePath() {
+        return primaryCodePath;
+    }
     public void setPrimaryCodePath(String primaryCodePath) {
         this.primaryCodePath = primaryCodePath;
     }
+
+/*
+    private String primarySearchPath;
+    public String getPrimarySearchPath() {
+        return primarySearchPath;
+    }
+    public void setPrimarySearchPath(String primarySearchPath) {
+        this.primarySearchPath = primarySearchPath;
+    }
+ */
 
     private String primaryValueSetPath;
     public String getPrimaryValueSetPath() { return primaryValueSetPath; }
@@ -113,6 +125,27 @@ public class ClassType extends DataType implements NamedType {
 
     public void addTargetRelationship(Relationship relationship) {
         targetRelationships.add(relationship);
+    }
+
+    private List<SearchType> searches = new ArrayList<>();
+    public Iterable<SearchType> getSearches() {
+        return searches;
+    }
+
+    public void addSearch(SearchType search) {
+        searches.add(search);
+    }
+
+    public SearchType findSearch(String searchPath) {
+        if (searches != null) {
+            for (SearchType search : searches) {
+                if (search.getName().equals(searchPath)) {
+                    return search;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

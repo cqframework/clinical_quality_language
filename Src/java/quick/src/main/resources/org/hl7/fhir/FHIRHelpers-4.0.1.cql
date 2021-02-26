@@ -107,8 +107,14 @@ define function ToConcept(concept FHIR.CodeableConcept):
             display: concept.text.value
         }
 
+define function reference(reference String):
+    if reference is null then
+        null
+    else
+        Reference { reference: { string { value: reference } } }
+
 define function resolve(reference Reference) returns Resource: external
-define function references(reference Reference, resource Resource) returns Boolean: external
+define function reference(resource Resource) returns Reference: external
 define function extension(element Element, url String) returns List<Element>: external
 define function extension(resource Resource, url String) returns List<Element>: external
 define function hasValue(element Element) returns Boolean: external

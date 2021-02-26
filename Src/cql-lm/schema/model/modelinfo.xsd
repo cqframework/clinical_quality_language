@@ -51,6 +51,13 @@
 		<xs:annotation>
 			<xs:documentation>Defines a possible search path for a ClassInfo within the model.</xs:documentation>
 		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Specifies the type of the search parameter as a type specifier</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
 		<xs:attribute name="name" type="xs:string" use="required">
 			<xs:annotation>
 				<xs:documentation>Defines the name of the search info</xs:documentation>
@@ -58,7 +65,32 @@
 		</xs:attribute>
 		<xs:attribute name="path" type="xs:string" use="required">
 			<xs:annotation>
-				<xs:documentation>Defines the path to search values within the ClassInfo. In the simplest case, this is the same as the name.</xs:documentation>
+				<xs:documentation>Defines the formal path to search values within the ClassInfo. In the simplest case, this is the same as the name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the type of the search parameter</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="label" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides an optional, user-friendly label for the search path that can be used to reference the search path from CQL.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a short description of the search path</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="definition" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides a complete, detailed, markdown-capable definition of the search path</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="comment" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides markdown-capable additional comments on the use of the search path</xs:documentation>
 			</xs:annotation>
 		</xs:attribute>
 	</xs:complexType>
@@ -338,6 +370,21 @@
 				<xs:attribute name="label" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The label attribute specifies the name of the class as it is referenced from CQL. This is a user-friendly identifier for the class that can be used within CQL as an alternative way to reference the class.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="description" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Specifies a short description of the class</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="definition" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Provides a complete, detailed, markdown-capable definition of the class</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="comment" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Provides markdown-capable additional comments on the use of the class</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 				<xs:attribute name="target" type="xs:string" use="optional">

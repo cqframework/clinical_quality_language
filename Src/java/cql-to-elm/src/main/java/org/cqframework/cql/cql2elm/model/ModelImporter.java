@@ -513,6 +513,10 @@ public class ModelImporter {
         return elementType;
     }
 
+    private SearchType resolveClassTypeSearch(ClassType t, SearchInfo s) {
+        return new SearchType(s.getName(), s.getPath(), resolveTypeNameOrSpecifier(s.getType(), s.getTypeSpecifier()));
+    }
+
     private ClassType resolveClassType(ClassInfo t) {
         if (t.getName() == null) {
             throw new IllegalArgumentException("Class definition must have a name.");
@@ -548,6 +552,12 @@ public class ModelImporter {
                 result.addElements(resolveClassTypeElements(result, t.getElement()));
             }
 
+            if (t.getSearch() != null) {
+                for (SearchInfo si : t.getSearch()) {
+                    result.addSearch(resolveClassTypeSearch(result, si));
+                }
+            }
+
             //Here we handle the case when a type is not a generic but its base type is a generic type whose parameters
             //have all been bound to concrete types (no remaining degrees of freedom) and is not expressed in generic notation in the model-info file.
             if(isParentGeneric(result) && !t.getBaseType().contains("<")) {
@@ -559,6 +569,7 @@ public class ModelImporter {
             result.setTarget(t.getTarget());
             result.setRetrievable(t.isRetrievable());
             result.setPrimaryCodePath(t.getPrimaryCodePath());
+            //result.setPrimarySearchPath(t.getPrimarySearchPath());
         }
 
         return result;
@@ -572,7 +583,6 @@ public class ModelImporter {
         }
 
         throw new IllegalArgumentException(String.format("Could not resolve context name %s.", contextName));
-
     }
 
     private Relationship resolveRelationship(RelationshipInfo relationshipInfo) {
