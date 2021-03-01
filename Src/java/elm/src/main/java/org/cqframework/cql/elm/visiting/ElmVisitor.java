@@ -471,6 +471,16 @@ public interface ElmVisitor<T, C> {
     T visitToDateTime(ToDateTime elm, C context);
 
     /**
+     * Visit a ToLong. This method will be called for
+     * every node in the tree that is a ToLong.
+     *
+     * @param elm the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitToLong(ToLong elm, C context);
+
+    /**
      * Visit a ToDecimal. This method will be called for
      * every node in the tree that is a ToDecimal.
      *
@@ -1639,6 +1649,16 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitSortClause(SortClause elm, C context);
+
+    /**
+     * Visit a AggregateClause. This method will be called for
+     * every node in the tree that is an AggregateClause.
+     *
+     * @param elm the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitAggregateClause(AggregateClause elm, C context);
 
     /**
      * Visit a ReturnClause. This method will be called for

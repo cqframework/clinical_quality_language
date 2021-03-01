@@ -37,7 +37,7 @@ define "Qualifying Encounters (2)":
     where exists (
         Encounter.participant Participant
           where Participant is "Practitioner"
-            and Participant.specialty in "Opthalmology"
+            and Participant.specialty in "Ophthalmology"
     )
 
 /*
