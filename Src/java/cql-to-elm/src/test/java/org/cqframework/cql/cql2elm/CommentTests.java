@@ -111,5 +111,34 @@ public class CommentTests {
                     break;
             }
         }
+
+        d = library.resolveExpressionRef("TestMultiline");
+        assertThat(d.getAnnotation(), notNullValue());
+        for (Object o : d.getAnnotation()) {
+            if (o instanceof Annotation) {
+                a = (Annotation)o;
+            }
+        }
+        assertThat(a, notNullValue());
+        assertThat(a.getT(), notNullValue());
+        assertThat(a.getT().size(), equalTo(3));
+        for (int i = 0; i < a.getT().size(); i++) {
+            Tag t = a.getT().get(i);
+            switch (i) {
+                case 0:
+                    assertThat(t.getName(), equalTo("author"));
+                    assertThat(t.getValue(), equalTo("Frederic Chopin"));
+                    break;
+                case 1:
+                    assertThat(t.getName(), equalTo("description"));
+                    assertThat(t.getValue(), equalTo("This is a multi-line description that spans multiple lines."));
+                    break;
+                case 2:
+                    assertThat(t.getName(), equalTo("following"));
+                    assertThat(t.getValue(), equalTo("true"));
+                    break;
+            }
+        }
+
     }
 }

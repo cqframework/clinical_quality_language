@@ -404,7 +404,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
             }
         }
-        return String.join(" ", result);
+        return String.join("", result);
     }
 
     private List<Tag> getTags(String header) {

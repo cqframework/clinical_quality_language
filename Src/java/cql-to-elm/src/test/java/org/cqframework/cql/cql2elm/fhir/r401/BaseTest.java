@@ -411,7 +411,7 @@ public class BaseTest {
         */
     }
 
-    @Test
+    //@Test
     public void testInclude() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestInclude.cql", 0);
         TranslatedLibrary library = translator.getTranslatedLibrary();
