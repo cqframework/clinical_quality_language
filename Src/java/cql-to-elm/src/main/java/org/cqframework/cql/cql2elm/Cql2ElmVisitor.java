@@ -366,7 +366,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 tags.add(af.createTag().withName(tagName.trim()).withValue(tagValue.trim()));
             }
             else {
-                tagStartIndex = header.indexOf("@", tagStartIndex);
+                tagStartIndex = header.indexOf("@", tagStartIndex + 1);
             }
         }
         return tags;

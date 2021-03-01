@@ -73,7 +73,7 @@ public class LibraryInfo extends BaseInfo {
     }
 
     private void addDefinition(BaseInfo definition) {
-        if (definition != null) {
+        if (definition != null && definition.getDefinition() != null) {
             Interval sourceInterval = definition.getDefinition().getSourceInterval();
             if (sourceInterval != null) {
                 definitions.put(sourceInterval, definition);

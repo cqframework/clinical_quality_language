@@ -182,6 +182,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         }
 
         ContextDefinitionInfo contextDefinition = new ContextDefinitionInfo();
+        contextDefinition.setDefinition(ctx);
         processHeader(ctx, contextDefinition);
         libraryInfo.addContextDefinition(contextDefinition);
 

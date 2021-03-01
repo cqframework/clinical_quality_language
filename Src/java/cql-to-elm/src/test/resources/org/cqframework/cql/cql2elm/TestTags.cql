@@ -18,3 +18,7 @@ define TestExpression:
 */
 define function TestFunction():
   1 + 1
+
+/*@:@*/
+define TestInvalid:
+  1 + 1
