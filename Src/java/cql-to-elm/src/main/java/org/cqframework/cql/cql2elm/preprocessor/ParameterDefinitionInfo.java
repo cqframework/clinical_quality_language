@@ -1,10 +1,10 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
-public class ParameterDefinitionInfo {
+public class ParameterDefinitionInfo extends BaseInfo {
     private String name;
-    private cqlParser.ParameterDefinitionContext definition;
 
     public String getName() {
         return name;
@@ -14,12 +14,13 @@ public class ParameterDefinitionInfo {
         name = value;
     }
 
+    @Override
     public cqlParser.ParameterDefinitionContext getDefinition() {
-        return definition;
+        return (cqlParser.ParameterDefinitionContext)super.getDefinition();
     }
 
     public void setDefinition(cqlParser.ParameterDefinitionContext value) {
-        definition = value;
+        super.setDefinition(value);
     }
 
     public ParameterDefinitionInfo withName(String value) {

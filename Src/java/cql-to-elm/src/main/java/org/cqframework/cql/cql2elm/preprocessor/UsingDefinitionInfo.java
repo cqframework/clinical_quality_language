@@ -1,6 +1,8 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
-public class UsingDefinitionInfo {
+import org.cqframework.cql.gen.cqlParser;
+
+public class UsingDefinitionInfo extends BaseInfo {
     private String namespaceName;
     private String name;
     private String version;
@@ -55,6 +57,20 @@ public class UsingDefinitionInfo {
 
     public UsingDefinitionInfo withLocalName(String value) {
         setLocalName(value);
+        return this;
+    }
+
+    @Override
+    public cqlParser.UsingDefinitionContext getDefinition() {
+        return (cqlParser.UsingDefinitionContext)super.getDefinition();
+    }
+
+    public void setDefinition(cqlParser.UsingDefinitionContext value) {
+        super.setDefinition(value);
+    }
+
+    public UsingDefinitionInfo withDefinition(cqlParser.UsingDefinitionContext value) {
+        setDefinition(value);
         return this;
     }
 }

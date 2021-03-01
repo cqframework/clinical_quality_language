@@ -15,6 +15,7 @@ import org.cqframework.cql.cql2elm.model.*;
 import org.hl7.cql.model.*;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Narrative;
+import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Interval;
@@ -165,7 +166,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
     public void setCompatibilityLevel(String compatibilityLevel) {
         this.compatibilityLevel = compatibilityLevel;
-        this.compatibilityVersion = new Version(compatibilityLevel);
+        if (compatibilityLevel != null) {
+            this.compatibilityVersion = new Version(compatibilityLevel);
+        }
     }
 
     public boolean isCompatibleWith(String sinceCompatibilityLevel) {
@@ -256,8 +259,42 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef
                         || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
                         || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
-                    if (element.getAnnotation().size() == 0) {
+                    Annotation a = getAnnotation(element);
+                    // Add header information (comments prior to the definition)
+                    BaseInfo definitionInfo = libraryInfo.resolveDefinition(tree);
+                    if (definitionInfo != null && definitionInfo.getHeaderInterval() != null) {
+                        Chunk headerChunk = new Chunk().withInterval(definitionInfo.getHeaderInterval());
+                        Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, chunk.getInterval().b));
+                        newChunk.addChunk(headerChunk);
+                        newChunk.setElement(chunk.getElement());
+                        for (Chunk c : chunk.getChunks()) {
+                            newChunk.addChunk(c);
+                        }
+                        chunk = newChunk;
+                    }
+                    if (a == null) {
                         element.getAnnotation().add(buildAnnotation(chunk));
+                    }
+                    else {
+                        addNarrativeToAnnotation(a, chunk);
+                    }
+                }
+            }
+            else {
+                if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
+                    Chunk headerChunk = new Chunk().withInterval(libraryInfo.getHeaderInterval());
+                    Chunk definitionChunk = new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
+                    Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, definitionChunk.getInterval().b));
+                    newChunk.addChunk(headerChunk);
+                    newChunk.addChunk(definitionChunk);
+                    newChunk.setElement(chunk.getElement());
+                    chunk = newChunk;
+                    Annotation a = getAnnotation(libraryBuilder.getLibrary());
+                    if (a == null) {
+                        libraryBuilder.getLibrary().getAnnotation().add(buildAnnotation(chunk));
+                    }
+                    else {
+                        addNarrativeToAnnotation(a, chunk);
                     }
                 }
             }
@@ -268,10 +305,140 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
     }
 
+    private void processTags(@NotNull ParseTree tree, Object o) {
+        if (o instanceof Element) {
+            Element element = (Element)o;
+            if (!(tree instanceof cqlParser.LibraryContext)) {
+                if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef
+                        || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
+                        || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
+                    List<Tag> tags = getTags(tree);
+                    if (tags != null && tags.size() > 0) {
+                        Annotation a = getAnnotation(element);
+                        if (a == null) {
+                            a = buildAnnotation();
+                            element.getAnnotation().add(a);
+                        }
+                        a.getT().addAll(tags);
+                    }
+                }
+            }
+            else {
+                if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
+                    List<Tag> tags = getTags(libraryInfo.getHeader());
+                    if (tags != null && tags.size() > 0) {
+                        Annotation a = getAnnotation(libraryBuilder.getLibrary());
+                        if (a == null) {
+                            a = buildAnnotation();
+                            libraryBuilder.getLibrary().getAnnotation().add(a);
+                        }
+                        a.getT().addAll(tags);
+                    }
+                }
+            }
+        }
+    }
+
+    private List<Tag> getTags(ParseTree tree) {
+        BaseInfo bi = libraryInfo.resolveDefinition(tree);
+        if (bi != null) {
+            return getTags(bi.getHeader());
+        }
+
+        return null;
+    }
+
+    private List<Tag> parseTags(String header) {
+        List<Tag> tags = new ArrayList<>();
+        int tagStartIndex = header.indexOf("@");
+        while (tagStartIndex >= 0) {
+            int tagNameEndIndex = header.indexOf(":", tagStartIndex);
+            if (tagNameEndIndex >= 0) {
+                String tagName = header.substring(tagStartIndex + 1, tagNameEndIndex);
+                tagStartIndex = header.indexOf("@", tagNameEndIndex);
+                String tagValue = null;
+                if (tagStartIndex >= 0) {
+                    tagValue = header.substring(tagNameEndIndex + 1, tagStartIndex);
+                }
+                else {
+                    tagValue = header.substring(tagNameEndIndex + 1);
+                }
+                tags.add(af.createTag().withName(tagName.trim()).withValue(tagValue.trim()));
+            }
+            else {
+                tagStartIndex = header.indexOf("@", tagStartIndex);
+            }
+        }
+        return tags;
+    }
+
+    private String parseComments(String header) {
+        List<String> result = new ArrayList<>();
+        if (header != null) {
+            header = header.replace("\r\n", "\n");
+            String[] lines = header.split("\n");
+            boolean inMultiline = false;
+            for (String line : lines) {
+                if (!inMultiline) {
+                    int start = line.indexOf("/*");
+                    if (start >= 0) {
+                        result.add(line.substring(start + 2));
+                        inMultiline = true;
+                    }
+                    else start = line.indexOf("//");
+                    if (start >= 0) {
+                        result.add(line.substring(start + 2));
+                    }
+                }
+                else {
+                    int end = line.indexOf("*/");
+                    if (end >= 0) {
+                        inMultiline = false;
+                        if (end > 0) {
+                            result.add(line.substring(0, end));
+                        }
+                    }
+                    else {
+                        result.add(line);
+                    }
+                }
+            }
+        }
+        return String.join(" ", result);
+    }
+
+    private List<Tag> getTags(String header) {
+        if (header != null) {
+            header = parseComments(header);
+            return parseTags(header);
+        }
+
+        return null;
+    }
+
+    private Annotation getAnnotation(Element element) {
+        for (Object o : element.getAnnotation()) {
+            if (o instanceof Annotation) {
+                return (Annotation)o;
+            }
+        }
+
+        return null;
+    }
+
+    private Annotation buildAnnotation() {
+        Annotation annotation = af.createAnnotation();
+        return annotation;
+    }
+
     private Annotation buildAnnotation(Chunk chunk) {
         Annotation annotation = af.createAnnotation();
         annotation.setS(buildNarrative(chunk));
         return annotation;
+    }
+
+    private void addNarrativeToAnnotation(Annotation annotation, Chunk chunk) {
+        annotation.setS(buildNarrative(chunk));
     }
 
     private Narrative buildNarrative(Chunk chunk) {
@@ -392,6 +559,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (annotate) {
                 popChunk(tree, o);
             }
+            processTags(tree, o);
         }
     }
 

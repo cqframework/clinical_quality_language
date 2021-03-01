@@ -1,13 +1,13 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
 /**
  * Created by Bryn on 5/22/2016.
  */
-public class CodeDefinitionInfo {
+public class CodeDefinitionInfo extends BaseInfo {
     private String name;
-    private cqlParser.CodeDefinitionContext definition;
 
     public String getName() {
         return name;
@@ -17,17 +17,18 @@ public class CodeDefinitionInfo {
         name = value;
     }
 
-    public cqlParser.CodeDefinitionContext getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(cqlParser.CodeDefinitionContext value) {
-        definition = value;
-    }
-
     public CodeDefinitionInfo withName(String value) {
         setName(value);
         return this;
+    }
+
+    @Override
+    public cqlParser.CodeDefinitionContext getDefinition() {
+        return (cqlParser.CodeDefinitionContext)super.getDefinition();
+    }
+
+    public void setDefinition(cqlParser.CodeDefinitionContext value) {
+        super.setDefinition(value);
     }
 
     public CodeDefinitionInfo withDefinition(cqlParser.CodeDefinitionContext value) {

@@ -176,7 +176,9 @@ public class LibraryBuilder {
     }
     public void setCompatibilityLevel(String compatibilityLevel) {
         this.compatibilityLevel = compatibilityLevel;
-        this.compatibilityVersion = new Version(compatibilityLevel);
+        if (compatibilityLevel != null) {
+            this.compatibilityVersion = new Version(compatibilityLevel);
+        }
     }
 
     public boolean isCompatibleWith(String sinceCompatibilityLevel) {

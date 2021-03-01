@@ -1,13 +1,13 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
 /**
  * Created by Bryn on 5/22/2016.
  */
-public class ConceptDefinitionInfo {
+public class ConceptDefinitionInfo extends BaseInfo {
     private String name;
-    private cqlParser.ConceptDefinitionContext definition;
 
     public String getName() {
         return name;
@@ -17,12 +17,13 @@ public class ConceptDefinitionInfo {
         name = value;
     }
 
+    @Override
     public cqlParser.ConceptDefinitionContext getDefinition() {
-        return definition;
+        return (cqlParser.ConceptDefinitionContext)super.getDefinition();
     }
 
     public void setDefinition(cqlParser.ConceptDefinitionContext value) {
-        definition = value;
+        super.setDefinition(value);
     }
 
     public ConceptDefinitionInfo withName(String value) {

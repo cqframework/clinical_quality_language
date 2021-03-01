@@ -1,10 +1,10 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
-public class CodesystemDefinitionInfo {
+public class CodesystemDefinitionInfo extends BaseInfo {
     private String name;
-    private cqlParser.CodesystemDefinitionContext definition;
 
     public String getName() {
         return name;
@@ -14,12 +14,13 @@ public class CodesystemDefinitionInfo {
         name = value;
     }
 
+    @Override
     public cqlParser.CodesystemDefinitionContext getDefinition() {
-        return definition;
+        return (cqlParser.CodesystemDefinitionContext)super.getDefinition();
     }
 
     public void setDefinition(cqlParser.CodesystemDefinitionContext value) {
-        definition = value;
+        super.setDefinition(value);
     }
 
     public CodesystemDefinitionInfo withName(String value) {

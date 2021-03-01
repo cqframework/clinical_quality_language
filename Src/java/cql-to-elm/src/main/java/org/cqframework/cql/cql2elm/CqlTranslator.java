@@ -598,6 +598,7 @@ public class CqlTranslator {
         ParseTree tree = parser.library();
 
         CqlPreprocessorVisitor preprocessor = new CqlPreprocessorVisitor();
+        preprocessor.setTokenStream(tokens);
         preprocessor.visit(tree);
 
         visitor.setTokenStream(tokens);

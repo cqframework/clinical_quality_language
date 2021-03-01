@@ -410,4 +410,65 @@ public class BaseTest {
                 "</library>\n"));
         */
     }
+
+    @Test
+    public void testInclude() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestInclude.cql", 0);
+        TranslatedLibrary library = translator.getTranslatedLibrary();
+        ExpressionDef expressionDef = library.resolveExpressionRef("TestPractitionerSearch1");
+        assertThat(expressionDef, notNullValue());
+        Expression expression = expressionDef.getExpression();
+        assertThat(expression, notNullValue());
+        assertThat(expression, instanceOf(Retrieve.class));
+        assertThat(((Retrieve)expression).getCodeProperty(), equalTo("?name"));
+
+        expressionDef = library.resolveExpressionRef("TestPractitionerSearch1A");
+        assertThat(expressionDef, notNullValue());
+        expression = expressionDef.getExpression();
+        assertThat(expression, notNullValue());
+        assertThat(expression, instanceOf(Query.class));
+        assertThat(((Query)expression).getWhere(), notNullValue());
+        assertThat(((Query)expression).getWhere(), instanceOf(Equal.class));
+        Equal eq = (Equal)((Query)expression).getWhere();
+        assertThat(eq.getOperand().get(0), instanceOf(Search.class));
+        Search s = (Search)eq.getOperand().get(0);
+        assertThat(s.getPath(), equalTo("name"));
+
+        /*
+            <query>
+              <retrieve>
+              <where>
+                <equivalent>
+                  <as "Medication">
+                    <functionref "resolve">
+                      <property path="medication.reference" scope="MR"/>
+                    </functionref>
+                  </as>
+                  <coderef/>
+                </equivalent>
+              </where>
+            </query>
+         */
+        expressionDef = library.resolveExpressionRef("TestMedicationRequest1");
+        assertThat(expressionDef, notNullValue());
+        expression = expressionDef.getExpression();
+        assertThat(expression, instanceOf(Query.class));
+        assertThat(((Query)expression).getWhere(), instanceOf(Equivalent.class));
+        Equivalent eqv = (Equivalent)((Query)expression).getWhere();
+        assertThat(eqv.getOperand().get(0), instanceOf(As.class));
+        As as = (As)eqv.getOperand().get(0);
+        assertThat(as.getAsType().getLocalPart(), equalTo("Medication"));
+        assertThat(as.getOperand(), instanceOf(FunctionRef.class));
+        FunctionRef fr = (FunctionRef)as.getOperand();
+        assertThat(fr.getName(), equalTo("resolve"));
+        assertThat(fr.getOperand().size(), equalTo(1));
+        assertThat(fr.getOperand().get(0), instanceOf(Property.class));
+        Property p = (Property)fr.getOperand().get(0);
+        assertThat(p.getPath(), equalTo("reference"));
+        assertThat(p.getScope(), equalTo("MR"));
+        assertThat(p.getSource(), instanceOf(Property.class));
+        p = (Property)p.getSource();
+        assertThat(p.getPath(), equalTo("medication"));
+        assertThat(p.getScope(), equalTo("MR"));
+    }
 }

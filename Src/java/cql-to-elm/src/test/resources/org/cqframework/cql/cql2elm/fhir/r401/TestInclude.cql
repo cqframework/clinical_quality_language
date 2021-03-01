@@ -22,6 +22,7 @@ define TestPractitionerSearch1A:
   [Practitioner] P
     where P."?name" = 'ABC'
 
+/*
 // [base]/Practitioner?name='ABC'
 
 define TestObservationEncounterSearch1:
@@ -62,17 +63,18 @@ define TestEncounterChaining1:
 // [base]/Encounter?_has:Observation:context:code=http://snomed.info/sct|165815009
 
 // Includes
+*/
 
 // If a reference is resolved in the scope of a query, that resolve can be rewritten as an include in the retrieve for that source
 // MedicationRequest
 define TestMedicationRequest1:
   [MedicationRequest] MR
-    where MR.medication ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
-      or (MR.medication.reference.resolve() as Medication).code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
+    where MR.medication.reference.resolve().as(Medication).code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
 
 // Expected FHIR URL for the retrieve
 // [base]/MedicationRequest?patient=123&_include=MedicationRequest:medication
 
+/*
 define TestMedicationRequest1A:
   [MedicationRequest] MR
     with [Medication] M such that MR.medication.references(M) and M.code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
@@ -148,6 +150,7 @@ define TestEncounterRevereseInclude1:
     let P: [Provenance] N where N.target.references(E)
 
 // [base]/Encounter?_revinclude=Provenance:target
+*/
 
 // TODO: Improve syntax with a "references" keyword?
 /*

@@ -111,8 +111,9 @@ define function reference(reference String):
     if reference is null then
         null
     else
-        Reference { reference: { string { value: reference } } }
+        Reference { reference: string { value: reference } }
 
+define function resolve(reference String) returns Resource: external
 define function resolve(reference Reference) returns Resource: external
 define function reference(resource Resource) returns Reference: external
 define function extension(element Element, url String) returns List<Element>: external
