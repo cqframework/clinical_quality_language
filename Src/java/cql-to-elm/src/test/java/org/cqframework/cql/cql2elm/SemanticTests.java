@@ -12,8 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class SemanticTests {
 
@@ -274,6 +273,20 @@ public class SemanticTests {
     @Test
     public void testIssue558() throws IOException {
         TestUtils.runSemanticTest("Issue558.cql", 1);
+    }
+
+    @Test
+    public void testIssue581() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue581.cql", 0);
+        Library library = translator.toELM();
+        assertThat(library.getStatements(), notNullValue());
+        assertThat(library.getStatements().getDef(), notNullValue());
+        assertThat(library.getStatements().getDef().size(), equalTo(1));
+        assertThat(library.getStatements().getDef().get(0), instanceOf(FunctionDef.class));
+        FunctionDef fd = (FunctionDef)library.getStatements().getDef().get(0);
+        assertThat(fd.getExpression(), instanceOf(If.class));
+        If i = (If)fd.getExpression();
+        assertThat(i.getCondition(), instanceOf(Not.class));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

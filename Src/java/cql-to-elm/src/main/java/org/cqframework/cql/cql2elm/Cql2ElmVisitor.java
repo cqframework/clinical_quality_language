@@ -3058,7 +3058,7 @@ DATETIME
     }
 
     public Expression resolveIfThenElse(If ifObject) {
-        ifObject.setCondition(libraryBuilder.convertExpression(ifObject.getCondition(), libraryBuilder.resolveTypeName("System", "Boolean")));
+        ifObject.setCondition(libraryBuilder.ensureCompatible(ifObject.getCondition(), libraryBuilder.resolveTypeName("System", "Boolean")));
         DataType resultType = libraryBuilder.ensureCompatibleTypes(ifObject.getThen().getResultType(), ifObject.getElse().getResultType());
         ifObject.setResultType(resultType);
         ifObject.setThen(libraryBuilder.ensureCompatible(ifObject.getThen(), resultType));
