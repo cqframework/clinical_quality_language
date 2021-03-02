@@ -300,7 +300,48 @@ public class SemanticTests {
 
     @Test
     public void testIssue592() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("Issue592.cql", 0, new CqlTranslatorOptions().withCompatibilityLevel("1.3"));
+        TestUtils.runSemanticTest("Issue592.cql", 0, new CqlTranslatorOptions().withCompatibilityLevel("1.3"));
+    }
+
+    @Test
+    public void testIssue596() throws IOException {
+        // NOTE: This test is susceptible to constant folding optimization...
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue596.cql", 0);
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("NullBeforeInterval");
+        /*
+        define NullBeforeInterval:
+            (null as Integer) before Interval[1, 10]
+
+          <before>
+            <if>
+              <isNull>
+                <as>
+                  <null/>
+                </as>
+              </isNull>
+              <null>
+              </null>
+              <interval>
+              </interval>
+            </if>
+            <interval>
+            </interval>
+          </before>
+         */
+        assertThat(ed.getExpression(), instanceOf(Before.class));
+        Before b = (Before)ed.getExpression();
+        assertThat(b.getOperand(), notNullValue());
+        assertThat(b.getOperand().size(), equalTo(2));
+        assertThat(b.getOperand().get(0), instanceOf(If.class));
+        assertThat(b.getOperand().get(1), instanceOf(Interval.class));
+        If i = (If)b.getOperand().get(0);
+        assertThat(i.getCondition(), instanceOf(IsNull.class));
+        assertThat(i.getThen(), instanceOf(Null.class));
+        assertThat(i.getElse(), instanceOf(Interval.class));
+        IsNull isNull = (IsNull)i.getCondition();
+        assertThat(isNull.getOperand(), instanceOf(As.class));
+        As a = (As)isNull.getOperand();
+        assertThat(a.getOperand(), instanceOf(Null.class));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
