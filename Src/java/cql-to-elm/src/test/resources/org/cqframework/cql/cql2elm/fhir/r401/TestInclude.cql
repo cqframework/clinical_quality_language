@@ -74,13 +74,22 @@ define TestMedicationRequest1:
 // Expected FHIR URL for the retrieve
 // [base]/MedicationRequest?patient=123&_include=MedicationRequest:medication
 
-/*
 define TestMedicationRequest1A:
   [MedicationRequest] MR
-    with [Medication] M such that MR.medication.references(M) and M.code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
+    with [Medication] M such that MR.medication = M.reference() and M.code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
 
 //X.<reference>.references(Y) <=> X.<reference> = Y.reference()
 
+define TestMedicationRequest1B:
+  [MedicationRequest] MR
+    with [MR.medication -> Medication] M such that M.code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
+
+define TestMedicationRequest1C:
+  [MedicationRequest] MR
+    let M: singleton from ([MR.medication -> Medication])
+    where M.code ~ "aspirin 325 MG / oxycodone hydrochloride 4.84 MG Oral Tablet"
+
+/*
 // [base]/MedicationRequest?patient=123&_include=MedicationRequest:medication
 // TODO: Optimize to a chaining request if supported:
 // [base]/MedicationRequest?patient=123&medication.code=http://www.nlm.nih.gov/research/umls/rxnorm|848768

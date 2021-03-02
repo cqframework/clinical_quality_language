@@ -20,6 +20,14 @@ public class OperatorResolution {
         this.operator = operator;
     }
 
+    private boolean allowFluent = false;
+    public boolean getAllowFluent() {
+        return allowFluent;
+    }
+    public void setAllowFluent(boolean allowFluent) {
+        this.allowFluent = allowFluent;
+    }
+
     private void ensureConversions() {
         if (this.conversions == null) {
             this.conversions = new ArrayList<>();

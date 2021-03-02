@@ -1166,7 +1166,7 @@ public class LibraryBuilder {
                     callContext.getOperatorName(), callContext.getSignature()));
         }
 
-        if (callContext.getAllowFluent() && !resolution.getOperator().getFluent()) {
+        if (callContext.getAllowFluent() && !resolution.getOperator().getFluent() && !resolution.getAllowFluent()) {
             throw new IllegalArgumentException(String.format("Invocation of operator %s with signature %s uses fluent syntax, but the operator is not defined as a fluent function.",
                     callContext.getOperatorName(), callContext.getSignature()));
         }

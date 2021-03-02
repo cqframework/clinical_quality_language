@@ -1,6 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.hl7.cql.model.DataType;
+import org.hl7.cql_annotations.r1.Annotation;
+import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
 
 import java.util.*;
@@ -207,7 +209,15 @@ public class TranslatedLibrary {
     }
 
     public OperatorResolution resolveCall(CallContext callContext, ConversionMap conversionMap) {
-        return operators.resolveOperator(callContext, conversionMap);
+        OperatorResolution resolution = operators.resolveOperator(callContext, conversionMap);
+
+        // For backwards compatibility, a library can indicate that functions it exports are allowed to be invoked
+        // with fluent syntax. This is used in FHIRHelpers to allow fluent resolution, which is implicit in 1.4.
+        if (resolution != null && resolution.getOperator() != null && callContext.getAllowFluent() && !resolution.getOperator().getFluent()) {
+            resolution.setAllowFluent(getBooleanTag("allowFluent"));
+        }
+
+        return resolution;
     }
 
     public OperatorMap getOperatorMap() {
@@ -216,5 +226,45 @@ public class TranslatedLibrary {
 
     public Iterable<Conversion> getConversions() {
         return conversions;
+    }
+
+    private Annotation getAnnotation() {
+        if (library != null && library.getAnnotation() != null) {
+            for (Object o : library.getAnnotation()) {
+                if (o instanceof Annotation) {
+                    return (Annotation)o;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public String getTag(String tagName) {
+        Annotation a = getAnnotation();
+        if (a != null && a.getT() != null) {
+            for (Tag t : a.getT()) {
+                if (t.getName().equals(tagName)) {
+                    return t.getValue();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public boolean getBooleanTag(String tagName) {
+        String tagValue = getTag(tagName);
+        if (tagValue != null) {
+            try {
+                return Boolean.valueOf(tagValue);
+            }
+            catch (Exception e) {
+                // Do not throw
+                return false;
+            }
+        }
+
+        return false;
     }
 }
