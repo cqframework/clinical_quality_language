@@ -2822,11 +2822,12 @@ public class LibraryBuilder {
     }
 
     public boolean inSpecificContext() {
-        return !currentExpressionContext().equals("Unfiltered");
+        return !inUnfilteredContext();
     }
 
     public boolean inUnfilteredContext() {
-        return currentExpressionContext().equals("Unfiltered");
+        return currentExpressionContext().equals("Unfiltered")
+                || (isCompatibilityLevel3() && currentExpressionContext().equals("Population"));
     }
 
     public boolean inQueryContext() {

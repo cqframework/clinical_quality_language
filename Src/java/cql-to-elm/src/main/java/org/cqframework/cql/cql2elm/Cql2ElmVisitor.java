@@ -967,6 +967,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return cd;
     }
 
+    private boolean isUnfilteredContext(String contextName) {
+        return contextName.equals("Unfiltered") || (isCompatibilityLevel3() && contextName.equals("Population"));
+    }
+
     @Override
     public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
         String modelIdentifier = parseString(ctx.modelIdentifier());
@@ -974,7 +978,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         currentContext = modelIdentifier != null ? modelIdentifier + "." + unqualifiedIdentifier : unqualifiedIdentifier;
 
-        if (!unqualifiedIdentifier.equals("Unfiltered")) {
+        if (!isUnfilteredContext(unqualifiedIdentifier)) {
             ModelContext modelContext = libraryBuilder.resolveContextName(modelIdentifier, unqualifiedIdentifier);
 
             // If this is the first time a context definition is encountered, construct a context definition:

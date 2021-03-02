@@ -298,6 +298,11 @@ public class SemanticTests {
         assertThat(translator.getErrors().size(), equalTo(2));
     }
 
+    @Test
+    public void testIssue592() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue592.cql", 0, new CqlTranslatorOptions().withCompatibilityLevel("1.3"));
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }
