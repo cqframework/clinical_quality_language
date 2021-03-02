@@ -25,8 +25,6 @@ import javax.xml.bind.*;
 import javax.xml.namespace.QName;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -70,7 +68,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private final List<Retrieve> retrieves = new ArrayList<>();
     private final List<Expression> expressions = new ArrayList<>();
     private final Map<String, Element> contextDefinitions = new HashMap<>();
-    private DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
     public Cql2ElmVisitor(LibraryBuilder libraryBuilder) {
         super();
@@ -81,7 +78,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         this.libraryBuilder = libraryBuilder;
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);
-        this.decimalFormat.setParseBigDecimal(true);
     }
     
     public void enableAnnotations() {
@@ -1561,9 +1557,9 @@ DATETIME
 
     private BigDecimal parseDecimal(String value) {
         try {
-            BigDecimal result = (BigDecimal)decimalFormat.parse(value);
+            BigDecimal result = new BigDecimal(value);
             return result;
-        } catch (ParseException e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException(String.format("Could not parse number literal: %s", value, e));
         }
     }
