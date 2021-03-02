@@ -289,6 +289,15 @@ public class SemanticTests {
         assertThat(i.getCondition(), instanceOf(Not.class));
     }
 
+    @Test
+    public void testIssue587() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue587.cql", 2);
+        // This doesn't resolve correctly, collapse null should work, but it's related to this issue:
+        // [#435](https://github.com/cqframework/clinical_quality_language/issues/435)
+        // So keeping as a verification of current behavior here, will address as part of vNext
+        assertThat(translator.getErrors().size(), equalTo(2));
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }
