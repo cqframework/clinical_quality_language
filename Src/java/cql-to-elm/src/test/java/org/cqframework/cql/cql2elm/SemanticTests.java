@@ -266,6 +266,11 @@ public class SemanticTests {
         assertThat(mother.getName(), is("Mother"));
     }
 
+    @Test
+    public void testIssue547() throws IOException {
+        TestUtils.runSemanticTest("Issue547.cql", 2);
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }

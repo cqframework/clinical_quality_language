@@ -1067,7 +1067,7 @@ public class LibraryBuilder {
         Iterable<Expression> operands = invocation.getOperands();
         List<DataType> dataTypes = new ArrayList<>();
         for (Expression operand : operands) {
-            if (operand.getResultType() == null) {
+            if (operand == null || operand.getResultType() == null) {
                 throw new IllegalArgumentException(String.format("Could not determine signature for invocation of operator %s%s.",
                         libraryName == null ? "" : libraryName + ".", operatorName));
             }
