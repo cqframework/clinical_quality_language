@@ -1245,12 +1245,18 @@ public class LibraryBuilder {
         return resolveToInterval(expression);
     }
 
+    // When promoting a point to an interval, if the point is null, the result is null, rather than constructing an interval
+    // with null boundaries
     public Expression resolveToInterval(Expression expression) {
+        If condition = of.createIf();
+        condition.setCondition(buildIsNull(expression));
+        condition.setThen(buildNull(new IntervalType(expression.getResultType())));
         Interval toInterval = of.createInterval().withLow(expression).withHigh(expression).withLowClosed(true).withHighClosed(true);
         toInterval.setResultType(new IntervalType(expression.getResultType()));
-        return toInterval;
+        condition.setElse(toInterval);
+        condition.setResultType(resolveTypeName("System", "Boolean"));
+        return condition;
     }
-
     private Expression convertIntervalExpression(Expression expression, Conversion conversion) {
         IntervalType fromType = (IntervalType)conversion.getFromType();
         IntervalType toType = (IntervalType)conversion.getToType();
@@ -1310,6 +1316,19 @@ public class LibraryBuilder {
             result.setResultTypeSpecifier(dataTypeToTypeSpecifier(nullType));
         }
         return result;
+    }
+
+    public IsNull buildIsNull(Expression expression) {
+        IsNull isNull = of.createIsNull().withOperand(expression);
+        isNull.setResultType(resolveTypeName("System", "Boolean"));
+        return isNull;
+    }
+
+    public Not buildIsNotNull(Expression expression) {
+        IsNull isNull = buildIsNull(expression);
+        Not not = of.createNot().withOperand(isNull);
+        not.setResultType(resolveTypeName("System", "Boolean"));
+        return not;
     }
 
     public MinValue buildMinimum(DataType dataType) {
@@ -2371,10 +2390,7 @@ public class LibraryBuilder {
             PropertyResolution resolution = resolveProperty(listType.getElementType(), memberIdentifier);
             Expression accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getType());
             accessor = applyTargetMap(accessor, resolution.getTargetMap());
-            IsNull isNull = of.createIsNull().withOperand(accessor);
-            isNull.setResultType(resolveTypeName("System", "Boolean"));
-            Not not = of.createNot().withOperand(isNull);
-            not.setResultType(resolveTypeName("System", "Boolean"));
+            Expression not = buildIsNotNull(accessor);
 
             // Recreate property, it needs to be accessed twice
             accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getType());
