@@ -642,11 +642,13 @@ public class BaseTest {
           <query>
             <retrieve MedicationRequest/>
             <let alias="M">
-              <retrieve Medication>
-                <context>
-                  <property path="medication" source="MR"/>
-                </context>
-              </retrieve>
+              <singletonFrom>
+                <retrieve Medication>
+                  <context>
+                    <property path="medication" source="MR"/>
+                  </context>
+                </retrieve>
+              </singletonFrom>
             </let>
             <where>
               <equivalent>
@@ -668,8 +670,10 @@ public class BaseTest {
         assertThat(q.getLet(), notNullValue());
         assertThat(q.getLet().size(), equalTo(1));
         LetClause lc = q.getLet().get(0);
-        assertThat(lc.getExpression(), instanceOf(Retrieve.class));
-        r = (Retrieve)lc.getExpression();
+        assertThat(lc.getExpression(), instanceOf(SingletonFrom.class));
+        SingletonFrom sf = (SingletonFrom)lc.getExpression();
+        assertThat(sf.getOperand(), instanceOf(Retrieve.class));
+        r = (Retrieve)sf.getOperand();
         assertThat(r.getContext(), instanceOf(Property.class));
         p = (Property)r.getContext();
         assertThat(p.getPath(), equalTo("medication"));
@@ -683,11 +687,9 @@ public class BaseTest {
         assertThat(fr.getOperand().get(0), instanceOf(Property.class));
         p = (Property)fr.getOperand().get(0);
         assertThat(p.getPath(), equalTo("code"));
-        assertThat(p.getScope(), equalTo("M"));
-        assertThat(eqv.getOperand().get(1), instanceOf(FunctionRef.class));
-        fr = (FunctionRef)eqv.getOperand().get(1);
-        assertThat(fr.getName(), equalTo("ToConcept"));
-        assertThat(fr.getOperand().size(), equalTo(1));
-        assertThat(fr.getOperand().get(0), instanceOf(CodeRef.class));
+        assertThat(p.getSource(), instanceOf(QueryLetRef.class));
+        QueryLetRef qlr = (QueryLetRef)p.getSource();
+        assertThat(qlr.getName(), equalTo("M"));
+        assertThat(eqv.getOperand().get(1), instanceOf(ToConcept.class));
     }
 }
