@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm.qdm.v54;
 
-import jdk.nashorn.internal.objects.annotations.Where;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;

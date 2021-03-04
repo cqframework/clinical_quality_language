@@ -1,6 +1,7 @@
 package org.cqframework.cql.grammar;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.gen.cqlLexer;
@@ -44,7 +45,7 @@ public class GrammarTest {
     }
 
     private ParseTree parseToTree(String logic) {
-        ANTLRInputStream input = new ANTLRInputStream(logic);
+        CharStream input = CharStreams.fromString(logic);
         CommonTokenStream tokens = new CommonTokenStream(new cqlLexer(input));
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);

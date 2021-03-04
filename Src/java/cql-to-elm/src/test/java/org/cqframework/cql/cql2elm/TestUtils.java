@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -12,8 +13,6 @@ import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
 import org.hl7.elm.r1.Library;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -81,7 +80,7 @@ public class TestUtils {
 
     public static Cql2ElmVisitor visitFile(String fileName, boolean inClassPath) throws IOException {
         InputStream is = inClassPath ? TestUtils.class.getResourceAsStream(fileName) : new FileInputStream(fileName);
-        TokenStream tokens = parseANTLRInputStream(new ANTLRInputStream(is));
+        TokenStream tokens = parseCharStream(CharStreams.fromStream(is));
         ParseTree tree = parseTokenStream(tokens);
         Cql2ElmVisitor visitor = createElmTranslatorVisitor(tokens, tree);
         visitor.visit(tree);
@@ -156,7 +155,7 @@ public class TestUtils {
         return parser.library();
     }
 
-    private static TokenStream parseANTLRInputStream(ANTLRInputStream is) {
+    private static TokenStream parseCharStream(CharStream is) {
         cqlLexer lexer = new cqlLexer(is);
         return new CommonTokenStream(lexer);
     }

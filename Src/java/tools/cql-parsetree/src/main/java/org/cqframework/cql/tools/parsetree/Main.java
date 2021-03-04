@@ -1,8 +1,10 @@
 package org.cqframework.cql.tools.parsetree;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.gui.Trees;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 
@@ -23,13 +25,13 @@ public class Main {
         if (inputFile != null) {
             is = new FileInputStream(inputFile);
         }
-        ANTLRInputStream input = new ANTLRInputStream(is);
+        CharStream input = CharStreams.fromStream(is);
         cqlLexer lexer = new cqlLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();
         cqlParser parser = new cqlParser(tokens);
         parser.setBuildParseTree(true);
         ParserRuleContext tree = parser.library();
-        tree.inspect(parser);
+        Trees.inspect(tree, parser);
     }
 }
