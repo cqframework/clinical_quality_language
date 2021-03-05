@@ -3254,7 +3254,6 @@ DATETIME
         }
 
         if (ctx.terminology() != null) {
-            String codePath = null;
             if (ctx.codePath() != null) {
                 String identifiers = (String)visit(ctx.codePath());
                 retrieve.setCodeProperty(identifiers);

@@ -8,8 +8,8 @@ import javax.xml.bind.JAXB;
 import java.io.*;
 import java.nio.file.Path;
 
-// NOTE: This implementation is naive and assumes library file names will always take the form:
-// <filename>[-<version>].cql
+// NOTE: This implementation assumes modelinfo file names will always take the form:
+// <modelname>-modelinfo[-<version>].cql
 // And further that <filename> will never contain dashes, and that <version> will always be of the form <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
 public class DefaultModelInfoProvider implements ModelInfoProvider {
@@ -66,11 +66,6 @@ public class DefaultModelInfoProvider implements ModelInfoProvider {
                         }
                     }
                 }
-
-                // Do not throw, allow the loader to throw, just report null
-                //if (mostRecentFile == null) {
-                //    throw new IllegalArgumentException(String.format("Could not resolve most recent source library for library %s.", libraryIdentifier.getId()));
-                //}
 
                 modelFile = mostRecentFile;
             }
