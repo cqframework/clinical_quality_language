@@ -322,6 +322,23 @@ public class LibraryTests {
     }
 
     @Test
+    public void testFluentFunctions7() throws IOException {
+        CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestFluent7.cql");
+        assertThat(translator.getErrors().size(), equalTo(0));
+        Library library = translator.toELM();
+        ExpressionDef def = getExpressionDef(library, "Test");
+        assertThat(def, notNullValue());
+        Expression e = def.getExpression();
+        assertThat(e, notNullValue());
+        assertThat(e, instanceOf(Equal.class));
+        Equal eq = (Equal)e;
+        assertThat(eq.getOperand(), notNullValue());
+        assertThat(eq.getOperand().size(), equalTo(2));
+        assertThat(eq.getOperand().get(0), instanceOf(FunctionRef.class));
+        assertThat(((FunctionRef)eq.getOperand().get(0)).getLibraryName(), equalTo("TF1"));
+    }
+
+    @Test
     public void testInvalidInvocation() throws IOException {
         CqlTranslator translator = TestUtils.createTranslatorFromStream("LibraryTests/TestInvalidFunction.cql");
         assertThat(translator.getErrors().size(), equalTo(1));

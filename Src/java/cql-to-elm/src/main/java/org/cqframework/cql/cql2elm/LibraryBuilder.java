@@ -710,6 +710,10 @@ public class LibraryBuilder {
         return translatedLibrary.resolveIncludeRef(identifier);
     }
 
+    public String resolveIncludeAlias(VersionedIdentifier libraryIdentifier) {
+        return translatedLibrary.resolveIncludeAlias(libraryIdentifier);
+    }
+
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
         return translatedLibrary.resolveCodeSystemRef(identifier);
     }
@@ -1103,6 +1107,9 @@ public class LibraryBuilder {
             }
 
             invocation.setResultType(resolution.getOperator().getResultType());
+            if (resolution.getLibraryIdentifier() != null) {
+                resolution.setLibraryName(resolveIncludeAlias(resolution.getLibraryIdentifier()));
+            }
             invocation.setResolution(resolution);
             return invocation;
         }

@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.cqframework.cql.cql2elm.NamespaceManager;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Tag;
@@ -154,6 +155,19 @@ public class TranslatedLibrary {
         return null;
     }
 
+    public String resolveIncludeAlias(VersionedIdentifier identifier) {
+        if (identifier != null && library != null && library.getIncludes() != null && library.getIncludes().getDef() != null) {
+            String libraryPath = NamespaceManager.getPath(identifier.getSystem(), identifier.getId());
+            for (IncludeDef id : library.getIncludes().getDef()) {
+                if (id.getPath().equals(libraryPath)) {
+                    return id.getLocalIdentifier();
+                }
+            }
+        }
+
+        return null;
+    }
+
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof CodeSystemDef) {
@@ -211,10 +225,16 @@ public class TranslatedLibrary {
     public OperatorResolution resolveCall(CallContext callContext, ConversionMap conversionMap) {
         OperatorResolution resolution = operators.resolveOperator(callContext, conversionMap);
 
-        // For backwards compatibility, a library can indicate that functions it exports are allowed to be invoked
-        // with fluent syntax. This is used in FHIRHelpers to allow fluent resolution, which is implicit in 1.4.
-        if (resolution != null && resolution.getOperator() != null && callContext.getAllowFluent() && !resolution.getOperator().getFluent()) {
-            resolution.setAllowFluent(getBooleanTag("allowFluent"));
+        if (resolution != null && resolution.getOperator() != null) {
+            // For backwards compatibility, a library can indicate that functions it exports are allowed to be invoked
+            // with fluent syntax. This is used in FHIRHelpers to allow fluent resolution, which is implicit in 1.4.
+            if (callContext.getAllowFluent() && !resolution.getOperator().getFluent()) {
+                resolution.setAllowFluent(getBooleanTag("allowFluent"));
+            }
+
+            // The resolution needs to carry with it the full versioned identifier of the library so that it can be correctly
+            // reflected via the alias for the library in the calling context.
+            resolution.setLibraryIdentifier(this.getIdentifier());
         }
 
         return resolution;
