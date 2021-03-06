@@ -344,6 +344,27 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return null;
     }
 
+    private boolean isValidIdentifier(String tagName) {
+        for (int i = 0; i < tagName.length(); i++) {
+            if (tagName.charAt(i) == '_') {
+                continue;
+            }
+
+            if (i == 0) {
+                if (!Character.isLetter(tagName.charAt(i))) {
+                    return false;
+                }
+            }
+            else {
+                if (!Character.isLetterOrDigit(tagName.charAt(i))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     private List<Tag> parseTags(String header) {
         List<Tag> tags = new ArrayList<>();
         int tagStartIndex = header.indexOf("@");
@@ -351,15 +372,20 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             int tagNameEndIndex = header.indexOf(":", tagStartIndex);
             if (tagNameEndIndex >= 0) {
                 String tagName = header.substring(tagStartIndex + 1, tagNameEndIndex);
-                tagStartIndex = header.indexOf("@", tagNameEndIndex);
-                String tagValue = null;
-                if (tagStartIndex >= 0) {
-                    tagValue = header.substring(tagNameEndIndex + 1, tagStartIndex);
+                if (isValidIdentifier(tagName)) {
+                    tagStartIndex = header.indexOf("@", tagNameEndIndex);
+                    String tagValue = null;
+                    if (tagStartIndex >= 0) {
+                        tagValue = header.substring(tagNameEndIndex + 1, tagStartIndex);
+                    }
+                    else {
+                        tagValue = header.substring(tagNameEndIndex + 1);
+                    }
+                    tags.add(af.createTag().withName(tagName.trim()).withValue(tagValue.trim()));
                 }
                 else {
-                    tagValue = header.substring(tagNameEndIndex + 1);
+                    tagStartIndex = header.indexOf("@", tagStartIndex + 1);
                 }
-                tags.add(af.createTag().withName(tagName.trim()).withValue(tagValue.trim()));
             }
             else {
                 tagStartIndex = header.indexOf("@", tagStartIndex + 1);
