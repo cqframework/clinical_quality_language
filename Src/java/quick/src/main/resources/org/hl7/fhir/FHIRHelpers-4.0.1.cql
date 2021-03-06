@@ -6,7 +6,6 @@
  https://github.com/cqframework/clinical_quality_language/wiki/FHIRHelpers
 @allowFluent: true
 */
-
 library FHIRHelpers version '4.0.1'
 
 using FHIR version '4.0.1'
