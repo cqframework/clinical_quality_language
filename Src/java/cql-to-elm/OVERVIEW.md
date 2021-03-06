@@ -17,35 +17,35 @@ The `cql`, `model`, `elm`, and `cql-to-elm` packages are required to use the tra
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>model</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>elm</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql-to-elm</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
-    
+
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
-    
+
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>quick</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>qdm</artifactId>
-      <version>1.5.1</version>
+      <version>1.5.2</version>
     </dependency>
 
 ## Technologies
@@ -54,7 +54,7 @@ CQL is defined using an [ANTLR4](http://www.antlr.org/) grammar. ANTLR4 is a sim
 
 ## Current Status
 
-The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5)), with in-progress support for the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the Issues tracker in the Github repository.
+The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the Issues tracker in the Github repository.
 
 ## Roadmap
 
