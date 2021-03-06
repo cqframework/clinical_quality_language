@@ -16,7 +16,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     private LibraryInfo libraryInfo = new LibraryInfo();
     private boolean implicitContextCreated = false;
     private String currentContext = "Unfiltered";
-    private int lastSourceIndex = 0;
+    private int lastSourceIndex = -1;
     private TokenStream tokenStream;
 
     public LibraryInfo getLibraryInfo() {
@@ -47,8 +47,8 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
         org.antlr.v4.runtime.misc.Interval sourceInterval = ctx.getSourceInterval();
         int beforeDefinition = sourceInterval.a - 1;
         if (beforeDefinition >= lastSourceIndex) {
-            header = new org.antlr.v4.runtime.misc.Interval(lastSourceIndex, sourceInterval.a - 1);
-            lastSourceIndex = sourceInterval.b + 1;
+            header = new org.antlr.v4.runtime.misc.Interval(lastSourceIndex + 1, sourceInterval.a - 1);
+            lastSourceIndex = sourceInterval.b;
 
             info.setHeaderInterval(header);
             info.setHeader(tokenStream.getText(header));
