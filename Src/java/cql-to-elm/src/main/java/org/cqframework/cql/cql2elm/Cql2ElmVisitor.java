@@ -256,29 +256,31 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                         || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
                         || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
                     Annotation a = getAnnotation(element);
-                    // Add header information (comments prior to the definition)
-                    BaseInfo definitionInfo = libraryInfo.resolveDefinition(tree);
-                    if (definitionInfo != null && definitionInfo.getHeaderInterval() != null) {
-                        Chunk headerChunk = new Chunk().withInterval(definitionInfo.getHeaderInterval());
-                        Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, chunk.getInterval().b));
-                        newChunk.addChunk(headerChunk);
-                        newChunk.setElement(chunk.getElement());
-                        for (Chunk c : chunk.getChunks()) {
-                            newChunk.addChunk(c);
+                    if (a == null || a.getS() == null) {
+                        // Add header information (comments prior to the definition)
+                        BaseInfo definitionInfo = libraryInfo.resolveDefinition(tree);
+                        if (definitionInfo != null && definitionInfo.getHeaderInterval() != null) {
+                            Chunk headerChunk = new Chunk().withInterval(definitionInfo.getHeaderInterval()).withIsHeaderChunk(true);
+                            Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, chunk.getInterval().b));
+                            newChunk.addChunk(headerChunk);
+                            newChunk.setElement(chunk.getElement());
+                            for (Chunk c : chunk.getChunks()) {
+                                newChunk.addChunk(c);
+                            }
+                            chunk = newChunk;
                         }
-                        chunk = newChunk;
-                    }
-                    if (a == null) {
-                        element.getAnnotation().add(buildAnnotation(chunk));
-                    }
-                    else {
-                        addNarrativeToAnnotation(a, chunk);
+                        if (a == null) {
+                            element.getAnnotation().add(buildAnnotation(chunk));
+                        }
+                        else {
+                            addNarrativeToAnnotation(a, chunk);
+                        }
                     }
                 }
             }
             else {
                 if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                    Chunk headerChunk = new Chunk().withInterval(libraryInfo.getHeaderInterval());
+                    Chunk headerChunk = new Chunk().withInterval(libraryInfo.getHeaderInterval()).withIsHeaderChunk(true);
                     Chunk definitionChunk = new Chunk().withInterval(libraryInfo.getDefinition().getSourceInterval());
                     Chunk newChunk = new Chunk().withInterval(new org.antlr.v4.runtime.misc.Interval(headerChunk.getInterval().a, definitionChunk.getInterval().b));
                     newChunk.addChunk(headerChunk);
@@ -315,7 +317,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                             a = buildAnnotation();
                             element.getAnnotation().add(a);
                         }
-                        a.getT().addAll(tags);
+                        // If the definition was processed as a forward declaration, the tag processing will already have occurred
+                        // and just adding tags would duplicate them here. This doesn't account for the possibility that
+                        // tags would be added for some other reason, but I didn't want the overhead of checking for existing
+                        // tags, and there is currently nothing that would add tags other than being processed from comments
+                        if (a.getT().size() == 0) {
+                            a.getT().addAll(tags);
+                        }
                     }
                 }
             }
@@ -497,7 +505,11 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
         else {
-            narrative.getContent().add(tokenStream.getText(chunk.getInterval()));
+            String chunkContent = tokenStream.getText(chunk.getInterval());
+            if (chunk.isHeaderChunk()) {
+                chunkContent = chunkContent.trim();
+            }
+            narrative.getContent().add(chunkContent);
         }
 
         return narrative;
