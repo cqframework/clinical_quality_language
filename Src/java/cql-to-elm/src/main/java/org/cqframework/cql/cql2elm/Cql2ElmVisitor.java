@@ -509,10 +509,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (chunk.isHeaderChunk()) {
                 chunkContent = chunkContent.trim();
             }
+            chunkContent = normalizeWhitespace(chunkContent);
             narrative.getContent().add(chunkContent);
         }
 
         return narrative;
+    }
+
+    private String normalizeWhitespace(String input) {
+        return input.replace("\r\n", "\n");
     }
 
     private boolean hasChunks(Narrative narrative) {
