@@ -452,34 +452,6 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
-	<xs:complexType name="DeviceApplied">
-		<xs:annotation>
-			<xs:documentation>
-				Data elements that meet criteria using this
-				datatype should document that the device indicated by the QDM
-				category and its corresponding value set is in use, or impacts or
-				alters the treatment, care plan, or encounter (e.g., an
-				antithrombotic device has been placed on the patient's legs to
-				prevent thromboembolism, or a cardiac pacemaker is in place).
-				Timing: The Relevant Period addresses:
-					startTime – When the device is inserted or first used
-					stopTime – when the device is removed or last used
-			</xs:documentation>
-		</xs:annotation>
-		<xs:complexContent>
-			<xs:extension base="QDMBaseType">
-				<xs:sequence>
-					<xs:element name="authorDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relevantDatetime" type="dt:DateTime" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="relevantPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="reason" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="anatomicalLocationSite" type="dt:Code" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="performer" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
-				</xs:sequence>
-			</xs:extension>
-		</xs:complexContent>
-	</xs:complexType>
 	<xs:complexType name="DeviceOrder">
 		<xs:annotation>
 			<xs:documentation>
@@ -689,7 +661,6 @@
 					<xs:element name="dischargeDisposition" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="diagnoses" type="DiagnosisComponent" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="facilityLocation" type="FacilityLocation" minOccurs="0" maxOccurs="unbounded"/>
-					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="lengthOfStay" type="dt:Quantity" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="participant" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="priority" type="dt:Code" minOccurs="0" maxOccurs="1"/>
@@ -1129,7 +1100,6 @@
 			<xs:extension base="QDMBaseType">
 				<xs:sequence>
 					<xs:element name="participationPeriod" type="dt:DateTimeInterval" minOccurs="0" maxOccurs="1"/>
-					<xs:element name="recorder" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -1267,7 +1237,6 @@
 					<xs:element name="negationRationale" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="component" type="Component" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="performer" type="QDMEntity" minOccurs="0" maxOccurs="unbounded"/>
-					<xs:element name="priority" type="dt:Code" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="relatedTo" type="dt:String" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
 			</xs:extension>
