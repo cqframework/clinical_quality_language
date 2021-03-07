@@ -530,6 +530,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private Serializable wrapNarrative(Narrative narrative) {
+        /*
+        TODO: Should be able to collapse narrative if the span doesn't have an attribute
+        That's what this code is doing, but it doesn't work and I don't have time to debug it
+        if (narrative.getR() == null) {
+            StringBuilder content = new StringBuilder();
+            boolean onlyStrings = true;
+            for (Serializable s : narrative.getContent()) {
+                if (s instanceof String) {
+                    content.append((String)s);
+                }
+                else {
+                    onlyStrings = false;
+                }
+            }
+            if (onlyStrings) {
+                return content.toString();
+            }
+        }
+        */
         return new JAXBElement<>(
                 new QName("urn:hl7-org:cql-annotations:r1", "s"),
                 Narrative.class,
@@ -4479,18 +4498,18 @@ DATETIME
 
     private void decorate(Element element, TrackBack tb) {
         if (locate && tb != null) {
-                element.setLocator(tb.toLocator());
-            }
+            element.setLocator(tb.toLocator());
+        }
 
-            if (resultTypes && element.getResultType() != null) {
-                if (element.getResultType() instanceof NamedType) {
-                    element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
-                }
-                else {
-                    element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
-                }
+        if (resultTypes && element.getResultType() != null) {
+            if (element.getResultType() instanceof NamedType) {
+                element.setResultTypeName(libraryBuilder.dataTypeToQName(element.getResultType()));
+            }
+            else {
+                element.setResultTypeSpecifier(libraryBuilder.dataTypeToTypeSpecifier(element.getResultType()));
             }
         }
+    }
 
     private TrackBack track(Trackable trackable, ParseTree pt) {
         TrackBack tb = getTrackBack(pt);
