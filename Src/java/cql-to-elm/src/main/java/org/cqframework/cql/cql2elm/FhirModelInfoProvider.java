@@ -17,7 +17,7 @@ public class FhirModelInfoProvider implements ModelInfoProvider, NamespaceAware 
 
     private boolean isFHIRModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            return modelIdentifier.getId().equals("FHIR") &&
+            return modelIdentifier.getId().equalsIgnoreCase("FHIR") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir"));
         }
 

@@ -14,7 +14,7 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
 
     private boolean isQICoreModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            return modelIdentifier.getId().equals("QICore") &&
+            return modelIdentifier.getId().equalsIgnoreCase("QICore") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/qicore"));
         }
 

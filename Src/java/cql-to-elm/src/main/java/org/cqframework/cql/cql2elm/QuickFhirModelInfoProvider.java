@@ -17,7 +17,7 @@ public class QuickFhirModelInfoProvider implements ModelInfoProvider {
 
     private boolean isQuickFhirModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            return modelIdentifier.getId().equals("QUICKFHIR") &&
+            return modelIdentifier.getId().equalsIgnoreCase("QUICKFHIR") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir"));
         }
 

@@ -14,7 +14,7 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
 
     private boolean isUSCoreModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            return modelIdentifier.getId().equals("USCore") &&
+            return modelIdentifier.getId().equalsIgnoreCase("USCore") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/core"));
         }
 
