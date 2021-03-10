@@ -21,7 +21,7 @@ public class FhirModelInfoProvider implements ModelInfoProvider, NamespaceAware 
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir"));
         }
 
-        return modelIdentifier.getId().equals("FHIR");
+        return modelIdentifier.getId().equalsIgnoreCase("FHIR");
     }
 
     public ModelInfo load(VersionedIdentifier modelIdentifier) {

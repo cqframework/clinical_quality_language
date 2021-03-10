@@ -18,7 +18,7 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/qicore"));
         }
 
-        return modelIdentifier.getId().equals("QICore");
+        return modelIdentifier.getId().equalsIgnoreCase("QICore");
     }
 
     public ModelInfo load(VersionedIdentifier modelIdentifier) {

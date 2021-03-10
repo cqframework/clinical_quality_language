@@ -21,7 +21,7 @@ public class QuickFhirModelInfoProvider implements ModelInfoProvider {
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir"));
         }
 
-        return modelIdentifier.getId().equals("QUICKFHIR");
+        return modelIdentifier.getId().equalsIgnoreCase("QUICKFHIR");
     }
 
     public ModelInfo load(VersionedIdentifier modelIdentifier) {

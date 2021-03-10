@@ -18,7 +18,7 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/core"));
         }
 
-        return modelIdentifier.getId().equals("USCore");
+        return modelIdentifier.getId().equalsIgnoreCase("USCore");
     }
 
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
