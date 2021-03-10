@@ -57,6 +57,7 @@ public class CqlTranslator {
     }
     public static enum Format { XML, JSON, JXSON, COFFEE }
     private static JAXBContext jaxbContext;
+    private static ObjectMapper jxsonMapper;
 
     private Library library = null;
     private TranslatedLibrary translatedLibrary = null;
@@ -519,6 +520,19 @@ public class CqlTranslator {
         return jaxbContext;
     }
 
+    public static ObjectMapper getJxsonMapper() {
+        if (jxsonMapper == null) {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_DEFAULT);
+            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+            JaxbAnnotationModule annotationModule = new JaxbAnnotationModule();
+            mapper.registerModule(annotationModule);
+            jxsonMapper = mapper;
+        }
+
+        return jxsonMapper;
+    }
+
     private class CqlErrorListener extends BaseErrorListener {
 
         private LibraryBuilder builder;
@@ -614,7 +628,7 @@ public class CqlTranslator {
         messages.addAll(builder.getMessages());
     }
 
-    public String convertToXml(Library library) throws JAXBException {
+    public static String convertToXml(Library library) throws JAXBException {
         Marshaller marshaller = getJaxbContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
@@ -643,7 +657,7 @@ public class CqlTranslator {
         */
     }
 
-    public String convertToJson(Library library) throws JAXBException {
+    public static String convertToJson(Library library) throws JAXBException {
         Marshaller marshaller = getJaxbContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty("eclipselink.media-type", "application/json");
@@ -653,15 +667,10 @@ public class CqlTranslator {
         return writer.getBuffer().toString();
     }
 
-    public String convertToJxson(Library library) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_DEFAULT);
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        JaxbAnnotationModule annotationModule = new JaxbAnnotationModule();
-        mapper.registerModule(annotationModule);
+    public static String convertToJxson(Library library) throws JsonProcessingException {
         LibraryWrapper wrapper = new LibraryWrapper();
         wrapper.setLibrary(library);
-        return mapper.writeValueAsString(wrapper);
+        return getJxsonMapper().writeValueAsString(wrapper);
     }
 
     public static void loadModelInfo(File modelInfoXML) {
