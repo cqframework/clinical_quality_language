@@ -267,7 +267,7 @@ public class SemanticTests {
 
     @Test
     public void testIssue547() throws IOException {
-        TestUtils.runSemanticTest("Issue547.cql", 2);
+        TestUtils.runSemanticTest("Issue547.cql", 3);
     }
 
     @Test
