@@ -174,7 +174,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
 
         if (sinceCompatibilityLevel == null || sinceCompatibilityLevel.isEmpty()) {
-            throw new IllegalArgumentException("Internal Translator Error: compatbility level is required to determine a compatibility check");
+            throw new IllegalArgumentException("Internal Translator Error: compatibility level is required to determine a compatibility check");
         }
 
         Version sinceVersion = new Version(sinceCompatibilityLevel);
@@ -304,39 +304,41 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private void processTags(@NotNull ParseTree tree, Object o) {
-        if (o instanceof Element) {
-            Element element = (Element)o;
-            if (!(tree instanceof cqlParser.LibraryContext)) {
-                if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef
-                        || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
-                        || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
-                    List<Tag> tags = getTags(tree);
-                    if (tags != null && tags.size() > 0) {
-                        Annotation a = getAnnotation(element);
-                        if (a == null) {
-                            a = buildAnnotation();
-                            element.getAnnotation().add(a);
-                        }
-                        // If the definition was processed as a forward declaration, the tag processing will already have occurred
-                        // and just adding tags would duplicate them here. This doesn't account for the possibility that
-                        // tags would be added for some other reason, but I didn't want the overhead of checking for existing
-                        // tags, and there is currently nothing that would add tags other than being processed from comments
-                        if (a.getT().size() == 0) {
-                            a.getT().addAll(tags);
+        if (isCompatibleWith("1.5")) {
+            if (o instanceof Element) {
+                Element element = (Element)o;
+                if (!(tree instanceof cqlParser.LibraryContext)) {
+                    if (element instanceof UsingDef || element instanceof IncludeDef || element instanceof CodeSystemDef
+                            || element instanceof ValueSetDef || element instanceof CodeDef || element instanceof ConceptDef
+                            || element instanceof ParameterDef || element instanceof ContextDef || element instanceof ExpressionDef) {
+                        List<Tag> tags = getTags(tree);
+                        if (tags != null && tags.size() > 0) {
+                            Annotation a = getAnnotation(element);
+                            if (a == null) {
+                                a = buildAnnotation();
+                                element.getAnnotation().add(a);
+                            }
+                            // If the definition was processed as a forward declaration, the tag processing will already have occurred
+                            // and just adding tags would duplicate them here. This doesn't account for the possibility that
+                            // tags would be added for some other reason, but I didn't want the overhead of checking for existing
+                            // tags, and there is currently nothing that would add tags other than being processed from comments
+                            if (a.getT().size() == 0) {
+                                a.getT().addAll(tags);
+                            }
                         }
                     }
                 }
-            }
-            else {
-                if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
-                    List<Tag> tags = getTags(libraryInfo.getHeader());
-                    if (tags != null && tags.size() > 0) {
-                        Annotation a = getAnnotation(libraryBuilder.getLibrary());
-                        if (a == null) {
-                            a = buildAnnotation();
-                            libraryBuilder.getLibrary().getAnnotation().add(a);
+                else {
+                    if (libraryInfo.getDefinition() != null && libraryInfo.getHeaderInterval() != null) {
+                        List<Tag> tags = getTags(libraryInfo.getHeader());
+                        if (tags != null && tags.size() > 0) {
+                            Annotation a = getAnnotation(libraryBuilder.getLibrary());
+                            if (a == null) {
+                                a = buildAnnotation();
+                                libraryBuilder.getLibrary().getAnnotation().add(a);
+                            }
+                            a.getT().addAll(tags);
                         }
-                        a.getT().addAll(tags);
                     }
                 }
             }
@@ -1094,7 +1096,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         ContextDef contextDef = of.createContextDef().withName(currentContext);
         track(contextDef, ctx);
-        libraryBuilder.addContext(contextDef);
+        if (isCompatibleWith("1.5")) {
+            libraryBuilder.addContext(contextDef);
+        }
 
         return currentContext;
     }
@@ -3993,6 +3997,7 @@ DATETIME
 
     @Override
     public Object visitAggregateClause(@NotNull cqlParser.AggregateClauseContext ctx) {
+        checkCompatibilityLevel("Aggregate query clause", "1.5");
         AggregateClause aggregateClause = of.createAggregateClause();
         if (ctx.getChild(1) instanceof TerminalNode) {
             switch (ctx.getChild(1).getText()) {
@@ -4335,8 +4340,13 @@ DATETIME
 
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
-                .withFluent(ctx.fluentModifier() != null)
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()));
+
+        if (ctx.fluentModifier() != null) {
+            checkCompatibilityLevel("Fluent functions", "1.5");
+            fun.setFluent(true);
+        }
+
         if (ctx.operandDefinition() != null) {
             for (cqlParser.OperandDefinitionContext opdef : ctx.operandDefinition()) {
                 TypeSpecifier typeSpecifier = parseTypeSpecifier(opdef.typeSpecifier());
