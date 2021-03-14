@@ -43,7 +43,9 @@ public class ModelManager {
 
     public void registerWellKnownNamespaces() {
         if (namespaceManager != null) {
-            namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("FHIR", "http://hl7.org/fhir"));
+            if (namespaceManager.getNamespaceInfoFromUri("http://hl7.org/fhir") != null) {
+                namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("FHIR", "http://hl7.org/fhir"));
+            }
             namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("ecqi.healthit.gov", "urn:healthit-gov"));
             namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("hl7.fhir.us.core", "http://hl7.org/fhir/us/core"));
             namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("hl7.fhir.us.qicore", "http://hl7.org/fhir/us/qicore"));
