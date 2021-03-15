@@ -131,7 +131,7 @@ public class CommentTests {
                     break;
                 case 1:
                     assertThat(t.getName(), equalTo("description"));
-                    assertThat(t.getValue(), equalTo("This is a multi-line description that spans multiple lines."));
+                    assertThat(t.getValue(), equalTo("This is a multi-line description that\n spans multiple lines."));
                     break;
                 case 2:
                     assertThat(t.getName(), equalTo("following"));
