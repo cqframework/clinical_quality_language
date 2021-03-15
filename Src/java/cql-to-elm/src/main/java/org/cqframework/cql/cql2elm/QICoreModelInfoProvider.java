@@ -14,11 +14,11 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
 
     private boolean isQICoreModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            return modelIdentifier.getId().equalsIgnoreCase("QICore") &&
+            return modelIdentifier.getId().equals("QICore") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/qicore"));
         }
 
-        return modelIdentifier.getId().equalsIgnoreCase("QICore");
+        return modelIdentifier.getId().equals("QICore");
     }
 
     public ModelInfo load(VersionedIdentifier modelIdentifier) {

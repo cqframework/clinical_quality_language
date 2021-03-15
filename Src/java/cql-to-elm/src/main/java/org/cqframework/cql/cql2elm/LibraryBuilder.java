@@ -205,18 +205,26 @@ public class LibraryBuilder {
         }
     }
 
-    public String getWellKnownNamespaceName(String unqualifiedIdentifier) {
+    /*
+    A "well-known" model name is one that is allowed to resolve without a namespace in a namespace-aware context
+     */
+    public boolean isWellKnownModelName(String unqualifiedIdentifier) {
         if (namespaceInfo == null) {
-            // Do not return namespaces if we are not in a namespace-aware translation
-            return null;
+            return false;
         }
 
-        String namespaceName = modelManager.getWellKnownNamespaceName(unqualifiedIdentifier);
-        if (namespaceName == null && namespaceInfo != null) {
-            namespaceName = namespaceInfo.getName();
+        return modelManager.isWellKnownModelName(unqualifiedIdentifier);
+    }
+
+    /*
+    A "well-known" library name is a library name that is allowed to resolve without a namespace in a namespace-aware context
+     */
+    public boolean isWellKnownLibraryName(String unqualifiedIdentifier) {
+        if (namespaceInfo == null) {
+            return false;
         }
 
-        return namespaceName;
+        return libraryManager.isWellKnownLibraryName(unqualifiedIdentifier);
     }
 
     public NamespaceInfo getNamespaceInfo() {
@@ -625,8 +633,9 @@ public class LibraryBuilder {
         // Note that translation of a referenced library may result in implicit specification of the namespace
         // In this case, the referencedLibrary will have a namespaceUri different than the currently resolved namespaceUri
         // of the IncludeDef.
-        String currentPath = NamespaceManager.getUriPart(includeDef.getPath());
-        if (currentPath != null && !currentPath.equals(libraryIdentifier.getSystem())) {
+        String currentNamespaceUri = NamespaceManager.getUriPart(includeDef.getPath());
+        if ((currentNamespaceUri == null && libraryIdentifier.getSystem() != null)
+                || (currentNamespaceUri != null && !currentNamespaceUri.equals(libraryIdentifier.getSystem()))) {
             includeDef.setPath(NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId()));
         }
 

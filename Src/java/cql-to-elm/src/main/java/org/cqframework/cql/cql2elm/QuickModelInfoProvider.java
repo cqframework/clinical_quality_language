@@ -14,11 +14,11 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
 
     private boolean isQuickModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            return modelIdentifier.getId().equalsIgnoreCase("QUICK") &&
+            return modelIdentifier.getId().equals("QUICK") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir"));
         }
 
-        return modelIdentifier.getId().equalsIgnoreCase("QUICK");
+        return modelIdentifier.getId().equals("QUICK");
     }
 
     public ModelInfo load(VersionedIdentifier modelIdentifier) {

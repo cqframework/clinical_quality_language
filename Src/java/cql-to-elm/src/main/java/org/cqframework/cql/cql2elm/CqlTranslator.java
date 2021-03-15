@@ -369,10 +369,6 @@ public class CqlTranslator {
             libraryManager.getNamespaceManager().ensureNamespaceRegistered(this.namespaceInfo);
         }
 
-        if (modelManager.getNamespaceManager().hasNamespaces()) {
-            modelManager.registerWellKnownNamespaces();
-        }
-
         if (libraryManager.getNamespaceManager().hasNamespaces() && libraryManager.getLibrarySourceLoader() instanceof NamespaceAware) {
             ((NamespaceAware)libraryManager.getLibrarySourceLoader()).setNamespaceManager(libraryManager.getNamespaceManager());
         }

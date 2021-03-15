@@ -17,11 +17,11 @@ public class QuickFhirModelInfoProvider implements ModelInfoProvider {
 
     private boolean isQuickFhirModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
-            return modelIdentifier.getId().equalsIgnoreCase("QUICKFHIR") &&
+            return modelIdentifier.getId().equals("QUICKFHIR") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir"));
         }
 
-        return modelIdentifier.getId().equalsIgnoreCase("QUICKFHIR");
+        return modelIdentifier.getId().equals("QUICKFHIR");
     }
 
     public ModelInfo load(VersionedIdentifier modelIdentifier) {

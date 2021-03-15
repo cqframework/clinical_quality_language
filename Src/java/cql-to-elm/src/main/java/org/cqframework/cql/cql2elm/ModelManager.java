@@ -41,33 +41,24 @@ public class ModelManager {
         return this.modelInfoLoader;
     }
 
-    public void registerWellKnownNamespaces() {
-        if (namespaceManager != null) {
-            if (namespaceManager.getNamespaceInfoFromUri("http://hl7.org/fhir") == null) {
-                namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("FHIR", "http://hl7.org/fhir"));
-            }
-            namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("ecqi.healthit.gov", "urn:healthit-gov"));
-            namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("hl7.fhir.us.core", "http://hl7.org/fhir/us/core"));
-            namespaceManager.ensureNamespaceRegistered(new NamespaceInfo("hl7.fhir.us.qicore", "http://hl7.org/fhir/us/qicore"));
-        }
-    }
-
     /*
-    If we are using namespaces, for well-known models, return the namespace name for the model
+    A "well-known" model name is one that is allowed to resolve without a namespace in a namespace-aware context
      */
-    public String getWellKnownNamespaceName(String unqualifiedIdentifier) {
+    public boolean isWellKnownModelName(String unqualifiedIdentifier) {
         if (unqualifiedIdentifier == null) {
-            return null;
+            return false;
         }
 
         switch (unqualifiedIdentifier) {
-            case "FHIR": return "FHIR"; // NOTE: Should probably be hl7.fhir.r4.core, but that is version specific, and FHIR has the same name across model info versions
-            case "QDM": return "ecqi.healthit.gov";
-            case "USCore": return "hl7.fhir.us.core";
-            case "QICore": return "hl7.fhir.us.qicore";
+            case "FHIR":
+            case "QDM":
+            case "USCore":
+            case "QICore":
+            case "QUICK":
+                return true;
+            default:
+                return false;
         }
-
-        return null;
     }
 
     private Model buildModel(VersionedIdentifier identifier) {
