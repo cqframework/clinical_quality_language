@@ -11,6 +11,13 @@ import org.hl7.elm.r1.*;
  */
 public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implements ElmClinicalVisitor<T, C> {
 
+    @Override
+    public T visitElement(Element elm, C context) {
+        if (elm instanceof CodeDef) return visitCodeDef((CodeDef)elm, context);
+        else if (elm instanceof ValueSetDef) return visitValueSetDef((ValueSetDef)elm, context);
+        else if (elm instanceof ConceptDef) return visitConceptDef((ConceptDef)elm, context);
+        return super.visitElement(elm, context);
+    }
     /**
      * Visit an Expression. This method will be called for
      * every node in the tree that is an Expression.
@@ -22,6 +29,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
     @Override
     public T visitExpression(Expression elm, C context) {
         if (elm instanceof Code) return visitCode((Code)elm, context);
+        else if (elm instanceof CodeRef) return visitCodeRef((CodeRef)elm, context);
         else if (elm instanceof CodeSystemRef) return visitCodeSystemRef((CodeSystemRef)elm, context);
         else if (elm instanceof Concept) return visitConcept((Concept)elm, context);
         else if (elm instanceof InCodeSystem) return visitInCodeSystem((InCodeSystem)elm, context);
@@ -30,6 +38,20 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
         else if (elm instanceof Retrieve) return visitRetrieve((Retrieve)elm, context);
         else if (elm instanceof ValueSetRef) return visitValueSetRef((ValueSetRef)elm, context);
         else return super.visitExpression(elm, context);
+    }
+
+    public T visitConceptDef(ConceptDef elm, C context) {
+        return null;
+    }
+
+    public T visitCodeDef(CodeDef elm, C context) {
+        visitAccessModifier(elm.getAccessLevel(), context);
+        visitCodeSystemRef(elm.getCodeSystem(), context);
+        return null;
+    }
+
+    public T visitCodeRef(CodeRef elm, C context) {
+        return null;
     }
 
     /**
@@ -69,6 +91,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitRetrieve(Retrieve elm, C context) {
+        visitExpression(elm.getCodes(), context);
         return null;
     }
 
@@ -81,6 +104,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCodeSystemDef(CodeSystemDef elm, C context) {
+        visitAccessModifier(elm.getAccessLevel(), context);
         return null;
     }
 
@@ -93,6 +117,8 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitValueSetDef(ValueSetDef elm, C context) {
+        visitAccessModifier(elm.getAccessLevel(), context);
+        elm.getCodeSystem().stream().forEach(codeSystem -> visitCodeSystemRef(codeSystem, context));
         return null;
     }
 
@@ -165,6 +191,8 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitInValueSet(InValueSet elm, C context) {
+        visitExpression(elm.getCode(), context);
+        visitExpression(elm.getValueset(), context);
         return null;
     }
 

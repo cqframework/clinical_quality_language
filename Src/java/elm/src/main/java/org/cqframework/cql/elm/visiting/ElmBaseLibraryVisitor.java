@@ -1,6 +1,7 @@
 package org.cqframework.cql.elm.visiting;
 
 import org.hl7.elm.r1.*;
+import org.hl7.elm.r1.Library.Statements;
 
 /**
  * Created by Bryn on 4/14/2016.
@@ -33,6 +34,33 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitLibrary(Library elm, C context) {
+        if(elm.getUsings() != null && elm.getUsings().getDef() != null && !elm.getUsings().getDef().isEmpty()) {
+            elm.getUsings().getDef().stream().forEach(using -> visitElement(using, context));
+        }
+        if (elm.getIncludes() != null && elm.getIncludes().getDef() != null && !elm.getIncludes().getDef().isEmpty()) {
+            elm.getIncludes().getDef().stream().forEach(include -> visitElement(include, context));
+        }
+        if (elm.getCodeSystems() != null && elm.getCodeSystems().getDef() != null && !elm.getCodeSystems().getDef().isEmpty()) {
+            elm.getCodeSystems().getDef().stream().forEach(codeSystem -> visitElement(codeSystem, context));
+        }
+        if (elm.getValueSets() != null && elm.getValueSets().getDef() != null && !elm.getValueSets().getDef().isEmpty()) {
+            elm.getValueSets().getDef().stream().forEach(valueset -> visitElement(valueset, context));
+        }
+        if (elm.getCodes() != null && elm.getCodes().getDef() != null && !elm.getCodes().getDef().isEmpty()) {
+            elm.getCodes().getDef().stream().forEach(code -> visitElement(code, context));
+        }
+        if (elm.getConcepts() != null && elm.getConcepts().getDef() != null && !elm.getConcepts().getDef().isEmpty()) {
+            elm.getConcepts().getDef().stream().forEach(concept -> visitElement(concept, context));
+        }
+        if (elm.getParameters() != null && elm.getParameters().getDef() != null && !elm.getParameters().getDef().isEmpty()) {
+            elm.getParameters().getDef().stream().forEach(param -> visitElement(param, context));
+        }
+        if (elm.getContexts() != null && elm.getContexts().getDef() != null && !elm.getContexts().getDef().isEmpty()) {
+            elm.getContexts().getDef().stream().forEach(contextDef -> visitElement(contextDef, context));
+        }
+        if (elm.getStatements() != null && elm.getStatements().getDef() != null && !elm.getStatements().getDef().isEmpty()) {
+            visitStatements(elm.getStatements(), context);
+        }
         return null;
     }
 
@@ -69,6 +97,21 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitContextDef(ContextDef elm, C context) {
+        return null;
+    }
+
+    public T visitStatements(Statements elm, C context) {
+        int n = elm.getDef().size();
+        for (int i=0; i<n; i++) {
+            Element c = elm.getDef().get(i);
+            if (c instanceof ExpressionDef) {
+                visitElement((ExpressionDef)c, context);
+            } else if (c instanceof ContextDef) {
+                visitElement((ContextDef)c, context);
+            } else if (c instanceof FunctionDef) {
+                visitElement((FunctionDef)c, context);
+            }
+        }
         return null;
     }
 }
