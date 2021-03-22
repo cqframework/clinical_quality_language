@@ -15,7 +15,7 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
     private boolean isQuickModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
             return modelIdentifier.getId().equals("QUICK") &&
-                    (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/core"));
+                    (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/qicore"));
         }
 
         return modelIdentifier.getId().equals("QUICK");
