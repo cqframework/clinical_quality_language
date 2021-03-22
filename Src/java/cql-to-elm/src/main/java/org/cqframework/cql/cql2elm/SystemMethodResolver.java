@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.antlr.v4.runtime.misc.NotNull;
 import org.cqframework.cql.cql2elm.model.QueryContext;
 import org.cqframework.cql.gen.cqlParser;
 import org.hl7.cql.model.*;
@@ -319,7 +318,6 @@ public class SystemMethodResolver {
                 params.add(list);
                 return builder.resolveFunction(null, "Flatten", params);
             }
-            case "conformsTo": return builder.resolveFunction("FHIRSupport", "ConformsTo", getParams(target, ctx));
             case "contains": {
                 checkArgumentCount(ctx, functionName, 1);
                 List<Expression> params = new ArrayList<Expression>();
@@ -508,11 +506,7 @@ public class SystemMethodResolver {
             }
 
             default: {
-                if (mustResolve) {
-                    throw new IllegalArgumentException(String.format("Unknown method %s.", functionName));
-                }
-
-                return null;
+                return visitor.resolveFunction(null, functionName, getParams(target, ctx), mustResolve, false, true);
             }
         }
     }

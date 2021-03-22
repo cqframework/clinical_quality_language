@@ -1,6 +1,9 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.cqframework.cql.cql2elm.ModelManager;
+import org.cqframework.cql.cql2elm.NamespaceManager;
 import org.hl7.cql.model.*;
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.*;
 
 import java.util.*;
@@ -8,6 +11,8 @@ import java.util.*;
 public class ModelImporter {
 
     private ModelInfo modelInfo;
+    private ModelManager modelManager;
+    private Map<String, Model> modelIndex;
     private Map<String, TypeInfo> typeInfoIndex;
     private Map<String, DataType> resolvedTypes;
     private List<DataType> dataTypes;
@@ -15,24 +20,37 @@ public class ModelImporter {
     private List<ModelContext> contexts;
     private ModelContext defaultContext;
 
-    public ModelImporter(ModelInfo modelInfo, Iterable<DataType> systemTypes) {
+    public ModelImporter(ModelInfo modelInfo, ModelManager modelManager) {
         if (modelInfo == null) {
             throw new IllegalArgumentException("modelInfo is null");
         }
 
         this.modelInfo = modelInfo;
+        this.modelManager = modelManager;
+        this.modelIndex = new HashMap<>();
         this.typeInfoIndex = new HashMap<>();
         this.resolvedTypes = new HashMap<>();
         this.dataTypes = new ArrayList<>();
         this.conversions = new ArrayList<>();
         this.contexts = new ArrayList<>();
 
-        // Import system types
-        if (systemTypes != null) {
-            for (DataType systemType : systemTypes) {
-                if (systemType instanceof NamedType) {
-                    NamedType namedSystemType = (NamedType)systemType;
-                    this.resolvedTypes.put(namedSystemType.getName(), systemType);
+        if (modelManager != null) {
+            // Import required models
+            for (ModelSpecifier requiredModel : modelInfo.getRequiredModelInfo()) {
+                Model model = modelManager.resolveModel(new VersionedIdentifier()
+                        .withSystem(NamespaceManager.getUriPart(requiredModel.getUrl()))
+                        .withId(requiredModel.getName())
+                        .withVersion(requiredModel.getVersion()));
+                if (model != null) {
+                    modelIndex.put(requiredModel.getName(), model);
+                }
+            }
+
+            // Ensure System model is registered
+            if (!modelIndex.containsKey("System")) {
+                Model systemModel = modelManager.resolveModel(new VersionedIdentifier().withId("System"));
+                if (systemModel != null) {
+                    modelIndex.put("System", systemModel);
                 }
             }
         }
@@ -95,15 +113,6 @@ public class ModelImporter {
 
             if (t instanceof ClassInfo) {
                 importRelationships((ClassInfo)t, (ClassType)type);
-            }
-        }
-
-        if (systemTypes != null) {
-            for (DataType systemType : systemTypes) {
-                if (systemType instanceof NamedType) {
-                    NamedType namedSystemType = (NamedType)systemType;
-                    this.resolvedTypes.remove(namedSystemType.getName());
-                }
             }
         }
     }
@@ -259,7 +268,35 @@ public class ModelImporter {
             throw new IllegalArgumentException("typeName is null");
         }
 
-        return resolvedTypes.get(casify(typeName));
+        DataType resolvedType = resolvedTypes.get(casify(typeName));
+        if (resolvedType != null) {
+            return resolvedType;
+        }
+
+        int qualifierIndex = typeName.indexOf(".");
+        if (qualifierIndex < 0) {
+            return null;
+        }
+
+        String qualifier = typeName.substring(0, qualifierIndex);
+        if (qualifier.equals("")) {
+            return null;
+        }
+
+        if (!qualifier.equals(this.modelInfo.getName())) {
+            Model model = resolveModel(qualifier);
+            if (model == null) {
+                return null;
+            }
+
+            return model.resolveTypeName(typeName);
+        }
+
+        return null;
+    }
+
+    private Model resolveModel(String localIdentifier) {
+        return modelIndex.get(localIdentifier);
     }
 
     private TypeInfo lookupTypeInfo(String typeName) {
@@ -476,6 +513,10 @@ public class ModelImporter {
         return elementType;
     }
 
+    private SearchType resolveClassTypeSearch(ClassType t, SearchInfo s) {
+        return new SearchType(s.getName(), s.getPath(), resolveTypeNameOrSpecifier(s.getType(), s.getTypeSpecifier()));
+    }
+
     private ClassType resolveClassType(ClassInfo t) {
         if (t.getName() == null) {
             throw new IllegalArgumentException("Class definition must have a name.");
@@ -511,6 +552,12 @@ public class ModelImporter {
                 result.addElements(resolveClassTypeElements(result, t.getElement()));
             }
 
+            if (t.getSearch() != null) {
+                for (SearchInfo si : t.getSearch()) {
+                    result.addSearch(resolveClassTypeSearch(result, si));
+                }
+            }
+
             //Here we handle the case when a type is not a generic but its base type is a generic type whose parameters
             //have all been bound to concrete types (no remaining degrees of freedom) and is not expressed in generic notation in the model-info file.
             if(isParentGeneric(result) && !t.getBaseType().contains("<")) {
@@ -535,7 +582,6 @@ public class ModelImporter {
         }
 
         throw new IllegalArgumentException(String.format("Could not resolve context name %s.", contextName));
-
     }
 
     private Relationship resolveRelationship(RelationshipInfo relationshipInfo) {

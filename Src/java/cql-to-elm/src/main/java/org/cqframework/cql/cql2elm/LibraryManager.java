@@ -31,7 +31,12 @@ public class LibraryManager {
             throw new IllegalArgumentException("modelManager is null");
         }
         this.modelManager = modelManager;
-        this.namespaceManager = new NamespaceManager();
+        if (this.modelManager.getNamespaceManager() != null) {
+            this.namespaceManager = modelManager.getNamespaceManager();
+        }
+        else {
+            this.namespaceManager = new NamespaceManager();
+        }
         libraries = new HashMap<>();
         translationStack = new Stack<>();
         this.librarySourceLoader = new PriorityLibrarySourceLoader();
@@ -65,6 +70,22 @@ public class LibraryManager {
         return libraries;
     }
 
+    /*
+    A "well-known" library name is one that is allowed to resolve without a namespace in a namespace-aware context
+     */
+    public boolean isWellKnownLibraryName(String unqualifiedIdentifier) {
+        if (unqualifiedIdentifier == null) {
+            return false;
+        }
+
+        switch (unqualifiedIdentifier) {
+            case "FHIRHelpers":
+                return true;
+            default:
+                return false;
+        }
+    }
+
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
@@ -85,6 +106,9 @@ public class LibraryManager {
         }
 
         else if (library != null) {
+            if (libraryIdentifier.getSystem() == null && library.getIdentifier().getSystem() != null) {
+                libraryIdentifier.setSystem(library.getIdentifier().getSystem());
+            }
             return library;
         }
 

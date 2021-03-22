@@ -23,7 +23,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     private static List<CommentToken> comments = new ArrayList<>();
 
     public static FormatResult getFormattedOutput(InputStream is) throws IOException {
-        ANTLRInputStream in = new ANTLRInputStream(is);
+        CharStream in = CharStreams.fromStream(is);
         cqlLexer lexer = new cqlLexer(in);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         tokens.fill();

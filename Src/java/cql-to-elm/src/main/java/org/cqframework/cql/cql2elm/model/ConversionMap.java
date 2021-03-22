@@ -170,7 +170,7 @@ public class ConversionMap {
     Returns conversions for the given type, or any supertype, recursively
      */
     public List<Conversion> getAllConversions(DataType fromType) {
-        List<Conversion> conversions = new ArrayList();
+        List<Conversion> conversions = new ArrayList<Conversion>();
         DataType currentType = fromType;
         while (currentType != null) {
             conversions.addAll(getConversions(currentType));

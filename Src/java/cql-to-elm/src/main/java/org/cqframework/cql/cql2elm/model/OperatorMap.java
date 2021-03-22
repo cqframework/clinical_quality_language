@@ -32,7 +32,7 @@ public class OperatorMap {
     }
 
     public boolean supportsOperator(String libraryName, String operatorName, DataType... signature) {
-        CallContext call = new CallContext(libraryName, operatorName, false, false, signature);
+        CallContext call = new CallContext(libraryName, operatorName, false, false, false, signature);
         try {
             OperatorResolution resolution = resolveOperator(call, null);
             if (resolution == null) {

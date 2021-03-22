@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.hl7.elm.r1.VersionedIdentifier;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,39 @@ public class OperatorResolution {
     }
     public void setOperator(Operator operator) {
         this.operator = operator;
+    }
+
+    private boolean allowFluent = false;
+    public boolean getAllowFluent() {
+        return allowFluent;
+    }
+    public void setAllowFluent(boolean allowFluent) {
+        this.allowFluent = allowFluent;
+    }
+
+    /*
+    The versioned identifier (fully qualified, versioned, library identifier of the library in which the resolved operator
+    is defined. This is set by the library resolution to allow the calling context to understand the defined location
+    of the resolved operator.
+     */
+    private VersionedIdentifier libraryIdentifier;
+    public VersionedIdentifier getLibraryIdentifier() {
+        return libraryIdentifier;
+    }
+    public void setLibraryIdentifier(VersionedIdentifier libraryIdentifier) {
+        this.libraryIdentifier = libraryIdentifier;
+    }
+
+    /*
+    The local alias for the resolved library. This is set by the libraryBuilder to allow the invocation
+    to set the library alias if necessary.
+     */
+    private String libraryName;
+    public String getLibraryName() {
+        return libraryName;
+    }
+    public void setLibraryName(String libraryName) {
+        this.libraryName = libraryName;
     }
 
     private void ensureConversions() {

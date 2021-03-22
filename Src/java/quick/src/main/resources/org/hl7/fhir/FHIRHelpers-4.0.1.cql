@@ -1,3 +1,11 @@
+/*
+@author: Bryn Rhodes
+@description: This library defines functions to convert between FHIR 
+ data types and CQL system-defined types, as well as functions to support
+ FHIRPath implementation. For more information, the FHIRHelpers wiki page:
+ https://github.com/cqframework/clinical_quality_language/wiki/FHIRHelpers
+@allowFluent: true
+*/
 library FHIRHelpers version '4.0.1'
 
 using FHIR version '4.0.1'
@@ -107,6 +115,37 @@ define function ToConcept(concept FHIR.CodeableConcept):
             display: concept.text.value
         }
 
+define function reference(reference String):
+    if reference is null then
+        null
+    else
+        Reference { reference: string { value: reference } }
+
+define function resolve(reference String) returns Resource: external
+define function resolve(reference Reference) returns Resource: external
+define function reference(resource Resource) returns Reference: external
+define function extension(element Element, url String) returns List<Element>: external
+define function extension(resource Resource, url String) returns List<Element>: external
+define function hasValue(element Element) returns Boolean: external
+define function getValue(element Element) returns Any: external
+define function ofType(identifier String) returns List<Any>: external
+define function is(identifier String) returns Boolean: external
+define function as(identifier String) returns Any: external
+define function elementDefinition(element Element) returns ElementDefinition: external
+define function slice(element Element, url String, name String) returns List<Element>: external
+define function checkModifiers(resource Resource) returns Resource: external
+define function checkModifiers(resource Resource, modifier String) returns Resource: external
+define function checkModifiers(element Element) returns Element: external
+define function checkModifiers(element Element, modifier String) returns Element: external
+define function conformsTo(resource Resource, structure String) returns Boolean: external
+define function memberOf(code code, valueSet String) returns Boolean: external
+define function memberOf(coding Coding, valueSet String) returns Boolean: external
+define function memberOf(concept CodeableConcept, valueSet String) returns Boolean: external
+define function subsumes(coding Coding, subsumedCoding Coding) returns Boolean: external
+define function subsumes(concept CodeableConcept, subsumedConcept CodeableConcept) returns Boolean: external
+define function subsumedBy(coding Coding, subsumingCoding Coding) returns Boolean: external
+define function subsumedBy(concept CodeableConcept, subsumingConcept CodeableConcept) returns Boolean: external
+define function htmlChecks(element Element) returns Boolean: external
 
 define function ToString(value AccountStatus): value.value
 define function ToString(value ActionCardinalityBehavior): value.value

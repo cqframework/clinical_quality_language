@@ -22,6 +22,25 @@ public class Chunk {
         return this;
     }
 
+    /*
+    If a chunk is a header chunk then the narrative construction can choose to "trim" the content
+    to avoid the inclusion of whitespace between definitions in the narrative output.
+    This does have the side-affect of needing to reconstitute whitespace when reconstructing the
+    entire narrative from the source annotations, but that isn't a use case we're optimizing for,
+    we're focusing on providing minimal required narrative per definition.
+     */
+    private boolean headerChunk = false;
+    public boolean isHeaderChunk() {
+        return this.headerChunk;
+    }
+    public void setHeaderChunk(boolean isHeaderChunk) {
+        this.headerChunk = isHeaderChunk;
+    }
+    public Chunk withIsHeaderChunk(boolean isHeaderChunk) {
+        setHeaderChunk(isHeaderChunk);
+        return this;
+    }
+
     private Element element;
     public Element getElement() {
         return element;

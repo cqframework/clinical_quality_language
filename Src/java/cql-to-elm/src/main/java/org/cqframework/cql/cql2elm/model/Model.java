@@ -1,13 +1,13 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.cql.model.*;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.util.*;
 
 public class Model {
-    public Model(@NotNull ModelInfo modelInfo, Model systemModel) throws ClassNotFoundException {
+    public Model(ModelInfo modelInfo, ModelManager modelManager) throws ClassNotFoundException {
         info = modelInfo;
         index = new HashMap<>();
         nameIndex = new HashMap<>();
@@ -15,7 +15,7 @@ public class Model {
         conversions = new ArrayList<>();
         contexts = new ArrayList<>();
 
-        ModelImporter importer = new ModelImporter(info, systemModel != null ? systemModel.nameIndex.values() : null);
+        ModelImporter importer = new ModelImporter(info, modelManager);
         index = importer.getTypes();
         for (Conversion c : importer.getConversions()) {
             conversions.add(c);
@@ -44,6 +44,9 @@ public class Model {
     private Map<String, DataType> index;
     private Map<String, ClassType> classIndex;
     private Map<String, DataType> nameIndex;
+    protected Map<String, DataType> getNameIndex() {
+        return nameIndex;
+    }
     private List<Conversion> conversions;
     private List<ModelContext> contexts;
     private String defaultContext;
@@ -55,7 +58,7 @@ public class Model {
         return conversions;
     }
 
-    public DataType resolveTypeName(@NotNull String typeName) {
+    public DataType resolveTypeName(String typeName) {
         typeName = casify(typeName);
         DataType result = index.get(typeName);
         if (result == null) {
@@ -65,11 +68,11 @@ public class Model {
         return result;
     }
 
-    public ModelContext resolveContextName(@NotNull String contextName) {
+    public ModelContext resolveContextName(String contextName) {
         return resolveContextName(contextName, true);
     }
 
-    public ModelContext resolveContextName(@NotNull String contextName, boolean mustResolve) {
+    public ModelContext resolveContextName(String contextName, boolean mustResolve) {
         for (ModelContext context : contexts) {
             if (context.getName().equals(contextName)) {
                 return context;
@@ -99,7 +102,7 @@ public class Model {
         return null;
     }
 
-    public ClassType resolveLabel(@NotNull String label) {
+    public ClassType resolveLabel(String label) {
         return classIndex.get(casify(label));
     }
 
@@ -107,7 +110,7 @@ public class Model {
         return (this.info.isCaseSensitive() != null ? this.info.isCaseSensitive() : false) ? typeName.toLowerCase() : typeName;
     }
 
-    private DataType internalResolveTypeName(@NotNull String typeName, Model systemModel) {
+    private DataType internalResolveTypeName(String typeName, Model systemModel) {
         DataType result = resolveTypeName(typeName);
         if (result == null) {
             result = systemModel.resolveTypeName(typeName);

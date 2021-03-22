@@ -39,7 +39,10 @@ public class TestPointIntervalSignatures {
         assertThat(def, hasTypeAndResult(Before.class, "System.Boolean"));
         BinaryExpression op = (BinaryExpression)def.getExpression();
         Expression left = op.getOperand().get(0);
-        assertThat(left, instanceOf(Interval.class));
+        assertThat(left, instanceOf(If.class));
+        assertThat(((If)left).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)left).getThen(), instanceOf(Null.class));
+        assertThat(((If)left).getElse(), instanceOf(Interval.class));
         Expression right = op.getOperand().get(1);
         assertThat(right, instanceOf(ExpressionRef.class));
 
@@ -47,7 +50,10 @@ public class TestPointIntervalSignatures {
         assertThat(def, hasTypeAndResult(SameOrBefore.class, "System.Boolean"));
         op = (BinaryExpression)def.getExpression();
         left = op.getOperand().get(0);
-        assertThat(left, instanceOf(Interval.class));
+        assertThat(left, instanceOf(If.class));
+        assertThat(((If)left).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)left).getThen(), instanceOf(Null.class));
+        assertThat(((If)left).getElse(), instanceOf(Interval.class));
         right = op.getOperand().get(1);
         assertThat(right, instanceOf(ExpressionRef.class));
 
@@ -55,7 +61,10 @@ public class TestPointIntervalSignatures {
         assertThat(def, hasTypeAndResult(SameOrBefore.class, "System.Boolean"));
         op = (BinaryExpression)def.getExpression();
         left = op.getOperand().get(0);
-        assertThat(left, instanceOf(Interval.class));
+        assertThat(left, instanceOf(If.class));
+        assertThat(((If)left).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)left).getThen(), instanceOf(Null.class));
+        assertThat(((If)left).getElse(), instanceOf(Interval.class));
         right = op.getOperand().get(1);
         assertThat(right, instanceOf(ExpressionRef.class));
 
@@ -65,7 +74,10 @@ public class TestPointIntervalSignatures {
         left = op.getOperand().get(0);
         assertThat(left, instanceOf(ExpressionRef.class));
         right = op.getOperand().get(1);
-        assertThat(right, instanceOf(Interval.class));
+        assertThat(right, instanceOf(If.class));
+        assertThat(((If)right).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)right).getThen(), instanceOf(Null.class));
+        assertThat(((If)right).getElse(), instanceOf(Interval.class));
 
         def = defs.get("IntervalOnOrBeforePoint");
         assertThat(def, hasTypeAndResult(SameOrBefore.class, "System.Boolean"));
@@ -73,7 +85,10 @@ public class TestPointIntervalSignatures {
         left = op.getOperand().get(0);
         assertThat(left, instanceOf(ExpressionRef.class));
         right = op.getOperand().get(1);
-        assertThat(right, instanceOf(Interval.class));
+        assertThat(right, instanceOf(If.class));
+        assertThat(((If)right).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)right).getThen(), instanceOf(Null.class));
+        assertThat(((If)right).getElse(), instanceOf(Interval.class));
 
         def = defs.get("IntervalSameOrBeforePoint");
         assertThat(def, hasTypeAndResult(SameOrBefore.class, "System.Boolean"));
@@ -81,13 +96,19 @@ public class TestPointIntervalSignatures {
         left = op.getOperand().get(0);
         assertThat(left, instanceOf(ExpressionRef.class));
         right = op.getOperand().get(1);
-        assertThat(right, instanceOf(Interval.class));
+        assertThat(right, instanceOf(If.class));
+        assertThat(((If)right).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)right).getThen(), instanceOf(Null.class));
+        assertThat(((If)right).getElse(), instanceOf(Interval.class));
 
         def = defs.get("PointAfterInterval");
         assertThat(def, hasTypeAndResult(After.class, "System.Boolean"));
         op = (BinaryExpression)def.getExpression();
         left = op.getOperand().get(0);
-        assertThat(left, instanceOf(Interval.class));
+        assertThat(left, instanceOf(If.class));
+        assertThat(((If)left).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)left).getThen(), instanceOf(Null.class));
+        assertThat(((If)left).getElse(), instanceOf(Interval.class));
         right = op.getOperand().get(1);
         assertThat(right, instanceOf(ExpressionRef.class));
 
@@ -95,7 +116,10 @@ public class TestPointIntervalSignatures {
         assertThat(def, hasTypeAndResult(SameOrAfter.class, "System.Boolean"));
         op = (BinaryExpression)def.getExpression();
         left = op.getOperand().get(0);
-        assertThat(left, instanceOf(Interval.class));
+        assertThat(left, instanceOf(If.class));
+        assertThat(((If)left).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)left).getThen(), instanceOf(Null.class));
+        assertThat(((If)left).getElse(), instanceOf(Interval.class));
         right = op.getOperand().get(1);
         assertThat(right, instanceOf(ExpressionRef.class));
 
@@ -103,7 +127,10 @@ public class TestPointIntervalSignatures {
         assertThat(def, hasTypeAndResult(SameOrAfter.class, "System.Boolean"));
         op = (BinaryExpression)def.getExpression();
         left = op.getOperand().get(0);
-        assertThat(left, instanceOf(Interval.class));
+        assertThat(left, instanceOf(If.class));
+        assertThat(((If)left).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)left).getThen(), instanceOf(Null.class));
+        assertThat(((If)left).getElse(), instanceOf(Interval.class));
         right = op.getOperand().get(1);
         assertThat(right, instanceOf(ExpressionRef.class));
 
@@ -113,7 +140,10 @@ public class TestPointIntervalSignatures {
         left = op.getOperand().get(0);
         assertThat(left, instanceOf(ExpressionRef.class));
         right = op.getOperand().get(1);
-        assertThat(right, instanceOf(Interval.class));
+        assertThat(right, instanceOf(If.class));
+        assertThat(((If)right).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)right).getThen(), instanceOf(Null.class));
+        assertThat(((If)right).getElse(), instanceOf(Interval.class));
 
         def = defs.get("IntervalOnOrAfterPoint");
         assertThat(def, hasTypeAndResult(SameOrAfter.class, "System.Boolean"));
@@ -121,7 +151,10 @@ public class TestPointIntervalSignatures {
         left = op.getOperand().get(0);
         assertThat(left, instanceOf(ExpressionRef.class));
         right = op.getOperand().get(1);
-        assertThat(right, instanceOf(Interval.class));
+        assertThat(right, instanceOf(If.class));
+        assertThat(((If)right).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)right).getThen(), instanceOf(Null.class));
+        assertThat(((If)right).getElse(), instanceOf(Interval.class));
 
         def = defs.get("IntervalSameOrAfterPoint");
         assertThat(def, hasTypeAndResult(SameOrAfter.class, "System.Boolean"));
@@ -129,7 +162,10 @@ public class TestPointIntervalSignatures {
         left = op.getOperand().get(0);
         assertThat(left, instanceOf(ExpressionRef.class));
         right = op.getOperand().get(1);
-        assertThat(right, instanceOf(Interval.class));
+        assertThat(right, instanceOf(If.class));
+        assertThat(((If)right).getCondition(), instanceOf(IsNull.class));
+        assertThat(((If)right).getThen(), instanceOf(Null.class));
+        assertThat(((If)right).getElse(), instanceOf(Interval.class));
 
         def = defs.get("PointInInterval");
         assertThat(def, hasTypeAndResult(In.class, "System.Boolean"));

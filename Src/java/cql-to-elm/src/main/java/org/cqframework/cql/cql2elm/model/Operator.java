@@ -15,7 +15,9 @@ public class Operator {
             operandTypes.add(operand.getResultType());
         }
         return new Operator(functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])),
-                functionDef.getResultType()).withAccessLevel(functionDef.getAccessLevel());
+                functionDef.getResultType()).withAccessLevel(functionDef.getAccessLevel())
+                .withFluent(functionDef.isFluent() != null ? functionDef.isFluent() : false)
+                .withExternal(functionDef.isExternal() != null ? functionDef.isExternal() : false);
     }
 
     public Operator(String name, Signature signature, DataType resultType) {
@@ -55,6 +57,30 @@ public class Operator {
 
     public Operator withAccessLevel(AccessModifier accessLevel) {
         setAccessLevel(accessLevel);
+        return this;
+    }
+
+    private boolean isFluent = false;
+    public boolean getFluent() {
+        return isFluent;
+    }
+    public void setFluent(boolean isFluent) {
+        this.isFluent = isFluent;
+    }
+    public Operator withFluent(boolean isFluent) {
+        setFluent(isFluent);
+        return this;
+    }
+
+    private boolean isExternal = false;
+    public boolean getExternal() {
+        return isExternal;
+    }
+    public void setExternal(boolean isExternal) {
+        this.isExternal = isExternal;
+    }
+    public Operator withExternal(boolean isExternal) {
+        setExternal(isExternal);
         return this;
     }
 

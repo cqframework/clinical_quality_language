@@ -1,6 +1,9 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.cqframework.cql.cql2elm.NamespaceManager;
 import org.hl7.cql.model.DataType;
+import org.hl7.cql_annotations.r1.Annotation;
+import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
 
 import java.util.*;
@@ -152,6 +155,19 @@ public class TranslatedLibrary {
         return null;
     }
 
+    public String resolveIncludeAlias(VersionedIdentifier identifier) {
+        if (identifier != null && library != null && library.getIncludes() != null && library.getIncludes().getDef() != null) {
+            String libraryPath = NamespaceManager.getPath(identifier.getSystem(), identifier.getId());
+            for (IncludeDef id : library.getIncludes().getDef()) {
+                if (id.getPath().equals(libraryPath)) {
+                    return id.getLocalIdentifier();
+                }
+            }
+        }
+
+        return null;
+    }
+
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
         Element element = resolve(identifier);
         if (element instanceof CodeSystemDef) {
@@ -207,7 +223,21 @@ public class TranslatedLibrary {
     }
 
     public OperatorResolution resolveCall(CallContext callContext, ConversionMap conversionMap) {
-        return operators.resolveOperator(callContext, conversionMap);
+        OperatorResolution resolution = operators.resolveOperator(callContext, conversionMap);
+
+        if (resolution != null && resolution.getOperator() != null) {
+            // For backwards compatibility, a library can indicate that functions it exports are allowed to be invoked
+            // with fluent syntax. This is used in FHIRHelpers to allow fluent resolution, which is implicit in 1.4.
+            if (callContext.getAllowFluent() && !resolution.getOperator().getFluent()) {
+                resolution.setAllowFluent(getBooleanTag("allowFluent"));
+            }
+
+            // The resolution needs to carry with it the full versioned identifier of the library so that it can be correctly
+            // reflected via the alias for the library in the calling context.
+            resolution.setLibraryIdentifier(this.getIdentifier());
+        }
+
+        return resolution;
     }
 
     public OperatorMap getOperatorMap() {
@@ -216,5 +246,45 @@ public class TranslatedLibrary {
 
     public Iterable<Conversion> getConversions() {
         return conversions;
+    }
+
+    private Annotation getAnnotation() {
+        if (library != null && library.getAnnotation() != null) {
+            for (Object o : library.getAnnotation()) {
+                if (o instanceof Annotation) {
+                    return (Annotation)o;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public String getTag(String tagName) {
+        Annotation a = getAnnotation();
+        if (a != null && a.getT() != null) {
+            for (Tag t : a.getT()) {
+                if (t.getName().equals(tagName)) {
+                    return t.getValue();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public boolean getBooleanTag(String tagName) {
+        String tagValue = getTag(tagName);
+        if (tagValue != null) {
+            try {
+                return Boolean.valueOf(tagValue);
+            }
+            catch (Exception e) {
+                // Do not throw
+                return false;
+            }
+        }
+
+        return false;
     }
 }

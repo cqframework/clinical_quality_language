@@ -1,8 +1,12 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import org.antlr.v4.runtime.misc.Interval;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.cqframework.cql.gen.cqlParser;
+
 import java.util.*;
 
-public class LibraryInfo {
+public class LibraryInfo extends BaseInfo {
     private String namespaceName;
     private String libraryName;
     private String version;
@@ -17,6 +21,8 @@ public class LibraryInfo {
     private final Map<String, ParameterDefinitionInfo> parameterDefinitions;
     private final Map<String, ExpressionDefinitionInfo> expressionDefinitions;
     private final Map<String, List<FunctionDefinitionInfo>> functionDefinitions;
+    private final List<ContextDefinitionInfo> contextDefinitions;
+    private final Map<Interval, BaseInfo> definitions;
 
     public LibraryInfo() {
         usingDefinitions = new LinkedHashMap<>();
@@ -28,6 +34,8 @@ public class LibraryInfo {
         parameterDefinitions = new LinkedHashMap<>();
         expressionDefinitions = new LinkedHashMap<>();
         functionDefinitions = new LinkedHashMap<>();
+        contextDefinitions = new ArrayList<>();
+        definitions = new HashMap<>();
     }
 
     public String getNamespaceName() {
@@ -46,6 +54,11 @@ public class LibraryInfo {
         this.libraryName = libraryName;
     }
 
+    public LibraryInfo withLibraryName(String value) {
+        setLibraryName(value);
+        return this;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -54,13 +67,32 @@ public class LibraryInfo {
         this.version = version;
     }
 
-    public LibraryInfo withLibraryName(String value) {
-        setLibraryName(value);
+    public LibraryInfo withVersion(String value) {
+        setVersion(value);
         return this;
     }
 
-    public LibraryInfo withVersion(String value) {
-        setVersion(value);
+    private void addDefinition(BaseInfo definition) {
+        if (definition != null && definition.getDefinition() != null) {
+            Interval sourceInterval = definition.getDefinition().getSourceInterval();
+            if (sourceInterval != null) {
+                definitions.put(sourceInterval, definition);
+            }
+        }
+    }
+
+    @Override
+    public cqlParser.LibraryDefinitionContext getDefinition() {
+        return (cqlParser.LibraryDefinitionContext)super.getDefinition();
+    }
+
+    public void setDefinition(cqlParser.LibraryDefinitionContext value) {
+        super.setDefinition(value);
+        addDefinition(this);
+    }
+
+    public LibraryInfo withDefinition(cqlParser.LibraryDefinitionContext value) {
+        setDefinition(value);
         return this;
     }
 
@@ -70,6 +102,7 @@ public class LibraryInfo {
             preferredUsingDefinition = usingDefinition;
         }
         usingDefinitions.put(usingDefinition.getName(), usingDefinition);
+        addDefinition(usingDefinition);
     }
 
     public UsingDefinitionInfo resolveModelReference(String identifier) {
@@ -91,6 +124,7 @@ public class LibraryInfo {
 
     public void addIncludeDefinition(IncludeDefinitionInfo includeDefinition) {
         includeDefinitions.put(includeDefinition.getLocalName(), includeDefinition);
+        addDefinition(includeDefinition);
     }
 
     public IncludeDefinitionInfo resolveLibraryReference(String identifier) {
@@ -108,6 +142,7 @@ public class LibraryInfo {
 
     public void addParameterDefinition(ParameterDefinitionInfo parameterDefinition) {
         parameterDefinitions.put(parameterDefinition.getName(), parameterDefinition);
+        addDefinition(parameterDefinition);
     }
 
     public ParameterDefinitionInfo resolveParameterReference(String identifier) {
@@ -125,6 +160,7 @@ public class LibraryInfo {
 
     public void addCodesystemDefinition(CodesystemDefinitionInfo codesystemDefinition) {
         codesystemDefinitions.put(codesystemDefinition.getName(), codesystemDefinition);
+        addDefinition(codesystemDefinition);
     }
 
     public CodesystemDefinitionInfo resolveCodesystemReference(String identifier) {
@@ -133,6 +169,7 @@ public class LibraryInfo {
 
     public void addValuesetDefinition(ValuesetDefinitionInfo valuesetDefinition) {
         valuesetDefinitions.put(valuesetDefinition.getName(), valuesetDefinition);
+        addDefinition(valuesetDefinition);
     }
 
     public ValuesetDefinitionInfo resolveValuesetReference(String identifier) {
@@ -150,6 +187,7 @@ public class LibraryInfo {
 
     public void addCodeDefinition(CodeDefinitionInfo codeDefinition) {
         codeDefinitions.put(codeDefinition.getName(), codeDefinition);
+        addDefinition(codeDefinition);
     }
 
     public CodeDefinitionInfo resolveCodeReference(String identifier) {
@@ -158,6 +196,7 @@ public class LibraryInfo {
 
     public void addConceptDefinition(ConceptDefinitionInfo conceptDefinition) {
         conceptDefinitions.put(conceptDefinition.getName(), conceptDefinition);
+        addDefinition(conceptDefinition);
     }
 
     public ConceptDefinitionInfo resolveConceptReference(String identifier) {
@@ -166,6 +205,7 @@ public class LibraryInfo {
 
     public void addExpressionDefinition(ExpressionDefinitionInfo letStatement) {
         expressionDefinitions.put(letStatement.getName(), letStatement);
+        addDefinition(letStatement);
     }
 
     public ExpressionDefinitionInfo resolveExpressionReference(String identifier) {
@@ -188,6 +228,7 @@ public class LibraryInfo {
             functionDefinitions.put(functionDefinition.getName(), infos);
         }
         infos.add(functionDefinition);
+        addDefinition(functionDefinition);
     }
 
     public Iterable<FunctionDefinitionInfo> resolveFunctionReference(String identifier) {
@@ -201,5 +242,24 @@ public class LibraryInfo {
         }
 
         return null;
+    }
+
+    public void addContextDefinition(ContextDefinitionInfo contextDefinition) {
+        contextDefinitions.add(contextDefinition);
+        addDefinition(contextDefinition);
+    }
+
+    public ContextDefinitionInfo resolveContext(cqlParser.ContextDefinitionContext ctx) {
+        for (ContextDefinitionInfo cd : contextDefinitions) {
+            if (ctx.getSourceInterval().equals(cd.getDefinition().getSourceInterval())) {
+                return cd;
+            }
+        }
+
+        return null;
+    }
+
+    public BaseInfo resolveDefinition(ParseTree pt) {
+        return definitions.get(pt.getSourceInterval());
     }
 }

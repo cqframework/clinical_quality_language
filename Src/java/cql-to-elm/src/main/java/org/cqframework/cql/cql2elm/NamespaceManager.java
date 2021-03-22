@@ -80,6 +80,10 @@ public class NamespaceManager {
     }
 
     public static String getUriPart(String namespaceQualifiedName) {
+        if (namespaceQualifiedName == null) {
+            return null;
+        }
+
         int i = namespaceQualifiedName.lastIndexOf('/');
         if (i > 0) {
             return namespaceQualifiedName.substring(0, i);
@@ -89,6 +93,10 @@ public class NamespaceManager {
     }
 
     public static String getNamePart(String namespaceQualifiedName) {
+        if (namespaceQualifiedName == null) {
+            return null;
+        }
+
         int i = namespaceQualifiedName.lastIndexOf("/");
         if (i > 0) {
             return namespaceQualifiedName.substring(i + 1);

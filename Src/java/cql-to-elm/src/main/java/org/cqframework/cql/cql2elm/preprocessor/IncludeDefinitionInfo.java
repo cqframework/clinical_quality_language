@@ -1,6 +1,9 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
-public class IncludeDefinitionInfo {
+import org.antlr.v4.runtime.misc.Interval;
+import org.cqframework.cql.gen.cqlParser;
+
+public class IncludeDefinitionInfo extends BaseInfo {
     private String namespaceName;
     private String name;
     private String version;
@@ -50,6 +53,20 @@ public class IncludeDefinitionInfo {
 
     public IncludeDefinitionInfo withLocalName(String value) {
         setLocalName(value);
+        return this;
+    }
+
+    @Override
+    public cqlParser.IncludeDefinitionContext getDefinition() {
+        return (cqlParser.IncludeDefinitionContext)super.getDefinition();
+    }
+
+    public void setDefinition(cqlParser.IncludeDefinitionContext value) {
+        super.setDefinition(value);
+    }
+
+    public IncludeDefinitionInfo withDefinition(cqlParser.IncludeDefinitionContext value) {
+        setDefinition(value);
         return this;
     }
 }

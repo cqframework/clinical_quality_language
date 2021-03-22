@@ -1,10 +1,12 @@
 package org.cqframework.cql.cql2elm.preprocessor;
 
+import org.antlr.v4.runtime.misc.Interval;
 import org.cqframework.cql.gen.cqlParser;
 
-public class ValuesetDefinitionInfo {
+public class ValuesetDefinitionInfo extends BaseInfo {
     private String name;
-    private cqlParser.ValuesetDefinitionContext definition;
+    private String header;
+    private Interval headerInterval;
 
     public String getName() {
         return name;
@@ -14,12 +16,13 @@ public class ValuesetDefinitionInfo {
         name = value;
     }
 
+    @Override
     public cqlParser.ValuesetDefinitionContext getDefinition() {
-        return definition;
+        return (cqlParser.ValuesetDefinitionContext)super.getDefinition();
     }
 
     public void setDefinition(cqlParser.ValuesetDefinitionContext value) {
-        definition = value;
+        super.setDefinition(value);
     }
 
     public ValuesetDefinitionInfo withName(String value) {

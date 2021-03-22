@@ -3,32 +3,103 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.Model;
 import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Bryn on 12/29/2016.
  */
 public class ModelManager {
+    private NamespaceManager namespaceManager;
+    private ModelInfoLoader modelInfoLoader;
     private final Map<String, Model> models = new HashMap<>();
+    private final Set<String> loadingModels = new HashSet<>();
+
+    public ModelManager() {
+        namespaceManager = new NamespaceManager();
+        initialize();
+    }
+
+    public ModelManager(NamespaceManager namespaceManager) {
+        this.namespaceManager = namespaceManager;
+        initialize();
+    }
+
+    private void initialize() {
+        modelInfoLoader = new ModelInfoLoader();
+    }
+
+    public NamespaceManager getNamespaceManager() {
+        return this.namespaceManager;
+    }
+
+    public ModelInfoLoader getModelInfoLoader() {
+        return this.modelInfoLoader;
+    }
+
+    /*
+    A "well-known" model name is one that is allowed to resolve without a namespace in a namespace-aware context
+     */
+    public boolean isWellKnownModelName(String unqualifiedIdentifier) {
+        if (unqualifiedIdentifier == null) {
+            return false;
+        }
+
+        switch (unqualifiedIdentifier) {
+            case "FHIR":
+            case "QDM":
+            case "USCore":
+            case "QICore":
+            case "QUICK":
+                return true;
+            default:
+                return false;
+        }
+    }
 
     private Model buildModel(VersionedIdentifier identifier) {
         Model model = null;
+        if (identifier == null) {
+            throw new IllegalArgumentException("Model identifier is required");
+        }
+        if (identifier.getId() == null || identifier.getId().equals("")) {
+            throw new IllegalArgumentException("Model identifier Id is required");
+        }
+        String modelPath = NamespaceManager.getPath(identifier.getSystem(), identifier.getId());
+        pushLoading(modelPath);
         try {
-            ModelInfoProvider provider = ModelInfoLoader.getModelInfoProvider(identifier);
+            ModelInfo modelInfo = modelInfoLoader.getModelInfo(identifier);
             if (identifier.getId().equals("System")) {
-                model = new SystemModel(provider.load());
+                model = new SystemModel(modelInfo);
             }
             else {
-                model = new Model(provider.load(), resolveModel("System"));
+                model = new Model(modelInfo, this);
             }
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s.",
                     identifier.getId(), identifier.getVersion()));
         }
+        finally {
+            popLoading(modelPath);
+        }
 
         return model;
+    }
+
+    private void pushLoading(String modelId) {
+        if (loadingModels.contains(modelId)) {
+            throw new IllegalArgumentException(String.format("Circular model reference %s", modelId));
+        }
+        loadingModels.add(modelId);
+    }
+
+    private void popLoading(String modelId) {
+        loadingModels.remove(modelId);
     }
 
     public Model resolveModel(String modelName) {
@@ -40,10 +111,11 @@ public class ModelManager {
     }
 
     public Model resolveModel(VersionedIdentifier modelIdentifier) {
-        Model model = models.get(modelIdentifier.getId());
+        String modelPath = NamespaceManager.getPath(modelIdentifier.getSystem(), modelIdentifier.getId());
+        Model model = models.get(modelPath);
         if (model == null) {
             model = buildModel(modelIdentifier);
-            models.put(modelIdentifier.getId(), model);
+            models.put(modelPath, model);
         }
 
         if (modelIdentifier.getVersion() != null && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {

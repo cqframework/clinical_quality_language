@@ -1,29 +1,37 @@
 package org.cqframework.cql.cql2elm;
 
+import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.bind.JAXB;
 
 public class UsCoreModelInfoProvider implements ModelInfoProvider {
-    private String version;
-    public String getVersion() {
-        return version;
-    }
-    public void setVersion(String version) {
-        this.version = version;
-    }
-    public UsCoreModelInfoProvider withVersion(String version) {
-        setVersion(version);
-        return this;
+    private NamespaceManager namespaceManager;
+
+    public void setNamespaceManager(NamespaceManager namespaceManager) {
+        this.namespaceManager = namespaceManager;
     }
 
-    public ModelInfo load() {
-        String localVersion = version == null ? "" : version;
-        switch (localVersion) {
-            case "3.1.0":
-            default:
-                return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"),
-                        ModelInfo.class);
+    private boolean isUSCoreModelIdentifier(VersionedIdentifier modelIdentifier) {
+        if (namespaceManager != null && namespaceManager.hasNamespaces()) {
+            return modelIdentifier.getId().equals("USCore") &&
+                    (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/core"));
         }
+
+        return modelIdentifier.getId().equals("USCore");
+    }
+
+    public ModelInfo load(VersionedIdentifier modelIdentifier) {
+        if (isUSCoreModelIdentifier(modelIdentifier)) {
+            String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
+            switch (localVersion) {
+                case "3.1.0":
+                default:
+                    return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"),
+                            ModelInfo.class);
+            }
+        }
+
+        return null;
     }
 }
