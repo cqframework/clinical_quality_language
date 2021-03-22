@@ -10,7 +10,7 @@ import java.nio.file.Path;
 
 // NOTE: This implementation assumes modelinfo file names will always take the form:
 // <modelname>-modelinfo[-<version>].cql
-// And further that <filename> will never contain dashes, and that <version> will always be of the form <major>[.<minor>[.<patch>]]
+// And further that <modelname> will never contain dashes, and that <version> will always be of the form <major>[.<minor>[.<patch>]]
 // Usage outside these boundaries will result in errors or incorrect behavior.
 public class DefaultModelInfoProvider implements ModelInfoProvider {
 
@@ -34,7 +34,7 @@ public class DefaultModelInfoProvider implements ModelInfoProvider {
             FilenameFilter filter = new FilenameFilter() {
                 @Override
                 public boolean accept(File path, String name) {
-                    return name.startsWith(modelName.toLowerCase()) && name.endsWith(".xml");
+                    return name.startsWith(modelName.toLowerCase() + "-modelinfo") && name.endsWith(".xml");
                 }
             };
 
@@ -49,19 +49,18 @@ public class DefaultModelInfoProvider implements ModelInfoProvider {
                         fileName = fileName.substring(0, indexOfExtension);
                     }
 
-                    int indexOfVersionSeparator = fileName.lastIndexOf("-");
-                    if (indexOfVersionSeparator >= 0) {
-                        Version version = new Version(fileName.substring(indexOfVersionSeparator + 1));
-                        // If the file has a version, make sure it is compatible with the version we are looking for
-                        if (indexOfVersionSeparator == (modelName + "-modelinfo").length() && requestedVersion == null || version.compatibleWith(requestedVersion)) {
+                    String[] fileNameComponents = fileName.split("-");
+                    if (fileNameComponents.length == 3) {
+                        Version version = new Version(fileNameComponents[2]);
+                        if (requestedVersion == null || version.compatibleWith(requestedVersion)) {
                             if (mostRecent == null || version.compareTo(mostRecent) > 0) {
                                 mostRecent = version;
                                 mostRecentFile = file;
                             }
                         }
-                    } else {
-                        // If the file is named correctly, but has no version, consider it the most recent version
-                        if (fileName.equals(modelName + "-modelinfo") && mostRecent == null) {
+                    }
+                    else {
+                        if (mostRecent == null) {
                             mostRecentFile = file;
                         }
                     }

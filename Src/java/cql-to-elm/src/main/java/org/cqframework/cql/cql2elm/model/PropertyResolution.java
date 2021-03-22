@@ -14,7 +14,7 @@ public class PropertyResolution {
     private DataType type;
     private String name;
     private String targetMap;
-    private boolean isSearch = false;
+    private boolean isSearchValue = false;
 
     public PropertyResolution(ClassTypeElement e) {
         this.type = e.getType();
@@ -32,7 +32,7 @@ public class PropertyResolution {
     public PropertyResolution(SearchType s) {
         this.type = s.getType();
         this.name = s.getName();
-        this.isSearch = true;
+        this.isSearchValue = true;
     }
 
     public PropertyResolution(DataType type, String name) {
@@ -75,7 +75,7 @@ public class PropertyResolution {
         return this.targetMap;
     }
 
-    public boolean getIsSearch() {
-        return this.isSearch;
+    public boolean isSearch() {
+        return this.isSearchValue;
     }
 }

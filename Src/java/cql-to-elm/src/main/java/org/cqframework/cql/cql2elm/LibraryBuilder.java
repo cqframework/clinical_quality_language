@@ -2231,7 +2231,7 @@ public class LibraryBuilder {
 
                 PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
                 if (resolution != null) {
-                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.getIsSearch(), resolution.getType());
+                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
                     contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
                     return contextAccessor;
                 }
@@ -2580,7 +2580,7 @@ public class LibraryBuilder {
         }
         else if (left instanceof AliasRef) {
             PropertyResolution resolution = resolveProperty(left.getResultType(), memberIdentifier);
-            Expression result = buildProperty(((AliasRef)left).getName(), resolution.getName(), resolution.getIsSearch(), resolution.getType());
+            Expression result = buildProperty(((AliasRef)left).getName(), resolution.getName(), resolution.isSearch(), resolution.getType());
             return applyTargetMap(result, resolution.getTargetMap());
         }
         else if (left.getResultType() instanceof ListType && listTraversal) {
@@ -2589,12 +2589,12 @@ public class LibraryBuilder {
             // listValue.property ::= listValue X where X.property is not null return all X.property
             ListType listType = (ListType)left.getResultType();
             PropertyResolution resolution = resolveProperty(listType.getElementType(), memberIdentifier);
-            Expression accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getIsSearch(), resolution.getType());
+            Expression accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.isSearch(), resolution.getType());
             accessor = applyTargetMap(accessor, resolution.getTargetMap());
             Expression not = buildIsNotNull(accessor);
 
             // Recreate property, it needs to be accessed twice
-            accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.getIsSearch(), resolution.getType());
+            accessor = buildProperty(of.createAliasRef().withName("$this"), resolution.getName(), resolution.isSearch(), resolution.getType());
             accessor = applyTargetMap(accessor, resolution.getTargetMap());
 
             AliasedQuerySource source = of.createAliasedQuerySource().withExpression(left).withAlias("$this");
@@ -2615,7 +2615,7 @@ public class LibraryBuilder {
         }
         else {
             PropertyResolution resolution = resolveProperty(left.getResultType(), memberIdentifier);
-            Expression result = buildProperty(left, resolution.getName(), resolution.getIsSearch(), resolution.getType());
+            Expression result = buildProperty(left, resolution.getName(), resolution.isSearch(), resolution.getType());
             result = applyTargetMap(result, resolution.getTargetMap());
             return result;
         }

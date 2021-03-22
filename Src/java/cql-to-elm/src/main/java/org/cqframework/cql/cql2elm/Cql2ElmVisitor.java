@@ -42,7 +42,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     private boolean methodInvocation = true;
     private boolean includeDeprecatedElements = false;
     private boolean fromKeywordRequired = false;
-    private String compatibilityLevel = null;
     private TokenStream tokenStream;
 
     private final LibraryBuilder libraryBuilder;
@@ -148,49 +147,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         fromKeywordRequired = false;
     }
 
-    public boolean isCompatibilityLevel3() {
-        return "1.3".equals(compatibilityLevel);
-    }
-
-    public boolean isCompatibilityLevel4() {
-        return "1.4".equals(compatibilityLevel);
-    }
-
-    private Version compatibilityVersion;
-    public String getCompatibilityLevel() {
-        return this.compatibilityLevel;
-    }
-    public void setCompatibilityLevel(String compatibilityLevel) {
-        this.compatibilityLevel = compatibilityLevel;
-        if (compatibilityLevel != null) {
-            this.compatibilityVersion = new Version(compatibilityLevel);
-        }
-    }
-
-    public boolean isCompatibleWith(String sinceCompatibilityLevel) {
-        if (compatibilityVersion == null) {
-            // No compatibility version is specified, assume latest functionality
-            return true;
-        }
-
-        if (sinceCompatibilityLevel == null || sinceCompatibilityLevel.isEmpty()) {
-            throw new IllegalArgumentException("Internal Translator Error: compatibility level is required to determine a compatibility check");
-        }
-
-        Version sinceVersion = new Version(sinceCompatibilityLevel);
-        return compatibilityVersion.compatibleWith(sinceVersion);
-    }
-
-    public void checkCompatibilityLevel(String featureName, String sinceCompatibilityLevel) {
-        if (featureName == null || featureName.isEmpty()) {
-            throw new IllegalArgumentException("Internal Translator Error: feature name is required to perform a compatibility check");
-        }
-
-        if (!isCompatibleWith(sinceCompatibilityLevel)) {
-            throw new IllegalArgumentException(String.format("Feature %s was introduced in version %s and so cannot be used at compatibility level %s", featureName, sinceCompatibilityLevel, compatibilityLevel));
-        }
-    }
-
     public void setTranslatorOptions(CqlTranslatorOptions options) {
         if (options.getOptions().contains(CqlTranslator.Options.EnableDateRangeOptimization)) {
             this.enableDateRangeOptimization();
@@ -213,7 +169,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (options.getOptions().contains(CqlTranslator.Options.RequireFromKeyword)) {
             this.enableFromKeywordRequired();
         }
-        setCompatibilityLevel(options.getCompatibilityLevel());
+        libraryBuilder.setCompatibilityLevel(options.getCompatibilityLevel());
     }
 
     public TokenStream getTokenStream() {
@@ -304,7 +260,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private void processTags(ParseTree tree, Object o) {
-        if (isCompatibleWith("1.5")) {
+        if (libraryBuilder.isCompatibleWith("1.5")) {
             if (o instanceof Element) {
                 Element element = (Element)o;
                 if (!(tree instanceof cqlParser.LibraryContext)) {
@@ -1034,7 +990,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private boolean isUnfilteredContext(String contextName) {
-        return contextName.equals("Unfiltered") || (isCompatibilityLevel3() && contextName.equals("Population"));
+        return contextName.equals("Unfiltered") || (libraryBuilder.isCompatibilityLevel3() && contextName.equals("Population"));
     }
 
     @Override
@@ -1098,7 +1054,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         ContextDef contextDef = of.createContextDef().withName(currentContext);
         track(contextDef, ctx);
-        if (isCompatibleWith("1.5")) {
+        if (libraryBuilder.isCompatibleWith("1.5")) {
             libraryBuilder.addContext(contextDef);
         }
 
@@ -1928,7 +1884,7 @@ DATETIME
                 operatorName = "TimeFrom";
                 break;
             case "timezone":
-                if (!this.isCompatibilityLevel3()) {
+                if (!libraryBuilder.isCompatibilityLevel3()) {
                     // ERROR:
                     throw new IllegalArgumentException("Timezone keyword is only valid in 1.3 or lower");
                 }
@@ -3999,7 +3955,7 @@ DATETIME
 
     @Override
     public Object visitAggregateClause(cqlParser.AggregateClauseContext ctx) {
-        checkCompatibilityLevel("Aggregate query clause", "1.5");
+        libraryBuilder.checkCompatibilityLevel("Aggregate query clause", "1.5");
         AggregateClause aggregateClause = of.createAggregateClause();
         if (ctx.getChild(1) instanceof TerminalNode) {
             switch (ctx.getChild(1).getText()) {
@@ -4247,7 +4203,7 @@ DATETIME
 
     public Expression resolveFunction(String libraryName, String functionName, List<Expression> expressions, boolean mustResolve, boolean allowPromotionAndDemotion, boolean allowFluent) {
         if (allowFluent) {
-            checkCompatibilityLevel("Fluent functions", "1.5");
+            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
         }
 
         functionName = ensureSystemFunctionName(libraryName, functionName);
@@ -4336,16 +4292,12 @@ DATETIME
     }
 
     public Object internalVisitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
-        if (ctx.fluentModifier() != null) {
-            checkCompatibilityLevel("Fluent functions", "1.5");
-        }
-
         FunctionDef fun = of.createFunctionDef()
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifierOrFunctionIdentifier()));
 
         if (ctx.fluentModifier() != null) {
-            checkCompatibilityLevel("Fluent functions", "1.5");
+            libraryBuilder.checkCompatibilityLevel("Fluent functions", "1.5");
             fun.setFluent(true);
         }
 

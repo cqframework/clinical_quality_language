@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm.preprocessor;
 
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.cqframework.cql.gen.cqlBaseVisitor;
@@ -32,17 +31,11 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visit(@NotNull ParseTree tree) {
-        try {
-            return super.visit(tree);
-        }
-        finally {
-            //org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
-            //lastSourceIndex = sourceInterval.b;
-        }
+    public Object visit(ParseTree tree) {
+        return super.visit(tree);
     }
 
-    private void processHeader(@NotNull ParseTree ctx, BaseInfo info) {
+    private void processHeader(ParseTree ctx, BaseInfo info) {
         Interval header = null;
         org.antlr.v4.runtime.misc.Interval sourceInterval = ctx.getSourceInterval();
         int beforeDefinition = sourceInterval.a - 1;
@@ -57,7 +50,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object visitLibraryDefinition(@NotNull cqlParser.LibraryDefinitionContext ctx) {
+    public Object visitLibraryDefinition(cqlParser.LibraryDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         libraryInfo.setLibraryName(identifiers.remove(identifiers.size() - 1));
         if (identifiers.size() > 0) {
@@ -73,7 +66,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object visitIncludeDefinition(@NotNull cqlParser.IncludeDefinitionContext ctx) {
+    public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
         IncludeDefinitionInfo includeDefinition = new IncludeDefinitionInfo();
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         includeDefinition.setName(identifiers.remove(identifiers.size() - 1));
@@ -97,7 +90,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object visitUsingDefinition(@NotNull cqlParser.UsingDefinitionContext ctx) {
+    public Object visitUsingDefinition(cqlParser.UsingDefinitionContext ctx) {
         UsingDefinitionInfo usingDefinition = new UsingDefinitionInfo();
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         usingDefinition.setName(identifiers.remove(identifiers.size() - 1));
@@ -121,7 +114,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
 
     @Override
     @SuppressWarnings("unchecked")
-    public Object visitCodesystemDefinition(@NotNull cqlParser.CodesystemDefinitionContext ctx) {
+    public Object visitCodesystemDefinition(cqlParser.CodesystemDefinitionContext ctx) {
         CodesystemDefinitionInfo codesystemDefinition = new CodesystemDefinitionInfo();
         codesystemDefinition.setName((String)visit(ctx.identifier()));
         codesystemDefinition.setDefinition(ctx);
@@ -131,7 +124,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitValuesetDefinition(@NotNull cqlParser.ValuesetDefinitionContext ctx) {
+    public Object visitValuesetDefinition(cqlParser.ValuesetDefinitionContext ctx) {
         ValuesetDefinitionInfo valuesetDefinition = new ValuesetDefinitionInfo();
         valuesetDefinition.setName((String)visit(ctx.identifier()));
         valuesetDefinition.setDefinition(ctx);
@@ -141,7 +134,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitCodeDefinition(@NotNull cqlParser.CodeDefinitionContext ctx) {
+    public Object visitCodeDefinition(cqlParser.CodeDefinitionContext ctx) {
         CodeDefinitionInfo codeDefinition = new CodeDefinitionInfo();
         codeDefinition.setName((String)visit(ctx.identifier()));
         codeDefinition.setDefinition(ctx);
@@ -151,7 +144,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitConceptDefinition(@NotNull cqlParser.ConceptDefinitionContext ctx) {
+    public Object visitConceptDefinition(cqlParser.ConceptDefinitionContext ctx) {
         ConceptDefinitionInfo conceptDefinition = new ConceptDefinitionInfo();
         conceptDefinition.setName((String)visit(ctx.identifier()));
         conceptDefinition.setDefinition(ctx);
@@ -161,7 +154,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitParameterDefinition(@NotNull cqlParser.ParameterDefinitionContext ctx) {
+    public Object visitParameterDefinition(cqlParser.ParameterDefinitionContext ctx) {
         ParameterDefinitionInfo parameterDefinition = new ParameterDefinitionInfo();
         parameterDefinition.setName((String)visit(ctx.identifier()));
         parameterDefinition.setDefinition(ctx);
@@ -171,7 +164,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitContextDefinition(@NotNull cqlParser.ContextDefinitionContext ctx) {
+    public Object visitContextDefinition(cqlParser.ContextDefinitionContext ctx) {
         String modelIdentifier = ctx.modelIdentifier() != null ? (String)visit(ctx.modelIdentifier()) : null;
         String unqualifiedContext = (String)visit(ctx.identifier());
         if (modelIdentifier != null && !modelIdentifier.equals("")) {
@@ -197,7 +190,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitExpressionDefinition(@NotNull cqlParser.ExpressionDefinitionContext ctx) {
+    public Object visitExpressionDefinition(cqlParser.ExpressionDefinitionContext ctx) {
         ExpressionDefinitionInfo expressionDefinition = new ExpressionDefinitionInfo();
         expressionDefinition.setName((String)visit(ctx.identifier()));
         expressionDefinition.setContext(currentContext);
@@ -208,7 +201,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitFunctionDefinition(@NotNull cqlParser.FunctionDefinitionContext ctx) {
+    public Object visitFunctionDefinition(cqlParser.FunctionDefinitionContext ctx) {
         FunctionDefinitionInfo functionDefinition = new FunctionDefinitionInfo();
         functionDefinition.setName((String)visit(ctx.identifierOrFunctionIdentifier()));
         functionDefinition.setContext(currentContext);
@@ -219,7 +212,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitTerminal(@NotNull TerminalNode node) {
+    public Object visitTerminal(TerminalNode node) {
         String text = node.getText();
         int tokenType = node.getSymbol().getType();
         if (cqlLexer.STRING == tokenType || cqlLexer.QUOTEDIDENTIFIER == tokenType) {
@@ -231,7 +224,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitQualifiedIdentifier(@NotNull cqlParser.QualifiedIdentifierContext ctx) {
+    public Object visitQualifiedIdentifier(cqlParser.QualifiedIdentifierContext ctx) {
         // Return the list of qualified identifiers for resolution by the containing element
         List<String> identifiers = new ArrayList<>();
         for (cqlParser.QualifierContext qualifierContext : ctx.qualifier()) {
@@ -245,7 +238,7 @@ public class CqlPreprocessorVisitor extends cqlBaseVisitor {
     }
 
     @Override
-    public Object visitQualifiedIdentifierExpression(@NotNull cqlParser.QualifiedIdentifierExpressionContext ctx) {
+    public Object visitQualifiedIdentifierExpression(cqlParser.QualifiedIdentifierExpressionContext ctx) {
         // Return the list of qualified identifiers for resolution by the containing element
         List<String> identifiers = new ArrayList<>();
         for (cqlParser.QualifierExpressionContext qualifierContext : ctx.qualifierExpression()) {

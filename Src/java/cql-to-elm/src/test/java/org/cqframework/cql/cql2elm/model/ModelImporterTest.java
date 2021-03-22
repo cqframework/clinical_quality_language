@@ -6,6 +6,7 @@ import org.hl7.cql.model.*;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ClassInfo;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.testng.SkipException;
 import org.testng.annotations.Test;
 
 import java.util.Collections;
@@ -19,11 +20,13 @@ import static org.testng.AssertJUnit.assertNotNull;
 
 public class ModelImporterTest {
 
-    //@Test
+    @Test
     // TODO: Re-enable generic support here
     // Requires type resolution capability in the model classes
     // Was being handled by pre-resolving and passing the entire map through to the GenericClassSignatureParser
     public void handleModelInfoGenerics() {
+        throw new SkipException("Requires type resolution capability in the model classes");
+        /*
         try {
 
             ModelManager modelManager = new ModelManager();
@@ -131,11 +134,14 @@ public class ModelImporterTest {
             e.printStackTrace();
             fail();
         }
+        */
     }
 
-    //@Test
+    @Test
     // TODO: Re-enable, see message above
     public void handleModelInfoGenericsSad1() {
+        throw new SkipException("Disabled until model classes support type resolution");
+        /*
         try {
 
             ModelManager modelManager = new ModelManager();
@@ -155,5 +161,6 @@ public class ModelImporterTest {
             e.printStackTrace();
             fail();
         }
+        */
     }
 }

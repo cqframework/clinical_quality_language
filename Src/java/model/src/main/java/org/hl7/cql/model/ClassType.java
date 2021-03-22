@@ -93,16 +93,6 @@ public class ClassType extends DataType implements NamedType {
         this.primaryCodePath = primaryCodePath;
     }
 
-/*
-    private String primarySearchPath;
-    public String getPrimarySearchPath() {
-        return primarySearchPath;
-    }
-    public void setPrimarySearchPath(String primarySearchPath) {
-        this.primarySearchPath = primarySearchPath;
-    }
- */
-
     private String primaryValueSetPath;
     public String getPrimaryValueSetPath() { return primaryValueSetPath; }
     public void setPrimaryValueSetPath(String primaryValueSetPath) {

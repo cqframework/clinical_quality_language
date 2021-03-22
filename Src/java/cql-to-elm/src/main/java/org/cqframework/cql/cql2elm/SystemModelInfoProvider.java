@@ -15,7 +15,7 @@ public class SystemModelInfoProvider implements ModelInfoProvider {
     private boolean isSystemModelIdentifier(VersionedIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
             return modelIdentifier.getId().equals("System") &&
-                    (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://cql.hl7.org/public"));
+                    (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("urn:hl7-org:elm-types:r1"));
         }
 
         return modelIdentifier.getId().equals("System");

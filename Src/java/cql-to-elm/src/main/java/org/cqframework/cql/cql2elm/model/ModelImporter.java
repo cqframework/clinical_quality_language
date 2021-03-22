@@ -569,7 +569,6 @@ public class ModelImporter {
             result.setTarget(t.getTarget());
             result.setRetrievable(t.isRetrievable());
             result.setPrimaryCodePath(t.getPrimaryCodePath());
-            //result.setPrimarySearchPath(t.getPrimarySearchPath());
         }
 
         return result;
