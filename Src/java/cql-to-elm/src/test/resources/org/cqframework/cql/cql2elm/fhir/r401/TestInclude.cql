@@ -1,3 +1,33 @@
+/*
+The process of translating a CQL retrieve into a FHIR query involves potentially
+different approaches depending on the data access capabilities of the environment
+in which the CQL will be evaluated. Because the optimal ELM approach depends on the
+environment, the CQL translator focuses on property-based evaluation (though it does
+support a few of the search-based approaches, and those are tested here).
+
+The actual rewrite is expected to take place as a "planning" step by the execution
+engine, either once as a "plan" step that rewrites the ELM for a particular environment,
+or as part of evaluation using run-time resolution.
+
+The tests here began as a way to validate all of the approaches, but is now focused only
+on making sure that there are capabilities provided, not on implementing translation for
+a particular target environment.
+
+In particular, the translator supports:
+* Author-time selection of a particular search path through the use of the undocumented "?" syntax
+This is not something we propose exposing to authors, but is supported as a way to perform "syntactic"
+optimization if necessary. Current behavior is that this only works outside a retrieve, when used within
+a retrieve it is still considered a code path, but the "?" prefix is retained.
+* Support for the .resolve() function that, given a FHIR reference resolves to the referenced resource
+* Support for the .reference() function that, given a FHIR resource, returns the FHIR reference to it
+* Support for equality of FHIR references
+
+The planning step would then be able to optimize for a particular environment based on:
+* Whether it's a file-based environment and the engine is expected to perform most of the query work
+* Whether it's a relational environment where references would be expected to be supported as joins by the data-access layer
+* Whether it's an API environment where references would be expected to be supported via "include" parameters
+ */
+
 library TestInclude
 
 using FHIR version '4.0.1'
