@@ -60,6 +60,43 @@ public class ModelInfoComparer {
         //assertThat(differences.length(), is(0));
     }
 
+    @Test
+    public void compareMetadataModelInfo() {
+        ModelInfo a = JAXB.unmarshal(ModelInfoComparer.class.getResourceAsStream("fhir-modelinfo-4.0.1-1.5.1.xml"), ModelInfo.class);
+        ModelInfo b = JAXB.unmarshal(ModelInfoComparer.class.getResourceAsStream("fhir-modelinfo-4.0.1-with-metadata.xml"), ModelInfo.class);
+
+        ModelInfoCompareContext differences = new ModelInfoCompareContext();
+        compareModelInfo(differences, a, b);
+        /*
+        Comparison of 1.5.1 model info with 1.5.2, the only difference is the addition of metadata:
+         */
+        assertThat(differences.toString(), is(String.format("ModelInfo.markdown.Element value in right only%n" + // redeclaration for metadata
+                "ModelInfo.SimpleQuantity.primaryCodePath: code <> null%n" + // primaryCodePath should not be set on a non-retrievable type
+                "ModelInfo.SimpleQuantity.Element value in left only%n" + // SimpleQuantity is derived from Quantity, no need to re-declare elements
+                "ModelInfo.SimpleQuantity.Element unit in left only%n" + // ditto
+                "ModelInfo.SimpleQuantity.Element system in left only%n" + // ditto
+                "ModelInfo.SimpleQuantity.Element code in left only%n" + // ditto
+                "ModelInfo.MoneyQuantity.primaryCodePath: code <> null%n" + // primaryCodePath should not be set on a non-retrievable type
+                "ModelInfo.MoneyQuantity.Element value in left only%n" + // MoneyQuantity is derived from Quantity, no need to re-declare elements
+                "ModelInfo.MoneyQuantity.Element comparator in left only%n" + // ditto
+                "ModelInfo.MoneyQuantity.Element unit in left only%n" + // ditto
+                "ModelInfo.MoneyQuantity.Element system in left only%n" + // ditto
+                "ModelInfo.MoneyQuantity.Element code in left only%n" + // ditto
+                "ModelInfo.uuid.Element value in right only%n" + // redeclartion for metadata
+                "ModelInfo.ElementDefinition.Type.targetProfile.name: targetProfile <> profile%n" + // backwards compatible, but more accurate ElementDefinition.Type
+                "ModelInfo.ElementDefinition.Type.versioning.name: versioning <> targetProfile%n" + // ditto
+                "ModelInfo.ElementDefinition.Type.versioning.type: FHIR.ReferenceVersionRules <> List<FHIR.canonical>%n" + // ditto
+                "ModelInfo.ElementDefinition.Type.Element aggregation in right only%n" + // ditto
+                "ModelInfo.ElementDefinition.Type.Element versioning in right only%n" + // ditto
+                "ModelInfo.unsignedInt.Element value in right only%n" + // redeclaration for metdata
+                "ModelInfo.id.Element value in right only%n" + // redeclaration for metdata
+                "ModelInfo.url.Element value in right only%n" + // redeclaration for metdata
+                "ModelInfo.canonical.Element value in right only%n" + // redeclaration for metdata
+                "ModelInfo.code.Element value in right only%n" + // redeclaration for metdata
+                "ModelInfo.oid.Element value in right only%n" + // redeclaration for metdata
+                "ModelInfo.positiveInt.Element value in right only%n"))); // redeclaration for metdata
+    }
+
     public class ModelInfoCompareContext {
         private StringBuilder differences = new StringBuilder();
         private List<String> focusList = new ArrayList<String>();
