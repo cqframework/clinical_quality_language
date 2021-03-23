@@ -10,6 +10,47 @@ import org.hl7.elm.r1.*;
  * operations with no return type.
  */
 public interface ElmClinicalVisitor<T, C> extends ElmVisitor<T, C> {
+
+    /**
+     * Visit a CodeFilterElement. This method will be called for
+     * every node in the tree that is a CodeFilterElement.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitCodeFilterElement(CodeFilterElement elm, C context);
+
+    /**
+     * Visit a DateFilterElement. This method will be called for
+     * every node in the tree that is a DateFilterElement.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitDateFilterElement(DateFilterElement elm, C context);
+
+    /**
+     * Visit an OtherFilterElement. This method will be called for
+     * every node in the tree that is an OtherFilterElement.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitOtherFilterElement(OtherFilterElement elm, C context);
+
+    /**
+     * Visit an IncludeElement. This method will be called for
+     * every node in the tree that is an IncludeElement.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitIncludeElement(IncludeElement elm, C context);
+
     /**
      * Visit a Retrieve. This method will be called for
      * every node in the tree that is a Retrieve.
@@ -19,6 +60,16 @@ public interface ElmClinicalVisitor<T, C> extends ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitRetrieve(Retrieve elm, C context);
+
+    /**
+     * Visit a Search. This method will be called for
+     * every node in the tree that is a Search.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitSearch(Search elm, C context);
 
     /**
      * Visit a CodeSystemDef. This method will be called for
@@ -41,6 +92,26 @@ public interface ElmClinicalVisitor<T, C> extends ElmVisitor<T, C> {
     T visitValueSetDef(ValueSetDef elm, C context);
 
     /**
+     * Visit a CodeDef. This method will be called for
+     * every node in the tree that is a CodeDef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitCodeDef(CodeDef elm, C context);
+
+    /**
+     * Visit an ConceptDef. This method will be called for
+     * every node in the tree that is an ConceptDef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConceptDef(ConceptDef elm, C context);
+
+    /**
      * Visit a CodeSystemRef. This method will be called for
      * every node in the tree that is a CodeSystemRef.
      *
@@ -59,6 +130,26 @@ public interface ElmClinicalVisitor<T, C> extends ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitValueSetRef(ValueSetRef elm, C context);
+
+    /**
+     * Visit a CodeRef. This method will be called for
+     * every node in the tree that is a CodeRef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitCodeRef(CodeRef elm, C context);
+
+    /**
+     * Visit a ConceptRef. This method will be called for
+     * every node in the tree that is a ConceptRef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConceptRef(ConceptRef elm, C context);
 
     /**
      * Visit a Code. This method will be called for
@@ -91,6 +182,16 @@ public interface ElmClinicalVisitor<T, C> extends ElmVisitor<T, C> {
     T visitInCodeSystem(InCodeSystem elm, C context);
 
     /**
+     * Visit an AnyInCodeSystem. This method will be called for
+     * every node in the tree that is an AnyInCodeSystem.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitAnyInCodeSystem(AnyInCodeSystem elm, C context);
+
+    /**
      * Visit a InValueSet. This method will be called for
      * every node in the tree that is a InValueSet.
      *
@@ -101,6 +202,36 @@ public interface ElmClinicalVisitor<T, C> extends ElmVisitor<T, C> {
     T visitInValueSet(InValueSet elm, C context);
 
     /**
+     * Visit an AnyInValueSet. This method will be called for
+     * every node in the tree that is an AnyInValueSet.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitAnyInValueSet(AnyInValueSet elm, C context);
+
+    /**
+     * Visit an Subsumes. This method will be called for
+     * every node in the tree that is an Subsumes.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitSubsumes(Subsumes elm, C context);
+
+    /**
+     * Visit an SubsumedBy. This method will be called for
+     * every node in the tree that is an SubsumedBy.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitSubsumedBy(SubsumedBy elm, C context);
+
+    /**
      * Visit a Quantity. This method will be called for
      * every node in the tree that is a Quantity.
      *
@@ -109,6 +240,16 @@ public interface ElmClinicalVisitor<T, C> extends ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitQuantity(Quantity elm, C context);
+
+    /**
+     * Visit a Ratio. This method will be called for
+     * every node in the tree that is a Ratio.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitRatio(Ratio elm, C context);
 
     /**
      * Visit a CalculateAge. This method will be called for

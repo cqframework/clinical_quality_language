@@ -59,7 +59,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
             elm.getContexts().getDef().stream().forEach(contextDef -> visitElement(contextDef, context));
         }
         if (elm.getStatements() != null && elm.getStatements().getDef() != null && !elm.getStatements().getDef().isEmpty()) {
-            visitStatements(elm.getStatements(), context);
+            elm.getStatements().getDef().stream().forEach(statementDef -> visitElement(statementDef, context));
         }
         return null;
     }
@@ -97,21 +97,6 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitContextDef(ContextDef elm, C context) {
-        return null;
-    }
-
-    public T visitStatements(Statements elm, C context) {
-        int n = elm.getDef().size();
-        for (int i=0; i<n; i++) {
-            Element c = elm.getDef().get(i);
-            if (c instanceof ExpressionDef) {
-                visitElement((ExpressionDef)c, context);
-            } else if (c instanceof ContextDef) {
-                visitElement((ContextDef)c, context);
-            } else if (c instanceof FunctionDef) {
-                visitElement((FunctionDef)c, context);
-            }
-        }
         return null;
     }
 }

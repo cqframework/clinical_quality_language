@@ -81,6 +81,16 @@ public interface ElmVisitor<T, C> {
     T visitTupleTypeSpecifier(TupleTypeSpecifier elm, C context);
 
     /**
+     * Visit a ChoiceTypeSpecifier. This method will be called for
+     * every node in the tree that is a ChoiceTypeSpecifier.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitChoiceTypeSpecifier(ChoiceTypeSpecifier elm, C context);
+
+    /**
      * Visit an Expression. This method will be called for
      * every node in the tree that is an Expression.
      *
@@ -99,6 +109,16 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitUnaryExpression(UnaryExpression elm, C context);
+
+    /**
+     * Visit an OperatorExpression. This method will be called for
+     * every node in the tree that is an OperatorExpression.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitOperatorExpression(OperatorExpression elm, C context);
 
     /**
      * Visit a BinaryExpression. This method will be called for
@@ -321,6 +341,16 @@ public interface ElmVisitor<T, C> {
     T visitXor(Xor elm, C context);
 
     /**
+     * Visit a Implies. This method will be called for
+     * every node in the tree that is a Implies.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitImplies(Implies elm, C context);
+
+    /**
      * Visit a Not. This method will be called for
      * every node in the tree that is a Not.
      *
@@ -441,6 +471,26 @@ public interface ElmVisitor<T, C> {
     T visitConvert(Convert elm, C context);
 
     /**
+     * Visit a CanConvert. This method will be called for
+     * every node in the tree that is a CanConvert.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitCanConvert(CanConvert elm, C context);
+
+    /**
+     * Visit a ConvertsToBoolean. This method will be called for
+     * every node in the tree that is a ConvertsToBoolean.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToBoolean(ConvertsToBoolean elm, C context);
+
+    /**
      * Visit a ToBoolean. This method will be called for
      * every node in the tree that is a ToBoolean.
      *
@@ -449,6 +499,16 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitToBoolean(ToBoolean elm, C context);
+
+    /**
+     * Visit a ToChars. This method will be called for
+     * every node in the tree that is a ToChars.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitToChars(ToChars elm, C context);
 
     /**
      * Visit a ToConcept. This method will be called for
@@ -461,6 +521,36 @@ public interface ElmVisitor<T, C> {
     T visitToConcept(ToConcept elm, C context);
 
     /**
+     * Visit a ConvertsToDate. This method will be called for
+     * every node in the tree that is a ConvertsToDate.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToDate(ConvertsToDate elm, C context);
+
+    /**
+     * Visit a ToDate. This method will be called for
+     * every node in the tree that is a ToDate.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitToDate(ToDate elm, C context);
+
+    /**
+     * Visit a ConvertsToDateTime. This method will be called for
+     * every node in the tree that is a ConvertsToDateTime.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToDateTime(ConvertsToDateTime elm, C context);
+
+    /**
      * Visit a ToDateTime. This method will be called for
      * every node in the tree that is a ToDateTime.
      *
@@ -469,6 +559,16 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitToDateTime(ToDateTime elm, C context);
+
+    /**
+     * Visit a ConvertsToLong. This method will be called for
+     * every node in the tree that is a ConvertsToLong.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToLong(ConvertsToLong elm, C context);
 
     /**
      * Visit a ToLong. This method will be called for
@@ -481,6 +581,16 @@ public interface ElmVisitor<T, C> {
     T visitToLong(ToLong elm, C context);
 
     /**
+     * Visit a ConvertsToDecimal. This method will be called for
+     * every node in the tree that is a ConvertsToDecimal.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToDecimal(ConvertsToDecimal elm, C context);
+
+    /**
      * Visit a ToDecimal. This method will be called for
      * every node in the tree that is a ToDecimal.
      *
@@ -489,6 +599,16 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitToDecimal(ToDecimal elm, C context);
+
+    /**
+     * Visit a ConvertsToInteger. This method will be called for
+     * every node in the tree that is a ConvertsToInteger.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToInteger(ConvertsToInteger elm, C context);
 
     /**
      * Visit a ToInteger. This method will be called for
@@ -501,6 +621,46 @@ public interface ElmVisitor<T, C> {
     T visitToInteger(ToInteger elm, C context);
 
     /**
+     * Visit a ToList. This method will be called for
+     * every node in the tree that is a ToList.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitToList(ToList elm, C context);
+
+    /**
+     * Visit a ConvertQuantity. This method will be called for
+     * every node in the tree that is a ConvertQuantity.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertQuantity(ConvertQuantity elm, C context);
+
+    /**
+     * Visit a CanConvertQuantity. This method will be called for
+     * every node in the tree that is a CanConvertQuantity.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitCanConvertQuantity(CanConvertQuantity elm, C context);
+
+    /**
+     * Visit a ConvertsToQuantity. This method will be called for
+     * every node in the tree that is a ConvertsToQuantity.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToQuantity(ConvertsToQuantity elm, C context);
+
+    /**
      * Visit a ToQuantity. This method will be called for
      * every node in the tree that is a ToQuantity.
      *
@@ -511,6 +671,36 @@ public interface ElmVisitor<T, C> {
     T visitToQuantity(ToQuantity elm, C context);
 
     /**
+     * Visit a ConvertsToRatio. This method will be called for
+     * every node in the tree that is a ConvertsToRatio.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToRatio(ConvertsToRatio elm, C context);
+
+    /**
+     * Visit a Ratio. This method will be called for
+     * every node in the tree that is a Ratio.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitToRatio(ToRatio elm, C context);
+
+    /**
+     * Visit a ConvertsToString. This method will be called for
+     * every node in the tree that is a ConvertsToString.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToString(ConvertsToString elm, C context);
+
+    /**
      * Visit a ToString. This method will be called for
      * every node in the tree that is a ToString.
      *
@@ -519,6 +709,16 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitToString(ToString elm, C context);
+
+    /**
+     * Visit a ConvertsToTime. This method will be called for
+     * every node in the tree that is a ConvertsToTime.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitConvertsToTime(ConvertsToTime elm, C context);
 
     /**
      * Visit a ToTime. This method will be called for
@@ -801,6 +1001,36 @@ public interface ElmVisitor<T, C> {
     T visitMaxValue(MaxValue elm, C context);
 
     /**
+     * Visit a Precision. This method will be called for
+     * every node in the tree that is a Precision.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitPrecision(Precision elm, C context);
+
+    /**
+     * Visit a LowBoundary. This method will be called for
+     * every node in the tree that is a LowBoundary.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitLowBoundary(LowBoundary elm, C context);
+
+    /**
+     * Visit a HighBoundary. This method will be called for
+     * every node in the tree that is a HighBoundary.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitHighBoundary(HighBoundary elm, C context);
+
+    /**
      * Visit a Concatenate. This method will be called for
      * every node in the tree that is a Concatenate.
      *
@@ -829,6 +1059,16 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitSplit(Split elm, C context);
+
+    /**
+     * Visit a SplitOnMatches. This method will be called for
+     * every node in the tree that is a SplitOnMatches.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitSplitOnMatches(SplitOnMatches elm, C context);
 
     /**
      * Visit a Length. This method will be called for
@@ -881,6 +1121,16 @@ public interface ElmVisitor<T, C> {
     T visitPositionOf(PositionOf elm, C context);
 
     /**
+     * Visit a LastPositionOf. This method will be called for
+     * every node in the tree that is a LastPositionOf.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitLastPositionOf(LastPositionOf elm, C context);
+
+    /**
      * Visit a Substring. This method will be called for
      * every node in the tree that is a Substring.
      *
@@ -889,6 +1139,46 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitSubstring(Substring elm, C context);
+
+    /**
+     * Visit a StartsWith. This method will be called for
+     * every node in the tree that is a StartsWith.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitStartsWith(StartsWith elm, C context);
+
+    /**
+     * Visit a EndsWith. This method will be called for
+     * every node in the tree that is a EndsWith.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitEndsWith(EndsWith elm, C context);
+
+    /**
+     * Visit a Matches. This method will be called for
+     * every node in the tree that is a Matches.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitMatches(Matches elm, C context);
+
+    /**
+     * Visit a ReplaceMatches. This method will be called for
+     * every node in the tree that is a ReplaceMatches.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitReplaceMatches(ReplaceMatches elm, C context);
 
     /**
      * Visit a DurationBetween. This method will be called for
@@ -929,6 +1219,16 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitTimeFrom(TimeFrom elm, C context);
+
+    /**
+     * Visit a TimezoneFrom. This method will be called for
+     * every node in the tree that is a TimezoneFrom.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitTimezoneFrom(TimezoneFrom elm, C context);
 
     /**
      * Visit a TimezoneOffsetFrom. This method will be called for
@@ -991,6 +1291,16 @@ public interface ElmVisitor<T, C> {
     T visitDateTime(DateTime elm, C context);
 
     /**
+     * Visit a Date. This method will be called for
+     * every node in the tree that is a Date.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitDate(Date elm, C context);
+
+    /**
      * Visit a Time. This method will be called for
      * every node in the tree that is a Time.
      *
@@ -1039,6 +1349,26 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitWidth(Width elm, C context);
+
+    /**
+     * Visit a Size. This method will be called for
+     * every node in the tree that is a Size.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitSize(Size elm, C context);
+
+    /**
+     * Visit a PointFrom. This method will be called for
+     * every node in the tree that is a PointFrom.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitPointFrom(PointFrom elm, C context);
 
     /**
      * Visit a Start. This method will be called for
@@ -1251,6 +1581,16 @@ public interface ElmVisitor<T, C> {
     T visitCollapse(Collapse elm, C context);
 
     /**
+     * Visit a Expand. This method will be called for
+     * every node in the tree that is a Expand.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitExpand(Expand elm, C context);
+
+    /**
      * Visit a Union. This method will be called for
      * every node in the tree that is a Union.
      *
@@ -1331,6 +1671,46 @@ public interface ElmVisitor<T, C> {
     T visitLast(Last elm, C context);
 
     /**
+     * Visit a Slice. This method will be called for
+     * every node in the tree that is a Slice.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitSlice(Slice elm, C context);
+
+    /**
+     * Visit a Children. This method will be called for
+     * every node in the tree that is a Children.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitChildren(Children elm, C context);
+
+    /**
+     * Visit a Descendents. This method will be called for
+     * every node in the tree that is a Descendents.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitDescendents(Descendents elm, C context);
+
+    /**
+     * Visit a Message. This method will be called for
+     * every node in the tree that is a Message.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitMessage(Message elm, C context);
+
+    /**
      * Visit a IndexOf. This method will be called for
      * every node in the tree that is a IndexOf.
      *
@@ -1371,6 +1751,16 @@ public interface ElmVisitor<T, C> {
     T visitForEach(ForEach elm, C context);
 
     /**
+     * Visit a Repeat. This method will be called for
+     * every node in the tree that is a Repeat.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitRepeat(Repeat elm, C context);
+
+    /**
      * Visit a Distinct. This method will be called for
      * every node in the tree that is a Distinct.
      *
@@ -1389,6 +1779,26 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitCurrent(Current elm, C context);
+
+    /**
+     * Visit an Iteration. This method will be called for
+     * every node in the tree that is an Iteration.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitIteration(Iteration elm, C context);
+
+    /**
+     * Visit a Total. This method will be called for
+     * every node in the tree that is a Total.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitTotal(Total elm, C context);
 
     /**
      * Visit a SingletonFrom. This method will be called for
@@ -1411,6 +1821,16 @@ public interface ElmVisitor<T, C> {
     T visitAggregateExpression(AggregateExpression elm, C context);
 
     /**
+     * Visit an Aggregate. This method will be called for
+     * every node in the tree that is an Aggregate.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitAggregate(Aggregate elm, C context);
+
+    /**
      * Visit a Count. This method will be called for
      * every node in the tree that is a Count.
      *
@@ -1429,6 +1849,26 @@ public interface ElmVisitor<T, C> {
      * @return the visitor result
      */
     T visitSum(Sum elm, C context);
+
+    /**
+     * Visit a Product. This method will be called for
+     * every node in the tree that is a Product.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitProduct(Product elm, C context);
+
+    /**
+     * Visit a GeometricMean. This method will be called for
+     * every node in the tree that is a GeometricMean.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    T visitGeometricMean(GeometricMean elm, C context);
 
     /**
      * Visit a Min. This method will be called for

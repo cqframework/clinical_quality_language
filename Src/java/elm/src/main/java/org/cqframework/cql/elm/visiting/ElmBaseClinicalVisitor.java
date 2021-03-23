@@ -14,10 +14,16 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
     @Override
     public T visitElement(Element elm, C context) {
         if (elm instanceof CodeDef) return visitCodeDef((CodeDef)elm, context);
+        else if (elm instanceof CodeSystemDef) return visitCodeSystemDef((CodeSystemDef)elm, context);
         else if (elm instanceof ValueSetDef) return visitValueSetDef((ValueSetDef)elm, context);
         else if (elm instanceof ConceptDef) return visitConceptDef((ConceptDef)elm, context);
+        else if (elm instanceof CodeFilterElement) return visitCodeFilterElement((CodeFilterElement)elm, context);
+        else if (elm instanceof DateFilterElement) return visitDateFilterElement((DateFilterElement)elm, context);
+        else if (elm instanceof OtherFilterElement) return visitOtherFilterElement((OtherFilterElement)elm, context);
+        else if (elm instanceof IncludeElement) return visitIncludeElement((IncludeElement)elm, context);
         return super.visitElement(elm, context);
     }
+
     /**
      * Visit an Expression. This method will be called for
      * every node in the tree that is an Expression.
@@ -29,29 +35,32 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
     @Override
     public T visitExpression(Expression elm, C context) {
         if (elm instanceof Code) return visitCode((Code)elm, context);
-        else if (elm instanceof CodeRef) return visitCodeRef((CodeRef)elm, context);
         else if (elm instanceof CodeSystemRef) return visitCodeSystemRef((CodeSystemRef)elm, context);
-        else if (elm instanceof Concept) return visitConcept((Concept)elm, context);
-        else if (elm instanceof InCodeSystem) return visitInCodeSystem((InCodeSystem)elm, context);
-        else if (elm instanceof InValueSet) return visitInValueSet((InValueSet)elm, context);
-        else if (elm instanceof Quantity) return visitQuantity((Quantity)elm, context);
-        else if (elm instanceof Retrieve) return visitRetrieve((Retrieve)elm, context);
         else if (elm instanceof ValueSetRef) return visitValueSetRef((ValueSetRef)elm, context);
+        else if (elm instanceof CodeRef) return visitCodeRef((CodeRef)elm, context);
+        else if (elm instanceof ConceptRef) return visitConceptRef((ConceptRef)elm, context);
+        else if (elm instanceof Concept) return visitConcept((Concept)elm, context);
+        else if (elm instanceof Quantity) return visitQuantity((Quantity)elm, context);
+        else if (elm instanceof Ratio) return visitRatio((Ratio)elm, context);
+        else if (elm instanceof Retrieve) return visitRetrieve((Retrieve)elm, context);
         else return super.visitExpression(elm, context);
     }
 
-    public T visitConceptDef(ConceptDef elm, C context) {
-        return null;
-    }
-
-    public T visitCodeDef(CodeDef elm, C context) {
-        visitAccessModifier(elm.getAccessLevel(), context);
-        visitCodeSystemRef(elm.getCodeSystem(), context);
-        return null;
-    }
-
-    public T visitCodeRef(CodeRef elm, C context) {
-        return null;
+    /**
+     * Visit an OperatorExpression. This method will be called for
+     * every node in the tree that is a OperatorExpression.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    @Override
+    public T visitOperatorExpression(OperatorExpression elm, C context) {
+        if (elm instanceof InCodeSystem) return visitInCodeSystem((InCodeSystem)elm, context);
+        else if (elm instanceof AnyInCodeSystem) return visitAnyInCodeSystem((AnyInCodeSystem)elm, context);
+        else if (elm instanceof InValueSet) return visitInValueSet((InValueSet)elm, context);
+        else if (elm instanceof AnyInValueSet) return visitAnyInValueSet((AnyInValueSet)elm, context);
+        else return super.visitOperatorExpression(elm, context);
     }
 
     /**
@@ -79,7 +88,66 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
     @Override
     public T visitBinaryExpression(BinaryExpression elm, C context) {
         if (elm instanceof CalculateAgeAt) return visitCalculateAgeAt((CalculateAgeAt)elm, context);
+        else if (elm instanceof Subsumes) return visitSubsumes((Subsumes)elm, context);
+        else if (elm instanceof SubsumedBy) return visitSubsumedBy((SubsumedBy)elm, context);
         else return super.visitBinaryExpression(elm, context);
+    }
+
+    /**
+     * Visit a CodeFilterElement. This method will be called for
+     * every node in the tree that is a CodeFilterElement.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitCodeFilterElement(CodeFilterElement elm, C context) {
+        if (elm.getValue() != null) {
+            visitElement(elm.getValue(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a DateFilterElement. This method will be called for
+     * every node in the tree that is a DateFilterElement.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitDateFilterElement(DateFilterElement elm, C context) {
+        if (elm.getValue() != null) {
+            visitElement(elm.getValue(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit an OtherFilterElement. This method will be called for
+     * every node in the tree that is an OtherFilterElement.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitOtherFilterElement(OtherFilterElement elm, C context) {
+        if (elm.getValue() != null) {
+            visitElement(elm.getValue(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit an IncludeElement. This method will be called for
+     * every node in the tree that is an IncludeElement.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitIncludeElement(IncludeElement elm, C context) {
+        return null;
     }
 
     /**
@@ -91,7 +159,56 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitRetrieve(Retrieve elm, C context) {
-        visitExpression(elm.getCodes(), context);
+        if (elm.getCodes() != null) {
+            visitElement(elm.getCodes(), context);
+        }
+        if (elm.getDateRange() != null) {
+            visitElement(elm.getDateRange(), context);
+        }
+        if (elm.getContext() != null) {
+            visitElement(elm.getContext(), context);
+        }
+        for (IncludeElement ie : elm.getInclude()) {
+            visitElement(ie, context);
+        }
+        for (CodeFilterElement cfe : elm.getCodeFilter()) {
+            visitElement(cfe, context);
+        }
+        for (DateFilterElement dfe : elm.getDateFilter()) {
+            visitElement(dfe, context);
+        }
+        for (OtherFilterElement ofe : elm.getOtherFilter()) {
+            visitElement(ofe, context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a Property. This method will be called for
+     * every node in the tree that is a Property.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    @Override
+    public T visitProperty(Property elm, C context) {
+        T result = super.visitProperty(elm, context);
+        if (elm instanceof Search) {
+            visitSearch((Search)elm, context);
+        }
+        return result;
+    }
+
+    /**
+     * Visit a Search. This method will be called for
+     * every node in the tree that is a Search.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitSearch(Search elm, C context) {
         return null;
     }
 
@@ -104,7 +221,9 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCodeSystemDef(CodeSystemDef elm, C context) {
-        visitAccessModifier(elm.getAccessLevel(), context);
+        if (elm.getAccessLevel() != null) {
+            visitAccessModifier(elm.getAccessLevel(), context);
+        }
         return null;
     }
 
@@ -117,8 +236,46 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitValueSetDef(ValueSetDef elm, C context) {
-        visitAccessModifier(elm.getAccessLevel(), context);
+        if (elm.getAccessLevel() != null) {
+            visitAccessModifier(elm.getAccessLevel(), context);
+        }
         elm.getCodeSystem().stream().forEach(codeSystem -> visitCodeSystemRef(codeSystem, context));
+        return null;
+    }
+
+    /**
+     * Visit a CodeDef. This method will be called for
+     * every node in the tree that is a CodeDef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitCodeDef(CodeDef elm, C context) {
+        if (elm.getAccessLevel() != null) {
+            visitAccessModifier(elm.getAccessLevel(), context);
+        }
+        if (elm.getCodeSystem() != null) {
+            visitCodeSystemRef(elm.getCodeSystem(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit an ConceptDef. This method will be called for
+     * every node in the tree that is an ConceptDef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConceptDef(ConceptDef elm, C context) {
+        if (elm.getAccessLevel() != null) {
+            visitAccessModifier(elm.getAccessLevel(), context);
+        }
+        for (CodeRef cr : elm.getCode()) {
+            visitElement(cr, context);
+        }
         return null;
     }
 
@@ -147,6 +304,30 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
     }
 
     /**
+     * Visit a CodeRef. This method will be called for
+     * every node in the tree that is a CodeRef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitCodeRef(CodeRef elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a ConceptRef. This method will be called for
+     * every node in the tree that is a ConceptRef.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConceptRef(ConceptRef elm, C context) {
+        return null;
+    }
+
+    /**
      * Visit a Code. This method will be called for
      * every node in the tree that is a Code.
      *
@@ -155,6 +336,9 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCode(Code elm, C context) {
+        if (elm.getSystem() != null) {
+            visitElement(elm.getSystem(), context);
+        }
         return null;
     }
 
@@ -167,6 +351,9 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitConcept(Concept elm, C context) {
+        for (Code c : elm.getCode()) {
+            visitElement(c, context);
+        }
         return null;
     }
 
@@ -179,6 +366,30 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitInCodeSystem(InCodeSystem elm, C context) {
+        if (elm.getCode() != null) {
+            visitElement(elm.getCode(), context);
+        }
+        if (elm.getCodesystem() != null) {
+            visitElement(elm.getCodesystem(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit an AnyInCodeSystem. This method will be called for
+     * every node in the tree that is an AnyInCodeSystem.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitAnyInCodeSystem(AnyInCodeSystem elm, C context) {
+        if (elm.getCodes() != null) {
+            visitElement(elm.getCodes(), context);
+        }
+        if (elm.getCodesystem() != null) {
+            visitElement(elm.getCodesystem(), context);
+        }
         return null;
     }
 
@@ -191,8 +402,54 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitInValueSet(InValueSet elm, C context) {
-        visitExpression(elm.getCode(), context);
-        visitExpression(elm.getValueset(), context);
+        if (elm.getCode() != null) {
+            visitElement(elm.getCode(), context);
+        }
+        if (elm.getValueset() != null) {
+            visitElement(elm.getValueset(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit an AnyInValueSet. This method will be called for
+     * every node in the tree that is an AnyInValueSet.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitAnyInValueSet(AnyInValueSet elm, C context) {
+        if (elm.getCodes() != null) {
+            visitElement(elm.getCodes(), context);
+        }
+        if (elm.getValueset() != null) {
+            visitElement(elm.getValueset(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit an Subsumes. This method will be called for
+     * every node in the tree that is an Subsumes.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitSubsumes(Subsumes elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit an SubsumedBy. This method will be called for
+     * every node in the tree that is an SubsumedBy.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitSubsumedBy(SubsumedBy elm, C context) {
         return null;
     }
 
@@ -205,6 +462,24 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitQuantity(Quantity elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a Ratio. This method will be called for
+     * every node in the tree that is a Ratio.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitRatio(Ratio elm, C context) {
+        if (elm.getDenominator() != null) {
+            visitElement(elm.getDenominator(), context);
+        }
+        if (elm.getNumerator() != null) {
+            visitElement(elm.getNumerator(), context);
+        }
         return null;
     }
 

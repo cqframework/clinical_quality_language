@@ -28,8 +28,10 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof ReturnClause) return visitReturnClause((ReturnClause)elm, context);
         else if (elm instanceof AggregateClause) return visitAggregateClause((AggregateClause)elm, context);
         else if (elm instanceof SortByItem) return visitSortByItem((SortByItem)elm, context);
+        else if (elm instanceof SortClause) return visitSortClause((SortClause)elm, context);
         else if (elm instanceof TupleElementDefinition) return visitTupleElementDefinition((TupleElementDefinition)elm, context);
         else if (elm instanceof TypeSpecifier) return visitTypeSpecifier((TypeSpecifier)elm, context);
+        else if (elm instanceof ExpressionDef) return visitExpressionDef((ExpressionDef)elm, context);
         else return null;
     }
 
@@ -46,6 +48,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof IntervalTypeSpecifier) return visitIntervalTypeSpecifier((IntervalTypeSpecifier)elm, context);
         else if (elm instanceof ListTypeSpecifier) return visitListTypeSpecifier((ListTypeSpecifier)elm, context);
         else if (elm instanceof TupleTypeSpecifier) return visitTupleTypeSpecifier((TupleTypeSpecifier)elm, context);
+        else if (elm instanceof ChoiceTypeSpecifier) return visitChoiceTypeSpecifier((ChoiceTypeSpecifier)elm, context);
         else return null;
     }
 
@@ -70,7 +73,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIntervalTypeSpecifier(IntervalTypeSpecifier elm, C context) {
-        visitElement(elm.getPointType(), context);
+        visitTypeSpecifier(elm.getPointType(), context);
         return null;
     }
 
@@ -83,7 +86,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitListTypeSpecifier(ListTypeSpecifier elm, C context) {
-        visitElement(elm.getElementType(), context);
+        visitTypeSpecifier(elm.getElementType(), context);
         return null;
     }
 
@@ -96,7 +99,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTupleElementDefinition(TupleElementDefinition elm, C context) {
-        visitElement(elm.getType(), context);
+        visitTypeSpecifier(elm.getElementType(), context);
         return null;
     }
 
@@ -110,7 +113,22 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitTupleTypeSpecifier(TupleTypeSpecifier elm, C context) {
         for (TupleElementDefinition element : elm.getElement()) {
-            visitElement(element, context);
+            visitTupleElementDefinition(element, context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a ChoiceTypeSpecifier. This method will be called for
+     * every node in the tree that is a ChoiceTypeSpecifier.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitChoiceTypeSpecifier(ChoiceTypeSpecifier elm, C context) {
+        for (TypeSpecifier choice : elm.getChoice()) {
+            visitElement(choice, context);
         }
         return null;
     }
@@ -125,48 +143,69 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      */
     public T visitExpression(Expression elm, C context) {
         if (elm instanceof AggregateExpression) return visitAggregateExpression((AggregateExpression)elm, context);
+        else if (elm instanceof OperatorExpression) return visitOperatorExpression((OperatorExpression)elm, context);
         else if (elm instanceof AliasRef) return visitAliasRef((AliasRef)elm, context);
-        else if (elm instanceof AnyInValueSet) return visitAnyInValueSet((AnyInValueSet)elm, context);
-        else if (elm instanceof BinaryExpression) return visitBinaryExpression((BinaryExpression)elm, context);
         else if (elm instanceof Case) return visitCase((Case)elm, context);
-        else if (elm instanceof Combine) return visitCombine((Combine)elm, context);
         else if (elm instanceof Current) return visitCurrent((Current)elm, context);
-        else if (elm instanceof DateTime) return visitDateTime((DateTime)elm, context);
         else if (elm instanceof ExpressionRef) return visitExpressionRef((ExpressionRef)elm, context);
         else if (elm instanceof Filter) return visitFilter((Filter)elm, context);
-        else if (elm instanceof First) return visitFirst((First)elm, context);
         else if (elm instanceof ForEach) return visitForEach((ForEach)elm, context);
-        else if (elm instanceof FunctionRef) return visitFunctionRef((FunctionRef)elm, context);
         else if (elm instanceof IdentifierRef) return visitIdentifierRef((IdentifierRef)elm, context);
         else if (elm instanceof If) return visitIf((If)elm, context);
-        else if (elm instanceof IndexOf) return visitIndexOf((IndexOf)elm, context);
         else if (elm instanceof Instance) return visitInstance((Instance)elm, context);
         else if (elm instanceof Interval) return visitInterval((Interval)elm, context);
-        else if (elm instanceof Last) return visitLast((Last)elm, context);
+        else if (elm instanceof Iteration) return visitIteration((Iteration)elm, context);
         else if (elm instanceof List) return visitList((List)elm, context);
         else if (elm instanceof Literal) return visitLiteral((Literal)elm, context);
         else if (elm instanceof MaxValue) return visitMaxValue((MaxValue)elm, context);
         else if (elm instanceof MinValue) return visitMinValue((MinValue)elm, context);
-        else if (elm instanceof NaryExpression) return visitNaryExpression((NaryExpression)elm, context);
-        else if (elm instanceof Now) return visitNow((Now)elm, context);
         else if (elm instanceof Null) return visitNull((Null)elm, context);
         else if (elm instanceof OperandRef) return visitOperandRef((OperandRef)elm, context);
         else if (elm instanceof ParameterRef) return visitParameterRef((ParameterRef)elm, context);
-        else if (elm instanceof PositionOf) return visitPositionOf((PositionOf)elm, context);
         else if (elm instanceof Property) return visitProperty((Property)elm, context);
         else if (elm instanceof Query) return visitQuery((Query)elm, context);
         else if (elm instanceof QueryLetRef) return visitQueryLetRef((QueryLetRef)elm, context);
-        else if (elm instanceof Round) return visitRound((Round)elm, context);
+        else if (elm instanceof Repeat) return visitRepeat((Repeat)elm, context);
         else if (elm instanceof Sort) return visitSort((Sort)elm, context);
-        else if (elm instanceof Split) return visitSplit((Split)elm, context);
-        else if (elm instanceof Substring) return visitSubstring((Substring)elm, context);
+        else if (elm instanceof Total) return visitTotal((Total)elm, context);
+        else if (elm instanceof Tuple) return visitTuple((Tuple)elm, context);
+        else return null;
+    }
+
+    /**
+     * Visit an OperatorExpression. This method will be called for
+     * every node in the tree that is an OperatorExpression.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitOperatorExpression(OperatorExpression elm, C context) {
+        if (elm instanceof UnaryExpression) return visitUnaryExpression((UnaryExpression)elm, context);
+        else if (elm instanceof BinaryExpression) return visitBinaryExpression((BinaryExpression)elm, context);
         else if (elm instanceof TernaryExpression) return visitTernaryExpression((TernaryExpression)elm, context);
-        else if (elm instanceof Time) return visitTime((Time)elm, context);
+        else if (elm instanceof NaryExpression) return visitNaryExpression((NaryExpression)elm, context);
+        else if (elm instanceof Round) return visitRound((Round)elm, context);
+        else if (elm instanceof Combine) return visitCombine((Combine)elm, context);
+        else if (elm instanceof Split) return visitSplit((Split)elm, context);
+        else if (elm instanceof SplitOnMatches) return visitSplitOnMatches((SplitOnMatches)elm, context);
+        else if (elm instanceof PositionOf) return visitPositionOf((PositionOf)elm, context);
+        else if (elm instanceof LastPositionOf) return visitLastPositionOf((LastPositionOf)elm, context);
+        else if (elm instanceof Substring) return visitSubstring((Substring)elm, context);
         else if (elm instanceof TimeOfDay) return visitTimeOfDay((TimeOfDay)elm, context);
         else if (elm instanceof Today) return visitToday((Today)elm, context);
-        else if (elm instanceof Tuple) return visitTuple((Tuple)elm, context);
-        else if (elm instanceof UnaryExpression) return visitUnaryExpression((UnaryExpression)elm, context);
-        else return null;
+        else if (elm instanceof Now) return visitNow((Now)elm, context);
+        else if (elm instanceof Time) return visitTime((Time)elm, context);
+        else if (elm instanceof Date) return visitDate((Date)elm, context);
+        else if (elm instanceof DateTime) return visitDateTime((DateTime)elm, context);
+        else if (elm instanceof First) return visitFirst((First)elm, context);
+        else if (elm instanceof Last) return visitLast((Last)elm, context);
+        else if (elm instanceof IndexOf) return visitIndexOf((IndexOf)elm, context);
+        else if (elm instanceof Slice) return visitSlice((Slice)elm, context);
+        else if (elm instanceof Children) return visitChildren((Children)elm, context);
+        else if (elm instanceof Descendents) return visitDescendents((Descendents)elm, context);
+        else if (elm instanceof Message) return visitMessage((Message)elm, context);
+        return null;
     }
 
     /**
@@ -178,10 +217,24 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitUnaryExpression(UnaryExpression elm, C context) {
+        if (elm.getOperand() != null) {
+            visitElement(elm.getOperand(), context);
+        }
         if (elm instanceof Abs) return visitAbs((Abs)elm, context);
         else if (elm instanceof As) return visitAs((As)elm, context);
         else if (elm instanceof Ceiling) return visitCeiling((Ceiling)elm, context);
+        else if (elm instanceof CanConvert) return visitCanConvert((CanConvert)elm, context);
         else if (elm instanceof Convert) return visitConvert((Convert)elm, context);
+        else if (elm instanceof ConvertsToBoolean) return visitConvertsToBoolean((ConvertsToBoolean) elm, context);
+        else if (elm instanceof ConvertsToDate) return visitConvertsToDate((ConvertsToDate)elm, context);
+        else if (elm instanceof ConvertsToDateTime) return visitConvertsToDateTime((ConvertsToDateTime)elm, context);
+        else if (elm instanceof ConvertsToDecimal) return visitConvertsToDecimal((ConvertsToDecimal)elm, context);
+        else if (elm instanceof ConvertsToInteger) return visitConvertsToInteger((ConvertsToInteger)elm, context);
+        else if (elm instanceof ConvertsToLong) return visitConvertsToLong((ConvertsToLong)elm, context);
+        else if (elm instanceof ConvertsToQuantity) return visitConvertsToQuantity((ConvertsToQuantity)elm, context);
+        else if (elm instanceof ConvertsToRatio) return visitConvertsToRatio((ConvertsToRatio)elm, context);
+        else if (elm instanceof ConvertsToString) return visitConvertsToString((ConvertsToString)elm, context);
+        else if (elm instanceof ConvertsToTime) return visitConvertsToTime((ConvertsToTime)elm, context);
         else if (elm instanceof DateFrom) return visitDateFrom((DateFrom)elm, context);
         else if (elm instanceof DateTimeComponentFrom) return visitDateTimeComponentFrom((DateTimeComponentFrom)elm, context);
         else if (elm instanceof Distinct) return visitDistinct((Distinct)elm, context);
@@ -199,20 +252,27 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Lower) return visitLower((Lower)elm, context);
         else if (elm instanceof Negate) return visitNegate((Negate)elm, context);
         else if (elm instanceof Not) return visitNot((Not)elm, context);
+        else if (elm instanceof PointFrom) return visitPointFrom((PointFrom)elm, context);
+        else if (elm instanceof Precision) return visitPrecision((Precision)elm, context);
         else if (elm instanceof Predecessor) return visitPredecessor((Predecessor)elm, context);
         else if (elm instanceof SingletonFrom) return visitSingletonFrom((SingletonFrom)elm, context);
+        else if (elm instanceof Size) return visitSize((Size)elm, context);
         else if (elm instanceof Start) return visitStart((Start)elm, context);
         else if (elm instanceof Successor) return visitSuccessor((Successor)elm, context);
         else if (elm instanceof TimeFrom) return visitTimeFrom((TimeFrom)elm, context);
+        else if (elm instanceof TimezoneFrom) return visitTimezoneFrom((TimezoneFrom)elm, context);
         else if (elm instanceof TimezoneOffsetFrom) return visitTimezoneOffsetFrom((TimezoneOffsetFrom)elm, context);
         else if (elm instanceof ToBoolean) return visitToBoolean((ToBoolean)elm, context);
         else if (elm instanceof ToConcept) return visitToConcept((ToConcept)elm, context);
+        else if (elm instanceof ToChars) return visitToChars((ToChars)elm, context);
+        else if (elm instanceof ToDate) return visitToDate((ToDate)elm, context);
         else if (elm instanceof ToDateTime) return visitToDateTime((ToDateTime)elm, context);
-        else if (elm instanceof ToLong) return visitToLong((ToLong)elm, context);
         else if (elm instanceof ToDecimal) return visitToDecimal((ToDecimal)elm, context);
         else if (elm instanceof ToInteger) return visitToInteger((ToInteger)elm, context);
+        else if (elm instanceof ToLong) return visitToLong((ToLong)elm, context);
         else if (elm instanceof ToList) return visitToList((ToList)elm, context);
         else if (elm instanceof ToQuantity) return visitToQuantity((ToQuantity)elm, context);
+        else if (elm instanceof ToRatio) return visitToRatio((ToRatio)elm, context);
         else if (elm instanceof ToString) return visitToString((ToString)elm, context);
         else if (elm instanceof ToTime) return visitToTime((ToTime)elm, context);
         else if (elm instanceof Truncate) return visitTruncate((Truncate)elm, context);
@@ -230,20 +290,29 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitBinaryExpression(BinaryExpression elm, C context) {
+        for (Expression e : elm.getOperand()) {
+            visitElement(e, context);
+        }
         if (elm instanceof Add) return visitAdd((Add)elm, context);
         else if (elm instanceof After) return visitAfter((After)elm, context);
         else if (elm instanceof And) return visitAnd((And)elm, context);
         else if (elm instanceof Before) return visitBefore((Before)elm, context);
+        else if (elm instanceof CanConvertQuantity) return visitCanConvertQuantity((CanConvertQuantity)elm, context);
         else if (elm instanceof Contains) return visitContains((Contains)elm, context);
+        else if (elm instanceof ConvertQuantity) return visitConvertQuantity((ConvertQuantity)elm, context);
         else if (elm instanceof Collapse) return visitCollapse((Collapse)elm, context);
         else if (elm instanceof DifferenceBetween) return visitDifferenceBetween((DifferenceBetween)elm, context);
         else if (elm instanceof Divide) return visitDivide((Divide)elm, context);
         else if (elm instanceof DurationBetween) return visitDurationBetween((DurationBetween)elm, context);
         else if (elm instanceof Ends) return visitEnds((Ends)elm, context);
+        else if (elm instanceof EndsWith) return visitEndsWith((EndsWith)elm, context);
         else if (elm instanceof Equal) return visitEqual((Equal)elm, context);
         else if (elm instanceof Equivalent) return visitEquivalent((Equivalent)elm, context);
+        else if (elm instanceof Expand) return visitExpand((Expand)elm, context);
         else if (elm instanceof Greater) return visitGreater((Greater)elm, context);
         else if (elm instanceof GreaterOrEqual) return visitGreaterOrEqual((GreaterOrEqual)elm, context);
+        else if (elm instanceof HighBoundary) return visitHighBoundary((HighBoundary)elm, context);
+        else if (elm instanceof Implies) return visitImplies((Implies)elm, context);
         else if (elm instanceof In) return visitIn((In)elm, context);
         else if (elm instanceof IncludedIn) return visitIncludedIn((IncludedIn)elm, context);
         else if (elm instanceof Includes) return visitIncludes((Includes)elm, context);
@@ -251,6 +320,8 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof Less) return visitLess((Less)elm, context);
         else if (elm instanceof LessOrEqual) return visitLessOrEqual((LessOrEqual)elm, context);
         else if (elm instanceof Log) return visitLog((Log)elm, context);
+        else if (elm instanceof LowBoundary) return visitLowBoundary((LowBoundary)elm, context);
+        else if (elm instanceof Matches) return visitMatches((Matches)elm, context);
         else if (elm instanceof Meets) return visitMeets((Meets)elm, context);
         else if (elm instanceof MeetsAfter) return visitMeetsAfter((MeetsAfter)elm, context);
         else if (elm instanceof MeetsBefore) return visitMeetsBefore((MeetsBefore)elm, context);
@@ -270,6 +341,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         else if (elm instanceof SameOrAfter) return visitSameOrAfter((SameOrAfter)elm, context);
         else if (elm instanceof SameOrBefore) return visitSameOrBefore((SameOrBefore)elm, context);
         else if (elm instanceof Starts) return visitStarts((Starts)elm, context);
+        else if (elm instanceof StartsWith) return visitStartsWith((StartsWith)elm, context);
         else if (elm instanceof Subtract) return visitSubtract((Subtract)elm, context);
         else if (elm instanceof Times) return visitTimes((Times)elm, context);
         else if (elm instanceof TruncatedDivide) return visitTruncatedDivide((TruncatedDivide)elm, context);
@@ -289,6 +361,7 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         for (Expression element : elm.getOperand()) {
             visitElement(element, context);
         }
+        if (elm instanceof ReplaceMatches) return visitReplaceMatches((ReplaceMatches)elm, context);
         return null;
     }
 
@@ -318,7 +391,15 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitExpressionDef(ExpressionDef elm, C context) {
-        visitElement(elm.getExpression(), context);
+        if (elm.getAccessLevel() != null) {
+            visitAccessModifier(elm.getAccessLevel(), context);
+        }
+        if (elm.getExpression() != null) {
+            visitElement(elm.getExpression(), context);
+        }
+        if (elm instanceof FunctionDef) {
+            visitFunctionDef((FunctionDef)elm, context);
+        }
         return null;
     }
 
@@ -331,13 +412,21 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFunctionDef(FunctionDef elm, C context) {
-        visitAccessModifier(elm.getAccessLevel(), context);
         elm.getOperand().stream().forEach(operand -> visitElement(operand, context));
-        visitElement(elm.getExpression(), context);
-        visitElement(elm.getResultTypeSpecifier(), context);
+        if (elm.getResultTypeSpecifier() != null) {
+            visitElement(elm.getResultTypeSpecifier(), context);
+        }
         return null;
     }
 
+    /**
+     * Visit AccessModifier. This method will be called for
+     * every node in the tree that is a AccessModifier.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
     public T visitAccessModifier(AccessModifier elm, C context) {
         return null;
     }
@@ -464,7 +553,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTupleElement(TupleElement elm, C context) {
-        visitElement(elm.getValue(), context);
+        if (elm.getValue() != null) {
+            visitExpression(elm.getValue(), context);
+        }
         return null;
     }
 
@@ -492,7 +583,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitInstanceElement(InstanceElement elm, C context) {
-        visitElement(elm.getValue(), context);
+        if (elm.getValue() != null) {
+            visitExpression(elm.getValue(), context);
+        }
         return null;
     }
 
@@ -562,7 +655,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAnd(And elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -575,7 +667,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitOr(Or elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -588,7 +679,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitXor(Xor elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
+        return null;
+    }
+
+    /**
+     * Visit a Implies. This method will be called for
+     * every node in the tree that is a Implies.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitImplies(Implies elm, C context) {
         return null;
     }
 
@@ -601,7 +703,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNot(Not elm, C context) {
-        visitExpression(elm.getOperand(), context);
         return null;
     }
 
@@ -638,6 +739,15 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCase(Case elm, C context) {
+        if (elm.getComparand() != null) {
+            visitElement(elm.getComparand(), context);
+        }
+        for (CaseItem ci : elm.getCaseItem()) {
+            visitElement(ci, context);
+        }
+        if (elm.getElse() != null) {
+            visitElement(elm.getElse(), context);
+        }
         return null;
     }
 
@@ -710,6 +820,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIs(Is elm, C context) {
+        if (elm.getIsTypeSpecifier() != null) {
+            visitElement(elm.getIsTypeSpecifier(), context);
+        }
         return null;
     }
 
@@ -722,8 +835,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAs(As elm, C context) {
-        visitExpression(elm.getOperand(), context);
-        visitElement(elm.getAsTypeSpecifier(), context);
+        if (elm.getOperand() != null) {
+            visitExpression(elm.getOperand(), context);
+        }
+        if (elm.getAsTypeSpecifier() != null) {
+            visitElement(elm.getAsTypeSpecifier(), context);
+        }
         return null;
     }
 
@@ -736,6 +853,36 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitConvert(Convert elm, C context) {
+        if (elm.getToTypeSpecifier() != null) {
+            visitElement(elm.getToTypeSpecifier(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a CanConvert. This method will be called for
+     * every node in the tree that is a CanConvert.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitCanConvert(CanConvert elm, C context) {
+        if (elm.getToTypeSpecifier() != null) {
+            visitElement(elm.getToTypeSpecifier(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a ConvertsToBoolean. This method will be called for
+     * every node in the tree that is a ConvertsToBoolean.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToBoolean(ConvertsToBoolean elm, C context) {
         return null;
     }
 
@@ -752,6 +899,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
+     * Visit a ToChars. This method will be called for
+     * every node in the tree that is a ToChars.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitToChars(ToChars elm, C context) {
+        return null;
+    }
+
+    /**
      * Visit a ToConcept. This method will be called for
      * every node in the tree that is a ToConcept.
      *
@@ -760,7 +919,42 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToConcept(ToConcept elm, C context) {
-        visitExpression(elm.getOperand(), context);
+        return null;
+    }
+
+    /**
+     * Visit a ConvertsToDate. This method will be called for
+     * every node in the tree that is a ConvertsToDate.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToDate(ConvertsToDate elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a ToDate. This method will be called for
+     * every node in the tree that is a ToDate.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitToDate(ToDate elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a ConvertsToDateTime. This method will be called for
+     * every node in the tree that is a ConvertsToDateTime.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToDateTime(ConvertsToDateTime elm, C context) {
         return null;
     }
 
@@ -777,6 +971,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
+     * Visit a ConvertsToLong. This method will be called for
+     * every node in the tree that is a ConvertsToLong.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToLong(ConvertsToLong elm, C context) {
+        return null;
+    }
+
+    /**
      * Visit a ToLong. This method will be called for
      * every node in the tree that is a ToLong.
      *
@@ -787,6 +993,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     public T visitToLong(ToLong elm, C context) { return null; }
 
     /**
+     * Visit a ConvertsToDecimal. This method will be called for
+     * every node in the tree that is a ConvertsToDecimal.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToDecimal(ConvertsToDecimal elm, C context) {
+        return null;
+    }
+
+    /**
      * Visit a ToDecimal. This method will be called for
      * every node in the tree that is a ToDecimal.
      *
@@ -795,7 +1013,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToDecimal(ToDecimal elm, C context) {
-        visitExpression(elm.getOperand(), context);
+        return null;
+    }
+
+    /**
+     * Visit a ConvertsToInteger. This method will be called for
+     * every node in the tree that is a ConvertsToInteger.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToInteger(ConvertsToInteger elm, C context) {
         return null;
     }
 
@@ -811,8 +1040,51 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         return null;
     }
 
+    /**
+     * Visit a ToList. This method will be called for
+     * every node in the tree that is a ToList.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
     public T visitToList(ToList elm, C context) {
-        visitExpression(elm.getOperand(), context);
+        return null;
+    }
+
+    /**
+     * Visit a ConvertQuantity. This method will be called for
+     * every node in the tree that is a ConvertQuantity.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertQuantity(ConvertQuantity elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a CanConvertQuantity. This method will be called for
+     * every node in the tree that is a CanConvertQuantity.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitCanConvertQuantity(CanConvertQuantity elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a ConvertsToQuantity. This method will be called for
+     * every node in the tree that is a ConvertsToQuantity.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToQuantity(ConvertsToQuantity elm, C context) {
         return null;
     }
 
@@ -825,7 +1097,42 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToQuantity(ToQuantity elm, C context) {
-        visitExpression(elm.getOperand(), context);
+        return null;
+    }
+
+    /**
+     * Visit a ConvertsToRatio. This method will be called for
+     * every node in the tree that is a ConvertsToRatio.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToRatio(ConvertsToRatio elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a Ratio. This method will be called for
+     * every node in the tree that is a Ratio.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitToRatio(ToRatio elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a ConvertsToString. This method will be called for
+     * every node in the tree that is a ConvertsToString.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToString(ConvertsToString elm, C context) {
         return null;
     }
 
@@ -838,6 +1145,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitToString(ToString elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a ConvertsToTime. This method will be called for
+     * every node in the tree that is a ConvertsToTime.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitConvertsToTime(ConvertsToTime elm, C context) {
         return null;
     }
 
@@ -862,7 +1181,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitEqual(Equal elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -875,7 +1193,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitEquivalent(Equivalent elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -888,7 +1205,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNotEqual(NotEqual elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -901,7 +1217,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLess(Less elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -914,7 +1229,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitGreater(Greater elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -927,7 +1241,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLessOrEqual(LessOrEqual elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -940,7 +1253,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitGreaterOrEqual(GreaterOrEqual elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -1185,6 +1497,42 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
+     * Visit a Precision. This method will be called for
+     * every node in the tree that is a Precision.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitPrecision(Precision elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a LowBoundary. This method will be called for
+     * every node in the tree that is a LowBoundary.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitLowBoundary(LowBoundary elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a HighBoundary. This method will be called for
+     * every node in the tree that is a HighBoundary.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitHighBoundary(HighBoundary elm, C context) {
+        return null;
+    }
+
+    /**
      * Visit a Concatenate. This method will be called for
      * every node in the tree that is a Concatenate.
      *
@@ -1205,6 +1553,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCombine(Combine elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        if (elm.getSeparator() != null) {
+            visitElement(elm.getSeparator(), context);
+        }
         return null;
     }
 
@@ -1217,8 +1571,30 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSplit(Split elm, C context) {
-        visitExpression(elm.getStringToSplit(), context);
-        visitExpression(elm.getSeparator(), context);
+        if (elm.getStringToSplit() != null) {
+            visitExpression(elm.getStringToSplit(), context);
+        }
+        if (elm.getSeparator() != null) {
+            visitExpression(elm.getSeparator(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a SplitOnMatches. This method will be called for
+     * every node in the tree that is a SplitOnMatches.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitSplitOnMatches(SplitOnMatches elm, C context) {
+        if (elm.getStringToSplit() != null) {
+            visitExpression(elm.getStringToSplit(), context);
+        }
+        if (elm.getSeparatorPattern() != null) {
+            visitExpression(elm.getSeparatorPattern(), context);
+        }
         return null;
     }
 
@@ -1279,6 +1655,30 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitPositionOf(PositionOf elm, C context) {
+        if (elm.getPattern() != null) {
+            visitExpression(elm.getPattern(), context);
+        }
+        if (elm.getString() != null) {
+            visitExpression(elm.getString(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a LastPositionOf. This method will be called for
+     * every node in the tree that is a LastPositionOf.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitLastPositionOf(LastPositionOf elm, C context) {
+        if (elm.getPattern() != null) {
+            visitExpression(elm.getPattern(), context);
+        }
+        if (elm.getString() != null) {
+            visitExpression(elm.getString(), context);
+        }
         return null;
     }
 
@@ -1291,6 +1691,63 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSubstring(Substring elm, C context) {
+        if (elm.getStringToSub() != null) {
+            visitExpression(elm.getStringToSub(), context);
+        }
+        if (elm.getStartIndex() != null) {
+            visitExpression(elm.getStartIndex(), context);
+        }
+        if (elm.getLength() != null) {
+            visitExpression(elm.getLength(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a StartsWith. This method will be called for
+     * every node in the tree that is a StartsWith.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitStartsWith(StartsWith elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a EndsWith. This method will be called for
+     * every node in the tree that is a EndsWith.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitEndsWith(EndsWith elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a Matches. This method will be called for
+     * every node in the tree that is a Matches.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitMatches(Matches elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a ReplaceMatches. This method will be called for
+     * every node in the tree that is a ReplaceMatches.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitReplaceMatches(ReplaceMatches elm, C context) {
         return null;
     }
 
@@ -1345,6 +1802,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     /**
      * Visit a TimezoneFrom. This method will be called for
      * every node in the tree that is a TimezoneFrom.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitTimezoneFrom(TimezoneFrom elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a TimezoneOffsetFrom. This method will be called for
+     * every node in the tree that is a TimezoneOffsetFrom.
      *
      * @param elm     the ELM tree
      * @param context the context passed to the visitor
@@ -1411,6 +1880,51 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDateTime(DateTime elm, C context) {
+        if (elm.getYear() != null) {
+            visitExpression(elm.getYear(), context);
+        }
+        if (elm.getMonth() != null) {
+            visitExpression(elm.getMonth(), context);
+        }
+        if (elm.getDay() != null) {
+            visitExpression(elm.getDay(), context);
+        }
+        if (elm.getHour() != null) {
+            visitExpression(elm.getHour(), context);
+        }
+        if (elm.getMinute() != null) {
+            visitExpression(elm.getMinute(), context);
+        }
+        if (elm.getSecond() != null) {
+            visitExpression(elm.getSecond(), context);
+        }
+        if (elm.getMillisecond() != null) {
+            visitExpression(elm.getMillisecond(), context);
+        }
+        if (elm.getTimezoneOffset() != null) {
+            visitExpression(elm.getTimezoneOffset(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a Date. This method will be called for
+     * every node in the tree that is a Date.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitDate(Date elm, C context) {
+        if (elm.getYear() != null) {
+            visitExpression(elm.getYear(), context);
+        }
+        if (elm.getMonth() != null) {
+            visitExpression(elm.getMonth(), context);
+        }
+        if (elm.getDay() != null) {
+            visitExpression(elm.getDay(), context);
+        }
         return null;
     }
 
@@ -1423,6 +1937,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitTime(Time elm, C context) {
+        if (elm.getHour() != null) {
+            visitExpression(elm.getHour(), context);
+        }
+        if (elm.getMinute() != null) {
+            visitExpression(elm.getMinute(), context);
+        }
+        if (elm.getSecond() != null) {
+            visitExpression(elm.getSecond(), context);
+        }
+        if (elm.getMillisecond() != null) {
+            visitExpression(elm.getMillisecond(), context);
+        }
         return null;
     }
 
@@ -1471,6 +1997,30 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitWidth(Width elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a Size. This method will be called for
+     * every node in the tree that is a Size.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitSize(Size elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a PointFrom. This method will be called for
+     * every node in the tree that is a PointFrom.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitPointFrom(PointFrom elm, C context) {
         return null;
     }
 
@@ -1727,6 +2277,18 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
     }
 
     /**
+     * Visit a Expand. This method will be called for
+     * every node in the tree that is a Expand.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitExpand(Expand elm, C context) {
+        return null;
+    }
+
+    /**
      * Visit a Union. This method will be called for
      * every node in the tree that is a Union.
      *
@@ -1735,7 +2297,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitUnion(Union elm, C context) {
-        elm.getOperand().stream().forEach(operand -> visitExpression(operand, context));
         return null;
     }
 
@@ -1772,7 +2333,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitExists(Exists elm, C context) {
-        visitExpression(elm.getOperand(), context);
         return null;
     }
 
@@ -1797,6 +2357,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFilter(Filter elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        if (elm.getCondition() != null) {
+            visitElement(elm.getCondition(), context);
+        }
         return null;
     }
 
@@ -1809,7 +2375,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFirst(First elm, C context) {
-        visitExpression(elm.getSource(), context);
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
         return null;
     }
 
@@ -1822,7 +2390,87 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLast(Last elm, C context) {
-        visitExpression(elm.getSource(), context);
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a Slice. This method will be called for
+     * every node in the tree that is a Slice.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitSlice(Slice elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        if (elm.getStartIndex() != null) {
+            visitElement(elm.getStartIndex(), context);
+        }
+        if (elm.getEndIndex() != null) {
+            visitElement(elm.getEndIndex(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a Children. This method will be called for
+     * every node in the tree that is a Children.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitChildren(Children elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a Descendents. This method will be called for
+     * every node in the tree that is a Descendents.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitDescendents(Descendents elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a Message. This method will be called for
+     * every node in the tree that is a Message.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitMessage(Message elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        if (elm.getCondition() != null) {
+            visitElement(elm.getCondition(), context);
+        }
+        if (elm.getCode() != null) {
+            visitElement(elm.getCode(), context);
+        }
+        if (elm.getSeverity() != null) {
+            visitElement(elm.getSeverity(), context);
+        }
+        if (elm.getMessage() != null) {
+            visitElement(elm.getMessage(), context);
+        }
         return null;
     }
 
@@ -1835,6 +2483,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitIndexOf(IndexOf elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        if (elm.getElement() != null) {
+            visitElement(elm.getElement(), context);
+        }
         return null;
     }
 
@@ -1847,7 +2501,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitFlatten(Flatten elm, C context) {
-        visitExpression(elm.getOperand(), context);
         return null;
     }
 
@@ -1860,6 +2513,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSort(Sort elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        for (SortByItem sbi : elm.getBy()) {
+            visitElement(elm, context);
+        }
         return null;
     }
 
@@ -1872,6 +2531,30 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitForEach(ForEach elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        if (elm.getElement() != null) {
+            visitElement(elm.getElement(), context);
+        }
+        return null;
+    }
+
+    /**
+     * Visit a Repeat. This method will be called for
+     * every node in the tree that is a Repeat.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitRepeat(Repeat elm, C context) {
+        if (elm.getSource() != null) {
+            visitElement(elm.getSource(), context);
+        }
+        if (elm.getElement() != null) {
+            visitElement(elm.getElement(), context);
+        }
         return null;
     }
 
@@ -1884,7 +2567,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitDistinct(Distinct elm, C context) {
-        visitExpression(elm.getOperand(), context);
         return null;
     }
 
@@ -1897,6 +2579,30 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitCurrent(Current elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit an Iteration. This method will be called for
+     * every node in the tree that is an Iteration.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitIteration(Iteration elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a Total. This method will be called for
+     * every node in the tree that is a Total.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitTotal(Total elm, C context) {
         return null;
     }
 
@@ -1921,7 +2627,43 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAggregateExpression(AggregateExpression elm, C context) {
-        visitExpression(elm.getSource(), context);
+        if (elm.getSource() != null) {
+            visitExpression(elm.getSource(), context);
+        }
+        if (elm instanceof Aggregate) visitAggregate((Aggregate)elm, context);
+        else if (elm instanceof Count) visitCount((Count)elm, context);
+        else if (elm instanceof Sum) visitSum((Sum)elm, context);
+        else if (elm instanceof Product) visitProduct((Product)elm, context);
+        else if (elm instanceof Min) visitMin((Min)elm, context);
+        else if (elm instanceof Max) visitMax((Max)elm, context);
+        else if (elm instanceof Avg) visitAvg((Avg)elm, context);
+        else if (elm instanceof GeometricMean) visitGeometricMean((GeometricMean)elm, context);
+        else if (elm instanceof Median) visitMedian((Median)elm, context);
+        else if (elm instanceof Mode) visitMode((Mode)elm, context);
+        else if (elm instanceof Variance) visitVariance((Variance)elm, context);
+        else if (elm instanceof StdDev) visitStdDev((StdDev)elm, context);
+        else if (elm instanceof PopulationVariance) visitPopulationVariance((PopulationVariance)elm, context);
+        else if (elm instanceof PopulationStdDev) visitPopulationStdDev((PopulationStdDev)elm, context);
+        else if (elm instanceof AllTrue) visitAllTrue((AllTrue)elm, context);
+        else if (elm instanceof AnyTrue) visitAnyTrue((AnyTrue)elm, context);
+        return null;
+    }
+
+    /**
+     * Visit an Aggregate. This method will be called for
+     * every node in the tree that is an Aggregate.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitAggregate(Aggregate elm, C context) {
+        if (elm.getInitialValue() != null) {
+            visitExpression(elm.getInitialValue(), context);
+        }
+        if (elm.getIteration() != null) {
+            visitExpression(elm.getIteration(), context);
+        }
         return null;
     }
 
@@ -1946,6 +2688,30 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSum(Sum elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a Product. This method will be called for
+     * every node in the tree that is a Product.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitProduct(Product elm, C context) {
+        return null;
+    }
+
+    /**
+     * Visit a GeometricMean. This method will be called for
+     * every node in the tree that is a GeometricMean.
+     *
+     * @param elm     the ELM tree
+     * @param context the context passed to the visitor
+     * @return the visitor result
+     */
+    public T visitGeometricMean(GeometricMean elm, C context) {
         return null;
     }
 
@@ -2081,12 +2847,6 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
         return null;
     }
 
-    public T visitAnyInValueSet(AnyInValueSet elm, C context) {
-        visitExpression(elm.getCodes(), context);
-        visitExpression(elm.getValueset(), context);
-        return null;
-    }
-
     /**
      * Visit a Property. This method will be called for
      * every node in the tree that is a Property.
@@ -2096,7 +2856,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitProperty(Property elm, C context) {
-        visitExpression(elm.getSource(), context);
+        if (elm.getSource() != null) {
+            visitExpression(elm.getSource(), context);
+        }
         return null;
     }
 
@@ -2109,7 +2871,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAliasedQuerySource(AliasedQuerySource elm, C context) {
-        visitExpression(elm.getExpression(), context);
+        if (elm.getExpression() != null) {
+            visitExpression(elm.getExpression(), context);
+        }
+        if (elm instanceof RelationshipClause) {
+            visitRelationshipClause((RelationshipClause)elm, context);
+        }
         return null;
     }
 
@@ -2122,7 +2889,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitLetClause(LetClause elm, C context) {
-        visitExpression(elm.getExpression(), context);
+        if (elm.getExpression() != null) {
+            visitElement(elm.getExpression(), context);
+        }
         return null;
     }
 
@@ -2135,6 +2904,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitRelationshipClause(RelationshipClause elm, C context) {
+        if (elm.getSuchThat() != null) {
+            visitElement(elm.getSuchThat(), context);
+        }
         if (elm instanceof With) {
             visitWith((With) elm, context);
         } else if (elm instanceof Without) {
@@ -2176,6 +2948,15 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSortByItem(SortByItem elm, C context) {
+        if (elm instanceof ByDirection) {
+            visitByDirection((ByDirection)elm, context);
+        }
+        else if (elm instanceof ByColumn) {
+            visitByColumn((ByColumn)elm, context);
+        }
+        else if (elm instanceof ByExpression) {
+            visitByExpression((ByExpression)elm, context);
+        }
         return null;
     }
 
@@ -2212,6 +2993,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitByExpression(ByExpression elm, C context) {
+        if (elm.getExpression() != null) {
+            visitElement(elm.getExpression(), context);
+        }
         return null;
     }
 
@@ -2224,6 +3008,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitSortClause(SortClause elm, C context) {
+        for (SortByItem sbi : elm.getBy()) {
+            visitElement(sbi, context);
+        }
         return null;
     }
 
@@ -2236,6 +3023,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitAggregateClause(AggregateClause elm, C context) {
+        if (elm.getExpression() != null) {
+            visitElement(elm.getExpression(), context);
+        }
+        if (elm.getStarting() != null) {
+            visitElement(elm.getStarting(), context);
+        }
         return null;
     }
 
@@ -2248,11 +3041,12 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitReturnClause(ReturnClause elm, C context) {
-        visitExpression(elm.getExpression(), context);
+        if (elm.getExpression() != null) {
+            visitExpression(elm.getExpression(), context);
+        }
         return null;
     }
 
-    //TODO:
     /**
      * Visit a Query. This method will be called for
      * every node in the tree that is a Query.
@@ -2262,33 +3056,26 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitQuery(Query elm, C context) {
-        boolean internalValidation = false;
-        for(AliasedQuerySource source : elm.getSource()) {
-            if (source.getAlias().equals("$this")) {
-                internalValidation = true;
-                visitExpression(source.getExpression(), context);
-            } else {
-                visitElement(source, context);
-            }
+        for (AliasedQuerySource source : elm.getSource()) {
+            visitElement(source, context);
         }
-        if (internalValidation) {
-            visitExpression(elm.getReturn().getExpression(), context);
-        } else {
-            if (elm.getLet() != null && !elm.getLet().isEmpty()) {
-                elm.getLet().stream().forEach(let -> visitLetClause(let, context));
-            }
-            if (elm.getRelationship() != null && !elm.getRelationship().isEmpty()) {
-                elm.getRelationship().stream().forEach(relationship -> visitRelationshipClause(relationship, context));
-            }
-            if (elm.getWhere() != null) {
-                visitExpression(elm.getWhere(), context);
-            }
-            if (elm.getReturn() != null) {
-                visitReturnClause(elm.getReturn(), context);
-            }
-            if (elm.getSort() != null) {
-                visitSortClause(elm.getSort(), context);
-            }
+        if (elm.getLet() != null && !elm.getLet().isEmpty()) {
+            elm.getLet().stream().forEach(let -> visitElement(let, context));
+        }
+        if (elm.getRelationship() != null && !elm.getRelationship().isEmpty()) {
+            elm.getRelationship().stream().forEach(relationship -> visitElement(relationship, context));
+        }
+        if (elm.getWhere() != null) {
+            visitElement(elm.getWhere(), context);
+        }
+        if (elm.getReturn() != null) {
+            visitElement(elm.getReturn(), context);
+        }
+        if (elm.getAggregate() != null) {
+            visitElement(elm.getAggregate(), context);
+        }
+        if (elm.getSort() != null) {
+            visitElement(elm.getSort(), context);
         }
         return null;
     }
