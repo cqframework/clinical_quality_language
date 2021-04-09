@@ -86,6 +86,11 @@ public class LibraryManager {
         }
     }
 
+    public void cacheLibrary(TranslatedLibrary library) {
+        String libraryPath = NamespaceManager.getPath(library.getIdentifier().getSystem(), library.getIdentifier().getId());
+        libraries.put(libraryPath, library);
+    }
+
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
