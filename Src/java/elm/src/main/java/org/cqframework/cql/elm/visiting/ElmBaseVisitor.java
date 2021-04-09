@@ -374,6 +374,9 @@ public class ElmBaseVisitor<T, C> implements ElmVisitor<T, C> {
      * @return the visitor result
      */
     public T visitNaryExpression(NaryExpression elm, C context) {
+        for (Expression element : elm.getOperand()) {
+            visitElement(element, context);
+        }
         if (elm instanceof Coalesce) return visitCoalesce((Coalesce)elm, context);
         else if (elm instanceof Concatenate) return visitConcatenate((Concatenate)elm, context);
         else if (elm instanceof Except) return visitExcept((Except)elm, context);
