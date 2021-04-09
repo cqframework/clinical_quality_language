@@ -75,22 +75,26 @@ define TestChoice:
 define TestSlices:
   [Observation: "Blood pressure"] BP
     let
-      SystolicBP: singleton from (BP.component C where FHIRHelpers.ToConcept(C.code) ~ "Systolic blood pressure"),
-      DiastolicBP: singleton from (BP.component C where FHIRHelpers.ToConcept(C.code) ~ "Diastolic blood pressure")
+      SystolicBP: singleton from (BP.component C where C.code ~ "Systolic blood pressure"),
+      DiastolicBP: singleton from (BP.component C where C.code ~ "Diastolic blood pressure")
     where SystolicBP.value < 140 'mm[Hg]'
       and DiastolicBP.value < 90 'mm[Hg]'
 
 define TestSimpleExtensions:
   Patient P
-    let birthsex: singleton from (P.extension E where E.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex')
+    let birthsex: singleton from (
+        P.extension E where E.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
+    )
     where birthsex.value = 'M'
 
 define TestComplexExtensions:
   Patient P
     let
-      race: singleton from (P.extension E where E.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'),
+      race: singleton from (
+        P.extension E where E.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+      ),
       ombCategory: race.extension E where E.url = 'ombCategory',
       detailed: race.extension E where E.url = 'detailed'
-    where (ombCategory O return FHIRHelpers.ToConcept(O.value)) contains "American Indian or Alaska Native"
-      and (detailed O return FHIRHelpers.ToConcept(O.value)) contains "Alaska Native"
+    where ombCategory.value contains "American Indian or Alaska Native"
+      and detailed.value contains "Alaska Native"
 
