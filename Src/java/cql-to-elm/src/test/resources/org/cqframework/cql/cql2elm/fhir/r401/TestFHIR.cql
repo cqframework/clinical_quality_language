@@ -80,17 +80,21 @@ define TestSlices:
 
 define TestSimpleExtensions:
   Patient P
-    let birthsex: singleton from (P.extension E where E.url.value = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex')
+    let birthsex: singleton from (
+        P.extension E where E.url.value = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'
+    )
     where (birthsex.value as FHIR.code).value = 'M'
 
 define TestComplexExtensions:
   Patient P
     let
-      race: singleton from (P.extension E where E.url.value = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'),
+      race: singleton from (
+        P.extension E where E.url.value = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+      ),
       ombCategory: race.extension E where E.url.value = 'ombCategory',
       detailed: race.extension E where E.url.value = 'detailed'
-    where (ombCategory O return ToConcept(O.value as FHIR.CodeableConcept)) contains "American Indian or Alaska Native"
-      and (detailed O return ToConcept(O.value as FHIR.CodeableConcept)) contains "Alaska Native"
+    where (ombCategory O return ToCode(O.value as FHIR.Coding)) contains "American Indian or Alaska Native"
+      and (detailed O return ToCode(O.value as FHIR.Coding)) contains "Alaska Native"
 
 define function ToInterval(period FHIR.Period):
     if period is null then
@@ -102,7 +106,7 @@ define function ToQuantity(quantity FHIR.Quantity):
     if quantity is null then
         null
     else
-        System.Quantity { value: quantity.value.value, unit: quantity.unit.value }
+        System.Quantity { value: quantity.value.value, unit: quantity.code.value }
 
 define function ToInterval(range FHIR.Range):
     if range is null then
