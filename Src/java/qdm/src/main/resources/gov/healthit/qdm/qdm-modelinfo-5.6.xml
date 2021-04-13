@@ -740,13 +740,13 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="prescriber">
             <ns4:typeSpecifier xsi:type="ns4:ListTypeSpecifier">
-                <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
+                <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Location"/>
-                </ns4:typeSpecifier>
+                </ns4:elementTypeSpecifier>
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="recorder">
@@ -946,13 +946,13 @@
         <ns4:element name="negationRationale" type="System.Code"/>
         <ns4:element name="prescriber">
             <ns4:typeSpecifier xsi:type="ns4:ListTypeSpecifier">
-                <ns4:typeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
+                <ns4:elementTypeSpecifier xsi:type="ns4:ChoiceTypeSpecifier">
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="PatientEntity"/>
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="CarePartner"/>
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Practitioner"/>
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Organization"/>
                     <ns4:choice xsi:type="ns4:NamedTypeSpecifier" modelName="QDM" name="Location"/>
-                </ns4:typeSpecifier>
+                </ns4:elementTypeSpecifier>
             </ns4:typeSpecifier>
         </ns4:element>
         <ns4:element name="relatedTo" type="list&lt;System.String&gt;"/>

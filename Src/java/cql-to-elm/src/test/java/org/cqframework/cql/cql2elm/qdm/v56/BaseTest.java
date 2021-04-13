@@ -23,7 +23,7 @@ public class BaseTest {
 
     @Test
     public void testEntities() throws IOException {
-        TestUtils.runSemanticTest("qdm/v56/TestChoiceTypes.cql", 0);
+        TestUtils.runSemanticTest("qdm/v56/TestEntities.cql", 0);
     }
 
     @Test
