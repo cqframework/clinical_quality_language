@@ -105,3 +105,15 @@ define "Eye Exam Complete":
               and Performer.specialty in "Ophthalmology"
         )
 
+define "Medication Order Prescribers":
+  ["Medication, Order"] MO
+    where exists (MO.prescriber P where P is Practitioner)
+
+define "Medication Discharge Prescribers":
+  ["Medication, Discharge"] MD
+    where exists (MD.prescriber P where P is Practitioner)
+
+define "Medication Dispensed Prescribers":
+  ["Medication, Dispensed"] MD
+    where exists (MD.prescriber P where P is Practitioner)
+
