@@ -92,6 +92,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     private String currentSection;
     private int sectionCount = 0;
     private void newSection(String section) {
+//        System.out.println(section);
         if (hasSectionContent()) {
             resetIndentLevel();
             newLine();
@@ -219,6 +220,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             case ")": return !inFunctionDefinition() && !inFunctionInvocation();
             case "[": return inRetrieve();
             case "]": return false;
+            case "starts": return !inFunctionDefinition() || !inFunctionInvocation();
             default: return true;
         }
     }
@@ -229,7 +231,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             case "<": return !inTypeSpecifier();
             case ">": return !inTypeSpecifier();
             case "(": return !inFunctionDefinition() && !inFunctionInvocation();
-            case ")": return !inFunctionDefinition() && !inFunctionInvocation();
+            case ")": return !inFunctionDefinition() || !inFunctionInvocation();
             case "[": return false;
             case "]": return inRetrieve();
             default: return true;
@@ -247,9 +249,11 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
                     .append(whitespaceBefore);
         }
         output.append(token.token.getText()).append(whitespace);
+        newLine();
     }
 
     private void appendTerminal(String terminal) {
+
         if (needsWhitespaceBefore(terminal)) {
             ensureWhitespace();
         }
@@ -258,9 +262,10 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             newLine();
             decreaseIndentLevel();
         }
-        if (terminal.equals("end")) {
+        if (terminal.equals("end") && (inFunctionInvocation() || inFunctionDefinition()) ) {
             newLine();
         }
+
         output.append(terminal);
         onNewLine = false;
         needsWhitespace = needsWhitespaceAfter(terminal);
@@ -722,7 +727,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
         }
     }
 
-//    @Override
+    //    @Override
 //    public Object visitSingleSourceClause(cqlParser.SingleSourceClauseContext ctx) {
 //        return super.visitSingleSourceClause(ctx);
 //    }
