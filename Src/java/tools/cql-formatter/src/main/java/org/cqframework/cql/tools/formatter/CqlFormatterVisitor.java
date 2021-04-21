@@ -92,7 +92,6 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
     private String currentSection;
     private int sectionCount = 0;
     private void newSection(String section) {
-//        System.out.println(section);
         if (hasSectionContent()) {
             resetIndentLevel();
             newLine();
