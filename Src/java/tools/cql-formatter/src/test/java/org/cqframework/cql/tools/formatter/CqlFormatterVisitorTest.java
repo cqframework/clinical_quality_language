@@ -63,7 +63,7 @@ public class CqlFormatterVisitorTest {
         Assert.assertFalse(inError);
         runTest("git-issue-349.cql");
         Assert.assertFalse(inError);
-        runTest("space-after.cql");
+        runTest("cqf-838.cql");
         Assert.assertFalse(inError);
         try {
             runTest("invalid-syntax.cql");
