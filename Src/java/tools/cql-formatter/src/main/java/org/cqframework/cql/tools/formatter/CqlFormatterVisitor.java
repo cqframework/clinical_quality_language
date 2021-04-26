@@ -260,7 +260,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             newLine();
             decreaseIndentLevel();
         }
-        if (terminal.equals("end")) {
+        if (terminal.equals("end") && (inFunctionInvocation() || inFunctionDefinition()) ) {
             newLine();
         }
         output.append(terminal);
