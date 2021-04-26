@@ -248,6 +248,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
                     .append(whitespaceBefore);
         }
         output.append(token.token.getText()).append(whitespace);
+        newLine();
     }
 
     private void appendTerminal(String terminal) {
