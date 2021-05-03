@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
@@ -2078,33 +2079,36 @@ public class LibraryBuilder {
         // 10: The name of a property on a specific context
         // 11: An unresolved identifier error is thrown
 
+        //Collect every match, issue warning if multiple matches were made, but return initial match:
+        List<Expression> matchCollection = new ArrayList<>();
+
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
         if (inTypeSpecifierContext()) {
-            return this.createLiteral(identifier);
+            matchCollection.add(this.createLiteral(identifier));
         }
 
         // In the sort clause of a plural query, names may be resolved based on the result type of the query
         IdentifierRef resultElement = resolveQueryResultElement(identifier);
         if (resultElement != null) {
-            return resultElement;
+            matchCollection.add(resultElement);
         }
 
         // In the case of a $this alias, names may be resolved as implicit property references
         Expression thisElement = resolveQueryThisElement(identifier);
         if (thisElement != null) {
-            return thisElement;
+            matchCollection.add(thisElement);
         }
 
         if (identifier.equals("$index")) {
             Iteration result = of.createIteration();
             result.setResultType(resolveTypeName("System", "Integer"));
-            return result;
+            matchCollection.add(result);
         }
 
         if (identifier.equals("$total")) {
             Total result = of.createTotal();
             result.setResultType(resolveTypeName("System", "Decimal")); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            return result;
+            matchCollection.add(result);
         }
 
         AliasedQuerySource alias = resolveAlias(identifier);
@@ -2116,19 +2120,19 @@ public class LibraryBuilder {
             else {
                 result.setResultType(alias.getResultType());
             }
-            return result;
+            matchCollection.add(result);
         }
 
         LetClause let = resolveQueryLet(identifier);
         if (let != null) {
             QueryLetRef result = of.createQueryLetRef().withName(identifier);
             result.setResultType(let.getResultType());
-            return result;
+            matchCollection.add(result);
         }
 
         OperandRef operandRef = resolveOperandRef(identifier);
         if (operandRef != null) {
-            return operandRef;
+            matchCollection.add(operandRef);
         }
 
         Element element = resolve(identifier);
@@ -2142,7 +2146,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
                         expressionRef.getName()));
             }
-            return expressionRef;
+            matchCollection.add(expressionRef);
         }
 
         if (element instanceof ParameterDef) {
@@ -2154,7 +2158,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
-            return parameterRef;
+            matchCollection.add(parameterRef);
         }
 
         if (element instanceof ValueSetDef) {
@@ -2166,7 +2170,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
             }
-            return valuesetRef;
+            matchCollection.add(valuesetRef);
         }
 
         if (element instanceof CodeSystemDef) {
@@ -2178,7 +2182,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
-            return codesystemRef;
+            matchCollection.add(codesystemRef);
 
         }
 
@@ -2191,7 +2195,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
-            return codeRef;
+            matchCollection.add(codeRef);
         }
 
         if (element instanceof ConceptDef) {
@@ -2203,14 +2207,14 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
-            return conceptRef;
+            matchCollection.add(conceptRef);
         }
 
         if (element instanceof IncludeDef) {
             checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-            return libraryRef;
+            matchCollection.add(libraryRef);
         }
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
@@ -2233,17 +2237,23 @@ public class LibraryBuilder {
                 if (resolution != null) {
                     Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
                     contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
-                    return contextAccessor;
+                    matchCollection.add(contextAccessor);
                 }
             }
         }
 
-        if (mustResolve) {
+        if (matchCollection.size() > 0 ){
+            //issue warning that multiple matches occurred:
+            this.reportWarning("Identifier hiding detected: identifier" + (matchCollection.size() > 3 ? "s": "") +" in a broader scope hidden: " + StringUtils.join(matchCollection, ","), matchCollection.get(0));
+            //return first match:
+            return matchCollection.get(0);
+        } else if (mustResolve){
             // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
         }
 
         return null;
+
     }
 
     public Property buildProperty(String scope, String path, boolean isSearch, DataType resultType) {
