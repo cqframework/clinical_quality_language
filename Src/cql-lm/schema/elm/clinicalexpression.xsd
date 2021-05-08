@@ -141,6 +141,11 @@ This property may be specified as a path, including qualifiers and constant inde
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="Element">
+				<xs:attribute name="includeFrom" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The localId of another Retrieve that specifies the data to be included in this retrieve. The target Retrieve will have an includedIn attribute referencing this includeElement.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
 				<xs:attribute name="relatedDataType" type="xs:QName" use="required">
 					<xs:annotation>
 						<xs:documentation>The relatedDataType attribute specifies the type of the related data being requested.</xs:documentation>
@@ -314,6 +319,11 @@ This property may be specified as a path, including qualifiers and constant inde
 				<xs:attribute name="dateSearch" type="xs:string" use="optional">
 					<xs:annotation>
 						<xs:documentation>The dateSearch attribute specifies the name of the search path to use for searching for values in the date range specified by the dateRange element.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="includedIn" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The localId of another Retrieve that includes the data for this retrieve. The target Retrieve will have an includeElement referencing this retrieve.</xs:documentation>
 					</xs:annotation>
 				</xs:attribute>
 			</xs:extension>
