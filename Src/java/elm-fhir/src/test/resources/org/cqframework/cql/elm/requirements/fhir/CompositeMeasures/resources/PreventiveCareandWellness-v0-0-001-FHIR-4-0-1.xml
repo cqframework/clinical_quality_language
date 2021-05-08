@@ -1,0 +1,100 @@
+<Measure xmlns="http://hl7.org/fhir">
+   <id value="PreventiveCareandWellnessComposite"/>
+   <meta>
+      <profile value="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/composite-measure-cqfm"/>
+   </meta>
+   <language value="en"/>
+   <url value="http://ecqi.healthit.gov/ecqms/Measure/PreventiveCareandWellnessComposite"/>
+   <version value="0.0.001"/>
+   <name value="PreventiveCareandWellnessComposite"/>
+   <title value="Preventive Care and Wellness Composite"/>
+   <status value="draft"/>
+   <experimental value="true"/>
+   <publisher value="National Committee for Quality Assurance"/>
+   <description value="This artifact is an example of a weighted composite measure that uses a mixture of single-rate or multi-rate component measures that have different measure bases."/>
+   <effectivePeriod>
+      <start value="2022-01-01"/>
+      <end value="2022-12-31"/>
+   </effectivePeriod>
+   <relatedArtifact>
+      <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-weight">
+         <valueDecimal value="0.2"/>
+      </extension>
+      <type value="composed-of"/>
+      <url value="http://ecqi.healthit.gov/ecqms/Measure/BCSComponent"/>
+      <resource value="http://ecqi.healthit.gov/ecqms/Measure/BCSComponent|0.0.001"/>
+   </relatedArtifact>
+   <relatedArtifact>
+      <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-weight">
+         <valueDecimal value="0.2"/>
+      </extension>
+      <type value="composed-of"/>
+      <url value="http://ecqi.healthit.gov/ecqms/Measure/HBPComponent"/>
+      <resource value="http://ecqi.healthit.gov/ecqms/Measure/HBPComponent|0.0.001"/>
+   </relatedArtifact>
+   <relatedArtifact>
+      <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-weight">
+         <valueDecimal value="0.2"/>
+      </extension>
+      <type value="composed-of"/>
+      <url value="http://ecqi.healthit.gov/ecqms/Measure/CCSComponent"/>
+      <resource value="http://ecqi.healthit.gov/ecqms/Measure/CCSComponent|0.0.001"/>
+   </relatedArtifact>
+   <relatedArtifact>
+      <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-weight">
+         <valueDecimal value="0.2"/>
+      </extension>
+      <type value="composed-of"/>
+      <url value="http://ecqi.healthit.gov/ecqms/Measure/PVSComponent"/>
+      <resource value="http://ecqi.healthit.gov/ecqms/Measure/PVSComponent|0.0.001"/>
+   </relatedArtifact>
+   <relatedArtifact>
+      <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-groupId">
+         <valueId value="Group1"/>
+      </extension>
+      <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-weight">
+         <valueDecimal value="0.1"/>
+      </extension>
+      <type value="composed-of"/>
+      <url value="http://ecqi.healthit.gov/ecqms/Measure/TSCComponent"/>
+      <resource value="http://ecqi.healthit.gov/ecqms/Measure/TSCComponent|0.0.001"/>
+   </relatedArtifact>
+   <relatedArtifact>
+      <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-groupId">
+         <valueId value="Group2"/>
+      </extension>
+      <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-weight">
+         <valueDecimal value="0.1"/>
+      </extension>
+      <type value="composed-of"/>
+      <url value="http://ecqi.healthit.gov/ecqms/Measure/TSCComponent"/>
+      <resource value="http://ecqi.healthit.gov/ecqms/Measure/TSCComponent|0.0.001"/>
+   </relatedArtifact>
+   <scoring>
+      <coding>
+         <system value="http://terminology.hl7.org/CodeSystem/measure-scoring"/>
+         <code value="composite"/>
+         <display value="Composite"/>
+      </coding>
+   </scoring>
+   <type>
+      <coding>
+         <system value="http://terminology.hl7.org/CodeSystem/measure-type"/>
+         <code value="process"/>
+         <display value="Process"/>
+      </coding>
+   </type>
+   <compositeScoring>
+      <coding>
+         <system value="http://terminology.hl7.org/CodeSystem/composite-measure-scoring"/>
+         <code value="weighted"/>
+         <display value="Weighted"/>
+      </coding>
+   </compositeScoring>
+   <improvementNotation>
+      <coding>
+         <system value="http://terminology.hl7.org/CodeSystem/measure-improvement-notation"/>
+         <code value="increase"/>
+      </coding>
+   </improvementNotation>
+</Measure>

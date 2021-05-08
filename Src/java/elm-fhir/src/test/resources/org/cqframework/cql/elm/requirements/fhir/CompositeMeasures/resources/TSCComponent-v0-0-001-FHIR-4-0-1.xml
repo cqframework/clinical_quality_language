@@ -1,0 +1,252 @@
+<Measure xmlns="http://hl7.org/fhir">
+    <id value="TSCComponent"/>
+    <meta>
+        <profile value="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/proportion-measure-cqfm"/>
+    </meta>
+    <language value="en"/>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-populationBasis">
+        <valueCode value="boolean"/>
+    </extension>
+    <url value="http://ecqi.healthit.gov/ecqms/Measure/TSCComponent"/>
+    <version value="0.0.001"/>
+    <name value="TSCComponent"/>
+    <title value="Preventive Care and Screening: Tobacco Use: Screening and Cessation Intervention"/>
+    <status value="draft"/>
+    <experimental value="true"/>
+    <publisher value="National Committee for Quality Assurance"/>
+    <description value="This is an example only."/>
+    <effectivePeriod>
+        <start value="2022-01-01"/>
+        <end value="2022-12-31"/>
+    </effectivePeriod>
+    <library value="http://ecqi.healthit.gov/ecqms/Library/TSCComponent"/>
+    <scoring>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/measure-scoring"/>
+            <code value="proportion"/>
+            <display value="Proportion"/>
+        </coding>
+    </scoring>
+    <type>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/measure-type"/>
+            <code value="process"/>
+        </coding>
+    </type>
+    <improvementNotation>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/measure-improvement-notation"/>
+            <code value="increase"/>
+        </coding>
+    </improvementNotation>
+    <group id="Group1">
+        <population id="1DE7294A-72AE-42D1-A2A6-BCAE23DBA8A6">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="initial-population"/>
+                    <display value="Initial Population"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Initial Population"/>
+            </criteria>
+        </population>
+        <population id="0F57D23C-C2AA-4CE1-9E20-33DAE1F2B145">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="denominator"/>
+                    <display value="Denominator"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Denominator 1"/>
+            </criteria>
+        </population>
+        <population id="570F7624-72EC-4CFC-9137-F48E476D77DC">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="denominator-exception"/>
+                    <display value="Denominator Exception"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Denominator Exceptions 1"/>
+            </criteria>
+        </population>
+        <population id="20577EB7-3FE9-43D2-B918-A8C7AE5E0E91">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="numerator"/>
+                    <display value="Numerator"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Numerator 1"/>
+            </criteria>
+        </population>
+    </group>
+    <group id="Group2">
+        <population id="DD346C87-5D2B-4319-B41D-7BF64ADF95D0">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="initial-population"/>
+                    <display value="Initial Population"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Initial Population"/>
+            </criteria>
+        </population>
+        <population id="A1FAA872-5C94-4F2B-A355-8E3A3390369C">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="denominator"/>
+                    <display value="Denominator"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Denominator 2"/>
+            </criteria>
+        </population>
+        <population id="3AE470CD-37DF-492D-A3A4-365BAF744C5A">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="denominator-exception"/>
+                    <display value="Denominator Exception"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Denominator Exceptions 2"/>
+            </criteria>
+        </population>
+        <population id="B1F8B729-7BBD-4616-B39C-E90444B7884C">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="numerator"/>
+                    <display value="Numerator"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Numerator 2"/>
+            </criteria>
+        </population>
+    </group>
+    <group id="Group3">
+        <population id="EA2696EE-326B-490A-82B5-E4D8FC581E77">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="initial-population"/>
+                    <display value="Initial Population"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Initial Population"/>
+            </criteria>
+        </population>
+        <population id="D346BB79-EFD1-4DB1-902A-36F027BE75E9">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="denominator"/>
+                    <display value="Denominator"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Denominator 3"/>
+            </criteria>
+        </population>
+        <population id="6BBFE753-2072-4848-B189-0E5B44BE1F52">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="denominator-exception"/>
+                    <display value="Denominator Exception"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Denominator Exceptions 3"/>
+            </criteria>
+        </population>
+        <population id="F8E22F0F-7307-4BED-9295-648803772928">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="numerator"/>
+                    <display value="Numerator"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Numerator 3"/>
+            </criteria>
+        </population>
+    </group>
+    <supplementalData id="fe7bab72-cc69-44bb-a678-473b24811e67">
+        <usage>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/measure-data-usage"/>
+                <code value="supplemental-data"/>
+            </coding>
+        </usage>
+        <criteria>
+            <language value="text/cql.identifier"/>
+            <expression value="SDE Ethnicity"/>
+        </criteria>
+    </supplementalData>
+    <supplementalData id="2486f84d-df90-489b-8f5c-e55cdcfb361e">
+        <usage>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/measure-data-usage"/>
+                <code value="supplemental-data"/>
+            </coding>
+        </usage>
+        <criteria>
+            <language value="text/cql.identifier"/>
+            <expression value="SDE Payer"/>
+        </criteria>
+    </supplementalData>
+    <supplementalData id="bb0949c4-1f7b-4ce2-a988-c2e60f1a0079">
+        <usage>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/measure-data-usage"/>
+                <code value="supplemental-data"/>
+            </coding>
+        </usage>
+        <criteria>
+            <language value="text/cql.identifier"/>
+            <expression value="SDE Race"/>
+        </criteria>
+    </supplementalData>
+    <supplementalData id="742028bc-5aa5-4a5b-927d-be1908e10aaf">
+        <usage>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/measure-data-usage"/>
+                <code value="supplemental-data"/>
+            </coding>
+        </usage>
+        <criteria>
+            <language value="text/cql.identifier"/>
+            <expression value="SDE Sex"/>
+        </criteria>
+    </supplementalData>
+</Measure>

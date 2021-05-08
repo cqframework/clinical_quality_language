@@ -1,0 +1,1308 @@
+<Measure xmlns="http://hl7.org/fhir">
+    <id value="CCSComponent"/>
+    <meta>
+        <profile value="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/proportion-measure-cqfm"/>
+        <profile value="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/computable-measure-cqfm"/>
+    </meta>
+    <language value="en"/>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-populationBasis">
+        <valueCode value="boolean"/>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Measurement Period"/>
+            <use value="in"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="Period"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="SDE Sex"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="Coding"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Numerator"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="boolean"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Colonoscopy Performed"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Procedure"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Fecal Occult Blood Test Performed"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Observation"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Flexible Sigmoidoscopy Performed"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Procedure"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Fecal Immunochemical Test DNA"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Observation"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="CT Colonography Performed"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Procedure"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Denominator"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="boolean"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Initial Population"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="boolean"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Patient"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="Patient"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Qualifying Encounters"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Encounter"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="SDE Payer"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Any"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="SDE Ethnicity"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Coding"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Denominator Exclusion"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="boolean"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Has Hospice"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="boolean"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Malignant Neoplasm"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Condition"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Total Colectomy Performed"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Procedure"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Advanced Illness and Frailty Exclusion Not Including Over Age 80"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="boolean"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Has Criteria Indicating Frailty"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="boolean"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Outpatient Encounters with Advanced Illness"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Encounter"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Inpatient Encounter with Advanced Illness"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Encounter"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Dementia Medications In Year Before or During Measurement Period"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="MedicationDispense"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Long Term Care Periods Longer Than 90 Consecutive Days"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="1"/>
+            <type value="boolean"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="Long Term Care Periods During Measurement Period"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Period"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-parameter">
+        <valueParameterDefinition>
+            <name value="SDE Race"/>
+            <use value="out"/>
+            <min value="0"/>
+            <max value="*"/>
+            <type value="Coding"/>
+        </valueParameterDefinition>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Procedure"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Procedure"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.108.12.1020"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Observation"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Observation"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1011"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Procedure"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Procedure"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1010"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Observation"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Observation"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.108.12.1039"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Procedure"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Procedure"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.108.12.1038"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Patient"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Patient"/>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1001"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1240"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1025"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1023"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1016"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Coverage"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Coverage"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.3591"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="ServiceRequest"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/ServiceRequest"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1108.15"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Procedure"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Procedure"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1108.15"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Condition"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Condition"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.108.12.1001"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Procedure"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Procedure"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1019"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="DeviceRequest"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/DeviceRequest"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.118.12.1300"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="DeviceUseStatement"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/DeviceUseStatement"/>
+            <codeFilter>
+                <path value="device.code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.118.12.1300"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Condition"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Condition"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.113.12.1074"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1088"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Observation"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Observation"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.113.12.1075"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1087"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1086"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1085"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1084"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Condition"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Condition"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.110.12.1082"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1083"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Condition"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Condition"/>
+            <codeFilter>
+                <path value="code"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.110.12.1082"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="MedicationDispense"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/MedicationDispense"/>
+            <codeFilter>
+                <path value="medication"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.196.12.1510"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1014"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-dataRequirement">
+        <valueDataRequirement>
+            <type value="Encounter"/>
+            <profile value="http://hl7.org/fhir/StructureDefinition/Encounter"/>
+            <codeFilter>
+                <path value="type"/>
+                <valueSet value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1012"/>
+            </codeFilter>
+        </valueDataRequirement>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode">
+        <valueCoding>
+            <system value="http://snomed.info/sct"/>
+            <version value="http://snomed.info/sct/version/201709"/>
+            <code value="428361000124107"/>
+            <display value="Discharge to home for hospice care (procedure)"/>
+        </valueCoding>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-directReferenceCode">
+        <valueCoding>
+            <system value="http://snomed.info/sct"/>
+            <version value="http://snomed.info/sct/version/201709"/>
+            <code value="428371000124100"/>
+            <display value="Discharge to healthcare facility for hospice care (procedure)"/>
+        </valueCoding>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="SDE Sex"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;SDE Sex&quot;:&#xa;  SDE.&quot;SDE Sex&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="0"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="SupplementalDataElementsFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="SDE Sex"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;SDE Sex&quot;:&#xa;  case&#xa;      when Patient.gender = 'male' then Code { code: 'M', system: 'http://hl7.org/fhir/v3/AdministrativeGender', display: 'Male' }&#xa;      when Patient.gender = 'female' then Code { code: 'F', system: 'http://hl7.org/fhir/v3/AdministrativeGender', display: 'Female' }&#xa;      else null&#xa;    end"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="1"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Numerator"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Numerator&quot;:&#xa;  exists &quot;Colonoscopy Performed&quot;&#xa;      or exists &quot;Fecal Occult Blood Test Performed&quot;&#xa;      or exists &quot;Flexible Sigmoidoscopy Performed&quot;&#xa;      or exists &quot;Fecal Immunochemical Test DNA&quot;&#xa;      or exists &quot;CT Colonography Performed&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="2"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Colonoscopy Performed"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Colonoscopy Performed&quot;:&#xa;  [Procedure: &quot;Colonoscopy&quot;] Colonoscopy&#xa;      where Colonoscopy.status = 'completed'&#xa;        and Global.&quot;Normalize Interval&quot; ( Colonoscopy.performed ) ends 10 years or less on or before&#xa;        end of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="3"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Fecal Occult Blood Test Performed"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Fecal Occult Blood Test Performed&quot;:&#xa;  [Observation: &quot;Fecal Occult Blood Test (FOBT)&quot;] FecalOccultResult&#xa;      where FecalOccultResult.status in { 'final', 'amended', 'corrected', 'preliminary' }&#xa;        and FecalOccultResult.value is not null&#xa;        and Global.&quot;Normalize Interval&quot; ( FecalOccultResult.effective ) during day of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="4"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Flexible Sigmoidoscopy Performed"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Flexible Sigmoidoscopy Performed&quot;:&#xa;  [Procedure: &quot;Flexible Sigmoidoscopy&quot;] FlexibleSigmoidoscopy&#xa;      where FlexibleSigmoidoscopy.status = 'completed'&#xa;        and Global.&quot;Normalize Interval&quot; ( FlexibleSigmoidoscopy.performed ) ends 5 years or less on or before&#xa;        end of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="5"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Fecal Immunochemical Test DNA"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Fecal Immunochemical Test DNA&quot;:&#xa;  [Observation: &quot;FIT DNA&quot;] FitDNA&#xa;      where FitDNA.status in { 'final', 'amended', 'corrected', 'preliminary' }&#xa;        and FitDNA.value is not null&#xa;        and Global.&quot;Normalize Interval&quot; ( FitDNA.effective ) occurs 3 years or less on or before day of&#xa;        end of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="6"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="CT Colonography Performed"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;CT Colonography Performed&quot;:&#xa;  [Procedure: &quot;CT Colonography&quot;] Colonography&#xa;      where Colonography.status = 'completed'&#xa;        and Global.&quot;Normalize Interval&quot; ( Colonography.performed ) ends 5 years or less on or before&#xa;        end of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="7"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Denominator"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Denominator&quot;:&#xa;  &quot;Initial Population&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="8"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Initial Population"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Initial Population&quot;:&#xa;  Global.&quot;CalendarAgeInYearsAt&quot; ( FHIRHelpers.ToDate ( Patient.birthDate ), start of &quot;Measurement Period&quot; ) in Interval[50, 75]&#xa;      and exists AdultOutpatientEncounters.&quot;Qualifying Encounters&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="9"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="AdultOutpatientEncountersFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Qualifying Encounters"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Qualifying Encounters&quot;:&#xa;  (&#xa;      [Encounter: &quot;Office Visit&quot;]&#xa;    &#x9;&#x9;union [Encounter: &quot;Annual Wellness Visit&quot;]&#xa;    &#x9;&#x9;union [Encounter: &quot;Preventive Care Services - Established Office Visit, 18 and Up&quot;]&#xa;    &#x9;&#x9;union [Encounter: &quot;Preventive Care Services-Initial Office Visit, 18 and Up&quot;]&#xa;    &#x9;&#x9;union [Encounter: &quot;Home Healthcare Services&quot;]&#xa;    ) ValidEncounter&#xa;  &#x9;&#x9;where ValidEncounter.period during &quot;Measurement Period&quot;&#xa;    &#x9;&#x9;and ValidEncounter.status  = 'finished'"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="10"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="SDE Payer"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;SDE Payer&quot;:&#xa;  SDE.&quot;SDE Payer&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="11"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="SupplementalDataElementsFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="SDE Payer"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;SDE Payer&quot;:&#xa;  [Coverage: type in &quot;Payer&quot;] Payer&#xa;        return {&#xa;          code: Payer.type,&#xa;          period: Payer.period&#xa;        }"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="12"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Initial Population"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Initial Population&quot;:&#xa;  Global.&quot;CalendarAgeInYearsAt&quot; ( FHIRHelpers.ToDate ( Patient.birthDate ), start of &quot;Measurement Period&quot; ) in Interval[50, 75]&#xa;      and exists AdultOutpatientEncounters.&quot;Qualifying Encounters&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="13"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="SDE Ethnicity"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;SDE Ethnicity&quot;:&#xa;  SDE.&quot;SDE Ethnicity&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="14"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="SupplementalDataElementsFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="SDE Ethnicity"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;SDE Ethnicity&quot;:&#xa;  (flatten (&#xa;      Patient.extension Extension&#xa;        where Extension.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'&#xa;          return Extension.extension&#xa;    )) E&#xa;      where E.url = 'ombCategory'&#xa;        or E.url = 'detailed'&#xa;      return E.value as Coding"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="15"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Denominator Exclusion"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Denominator Exclusion&quot;:&#xa;  Hospice.&quot;Has Hospice&quot;&#xa;      or exists &quot;Malignant Neoplasm&quot;&#xa;      or exists &quot;Total Colectomy Performed&quot;&#xa;      or Frailty.&quot;Advanced Illness and Frailty Exclusion Not Including Over Age 80&quot;&#xa;        and Frailty.&quot;Long Term Care Periods Longer Than 90 Consecutive Days&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="16"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="HospiceFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Has Hospice"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Has Hospice&quot;:&#xa;  exists (&#xa;      [Encounter: &quot;Encounter Inpatient&quot;] DischargeHospice&#xa;  &#x9;&#x9;&#x9;where DischargeHospice.status = 'finished'&#xa;  &#x9;&#x9;    and (&#xa;  &#x9;        DischargeHospice.hospitalization.dischargeDisposition ~ &quot;Discharge to home for hospice care (procedure)&quot;&#xa;  &#x9;&#x9;&#x9;&#x9;    or DischargeHospice.hospitalization.dischargeDisposition ~ &quot;Discharge to healthcare facility for hospice care (procedure)&quot;&#xa;  &#x9;    &#x9;)&#xa;  &#x9;&#x9;&#x9;&#x9;and DischargeHospice.period ends during &quot;Measurement Period&quot;&#xa;  &#x9;)&#xa;      or exists (&#xa;        [ServiceRequest: &quot;Hospice care ambulatory&quot;] HospiceOrder&#xa;          where HospiceOrder.intent = 'order'&#xa;              and HospiceOrder.authoredOn in &quot;Measurement Period&quot;&#xa;      )&#xa;      or exists (&#xa;        [Procedure: &quot;Hospice care ambulatory&quot;] HospicePerformed&#xa;          where HospicePerformed.status = 'completed'&#xa;            and Global.&quot;Normalize Interval&quot;(HospicePerformed.performed) overlaps &quot;Measurement Period&quot;&#xa;      )"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="17"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Malignant Neoplasm"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Malignant Neoplasm&quot;:&#xa;  [Condition: &quot;Malignant Neoplasm of Colon&quot;] ColorectalCancer&#xa;      where Global.&quot;Prevalence Period&quot; ( ColorectalCancer ) starts on or before&#xa;      end of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="18"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Total Colectomy Performed"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Total Colectomy Performed&quot;:&#xa;  [Procedure: &quot;Total Colectomy&quot;] Colectomy&#xa;      where Colectomy.status = 'completed'&#xa;        and Global.&quot;Normalize Interval&quot; ( Colectomy.performed ) starts on or before&#xa;        end of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="19"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="AdvancedIllnessandFrailtyExclusionECQMFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Advanced Illness and Frailty Exclusion Not Including Over Age 80"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Advanced Illness and Frailty Exclusion Not Including Over Age 80&quot;:&#xa;  //If the measure does NOT include populations age 80 and older, then use this logic:&#xa;      &#x9;Global.&quot;CalendarAgeInYearsAt&quot;(FHIRHelpers.ToDate(Patient.birthDate), start of &quot;Measurement Period&quot;)>= 65&#xa;              and &quot;Has Criteria Indicating Frailty&quot;&#xa;              and ( Count(&quot;Outpatient Encounters with Advanced Illness&quot;)>= 2&#xa;                  or exists ( &quot;Inpatient Encounter with Advanced Illness&quot; )&#xa;                  or exists &quot;Dementia Medications In Year Before or During Measurement Period&quot;&#xa;              )"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="20"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="AdvancedIllnessandFrailtyExclusionECQMFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Has Criteria Indicating Frailty"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Has Criteria Indicating Frailty&quot;:&#xa;  //Ask Bryn about devices&#xa;      &#x9;exists ( [DeviceRequest: &quot;Frailty Device&quot;] FrailtyDeviceOrder&#xa;      &#x9;&#x9;&#x9;where FrailtyDeviceOrder.authoredOn during &quot;Measurement Period&quot;&#xa;      &#x9;)&#xa;      &#x9;&#x9;or exists ( [DeviceUseStatement: &quot;Frailty Device&quot;] FrailtyDeviceUse&#xa;      &#x9;&#x9;&#x9;&#x9;where Global.&quot;Normalize Interval&quot;(FrailtyDeviceUse.timing) overlaps &quot;Measurement Period&quot;&#xa;      &#x9;&#x9;)&#xa;      &#x9;&#x9;or exists ( [Condition: &quot;Frailty Diagnosis&quot;] FrailtyDiagnosis&#xa;      &#x9;&#x9;&#x9;&#x9;where Global.&quot;Prevalence Period&quot;(FrailtyDiagnosis) overlaps &quot;Measurement Period&quot;&#xa;      &#x9;&#x9;)&#xa;      &#x9;&#x9;or exists ( [Encounter: &quot;Frailty Encounter&quot;] FrailtyEncounter&#xa;      &#x9;&#x9;&#x9;&#x9;where FrailtyEncounter.period overlaps &quot;Measurement Period&quot;&#xa;      &#x9;&#x9;)&#xa;      &#x9;&#x9;or exists ( [Observation: &quot;Frailty Symptom&quot;] FrailtySymptomObservation&#xa;      &#x9;&#x9;&#x9;&#x9;where Global.&quot;Normalize Interval&quot;(FrailtySymptomObservation.effective) overlaps &quot;Measurement Period&quot;&#xa;      &#x9;&#x9;)"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="21"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="AdvancedIllnessandFrailtyExclusionECQMFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Outpatient Encounters with Advanced Illness"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Outpatient Encounters with Advanced Illness&quot;:&#xa;  ( [Encounter: &quot;Outpatient&quot;]&#xa;      &#x9;&#x9;union [Encounter: &quot;Observation&quot;]&#xa;      &#x9;&#x9;union [Encounter: &quot;ED&quot;]&#xa;      &#x9;&#x9;union [Encounter: &quot;Nonacute Inpatient&quot;] ) OutpatientEncounter&#xa;      &#x9;&#x9; with [Condition: &quot;Advanced Illness&quot;] AdvancedIllnessDiagnosis&#xa;                  such that exists (&#xa;                      OutpatientEncounter.diagnosis.condition EncounterDiagnosis&#xa;                          where EndsWith(EncounterDiagnosis.reference, AdvancedIllnessDiagnosis.id)&#xa;                  )&#xa;                  and OutpatientEncounter.period starts 2 years or less on or before&#xa;      &#x9;&#x9;&#x9;end of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="22"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="AdvancedIllnessandFrailtyExclusionECQMFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Inpatient Encounter with Advanced Illness"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Inpatient Encounter with Advanced Illness&quot;:&#xa;  [Encounter: &quot;Acute Inpatient&quot;] InpatientEncounter&#xa;      &#x9;&#x9;with [Condition: &quot;Advanced Illness&quot;] AdvancedIllnessDiagnosis&#xa;                  such that exists (&#xa;                      InpatientEncounter.diagnosis.condition EncounterDiagnosis&#xa;                          where EndsWith(EncounterDiagnosis.reference, AdvancedIllnessDiagnosis.id)&#xa;                  )&#xa;      &#x9;&#x9;&#x9;and InpatientEncounter.period starts 2 years or less on or before&#xa;      &#x9;&#x9;&#x9;end of &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="23"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="AdvancedIllnessandFrailtyExclusionECQMFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Dementia Medications In Year Before or During Measurement Period"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Dementia Medications In Year Before or During Measurement Period&quot;:&#xa;  [&quot;MedicationDispense&quot;: &quot;Dementia Medications&quot;] DementiaMed&#xa;      &#x9;&#x9;where DementiaMed.whenHandedOver during Interval[&#xa;                  ( start of &quot;Measurement Period&quot; - 1 year ), end of &quot;Measurement Period&quot;&#xa;              ]"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="24"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="AdvancedIllnessandFrailtyExclusionECQMFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Long Term Care Periods Longer Than 90 Consecutive Days"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;Long Term Care Periods Longer Than 90 Consecutive Days&quot;:&#xa;  exists ( &quot;Long Term Care Periods During Measurement Period&quot; LongTermCareDuringMP&#xa;        where duration in days of LongTermCareDuringMP > 90&#xa;    )"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="25"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="AdvancedIllnessandFrailtyExclusionECQMFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="Long Term Care Periods During Measurement Period"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="// start heredefine &quot;Long Term Care Periods During Measurement Period&quot;:&#xa;  ( [Encounter: &quot;Care Services in Long-Term Residential Facility&quot;]&#xa;              &#x9;&#x9;union [Encounter: &quot;Nursing Facility Visit&quot;] ) LongTermFacilityEncounter&#xa;              &#x9;&#x9;where LongTermFacilityEncounter.period overlaps &quot;Measurement Period&quot;&#xa;              &#x9;&#x9;return LongTermFacilityEncounter.period&#xa;              &#x9;&#x9;&#x9;intersect &quot;Measurement Period&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="26"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="CCSComponent"/>
+        </extension>
+        <extension url="name">
+            <valueString value="SDE Race"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;SDE Race&quot;:&#xa;  SDE.&quot;SDE Race&quot;"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="27"/>
+        </extension>
+    </extension>
+    <extension url="http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-logicDefinition">
+        <extension url="libraryName">
+            <valueString value="SupplementalDataElementsFHIR4"/>
+        </extension>
+        <extension url="name">
+            <valueString value="SDE Race"/>
+        </extension>
+        <extension url="statement">
+            <valueString value="define &quot;SDE Race&quot;:&#xa;  (flatten (&#xa;      Patient.extension Extension&#xa;        where Extension.url = 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'&#xa;          return Extension.extension&#xa;    )) E&#xa;      where E.url = 'ombCategory'&#xa;        or E.url = 'detailed'&#xa;      return E.value as Coding"/>
+        </extension>
+        <extension url="sequence">
+            <valueInteger value="28"/>
+        </extension>
+    </extension>
+    <url value="http://ecqi.healthit.gov/ecqms/Measure/CCSComponent"/>
+    <version value="0.0.001"/>
+    <name value="CCSComponent"/>
+    <title value="Colorectal Cancer Screening"/>
+    <status value="draft"/>
+    <experimental value="true"/>
+    <date value="2021-04-02T10:52:32-06:00"/>
+    <publisher value="National Committee for Quality Assurance"/>
+    <description value="This is only an example."/>
+    <effectivePeriod>
+        <start value="2022-01-01"/>
+        <end value="2022-12-31"/>
+    </effectivePeriod>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library SDE"/>
+        <resource value="Library/SupplementalDataElementsFHIR4|2.0.000"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library FHIRHelpers"/>
+        <resource value="Library/FHIRHelpers|4.0.001"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library Global"/>
+        <resource value="Library/MATGlobalCommonFunctionsFHIR4|5.0.000"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library AdultOutpatientEncounters"/>
+        <resource value="Library/AdultOutpatientEncountersFHIR4|2.0.000"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library Hospice"/>
+        <resource value="Library/HospiceFHIR4|2.0.000"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library FHIRHelpers"/>
+        <resource value="Library/FHIRHelpers|4.0.001"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library Global"/>
+        <resource value="Library/MATGlobalCommonFunctionsFHIR4|5.0.000"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library Frailty"/>
+        <resource value="Library/AdvancedIllnessandFrailtyExclusionECQMFHIR4|5.12.000"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Library Global"/>
+        <resource value="Library/MATGlobalCommonFunctionsFHIR4|5.0.000"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Code system SNOMEDCT:2017-09"/>
+        <resource value="http://snomed.info/sct|http://snomed.info/sct/version/201709"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Colonoscopy"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.108.12.1020"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Fecal Occult Blood Test (FOBT)"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1011"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Flexible Sigmoidoscopy"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1010"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set FIT DNA"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.108.12.1039"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set CT Colonography"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.108.12.1038"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Office Visit"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1001"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Annual Wellness Visit"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1240"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Preventive Care Services - Established Office Visit, 18 and Up"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1025"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Preventive Care Services-Initial Office Visit, 18 and Up"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1023"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Home Healthcare Services"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1016"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Payer"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.3591"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Encounter Inpatient"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Hospice care ambulatory"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1108.15"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Malignant Neoplasm of Colon"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.108.12.1001"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Total Colectomy"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.198.12.1019"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Frailty Device"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.118.12.1300"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Frailty Diagnosis"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.113.12.1074"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Frailty Encounter"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1088"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Frailty Symptom"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.113.12.1075"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Outpatient"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1087"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Observation"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1086"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set ED"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1085"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Nonacute Inpatient"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1084"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Advanced Illness"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.110.12.1082"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Acute Inpatient"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1083"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Dementia Medications"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.196.12.1510"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Care Services in Long-Term Residential Facility"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1014"/>
+    </relatedArtifact>
+    <relatedArtifact>
+        <type value="depends-on"/>
+        <display value="Value set Nursing Facility Visit"/>
+        <resource value="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1012"/>
+    </relatedArtifact>
+    <library value="http://ecqi.healthit.gov/ecqms/Library/CCSComponent"/>
+    <scoring>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/measure-scoring"/>
+            <code value="proportion"/>
+            <display value="Proportion"/>
+        </coding>
+    </scoring>
+    <type>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/measure-type"/>
+            <code value="process"/>
+        </coding>
+    </type>
+    <improvementNotation>
+        <coding>
+            <system value="http://terminology.hl7.org/CodeSystem/measure-improvement-notation"/>
+            <code value="increase"/>
+        </coding>
+    </improvementNotation>
+    <group>
+        <population id="93644713-B761-4A71-A6DB-38675B4D4AA0">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="initial-population"/>
+                    <display value="Initial Population"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Initial Population"/>
+            </criteria>
+        </population>
+        <population id="CCC5263F-B14C-4EFC-B726-3C323A137132">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="denominator"/>
+                    <display value="Denominator"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Denominator"/>
+            </criteria>
+        </population>
+        <population id="C8F51A00-EDC7-4F91-8415-25395BF16D16">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="denominator-exclusion"/>
+                    <display value="Denominator Exclusion"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Denominator Exclusion"/>
+            </criteria>
+        </population>
+        <population id="9E219037-5E8B-40F6-A304-4460BD8D3FFA">
+            <code>
+                <coding>
+                    <system value="http://terminology.hl7.org/CodeSystem/measure-population"/>
+                    <code value="numerator"/>
+                    <display value="Numerator"/>
+                </coding>
+            </code>
+            <criteria>
+                <language value="text/cql.identifier"/>
+                <expression value="Numerator"/>
+            </criteria>
+        </population>
+    </group>
+    <supplementalData id="4d3fff25-29d7-4e61-9fdd-a02a85c1472f">
+        <usage>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/measure-data-usage"/>
+                <code value="supplemental-data"/>
+            </coding>
+        </usage>
+        <criteria>
+            <language value="text/cql.identifier"/>
+            <expression value="SDE Ethnicity"/>
+        </criteria>
+    </supplementalData>
+    <supplementalData id="4732f9d3-e4c9-4a24-ab3c-9247a55d73ef">
+        <usage>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/measure-data-usage"/>
+                <code value="supplemental-data"/>
+            </coding>
+        </usage>
+        <criteria>
+            <language value="text/cql.identifier"/>
+            <expression value="SDE Payer"/>
+        </criteria>
+    </supplementalData>
+    <supplementalData id="523c2619-71c6-4e60-83f8-3d8eeef75398">
+        <usage>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/measure-data-usage"/>
+                <code value="supplemental-data"/>
+            </coding>
+        </usage>
+        <criteria>
+            <language value="text/cql.identifier"/>
+            <expression value="SDE Race"/>
+        </criteria>
+    </supplementalData>
+    <supplementalData id="336d1356-61a7-4220-9635-ffc50b90af2f">
+        <usage>
+            <coding>
+                <system value="http://terminology.hl7.org/CodeSystem/measure-data-usage"/>
+                <code value="supplemental-data"/>
+            </coding>
+        </usage>
+        <criteria>
+            <language value="text/cql.identifier"/>
+            <expression value="SDE Sex"/>
+        </criteria>
+    </supplementalData>
+</Measure>
