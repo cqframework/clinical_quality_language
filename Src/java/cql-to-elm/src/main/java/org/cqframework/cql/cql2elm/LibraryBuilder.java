@@ -1,6 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
@@ -2066,6 +2068,9 @@ public class LibraryBuilder {
     }
 
     public Expression resolveIdentifier(String identifier, boolean mustResolve) {
+
+
+
         // An Identifier will always be:
         // 1: The name of an alias
         // 2: The name of a query define clause
@@ -2080,35 +2085,35 @@ public class LibraryBuilder {
         // 11: An unresolved identifier error is thrown
 
         //Collect every match, issue warning if multiple matches were made, but return initial match:
-        List<Expression> matchCollection = new ArrayList<>();
+        List<Pair<Expression, String>> matchCollection = new ArrayList<>();
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
         if (inTypeSpecifierContext()) {
-            matchCollection.add(this.createLiteral(identifier));
+            matchCollection.add(new ImmutablePair<>(this.createLiteral(identifier), String.format("%s resolved as a potential type name")));
         }
 
         // In the sort clause of a plural query, names may be resolved based on the result type of the query
         IdentifierRef resultElement = resolveQueryResultElement(identifier);
         if (resultElement != null) {
-            matchCollection.add(resultElement);
+            matchCollection.add(new ImmutablePair<>(resultElement, String.format("%s resolved as an element of the result of a query")));
         }
 
         // In the case of a $this alias, names may be resolved as implicit property references
         Expression thisElement = resolveQueryThisElement(identifier);
         if (thisElement != null) {
-            matchCollection.add(thisElement);
+            matchCollection.add(new ImmutablePair<>(thisElement, String.format("%s resolved as an element of the current iteration element", identifier)));
         }
 
         if (identifier.equals("$index")) {
             Iteration result = of.createIteration();
             result.setResultType(resolveTypeName("System", "Integer"));
-            matchCollection.add(result);
+            matchCollection.add(new ImmutablePair<>(result, String.format("%s resolved as the index iteration accessor", identifier)));
         }
 
         if (identifier.equals("$total")) {
             Total result = of.createTotal();
             result.setResultType(resolveTypeName("System", "Decimal")); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            matchCollection.add(result);
+            matchCollection.add(new ImmutablePair<>(result, String.format("%s resolved as the total aggregation accessor", identifier)));
         }
 
         AliasedQuerySource alias = resolveAlias(identifier);
@@ -2120,19 +2125,19 @@ public class LibraryBuilder {
             else {
                 result.setResultType(alias.getResultType());
             }
-            matchCollection.add(result);
+            matchCollection.add(new ImmutablePair<>(result, String.format("%s resolved as an alias of a query", identifier)));
         }
 
         LetClause let = resolveQueryLet(identifier);
         if (let != null) {
             QueryLetRef result = of.createQueryLetRef().withName(identifier);
             result.setResultType(let.getResultType());
-            matchCollection.add(result);
+            matchCollection.add(new ImmutablePair<>(result, String.format("%s resolved as a let of a query", identifier)));
         }
 
         OperandRef operandRef = resolveOperandRef(identifier);
         if (operandRef != null) {
-            matchCollection.add(operandRef);
+            matchCollection.add(new ImmutablePair<>(operandRef, String.format("%s resolved as an operand to a function", identifier)));
         }
 
         Element element = resolve(identifier);
@@ -2146,7 +2151,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
                         expressionRef.getName()));
             }
-            matchCollection.add(expressionRef);
+            matchCollection.add(new ImmutablePair<>(expressionRef, String.format("%s resolved as an expression definition", identifier)));
         }
 
         if (element instanceof ParameterDef) {
@@ -2158,7 +2163,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
-            matchCollection.add(parameterRef);
+            matchCollection.add(new ImmutablePair<>(parameterRef, String.format("%s resolved as a parameter", identifier)));
         }
 
         if (element instanceof ValueSetDef) {
@@ -2170,7 +2175,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
             }
-            matchCollection.add(valuesetRef);
+            matchCollection.add(new ImmutablePair<>(valuesetRef, String.format("%s resolved as a value set", identifier)));
         }
 
         if (element instanceof CodeSystemDef) {
@@ -2182,7 +2187,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
-            matchCollection.add(codesystemRef);
+            matchCollection.add(new ImmutablePair<>(codesystemRef, String.format("%s resolved as a code system", identifier)));
 
         }
 
@@ -2195,7 +2200,7 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
-            matchCollection.add(codeRef);
+            matchCollection.add(new ImmutablePair<>(codeRef, String.format("%s resolved as a code", identifier)));
         }
 
         if (element instanceof ConceptDef) {
@@ -2207,14 +2212,14 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
-            matchCollection.add(conceptRef);
+            matchCollection.add(new ImmutablePair<>(conceptRef, String.format("%s resolved as a concept", identifier)));
         }
 
         if (element instanceof IncludeDef) {
             checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-            matchCollection.add(libraryRef);
+            matchCollection.add(new ImmutablePair<>(libraryRef, String.format("%s resolved as a library", identifier)));
         }
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
@@ -2237,23 +2242,36 @@ public class LibraryBuilder {
                 if (resolution != null) {
                     Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
                     contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
-                    matchCollection.add(contextAccessor);
+                    matchCollection.add(new ImmutablePair<>(contextAccessor, String.format("%s resolved as a context accessor", identifier)));
                 }
             }
         }
 
-        if (matchCollection.size() > 0 ){
+        if (matchCollection.size() > 0) {
             //issue warning that multiple matches occurred:
-            this.reportWarning("Identifier hiding detected: identifier" + (matchCollection.size() > 3 ? "s": "") +" in a broader scope hidden: " + StringUtils.join(matchCollection, ","), matchCollection.get(0));
+            if (matchCollection.size() > 1) {
+                this.reportWarning("Identifier hiding detected. Identifier" + (matchCollection.size() > 2 ? "s" : "") + " in a broader scope hidden: " +
+                                this.formatPairedMessage(matchCollection),
+                        matchCollection.get(0).getLeft());
+            }
             //return first match:
-            return matchCollection.get(0);
-        } else if (mustResolve){
+            return ((ImmutablePair<Expression, String>) matchCollection.get(0)).getLeft();
+        }
+        else if (mustResolve) {
             // ERROR:
             throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
         }
 
         return null;
 
+    }
+
+    private String formatPairedMessage(List<Pair<Expression, String>> list) {
+        StringBuilder sb = new StringBuilder();
+        for (Pair<Expression, String> p : list){
+            sb.append(p.getRight() + "\n");
+        }
+        return sb.toString();
     }
 
     public Property buildProperty(String scope, String path, boolean isSearch, DataType resultType) {
@@ -2266,7 +2284,7 @@ public class LibraryBuilder {
         }
         else {
             Property result = of.createProperty()
-                    .withScope(scope)
+                    .withScope(scope) 
                     .withPath(path);
             result.setResultType(resultType);
             return result;
