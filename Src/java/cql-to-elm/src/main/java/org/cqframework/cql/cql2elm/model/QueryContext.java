@@ -1,12 +1,15 @@
 package org.cqframework.cql.cql2elm.model;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.LetClause;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.sql.Array;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class QueryContext {
     private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
@@ -67,6 +70,18 @@ public class QueryContext {
 
     public AliasedQuerySource resolveAlias(String identifier) {
         return sources.get(identifier);
+    }
+
+    public List<Pair<String, Object>> resolveCaseIgnoredAliases(String identifier) {
+        List<Pair<String, Object>> ret = new ArrayList<>();
+        List<String> caseIgnoredKeyMatches = sources.keySet().stream()
+                .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
+                .collect(Collectors.toList());
+
+        for (String key : caseIgnoredKeyMatches){
+            ret.add(new ImmutablePair<>(key, sources.get(key)));
+        }
+        return ret;
     }
 
     public LetClause resolveLet(String identifier) {
