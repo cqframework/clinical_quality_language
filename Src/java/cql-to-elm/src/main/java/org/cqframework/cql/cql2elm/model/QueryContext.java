@@ -88,6 +88,18 @@ public class QueryContext {
         return lets.get(identifier);
     }
 
+    public List<Pair<String, Object>> resolveCaseIgnoredLets(String identifier) {
+        List<Pair<String, Object>> ret = new ArrayList<>();
+        List<String> caseIgnoredKeyMatches = lets.keySet().stream()
+                .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
+                .collect(Collectors.toList());
+
+        for (String key : caseIgnoredKeyMatches){
+            ret.add(new ImmutablePair<>(key, lets.get(key)));
+        }
+        return ret;
+    }
+
     private boolean isSingularValue = true;
     public boolean isSingular() {
         return isSingularValue;

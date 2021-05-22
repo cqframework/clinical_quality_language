@@ -23,7 +23,9 @@ import java.util.List;
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder {
-
+    public static final String SYSTEM = "System";
+    public static final String INTEGER = "Integer";
+    public static final String DECIMAL = "Decimal";
     public static final String $_THIS = "$this";
     public static final String HIGH = "high";
     public static final String HIGH_CLOSED = "highClosed";
@@ -38,6 +40,16 @@ public class LibraryBuilder {
     public static final String S_RESOLVED_AS_A_CONCEPT = "%s resolved as a concept";
     public static final String S_RESOLVED_AS_A_LIBRARY = "%s resolved as a library";
     public static final String S_RESOLVED_MORE_THAN_ONCE = "%s resolved more than once: ";
+    public static final String S_RESOLVED_AS_AN_ELEMENT_OF_THE_RESULT_OF_A_QUERY = "%s resolved as an element of the result of a query";
+    public static final String S_RESOLVED_AS_THE_INDEX_ITERATION_ACCESSOR = "%s resolved as the index iteration accessor";
+    public static final String S_RESOLVED_AS_THE_TOTAL_AGGREGATION_ACCESSOR = "%s resolved as the total aggregation accessor";
+    public static final String S_RESOLVED_AS_AN_ALIAS_OF_A_QUERY = "%s resolved as an alias of a query";
+    public static final String S_RESOLVED_AS_A_LET_OF_A_QUERY = "%s resolved as a let of a query";
+    public static final String S_RESOLVED_AS_AN_OPERAND_TO_A_FUNCTION = "%s resolved as an operand to a function";
+    public static final String S_RESOLVED_AS_A_CONTEXT_ACCESSOR = "%s resolved as a context accessor";
+    public static final String S_RESOLVED_AS_A_POTENTIAL_TYPE_NAME = "%s resolved as a potential type name";
+    public static final String COULD_NOT_VALIDATE_REFERENCE_TO_PARAMETER_S_BECAUSE_ITS_DEFINITION_CONTAINS_ERRORS = "Could not validate reference to parameter %s because its definition contains errors.";
+    public static final String COULD_NOT_RESOLVE_IDENTIFIER_S_IN_THE_CURRENT_LIBRARY = "Could not resolve identifier %s in the current library.";
 
     public static enum SignatureLevel {
         /*
@@ -2132,18 +2144,6 @@ public class LibraryBuilder {
             }
             else if (currentType instanceof IntervalType) {
                 IntervalType intervalType = (IntervalType)currentType;
-//                switch (identifier) {
-//                    case "low":
-//                    case "high":
-//                        return new PropertyResolution(intervalType.getPointType(), identifier);
-//                    case "lowClosed":
-//                    case "highClosed":
-//                        return new PropertyResolution(resolveTypeName("System", "Boolean"), identifier);
-//                    default:
-//                        // ERROR:
-//                        throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
-//                }
-
                 if (identifier.equals(HIGH)){
                     ri.setCaseMatchedObject(identifier, new PropertyResolution(intervalType.getPointType(), identifier));
                 }
@@ -2245,8 +2245,14 @@ public class LibraryBuilder {
      */
     private class ResolvedIdentifierResultHolder {
 
+        //collection of every match made within this method
         private Pair<String, Object> caseMatchedObject;
+
+        //subsequent case matched resolutions maintained (if equals occurs more than once, excess matches stored in a 'hidden match' collection)
+       //different from caseMatchCollection in structure, must be formatted at end of method.
         private List<Pair<String, Object>> hiddenCaseMatchCollection;
+
+        //every match made where equals is false but equalsIgnoreCase is true.
         private List<Pair<String, Object>> caseIgnoredCollection;
 
         public Pair<String, Object> getCaseMatchedObject() {
@@ -2261,8 +2267,11 @@ public class LibraryBuilder {
          */
         public void setCaseMatchedObject(String identifier, Object resolvedIdentifier) {
             if (this.caseMatchedObject  != null) {
-                //case matched object already exists, add to the hidden match collection
-                this.add(identifier, resolvedIdentifier, this.hiddenCaseMatchCollection);
+                //case matched object already exists in this instance, add to the hidden match collection
+                if (this.hiddenCaseMatchCollection == null) {
+                    this.hiddenCaseMatchCollection = new ArrayList<>();
+                }
+                this.hiddenCaseMatchCollection.add(new ImmutablePair<>(identifier, resolvedIdentifier));
             }
             else {
                 this.caseMatchedObject = new ImmutablePair<>(identifier, resolvedIdentifier);
@@ -2270,14 +2279,11 @@ public class LibraryBuilder {
         }
 
         public void addCaseIgnoredMatch(String identifier, Object caseIgnoredMatch) {
-            add(identifier, caseIgnoredMatch, this.caseIgnoredCollection);
-        }
-
-        private void add(String identifier, Object caseIgnoredMatch, List<Pair<String, Object>> resolvedCollection) {
-            if (resolvedCollection == null) {
-                resolvedCollection = new ArrayList<>();
+            if (this.caseIgnoredCollection == null) {
+                this.caseIgnoredCollection = new ArrayList<>();
             }
-            resolvedCollection.add(new ImmutablePair<>(identifier, caseIgnoredMatch));
+            this.caseIgnoredCollection.add(new ImmutablePair<>(identifier, caseIgnoredMatch));
+
         }
 
         private void addAllCaseIgnored(List<Pair<String, Object>> input) {
@@ -2302,22 +2308,31 @@ public class LibraryBuilder {
             return caseIgnoredCollection;
         }
 
+        public void absorb(ResolvedIdentifierResultHolder ri){
+            if (ri.getHiddenCaseMatchCollection() != null) {
+                this.addAllHidden(ri.getHiddenCaseMatchCollection());
+            }
+
+            if (ri.getCaseIgnoredCollection() != null) {
+                this.addAllCaseIgnored(ri.getCaseIgnoredCollection());
+            }
+
+            if (ri.getCaseMatchedObject() != null) {
+                this.setCaseMatchedObject(ri.getCaseMatchedObject().getLeft(), ri.getCaseMatchedObject().getRight());
+            }
+        }
     }
 
-
     /**
-     *  resolveIdentifier serves the function of both attempting to resolve an identifier as well as
-     *  inform the user when various scenarios occur such as no resolution, multiple resolutions, or a
-     *  case mis-matched resolution occurred.
+     * resolveIdentifier serves the function of both attempting to resolve an identifier as well as
+     * inform the user when various scenarios occur such as no resolution, multiple resolutions, or a
+     * case mis-matched resolution occurred.
      *
-     * @param identifier String value of identifier to be resolved
+     * @param identifier  String value of identifier to be resolved
      * @param mustResolve boolean determining whether IllegalArgumentException should be thrown if no match made
      * @return
      */
     public Expression resolveIdentifier(String identifier, boolean mustResolve) {
-
-
-
         // An Identifier will always be:
         // 1: The name of an alias
         // 2: The name of a query define clause
@@ -2331,154 +2346,102 @@ public class LibraryBuilder {
         // 10: The name of a property on a specific context
         // 11: An unresolved identifier error is thrown
 
-        //every match made where equals is false but equalsIgnoreCase is true.
-        List<Pair<String, Object>> caseIgnoredMatchCollection = new ArrayList<>();
-
-        //subsequent case matched resolutions maintained (if equals occurs more than once, excess matches stored in a 'hidden match' collection)
-        //different from caseMatchCollection in structure, must be formatted at end of method.
-        List<Pair<String, Object>> hiddenMatchCollection = new ArrayList<>();
-
-        //collection of every match made within this method, formatted to hold informational messages
-        List<Pair<Expression, String>> caseMatchCollection = new ArrayList<>();
-
+        ResolvedIdentifierResultHolder resolvedIdentifierResultHolder = new ResolvedIdentifierResultHolder();
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
         if (inTypeSpecifierContext()) {
-            caseMatchCollection.add(new ImmutablePair<>(this.createLiteral(identifier), String.format("%s resolved as a potential type name", identifier)));
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, this.createLiteral(identifier));
         }
 
-
-        {
-            //In the sort clause of a plural query, names may be resolved based on the result type of the query
-            ResolvedIdentifierResultHolder queryResultRIRH = resolveQueryResultElements(identifier);
-
-            if (queryResultRIRH.getCaseMatchedObject() != null) {
-                IdentifierRef resultElement = (IdentifierRef) queryResultRIRH.getCaseMatchedObject().getRight();
-                caseMatchCollection.add(new ImmutablePair<>(resultElement, String.format("%s resolved as an element of the result of a query", queryResultRIRH.getCaseMatchedObject().getLeft())));
-            }
-
-            if (queryResultRIRH.getCaseIgnoredCollection() != null && queryResultRIRH.getCaseIgnoredCollection().size() > 0) {
-                caseIgnoredMatchCollection.addAll(queryResultRIRH.getCaseIgnoredCollection());
-            }
-
-            if (queryResultRIRH.getHiddenCaseMatchCollection() != null && queryResultRIRH.getHiddenCaseMatchCollection().size() > 0) {
-                hiddenMatchCollection.addAll(queryResultRIRH.getHiddenCaseMatchCollection());
-            }
-
+        //In the sort clause of a plural query, names may be resolved based on the result type of the query
+        ResolvedIdentifierResultHolder queryResultRIRH = resolveQueryResultElements(identifier);
+        if (queryResultRIRH.getCaseMatchedObject() != null) {
+            IdentifierRef resultElement = (IdentifierRef) queryResultRIRH.getCaseMatchedObject().getRight();
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, resultElement);
         }
+        resolvedIdentifierResultHolder.absorb(queryResultRIRH);
 
 
-        {
-            // In the case of a $this alias, names may be resolved as implicit property references
-            ResolvedIdentifierResultHolder queryThisRIRH = resolveQueryThisElements(identifier);
-
-            if (queryThisRIRH.getCaseMatchedObject() != null) {
-                Expression resultElement = (Expression) queryThisRIRH.getCaseMatchedObject().getRight();
-                caseMatchCollection.add(new ImmutablePair<>(resultElement, String.format("%s resolved as an element of the result of a query", queryThisRIRH.getCaseMatchedObject().getLeft())));
-            }
-
-            if (queryThisRIRH.getCaseIgnoredCollection() != null && queryThisRIRH.getCaseIgnoredCollection().size() > 0) {
-                caseIgnoredMatchCollection.addAll(queryThisRIRH.getCaseIgnoredCollection());
-            }
-
-            if (queryThisRIRH.getHiddenCaseMatchCollection() != null && queryThisRIRH.getHiddenCaseMatchCollection().size() > 0) {
-                hiddenMatchCollection.addAll(queryThisRIRH.getHiddenCaseMatchCollection());
-            }
+        // In the case of a $this alias, names may be resolved as implicit property references
+        ResolvedIdentifierResultHolder queryThisRIRH = resolveQueryThisElements(identifier);
+        if (queryThisRIRH.getCaseMatchedObject() != null) {
+            Expression resultElement = (Expression) queryThisRIRH.getCaseMatchedObject().getRight();
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, resultElement);
         }
+        resolvedIdentifierResultHolder.absorb(queryThisRIRH);
 
 
         if (identifier.equals($_INDEX)) {
             Iteration result = of.createIteration();
-            result.setResultType(resolveTypeName("System", "Integer"));
-            caseMatchCollection.add(new ImmutablePair<>(result, String.format("%s resolved as the index iteration accessor", identifier)));
-        }
-        else if (identifier.equalsIgnoreCase($_INDEX)){
+            result.setResultType(resolveTypeName(SYSTEM, INTEGER));
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, result);
+        } else if (identifier.equalsIgnoreCase($_INDEX)) {
             Iteration result = of.createIteration();
-            result.setResultType(resolveTypeName("System", "Integer"));
-            caseIgnoredMatchCollection.add(new ImmutablePair<>(identifier, result));
+            result.setResultType(resolveTypeName(SYSTEM, INTEGER));
+            resolvedIdentifierResultHolder.addCaseIgnoredMatch(identifier, result);
         }
 
         if (identifier.equals($_TOTAL)) {
             Total result = of.createTotal();
-            result.setResultType(resolveTypeName("System", "Decimal")); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            caseMatchCollection.add(new ImmutablePair<>(result, String.format("%s resolved as the total aggregation accessor", identifier)));
-        }
-        else if (identifier.equalsIgnoreCase($_TOTAL)) {
+            result.setResultType(resolveTypeName(SYSTEM, DECIMAL)); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, result);
+        } else if (identifier.equalsIgnoreCase($_TOTAL)) {
             Total result = of.createTotal();
-            result.setResultType(resolveTypeName("System", "Decimal")); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            caseIgnoredMatchCollection.add(new ImmutablePair<>(identifier, result));
+            result.setResultType(resolveTypeName(SYSTEM, DECIMAL)); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
+            resolvedIdentifierResultHolder.addCaseIgnoredMatch(identifier, result);
         }
 
-        {
-            ResolvedIdentifierResultHolder aliasRIRH = resolveAliases(identifier);
-//          AliasedQuerySource alias = resolveAlias(identifier);
-            if (aliasRIRH.getCaseMatchedObject() != null) {
-                AliasRef result = of.createAliasRef().withName(identifier);
-                AliasedQuerySource aqs = (AliasedQuerySource) aliasRIRH.getCaseMatchedObject().getRight();
-                if (aqs.getResultType() instanceof ListType) {
-                    result.setResultType(((ListType) aqs.getResultType()).getElementType());
-                } else {
-                    result.setResultType(aqs.getResultType());
-                }
-                caseMatchCollection.add(new ImmutablePair<>(result, String.format("%s resolved as an alias of a query", identifier)));
+        ResolvedIdentifierResultHolder aliasRIRH = resolveAliases(identifier);
+        if (aliasRIRH.getCaseMatchedObject() != null) {
+            AliasRef result = of.createAliasRef().withName(identifier);
+            AliasedQuerySource aqs = (AliasedQuerySource) aliasRIRH.getCaseMatchedObject().getRight();
+            if (aqs.getResultType() instanceof ListType) {
+                result.setResultType(((ListType) aqs.getResultType()).getElementType());
+            } else {
+                result.setResultType(aqs.getResultType());
             }
-
-            if (aliasRIRH.getCaseIgnoredCollection() != null && aliasRIRH.getCaseIgnoredCollection().size() > 0){
-                caseIgnoredMatchCollection.addAll(aliasRIRH.getCaseIgnoredCollection());
-            }
-
-            if (aliasRIRH.getHiddenCaseMatchCollection() != null && aliasRIRH.getHiddenCaseMatchCollection().size() > 0){
-                hiddenMatchCollection.addAll(aliasRIRH.getHiddenCaseMatchCollection());
-            }
-
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, result);
         }
+        resolvedIdentifierResultHolder.absorb(aliasRIRH);
 
 
-        //TODO: case insensitive matching:
-        {
-            LetClause let = resolveQueryLet(identifier);
-            if (let != null) {
-                QueryLetRef result = of.createQueryLetRef().withName(identifier);
-                result.setResultType(let.getResultType());
-                caseMatchCollection.add(new ImmutablePair<>(result, String.format("%s resolved as a let of a query", identifier)));
-            }
+        ResolvedIdentifierResultHolder letsRIRH = resolveQueryLets(identifier);
+        if (letsRIRH.getCaseMatchedObject() != null) {
+            QueryLetRef result = of.createQueryLetRef().withName(identifier);
+            LetClause let = (LetClause) letsRIRH.getCaseMatchedObject().getRight();
+            result.setResultType(let.getResultType());
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, result);
         }
+        resolvedIdentifierResultHolder.absorb(letsRIRH);
 
-        {
-            OperandRef operandRef = resolveOperandRef(identifier);
-            if (operandRef != null) {
-                caseMatchCollection.add(new ImmutablePair<>(operandRef, String.format("%s resolved as an operand to a function", identifier)));
-            }
+
+        ResolvedIdentifierResultHolder operandRefRIRH = resolveOperandRefs(identifier);
+        if (operandRefRIRH.getCaseMatchedObject() != null) {
+            OperandRef operandRef = (OperandRef) operandRefRIRH.getCaseMatchedObject().getRight();
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, operandRef);
         }
+        resolvedIdentifierResultHolder.absorb(operandRefRIRH);
 
-        {
-            ResolvedIdentifierResultHolder resolvedElementsRIRH = resolveElements(identifier);
 
-            if (resolvedElementsRIRH.getCaseMatchedObject() != null){
-                caseMatchCollection.add(new ImmutablePair<>((Expression)resolvedElementsRIRH.getCaseMatchedObject().getRight(), String.format(lookupElementWarning(resolvedElementsRIRH.getCaseMatchedObject()), identifier)));
-            }
-
-            if (resolvedElementsRIRH.getCaseIgnoredCollection() != null && resolvedElementsRIRH.getCaseIgnoredCollection().size() > 0) {
-                caseIgnoredMatchCollection.addAll(resolvedElementsRIRH.getCaseIgnoredCollection());
-            }
-
-            if (resolvedElementsRIRH.getHiddenCaseMatchCollection() != null && resolvedElementsRIRH.getHiddenCaseMatchCollection().size() > 0) {
-                hiddenMatchCollection.addAll(resolvedElementsRIRH.getHiddenCaseMatchCollection());
-            }
+        ResolvedIdentifierResultHolder resolvedElementsRIRH = resolveElements(identifier);
+        if (resolvedElementsRIRH.getCaseMatchedObject() != null) {
+            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, (Expression) resolvedElementsRIRH.getCaseMatchedObject().getRight());
         }
+        resolvedIdentifierResultHolder.absorb(resolvedElementsRIRH);
+
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
         // the identifier may be resolved as an implicit property reference on that context.
         if (!inLiteralContext() && inSpecificContext()) {
             Element contextElement = resolve(currentExpressionContext());
             if (contextElement instanceof ParameterDef) {
-                ParameterDef contextParameter = (ParameterDef)contextElement;
+                ParameterDef contextParameter = (ParameterDef) contextElement;
 
                 checkLiteralContext();
                 ParameterRef parameterRef = of.createParameterRef().withName(contextParameter.getName());
                 parameterRef.setResultType(contextParameter.getResultType());
                 if (parameterRef.getResultType() == null) {
                     // ERROR:
-                    throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
+                    throw new IllegalArgumentException(String.format(COULD_NOT_VALIDATE_REFERENCE_TO_PARAMETER_S_BECAUSE_ITS_DEFINITION_CONTAINS_ERRORS,
                             parameterRef.getName()));
                 }
 
@@ -2486,24 +2449,24 @@ public class LibraryBuilder {
                 if (resolution != null) {
                     Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
                     contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
-                    caseMatchCollection.add(new ImmutablePair<>(contextAccessor, String.format("%s resolved as a context accessor", identifier)));
+                    resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, contextAccessor);
                 }
             }
         }
 
-        if (caseMatchCollection.size() > 0) {
+        if (resolvedIdentifierResultHolder.getCaseMatchedObject() != null) {
             //issue warning that multiple matches occurred:
-            if (caseMatchCollection.size() > 1) {
-                this.reportWarning("Identifier hiding detected. Identifier" + (caseMatchCollection.size() > 2 ? "s" : "") + " in a broader scope hidden: " +
-                                this.formatPairedMessage(caseMatchCollection),
-                        caseMatchCollection.get(0).getLeft());
+            if (resolvedIdentifierResultHolder.getHiddenCaseMatchCollection() != null && resolvedIdentifierResultHolder.getHiddenCaseMatchCollection().size() > 0) {
+                this.reportWarning("Identifier hiding detected. " +
+                                "Identifier" + (resolvedIdentifierResultHolder.getHiddenCaseMatchCollection().size() > 2 ? "s" : "") + " in a broader scope hidden: " +
+                                this.formatPairedMessage(resolvedIdentifierResultHolder.getHiddenCaseMatchCollection()),
+                        (Expression) resolvedIdentifierResultHolder.getCaseMatchedObject().getRight());
             }
             //return first match:
-            return ((ImmutablePair<Expression, String>) caseMatchCollection.get(0)).getLeft();
-        }
-        else if (mustResolve) {
+            return (Expression) resolvedIdentifierResultHolder.getCaseMatchedObject().getRight();
+        } else if (mustResolve) {
             // ERROR:
-            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
+            throw new IllegalArgumentException(String.format(COULD_NOT_RESOLVE_IDENTIFIER_S_IN_THE_CURRENT_LIBRARY, identifier));
         }
 
         return null;
@@ -2530,10 +2493,33 @@ public class LibraryBuilder {
             return S_RESOLVED_AS_A_CONCEPT;
         }
         else if (element instanceof IncludeDef) {
-
             return S_RESOLVED_AS_A_LIBRARY;
-
         }
+        else if (element instanceof IdentifierRef) {
+            return S_RESOLVED_AS_AN_ELEMENT_OF_THE_RESULT_OF_A_QUERY;
+        }
+        else if (element instanceof Iteration) {
+            return S_RESOLVED_AS_THE_INDEX_ITERATION_ACCESSOR;
+        }
+        else if (element instanceof Total) {
+            return S_RESOLVED_AS_THE_TOTAL_AGGREGATION_ACCESSOR;
+        }
+        else if (element instanceof AliasRef) {
+            return S_RESOLVED_AS_AN_ALIAS_OF_A_QUERY;
+        }
+        else if (element instanceof QueryLetRef ) {
+            return S_RESOLVED_AS_A_LET_OF_A_QUERY;
+        }
+        else if (element instanceof OperandRef ) {
+            return S_RESOLVED_AS_AN_OPERAND_TO_A_FUNCTION;
+        }
+        else if (element instanceof Literal) {
+            return S_RESOLVED_AS_A_POTENTIAL_TYPE_NAME;
+        }
+        else if (element instanceof Expression ) {
+            return S_RESOLVED_AS_A_CONTEXT_ACCESSOR;
+        }
+        //default message if no match is made:
         return S_RESOLVED_MORE_THAN_ONCE + element.getClass();
     }
 
@@ -2559,7 +2545,6 @@ public class LibraryBuilder {
             if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
                 ri.addAllCaseIgnored(caseIgnoredElements);
             }
-//            caseMatchCollection.add(new ImmutablePair<>(expressionRef, String.format("%s resolved as an expression definition", identifier)));
         }
 
         if (element instanceof ParameterDef) {
@@ -2577,7 +2562,6 @@ public class LibraryBuilder {
                 ri.addAllCaseIgnored(caseIgnoredElements);
             }
 
-//            caseMatchCollection.add(new ImmutablePair<>(parameterRef, String.format("%s resolved as a parameter", identifier)));
         }
 
         if (element instanceof ValueSetDef) {
@@ -2594,7 +2578,6 @@ public class LibraryBuilder {
             if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
                 ri.addAllCaseIgnored(caseIgnoredElements);
             }
-//            caseMatchCollection.add(new ImmutablePair<>(valuesetRef, String.format("%s resolved as a value set", identifier)));
         }
 
         if (element instanceof CodeSystemDef) {
@@ -2611,7 +2594,6 @@ public class LibraryBuilder {
             if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
                 ri.addAllCaseIgnored(caseIgnoredElements);
             }
-//            caseMatchCollection.add(new ImmutablePair<>(codesystemRef, String.format("%s resolved as a code system", identifier)));
 
         }
 
@@ -2629,7 +2611,6 @@ public class LibraryBuilder {
             if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
                 ri.addAllCaseIgnored(caseIgnoredElements);
             }
-//            caseMatchCollection.add(new ImmutablePair<>(codeRef, String.format("%s resolved as a code", identifier)));
         }
 
         if (element instanceof ConceptDef) {
@@ -2646,7 +2627,6 @@ public class LibraryBuilder {
             if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
                 ri.addAllCaseIgnored(caseIgnoredElements);
             }
-//            caseMatchCollection.add(new ImmutablePair<>(conceptRef, String.format("%s resolved as a concept", identifier)));
         }
 
         if (element instanceof IncludeDef) {
@@ -2658,16 +2638,15 @@ public class LibraryBuilder {
             if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
                 ri.addAllCaseIgnored(caseIgnoredElements);
             }
-//            caseMatchCollection.add(new ImmutablePair<>(libraryRef, String.format("%s resolved as a library", identifier)));
         }
 
         return ri;
     }
 
-    private String formatPairedMessage(List<Pair<Expression, String>> list) {
+    private String formatPairedMessage(List<Pair<String, Object>> list) {
         StringBuilder sb = new StringBuilder();
-        for (Pair<Expression, String> p : list){
-            sb.append(p.getRight() + "\n");
+        for (Pair<String, Object> p : list){
+            sb.append(String.format(lookupElementWarning(p.getRight()), p.getLeft()) + "\n");
         }
         return sb.toString();
     }
@@ -3109,16 +3088,6 @@ public class LibraryBuilder {
                     ri.addAllHidden(propertyRI.getCaseIgnoredCollection());
                 }
 
-//                PropertyResolution resolution = resolveProperty(query.getResultElementType(), identifier, false);
-//                if (resolution != null) {
-//                    IdentifierRef result = new IdentifierRef().withName(resolution.getName());
-//                    result.setResultType(resolution.getType());
-//                    if (resolution.getTargetMap() != null) {
-//                        throw new IllegalArgumentException("Target mapping not supported in this context");
-//                    }
-//                    ri.setCaseMatchedObject(resolution.getName(), result);
-//                }
-
             }
         }
 
@@ -3249,6 +3218,27 @@ public class LibraryBuilder {
         return null;
     }
 
+    private ResolvedIdentifierResultHolder resolveQueryLets(String identifier) {
+        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+        // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
+        if (inQueryContext()) {
+            for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
+                LetClause source = getScope().getQueries().get(i).resolveLet(identifier);
+                if (source != null) {
+                    ri.setCaseMatchedObject(identifier, source);
+                }
+
+                List<Pair<String, Object>> caseIgnoredMatches = getScope().getQueries().get(i).resolveCaseIgnoredLets(identifier);
+                if (caseIgnoredMatches != null && caseIgnoredMatches.size() > 0){
+                    ri.addAllCaseIgnored(caseIgnoredMatches);
+                }
+
+            }
+        }
+
+        return ri;
+    }
+
     private OperandRef resolveOperandRef(String identifier) {
         if (!functionDefs.empty()) {
             for (OperandDef operand : functionDefs.peek().getOperand()) {
@@ -3261,6 +3251,26 @@ public class LibraryBuilder {
         }
 
         return null;
+    }
+
+    private ResolvedIdentifierResultHolder resolveOperandRefs(String identifier) {
+        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+        if (!functionDefs.empty()) {
+            for (OperandDef operand : functionDefs.peek().getOperand()) {
+                if (operand.getName().equals(identifier)) {
+                    ri.setCaseMatchedObject (identifier, of.createOperandRef()
+                            .withName(identifier)
+                            .withResultType(operand.getResultType()));
+                }
+                else if (operand.getName().equalsIgnoreCase(identifier)) {
+                    ri.addCaseIgnoredMatch(identifier, of.createOperandRef()
+                            .withName(identifier)
+                            .withResultType(operand.getResultType()));
+                }
+            }
+        }
+
+        return ri;
     }
 
     private DataType getExpressionDefResultType(ExpressionDef expressionDef) {
