@@ -2976,7 +2976,6 @@ public class LibraryBuilder {
                     IdentifierRef result = new IdentifierRef().withName(identifier);
                     result.setResultType(query.getResultElementType());
                     ri.setCaseMatchedObject(identifier, result);
-                    return ri;
                 }
                 else  if (!identifier.equals($_THIS) && identifier.equalsIgnoreCase($_THIS)) {
                     IdentifierRef result = new IdentifierRef().withName(identifier);
