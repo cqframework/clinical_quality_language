@@ -540,7 +540,8 @@ The second argument is expected to be of type CodeSystem. When this argument is 
 			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="code" type="Expression"/>
-					<xs:element name="codesystem" type="Expression"/>
+					<xs:element name="codesystem" type="CodeSystemRef" minOccurs="0"/>
+					<xs:element name="codesystemEx" type="Expression" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -557,7 +558,8 @@ The second argument is expected to be of type CodeSystem. When this argument is 
 			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="codes" type="Expression"/>
-					<xs:element name="codesystem" type="Expression"/>
+					<xs:element name="codesystem" type="CodeSystemRef" minOccurs="0"/>
+					<xs:element name="codesystemEx" type="Expression" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -574,7 +576,8 @@ The second argument is expected to be of type ValueSet. When this argument is st
 			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="code" type="Expression"/>
-					<xs:element name="valueset" type="Expression"/>
+					<xs:element name="valueset" type="ValueSetRef" minOccurs="0"/>
+					<xs:element name="valuesetEx" type="Expression" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -591,7 +594,8 @@ The second argument is expected to be of type ValueSet. When this argument is st
 			<xs:extension base="OperatorExpression">
 				<xs:sequence>
 					<xs:element name="codes" type="Expression"/>
-					<xs:element name="valueset" type="Expression"/>
+					<xs:element name="valueset" type="ValueSetRef" minOccurs="0"/>
+					<xs:element name="valuesetEx" type="Expression" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

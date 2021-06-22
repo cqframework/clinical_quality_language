@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.model.invocation;
 
 import org.hl7.elm.r1.AnyInValueSet;
+import org.hl7.elm.r1.CodeSystemRef;
 import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.AnyInCodeSystem;
 
@@ -20,9 +21,13 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation {
     public Iterable<Expression> getOperands() {
         List<Expression> result = new ArrayList<>();
         result.add(((AnyInCodeSystem)expression).getCodes());
-        result.add(((AnyInCodeSystem)expression).getCodesystem());
+        if (((AnyInCodeSystem)expression).getCodesystem() != null) {
+            result.add(((AnyInCodeSystem)expression).getCodesystem());
+        }
+        else {
+            result.add(((AnyInCodeSystem)expression).getCodesystemEx());
+        }
         return result;
-        //return Collections.singletonList(((AnyInCodeSystem) expression).getCodes());
     }
 
     @Override
@@ -31,7 +36,14 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation {
         for (Expression operand : operands) {
             switch (i) {
                 case 0: ((AnyInCodeSystem)expression).setCodes(operand); break;
-                case 1: ((AnyInCodeSystem)expression).setCodesystem(operand); break;
+                case 1:
+                    if (operand instanceof CodeSystemRef) {
+                        ((AnyInCodeSystem)expression).setCodesystem((CodeSystemRef)operand);
+                    }
+                    else {
+                        ((AnyInCodeSystem)expression).setCodesystemEx(operand);
+                    }
+                break;
             }
             i++;
         }
@@ -39,6 +51,5 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation {
         if (i != 2) {
             throw new IllegalArgumentException("Binary operator expected");
         }
-        //((AnyInCodeSystem) expression).setCodes(assertAndGetSingleOperand(operands));
     }
 }

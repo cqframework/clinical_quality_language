@@ -1203,9 +1203,12 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitInCodeSystem(InCodeSystem elm, ElmRequirementsContext context) {
-        if (elm.getCode() != null && elm.getCodesystem() != null) {
+        if (elm.getCode() != null && (elm.getCodesystem() != null || elm.getCodesystemEx() != null)) {
             ElmRequirement left = visitElement(elm.getCode(), context);
-            ElmRequirement right = visitElement(elm.getCodesystem(), context);
+            ElmRequirement right =
+                    elm.getCodesystem() != null
+                        ? visitElement(elm.getCodesystem(), context)
+                        : visitElement(elm.getCodesystemEx(), context);
 
             return inferConditionRequirement(elm, context, left, right);
         }
@@ -1214,9 +1217,12 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitAnyInCodeSystem(AnyInCodeSystem elm, ElmRequirementsContext context) {
-        if (elm.getCodes() != null && elm.getCodesystem() != null) {
+        if (elm.getCodes() != null && (elm.getCodesystem() != null || elm.getCodesystemEx() != null)) {
             ElmRequirement left = visitElement(elm.getCodes(), context);
-            ElmRequirement right = visitElement(elm.getCodesystem(), context);
+            ElmRequirement right =
+                    elm.getCodesystem() != null
+                        ? visitElement(elm.getCodesystem(), context)
+                        : visitElement(elm.getCodesystemEx(), context);
 
             return inferConditionRequirement(elm, context, left, right);
         }
@@ -1225,9 +1231,12 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitInValueSet(InValueSet elm, ElmRequirementsContext context) {
-        if (elm.getCode() != null && elm.getValueset() != null) {
+        if (elm.getCode() != null && (elm.getValueset() != null || elm.getValuesetEx() != null)) {
             ElmRequirement left = visitElement(elm.getCode(), context);
-            ElmRequirement right = visitElement(elm.getValueset(), context);
+            ElmRequirement right =
+                    elm.getValueset() != null
+                            ? visitElement(elm.getValueset(), context)
+                            : visitElement(elm.getValuesetEx(), context);
 
             return inferConditionRequirement(elm, context, left, right);
         }
@@ -1236,9 +1245,12 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitAnyInValueSet(AnyInValueSet elm, ElmRequirementsContext context) {
-        if (elm.getCodes() != null && elm.getValueset() != null) {
+        if (elm.getCodes() != null && (elm.getValueset() != null || elm.getValuesetEx() != null)) {
             ElmRequirement left = visitElement(elm.getCodes(), context);
-            ElmRequirement right = visitElement(elm.getValueset(), context);
+            ElmRequirement right =
+                    elm.getValueset() != null
+                        ? visitElement(elm.getValueset(), context)
+                        : visitElement(elm.getValuesetEx(), context);
 
             return inferConditionRequirement(elm, context, left, right);
         }

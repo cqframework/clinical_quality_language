@@ -607,6 +607,14 @@ public class LibraryBuilder {
         libraryManager.endTranslation(getLibraryName());
     }
 
+    public boolean canResolveLibrary(IncludeDef includeDef) {
+        VersionedIdentifier libraryIdentifier = new VersionedIdentifier()
+                .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
+                .withId(NamespaceManager.getNamePart(includeDef.getPath()))
+                .withVersion(includeDef.getVersion());
+        return libraryManager.canResolveLibrary(libraryIdentifier);
+    }
+
     public void addInclude(IncludeDef includeDef) {
         if (library.getIdentifier() == null || library.getIdentifier().getId() == null) {
             throw new IllegalArgumentException("Unnamed libraries cannot reference other libraries.");
@@ -902,7 +910,8 @@ public class LibraryBuilder {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
-                        .withValueset(right);
+                        .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
+                        .withValuesetEx(right instanceof ValueSetRef ? null : right);
                         //.withValueset((ValueSetRef)right);
 
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
@@ -911,7 +920,8 @@ public class LibraryBuilder {
 
             InValueSet in = of.createInValueSet()
                     .withCode(left)
-                    .withValueset(right);
+                    .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
+                    .withValuesetEx(right instanceof ValueSetRef ? null : right);
                     //.withValueset((ValueSetRef) right);
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
@@ -922,7 +932,8 @@ public class LibraryBuilder {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
-                        .withCodesystem(right);
+                        .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
+                        .withCodesystemEx(right instanceof CodeSystemRef ? null : right);
                         //.withCodesystem((CodeSystemRef)right);
                 resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
@@ -930,7 +941,8 @@ public class LibraryBuilder {
 
             InCodeSystem in = of.createInCodeSystem()
                     .withCode(left)
-                    .withCodesystem(right);
+                    .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
+                    .withCodesystemEx(right instanceof CodeSystemRef ? null : right);
                     //.withCodesystem((CodeSystemRef)right);
             resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
