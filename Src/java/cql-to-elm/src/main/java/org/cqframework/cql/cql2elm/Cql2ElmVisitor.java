@@ -703,8 +703,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
         String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
-                //libraryBuilder.isWellKnownLibraryName(unqualifiedIdentifier) ? null :
-                        (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+                (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
         String path = getLibraryPath(namespaceName, unqualifiedIdentifier);
         IncludeDef library = of.createIncludeDef()
                 .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
