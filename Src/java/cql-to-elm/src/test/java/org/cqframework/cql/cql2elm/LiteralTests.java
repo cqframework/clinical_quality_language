@@ -15,6 +15,7 @@ import static org.cqframework.cql.cql2elm.matchers.ListOfLiterals.listOfLiterals
 import static org.cqframework.cql.cql2elm.matchers.LiteralFor.literalFor;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Bryn on 11/21/2017.
@@ -166,6 +167,9 @@ public class LiteralTests {
 
         ExpressionDef def = defs.get("TestDecimal");
         assertThat(def, hasTypeAndResult(Literal.class, "System.Decimal"));
+
+        Literal literal = (Literal)def.getExpression();
+        assertEquals("1.5", literal.getValue());
     }
 
     @Test
@@ -176,6 +180,9 @@ public class LiteralTests {
 
         ExpressionDef def = defs.get("TestString");
         assertThat(def, hasTypeAndResult(Literal.class, "System.String"));
+
+        Literal literal = (Literal)def.getExpression();
+        assertEquals("12345", literal.getValue());
     }
 
     @Test
@@ -186,6 +193,9 @@ public class LiteralTests {
 
         ExpressionDef def = defs.get("TestInteger");
         assertThat(def, hasTypeAndResult(Literal.class, "System.Integer"));
+
+        Literal literal = (Literal)def.getExpression();
+        assertEquals("12345", literal.getValue());
     }
 
     @Test
@@ -196,6 +206,10 @@ public class LiteralTests {
 
         ExpressionDef def = defs.get("TestLongInteger");
         assertThat(def, hasTypeAndResult(Literal.class, "System.Long"));
+
+        Literal literal = (Literal)def.getExpression();
+        assertEquals("12345", literal.getValue());
+
     }
 
     @Test
