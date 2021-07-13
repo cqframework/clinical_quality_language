@@ -1578,7 +1578,7 @@ DATETIME
     public Literal visitLongNumberLiteral(cqlParser.LongNumberLiteralContext ctx) {
         String input = ctx.LONGNUMBER().getText();
         if (input.endsWith("L")) {
-            input = input.substring(0, input.length() - 2);
+            input = input.substring(0, input.length() - 1);
         }
         return libraryBuilder.createLongNumberLiteral(input);
     }
