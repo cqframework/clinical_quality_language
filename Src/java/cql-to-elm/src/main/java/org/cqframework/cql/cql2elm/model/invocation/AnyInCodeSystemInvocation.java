@@ -25,7 +25,7 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation {
             result.add(((AnyInCodeSystem)expression).getCodesystem());
         }
         else {
-            result.add(((AnyInCodeSystem)expression).getCodesystemEx());
+            result.add(((AnyInCodeSystem)expression).getCodesystemExpression());
         }
         return result;
     }
@@ -41,7 +41,7 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation {
                         ((AnyInCodeSystem)expression).setCodesystem((CodeSystemRef)operand);
                     }
                     else {
-                        ((AnyInCodeSystem)expression).setCodesystemEx(operand);
+                        ((AnyInCodeSystem)expression).setCodesystemExpression(operand);
                     }
                 break;
             }

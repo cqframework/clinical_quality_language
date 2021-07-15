@@ -405,8 +405,8 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
             T childResult = visitElement(elm.getCodesystem(), context);
             result = aggregateResult(result, childResult);
         }
-        if (elm.getCodesystemEx() != null) {
-            T childResult = visitElement(elm.getCodesystemEx(), context);
+        if (elm.getCodesystemExpression() != null) {
+            T childResult = visitElement(elm.getCodesystemExpression(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -430,8 +430,8 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
             T childResult = visitElement(elm.getCodesystem(), context);
             result = aggregateResult(result, childResult);
         }
-        if (elm.getCodesystemEx() != null) {
-            T childResult = visitElement(elm.getCodesystemEx(), context);
+        if (elm.getCodesystemExpression() != null) {
+            T childResult = visitElement(elm.getCodesystemExpression(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -455,8 +455,8 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
             T childResult = visitElement(elm.getValueset(), context);
             result = aggregateResult(result, childResult);
         }
-        if (elm.getValuesetEx() != null) {
-            T childResult = visitElement(elm.getValuesetEx(), context);
+        if (elm.getValuesetExpression() != null) {
+            T childResult = visitElement(elm.getValuesetExpression(), context);
             result = aggregateResult(result, childResult);
         }
         return result;
@@ -480,8 +480,8 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
             T childResult = visitElement(elm.getValueset(), context);
             result = aggregateResult(result, childResult);
         }
-        if (elm.getValuesetEx() != null) {
-            T childResult = visitElement(elm.getValuesetEx(), context);
+        if (elm.getValuesetExpression() != null) {
+            T childResult = visitElement(elm.getValuesetExpression(), context);
             result = aggregateResult(result, childResult);
         }
         return result;

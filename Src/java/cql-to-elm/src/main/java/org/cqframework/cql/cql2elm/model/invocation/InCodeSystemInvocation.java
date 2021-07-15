@@ -22,7 +22,7 @@ public class InCodeSystemInvocation extends OperatorExpressionInvocation {
             result.add(((InCodeSystem)expression).getCodesystem());
         }
         else {
-            result.add(((InCodeSystem)expression).getCodesystemEx());
+            result.add(((InCodeSystem)expression).getCodesystemExpression());
         }
         return result;
     }
@@ -38,7 +38,7 @@ public class InCodeSystemInvocation extends OperatorExpressionInvocation {
                         ((InCodeSystem)expression).setCodesystem((CodeSystemRef)operand);
                     }
                     else {
-                        ((InCodeSystem)expression).setCodesystemEx(operand);
+                        ((InCodeSystem)expression).setCodesystemExpression(operand);
                     }
                 break;
             }

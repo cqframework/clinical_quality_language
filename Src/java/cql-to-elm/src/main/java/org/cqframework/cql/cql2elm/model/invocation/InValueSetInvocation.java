@@ -21,7 +21,7 @@ public class InValueSetInvocation extends OperatorExpressionInvocation {
             result.add(((InValueSet)expression).getValueset());
         }
         else {
-            result.add(((InValueSet)expression).getValuesetEx());
+            result.add(((InValueSet)expression).getValuesetExpression());
         }
         return result;
     }
@@ -37,7 +37,7 @@ public class InValueSetInvocation extends OperatorExpressionInvocation {
                         ((InValueSet)expression).setValueset((ValueSetRef)operand);
                     }
                     else {
-                        ((InValueSet)expression).setValuesetEx(operand);
+                        ((InValueSet)expression).setValuesetExpression(operand);
                     }
                 break;
             }

@@ -910,7 +910,7 @@ public class LibraryBuilder {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
                         .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
-                        .withValuesetEx(right instanceof ValueSetRef ? null : right);
+                        .withValuesetExpression(right instanceof ValueSetRef ? null : right);
 
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
@@ -919,7 +919,7 @@ public class LibraryBuilder {
             InValueSet in = of.createInValueSet()
                     .withCode(left)
                     .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
-                    .withValuesetEx(right instanceof ValueSetRef ? null : right);
+                    .withValuesetExpression(right instanceof ValueSetRef ? null : right);
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
         }
@@ -929,7 +929,7 @@ public class LibraryBuilder {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
                         .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
-                        .withCodesystemEx(right instanceof CodeSystemRef ? null : right);
+                        .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
                 resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
             }
@@ -937,7 +937,7 @@ public class LibraryBuilder {
             InCodeSystem in = of.createInCodeSystem()
                     .withCode(left)
                     .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
-                    .withCodesystemEx(right instanceof CodeSystemRef ? null : right);
+                    .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
             resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
         }

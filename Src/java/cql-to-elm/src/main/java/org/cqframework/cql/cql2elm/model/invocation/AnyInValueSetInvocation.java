@@ -24,7 +24,7 @@ public class AnyInValueSetInvocation extends OperatorExpressionInvocation {
             result.add(((AnyInValueSet)expression).getValueset());
         }
         else {
-            result.add(((AnyInValueSet)expression).getValuesetEx());
+            result.add(((AnyInValueSet)expression).getValuesetExpression());
         }
         return result;
     }
@@ -40,7 +40,7 @@ public class AnyInValueSetInvocation extends OperatorExpressionInvocation {
                         ((AnyInValueSet)expression).setValueset((ValueSetRef)operand);
                     }
                     else {
-                        ((AnyInValueSet)expression).setValuesetEx(operand);
+                        ((AnyInValueSet)expression).setValuesetExpression(operand);
                     }
                 break;
             }
