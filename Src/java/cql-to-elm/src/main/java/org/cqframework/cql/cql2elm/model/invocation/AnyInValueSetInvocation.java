@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm.model.invocation;
 
 import org.hl7.elm.r1.AnyInValueSet;
 import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.ValueSetRef;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,9 +20,13 @@ public class AnyInValueSetInvocation extends OperatorExpressionInvocation {
     public Iterable<Expression> getOperands() {
         List<Expression> result = new ArrayList<>();
         result.add(((AnyInValueSet)expression).getCodes());
-        result.add(((AnyInValueSet)expression).getValueset());
+        if (((AnyInValueSet)expression).getValueset() instanceof ValueSetRef) {
+            result.add(((AnyInValueSet)expression).getValueset());
+        }
+        else {
+            result.add(((AnyInValueSet)expression).getValuesetExpression());
+        }
         return result;
-        //return Collections.singletonList(((AnyInValueSet) expression).getCodes());
     }
 
     @Override
@@ -30,7 +35,14 @@ public class AnyInValueSetInvocation extends OperatorExpressionInvocation {
         for (Expression operand : operands) {
             switch (i) {
                 case 0: ((AnyInValueSet)expression).setCodes(operand); break;
-                case 1: ((AnyInValueSet)expression).setValueset(operand); break;
+                case 1:
+                    if (operand instanceof ValueSetRef) {
+                        ((AnyInValueSet)expression).setValueset((ValueSetRef)operand);
+                    }
+                    else {
+                        ((AnyInValueSet)expression).setValuesetExpression(operand);
+                    }
+                break;
             }
             i++;
         }

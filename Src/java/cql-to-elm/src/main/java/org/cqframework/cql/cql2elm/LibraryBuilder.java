@@ -607,6 +607,14 @@ public class LibraryBuilder {
         libraryManager.endTranslation(getLibraryName());
     }
 
+    public boolean canResolveLibrary(IncludeDef includeDef) {
+        VersionedIdentifier libraryIdentifier = new VersionedIdentifier()
+                .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
+                .withId(NamespaceManager.getNamePart(includeDef.getPath()))
+                .withVersion(includeDef.getVersion());
+        return libraryManager.canResolveLibrary(libraryIdentifier);
+    }
+
     public void addInclude(IncludeDef includeDef) {
         if (library.getIdentifier() == null || library.getIdentifier().getId() == null) {
             throw new IllegalArgumentException("Unnamed libraries cannot reference other libraries.");
@@ -898,12 +906,11 @@ public class LibraryBuilder {
 
     public Expression resolveIn(Expression left, Expression right) {
         if (right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet"))) {
-        //if (right instanceof ValueSetRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
-                        .withValueset(right);
-                        //.withValueset((ValueSetRef)right);
+                        .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
+                        .withValuesetExpression(right instanceof ValueSetRef ? null : right);
 
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
@@ -911,27 +918,26 @@ public class LibraryBuilder {
 
             InValueSet in = of.createInValueSet()
                     .withCode(left)
-                    .withValueset(right);
-                    //.withValueset((ValueSetRef) right);
+                    .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
+                    .withValuesetExpression(right instanceof ValueSetRef ? null : right);
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
         }
 
         if (right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem"))) {
-        //if (right instanceof CodeSystemRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
-                        .withCodesystem(right);
-                        //.withCodesystem((CodeSystemRef)right);
+                        .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
+                        .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
                 resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
             }
 
             InCodeSystem in = of.createInCodeSystem()
                     .withCode(left)
-                    .withCodesystem(right);
-                    //.withCodesystem((CodeSystemRef)right);
+                    .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
+                    .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
             resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
         }

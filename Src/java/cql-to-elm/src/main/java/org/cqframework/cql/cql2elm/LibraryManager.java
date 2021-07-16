@@ -91,6 +91,32 @@ public class LibraryManager {
         libraries.put(libraryPath, library);
     }
 
+    public boolean canResolveLibrary(VersionedIdentifier libraryIdentifier) {
+        if (libraryIdentifier == null) {
+            throw new IllegalArgumentException("libraryIdentifier is null.");
+        }
+
+        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().equals("")) {
+            throw new IllegalArgumentException("libraryIdentifier Id is null");
+        }
+
+        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+        TranslatedLibrary library = libraries.get(libraryPath);
+        if (library != null) {
+            return true;
+        }
+
+        InputStream librarySource = null;
+        try {
+            librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+        }
+        catch (Exception e) {
+            throw new CqlTranslatorIncludeException(e.getMessage(), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
+        }
+
+        return librarySource != null;
+    }
+
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");

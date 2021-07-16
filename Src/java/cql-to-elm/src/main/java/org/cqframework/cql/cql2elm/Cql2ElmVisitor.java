@@ -688,26 +688,41 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return libraryBuilder.getModel(modelIdentifier, localIdentifier);
     }
 
+    private String getLibraryPath(String namespaceName, String unqualifiedIdentifier) {
+        if (namespaceName != null) {
+            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
+            return NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
+        }
+
+        return unqualifiedIdentifier;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public Object visitIncludeDefinition(cqlParser.IncludeDefinitionContext ctx) {
         List<String> identifiers = (List<String>)visit(ctx.qualifiedIdentifier());
         String unqualifiedIdentifier = identifiers.remove(identifiers.size() - 1);
         String namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
-                libraryBuilder.isWellKnownLibraryName(unqualifiedIdentifier) ? null :
-                        (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
-        String path = null;
-        if (namespaceName != null) {
-            String namespaceUri = libraryBuilder.resolveNamespaceUri(namespaceName, true);
-            path = NamespaceManager.getPath(namespaceUri, unqualifiedIdentifier);
-        }
-        else {
-            path = unqualifiedIdentifier;
-        }
+                (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+        String path = getLibraryPath(namespaceName, unqualifiedIdentifier);
         IncludeDef library = of.createIncludeDef()
                 .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
                 .withPath(path)
                 .withVersion(parseString(ctx.versionSpecifier()));
+
+        // TODO: This isn't great because it complicates the loading process (and results in the source being loaded twice in the general case)
+        // But the full fix is to introduce source resolution/caching to enable this layer to determine whether the library identifier resolved
+        // with the namespace
+        if (!libraryBuilder.canResolveLibrary(library)) {
+            namespaceName = identifiers.size() > 0 ? String.join(".", identifiers) :
+                    libraryBuilder.isWellKnownLibraryName(unqualifiedIdentifier) ? null :
+                            (libraryBuilder.getNamespaceInfo() != null ? libraryBuilder.getNamespaceInfo().getName() : null);
+            path = getLibraryPath(namespaceName, unqualifiedIdentifier);
+            library = of.createIncludeDef()
+                    .withLocalIdentifier(ctx.localIdentifier() == null ? unqualifiedIdentifier : parseString(ctx.localIdentifier()))
+                    .withPath(path)
+                    .withVersion(parseString(ctx.versionSpecifier()));
+        }
 
         libraryBuilder.addInclude(library);
 
