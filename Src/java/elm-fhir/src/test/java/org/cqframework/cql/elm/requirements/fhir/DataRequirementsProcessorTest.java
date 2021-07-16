@@ -63,7 +63,7 @@ public class DataRequirementsProcessorTest {
             CqlTranslator translator = createTranslator("CompositeMeasures/cql/EXM124-9.0.000.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
             translator.toELM();
             assertTrue(translator.getErrors().isEmpty());
-            cacheLibrary(translator.getTranslatedLibrary());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
 
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
@@ -78,13 +78,6 @@ public class DataRequirementsProcessorTest {
         }
     }
 
-    private void cacheLibrary(TranslatedLibrary library) {
-        // Add the translated library to the library manager (NOTE: This should be a "cacheLibrary" call on the LibraryManager, available in 1.5.3+)
-        // Without this, the data requirements processor will try to load the current library, resulting in a re-translation
-        String libraryPath = NamespaceManager.getPath(library.getIdentifier().getSystem(), library.getIdentifier().getId());
-        libraryManager.getTranslatedLibraries().put(libraryPath, library);
-    }
-
     @Test
     public void TestDataRequirementsProcessorWithExpressions() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
@@ -96,7 +89,7 @@ public class DataRequirementsProcessorTest {
             CqlTranslator translator = createTranslator("OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
             translator.toELM();
             assertTrue(translator.getErrors().isEmpty());
-            cacheLibrary(translator.getTranslatedLibrary());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, expressions, false);
             assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
@@ -164,7 +157,7 @@ public class DataRequirementsProcessorTest {
             CqlTranslator translator = createTranslator("CompositeMeasures/cql/BCSComponent.cql", cqlTranslatorOptions);
             translator.toELM();
             assertTrue(translator.getErrors().isEmpty());
-            cacheLibrary(translator.getTranslatedLibrary());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
             assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
@@ -232,7 +225,7 @@ public class DataRequirementsProcessorTest {
         CqlTranslator translator = createTranslator(fileName, cqlTranslatorOptions);
         translator.toELM();
         assertTrue(translator.getErrors().isEmpty());
-        cacheLibrary(translator.getTranslatedLibrary());
+        libraryManager.cacheLibrary(translator.getTranslatedLibrary());
         return translator;
     }
 
