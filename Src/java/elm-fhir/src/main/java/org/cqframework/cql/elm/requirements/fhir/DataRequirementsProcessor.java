@@ -10,9 +10,11 @@ import org.hl7.cql.model.NamedType;
 import org.hl7.elm.r1.*;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.Expression;
+import org.hl7.elm.r1.Property;
 import org.hl7.fhir.r5.model.*;
 import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
+import org.cqframework.cql.elm.requirements.ElmDataRequirement;
 import org.cqframework.cql.elm.requirements.ElmRequirement;
 import org.cqframework.cql.elm.requirements.ElmRequirements;
 import org.cqframework.cql.elm.requirements.ElmRequirementsContext;
@@ -47,7 +49,12 @@ public class DataRequirementsProcessor {
         List<ExpressionDef> expressionDefs = null;
         if (expressions == null) {
             visitor.visitLibrary(translatedLibrary.getLibrary(), context);
-            expressionDefs = translatedLibrary.getLibrary().getStatements().getDef();
+            if (translatedLibrary.getLibrary() != null && translatedLibrary.getLibrary().getStatements() != null) {
+                expressionDefs = translatedLibrary.getLibrary().getStatements().getDef();
+            }
+            else {
+                expressionDefs = new ArrayList<ExpressionDef>();
+            }
         }
         else {
             context.enterLibrary(translatedLibrary.getIdentifier());
@@ -71,8 +78,11 @@ public class DataRequirementsProcessor {
         requirements.reportRequirement(context.getRequirements());
         // Collect reported data requirements from each expression
         for (ExpressionDef ed : expressionDefs) {
-            ElmRequirements reportedRequirements = context.getReportedRequirements(ed);
-            requirements.reportRequirement(reportedRequirements);
+            // Just being defensive here, can happen when there are errors deserializing the measure
+            if (ed != null) {
+                ElmRequirements reportedRequirements = context.getReportedRequirements(ed);
+                requirements.reportRequirement(reportedRequirements);
+            }
         }
 
         return createLibrary(context, requirements, translatedLibrary.getIdentifier(), expressionDefs, includeLogicDefinitions);
@@ -183,7 +193,7 @@ public class DataRequirementsProcessor {
         }
 
         for (ExpressionDef def : expressionDefs) {
-            if (!(def instanceof FunctionDef) && (def.getAccessLevel() == null
+            if (def != null && !(def instanceof FunctionDef) && (def.getAccessLevel() == null
                     || def.getAccessLevel() == AccessModifier.PUBLIC)) {
                 result.add(toOutputParameterDefinition(libraryIdentifier, def));
             }
@@ -278,7 +288,8 @@ public class DataRequirementsProcessor {
 
         for (ElmRequirement retrieve : requirements.getRetrieves()) {
             if (((Retrieve)retrieve.getElement()).getDataType() != null) {
-                result.add(toDataRequirement(context, retrieve.getLibraryIdentifier(), (Retrieve) retrieve.getElement(), retrieveMap));
+                result.add(toDataRequirement(context, retrieve.getLibraryIdentifier(), (Retrieve) retrieve.getElement(),
+                        retrieveMap, retrieve instanceof ElmDataRequirement ? ((ElmDataRequirement)retrieve).getProperties() : null));
             }
         }
 
@@ -328,9 +339,9 @@ public class DataRequirementsProcessor {
         if (uri != null) {
             // The translator has no way to correctly infer the namespace of the FHIRHelpers library, since it will happily provide that source to any namespace that wants it
             // So override the declaration here so that it points back to the FHIRHelpers library in the base specification
-            if (name.equals("FHIRHelpers") && !(uri.equals("http://hl7.org/fhir") || uri.equals("http://fhir.org/guides/cqf/common"))) {
-                uri = "http://fhir.org/guides/cqf/common";
-            }
+            //if (name.equals("FHIRHelpers") && !(uri.equals("http://hl7.org/fhir") || uri.equals("http://fhir.org/guides/cqf/common"))) {
+            //    uri = "http://fhir.org/guides/cqf/common";
+            //}
             return String.format("%s/Library/%s%s", uri, name, version != null ? ("|" + version) : "");
         }
 
@@ -368,8 +379,15 @@ public class DataRequirementsProcessor {
 
     private ParameterDefinition toOutputParameterDefinition(VersionedIdentifier libraryIdentifier, ExpressionDef def) {
         AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRAllTypes typeCode = Enumerations.FHIRAllTypes.fromCode(
-                toFHIRResultTypeCode(def.getResultType(), def.getName(), isList));
+        Enumerations.FHIRAllTypes typeCode = null;
+        try{
+                typeCode = Enumerations.FHIRAllTypes.fromCode(
+                        toFHIRResultTypeCode(def.getResultType(), def.getName(), isList));
+        }catch(org.hl7.fhir.exceptions.FHIRException fhirException){
+            validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",
+                    String.format("Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
+                            def.getResultType().toLabel(), libraryIdentifier.getId()), ValidationMessage.IssueSeverity.WARNING));
+        }
 
         return new ParameterDefinition()
                 .setName(def.getName())
@@ -542,8 +560,16 @@ public class DataRequirementsProcessor {
     }
 
     private org.hl7.fhir.r5.model.DataRequirement toDataRequirement(ElmRequirementsContext context,
-            VersionedIdentifier libraryIdentifier, Retrieve retrieve, Map<String, Retrieve> retrieveMap) {
+            VersionedIdentifier libraryIdentifier, Retrieve retrieve, Map<String, Retrieve> retrieveMap, Iterable<Property> properties) {
         org.hl7.fhir.r5.model.DataRequirement dr = new org.hl7.fhir.r5.model.DataRequirement();
+        try {
+            dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRAllTypes.fromCode(retrieve.getDataType().getLocalPart()));
+        }
+        catch(org.hl7.fhir.exceptions.FHIRException fhirException) {
+            validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.NOTSUPPORTED, "CQL Library Packaging",
+                    String.format("Result type %s of library %s is not supported; implementations may not be able to use the result of this expression",
+                            retrieve.getDataType().getLocalPart(), libraryIdentifier.getId()), ValidationMessage.IssueSeverity.WARNING));
+        }
 
         // Set the id attribute of the data requirement if it will be referenced from an included retrieve
         if (retrieve.getLocalId() != null && retrieve.getInclude() != null && retrieve.getInclude().size() > 0) {
@@ -553,8 +579,6 @@ public class DataRequirementsProcessor {
                 }
             }
         }
-
-        dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRAllTypes.fromCode(retrieve.getDataType().getLocalPart()));
 
         // Set profile if specified
         if (retrieve.getTemplateId() != null) {
@@ -596,6 +620,13 @@ public class DataRequirementsProcessor {
                 relatedRequirement.addExtension("targetId", new StringType(retrieve.getIncludedIn()));
                 relatedRequirement.addExtension("targetProperty", new StringType(stripReference(includeElement.getRelatedProperty())));
                 dr.addExtension(relatedRequirement);
+            }
+        }
+
+        // Add any properties as mustSupport items
+        if (properties != null) {
+            for (Property p : properties) {
+                dr.addMustSupport(p.getPath());
             }
         }
 

@@ -12,6 +12,8 @@ import org.hl7.elm.r1.Library;
 import org.hl7.fhir.r5.model.*;
 import org.testng.annotations.Test;
 import org.cqframework.cql.elm.requirements.fhir.DataRequirementsProcessor;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,10 +22,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertEquals;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class DataRequirementsProcessorTest {
+    private static Logger logger = LoggerFactory.getLogger(DataRequirementsProcessorTest.class);
+
     private static ModelManager modelManager;
     private static LibraryManager libraryManager;
     private static UcumService ucumService;
@@ -56,7 +61,7 @@ public class DataRequirementsProcessorTest {
                 PreventiveCareandWellness-v0-0-001-FHIR-4-0-1.xml
              */
             CqlTranslator translator = createTranslator("CompositeMeasures/cql/EXM124-9.0.000.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
-            Library elmLibrary = translator.toELM();
+            translator.toELM();
             assertTrue(translator.getErrors().isEmpty());
             cacheLibrary(translator.getTranslatedLibrary());
 
@@ -67,7 +72,7 @@ public class DataRequirementsProcessorTest {
             FhirContext context =  FhirContext.forR5();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
-            System.out.println(moduleDefString);
+            logger.debug(moduleDefString);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -89,7 +94,7 @@ public class DataRequirementsProcessorTest {
             // TODO - add expressions to expressions
             expressions.add("Conditions Indicating End of Life or With Limited Life Expectancy");//Active Ambulatory Opioid Rx");
             CqlTranslator translator = createTranslator("OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
-            Library elmLibrary = translator.toELM();
+            translator.toELM();
             assertTrue(translator.getErrors().isEmpty());
             cacheLibrary(translator.getTranslatedLibrary());
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
@@ -144,7 +149,7 @@ public class DataRequirementsProcessorTest {
             FhirContext context =  FhirContext.forR5();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
-            System.out.println(moduleDefString);
+            logger.debug(moduleDefString);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -157,7 +162,7 @@ public class DataRequirementsProcessorTest {
         try {
 //            CqlTranslator translator = createTranslator("/ecqm/resources/library-EXM506-2.2.000.json", cqlTranslatorOptions);
             CqlTranslator translator = createTranslator("CompositeMeasures/cql/BCSComponent.cql", cqlTranslatorOptions);
-            Library elmLibrary = translator.toELM();
+            translator.toELM();
             assertTrue(translator.getErrors().isEmpty());
             cacheLibrary(translator.getTranslatedLibrary());
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
@@ -211,7 +216,7 @@ public class DataRequirementsProcessorTest {
             FhirContext context =  FhirContext.forR5();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
-            System.out.println(moduleDefString);
+            logger.debug(moduleDefString);
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -225,7 +230,7 @@ public class DataRequirementsProcessorTest {
 
     private CqlTranslator setupDataRequirementsAnalysis(String fileName, CqlTranslatorOptions cqlTranslatorOptions) throws IOException {
         CqlTranslator translator = createTranslator(fileName, cqlTranslatorOptions);
-        Library elmLibrary = translator.toELM();
+        translator.toELM();
         assertTrue(translator.getErrors().isEmpty());
         cacheLibrary(translator.getTranslatedLibrary());
         return translator;
@@ -879,13 +884,9 @@ public class DataRequirementsProcessorTest {
 
     public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslatorOptions options) throws IOException {
         File translationTestFile = new File(DataRequirementsProcessorTest.class.getResource(testFileName).getFile());
-        if(null != translationTestFile) {
-            reset();
-            setup(translationTestFile.getParent());
-            CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, getModelManager(), getLibraryManager(), getUcumService(), options);
-            return translator;
-
-        }
-        return null;
+        reset();
+        setup(translationTestFile.getParent());
+        CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, getModelManager(), getLibraryManager(), getUcumService(), options);
+        return translator;
     }
 }

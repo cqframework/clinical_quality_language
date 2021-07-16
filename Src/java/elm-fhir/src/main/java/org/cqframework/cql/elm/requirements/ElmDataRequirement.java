@@ -112,6 +112,9 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     private Set<Property> propertySet;
+    public Iterable<Property> getProperties() {
+        return propertySet;
+    }
 
     public void reportProperty(ElmPropertyRequirement propertyRequirement) {
         if (propertySet == null) {
@@ -162,6 +165,10 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
     }
 
     private void applyConditionRequirementTo(ElmConditionRequirement conditionRequirement, Retrieve retrieve, ElmRequirementsContext context) {
+        if (retrieve.getDataType() == null) {
+            // If the retrieve has no data type, it is neither useful nor possible to apply requirements to it
+            return;
+        }
         // if the column is terminology-valued, express as a code filter
         // if the column is date-valued, express as a date filter
         // else express as an other filter
@@ -206,7 +213,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                 }
                 // Determine operation and appropriate range
                 // If right is interval-valued
-                // If the operation is equal, equivalent, sameas, in, or included in, the date range is the comparand
+                // If the operation is equal, equivalent, same as, in, or included in, the date range is the comparand
                 Expression comparand = conditionRequirement.getComparand().getExpression();
                 if (context.getTypeResolver().isIntervalType(comparisonType)) {
                     switch (conditionRequirement.getElement().getClass().getSimpleName()) {
@@ -317,7 +324,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                 }
 
                 // Search from the model info should be used to inform the selection, but will in general resolve to multiple choices
-                // May be a choice better left to the capabilitystatement-informed planning phase anyway
+                // May be a choice better left to the capabilityStatement-informed planning phase anyway
             }
 
             // In the absence of search information, either of these formulations is correct, favor primary query sources over withs

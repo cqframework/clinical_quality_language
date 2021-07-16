@@ -6,21 +6,21 @@ dependencies {
     compile project(':cql-to-elm')
 
     // fhir core dependencies
-    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.3.8'
-    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.3.8'
-    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation', version: '5.3.8'
-    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.3.8'
+    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.4.8'
+    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.4.8'
+    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation', version: '5.4.8'
+    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.4.8'
 
     // HAPI base
-    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '5.3.0'
-    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '5.3.0'
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '5.4.2'
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '5.4.2'
 
     // FHIR STU3
-    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '5.3.0'
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '5.4.2'
 
     // FHIR r4
-    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '5.3.0'
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '5.4.2'
 
     // FHIR r5
-    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '5.3.0'
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '5.4.2'
 }

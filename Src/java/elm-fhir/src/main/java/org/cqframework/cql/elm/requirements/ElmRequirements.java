@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-
 public class ElmRequirements extends ElmRequirement {
 
     private HashSet<ElmRequirement> requirements = new LinkedHashSet<ElmRequirement>();
@@ -28,7 +27,9 @@ public class ElmRequirements extends ElmRequirement {
             }
         }
         else {
-            requirements.add(requirement);
+            if (requirement != null) {
+                requirements.add(requirement);
+            }
         }
     }
 
