@@ -179,7 +179,7 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-
    - Repo for snapshots and releases: https://oss.sonatype.org/content/groups/public/info/cqframework/
    - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
  */
-configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'quick', 'cql-to-elm', 'qdm', 'cql-formatter']}) {
+configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'elm-fhir', 'quick', 'cql-to-elm', 'qdm', 'cql-formatter']}) {
     apply plugin: 'maven'
     apply plugin: 'signing'
 
