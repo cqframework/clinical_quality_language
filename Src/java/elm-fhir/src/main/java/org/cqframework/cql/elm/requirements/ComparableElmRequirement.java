@@ -193,13 +193,17 @@ public class ComparableElmRequirement {
                         newRetrieve.getTrackbacks().addAll(requiredRetrieve.getTrackbacks());
 
                         ElmDataRequirement newRequirement = new ElmDataRequirement(existing.getLibraryIdentifier(), newRetrieve);
-                        for (Property property : ((ElmDataRequirement)existing).getProperties()) {
-                            newRequirement.addProperty(property);
+                        if (((ElmDataRequirement)existing).getProperties() != null) {
+                            for (Property property : ((ElmDataRequirement)existing).getProperties()) {
+                                newRequirement.addProperty(property);
+                            }
                         }
 
                         // Merge mustSupport
-                        for (Property property : ((ElmDataRequirement)required).getProperties()) {
-                            newRequirement.addProperty(property);
+                        if (((ElmDataRequirement)required).getProperties() != null) {
+                            for (Property property : ((ElmDataRequirement)required).getProperties()) {
+                                newRequirement.addProperty(property);
+                            }
                         }
 
                         // Merge includes

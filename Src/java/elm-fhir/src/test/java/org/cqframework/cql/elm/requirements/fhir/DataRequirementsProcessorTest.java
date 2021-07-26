@@ -454,7 +454,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(measurementPeriod != null);
 
-            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() >= 18);
+            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() >= 15);
             DataRequirement diagnosisRequirement = null;
             for (DataRequirement requirement : moduleDefinitionLibrary.getDataRequirement()) {
                 if (requirement.getType() == Enumerations.FHIRAllTypes.CONDITION && requirement.getCodeFilter().size() == 1) {
