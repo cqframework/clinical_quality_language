@@ -85,6 +85,9 @@ public class DataRequirementsProcessor {
             }
         }
 
+        // Collapse the requirements
+        requirements = requirements.collapse();
+
         return createLibrary(context, requirements, translatedLibrary.getIdentifier(), expressionDefs, includeLogicDefinitions);
     }
 
@@ -363,11 +366,8 @@ public class DataRequirementsProcessor {
     }
 
     private ParameterDefinition toParameterDefinition(VersionedIdentifier libraryIdentifier, ParameterDef def) {
-        org.hl7.cql.model.DataType parameterType = def.getResultType() instanceof ListType
-                ? ((ListType)def.getResultType()).getElementType() : def.getResultType();
-
         AtomicBoolean isList = new AtomicBoolean(false);
-        Enumerations.FHIRAllTypes typeCode = Enumerations.FHIRAllTypes.fromCode(toFHIRParameterTypeCode(parameterType, def.getName(), isList));
+        Enumerations.FHIRAllTypes typeCode = Enumerations.FHIRAllTypes.fromCode(toFHIRParameterTypeCode(def.getResultType(), def.getName(), isList));
 
         return new ParameterDefinition()
                 .setName(def.getName())
@@ -585,9 +585,13 @@ public class DataRequirementsProcessor {
             dr.setProfile(Collections.singletonList(new org.hl7.fhir.r5.model.CanonicalType(retrieve.getTemplateId())));
         }
 
+        // collect must supports
+        Set<String> ps = new HashSet<String>();
+
         // Set code path if specified
         if (retrieve.getCodeProperty() != null) {
             dr.getCodeFilter().add(toCodeFilterComponent(context, libraryIdentifier, retrieve.getCodeProperty(), retrieve.getCodes()));
+            ps.add(retrieve.getCodeProperty());
         }
 
         // Add any additional code filters
@@ -598,6 +602,7 @@ public class DataRequirementsProcessor {
         // Set date path if specified
         if (retrieve.getDateProperty() != null) {
             dr.getDateFilter().add(toDateFilterComponent(context, libraryIdentifier, retrieve.getDateProperty(), retrieve.getDateRange()));
+            ps.add(retrieve.getDateProperty());
         }
 
         // Add any additional date filters
@@ -626,8 +631,13 @@ public class DataRequirementsProcessor {
         // Add any properties as mustSupport items
         if (properties != null) {
             for (Property p : properties) {
-                dr.addMustSupport(p.getPath());
+                if (!ps.contains(p.getPath())) {
+                    ps.add(p.getPath());
+                }
             }
+        }
+        for (String s : ps) {
+            dr.addMustSupport(s);
         }
 
         return dr;

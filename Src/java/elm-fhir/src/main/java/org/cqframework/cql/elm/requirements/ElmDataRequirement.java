@@ -116,6 +116,13 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         return propertySet;
     }
 
+    public void addProperty(Property property) {
+        if (propertySet == null) {
+            propertySet = new HashSet<Property>();
+        }
+        propertySet.add(property);
+    }
+
     public void reportProperty(ElmPropertyRequirement propertyRequirement) {
         if (propertySet == null) {
             propertySet = new HashSet<Property>();
@@ -155,6 +162,19 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
             // Build the left-hand as a Property (or Search) against the alias
             // The right-hand is the retrieve codes
             // Code comparator values are in, =, and ~ (may need to support ~in at some point...)
+            //Property p = new Property().withScope(this.getAlias()).withPath(retrieve.getCodeProperty());
+            //ElmPropertyRequirement pr = new ElmPropertyRequirement(this.libraryIdentifier, p, this.getQuerySource(), true);
+            //reportProperty(pr);
+            //ElmExpressionRequirement vs = new ElmExpressionRequirement(this.libraryIdentifier, retrieve.getCodes());
+            //InValueSet ivs = new InValueSet().withCode(p);
+            //if (retrieve.getCodes() instanceof ValueSetRef) {
+            //    ivs.setValueset((ValueSetRef)retrieve.getCodes());
+            //}
+            //else {
+            //    ivs.setValuesetExpression(retrieve.getCodes());
+            //}
+            //ElmConditionRequirement ecr = new ElmConditionRequirement(this.libraryIdentifier, ivs, pr, vs);
+            //addConditionRequirement(ecr);
         }
 
         if (retrieve.getDateProperty() != null || retrieve.getDateSearch() != null || retrieve.getDateLowProperty() != null || retrieve.getDateHighProperty() != null) {
