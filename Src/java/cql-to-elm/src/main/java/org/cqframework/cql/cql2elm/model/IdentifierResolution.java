@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm;
+package org.cqframework.cql.cql2elm.model;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Resolved identifiers is as simple class to maintain a collection of various matches after identifier resolution
  */
-public class ResolvedIdentifierResultHolder {
+public class IdentifierResolution {
 
     //collection of every match made within this method
     private Pair<String, Object> caseMatchedObject;
@@ -74,7 +74,7 @@ public class ResolvedIdentifierResultHolder {
         return caseIgnoredCollection;
     }
 
-    public void absorb(ResolvedIdentifierResultHolder ri) {
+    public void absorb(IdentifierResolution ri) {
         if (ri.getHiddenCaseMatchCollection() != null) {
             this.addAllHidden(ri.getHiddenCaseMatchCollection());
         }

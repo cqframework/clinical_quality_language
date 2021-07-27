@@ -2096,8 +2096,8 @@ public class LibraryBuilder {
     }
 
     // TODO: Support case-insensitive models
-    public ResolvedIdentifierResultHolder resolveProperties(DataType sourceType, String identifier, boolean mustResolve) {
-        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+    public IdentifierResolution resolveProperties(DataType sourceType, String identifier, boolean mustResolve) {
+        IdentifierResolution ri = new IdentifierResolution();
 
         DataType currentType = sourceType;
         while (currentType != null) {
@@ -2261,7 +2261,7 @@ public class LibraryBuilder {
         // 10: The name of a property on a specific context
         // 11: An unresolved identifier error is thrown
 
-        ResolvedIdentifierResultHolder resolvedIdentifierResultHolder = new ResolvedIdentifierResultHolder();
+        IdentifierResolution resolvedIdentifierResultHolder = new IdentifierResolution();
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
         if (inTypeSpecifierContext()) {
@@ -2269,7 +2269,7 @@ public class LibraryBuilder {
         }
 
         //In the sort clause of a plural query, names may be resolved based on the result type of the query
-        ResolvedIdentifierResultHolder queryResultRIRH = resolveQueryResultElements(identifier);
+        IdentifierResolution queryResultRIRH = resolveQueryResultElements(identifier);
         if (queryResultRIRH.getCaseMatchedObject() != null) {
             IdentifierRef resultElement = (IdentifierRef) queryResultRIRH.getCaseMatchedObject().getRight();
             resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, resultElement);
@@ -2278,7 +2278,7 @@ public class LibraryBuilder {
 
 
         // In the case of a $this alias, names may be resolved as implicit property references
-        ResolvedIdentifierResultHolder queryThisRIRH = resolveQueryThisElements(identifier);
+        IdentifierResolution queryThisRIRH = resolveQueryThisElements(identifier);
         if (queryThisRIRH.getCaseMatchedObject() != null) {
             Expression resultElement = (Expression) queryThisRIRH.getCaseMatchedObject().getRight();
             resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, resultElement);
@@ -2306,7 +2306,7 @@ public class LibraryBuilder {
             resolvedIdentifierResultHolder.addCaseIgnoredMatch(identifier, result);
         }
 
-        ResolvedIdentifierResultHolder aliasRIRH = resolveAliases(identifier);
+        IdentifierResolution aliasRIRH = resolveAliases(identifier);
         if (aliasRIRH.getCaseMatchedObject() != null) {
             AliasRef result = of.createAliasRef().withName(identifier);
             AliasedQuerySource aqs = (AliasedQuerySource) aliasRIRH.getCaseMatchedObject().getRight();
@@ -2320,7 +2320,7 @@ public class LibraryBuilder {
         resolvedIdentifierResultHolder.absorb(aliasRIRH);
 
 
-        ResolvedIdentifierResultHolder letsRIRH = resolveQueryLets(identifier);
+        IdentifierResolution letsRIRH = resolveQueryLets(identifier);
         if (letsRIRH.getCaseMatchedObject() != null) {
             QueryLetRef result = of.createQueryLetRef().withName(identifier);
             LetClause let = (LetClause) letsRIRH.getCaseMatchedObject().getRight();
@@ -2330,7 +2330,7 @@ public class LibraryBuilder {
         resolvedIdentifierResultHolder.absorb(letsRIRH);
 
 
-        ResolvedIdentifierResultHolder operandRefRIRH = resolveOperandRefs(identifier);
+        IdentifierResolution operandRefRIRH = resolveOperandRefs(identifier);
         if (operandRefRIRH.getCaseMatchedObject() != null) {
             OperandRef operandRef = (OperandRef) operandRefRIRH.getCaseMatchedObject().getRight();
             resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, operandRef);
@@ -2338,7 +2338,7 @@ public class LibraryBuilder {
         resolvedIdentifierResultHolder.absorb(operandRefRIRH);
 
 
-        ResolvedIdentifierResultHolder resolvedElementsRIRH = resolveElements(identifier);
+        IdentifierResolution resolvedElementsRIRH = resolveElements(identifier);
         if (resolvedElementsRIRH.getCaseMatchedObject() != null) {
             resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, (Expression) resolvedElementsRIRH.getCaseMatchedObject().getRight());
         }
@@ -2438,9 +2438,9 @@ public class LibraryBuilder {
         return S_RESOLVED_MORE_THAN_ONCE + element.getClass();
     }
 
-    private ResolvedIdentifierResultHolder resolveElements(String identifier) {
+    private IdentifierResolution resolveElements(String identifier) {
 
-        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+        IdentifierResolution ri = new IdentifierResolution();
 
         Element element = resolve(identifier);
         List<Pair<String, Object>> caseIgnoredElements = resolveCaseIgnored(identifier);
@@ -2967,8 +2967,8 @@ public class LibraryBuilder {
     }
 
 
-    private ResolvedIdentifierResultHolder resolveQueryResultElements(String identifier) {
-        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+    private IdentifierResolution resolveQueryResultElements(String identifier) {
+        IdentifierResolution ri = new IdentifierResolution();
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
@@ -2982,7 +2982,7 @@ public class LibraryBuilder {
                     result.setResultType(query.getResultElementType());
                     ri.addCaseIgnoredMatch(identifier, result);
                 }
-                ResolvedIdentifierResultHolder propertyRI = resolveProperties(query.getResultElementType(), identifier, false);
+                IdentifierResolution propertyRI = resolveProperties(query.getResultElementType(), identifier, false);
 
                 if (propertyRI.getCaseMatchedObject() != null) {
                     PropertyResolution pr = (PropertyResolution) propertyRI.getCaseMatchedObject().getRight();
@@ -3023,8 +3023,8 @@ public class LibraryBuilder {
         return null;
     }
 
-    private ResolvedIdentifierResultHolder resolveAliases(String identifier) {
-        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+    private IdentifierResolution resolveAliases(String identifier) {
+        IdentifierResolution ri = new IdentifierResolution();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
@@ -3069,12 +3069,12 @@ public class LibraryBuilder {
         return null;
     }
 
-    private ResolvedIdentifierResultHolder resolveQueryThisElements(String identifier) {
-        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+    private IdentifierResolution resolveQueryThisElements(String identifier) {
+        IdentifierResolution ri = new IdentifierResolution();
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.isImplicit()) {
-                ResolvedIdentifierResultHolder aliases = resolveAliases($_THIS);
+                IdentifierResolution aliases = resolveAliases($_THIS);
                 if (aliases.getCaseMatchedObject() != null) {
 
                     AliasedQuerySource src = (AliasedQuerySource) aliases.getCaseMatchedObject().getRight();
@@ -3087,7 +3087,7 @@ public class LibraryBuilder {
                         aliasRef.setResultType(src.getResultType());
                     }
 
-                    ResolvedIdentifierResultHolder propertyRI = resolveProperties(aliasRef.getResultType(), identifier, false);
+                    IdentifierResolution propertyRI = resolveProperties(aliasRef.getResultType(), identifier, false);
 
                     if (propertyRI.getCaseMatchedObject() != null) {
                        ri.setCaseMatchedObject(identifier, resolveAccessor(aliasRef, identifier));
@@ -3132,8 +3132,8 @@ public class LibraryBuilder {
         return null;
     }
 
-    private ResolvedIdentifierResultHolder resolveQueryLets(String identifier) {
-        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+    private IdentifierResolution resolveQueryLets(String identifier) {
+        IdentifierResolution ri = new IdentifierResolution();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
@@ -3167,8 +3167,8 @@ public class LibraryBuilder {
         return null;
     }
 
-    private ResolvedIdentifierResultHolder resolveOperandRefs(String identifier) {
-        ResolvedIdentifierResultHolder ri = new ResolvedIdentifierResultHolder();
+    private IdentifierResolution resolveOperandRefs(String identifier) {
+        IdentifierResolution ri = new IdentifierResolution();
         if (!functionDefs.empty()) {
             for (OperandDef operand : functionDefs.peek().getOperand()) {
                 if (operand.getName().equals(identifier)) {
