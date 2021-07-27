@@ -9,6 +9,8 @@ public class ElmCloner {
         cloneElement(elm, clonedElm);
         clonedElm.setDataType(elm.getDataType());
         clonedElm.setTemplateId(elm.getTemplateId());
+        clonedElm.setContext(clone(elm.getContext()));
+        clonedElm.setContextProperty(elm.getContextProperty());
         clonedElm.setCodeProperty(elm.getCodeProperty());
         clonedElm.setValueSetProperty(elm.getValueSetProperty());
         clonedElm.setCodeSearch(elm.getCodeSearch());
@@ -35,6 +37,10 @@ public class ElmCloner {
 
         for (OtherFilterElement otherFilterElement : elm.getOtherFilter()) {
             clonedElm.getOtherFilter().add(clone(otherFilterElement));
+        }
+
+        for (IncludeElement includeElement : elm.getInclude()) {
+            clonedElm.getInclude().add(clone(includeElement));
         }
 
         return clonedElm;
@@ -88,6 +94,16 @@ public class ElmCloner {
         clonedElm.setSearch(elm.getSearch());
         clonedElm.setComparator(elm.getComparator());
         clonedElm.setValue(clone(elm.getValue()));
+        return clonedElm;
+    }
+
+    public static IncludeElement clone(IncludeElement elm) {
+        IncludeElement clonedElm = new IncludeElement();
+        cloneElement(elm, clonedElm);
+        clonedElm.setRelatedDataType(elm.getRelatedDataType());
+        clonedElm.setRelatedProperty(elm.getRelatedProperty());
+        clonedElm.setRelatedSearch(elm.getRelatedSearch());
+        clonedElm.setIsReverse(elm.isIsReverse());
         return clonedElm;
     }
 

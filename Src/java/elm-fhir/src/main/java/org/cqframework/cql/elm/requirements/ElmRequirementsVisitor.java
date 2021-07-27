@@ -1,9 +1,53 @@
 package org.cqframework.cql.elm.requirements;
 
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
+import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
 
 import javax.xml.namespace.QName;
+
+/*
+This class implements an ELM Visitor to perform static analysis of data and dependency requirements
+for ELM trees.
+
+# Overall optimization/dependency tracing strategy:
+Two different types of requirements, reported requirements and inferred requirements.
+Reported requirements are tracked at the ExpressionDef level and rolled-up across expression defs
+Inferred requirements are inferred through expressions and reported at query boundaries
+  (or reported directly if the retrieve is not defined as part of a query source definition)
+
+The visitor is focused on two main tasks:
+* Gathering dependencies (any artifacts or declarations used)
+* Inferring data requirements (the minimum set of retrieves required to achieve a successful evaluation)
+
+Dependencies in any given visit are tracked cumulatively at the root
+Data Requirements must be tracked as inferred per expression def
+
+So in the context, when a requirement is reported, if it's a data requirement, it's tracked at the expression def level,
+whereas if it's a dependency, it's always tracked at the root.
+
+# Where clause optimization strategy:
+Visit a where clause looking for sargeable conditions of the form:
+
+    A op B
+
+Where:
+* A is an order-preserving expression with a single property reference to a property of some source in the current query context
+* op is a positive relative comparison operation (=, >, <, >=, <=)
+* B is a functional, repeatable, and deterministic context literal expression with respect to the current query context
+
+Gather sargeable conditions as Lists of conditions. At an AND, combine conditions from sub-nodes.
+At an OR, the result is separate lists of condition lists.
+At an AND, if there are already lists of lists, the condition is too complex for analysis (i.e. it's not in DNF or CNF)
+
+At a property, return an ElmPropertyRequirement
+At a literal return an ElmExpressionRequirement w/ contextLiteral true
+At a parameter return an ElmExpressionRequirement w/ contextLiteral true
+At a unary expression, return an ElmExpressionRequirement w/ contextLiteral false
+At a binary comparison expression, return ElmConditionRequirement if possible
+At a logical expression, return ElmConjunctiveRequirement or ElmDisjunctiveRequirement
+
+ */
 public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequirement, ElmRequirementsContext>{
 
     public ElmRequirementsVisitor() {
@@ -22,6 +66,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
         if (result instanceof ElmRequirements) {
             ((ElmRequirements)result).reportRequirement(nextResult);
+            return result;
         }
 
         ElmRequirements requirements = new ElmRequirements(result.getLibraryIdentifier(), result.getElement());
@@ -82,6 +127,16 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     public ElmRequirement visitFunctionRef(FunctionRef elm, ElmRequirementsContext context) {
         context.reportFunctionRef(elm);
         ElmRequirement result = super.visitFunctionRef(elm, context);
+
+        // If the result is a data requirement and the function is cardinality-reducing,
+        // Return as an operator requirement, rather than returning the result
+        if (result instanceof ElmDataRequirement) {
+            if (elm.getOperand().size() != 1 || (elm.getOperand().get(0).getResultType() instanceof ListType && !(elm.getResultType() instanceof ListType))) {
+                // Note that the assumption here is that the data requirement has already been reported to the context
+                return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm).combine((ElmDataRequirement)result);
+            }
+        }
+
         if (result != null) {
             return result;
         }

@@ -9,21 +9,23 @@ import org.fhir.ucum.UcumService;
 import org.hl7.elm.r1.*;
 import ca.uhn.fhir.parser.IParser;
 import org.hl7.elm.r1.Library;
+import org.hl7.fhir.DataRequirementCodeFilter;
 import org.hl7.fhir.r5.model.*;
 import org.testng.annotations.Test;
 import org.cqframework.cql.elm.requirements.fhir.DataRequirementsProcessor;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.testng.Assert.*;
 
 
 public class DataRequirementsProcessorTest {
@@ -73,6 +75,267 @@ public class DataRequirementsProcessorTest {
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private RelatedArtifact getDependency(org.hl7.fhir.r5.model.Library moduleDefinitionLibrary, String url) {
+        for (RelatedArtifact r : moduleDefinitionLibrary.getRelatedArtifact()) {
+            if (r.getType() == RelatedArtifact.RelatedArtifactType.DEPENDSON
+                    && r.getResource().equals(url)) {
+                return r;
+            }
+        }
+
+        return null;
+    }
+
+    private ParameterDefinition getParameter(org.hl7.fhir.r5.model.Library moduleDefinitionLibrary, String parameterName) {
+        for (ParameterDefinition pd : moduleDefinitionLibrary.getParameter()) {
+            if (pd.hasName() && pd.getName().equals(parameterName)) {
+                return pd;
+            }
+        }
+
+        return null;
+    }
+
+    @Test
+    public void TestDataRequirementsProcessorOpioidIssueExpression() {
+        CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
+        try {
+            NamespaceInfo ni = new NamespaceInfo("fhir.cdc.opioid-cds", "http://fhir.org/guides/cdc/opioid-cds");
+            CqlTranslator translator = createTranslator(ni, "OpioidCDSSTU3/cql/OpioidCDSREC10_bug_repo.cql", cqlTranslatorOptions);
+            translator.toELM();
+            assertTrue(translator.getErrors().isEmpty());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            Set<String> expressions = new HashSet<String>();
+            expressions.add("Negative PCP Screenings Count Since Last POS");
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager,
+                    translator.getTranslatedLibrary(), cqlTranslatorOptions, expressions, false);
+            assertNotNull(moduleDefinitionLibrary);
+
+            RelatedArtifact ra = null;
+            // OpioidCDSCommon
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
+
+            // FHIRHelpers
+            ra = getDependency(moduleDefinitionLibrary, "http://hl7.org/fhir/Library/FHIRHelpers|3.0.0");
+            assertNotNull(ra, "Expected depends-on http://hl7.org/fhir/Library/FHIRHelpers|3.0.0");
+
+            // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
+
+            // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
+
+            // parameter "Negative PCP Screenings Count Since Last POS": integer
+            assertTrue(moduleDefinitionLibrary.getParameter().size() == 1);
+            ParameterDefinition pd = moduleDefinitionLibrary.getParameter().get(0);
+            assertEquals(pd.getName(), "Negative PCP Screenings Count Since Last POS");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.INTEGER);
+
+            // dataRequirement Observation {
+            //   ms: { code, category, value, status, status.value, effective },
+            //   codeFilter {
+            //     { category in http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory },
+            //     { code in http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications }
+            //   }
+            // }
+            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 1);
+            DataRequirement dr= moduleDefinitionLibrary.getDataRequirement().get(0);
+            assertEquals(dr.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertTrue(dr.getMustSupport().size() == 6);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("code")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("category")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("value")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("status")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("status.value")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("effective")).count() == 1);
+            assertTrue(dr.getCodeFilter().size() == 2);
+            DataRequirement.DataRequirementCodeFilterComponent cf = null;
+            for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
+                if (drcf.getPath().equals("category") && drcf.getValueSet().equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory")) {
+                    cf = drcf;
+                    break;
+                }
+            }
+            assertNotNull(cf, "Expected filter on category");
+
+            cf = null;
+            for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
+                if (drcf.getPath().equals("code") && drcf.getValueSet().equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications")) {
+                    cf = drcf;
+                    break;
+                }
+            }
+            assertNotNull(cf, "Expected filter on code");
+
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    @Test
+    public void TestDataRequirementsProcessorOpioidIssueLibrary() {
+        CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
+        try {
+            NamespaceInfo ni = new NamespaceInfo("fhir.cdc.opioid-cds", "http://fhir.org/guides/cdc/opioid-cds");
+            CqlTranslator translator = createTranslator(ni, "OpioidCDSSTU3/cql/OpioidCDSREC10_bug_repo.cql", cqlTranslatorOptions);
+            translator.toELM();
+            assertTrue(translator.getErrors().isEmpty());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager,
+                    translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
+            assertNotNull(moduleDefinitionLibrary);
+
+            RelatedArtifact ra = null;
+            // FHIR-ModelInfo
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cqf/common/Library/FHIR-ModelInfo|3.0.0");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cqf/common/Library/FHIR-ModelInfo|3.0.0");
+
+            // FHIRHelpers
+            ra = getDependency(moduleDefinitionLibrary, "http://hl7.org/fhir/Library/FHIRHelpers|3.0.0");
+            assertNotNull(ra, "Expected depends-on http://hl7.org/fhir/Library/FHIRHelpers|3.0.0");
+
+            // OpioidCDSCommon
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommon|1.2.3");
+
+            // OpioidCDSRoutines
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSRoutines|1.2.3");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSRoutines|1.2.3");
+
+            // OpioidCDSCommonConfig
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommonConfig|1.2.3");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/Library/OpioidCDSCommonConfig|1.2.3");
+
+            // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory");
+
+            // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications");
+
+            // depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/cocaine-medications
+            ra = getDependency(moduleDefinitionLibrary, "http://fhir.org/guides/cdc/opioid-cds/ValueSet/cocaine-medications");
+            assertNotNull(ra, "Expected depends-on http://fhir.org/guides/cdc/opioid-cds/ValueSet/cocaine-medications");
+
+            // parameter "Negative PCP Screenings Count Since Last POS": integer
+            ParameterDefinition pd = null;
+
+            pd = getParameter(moduleDefinitionLibrary, "ContextPrescriptions");
+            assertNotNull(pd, "Expected parameter ContextPrescriptions");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.MEDICATIONREQUEST);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.IN);
+            assertEquals(pd.getMax(), "*");
+
+            pd = getParameter(moduleDefinitionLibrary, "Patient");
+            assertNotNull(pd, "Expected parameter Patient");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.PATIENT);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "1");
+
+            pd = getParameter(moduleDefinitionLibrary, "Lookback Year");
+            assertNotNull(pd, "Expected parameter Lookback Year");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.PERIOD);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "1");
+
+            pd = getParameter(moduleDefinitionLibrary, "PCP Screenings");
+            assertNotNull(pd, "Expected parameter PCP Screenings");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "*");
+
+            pd = getParameter(moduleDefinitionLibrary, "Positive PCP Screenings");
+            assertNotNull(pd, "Expected parameter Positive PCP Screenings");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "*");
+
+            pd = getParameter(moduleDefinitionLibrary, "Negative PCP Screenings");
+            assertNotNull(pd, "Expected parameter Negative PCP Screenings");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "*");
+
+            pd = getParameter(moduleDefinitionLibrary, "Negative PCP Screenings Count Since Last POS");
+            assertNotNull(pd, "Expected parameter Negative PCP Screenings Count Since Last POS");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.INTEGER);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "1");
+
+            pd = getParameter(moduleDefinitionLibrary, "Positive PCP Dates in Lookback Period");
+            assertNotNull(pd, "Expected parameter Positive PCP Dates in Lookback Period");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.STRING);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "*");
+
+            pd = getParameter(moduleDefinitionLibrary, "Has Positive Screening for PCP in Last 12 Months");
+            assertNotNull(pd, "Expected parameter Has Positive Screening for PCP in Last 12 Months");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.BOOLEAN);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "1");
+
+            pd = getParameter(moduleDefinitionLibrary, "PCP Summary");
+            assertNotNull(pd, "Expected parameter PCPSummary");
+            assertEquals(pd.getType(), Enumerations.FHIRAllTypes.STRING);
+            assertEquals(pd.getUse(), Enumerations.OperationParameterUse.OUT);
+            assertEquals(pd.getMax(), "1");
+
+            // dataRequirement Observation {
+            //   ms: { code, category, value, status, status.value, effective },
+            //   codeFilter {
+            //     { category in http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory },
+            //     { code in http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications }
+            //   }
+            // }
+            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 2);
+            DataRequirement dr = null;
+            for (DataRequirement r : moduleDefinitionLibrary.getDataRequirement()) {
+                if (r.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+                    dr = r;
+                    break;
+                }
+            }
+            assertNotNull(dr);
+            assertEquals(dr.getType(), Enumerations.FHIRAllTypes.OBSERVATION);
+            assertTrue(dr.getMustSupport().size() == 6);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("code")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("category")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("value")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("status")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("status.value")).count() == 1);
+            assertTrue(dr.getMustSupport().stream().filter(x -> x.getValue().equals("effective")).count() == 1);
+            assertTrue(dr.getCodeFilter().size() == 2);
+            DataRequirement.DataRequirementCodeFilterComponent cf = null;
+            for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
+                if (drcf.getPath().equals("category") && drcf.getValueSet().equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/observation-category-laboratory")) {
+                    cf = drcf;
+                    break;
+                }
+            }
+            assertNotNull(cf, "Expected filter on category");
+
+            cf = null;
+            for (DataRequirement.DataRequirementCodeFilterComponent drcf : dr.getCodeFilter()) {
+                if (drcf.getPath().equals("code") && drcf.getValueSet().equals("http://fhir.org/guides/cdc/opioid-cds/ValueSet/pcp-medications")) {
+                    cf = drcf;
+                    break;
+                }
+            }
+            assertNotNull(cf, "Expected filter on code");
+
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
@@ -191,7 +454,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(measurementPeriod != null);
 
-            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() >= 18);
+            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() >= 15);
             DataRequirement diagnosisRequirement = null;
             for (DataRequirement requirement : moduleDefinitionLibrary.getDataRequirement()) {
                 if (requirement.getType() == Enumerations.FHIRAllTypes.CONDITION && requirement.getCodeFilter().size() == 1) {
