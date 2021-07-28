@@ -102,6 +102,8 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         return new ElmDataRequirement(requirement.libraryIdentifier, getRetrieve(requirement.getExpression()));
     }
 
+    // This is an "inferred" retrieve but from an expression context and so can't be unambiguously tied to the
+    // data layer, and is thus not subject to include optimizations
     private static Retrieve getRetrieve(Expression expression) {
         return (Retrieve)new Retrieve()
                 .withLocalId(expression.getLocalId())
@@ -321,56 +323,59 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         if (leftRequirement != null && rightRequirement != null) {
             Retrieve leftRetrieve = leftRequirement.getRetrieve();
             Retrieve rightRetrieve = rightRequirement.getRetrieve();
-            ClassType leftRetrieveType = getRetrieveType(context, leftRetrieve);
-            ClassType rightRetrieveType = getRetrieveType(context, rightRetrieve);
-            if (leftRetrieveType != null && rightRetrieveType != null) {
-                SearchType leftSearch;
-                SearchType rightSearch;
-                for (SearchType search : leftRetrieveType.getSearches()) {
-                    if (joinRequirement.getLeftProperty().getProperty().getPath().startsWith(search.getPath())) {
-                        if (search.getType().isCompatibleWith(rightRetrieveType)) {
-                            leftSearch = search;
-                            break;
+            // Only report include possibility if the retrieves can both be tied to the data model
+            if (leftRetrieve.getDataType() != null && rightRetrieve.getDataType() != null) {
+                ClassType leftRetrieveType = getRetrieveType(context, leftRetrieve);
+                ClassType rightRetrieveType = getRetrieveType(context, rightRetrieve);
+                if (leftRetrieveType != null && rightRetrieveType != null) {
+                    SearchType leftSearch;
+                    SearchType rightSearch;
+                    for (SearchType search : leftRetrieveType.getSearches()) {
+                        if (joinRequirement.getLeftProperty().getProperty().getPath().startsWith(search.getPath())) {
+                            if (search.getType().isCompatibleWith(rightRetrieveType)) {
+                                leftSearch = search;
+                                break;
+                            }
                         }
                     }
-                }
-                for (SearchType search : rightRetrieveType.getSearches()) {
-                    if (joinRequirement.getRightProperty().getProperty().getPath().startsWith(search.getPath())) {
-                        if (search.getType().isCompatibleWith(leftRetrieveType)) {
-                            rightSearch = search;
-                            break;
+                    for (SearchType search : rightRetrieveType.getSearches()) {
+                        if (joinRequirement.getRightProperty().getProperty().getPath().startsWith(search.getPath())) {
+                            if (search.getType().isCompatibleWith(leftRetrieveType)) {
+                                rightSearch = search;
+                                break;
+                            }
                         }
                     }
+
+                    // Search from the model info should be used to inform the selection, but will in general resolve to multiple choices
+                    // May be a choice better left to the capabilityStatement-informed planning phase anyway
                 }
 
-                // Search from the model info should be used to inform the selection, but will in general resolve to multiple choices
-                // May be a choice better left to the capabilityStatement-informed planning phase anyway
-            }
-
-            // In the absence of search information, either of these formulations is correct, favor primary query sources over withs
-            if (leftRetrieve.getLocalId() == null) {
-                leftRetrieve.setLocalId(context.generateLocalId());
-            }
-            if (rightRetrieve.getLocalId() == null) {
-                rightRetrieve.setLocalId(context.generateLocalId());
-            }
-            if (rightRequirement.getQuerySource() instanceof With) {
-                leftRetrieve.getInclude().add(
-                        new IncludeElement()
-                                .withIncludeFrom(rightRetrieve.getLocalId())
-                                .withRelatedDataType(rightRetrieve.getDataType())
-                                .withRelatedProperty(joinRequirement.getLeftProperty().getProperty().getPath())
-                                .withIsReverse(false));
-                rightRetrieve.setIncludedIn(leftRetrieve.getLocalId());
-            }
-            else {
-                rightRetrieve.getInclude().add(
-                        new IncludeElement()
-                                .withIncludeFrom(leftRetrieve.getLocalId())
-                                .withRelatedDataType(leftRetrieve.getDataType())
-                                .withRelatedProperty(joinRequirement.getRightProperty().getProperty().getPath())
-                                .withIsReverse(false));
-                leftRetrieve.setIncludedIn(rightRetrieve.getLocalId());
+                // In the absence of search information, either of these formulations is correct, favor primary query sources over withs
+                if (leftRetrieve.getLocalId() == null) {
+                    leftRetrieve.setLocalId(context.generateLocalId());
+                }
+                if (rightRetrieve.getLocalId() == null) {
+                    rightRetrieve.setLocalId(context.generateLocalId());
+                }
+                if (rightRequirement.getQuerySource() instanceof With) {
+                    leftRetrieve.getInclude().add(
+                            new IncludeElement()
+                                    .withIncludeFrom(rightRetrieve.getLocalId())
+                                    .withRelatedDataType(rightRetrieve.getDataType())
+                                    .withRelatedProperty(joinRequirement.getLeftProperty().getProperty().getPath())
+                                    .withIsReverse(false));
+                    rightRetrieve.setIncludedIn(leftRetrieve.getLocalId());
+                }
+                else {
+                    rightRetrieve.getInclude().add(
+                            new IncludeElement()
+                                    .withIncludeFrom(leftRetrieve.getLocalId())
+                                    .withRelatedDataType(leftRetrieve.getDataType())
+                                    .withRelatedProperty(joinRequirement.getRightProperty().getProperty().getPath())
+                                    .withIsReverse(false));
+                    leftRetrieve.setIncludedIn(rightRetrieve.getLocalId());
+                }
             }
         }
     }
