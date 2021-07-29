@@ -377,11 +377,31 @@ public class TypeOperatorsTest {
         //assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
+
     @Test
     public void testConvertsToInteger() {
         ExpressionDef def = defs.get("StringConvertsToInteger");
         assertThat(def, hasTypeAndResult(ConvertsToInteger.class, "System.Boolean"));
         ConvertsToInteger convert = (ConvertsToInteger) def.getExpression();
+        assertThat(convert.getOperand(), literalFor("1"));
+        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Integer")));
+        //assertThat(convert.getToTypeSpecifier(), nullValue());
+    }
+
+    @Test
+    public void testToLong() {
+        ExpressionDef def = defs.get("StringToLong");
+        assertThat(def, hasTypeAndResult(ToLong.class, "System.Long"));
+        ToLong convert = (ToLong) def.getExpression();
+        assertThat(convert.getOperand(), literalFor("1"));
+        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Integer"));
+    }
+
+    @Test
+    public void testConvertsToLong() {
+        ExpressionDef def = defs.get("StringConvertsToLong");
+        assertThat(def, hasTypeAndResult(ConvertsToLong.class, "System.Boolean"));
+        ConvertsToLong convert = (ConvertsToLong) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1"));
         //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Integer")));
         //assertThat(convert.getToTypeSpecifier(), nullValue());
