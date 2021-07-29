@@ -377,7 +377,6 @@ public class TypeOperatorsTest {
         //assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
-
     @Test
     public void testConvertsToInteger() {
         ExpressionDef def = defs.get("StringConvertsToInteger");
