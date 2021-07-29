@@ -388,6 +388,25 @@ public class TypeOperatorsTest {
     }
 
     @Test
+    public void testToLong() {
+        ExpressionDef def = defs.get("StringToLong");
+        assertThat(def, hasTypeAndResult(ToLong.class, "System.Long"));
+        ToLong convert = (ToLong) def.getExpression();
+        assertThat(convert.getOperand(), literalFor("1"));
+        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Long"));
+    }
+
+    @Test
+    public void testConvertsToLong() {
+        ExpressionDef def = defs.get("StringConvertsToLong");
+        assertThat(def, hasTypeAndResult(ConvertsToLong.class, "System.Boolean"));
+        ConvertsToLong convert = (ConvertsToLong) def.getExpression();
+        assertThat(convert.getOperand(), literalFor("1"));
+        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Long")));
+        //assertThat(convert.getToTypeSpecifier(), nullValue());
+    }
+
+    @Test
     public void testToDecimal() {
         ExpressionDef def = defs.get("StringToDecimal");
         assertThat(def, hasTypeAndResult(ToDecimal.class, "System.Decimal"));
