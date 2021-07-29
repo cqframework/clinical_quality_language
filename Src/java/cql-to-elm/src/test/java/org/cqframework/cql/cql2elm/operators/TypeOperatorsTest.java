@@ -393,7 +393,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ToLong.class, "System.Long"));
         ToLong convert = (ToLong) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1"));
-        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Integer"));
+        //validateTyping(convert, new QName("urn:hl7-org:elm-types:r1", "Long"));
     }
 
     @Test
@@ -402,7 +402,7 @@ public class TypeOperatorsTest {
         assertThat(def, hasTypeAndResult(ConvertsToLong.class, "System.Boolean"));
         ConvertsToLong convert = (ConvertsToLong) def.getExpression();
         assertThat(convert.getOperand(), literalFor("1"));
-        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Integer")));
+        //assertThat(convert.getToType(), is(new QName("urn:hl7-org:elm-types:r1", "Long")));
         //assertThat(convert.getToTypeSpecifier(), nullValue());
     }
 
