@@ -134,6 +134,28 @@ public class ComparableElmRequirement {
                 && stringsEqual(left.getRelatedSearch(), right.getRelatedSearch());
     }
 
+    public static boolean includeElementsEqual(Iterable<IncludeElement> left, Iterable<IncludeElement> right) {
+        // TODO: Don't rely on order dependence here...
+        Iterator<IncludeElement> leftIterator = left.iterator();
+        Iterator<IncludeElement> rightIterator = right.iterator();
+
+        while (leftIterator.hasNext()) {
+            IncludeElement leftElement = leftIterator.next();
+
+            if (!rightIterator.hasNext()) {
+                return false;
+            }
+
+            IncludeElement rightElement = rightIterator.next();
+
+            if (!includeElementsEqual(leftElement, rightElement)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof ComparableElmRequirement) {
@@ -168,7 +190,10 @@ public class ComparableElmRequirement {
                 && stringsEqual(retrieve.getId(), otherRetrieve.getId())
                 && codeFiltersEqual(retrieve.getCodeFilter(), otherRetrieve.getCodeFilter())
                 && dateFiltersEqual(retrieve.getDateFilter(), otherRetrieve.getDateFilter())
-                && otherFiltersEqual(retrieve.getOtherFilter(), otherRetrieve.getOtherFilter());
+                && otherFiltersEqual(retrieve.getOtherFilter(), otherRetrieve.getOtherFilter())
+                // TODO: support for collapsing includes
+                && stringsEqual(retrieve.getIncludedIn(), otherRetrieve.getIncludedIn())
+                && includeElementsEqual(retrieve.getInclude(), otherRetrieve.getInclude());
     }
 
     private static boolean hasInclude(Retrieve retrieve, IncludeElement includeElement) {

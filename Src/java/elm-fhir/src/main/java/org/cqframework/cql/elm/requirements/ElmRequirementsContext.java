@@ -421,8 +421,12 @@ public class ElmRequirementsContext {
         if (requirement == null) {
             Retrieve retrieve = new Retrieve();
             retrieve.setDataType(typeName);
+            if (typeName.getNamespaceURI() != null && typeName.getLocalPart() != null) {
+                retrieve.setTemplateId(typeName.getNamespaceURI() + "/" + typeName.getLocalPart());
+            }
             requirement = new ElmDataRequirement(getCurrentLibraryIdentifier(), retrieve);
             unboundDataRequirements.put(typeName, requirement);
+            reportRequirement(requirement);
         }
 
         return requirement;

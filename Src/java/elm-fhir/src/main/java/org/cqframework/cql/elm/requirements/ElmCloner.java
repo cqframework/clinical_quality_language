@@ -11,6 +11,8 @@ public class ElmCloner {
         clonedElm.setTemplateId(elm.getTemplateId());
         clonedElm.setContext(clone(elm.getContext()));
         clonedElm.setContextProperty(elm.getContextProperty());
+        clonedElm.setContextSearch(elm.getContextSearch());
+        // Do not clone includedIn, contains a reference that would need to be updated
         clonedElm.setCodeProperty(elm.getCodeProperty());
         clonedElm.setValueSetProperty(elm.getValueSetProperty());
         clonedElm.setCodeSearch(elm.getCodeSearch());
@@ -100,6 +102,7 @@ public class ElmCloner {
     public static IncludeElement clone(IncludeElement elm) {
         IncludeElement clonedElm = new IncludeElement();
         cloneElement(elm, clonedElm);
+        // Do not set includeFrom, contains a reference that would need to be updated
         clonedElm.setRelatedDataType(elm.getRelatedDataType());
         clonedElm.setRelatedProperty(elm.getRelatedProperty());
         clonedElm.setRelatedSearch(elm.getRelatedSearch());
