@@ -194,7 +194,7 @@ public class DataRequirementsProcessorTest {
             libraryManager.cacheLibrary(translator.getTranslatedLibrary());
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager,
-                    translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
+                    translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false, true);
             assertNotNull(moduleDefinitionLibrary);
 
             RelatedArtifact ra = null;
