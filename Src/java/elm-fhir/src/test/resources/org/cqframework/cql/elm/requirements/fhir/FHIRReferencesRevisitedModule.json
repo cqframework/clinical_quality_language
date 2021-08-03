@@ -1,0 +1,226 @@
+{
+  "resourceType": "Library",
+  "status": "active",
+  "type": {
+    "coding": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/library-type",
+      "code": "module-definition"
+    } ]
+  },
+  "date": "2021-07-30T10:05:44-06:00",
+  "relatedArtifact": [ {
+    "type": "depends-on",
+    "display": "FHIR model information",
+    "resource": "http://fhir.org/guides/cqf/common/Library/FHIR-ModelInfo|4.0.1"
+  }, {
+    "type": "depends-on",
+    "display": "Library FHIRHelpers",
+    "resource": "Library/FHIRHelpers|4.0.1"
+  }, {
+    "type": "depends-on",
+    "display": "Value set Diabetes",
+    "resource": "TBD"
+  } ],
+  "parameter": [ {
+    "name": "Patient",
+    "use": "out",
+    "min": 0,
+    "max": "1",
+    "type": "Patient"
+  }, {
+    "name": "MedicationRequestWithEncounter",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "MedicationRequest"
+  }, {
+    "name": "PatientManagedByHealthcareProvider",
+    "use": "out",
+    "min": 0,
+    "max": "1",
+    "type": "Patient"
+  }, {
+    "name": "EncountersWithDiabetes",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "Encounter"
+  }, {
+    "name": "MedicationRequestForAspirin",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "MedicationRequest"
+  }, {
+    "name": "MedicationRequestWithAspirin",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "MedicationRequest"
+  }, {
+    "name": "TestMedicationRequest1",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "MedicationRequest"
+  }, {
+    "name": "TestMedicationRequest1A",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "MedicationRequest"
+  }, {
+    "name": "TestMedicationRequest1B",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "MedicationRequest"
+  }, {
+    "name": "TestMedicationRequest1C",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "MedicationRequest"
+  }, {
+    "name": "TestMedicationRequirement",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "Medication"
+  }, {
+    "name": "TestBoundDataRequirement",
+    "use": "out",
+    "min": 0,
+    "max": "*",
+    "type": "Medication"
+  } ],
+  "dataRequirement": [ {
+    "type": "Patient",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ]
+  }, {
+    "id": "G10004",
+    "type": "Patient",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ],
+    "mustSupport": [ "managingOrganization", "managingOrganization.reference" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement",
+      "extension": [ {
+        "url": "targetId",
+        "valueString": "G10002"
+      }, {
+        "url": "targetProperty",
+        "valueString": "encounter"
+      } ]
+    } ],
+    "type": "Encounter",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Encounter" ],
+    "mustSupport": [ "id" ]
+  }, {
+    "type": "Encounter",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Encounter" ],
+    "mustSupport": [ "reasonReference" ]
+  }, {
+    "id": "G10002",
+    "type": "MedicationRequest",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/MedicationRequest" ],
+    "mustSupport": [ "encounter.reference", "encounter" ]
+  }, {
+    "id": "G10006",
+    "type": "MedicationRequest",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/MedicationRequest" ],
+    "mustSupport": [ "medication.reference", "medication" ]
+  }, {
+    "type": "MedicationRequest",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/MedicationRequest" ],
+    "mustSupport": [ "medication.reference", "medication", "medication.reference.code" ],
+    "codeFilter": [ {
+      "path": "medication.reference.code",
+      "valueSet": "TBD"
+    } ]
+  }, {
+    "type": "MedicationRequest",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/MedicationRequest" ],
+    "mustSupport": [ "medication.reference", "medication" ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement",
+      "extension": [ {
+        "url": "targetId",
+        "valueString": "G10004"
+      }, {
+        "url": "targetProperty",
+        "valueString": "managingOrganization"
+      } ]
+    } ],
+    "type": "Organization",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Organization" ],
+    "mustSupport": [ "id", "type" ],
+    "codeFilter": [ {
+      "path": "type",
+      "valueSet": "TBD"
+    } ]
+  }, {
+    "type": "Condition",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Condition" ],
+    "mustSupport": [ "code", "id" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "TBD"
+    }, {
+      "path": "id"
+    } ]
+  }, {
+    "extension": [ {
+      "url": "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-relatedRequirement",
+      "extension": [ {
+        "url": "targetId",
+        "valueString": "G10006"
+      }, {
+        "url": "targetProperty",
+        "valueString": "medication"
+      } ]
+    } ],
+    "type": "Medication",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Medication" ],
+    "mustSupport": [ "code", "id" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "TBD"
+    } ]
+  }, {
+    "type": "Medication",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Medication" ],
+    "mustSupport": [ "id" ],
+    "codeFilter": [ {
+      "path": "id"
+    } ]
+  }, {
+    "type": "Medication",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Medication" ],
+    "mustSupport": [ "code" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "TBD"
+    } ]
+  }, {
+    "type": "Medication",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Medication" ],
+    "mustSupport": [ "code" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "TBD"
+    } ]
+  }, {
+    "type": "Medication",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Medication" ]
+  }, {
+    "type": "Medication",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Medication" ],
+    "mustSupport": [ "code" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "TBD"
+    } ]
+  } ]
+}

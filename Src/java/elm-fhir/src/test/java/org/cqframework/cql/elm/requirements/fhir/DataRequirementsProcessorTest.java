@@ -478,6 +478,28 @@ public class DataRequirementsProcessorTest {
         }
     }
 
+    @Test
+    public void TestDataRequirementsFHIRReferences() {
+        CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
+        try {
+            CqlTranslator translator = createTranslator("FHIRReferencesRevisited.cql", cqlTranslatorOptions);
+            translator.toELM();
+            assertTrue(translator.getErrors().isEmpty());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
+
+            FhirContext context =  FhirContext.forR5();
+            IParser parser = context.newJsonParser();
+            String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
+            logger.debug(moduleDefString);
+            // TODO: Validate consolidation of requirements
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
     private CqlTranslatorOptions getTranslatorOptions() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
         cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
