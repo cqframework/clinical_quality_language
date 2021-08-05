@@ -63,6 +63,10 @@ public class ComparableElmRequirement {
             }
         }
 
+        if (rightIterator.hasNext()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -91,6 +95,10 @@ public class ComparableElmRequirement {
             if (!dateFilterElementsEqual(leftElement, rightElement)) {
                 return false;
             }
+        }
+
+        if (rightIterator.hasNext()) {
+            return false;
         }
 
         return true;
@@ -123,6 +131,10 @@ public class ComparableElmRequirement {
             }
         }
 
+        if (rightIterator.hasNext()) {
+            return false;
+        }
+
         return true;
     }
 
@@ -151,6 +163,10 @@ public class ComparableElmRequirement {
             if (!includeElementsEqual(leftElement, rightElement)) {
                 return false;
             }
+        }
+
+        if (rightIterator.hasNext()) {
+            return false;
         }
 
         return true;

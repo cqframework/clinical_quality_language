@@ -34,7 +34,15 @@ public class DataRequirementsProcessor {
         return this.validationMessages;
     }
 
-    public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary, CqlTranslatorOptions options, Set<String> expressions, boolean includeLogicDefinitions) {
+    public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
+                                          CqlTranslatorOptions options, Set<String> expression,
+                                          boolean includeLogicDefinitions) {
+        return gatherDataRequirements(libraryManager, translatedLibrary, options, expression, includeLogicDefinitions, false, false);
+    }
+
+    public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
+                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          boolean includeLogicDefinitions, boolean collapseRequirements, boolean analyzeRequirements) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager required");
         }
@@ -44,7 +52,7 @@ public class DataRequirementsProcessor {
         }
 
         ElmRequirementsVisitor visitor = new ElmRequirementsVisitor();
-        ElmRequirementsContext context = new ElmRequirementsContext(libraryManager, options, visitor);
+        ElmRequirementsContext context = new ElmRequirementsContext(libraryManager, options, visitor, analyzeRequirements);
 
         List<ExpressionDef> expressionDefs = null;
         if (expressions == null) {
@@ -86,7 +94,9 @@ public class DataRequirementsProcessor {
         }
 
         // Collapse the requirements
-        requirements = requirements.collapse();
+        if (collapseRequirements) {
+            requirements = requirements.collapse();
+        }
 
         return createLibrary(context, requirements, translatedLibrary.getIdentifier(), expressionDefs, includeLogicDefinitions);
     }
@@ -613,6 +623,9 @@ public class DataRequirementsProcessor {
         // Add any related data requirements
         if (retrieve.getIncludedIn() != null) {
             Retrieve relatedRetrieve = retrieveMap.get(retrieve.getIncludedIn());
+            if (relatedRetrieve == null) {
+                throw new IllegalArgumentException(String.format("Could not resolve related retrieve with localid %s", retrieve.getIncludedIn()));
+            }
             IncludeElement includeElement = null;
             for (IncludeElement ie : relatedRetrieve.getInclude()) {
                 if (ie.getIncludeFrom() != null && ie.getIncludeFrom().equals(retrieve.getLocalId())) {

@@ -13,6 +13,22 @@ import java.util.*;
 
 public class ElmRequirementsContext {
 
+    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor, boolean analyzeRequirements) {
+        if (libraryManager == null) {
+            throw new IllegalArgumentException("Library Manager required");
+        }
+        this.libraryManager = libraryManager;
+        this.options = options;
+        this.analyzeRequirements = analyzeRequirements;
+        this.typeResolver = new TypeResolver(libraryManager);
+
+        if (visitor == null) {
+            throw new IllegalArgumentException("visitor required");
+        }
+        this.visitor = visitor;
+        this.requirements = new ElmRequirements(new VersionedIdentifier().withId("result"), new Null());
+    }
+
     private CqlTranslatorOptions options;
     public CqlTranslatorOptions getOptions() {
         return options;
@@ -24,6 +40,11 @@ public class ElmRequirementsContext {
     private LibraryManager libraryManager;
     public LibraryManager getLibraryManager() {
         return libraryManager;
+    }
+
+    private boolean analyzeRequirements;
+    public boolean getAnalyzeRequirements() {
+        return analyzeRequirements;
     }
 
     private TypeResolver typeResolver;
@@ -70,7 +91,7 @@ public class ElmRequirementsContext {
     }
 
     /*
-    Reported requirements are collected during the traversal, reported at query boundaries, or  at retrieves
+    Reported requirements are collected during the traversal, reported at query boundaries, or at retrieves
     that are outside of a query scope.
     These are collected by the ElmExpressionDefContext as expression defs are visited, and reported to the context after
     the visit is complete
@@ -161,21 +182,6 @@ public class ElmRequirementsContext {
     private ElmRequirementsVisitor visitor;
     public ElmRequirementsVisitor getVisitor() {
         return visitor;
-    }
-
-    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor) {
-        if (libraryManager == null) {
-            throw new IllegalArgumentException("Library Manager required");
-        }
-        this.libraryManager = libraryManager;
-        this.options = options;
-        this.typeResolver = new TypeResolver(libraryManager);
-
-        if (visitor == null) {
-            throw new IllegalArgumentException("visitor required");
-        }
-        this.visitor = visitor;
-        this.requirements = new ElmRequirements(new VersionedIdentifier().withId("result"), new Null());
     }
 
     private boolean isDefinition(Element elm) {
