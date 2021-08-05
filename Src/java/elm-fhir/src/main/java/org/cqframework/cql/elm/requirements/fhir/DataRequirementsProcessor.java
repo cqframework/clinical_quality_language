@@ -37,12 +37,12 @@ public class DataRequirementsProcessor {
     public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
                                           CqlTranslatorOptions options, Set<String> expression,
                                           boolean includeLogicDefinitions) {
-        return gatherDataRequirements(libraryManager, translatedLibrary, options, expression, includeLogicDefinitions, false);
+        return gatherDataRequirements(libraryManager, translatedLibrary, options, expression, includeLogicDefinitions, false, false);
     }
 
     public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
                                           CqlTranslatorOptions options, Set<String> expressions,
-                                          boolean includeLogicDefinitions, boolean collapseRequirements) {
+                                          boolean includeLogicDefinitions, boolean collapseRequirements, boolean analyzeRequirements) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager required");
         }
@@ -52,7 +52,7 @@ public class DataRequirementsProcessor {
         }
 
         ElmRequirementsVisitor visitor = new ElmRequirementsVisitor();
-        ElmRequirementsContext context = new ElmRequirementsContext(libraryManager, options, visitor);
+        ElmRequirementsContext context = new ElmRequirementsContext(libraryManager, options, visitor, analyzeRequirements);
 
         List<ExpressionDef> expressionDefs = null;
         if (expressions == null) {

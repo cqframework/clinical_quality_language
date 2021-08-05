@@ -161,9 +161,9 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
         // TODO: childResult reporting?
         super.visitRetrieve(elm, context);
         ElmDataRequirement result = new ElmDataRequirement(context.getCurrentLibraryIdentifier(), elm);
-        // If not in a query context, report the data requirement
+        // If not analyzing requirements, or in a query context, report the data requirement
         // If in a query context, the requirement will be reported as an inferred requirement at the query boundary
-        if (!context.inQueryContext()) {
+        if (!context.getAnalyzeRequirements() || !context.inQueryContext()) {
             context.reportRequirements(result, null);
         }
         return result;

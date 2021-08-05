@@ -132,7 +132,9 @@ public class ElmQueryContext {
         queryRequirement.addChildRequirements(childRequirements);
 
         // distribute query requirements to each alias
-        queryRequirement.distributeExpressionRequirement(queryRequirements, context);
+        if (context.getAnalyzeRequirements()) {
+            queryRequirement.distributeExpressionRequirement(queryRequirements, context);
+        }
 
         return queryRequirement;
     }
