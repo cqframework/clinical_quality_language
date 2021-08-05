@@ -105,6 +105,8 @@ public class DataRequirementsProcessorTest {
     public void TestDataRequirementsProcessorOpioidIssueExpression() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
         cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         try {
             NamespaceInfo ni = new NamespaceInfo("fhir.cdc.opioid-cds", "http://fhir.org/guides/cdc/opioid-cds");
             CqlTranslator translator = createTranslator(ni, "OpioidCDSSTU3/cql/OpioidCDSREC10_bug_repo.cql", cqlTranslatorOptions);
@@ -115,7 +117,7 @@ public class DataRequirementsProcessorTest {
             Set<String> expressions = new HashSet<String>();
             expressions.add("Negative PCP Screenings Count Since Last POS");
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager,
-                    translator.getTranslatedLibrary(), cqlTranslatorOptions, expressions, false, true, true);
+                    translator.getTranslatedLibrary(), cqlTranslatorOptions, expressions, false);
             assertNotNull(moduleDefinitionLibrary);
 
             RelatedArtifact ra = null;
@@ -186,6 +188,8 @@ public class DataRequirementsProcessorTest {
     public void TestDataRequirementsProcessorOpioidIssueLibrary() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
         cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         try {
             NamespaceInfo ni = new NamespaceInfo("fhir.cdc.opioid-cds", "http://fhir.org/guides/cdc/opioid-cds");
             CqlTranslator translator = createTranslator(ni, "OpioidCDSSTU3/cql/OpioidCDSREC10_bug_repo.cql", cqlTranslatorOptions);
@@ -194,7 +198,7 @@ public class DataRequirementsProcessorTest {
             libraryManager.cacheLibrary(translator.getTranslatedLibrary());
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager,
-                    translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false, true, true);
+                    translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
             assertNotNull(moduleDefinitionLibrary);
 
             RelatedArtifact ra = null;
@@ -507,6 +511,8 @@ public class DataRequirementsProcessorTest {
     }
 
     private CqlTranslator setupDataRequirementsAnalysis(String fileName, CqlTranslatorOptions cqlTranslatorOptions) throws IOException {
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         CqlTranslator translator = createTranslator(fileName, cqlTranslatorOptions);
         translator.toELM();
         assertTrue(translator.getErrors().isEmpty());
@@ -516,14 +522,14 @@ public class DataRequirementsProcessorTest {
 
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(CqlTranslator translator, CqlTranslatorOptions cqlTranslatorOptions) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false, true, true);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
         assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }
 
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(CqlTranslator translator, CqlTranslatorOptions cqlTranslatorOptions, Set<String> expressions) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, expressions, false, true, true);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, expressions, false);
         assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
         return moduleDefinitionLibrary;
     }

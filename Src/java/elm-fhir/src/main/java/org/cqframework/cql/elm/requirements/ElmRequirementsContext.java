@@ -13,13 +13,12 @@ import java.util.*;
 
 public class ElmRequirementsContext {
 
-    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor, boolean analyzeRequirements) {
+    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("Library Manager required");
         }
         this.libraryManager = libraryManager;
         this.options = options;
-        this.analyzeRequirements = analyzeRequirements;
         this.typeResolver = new TypeResolver(libraryManager);
 
         if (visitor == null) {
@@ -40,11 +39,6 @@ public class ElmRequirementsContext {
     private LibraryManager libraryManager;
     public LibraryManager getLibraryManager() {
         return libraryManager;
-    }
-
-    private boolean analyzeRequirements;
-    public boolean getAnalyzeRequirements() {
-        return analyzeRequirements;
     }
 
     private TypeResolver typeResolver;
