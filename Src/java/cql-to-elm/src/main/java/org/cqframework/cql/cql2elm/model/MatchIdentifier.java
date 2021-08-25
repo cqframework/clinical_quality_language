@@ -1,7 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.cqframework.cql.cql2elm.ConditionalIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +31,6 @@ public class MatchIdentifier {
 
     public static MatchIdentifier checkMatch(String identifier, String val, String checkVal, Object resolvedIdentifier) {
         return new MatchIdentifier(identifier, Match.checkMatch(val, checkVal), resolvedIdentifier);
-    }
-
-    /**
-     * This method is used to set a different identifier given a match condition
-     * @param val
-     * @param checkVal
-     * @param conditionalIdentifier
-     * @return
-     */
-    public static MatchIdentifier checkMatch(String identifier, String val, String checkVal, ConditionalIdentifier conditionalIdentifier) {
-        Match matchType = Match.checkMatch(val, checkVal);
-        Object resolvedIdentifier = conditionalIdentifier.getConditionalIdentifier(matchType);
-        return new MatchIdentifier(identifier, matchType, resolvedIdentifier);
     }
 
     public Match getMatchType() {
