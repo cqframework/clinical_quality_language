@@ -173,6 +173,11 @@ public class LibraryTests {
             translator = CqlTranslator.fromStream(
                     LibraryTests.class.getResourceAsStream("LibraryTests/HiddenIdentifier.cql"),
                     modelManager, libraryManager);
+
+            for (CqlTranslatorException c : translator.getWarnings()){
+                System.out.println(c.getMessage());
+            }
+
             assertThat(translator.getWarnings().size(), is(9));
         }
         catch (IOException e) {

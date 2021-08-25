@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
@@ -2096,8 +2097,8 @@ public class LibraryBuilder {
     }
 
     // TODO: Support case-insensitive models
-    public IdentifierResolution resolveProperties(DataType sourceType, String identifier, boolean mustResolve) {
-        IdentifierResolution ri = new IdentifierResolution();
+    public List<MatchIdentifier> resolveProperties(DataType sourceType, String identifier, boolean mustResolve) {
+        List<MatchIdentifier> matchList = new ArrayList<>();
 
         DataType currentType = sourceType;
         while (currentType != null) {
@@ -2106,59 +2107,38 @@ public class LibraryBuilder {
                 if (identifier.startsWith("?") && isCompatibleWith(COMPATIBILITY_LEVEL_1_5)) {
                     String searchPath = identifier.substring(1);
                     for (SearchType s : classType.getSearches()) {
-                        if (s.getName().equals(searchPath)) {
-                            ri.setCaseMatchedObject(searchPath, new PropertyResolution(s));
-                        }
-                        else if (s.getName().equalsIgnoreCase(searchPath)) {
-                            ri.addCaseIgnoredMatch(searchPath, new PropertyResolution(s));
-                        }
+                        matchList.add(MatchIdentifier.checkMatch(identifier, s.getName(), searchPath, new PropertyResolution(s)));
                     }
                 }
                 else {
                     for (ClassTypeElement e : classType.getElements()) {
-                        if (e.getName().equals(identifier)) {
+                        MatchIdentifier mi = MatchIdentifier.checkMatch(identifier, e.getName(), identifier, new PropertyResolution(e));
+                        if (mi.getMatchType() != Match.NONE){
                             if (e.isProhibited()) {
                                 throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
                             }
-
-                            ri.setCaseMatchedObject(identifier, new PropertyResolution(e));
+                            matchList.add(mi);
                         }
-                        else if (e.getName().equalsIgnoreCase(identifier)) {
-                            ri.addCaseIgnoredMatch(identifier, new PropertyResolution((e)));
-                        }
-
                     }
                 }
             }
             else if (currentType instanceof TupleType) {
                 TupleType tupleType = (TupleType)currentType;
                 for (TupleTypeElement e : tupleType.getElements()) {
-                    if (e.getName().equals(identifier)) {
-                        ri.setCaseMatchedObject(identifier, new PropertyResolution(e));
-                    }
-                    else if (e.getName().equalsIgnoreCase(identifier)) {
-                        ri.addCaseIgnoredMatch(identifier, new PropertyResolution(e));
-                    }
+                    matchList.add(MatchIdentifier.checkMatch(identifier, e.getName(), identifier, new PropertyResolution(e)));
                 }
             }
             else if (currentType instanceof IntervalType) {
                 IntervalType intervalType = (IntervalType)currentType;
-                if (identifier.equals(HIGH)){
-                    ri.setCaseMatchedObject(identifier, new PropertyResolution(intervalType.getPointType(), identifier));
-                }
-                else if (identifier.equals(HIGH_CLOSED)) {
-                    ri.setCaseMatchedObject(identifier, new PropertyResolution(resolveTypeName("System", "Boolean"), identifier));
-                }
-                else if (identifier.equalsIgnoreCase(HIGH)) {
-                    ri.addCaseIgnoredMatch(identifier, new PropertyResolution(intervalType.getPointType(), identifier));
-                }
-                else if (identifier.equalsIgnoreCase(HIGH_CLOSED)) {
-                    ri.addCaseIgnoredMatch(identifier, new PropertyResolution(resolveTypeName("System", "Boolean"), identifier));
-                }
-                else {
-                    // ERROR:
+
+                MatchIdentifier high = MatchIdentifier.checkMatch(identifier, identifier, HIGH, new PropertyResolution(intervalType.getPointType(), identifier));
+                MatchIdentifier highClosed = MatchIdentifier.checkMatch(identifier, identifier, HIGH_CLOSED, new PropertyResolution(resolveTypeName("System", "Boolean"), identifier));
+
+                if (high.getMatchType().equals(Match.NONE) && highClosed.getMatchType().equals(Match.NONE)){
                     throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
                 }
+                matchList.add(high);
+                matchList.add(highClosed);
 
             }
             else if (currentType instanceof ChoiceType) {
@@ -2205,12 +2185,13 @@ public class LibraryBuilder {
 
                 // The result type is a choice of all the resolved types
                 if (resultTypes.size() > 1) {
-                    ri.setCaseMatchedObject(identifier, new PropertyResolution(new ChoiceType(resultTypes), name, resultTargetMaps));
+                    matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, new PropertyResolution(new ChoiceType(resultTypes), name, resultTargetMaps)));
+
                 }
 
                 if (resultTypes.size() == 1) {
                     for (DataType resultType : resultTypes) {
-                        ri.setCaseMatchedObject(identifier, new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name));
+                        matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name)));
                     }
                 }
             }
@@ -2219,7 +2200,8 @@ public class LibraryBuilder {
                 // Resolve property as a list of items of property of the element type
                 ListType listType = (ListType)currentType;
                 PropertyResolution resolution = resolveProperty(listType.getElementType(), identifier);
-                ri.setCaseMatchedObject(identifier, new PropertyResolution(new ListType(resolution.getType()), resolution.getTargetMap()));
+
+                matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, new PropertyResolution(new ListType(resolution.getType()), resolution.getTargetMap())));
             }
 
             if (currentType.getBaseType() != null) {
@@ -2235,7 +2217,7 @@ public class LibraryBuilder {
             throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
         }
 
-        return ri;
+        return matchList;
     }
 
     /**
@@ -2261,88 +2243,74 @@ public class LibraryBuilder {
         // 10: The name of a property on a specific context
         // 11: An unresolved identifier error is thrown
 
-        IdentifierResolution resolvedIdentifierResultHolder = new IdentifierResolution();
+//        IdentifierResolution resolvedIdentifierResultHolder = new IdentifierResolution();
+
+        List<MatchIdentifier> matchList = new ArrayList<>();
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
         if (inTypeSpecifierContext()) {
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, this.createLiteral(identifier));
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, this.createLiteral(identifier)));
         }
 
         //In the sort clause of a plural query, names may be resolved based on the result type of the query
-        IdentifierResolution queryResultRIRH = resolveQueryResultElements(identifier);
-        if (queryResultRIRH.getCaseMatchedObject() != null) {
-            IdentifierRef resultElement = (IdentifierRef) queryResultRIRH.getCaseMatchedObject().getRight();
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, resultElement);
-        }
-        resolvedIdentifierResultHolder.absorb(queryResultRIRH);
-
+        matchList.addAll(resolveQueryResultElements(identifier));
 
         // In the case of a $this alias, names may be resolved as implicit property references
-        IdentifierResolution queryThisRIRH = resolveQueryThisElements(identifier);
-        if (queryThisRIRH.getCaseMatchedObject() != null) {
-            Expression resultElement = (Expression) queryThisRIRH.getCaseMatchedObject().getRight();
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, resultElement);
-        }
-        resolvedIdentifierResultHolder.absorb(queryThisRIRH);
+        matchList.addAll(resolveQueryThisElements(identifier));
 
-
-        if (identifier.equals($_INDEX)) {
+        if (Match.checkMatch(identifier, $_INDEX) != Match.NONE) {
             Iteration result = of.createIteration();
             result.setResultType(resolveTypeName(SYSTEM, INTEGER));
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, result);
-        } else if (identifier.equalsIgnoreCase($_INDEX)) {
-            Iteration result = of.createIteration();
-            result.setResultType(resolveTypeName(SYSTEM, INTEGER));
-            resolvedIdentifierResultHolder.addCaseIgnoredMatch(identifier, result);
+            matchList.add(MatchIdentifier.checkMatch(identifier, identifier, $_INDEX, result));
         }
 
-        if (identifier.equals($_TOTAL)) {
+        if (Match.checkMatch(identifier, $_TOTAL) != Match.NONE) {
             Total result = of.createTotal();
             result.setResultType(resolveTypeName(SYSTEM, DECIMAL)); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, result);
-        } else if (identifier.equalsIgnoreCase($_TOTAL)) {
-            Total result = of.createTotal();
-            result.setResultType(resolveTypeName(SYSTEM, DECIMAL)); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            resolvedIdentifierResultHolder.addCaseIgnoredMatch(identifier, result);
+            matchList.add(MatchIdentifier.checkMatch(identifier, identifier, $_TOTAL, result));
         }
 
-        IdentifierResolution aliasRIRH = resolveAliases(identifier);
-        if (aliasRIRH.getCaseMatchedObject() != null) {
+
+        List<MatchIdentifier> aliasMatches = resolveAliases(identifier);
+        MatchIdentifier aliasFirstCaseMatch = MatchIdentifier.getFirstCaseMatch(aliasMatches);
+        if (aliasFirstCaseMatch != null) {
             AliasRef result = of.createAliasRef().withName(identifier);
-            AliasedQuerySource aqs = (AliasedQuerySource) aliasRIRH.getCaseMatchedObject().getRight();
+            AliasedQuerySource aqs = (AliasedQuerySource) aliasFirstCaseMatch.getResolvedIdentifier();
             if (aqs.getResultType() instanceof ListType) {
                 result.setResultType(((ListType) aqs.getResultType()).getElementType());
             } else {
                 result.setResultType(aqs.getResultType());
             }
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, result);
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, result));
         }
-        resolvedIdentifierResultHolder.absorb(aliasRIRH);
+        matchList.addAll(aliasMatches);
 
 
-        IdentifierResolution letsRIRH = resolveQueryLets(identifier);
-        if (letsRIRH.getCaseMatchedObject() != null) {
+        List<MatchIdentifier> letsMatches = resolveQueryLets(identifier);
+        MatchIdentifier letsFirstCaseMatch = MatchIdentifier.getFirstCaseMatch(letsMatches);
+        if (letsFirstCaseMatch != null) {
             QueryLetRef result = of.createQueryLetRef().withName(identifier);
-            LetClause let = (LetClause) letsRIRH.getCaseMatchedObject().getRight();
+            LetClause let = (LetClause) letsFirstCaseMatch.getResolvedIdentifier();
             result.setResultType(let.getResultType());
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, result);
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, result));
         }
-        resolvedIdentifierResultHolder.absorb(letsRIRH);
+        matchList.addAll(letsMatches);
 
-
-        IdentifierResolution operandRefRIRH = resolveOperandRefs(identifier);
-        if (operandRefRIRH.getCaseMatchedObject() != null) {
-            OperandRef operandRef = (OperandRef) operandRefRIRH.getCaseMatchedObject().getRight();
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, operandRef);
+        List<MatchIdentifier> operandRefMatches = resolveOperandRefs(identifier);
+        MatchIdentifier operandFirstCaseMatch = MatchIdentifier.getFirstCaseMatch(operandRefMatches);
+        if (operandFirstCaseMatch != null) {
+            OperandRef operandRef = (OperandRef) operandFirstCaseMatch.getResolvedIdentifier();
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, operandRef));
         }
-        resolvedIdentifierResultHolder.absorb(operandRefRIRH);
+        matchList.addAll(operandRefMatches);
 
 
-        IdentifierResolution resolvedElementsRIRH = resolveElements(identifier);
-        if (resolvedElementsRIRH.getCaseMatchedObject() != null) {
-            resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, (Expression) resolvedElementsRIRH.getCaseMatchedObject().getRight());
+        List<MatchIdentifier> resolvedElementsMatches = resolveElements(identifier);
+        MatchIdentifier resolvedElementsFirstCaseMatch = MatchIdentifier.getFirstCaseMatch(resolvedElementsMatches);
+        if (resolvedElementsFirstCaseMatch != null) {
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, resolvedElementsFirstCaseMatch.getResolvedIdentifier()));
         }
-        resolvedIdentifierResultHolder.absorb(resolvedElementsRIRH);
+        matchList.addAll(resolvedElementsMatches);
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
         // the identifier may be resolved as an implicit property reference on that context.
@@ -2364,21 +2332,30 @@ public class LibraryBuilder {
                 if (resolution != null) {
                     Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
                     contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
-                    resolvedIdentifierResultHolder.setCaseMatchedObject(identifier, contextAccessor);
+                    matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, contextAccessor));
                 }
             }
         }
 
-        if (resolvedIdentifierResultHolder.getCaseMatchedObject() != null) {
+        MatchIdentifier firstCaseMatch = MatchIdentifier.getFirstCaseMatch(matchList);
+        if (firstCaseMatch != null) {
+
+            List<MatchIdentifier> allHiddenCaseMatches = MatchIdentifier.getAllMatches(matchList, Match.CASE);
+            //remove first element to filter out our "first come first serve" rule in deciding a match:
+            allHiddenCaseMatches.remove(0);
+
+            List<MatchIdentifier> allCaseIgnoredMatches = MatchIdentifier.getAllMatches(matchList, Match.CASE);
+            //List<MatchIdentifier> allSoundsLikeMatches = MatchIdentifier.getAllMatches(matchList, Match.SOUNDS_LIKE);
+
             //issue warning that multiple matches occurred:
-            if (resolvedIdentifierResultHolder.getHiddenCaseMatchCollection() != null && resolvedIdentifierResultHolder.getHiddenCaseMatchCollection().size() > 0) {
-                this.reportWarning("Identifier hiding detected. " +
-                                "Identifier" + (resolvedIdentifierResultHolder.getHiddenCaseMatchCollection().size() > 2 ? "s" : "") + " in a broader scope hidden: " +
-                                this.formatPairedMessage(resolvedIdentifierResultHolder.getHiddenCaseMatchCollection()),
-                        (Expression) resolvedIdentifierResultHolder.getCaseMatchedObject().getRight());
+            if (allHiddenCaseMatches.size() >= 1) {
+                this.reportWarning("Identifier hiding detected: " +
+                                "Identifier" + (allHiddenCaseMatches.size() > 1 ? "s" : "") + " in a broader scope hidden: " +
+                                this.formatMatchedMessage(allHiddenCaseMatches),
+                        (Expression) firstCaseMatch.getResolvedIdentifier());
             }
             //return first match:
-            return (Expression) resolvedIdentifierResultHolder.getCaseMatchedObject().getRight();
+            return (Expression) firstCaseMatch.getResolvedIdentifier();
         } else if (mustResolve) {
             // ERROR:
             throw new IllegalArgumentException(String.format(COULD_NOT_RESOLVE_IDENTIFIER_S_IN_THE_CURRENT_LIBRARY, identifier));
@@ -2438,11 +2415,12 @@ public class LibraryBuilder {
         return S_RESOLVED_MORE_THAN_ONCE + element.getClass();
     }
 
-    private IdentifierResolution resolveElements(String identifier) {
+    private List<MatchIdentifier> resolveElements(String identifier) {
 
-        IdentifierResolution ri = new IdentifierResolution();
+        List<MatchIdentifier> matchList = new ArrayList<>();
 
         Element element = resolve(identifier);
+
         List<Pair<String, Object>> caseIgnoredElements = resolveCaseIgnored(identifier);
 
         if (element instanceof ExpressionDef) {
@@ -2455,11 +2433,9 @@ public class LibraryBuilder {
                         expressionRef.getName()));
             }
 
-            ri.setCaseMatchedObject(identifier, expressionRef);
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, expressionRef));
 
-            if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
-                ri.addAllCaseIgnored(caseIgnoredElements);
-            }
+            matchList.addAll(MatchIdentifier.miListFromPairList(caseIgnoredElements, Match.CASE_IGNORED));
         }
 
         if (element instanceof ParameterDef) {
@@ -2471,11 +2447,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
-            ri.setCaseMatchedObject(identifier, parameterRef);
 
-            if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
-                ri.addAllCaseIgnored(caseIgnoredElements);
-            }
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, parameterRef));
+
+            matchList.addAll(MatchIdentifier.miListFromPairList(caseIgnoredElements, Match.CASE_IGNORED));
 
         }
 
@@ -2488,11 +2463,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
             }
-            ri.setCaseMatchedObject(identifier, valuesetRef);
 
-            if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
-                ri.addAllCaseIgnored(caseIgnoredElements);
-            }
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, valuesetRef));
+
+            matchList.addAll(MatchIdentifier.miListFromPairList(caseIgnoredElements, Match.CASE_IGNORED));
         }
 
         if (element instanceof CodeSystemDef) {
@@ -2504,12 +2478,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
-            ri.setCaseMatchedObject(identifier, codesystemRef);
 
-            if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
-                ri.addAllCaseIgnored(caseIgnoredElements);
-            }
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, codesystemRef));
 
+            matchList.addAll(MatchIdentifier.miListFromPairList(caseIgnoredElements, Match.CASE_IGNORED));
         }
 
         if (element instanceof CodeDef) {
@@ -2521,11 +2493,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
-            ri.setCaseMatchedObject(identifier, codeRef);
 
-            if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
-                ri.addAllCaseIgnored(caseIgnoredElements);
-            }
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, codeRef));
+
+            matchList.addAll(MatchIdentifier.miListFromPairList(caseIgnoredElements, Match.CASE_IGNORED));
         }
 
         if (element instanceof ConceptDef) {
@@ -2537,31 +2508,39 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
-            ri.setCaseMatchedObject(identifier, conceptRef);
 
-            if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
-                ri.addAllCaseIgnored(caseIgnoredElements);
-            }
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, conceptRef));
+
+            matchList.addAll(MatchIdentifier.miListFromPairList(caseIgnoredElements, Match.CASE_IGNORED));
         }
 
         if (element instanceof IncludeDef) {
             checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-            ri.setCaseMatchedObject(identifier, libraryRef);
 
-            if (caseIgnoredElements != null && caseIgnoredElements.size() > 0){
-                ri.addAllCaseIgnored(caseIgnoredElements);
-            }
+            matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, libraryRef));
+
+            matchList.addAll(MatchIdentifier.miListFromPairList(caseIgnoredElements, Match.CASE_IGNORED));
+
         }
 
-        return ri;
+        return matchList;
     }
 
     private String formatPairedMessage(List<Pair<String, Object>> list) {
         StringBuilder sb = new StringBuilder();
         for (Pair<String, Object> p : list){
             sb.append(String.format(lookupElementWarning(p.getRight()), p.getLeft()) + "\n");
+        }
+        return sb.toString();
+    }
+
+    private String formatMatchedMessage(List<MatchIdentifier> list) {
+        StringBuilder sb = new StringBuilder();
+
+        for (MatchIdentifier p : list){
+            sb.append(String.format(lookupElementWarning(p.getResolvedIdentifier()), p.getIdentifier()) + "\n");
         }
         return sb.toString();
     }
@@ -2967,45 +2946,34 @@ public class LibraryBuilder {
     }
 
 
-    private IdentifierResolution resolveQueryResultElements(String identifier) {
-        IdentifierResolution ri = new IdentifierResolution();
+    private List<MatchIdentifier> resolveQueryResultElements(String identifier) {
+
+        List<MatchIdentifier> matchList = new ArrayList<>();
+
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
-                if (identifier.equals($_THIS)) {
+                {
                     IdentifierRef result = new IdentifierRef().withName(identifier);
                     result.setResultType(query.getResultElementType());
-                    ri.setCaseMatchedObject(identifier, result);
+                    matchList.add(MatchIdentifier.checkMatch(identifier, identifier, $_THIS, result));
                 }
-                else  if (!identifier.equals($_THIS) && identifier.equalsIgnoreCase($_THIS)) {
-                    IdentifierRef result = new IdentifierRef().withName(identifier);
-                    result.setResultType(query.getResultElementType());
-                    ri.addCaseIgnoredMatch(identifier, result);
-                }
-                IdentifierResolution propertyRI = resolveProperties(query.getResultElementType(), identifier, false);
 
-                if (propertyRI.getCaseMatchedObject() != null) {
-                    PropertyResolution pr = (PropertyResolution) propertyRI.getCaseMatchedObject().getRight();
+                MatchIdentifier propertyMatch = MatchIdentifier.getFirstCaseMatch(resolveProperties(query.getResultElementType(), identifier, false));
+
+                if (propertyMatch != null) {
+                    PropertyResolution pr = (PropertyResolution) propertyMatch.getResolvedIdentifier();
                     IdentifierRef result = new IdentifierRef().withName(pr.getName());
                     result.setResultType(pr.getType());
                     if (pr.getTargetMap() != null) {
                         throw new IllegalArgumentException("Target mapping not supported in this context");
                     }
-                    ri.setCaseMatchedObject(pr.getName(), result);
+                    matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, result));
                 }
-
-                if (propertyRI.getCaseIgnoredCollection() != null) {
-                    ri.addAllCaseIgnored(propertyRI.getCaseIgnoredCollection());
-                }
-
-                if (propertyRI.getHiddenCaseMatchCollection() != null) {
-                    ri.addAllHidden(propertyRI.getCaseIgnoredCollection());
-                }
-
             }
         }
 
-        return ri;
+        return matchList;
     }
 
 
@@ -3023,25 +2991,20 @@ public class LibraryBuilder {
         return null;
     }
 
-    private IdentifierResolution resolveAliases(String identifier) {
-        IdentifierResolution ri = new IdentifierResolution();
+    private List<MatchIdentifier> resolveAliases(String identifier) {
+        List<MatchIdentifier> matchList = new ArrayList<>();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
                 AliasedQuerySource source = getScope().getQueries().get(i).resolveAlias(identifier);
                 if (source != null) {
-                    ri.setCaseMatchedObject(identifier, source);
+                    matchList.add(MatchIdentifier.createMatch(identifier, Match.CASE, source));
                 }
-
-                List<Pair<String, Object>> caseIgnoredMatches = getScope().getQueries().get(i).resolveCaseIgnoredAliases(identifier);
-                if (caseIgnoredMatches != null && caseIgnoredMatches.size() > 0){
-                    ri.addAllCaseIgnored(caseIgnoredMatches);
-                }
-
+                matchList.addAll(getScope().getQueries().get(i).resolveCaseIgnoredAliases(identifier));
             }
         }
 
-        return ri;
+        return matchList;
     }
 
     private Expression resolveQueryThisElement(String identifier) {
@@ -3069,15 +3032,21 @@ public class LibraryBuilder {
         return null;
     }
 
-    private IdentifierResolution resolveQueryThisElements(String identifier) {
-        IdentifierResolution ri = new IdentifierResolution();
+    private List<MatchIdentifier> resolveQueryThisElements(String identifier) {
+
+        List<MatchIdentifier> matchList = new ArrayList<>();
+
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.isImplicit()) {
-                IdentifierResolution aliases = resolveAliases($_THIS);
-                if (aliases.getCaseMatchedObject() != null) {
 
-                    AliasedQuerySource src = (AliasedQuerySource) aliases.getCaseMatchedObject().getRight();
+                List<MatchIdentifier> aliasMatches =  resolveAliases($_THIS);
+
+                MatchIdentifier aliasCaseMatch = MatchIdentifier.getFirstCaseMatch(aliasMatches);
+
+                if (aliasCaseMatch != null) {
+
+                    AliasedQuerySource src = (AliasedQuerySource) aliasCaseMatch.getResolvedIdentifier();
 
                     AliasRef aliasRef = of.createAliasRef().withName($_THIS);
                     if (src.getResultType() instanceof ListType) {
@@ -3087,35 +3056,15 @@ public class LibraryBuilder {
                         aliasRef.setResultType(src.getResultType());
                     }
 
-                    IdentifierResolution propertyRI = resolveProperties(aliasRef.getResultType(), identifier, false);
-
-                    if (propertyRI.getCaseMatchedObject() != null) {
-                       ri.setCaseMatchedObject(identifier, resolveAccessor(aliasRef, identifier));
-                       ri.setCaseMatchedObject(identifier, propertyRI.getCaseMatchedObject());
-                    }
-
-                    if (propertyRI.getCaseIgnoredCollection() != null) {
-                        ri.addAllCaseIgnored(propertyRI.getCaseIgnoredCollection());
-                    }
-
-                    if (propertyRI.getHiddenCaseMatchCollection() != null) {
-                        ri.addAllHidden(propertyRI.getCaseIgnoredCollection());
-                    }
-
+                    matchList.addAll(resolveProperties(aliasRef.getResultType(), identifier, false));
 
                 }
 
-                if (aliases.getCaseIgnoredCollection() != null) {
-                    ri.addAllCaseIgnored(aliases.getCaseIgnoredCollection());
-                }
-
-                if (aliases.getHiddenCaseMatchCollection() != null) {
-                    ri.addAllHidden(aliases.getCaseIgnoredCollection());
-                }
+                matchList.addAll(aliasMatches);
             }
         }
 
-        return ri;
+        return matchList;
     }
 
     private LetClause resolveQueryLet(String identifier) {
@@ -3132,21 +3081,16 @@ public class LibraryBuilder {
         return null;
     }
 
-    private IdentifierResolution resolveQueryLets(String identifier) {
-        IdentifierResolution ri = new IdentifierResolution();
+    private List<MatchIdentifier> resolveQueryLets(String identifier) {
+        List<MatchIdentifier> ri = new ArrayList<>();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
                 LetClause source = getScope().getQueries().get(i).resolveLet(identifier);
                 if (source != null) {
-                    ri.setCaseMatchedObject(identifier, source);
+                    ri.add(MatchIdentifier.createMatch(identifier, Match.CASE, source));
                 }
-
-                List<Pair<String, Object>> caseIgnoredMatches = getScope().getQueries().get(i).resolveCaseIgnoredLets(identifier);
-                if (caseIgnoredMatches != null && caseIgnoredMatches.size() > 0){
-                    ri.addAllCaseIgnored(caseIgnoredMatches);
-                }
-
+                ri.addAll(getScope().getQueries().get(i).resolveCaseIgnoredLets(identifier));
             }
         }
 
@@ -3167,20 +3111,15 @@ public class LibraryBuilder {
         return null;
     }
 
-    private IdentifierResolution resolveOperandRefs(String identifier) {
-        IdentifierResolution ri = new IdentifierResolution();
+    private List<MatchIdentifier> resolveOperandRefs(String identifier) {
+        List<MatchIdentifier> ri = new ArrayList<>();
         if (!functionDefs.empty()) {
             for (OperandDef operand : functionDefs.peek().getOperand()) {
-                if (operand.getName().equals(identifier)) {
-                    ri.setCaseMatchedObject (identifier, of.createOperandRef()
-                            .withName(identifier)
-                            .withResultType(operand.getResultType()));
-                }
-                else if (operand.getName().equalsIgnoreCase(identifier)) {
-                    ri.addCaseIgnoredMatch(identifier, of.createOperandRef()
-                            .withName(identifier)
-                            .withResultType(operand.getResultType()));
-                }
+
+                ri.add(MatchIdentifier.checkMatch(identifier, operand.getName(), identifier, of.createOperandRef()
+                        .withName(identifier)
+                        .withResultType(operand.getResultType())));
+
             }
         }
 
