@@ -33,7 +33,7 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware 
     }
 
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier, List<LibraryContentType> typeList) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -42,12 +42,17 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware 
             throw new IllegalArgumentException("libraryIdentifier Id is null.");
         }
 
-        InputStream source = null;
+
+        LibraryContentMeta source = null;
         for (LibrarySourceProvider provider : PROVIDERS) {
-            InputStream localSource = provider.getLibrarySource(libraryIdentifier);
-            if (localSource != null) {
-                if (source != null) {
-                    throw new IllegalArgumentException(String.format("Multiple sources found for library %s, version %s.",
+            LibraryContentMeta localSource = provider.getLibrarySource(libraryIdentifier);
+
+            boolean typeMatched = typeList.contains(LibraryContentType.ANY) ||
+                    typeList.contains(localSource.getLibraryContentType());
+            if (localSource.getSource() != null && typeMatched) {
+                if (source.getSource() != null &&
+                        source.getLibraryContentType().equals(localSource.getLibraryContentType())) {
+                    throw new IllegalArgumentException(String.format("Multiple sources and same type found for library %s, version %s.",
                             libraryIdentifier.getId(), libraryIdentifier.getVersion()));
                 }
 

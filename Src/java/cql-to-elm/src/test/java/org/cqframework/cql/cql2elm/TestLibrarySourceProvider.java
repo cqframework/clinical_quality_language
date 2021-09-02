@@ -6,9 +6,12 @@ import java.io.InputStream;
 
 public class TestLibrarySourceProvider implements LibrarySourceProvider {
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier) {
+
         String libraryFileName = String.format("LibraryTests/%s%s.cql",
                 libraryIdentifier.getId(), libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
-        return TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
+        return new LibraryContentMeta(LibraryContentType.CQL).
+                withSource(TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName));
+
     }
 }

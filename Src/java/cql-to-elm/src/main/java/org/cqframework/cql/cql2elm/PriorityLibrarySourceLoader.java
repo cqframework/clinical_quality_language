@@ -33,7 +33,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
     }
 
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier, List<LibraryContentType> typeList) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -42,16 +42,23 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
             throw new IllegalArgumentException("libraryIdentifier Id is null.");
         }
 
-        InputStream source = null;
+        LibraryContentMeta source = null;
         for (LibrarySourceProvider provider : PROVIDERS) {
-            InputStream localSource = provider.getLibrarySource(libraryIdentifier);
-            if (localSource != null) {
+            LibraryContentMeta localSource = provider.getLibrarySource(libraryIdentifier);
+
+            boolean typeMatched = typeList.contains(LibraryContentType.ANY) ||
+                    typeList.contains(localSource.getLibraryContentType());
+            if (localSource.getSource() != null && typeMatched) {
                 return localSource;
             }
         }
 
-        throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
-                libraryIdentifier.getId(), libraryIdentifier.getVersion()));
+        if (typeList.contains(LibraryContentType.CQL)) {
+            throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
+                    libraryIdentifier.getId(), libraryIdentifier.getVersion()));
+        }
+
+        return null;
     }
 
     private NamespaceManager namespaceManager;

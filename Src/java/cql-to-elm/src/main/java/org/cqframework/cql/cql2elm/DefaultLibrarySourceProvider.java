@@ -16,14 +16,13 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
         if (path == null || ! path.toFile().isDirectory()) {
             throw new IllegalArgumentException(String.format("path '%s' is not a valid directory", path));
         }
-
         this.path = path;
     }
 
     private Path path;
 
     @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier) {
         String libraryName = libraryIdentifier.getId();
         Path libraryPath = this.path.resolve(String.format("%s%s.cql", libraryName,
                 libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : ""));
@@ -74,7 +73,9 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
         }
         try {
             if (libraryFile != null) {
-                return new FileInputStream(libraryFile);
+                LibraryContentMeta libraryContentMeta = new LibraryContentMeta(LibraryContentType.CQL);
+                libraryContentMeta.setSource(new FileInputStream(libraryFile));
+                return libraryContentMeta;
             }
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(String.format("Could not load source for library %s.", libraryIdentifier.getId()), e);
