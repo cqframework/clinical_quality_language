@@ -2,14 +2,14 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.fhir.ucum.UcumService;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.elm.r1.*;
 
+import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.io.InputStreamReader;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
 
 import static org.cqframework.cql.cql2elm.CqlTranslatorException.HasErrors;
 
@@ -106,15 +106,15 @@ public class LibraryManager {
             return true;
         }
 
-        InputStream librarySource = null;
+        LibraryContentMeta libraryContentMeta = null;
         try {
-            librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
-        }
-        catch (Exception e) {
+            libraryContentMeta = librarySourceLoader.getLibrarySource(libraryIdentifier,
+                    Arrays.asList(new LibraryContentType[]{LibraryContentType.ANY}));
+        } catch (Exception e) {
             throw new CqlTranslatorIncludeException(e.getMessage(), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
 
-        return librarySource != null;
+        return libraryContentMeta != null;
     }
 
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
@@ -154,39 +154,164 @@ public class LibraryManager {
     }
 
     private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
-        InputStream librarySource = null;
-        try {
-            librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
-        }
-        catch (Exception e) {
-            throw new CqlTranslatorIncludeException(e.getMessage(), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
-        }
 
+        TranslatedLibrary result = null;
+        result = tryTranslatedLibraryFromElm(libraryIdentifier, options);
+        if (result != null) {
+            return result;
+        }
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
-        if (librarySource == null) {
-            throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
-                    libraryPath, libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
-        }
 
         try {
+            InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier,
+                    Arrays.asList(new LibraryContentType[]{LibraryContentType.CQL})).getSource();
             CqlTranslator translator = CqlTranslator.fromStream(namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()),
-                    libraryIdentifier, librarySource, modelManager, this, ucumService, options);
+                    libraryIdentifier, cqlSource, modelManager, this, ucumService, options);
             if (errors != null) {
                 errors.addAll(translator.getExceptions());
             }
 
-            TranslatedLibrary result = translator.getTranslatedLibrary();
+            result = translator.getTranslatedLibrary();
             if (libraryIdentifier.getVersion() != null && !libraryIdentifier.getVersion().equals(result.getIdentifier().getVersion())) {
                 throw new CqlTranslatorIncludeException(String.format("Library %s was included as version %s, but version %s of the library was found.",
                         libraryPath, libraryIdentifier.getVersion(), result.getIdentifier().getVersion()),
                         libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
             }
 
-            return result;
         } catch (IOException e) {
             throw new CqlTranslatorIncludeException(String.format("Errors occurred translating library %s, version %s.",
                     libraryPath, libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
+
+        if (result == null) {
+            throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
+                    libraryPath, libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
+        } else {
+            return result;
+        }
+    }
+
+
+
+    private TranslatedLibrary tryTranslatedLibraryFromElm(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options) {
+
+        TranslatedLibrary result;
+        LibraryContentMeta librarySource = null;
+        boolean loadSuccess = true;
+        try {
+            librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier,
+                    Arrays.asList(new LibraryContentType[]{LibraryContentType.JSON_ELM, LibraryContentType.XML_ELM}));
+        } catch (Exception e) {
+            loadSuccess = false;
+        }
+
+        if (librarySource != null && loadSuccess) {
+            result = generateTranslatedLibraryFromEml(libraryIdentifier, librarySource, options);
+            if (result != null) {
+                return result;
+            }
+        }
+        return null;
+    }
+
+    private TranslatedLibrary generateTranslatedLibraryFromEml(VersionedIdentifier libraryIdentifier, LibraryContentMeta librarySource, CqlTranslatorOptions options) {
+
+        Library library = null;
+        TranslatedLibrary translatedLibrary = null;
+        try {
+            if (librarySource.getLibraryContentType().equals(LibraryContentType.JSON_ELM)) {
+                library = CqlJsonLibraryReader.read(new InputStreamReader(librarySource.getSource()));
+            } else if (librarySource.getLibraryContentType().equals(LibraryContentType.XML_ELM)) {
+                library = CqlLibraryReader.read(new InputStreamReader(librarySource.getSource()));
+            }
+        } catch (IOException | JAXBException e) {
+            e.printStackTrace();
+        }
+
+
+        if (library != null &&
+                (librarySource.getLibraryContentType().equals(LibraryContentType.XML_ELM) ||
+                        translatorOptionsMatch(library, options))) {
+            translatedLibrary = generateTranslatedLibrary(library);
+            if (translatedLibrary != null) {
+                this.cacheLibrary(translatedLibrary);
+            }
+        }
+
+        return translatedLibrary;
+    }
+
+    private TranslatedLibrary generateTranslatedLibrary(Library library) {
+
+        if (library == null) {
+            return null;
+        }
+        boolean translationSuccess = true;
+        TranslatedLibrary translatedLibrary = new TranslatedLibrary();
+        try {
+            if (library != null) {
+                translatedLibrary.setLibrary(library);
+            }
+            if (library.getIdentifier() != null) {
+                translatedLibrary.setIdentifier(library.getIdentifier());
+            }
+
+            if (library.getUsings() != null && library.getUsings().getDef() != null) {
+                for (UsingDef usingDef : library.getUsings().getDef()) {
+                    translatedLibrary.add(usingDef);
+                }
+            }
+            if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
+                for (IncludeDef includeDef : library.getIncludes().getDef()) {
+                    translatedLibrary.add(includeDef);
+                }
+            }
+            if (library.getCodeSystems() != null && library.getCodeSystems().getDef() != null) {
+                for (CodeSystemDef codeSystemDef : library.getCodeSystems().getDef()) {
+                    translatedLibrary.add(codeSystemDef);
+                }
+            }
+            for (ValueSetDef valueSetDef : library.getValueSets().getDef()) {
+                translatedLibrary.add(valueSetDef);
+            }
+
+            if (library.getCodes() != null && library.getCodes().getDef() != null) {
+                for (CodeDef codeDef : library.getCodes().getDef()) {
+                    translatedLibrary.add(codeDef);
+                }
+            }
+            if (library.getConcepts() != null && library.getConcepts().getDef() != null) {
+                for (ConceptDef conceptDef : library.getConcepts().getDef()) {
+                    translatedLibrary.add(conceptDef);
+                }
+            }
+            if (library.getParameters() != null && library.getParameters().getDef() != null) {
+                for (ParameterDef parameterDef : library.getParameters().getDef()) {
+                    translatedLibrary.add(parameterDef);
+                }
+            }
+            if (library.getStatements() != null && library.getStatements().getDef() != null) {
+                for (ExpressionDef expressionDef : library.getStatements().getDef()) {
+                    translatedLibrary.add(expressionDef);
+                }
+            }
+        } catch (Exception e) {
+            translationSuccess = false;
+        }
+
+        if (translationSuccess) {
+            return translatedLibrary;
+        }
+
+        return null;
+    }
+
+    protected Boolean translatorOptionsMatch(Library library, CqlTranslatorOptions options) {
+        EnumSet<CqlTranslator.Options> translatorOptions = TranslatorOptionsUtil.getTranslatorOptions(library);
+        if (translatorOptions == null) {
+            return false;
+        }
+        return translatorOptions.equals(options.getOptions());
     }
 
     public void beginTranslation(String libraryName) {
