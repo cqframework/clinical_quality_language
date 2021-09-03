@@ -5,5 +5,5 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import java.io.InputStream;
 
 public interface LibrarySourceProvider {
-    LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier);
+    InputStream getLibrarySource(VersionedIdentifier libraryIdentifier);
 }

@@ -106,15 +106,20 @@ public class LibraryManager {
             return true;
         }
 
-        LibraryContentMeta libraryContentMeta = null;
+        InputStream source = null;
         try {
-            libraryContentMeta = librarySourceLoader.getLibrarySource(libraryIdentifier,
-                    Arrays.asList(new LibraryContentType[]{LibraryContentType.ANY}));
+            if (librarySourceLoader instanceof LibrarySourceLoaderExt) {
+                return ((LibrarySourceLoaderExt) librarySourceLoader).isLibrarySourceAvailable(libraryIdentifier,
+                        LibraryContentType.ANY);
+            } else {
+                source = librarySourceLoader.getLibrarySource(libraryIdentifier);
+            }
+
         } catch (Exception e) {
             throw new CqlTranslatorIncludeException(e.getMessage(), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
 
-        return libraryContentMeta != null;
+        return source != null;
     }
 
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
@@ -163,8 +168,14 @@ public class LibraryManager {
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         try {
-            InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier,
-                    Arrays.asList(new LibraryContentType[]{LibraryContentType.CQL})).getSource();
+            InputStream cqlSource;
+            if (librarySourceLoader instanceof LibrarySourceLoaderExt) {
+                cqlSource = ((LibrarySourceLoaderExt)librarySourceLoader)
+                        .getLibrarySource(libraryIdentifier,LibraryContentType.CQL);
+            } else {
+                cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+            }
+
             CqlTranslator translator = CqlTranslator.fromStream(namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()),
                     libraryIdentifier, cqlSource, modelManager, this, ucumService, options);
             if (errors != null) {
@@ -191,22 +202,31 @@ public class LibraryManager {
         }
     }
 
-
-
     private TranslatedLibrary tryTranslatedLibraryFromElm(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options) {
 
         TranslatedLibrary result;
-        LibraryContentMeta librarySource = null;
+        InputStream librarySource = null;
         boolean loadSuccess = true;
+        LibraryContentType contentType= null;
         try {
-            librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier,
-                    Arrays.asList(new LibraryContentType[]{LibraryContentType.JSON_ELM, LibraryContentType.XML_ELM}));
+            if (librarySourceLoader instanceof LibrarySourceLoaderExt) {
+                LibrarySourceLoaderExt sourceLoaderExt = (LibrarySourceLoaderExt) librarySourceLoader;
+                if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.JSON_ELM)) {
+                    contentType = LibraryContentType.JSON_ELM;
+                    librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.JSON_ELM);
+                } else if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.XML_ELM)) {
+                    contentType = LibraryContentType.XML_ELM;
+                    librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.XML_ELM);
+                }
+            } else {
+                librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+            }
         } catch (Exception e) {
             loadSuccess = false;
         }
 
         if (librarySource != null && loadSuccess) {
-            result = generateTranslatedLibraryFromEml(libraryIdentifier, librarySource, options);
+            result = generateTranslatedLibraryFromEml(libraryIdentifier, librarySource, contentType, options);
             if (result != null) {
                 return result;
             }
@@ -214,15 +234,15 @@ public class LibraryManager {
         return null;
     }
 
-    private TranslatedLibrary generateTranslatedLibraryFromEml(VersionedIdentifier libraryIdentifier, LibraryContentMeta librarySource, CqlTranslatorOptions options) {
+    private TranslatedLibrary generateTranslatedLibraryFromEml(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlTranslatorOptions options) {
 
         Library library = null;
         TranslatedLibrary translatedLibrary = null;
         try {
-            if (librarySource.getLibraryContentType().equals(LibraryContentType.JSON_ELM)) {
-                library = CqlJsonLibraryReader.read(new InputStreamReader(librarySource.getSource()));
-            } else if (librarySource.getLibraryContentType().equals(LibraryContentType.XML_ELM)) {
-                library = CqlLibraryReader.read(new InputStreamReader(librarySource.getSource()));
+            if (type.equals(LibraryContentType.JSON_ELM)) {
+                library = CqlJsonLibraryReader.read(new InputStreamReader(librarySource));
+            } else if (type.equals(LibraryContentType.XML_ELM)) {
+                library = CqlLibraryReader.read(new InputStreamReader(librarySource));
             }
         } catch (IOException | JAXBException e) {
             e.printStackTrace();
@@ -230,7 +250,7 @@ public class LibraryManager {
 
 
         if (library != null &&
-                (librarySource.getLibraryContentType().equals(LibraryContentType.XML_ELM) ||
+                (type.equals(LibraryContentType.XML_ELM) ||
                         translatorOptionsMatch(library, options))) {
             translatedLibrary = generateTranslatedLibrary(library);
             if (translatedLibrary != null) {

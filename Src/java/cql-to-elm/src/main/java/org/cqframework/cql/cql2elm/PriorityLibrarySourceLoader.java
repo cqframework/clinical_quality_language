@@ -11,7 +11,7 @@ import java.util.List;
  * resolve library includes within CQL. Package private since its not intended
  * to be used outside the context of the instantiating LibraryManager instance.
  */
-public class PriorityLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware {
+public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, NamespaceAware {
     private final List<LibrarySourceProvider> PROVIDERS = new ArrayList<>();
 
     @Override
@@ -33,32 +33,53 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
     }
 
     @Override
-    public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier, List<LibraryContentType> typeList) {
-        if (libraryIdentifier == null) {
-            throw new IllegalArgumentException("libraryIdentifier is null.");
-        }
+    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
 
-        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().equals("")) {
-            throw new IllegalArgumentException("libraryIdentifier Id is null.");
-        }
-
-        LibraryContentMeta source = null;
+        validateInput(libraryIdentifier, type);
+        InputStream source = null;
         for (LibrarySourceProvider provider : PROVIDERS) {
-            LibraryContentMeta localSource = provider.getLibrarySource(libraryIdentifier);
-
-            boolean typeMatched = typeList.contains(LibraryContentType.ANY) ||
-                    typeList.contains(localSource.getLibraryContentType());
-            if (localSource.getSource() != null && typeMatched) {
-                return localSource;
+            if (provider instanceof LibrarySourceProviderExt) {
+                LibrarySourceProviderExt providerExt = (LibrarySourceProviderExt) provider;
+                if (providerExt.isLibrarySourceAvailable(libraryIdentifier, type)) {
+                    source = providerExt.getLibrarySource(libraryIdentifier, type);
+                }
+            } else {
+                source = provider.getLibrarySource(libraryIdentifier);
+            }
+            if (source != null) {
+                return source;
             }
         }
 
-        if (typeList.contains(LibraryContentType.CQL)) {
-            throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
-                    libraryIdentifier.getId(), libraryIdentifier.getVersion()));
-        }
+        throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
+                libraryIdentifier.getId(), libraryIdentifier.getVersion()));
 
-        return null;
+    }
+
+    @Override
+    public boolean isLibrarySourceAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        validateInput(libraryIdentifier, type);
+
+        InputStream source;
+        for (LibrarySourceProvider provider : PROVIDERS) {
+            if (provider instanceof LibrarySourceProviderExt) {
+                LibrarySourceProviderExt providerExt = (LibrarySourceProviderExt) provider;
+                if (providerExt.isLibrarySourceAvailable(libraryIdentifier, type)) {
+                    return true;
+                }
+            } else {
+                source = provider.getLibrarySource(libraryIdentifier);
+                if (source != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+        return getLibrarySource(libraryIdentifier, LibraryContentType.CQL);
     }
 
     private NamespaceManager namespaceManager;
@@ -71,6 +92,20 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
             if (provider instanceof NamespaceAware) {
                 ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
             }
+        }
+    }
+
+    private void validateInput(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("libraryContentType is null.");
+        }
+
+        if (libraryIdentifier == null) {
+            throw new IllegalArgumentException("libraryIdentifier is null.");
+        }
+
+        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().equals("")) {
+            throw new IllegalArgumentException("libraryIdentifier Id is null.");
         }
     }
 }

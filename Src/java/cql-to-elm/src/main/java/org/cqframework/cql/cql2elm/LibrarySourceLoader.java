@@ -13,7 +13,7 @@ public interface LibrarySourceLoader {
 
   void clearProviders();
 
-  LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier, List<LibraryContentType> typeList);
+  InputStream getLibrarySource(VersionedIdentifier libraryIdentifier);
 
   void registerProvider(LibrarySourceProvider provider);
   

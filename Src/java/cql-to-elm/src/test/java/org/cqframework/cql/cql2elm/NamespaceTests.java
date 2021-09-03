@@ -23,7 +23,7 @@ public class NamespaceTests {
 
     public class NamespaceTestsLibrarySourceProvider implements LibrarySourceProvider {
         @Override
-        public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier) {
+        public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
             String namespacePath = "NamespaceTests/";
             if (libraryIdentifier.getSystem() != null) {
                 NamespaceInfo namespaceInfo = libraryManager.getNamespaceManager().getNamespaceInfoFromUri(libraryIdentifier.getSystem());
@@ -36,8 +36,7 @@ public class NamespaceTests {
                     namespacePath,
                     libraryIdentifier.getId(),
                     libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
-            return new LibraryContentMeta(LibraryContentType.CQL).withSource(
-                    org.cqframework.cql.cql2elm.NamespaceTests.class.getResourceAsStream(libraryFileName));
+            return org.cqframework.cql.cql2elm.NamespaceTests.class.getResourceAsStream(libraryFileName);
         }
     }
 

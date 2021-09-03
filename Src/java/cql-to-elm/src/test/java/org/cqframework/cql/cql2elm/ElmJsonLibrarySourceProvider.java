@@ -5,16 +5,33 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import java.io.InputStream;
 
 
-public class ElmJsonLibrarySourceProvider implements LibrarySourceProvider {
+public class ElmJsonLibrarySourceProvider implements LibrarySourceProviderExt {
 
-    public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    @Override
+    public boolean isLibrarySourceAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.JSON_ELM)) {
+            return false;
+        }
+        return ElmJsonLibrarySourceProvider.class.getResource(getFileName(libraryIdentifier)) != null;
+    }
 
-        LibraryContentMeta contentMeta = new LibraryContentMeta(LibraryContentType.JSON_ELM);
-        String libraryFileName = String.format("LibraryTests/%s%s.json",
+    @Override
+    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.JSON_ELM)) {
+            return null;
+        }
+        InputStream is = ElmJsonLibrarySourceProvider.class.getResourceAsStream(getFileName(libraryIdentifier));
+        return is;
+    }
+
+    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
+        return getLibrarySource(libraryIdentifier, LibraryContentType.CQL);
+
+    }
+
+    private String getFileName(VersionedIdentifier libraryIdentifier) {
+        return String.format("LibraryTests/%s%s.json",
                 libraryIdentifier.getId(), libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
-        InputStream is = ElmJsonLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
-        contentMeta.setSource(is);
-        return contentMeta;
     }
 
 }

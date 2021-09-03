@@ -14,11 +14,9 @@ public class FhirLibrarySourceProvider implements LibrarySourceProvider, Namespa
     private final String namespaceUri = "http://hl7.org/fhir";
 
     @Override
-    public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier) {
-        LibraryContentMeta contentMeta = new LibraryContentMeta(LibraryContentType.CQL);
+    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         InputStream result = FhirLibrarySourceProvider.class.getResourceAsStream(String.format("/org/hl7/fhir/%s-%s.cql", libraryIdentifier.getId(),
                 libraryIdentifier.getVersion()));
-        contentMeta.setSource(result);
 
         if (result != null) {
             // If the FHIRHelpers library is referenced in a namespace-enabled context,
@@ -34,7 +32,7 @@ public class FhirLibrarySourceProvider implements LibrarySourceProvider, Namespa
             }
         }
 
-        return contentMeta;
+        return result;
     }
 
     private NamespaceManager namespaceManager;

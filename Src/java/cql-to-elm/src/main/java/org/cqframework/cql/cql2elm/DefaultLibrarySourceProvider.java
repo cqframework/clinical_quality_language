@@ -22,7 +22,7 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
     private Path path;
 
     @Override
-    public LibraryContentMeta getLibrarySource(VersionedIdentifier libraryIdentifier) {
+    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         String libraryName = libraryIdentifier.getId();
         Path libraryPath = this.path.resolve(String.format("%s%s.cql", libraryName,
                 libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : ""));
@@ -73,9 +73,7 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
         }
         try {
             if (libraryFile != null) {
-                LibraryContentMeta libraryContentMeta = new LibraryContentMeta(LibraryContentType.CQL);
-                libraryContentMeta.setSource(new FileInputStream(libraryFile));
-                return libraryContentMeta;
+                return new FileInputStream(libraryFile);
             }
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException(String.format("Could not load source for library %s.", libraryIdentifier.getId()), e);
