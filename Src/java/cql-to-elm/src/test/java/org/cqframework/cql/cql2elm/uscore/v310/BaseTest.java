@@ -258,7 +258,7 @@ public class BaseTest {
         
  /*
         Handling a target with a complex argument to a function call.
-        target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"
+        target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"
  */
         def = defs.get("TestComplexFHIRHelpers");
         assertThat(def.getExpression(), instanceOf(Query.class));
@@ -270,9 +270,9 @@ public class BaseTest {
         assertThat(functionRef.getName(), is("ToConcept"));
         assertThat(functionRef.getLibraryName(), is("FHIRHelpers"));
         // Verify that return expression contains complex logic from the modelinfo
-        property = (Property)functionRef.getOperand().get(0);
-        assertThat(property.getPath(), is("value"));
-        and1 = (And)((Query) ((SingletonFrom) property.getSource()).getOperand()).getWhere();
+        assertThat(functionRef.getOperand().get(0), instanceOf(SingletonFrom.class));
+        SingletonFrom sf = (SingletonFrom)functionRef.getOperand().get(0);
+        and1 = (And)((Query)sf.getOperand()).getWhere();
         assertThat(and1.getOperand().get(0), instanceOf(Equal.class));
         assertThat(and1.getOperand().get(1), instanceOf(Equal.class));
         equal = (Equal) and1.getOperand().get(0);
