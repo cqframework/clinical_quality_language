@@ -1,13 +1,10 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.LetClause;
 
-import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,15 +69,15 @@ public class QueryContext {
         return sources.get(identifier);
     }
 
-    public List<MatchIdentifier> resolveCaseIgnoredAliases(String identifier) {
-        List<MatchIdentifier> ret = new ArrayList<>();
+    public List<IdentifierResolution> resolveCaseIgnoredAliases(String identifier) {
+        List<IdentifierResolution> ret = new ArrayList<>();
 
         List<String> caseIgnoredKeyMatches = sources.keySet().stream()
                 .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
                 .collect(Collectors.toList());
 
         for (String key : caseIgnoredKeyMatches){
-            ret.add(MatchIdentifier.createMatch(identifier, Match.CASE_IGNORED, sources.get(key)));
+            ret.add(IdentifierResolution.createMatch(identifier, MatchType.CASE_IGNORED, sources.get(key)));
         }
         return ret;
     }
@@ -89,14 +86,14 @@ public class QueryContext {
         return lets.get(identifier);
     }
 
-    public List<MatchIdentifier> resolveCaseIgnoredLets(String identifier) {
-        List<MatchIdentifier> ret = new ArrayList<>();
+    public List<IdentifierResolution> resolveCaseIgnoredLets(String identifier) {
+        List<IdentifierResolution> ret = new ArrayList<>();
         List<String> caseIgnoredKeyMatches = lets.keySet().stream()
                 .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
                 .collect(Collectors.toList());
 
         for (String key : caseIgnoredKeyMatches){
-            ret.add(MatchIdentifier.createMatch(identifier, Match.CASE, lets.get(key)));
+            ret.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, lets.get(key)));
         }
         return ret;
     }

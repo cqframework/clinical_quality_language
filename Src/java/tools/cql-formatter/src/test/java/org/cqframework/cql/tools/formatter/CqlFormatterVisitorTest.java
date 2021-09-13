@@ -31,14 +31,14 @@ public class CqlFormatterVisitorTest {
         // And the second one correctly reported an error, but why was it allowed to clobber the input?
         // At any rate, they both work correctly now (I had to add null to the characters to ignore for comparison though)
         //try {
-            // this test has an extra "`", which is not ignored - causing a syntax error.
-            runTest("git-issue-206-a.cql");
+        // this test has an extra "`", which is not ignored - causing a syntax error.
+        runTest("git-issue-206-a.cql");
         //} catch (AssertionError ae) {
         //    Assert.assertFalse(inError);
         //}
         //try {
-            // this test has an extra """, which is not ignored - causing a syntax error.
-            runTest("git-issue-206-b.cql");
+        // this test has an extra """, which is not ignored - causing a syntax error.
+        runTest("git-issue-206-b.cql");
         //} catch (AssertionError ae) {
         //    Assert.assertTrue(inError);
         //}
@@ -62,13 +62,6 @@ public class CqlFormatterVisitorTest {
         Assert.assertFalse(inError);
         runTest("git-issue-349.cql");
         Assert.assertFalse(inError);
-        runTest("git-issue-613.cql");
-        Assert.assertFalse(inError);
-        runTest("git-issue-437.cql");
-        Assert.assertFalse(inError);
-        runTest("git-issue-377.cql");
-        Assert.assertFalse(inError);
-
         try {
             runTest("invalid-syntax.cql");
         } catch (AssertionError ae) {

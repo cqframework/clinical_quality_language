@@ -1,11 +1,11 @@
 package org.cqframework.cql.cql2elm.model;
 
-public enum Match {
-    CASE, CASE_IGNORED, SOUNDS_LIKE, NONE;
+public enum MatchType {
+    EXACT, CASE_IGNORED, SOUNDS_LIKE, NONE;
 
-    public static Match checkMatch(String val, String checkVal) {
+    public static MatchType checkMatch(String val, String checkVal) {
         if (val.equals(checkVal)) {
-            return CASE;
+            return EXACT;
         }
 
         if (val.equalsIgnoreCase(checkVal)) {
