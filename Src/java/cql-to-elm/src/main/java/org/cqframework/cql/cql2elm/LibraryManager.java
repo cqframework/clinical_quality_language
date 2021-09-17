@@ -211,12 +211,12 @@ public class LibraryManager {
         try {
             if (librarySourceLoader instanceof LibrarySourceLoaderExt) {
                 LibrarySourceLoaderExt sourceLoaderExt = (LibrarySourceLoaderExt) librarySourceLoader;
-                if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.JSON_ELM)) {
-                    contentType = LibraryContentType.JSON_ELM;
-                    librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.JSON_ELM);
-                } else if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.XML_ELM)) {
-                    contentType = LibraryContentType.XML_ELM;
-                    librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.XML_ELM);
+                if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.JXSON)) {
+                    contentType = LibraryContentType.JXSON;
+                    librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.JXSON);
+                } else if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.XML)) {
+                    contentType = LibraryContentType.XML;
+                    librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.XML);
                 }
             } else {
                 librarySource = librarySourceLoader.getLibrarySource(libraryIdentifier);
@@ -239,9 +239,9 @@ public class LibraryManager {
         Library library = null;
         TranslatedLibrary translatedLibrary = null;
         try {
-            if (type.equals(LibraryContentType.JSON_ELM)) {
+            if (type.equals(LibraryContentType.JXSON)) {
                 library = CqlJsonLibraryReader.read(new InputStreamReader(librarySource));
-            } else if (type.equals(LibraryContentType.XML_ELM)) {
+            } else if (type.equals(LibraryContentType.XML)) {
                 library = CqlLibraryReader.read(new InputStreamReader(librarySource));
             }
         } catch (IOException | JAXBException e) {
@@ -250,7 +250,7 @@ public class LibraryManager {
 
 
         if (library != null &&
-                (type.equals(LibraryContentType.XML_ELM) ||
+                (type.equals(LibraryContentType.XML) ||
                         translatorOptionsMatch(library, options))) {
             translatedLibrary = generateTranslatedLibrary(library);
             if (translatedLibrary != null) {

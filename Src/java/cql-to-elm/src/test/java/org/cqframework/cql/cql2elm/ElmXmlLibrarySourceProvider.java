@@ -9,7 +9,7 @@ public class ElmXmlLibrarySourceProvider implements LibrarySourceProviderExt {
 
     @Override
     public boolean isLibrarySourceAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.XML_ELM)) {
+        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.XML)) {
             return false;
         }
         return ElmJsonLibrarySourceProvider.class.getResource(getFileName(libraryIdentifier)) != null;
@@ -17,7 +17,7 @@ public class ElmXmlLibrarySourceProvider implements LibrarySourceProviderExt {
 
     @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.XML_ELM)) {
+        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.XML)) {
             return null;
         }
         InputStream is = ElmJsonLibrarySourceProvider.class.getResourceAsStream(getFileName(libraryIdentifier));

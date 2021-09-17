@@ -5,8 +5,6 @@ package org.cqframework.cql.cql2elm;
  */
 public enum LibraryContentType {
     CQL,
-    JSON_ELM,
-    XML_ELM,
     XML,
     JSON,
     JXSON,
