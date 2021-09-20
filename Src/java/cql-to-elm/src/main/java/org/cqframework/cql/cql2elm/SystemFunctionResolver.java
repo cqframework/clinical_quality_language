@@ -313,6 +313,7 @@ public class SystemFunctionResolver {
                 case "ConvertsToString":
                 case "ConvertsToBoolean":
                 case "ConvertsToInteger":
+                case "ConvertsToLong":
                 case "ConvertsToDecimal":
                 case "ConvertsToDateTime":
                 case "ConvertsToDate":
@@ -322,6 +323,7 @@ public class SystemFunctionResolver {
                 case "ToString":
                 case "ToBoolean":
                 case "ToInteger":
+                case "ToLong":
                 case "ToDecimal":
                 case "ToDateTime":
                 case "ToDate":
@@ -621,6 +623,9 @@ public class SystemFunctionResolver {
                 break;
             case "ToInteger":
                 convert.setToType(builder.dataTypeToQName(sm.getInteger()));
+                break;
+            case "ToLong":
+                convert.setToType(builder.dataTypeToQName(sm.getLong()));
                 break;
             case "ToDecimal":
                 convert.setToType(builder.dataTypeToQName(sm.getDecimal()));

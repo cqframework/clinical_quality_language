@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="QICore" version="4.0.0" url="http://hl7.org/fhir/us/qicore" targetQualifier="qicore" patientClassName="Patient" patientBirthDatePropertyName="birthDate">
+<modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="QICore" version="4.0.0" url="http://hl7.org/fhir/us/qicore" targetUrl="http://hl7.org/fhir" targetQualifier="qicore" patientClassName="Patient" patientBirthDatePropertyName="birthDate">
    <requiredModelInfo name="System" version="1.0.0"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" xsi:type="ClassInfo">
       <element name="use" elementType="QICore.AddressUse"/>
@@ -671,9 +671,9 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="CommunicationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone" label="CommunicationNotDone" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="CommunicationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone" label="CommunicationNotDone" target="Communication" retrievable="true" xsi:type="ClassInfo">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
-      <element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value.value"/>
+      <element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1108,9 +1108,9 @@
       <element name="value" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="DeviceNameType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DeviceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested" label="DeviceNotRequested" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DeviceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested" label="DeviceNotRequested" target="DeviceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="doNotPerformReason" elementType="QICore.DoNotPerformReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-doNotPerformReason'].value)"/>
-      <element name="doNotPerform" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/StructureDefinition/request-doNotPerform'].value.value"/>
+      <element name="doNotPerform" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/StructureDefinition/request-doNotPerform'].value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1298,7 +1298,7 @@
       <element name="comment" elementType="System.String" target="%value.value"/>
       <element name="link" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DiagnosticReportLab" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-lab" label="DiagnosticReportLab" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DiagnosticReportLab" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-lab" label="DiagnosticReportLab" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="locationPerformed" elementType="QICore.Reference" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/diagnosticReport-locationPerformed']"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -1349,7 +1349,7 @@
          <elementTypeSpecifier elementType="QICore.Attachment" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DiagnosticReportNote" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-note" label="DiagnosticReportNote" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DiagnosticReportNote" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-note" label="DiagnosticReportNote" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="locationPerformed" elementType="QICore.Reference" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/diagnosticReport-locationPerformed']"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -1456,7 +1456,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo namespace="QICore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo baseType="System.Any" namespace="QICore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false" xsi:type="ClassInfo">
       <element name="id" elementType="System.String" target="%value.value"/>
       <element name="extension">
          <elementTypeSpecifier elementType="QICore.Extension" xsi:type="ListTypeSpecifier"/>
@@ -2049,7 +2049,7 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ImmunizationEvaluationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationnotdone" label="ImmunizationNotDone" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationnotdone" label="ImmunizationNotDone" target="Immunization" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2312,7 +2312,7 @@
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationAdministrationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotadministered" label="MedicationAdministrationNotDone" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationAdministrationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotadministered" label="MedicationAdministrationNotDone" target="MedicationAdministration" retrievable="true" xsi:type="ClassInfo">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -2440,7 +2440,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationDispenseNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotdispensed" label="MedicationDispenseNotDone" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationDispenseNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotdispensed" label="MedicationDispenseNotDone" target="MedicationDispense" retrievable="true" xsi:type="ClassInfo">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -2489,7 +2489,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationDispenseStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested" label="MedicationNotRequested" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested" label="MedicationNotRequested" target="MedicationRequest" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2868,9 +2868,9 @@
       </element>
       <element name="text" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ObservationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observationnotdone" label="ObservationNotDone" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ObservationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observationnotdone" label="ObservationNotDone" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="notDoneReason" elementType="QICore.NotDoneReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDoneReason'].value)"/>
-      <element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value.value"/>
+      <element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3263,7 +3263,7 @@
       <element name="actor" elementType="QICore.Reference"/>
       <element name="onBehalfOf" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ProcedureNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedurenotdone" label="ProcedureNotDone" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ProcedureNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedurenotdone" label="ProcedureNotDone" target="Procedure" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -3588,7 +3588,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="RequestIntent" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="RequestPriority" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo namespace="QICore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="System.Any" namespace="QICore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true" xsi:type="ClassInfo">
       <element name="id" elementType="System.String" target="%value.value"/>
       <element name="meta" elementType="QICore.Meta"/>
       <element name="implicitRules" elementType="System.String" target="%value.value"/>
@@ -3604,7 +3604,7 @@
       <element name="dimensions" elementType="System.Integer" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" target="ServiceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4193,7 +4193,7 @@
       <element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4239,7 +4239,7 @@
       </element>
       <element name="parent" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreLaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreLaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4315,7 +4315,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4329,7 +4329,7 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
@@ -4373,7 +4373,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4387,7 +4387,7 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
@@ -4431,7 +4431,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4445,10 +4445,10 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'].value)"/>
-      <element name="PulseOx" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='59408-5'].value)"/>
+      <element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'])"/>
+      <element name="PulseOx" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='59408-5'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -4503,7 +4503,7 @@
       <element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreSmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreSmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4610,7 +4610,7 @@
       </element>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4624,9 +4624,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BMICode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='39156-5'].value)"/>
+      <element name="BMICode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='39156-5'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -4669,7 +4669,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4683,9 +4683,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BodyHeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8302-2'].value)"/>
+      <element name="BodyHeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8302-2'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -4728,7 +4728,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4742,9 +4742,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BodyTempCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8310-5'].value)"/>
+      <element name="BodyTempCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8310-5'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -4787,7 +4787,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4801,9 +4801,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BodyWeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='29463-7'].value)"/>
+      <element name="BodyWeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='29463-7'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -4846,7 +4846,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4860,9 +4860,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BPCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85354-9'].value)"/>
+      <element name="BPCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85354-9'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -4907,7 +4907,7 @@
       <element name="SystolicBP" elementType="QICore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8480-6']"/>
       <element name="DiastolicBP" elementType="QICore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8462-4']"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4921,9 +4921,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="HeadCircumCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9843-4'].value)"/>
+      <element name="HeadCircumCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9843-4'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -4966,7 +4966,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4980,9 +4980,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="HeartRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8867-4'].value)"/>
+      <element name="HeartRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8867-4'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -5025,7 +5025,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5039,9 +5039,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'].value)"/>
+      <element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -5084,7 +5084,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5098,9 +5098,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="RespRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9279-1'].value)"/>
+      <element name="RespRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9279-1'])"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -5143,7 +5143,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5157,9 +5157,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="VitalsPanelCode" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85353-1'].value)">
+      <element name="VitalsPanelCode" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85353-1'])">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="subject" elementType="QICore.Reference"/>

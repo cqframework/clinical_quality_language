@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation libraryId="MATGlobalCommonFunctionsFHIR4" libraryVersion="5.0.000" startLine="261" startChar="19" endLine="261" endChar="53" message="Could not resolve membership operator for terminology target of the retrieve." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="117">
+         <a:s>library PVSComponent version '0.0.001'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="PVSComponent" version="0.0.001"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:26" localIdentifier="FHIR" uri="http://hl7.org/fhir" version="4.0.1">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="1">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>FHIR</a:s>
+               </a:s>
+               <a:s> version '4.0.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:56" localIdentifier="FHIRHelpers" path="FHIRHelpers" version="4.0.001">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="2">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>FHIRHelpers</a:s>
+               </a:s>
+               <a:s> version '4.0.001' called FHIRHelpers</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="3" locator="6:1-6:66" localIdentifier="SDE" path="SupplementalDataElementsFHIR4" version="2.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="3">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>SupplementalDataElementsFHIR4</a:s>
+               </a:s>
+               <a:s> version '2.0.000' called SDE</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="4" locator="7:1-7:69" localIdentifier="Global" path="MATGlobalCommonFunctionsFHIR4" version="5.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="4">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>MATGlobalCommonFunctionsFHIR4</a:s>
+               </a:s>
+               <a:s> version '5.0.000' called Global</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="5" locator="8:1-8:53" localIdentifier="Hospice" path="HospiceFHIR4" version="2.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="5">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>HospiceFHIR4</a:s>
+               </a:s>
+               <a:s> version '2.0.000' called Hospice</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </includes>
+   <parameters>
+      <def localId="25" locator="29:1-29:49" name="Measurement Period" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="25">
+               <a:s>parameter &quot;Measurement Period&quot; </a:s>
+               <a:s r="24">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="23">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <parameterTypeSpecifier localId="24" locator="29:32-29:49" xsi:type="IntervalTypeSpecifier">
+            <pointType localId="23" locator="29:41-29:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="6" locator="10:1-10:38" name="LOINC" id="http://loinc.org" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="6">
+               <a:s>codesystem &quot;LOINC&quot;: 'http://loinc.org'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="7" locator="12:1-12:103" name="Annual Wellness Visit" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1240" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="7">
+               <a:s>valueset &quot;Annual Wellness Visit&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1240'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="8" locator="13:1-13:139" name="Care Services in Long-Term Residential Facility" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1014" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="8">
+               <a:s>valueset &quot;Care Services in Long-Term Residential Facility&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1014'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="9" locator="14:1-14:129" name="Discharge Services - Nursing Facility" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.11.1065" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="9">
+               <a:s>valueset &quot;Discharge Services - Nursing Facility&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.11.1065'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="10" locator="15:1-15:136" name="Discharged to Health Care Facility for Hospice Care" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.207" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="10">
+               <a:s>valueset &quot;Discharged to Health Care Facility for Hospice Care&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.207'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="11" locator="16:1-16:120" name="Discharged to Home for Hospice Care" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.209" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="11">
+               <a:s>valueset &quot;Discharged to Home for Hospice Care&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.117.1.7.1.209'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="12" locator="17:1-17:100" name="Encounter Inpatient" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="12">
+               <a:s>valueset &quot;Encounter Inpatient&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.666.5.307'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="13" locator="18:1-18:116" name="Home Healthcare Services" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1016" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="13">
+               <a:s>valueset &quot;Home Healthcare Services&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1016'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="14" locator="19:1-19:104" name="Hospice care ambulatory" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1108.15" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="14">
+               <a:s>valueset &quot;Hospice care ambulatory&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113762.1.4.1108.15'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="15" locator="20:1-20:114" name="Nursing Facility Visit" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1012" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="15">
+               <a:s>valueset &quot;Nursing Facility Visit&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1012'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="16" locator="21:1-21:104" name="Office Visit" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="16">
+               <a:s>valueset &quot;Office Visit&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1001'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="17" locator="22:1-22:112" name="Pneumococcal Vaccine" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.110.12.1027" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="17">
+               <a:s>valueset &quot;Pneumococcal Vaccine&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.110.12.1027'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="18" locator="23:1-23:125" name="Pneumococcal Vaccine Administered" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.110.12.1034" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="18">
+               <a:s>valueset &quot;Pneumococcal Vaccine Administered&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.110.12.1034'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="19" locator="24:1-24:154" name="Preventive Care Services - Established Office Visit, 18 and Up" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1025" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="19">
+               <a:s>valueset &quot;Preventive Care Services - Established Office Visit, 18 and Up&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1025'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="20" locator="25:1-25:148" name="Preventive Care Services-Initial Office Visit, 18 and Up" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1023" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="20">
+               <a:s>valueset &quot;Preventive Care Services-Initial Office Visit, 18 and Up&quot;: 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1023'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="22" locator="27:1-27:62" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="22">
+               <a:s>code &quot;Birth date&quot;: '21112-8' from </a:s>
+               <a:s r="21">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Birth date'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="21" locator="27:35-27:41" name="LOINC"/>
+      </def>
+   </codes>
+   <contexts>
+      <def locator="31:1-31:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def locator="31:1-31:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="31:1-31:15" dataType="fhir:Patient" templateId="http://hl7.org/fhir/StructureDefinition/Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="28" locator="33:1-34:21" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="28">
+               <a:s>define &quot;SDE Ethnicity&quot;:
+  </a:s>
+               <a:s r="27">
+                  <a:s r="26">
+                     <a:s>SDE</a:s>
+                  </a:s>
+                  <a:s>.</a:s>
+                  <a:s r="27">
+                     <a:s>&quot;SDE Ethnicity&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="27" locator="34:3-34:21" name="SDE Ethnicity" libraryName="SDE" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="31" locator="36:1-37:17" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>define &quot;SDE Payer&quot;:
+  </a:s>
+               <a:s r="30">
+                  <a:s r="29">
+                     <a:s>SDE</a:s>
+                  </a:s>
+                  <a:s>.</a:s>
+                  <a:s r="30">
+                     <a:s>&quot;SDE Payer&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="30" locator="37:3-37:17" name="SDE Payer" libraryName="SDE" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="34" locator="39:1-40:16" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="34">
+               <a:s>define &quot;SDE Race&quot;:
+  </a:s>
+               <a:s r="33">
+                  <a:s r="32">
+                     <a:s>SDE</a:s>
+                  </a:s>
+                  <a:s>.</a:s>
+                  <a:s r="33">
+                     <a:s>&quot;SDE Race&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="33" locator="40:3-40:16" name="SDE Race" libraryName="SDE" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="37" locator="42:1-43:15" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="37">
+               <a:s>define &quot;SDE Sex&quot;:
+  </a:s>
+               <a:s r="36">
+                  <a:s r="35">
+                     <a:s>SDE</a:s>
+                  </a:s>
+                  <a:s>.</a:s>
+                  <a:s r="36">
+                     <a:s>&quot;SDE Sex&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="36" locator="43:3-43:15" name="SDE Sex" libraryName="SDE" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="74" locator="49:1-59:46" name="Qualifying Encounters" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="74">
+               <a:s>define &quot;Qualifying Encounters&quot;:
+  </a:s>
+               <a:s r="73">
+                  <a:s>
+                     <a:s r="63">
+                        <a:s r="62">
+                           <a:s>( </a:s>
+                           <a:s r="62">
+                              <a:s r="60">
+                                 <a:s r="58">
+                                    <a:s r="56">
+                                       <a:s r="54">
+                                          <a:s r="52">
+                                             <a:s r="50">
+                                                <a:s r="48">
+                                                   <a:s>[Encounter: </a:s>
+                                                   <a:s>
+                                                      <a:s>&quot;Office Visit&quot;</a:s>
+                                                   </a:s>
+                                                   <a:s>]</a:s>
+                                                </a:s>
+                                                <a:s>
+      union </a:s>
+                                                <a:s r="49">
+                                                   <a:s>[Encounter: </a:s>
+                                                   <a:s>
+                                                      <a:s>&quot;Annual Wellness Visit&quot;</a:s>
+                                                   </a:s>
+                                                   <a:s>]</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>
+      union </a:s>
+                                             <a:s r="51">
+                                                <a:s>[Encounter: </a:s>
+                                                <a:s>
+                                                   <a:s>&quot;Preventive Care Services - Established Office Visit, 18 and Up&quot;</a:s>
+                                                </a:s>
+                                                <a:s>]</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>
+      union </a:s>
+                                          <a:s r="53">
+                                             <a:s>[Encounter: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Preventive Care Services-Initial Office Visit, 18 and Up&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+      union </a:s>
+                                       <a:s r="55">
+                                          <a:s>[Encounter: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Home Healthcare Services&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+      union </a:s>
+                                    <a:s r="57">
+                                       <a:s>[Encounter: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Discharge Services - Nursing Facility&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+      union </a:s>
+                                 <a:s r="59">
+                                    <a:s>[Encounter: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Nursing Facility Visit&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      union </a:s>
+                              <a:s r="61">
+                                 <a:s>[Encounter: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Care Services in Long-Term Residential Facility&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> ValidEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+      </a:s>
+                  <a:s r="72">
+                     <a:s>where </a:s>
+                     <a:s r="72">
+                        <a:s r="67">
+                           <a:s r="65">
+                              <a:s r="64">
+                                 <a:s>ValidEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="65">
+                                 <a:s>period</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="67"> during </a:s>
+                           <a:s r="66">
+                              <a:s>&quot;Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        and </a:s>
+                        <a:s r="71">
+                           <a:s r="69">
+                              <a:s r="68">
+                                 <a:s>ValidEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="69">
+                                 <a:s>status</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> = </a:s>
+                           <a:s r="70">
+                              <a:s>'finished'</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="73" locator="50:3-59:46" xsi:type="Query">
+            <source localId="63" locator="50:3-57:91" alias="ValidEncounter">
+               <expression localId="62" locator="50:3-57:76" xsi:type="Union">
+                  <operand localId="58" locator="50:5-55:64" xsi:type="Union">
+                     <operand localId="54" locator="50:5-53:83" xsi:type="Union">
+                        <operand localId="50" locator="50:5-51:48" xsi:type="Union">
+                           <operand localId="48" locator="50:5-50:31" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="50:17-50:30" name="Office Visit" xsi:type="ValueSetRef"/>
+                           </operand>
+                           <operand localId="49" locator="51:13-51:48" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="51:25-51:47" name="Annual Wellness Visit" xsi:type="ValueSetRef"/>
+                           </operand>
+                        </operand>
+                        <operand xsi:type="Union">
+                           <operand localId="51" locator="52:13-52:89" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="52:25-52:88" name="Preventive Care Services - Established Office Visit, 18 and Up" xsi:type="ValueSetRef"/>
+                           </operand>
+                           <operand localId="53" locator="53:13-53:83" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="53:25-53:82" name="Preventive Care Services-Initial Office Visit, 18 and Up" xsi:type="ValueSetRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="Union">
+                        <operand localId="55" locator="54:13-54:51" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" codeComparator="in" xsi:type="Retrieve">
+                           <codes locator="54:25-54:50" name="Home Healthcare Services" xsi:type="ValueSetRef"/>
+                        </operand>
+                        <operand localId="57" locator="55:13-55:64" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" codeComparator="in" xsi:type="Retrieve">
+                           <codes locator="55:25-55:63" name="Discharge Services - Nursing Facility" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="Union">
+                     <operand localId="59" locator="56:13-56:49" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="56:25-56:48" name="Nursing Facility Visit" xsi:type="ValueSetRef"/>
+                     </operand>
+                     <operand localId="61" locator="57:13-57:74" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="57:25-57:73" name="Care Services in Long-Term Residential Facility" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+               </expression>
+            </source>
+            <where localId="72" locator="58:7-59:46" xsi:type="And">
+               <operand localId="67" locator="58:13-58:61" xsi:type="IncludedIn">
+                  <operand name="ToInterval" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                     <operand localId="65" locator="58:13-58:33" path="period" scope="ValidEncounter" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="66" locator="58:42-58:61" name="Measurement Period" xsi:type="ParameterRef"/>
+               </operand>
+               <operand localId="71" locator="59:13-59:46" xsi:type="Equal">
+                  <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                     <operand localId="69" locator="59:13-59:33" path="status" scope="ValidEncounter" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="70" locator="59:37-59:46" valueType="t:String" value="finished" xsi:type="Literal"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="78" locator="45:1-47:40" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="78">
+               <a:s>define &quot;Initial Population&quot;:
+  </a:s>
+               <a:s r="77">
+                  <a:s r="47">
+                     <a:s r="45">
+                        <a:s r="38">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="45">
+                           <a:s>&quot;CalendarAgeInYearsAt&quot; ( </a:s>
+                           <a:s r="42">
+                              <a:s r="39">
+                                 <a:s>FHIRHelpers</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="42">
+                                 <a:s>ToDate ( </a:s>
+                                 <a:s r="41">
+                                    <a:s r="40">
+                                       <a:s>Patient</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="41">
+                                       <a:s>birthDate</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> )</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="44">
+                              <a:s>start of </a:s>
+                              <a:s r="43">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s r="46"> >= 65</a:s>
+                  </a:s>
+                  <a:s>
+      and </a:s>
+                  <a:s r="76">
+                     <a:s>exists </a:s>
+                     <a:s r="75">
+                        <a:s>&quot;Qualifying Encounters&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="77" locator="46:3-47:40" xsi:type="And">
+            <operand localId="47" locator="46:3-46:113" xsi:type="GreaterOrEqual">
+               <operand localId="45" locator="46:3-46:107" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                  <operand xsi:type="ToDateTime">
+                     <operand localId="42" locator="46:35-46:74" name="ToDate" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                        <operand localId="41" locator="46:56-46:72" path="birthDate" xsi:type="Property">
+                           <source localId="40" locator="46:56-46:62" name="Patient" xsi:type="ExpressionRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="44" locator="46:77-46:105" xsi:type="Start">
+                     <operand localId="43" locator="46:86-46:105" name="Measurement Period" xsi:type="ParameterRef"/>
+                  </operand>
+               </operand>
+               <operand localId="46" locator="46:112-46:113" valueType="t:Integer" value="65" xsi:type="Literal"/>
+            </operand>
+            <operand localId="76" locator="47:11-47:40" xsi:type="Exists">
+               <operand localId="75" locator="47:18-47:40" name="Qualifying Encounters" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="80" locator="61:1-62:22" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="80">
+               <a:s>define &quot;Denominator&quot;:
+  </a:s>
+               <a:s r="79">
+                  <a:s>&quot;Initial Population&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="79" locator="62:3-62:22" name="Initial Population" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="83" locator="64:1-65:23" name="Denominator Exclusions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="83">
+               <a:s>define &quot;Denominator Exclusions&quot;:
+  </a:s>
+               <a:s r="82">
+                  <a:s r="81">
+                     <a:s>Hospice</a:s>
+                  </a:s>
+                  <a:s>.</a:s>
+                  <a:s r="82">
+                     <a:s>&quot;Has Hospice&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="82" locator="65:3-65:23" name="Has Hospice" libraryName="Hospice" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="117" locator="67:1-77:7" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="117">
+               <a:s>define &quot;Numerator&quot;:
+  </a:s>
+               <a:s r="116">
+                  <a:s r="99">
+                     <a:s>exists </a:s>
+                     <a:s r="98">
+                        <a:s>( </a:s>
+                        <a:s r="98">
+                           <a:s>
+                              <a:s r="85">
+                                 <a:s r="84">
+                                    <a:s r="84">
+                                       <a:s>[Immunization: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Pneumococcal Vaccine&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> PneumococcalVaccine</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+        </a:s>
+                           <a:s r="97">
+                              <a:s>where </a:s>
+                              <a:s r="97">
+                                 <a:s r="89">
+                                    <a:s r="87">
+                                       <a:s r="86">
+                                          <a:s>PneumococcalVaccine</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="87">
+                                          <a:s>status</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> = </a:s>
+                                    <a:s r="88">
+                                       <a:s>'completed'</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+          and </a:s>
+                                 <a:s r="96">
+                                    <a:s r="93">
+                                       <a:s r="91">
+                                          <a:s r="90">
+                                             <a:s>PneumococcalVaccine</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="91">
+                                             <a:s>occurrence</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> as </a:s>
+                                       <a:s r="92">
+                                          <a:s>dateTime</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s r="96"> on or before
+          </a:s>
+                                    <a:s r="95">
+                                       <a:s>end of </a:s>
+                                       <a:s r="94">
+                                          <a:s>&quot;Measurement Period&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+    )</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+      or </a:s>
+                  <a:s r="115">
+                     <a:s>exists </a:s>
+                     <a:s r="114">
+                        <a:s>( </a:s>
+                        <a:s r="114">
+                           <a:s>
+                              <a:s r="101">
+                                 <a:s r="100">
+                                    <a:s r="100">
+                                       <a:s>[Procedure: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Pneumococcal Vaccine Administered&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> PneumococcalVaccineGiven</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+          </a:s>
+                           <a:s r="113">
+                              <a:s>where </a:s>
+                              <a:s r="113">
+                                 <a:s r="105">
+                                    <a:s r="103">
+                                       <a:s r="102">
+                                          <a:s>PneumococcalVaccineGiven</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="103">
+                                          <a:s>status</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> = </a:s>
+                                    <a:s r="104">
+                                       <a:s>'completed'</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+            and </a:s>
+                                 <a:s r="112">
+                                    <a:s r="109">
+                                       <a:s r="107">
+                                          <a:s r="106">
+                                             <a:s>PneumococcalVaccineGiven</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="107">
+                                             <a:s>performed</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> as </a:s>
+                                       <a:s r="108">
+                                          <a:s>Period</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s r="112"> on or before
+            </a:s>
+                                    <a:s r="111">
+                                       <a:s>end of </a:s>
+                                       <a:s r="110">
+                                          <a:s>&quot;Measurement Period&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      )</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="116" locator="68:3-77:7" xsi:type="Or">
+            <operand localId="99" locator="68:3-72:5" xsi:type="Exists">
+               <operand localId="98" locator="68:10-72:5" xsi:type="Query">
+                  <source localId="85" locator="68:12-68:69" alias="PneumococcalVaccine">
+                     <expression localId="84" locator="68:12-68:49" dataType="fhir:Immunization" templateId="http://hl7.org/fhir/StructureDefinition/Immunization" codeProperty="vaccineCode" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="68:27-68:48" name="Pneumococcal Vaccine" xsi:type="ValueSetRef"/>
+                     </expression>
+                  </source>
+                  <where localId="97" locator="69:9-71:37" xsi:type="And">
+                     <operand localId="89" locator="69:15-69:54" xsi:type="Equal">
+                        <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                           <operand localId="87" locator="69:15-69:40" path="status" scope="PneumococcalVaccine" xsi:type="Property"/>
+                        </operand>
+                        <operand localId="88" locator="69:44-69:54" valueType="t:String" value="completed" xsi:type="Literal"/>
+                     </operand>
+                     <operand localId="96" locator="70:15-71:37" xsi:type="SameOrBefore">
+                        <operand name="ToDateTime" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                           <operand localId="93" locator="70:15-70:56" strict="false" xsi:type="As">
+                              <operand localId="91" locator="70:15-70:44" path="occurrence" scope="PneumococcalVaccine" xsi:type="Property"/>
+                              <asTypeSpecifier localId="92" locator="70:49-70:56" name="fhir:dateTime" xsi:type="NamedTypeSpecifier"/>
+                           </operand>
+                        </operand>
+                        <operand localId="95" locator="71:11-71:37" xsi:type="End">
+                           <operand localId="94" locator="71:18-71:37" name="Measurement Period" xsi:type="ParameterRef"/>
+                        </operand>
+                     </operand>
+                  </where>
+               </operand>
+            </operand>
+            <operand localId="115" locator="73:10-77:7" xsi:type="Exists">
+               <operand localId="114" locator="73:17-77:7" xsi:type="Query">
+                  <source localId="101" locator="73:19-73:91" alias="PneumococcalVaccineGiven">
+                     <expression localId="100" locator="73:19-73:66" dataType="fhir:Procedure" templateId="http://hl7.org/fhir/StructureDefinition/Procedure" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                        <codes locator="73:31-73:65" name="Pneumococcal Vaccine Administered" xsi:type="ValueSetRef"/>
+                     </expression>
+                  </source>
+                  <where localId="113" locator="74:11-76:39" xsi:type="And">
+                     <operand localId="105" locator="74:17-74:61" xsi:type="Equal">
+                        <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                           <operand localId="103" locator="74:17-74:47" path="status" scope="PneumococcalVaccineGiven" xsi:type="Property"/>
+                        </operand>
+                        <operand localId="104" locator="74:51-74:61" valueType="t:String" value="completed" xsi:type="Literal"/>
+                     </operand>
+                     <operand localId="112" locator="75:17-76:39" xsi:type="SameOrBefore">
+                        <operand name="ToInterval" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                           <operand localId="109" locator="75:17-75:60" strict="false" xsi:type="As">
+                              <operand localId="107" locator="75:17-75:50" path="performed" scope="PneumococcalVaccineGiven" xsi:type="Property"/>
+                              <asTypeSpecifier localId="108" locator="75:55-75:60" name="fhir:Period" xsi:type="NamedTypeSpecifier"/>
+                           </operand>
+                        </operand>
+                        <operand xsi:type="If">
+                           <condition xsi:type="IsNull">
+                              <operand localId="111" locator="76:13-76:39" xsi:type="End">
+                                 <operand localId="110" locator="76:20-76:39" name="Measurement Period" xsi:type="ParameterRef"/>
+                              </operand>
+                           </condition>
+                           <then xsi:type="Null">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </then>
+                           <else lowClosed="true" highClosed="true" xsi:type="Interval">
+                              <low localId="111" locator="76:13-76:39" xsi:type="End">
+                                 <operand localId="110" locator="76:20-76:39" name="Measurement Period" xsi:type="ParameterRef"/>
+                              </low>
+                              <high localId="111" locator="76:13-76:39" xsi:type="End">
+                                 <operand localId="110" locator="76:20-76:39" name="Measurement Period" xsi:type="ParameterRef"/>
+                              </high>
+                           </else>
+                        </operand>
+                     </operand>
+                  </where>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

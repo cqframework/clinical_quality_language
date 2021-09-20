@@ -15,6 +15,8 @@ public class CqlTranslatorOptions {
     private String compatibilityLevel = "1.5";
     private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
     private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
+    private boolean analyzeDataRequirements = false;
+    private boolean collapseDataRequirements = false;
 
     /**
      * Returns default translator options:
@@ -195,6 +197,32 @@ public class CqlTranslatorOptions {
 
     public CqlTranslatorOptions withSignatureLevel(LibraryBuilder.SignatureLevel signatureLevel) {
         setSignatureLevel(signatureLevel);
+        return this;
+    }
+
+    public boolean getCollapseDataRequirements() {
+        return this.collapseDataRequirements;
+    }
+
+    public void setCollapseDataRequirements(boolean collapseDataRequirements) {
+        this.collapseDataRequirements = collapseDataRequirements;
+    }
+
+    public CqlTranslatorOptions withCollapseDataRequirements(boolean collapseDataRequirements) {
+        setCollapseDataRequirements(collapseDataRequirements);
+        return this;
+    }
+
+    public boolean getAnalyzeDataRequirements() {
+        return this.analyzeDataRequirements;
+    }
+
+    public void setAnalyzeDataRequirements(boolean analyzeDataRequirements) {
+        this.analyzeDataRequirements = analyzeDataRequirements;
+    }
+
+    public CqlTranslatorOptions withAnalyzeDataRequirements(boolean analyzeDataRequirements) {
+        setAnalyzeDataRequirements(analyzeDataRequirements);
         return this;
     }
 
