@@ -34,34 +34,62 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitLibrary(Library elm, C context) {
-        if(elm.getUsings() != null && elm.getUsings().getDef() != null && !elm.getUsings().getDef().isEmpty()) {
-            elm.getUsings().getDef().stream().forEach(using -> visitElement(using, context));
+        T result = defaultResult();
+        if (elm.getUsings() != null && elm.getUsings().getDef() != null && !elm.getUsings().getDef().isEmpty()) {
+            for (UsingDef def : elm.getUsings().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
         if (elm.getIncludes() != null && elm.getIncludes().getDef() != null && !elm.getIncludes().getDef().isEmpty()) {
-            elm.getIncludes().getDef().stream().forEach(include -> visitElement(include, context));
+            for (IncludeDef def : elm.getIncludes().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
         if (elm.getCodeSystems() != null && elm.getCodeSystems().getDef() != null && !elm.getCodeSystems().getDef().isEmpty()) {
-            elm.getCodeSystems().getDef().stream().forEach(codeSystem -> visitElement(codeSystem, context));
+            for (CodeSystemDef def : elm.getCodeSystems().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
         if (elm.getValueSets() != null && elm.getValueSets().getDef() != null && !elm.getValueSets().getDef().isEmpty()) {
-            elm.getValueSets().getDef().stream().forEach(valueset -> visitElement(valueset, context));
+            for (ValueSetDef def : elm.getValueSets().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
         if (elm.getCodes() != null && elm.getCodes().getDef() != null && !elm.getCodes().getDef().isEmpty()) {
-            elm.getCodes().getDef().stream().forEach(code -> visitElement(code, context));
+            for (CodeDef def : elm.getCodes().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
         if (elm.getConcepts() != null && elm.getConcepts().getDef() != null && !elm.getConcepts().getDef().isEmpty()) {
-            elm.getConcepts().getDef().stream().forEach(concept -> visitElement(concept, context));
+            for (ConceptDef def : elm.getConcepts().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
         if (elm.getParameters() != null && elm.getParameters().getDef() != null && !elm.getParameters().getDef().isEmpty()) {
-            elm.getParameters().getDef().stream().forEach(param -> visitElement(param, context));
+            for (ParameterDef def : elm.getParameters().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
         if (elm.getContexts() != null && elm.getContexts().getDef() != null && !elm.getContexts().getDef().isEmpty()) {
-            elm.getContexts().getDef().stream().forEach(contextDef -> visitElement(contextDef, context));
+            for (ContextDef def : elm.getContexts().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
         if (elm.getStatements() != null && elm.getStatements().getDef() != null && !elm.getStatements().getDef().isEmpty()) {
-            elm.getStatements().getDef().stream().forEach(statementDef -> visitElement(statementDef, context));
+            for (ExpressionDef def : elm.getStatements().getDef()) {
+                T childResult = visitElement(def, context);
+                result = aggregateResult(result, childResult);
+            }
         }
-        return null;
+        return result;
     }
 
     /**
@@ -73,7 +101,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitUsingDef(UsingDef elm, C context) {
-        return null;
+        return defaultResult();
     }
 
     /**
@@ -85,7 +113,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitIncludeDef(IncludeDef elm, C context) {
-        return null;
+        return defaultResult();
     }
 
     /**
@@ -97,6 +125,6 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitContextDef(ContextDef elm, C context) {
-        return null;
+        return defaultResult();
     }
 }

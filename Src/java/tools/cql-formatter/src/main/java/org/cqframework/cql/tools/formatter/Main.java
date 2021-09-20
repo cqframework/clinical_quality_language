@@ -19,6 +19,19 @@ public class Main {
             is = new FileInputStream(inputFile);
         }
 
-        System.out.print(CqlFormatterVisitor.getFormattedOutput(is));
+        try {
+            CqlFormatterVisitor.FormatResult result = CqlFormatterVisitor.getFormattedOutput(is);
+            if( result.getErrors() != null && result.getErrors().size() > 0 ) {
+                for( Exception ex : result.getErrors() ) {
+                    System.out.println( ex.getMessage() );
+                }
+            } else {
+                System.out.print( result.getOutput() );
+            }
+        } finally {
+            if( is != System.in ) {
+                try { is.close(); } catch( IOException iex ) { }
+            }
+        }
     }
 }

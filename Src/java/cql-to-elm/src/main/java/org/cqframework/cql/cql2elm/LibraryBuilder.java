@@ -607,6 +607,14 @@ public class LibraryBuilder {
         libraryManager.endTranslation(getLibraryName());
     }
 
+    public boolean canResolveLibrary(IncludeDef includeDef) {
+        VersionedIdentifier libraryIdentifier = new VersionedIdentifier()
+                .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
+                .withId(NamespaceManager.getNamePart(includeDef.getPath()))
+                .withVersion(includeDef.getVersion());
+        return libraryManager.canResolveLibrary(libraryIdentifier);
+    }
+
     public void addInclude(IncludeDef includeDef) {
         if (library.getIdentifier() == null || library.getIdentifier().getId() == null) {
             throw new IllegalArgumentException("Unnamed libraries cannot reference other libraries.");
@@ -898,12 +906,11 @@ public class LibraryBuilder {
 
     public Expression resolveIn(Expression left, Expression right) {
         if (right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet"))) {
-        //if (right instanceof ValueSetRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
-                        .withValueset(right);
-                        //.withValueset((ValueSetRef)right);
+                        .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
+                        .withValuesetExpression(right instanceof ValueSetRef ? null : right);
 
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
@@ -911,27 +918,26 @@ public class LibraryBuilder {
 
             InValueSet in = of.createInValueSet()
                     .withCode(left)
-                    .withValueset(right);
-                    //.withValueset((ValueSetRef) right);
+                    .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
+                    .withValuesetExpression(right instanceof ValueSetRef ? null : right);
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
         }
 
         if (right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem"))) {
-        //if (right instanceof CodeSystemRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
-                        .withCodesystem(right);
-                        //.withCodesystem((CodeSystemRef)right);
+                        .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
+                        .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
                 resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
             }
 
             InCodeSystem in = of.createInCodeSystem()
                     .withCode(left)
-                    .withCodesystem(right);
-                    //.withCodesystem((CodeSystemRef)right);
+                    .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
+                    .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
             resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
         }
@@ -2380,11 +2386,21 @@ public class LibraryBuilder {
             }
             
             String functionArgument = targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'));
-            FunctionRef fr = of.createFunctionRef()
-                    .withLibraryName(libraryName).withName(functionName)
-                    .withOperand(functionArgument.equals("%value") ? source : applyTargetMap(source, functionArgument));
-            fr.setResultType(source.getResultType());
-            return fr;
+            Expression argumentSource = functionArgument.equals("%value") ? source : applyTargetMap(source, functionArgument);
+            if (argumentSource.getResultType() instanceof ListType) {
+                Query query = of.createQuery().withSource(of.createAliasedQuerySource().withExpression(argumentSource).withAlias("$this"));
+                FunctionRef fr = of.createFunctionRef().withLibraryName(libraryName).withName(functionName).withOperand(of.createAliasRef().withName("$this"));
+                query.setReturn(of.createReturnClause().withDistinct(false).withExpression(fr));
+                query.setResultType(source.getResultType());
+                return query;
+            }
+            else {
+                FunctionRef fr = of.createFunctionRef()
+                        .withLibraryName(libraryName).withName(functionName)
+                        .withOperand(argumentSource);
+                fr.setResultType(source.getResultType());
+                return fr;
+            }
         }
         else if (targetMap.contains("[")) {
             int indexerStart = targetMap.indexOf("[");
@@ -2469,19 +2485,28 @@ public class LibraryBuilder {
             Query query = of.createQuery().withSource(querySource).withWhere(criteria);
             result = query;
 
-            if (indexerEnd < targetMap.length()) {
+            if (indexerEnd + 1 < targetMap.length()) {
                 // There are additional paths following the indexer, apply them
                 String targetPath = targetMap.substring(indexerEnd + 1);
                 if (targetPath.startsWith(".")) {
                     targetPath = targetPath.substring(1);
                 }
 
+                if (!targetPath.isEmpty()) {
+                    query.setReturn(of.createReturnClause()
+                            .withDistinct(false).withExpression(of.createProperty()
+                                    .withSource(of.createAliasRef().withName("$this")).withPath(targetPath)));
+                }
+
+                // The value reference should go inside the query, rather than being applied as a property outside of it
+                //for (String path : targetPath.split("\\.")) {
+                //    result = of.createProperty().withSource(result).withPath(path);
+                //}
+            }
+
+            if (!(source.getResultType() instanceof ListType)) {
                 // Use a singleton from since the source of the query is a list
                 result = of.createSingletonFrom().withOperand(result);
-
-                for (String path : targetPath.split("\\.")) {
-                    result = of.createProperty().withSource(result).withPath(path);
-                }
             }
 
             result.setResultType(source.getResultType());
