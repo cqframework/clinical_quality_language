@@ -167,20 +167,6 @@ public class LibraryTests {
     }
 
     @Test
-    public void testHiddenIdentifiers() {
-        CqlTranslator translator = null;
-        try {
-            translator = CqlTranslator.fromStream(
-                    LibraryTests.class.getResourceAsStream("LibraryTests/HiddenIdentifier.cql"),
-                    modelManager, libraryManager);
-            assertThat(translator.getWarnings().size(), is(1));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
     public void testTranslatorOptionsFlowDownWithAnnotations() {
         try {
             // Test Annotations are created for both libraries
