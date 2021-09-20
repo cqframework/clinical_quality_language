@@ -5,8 +5,8 @@ import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.LetClause;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class QueryContext {
     private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
@@ -69,8 +69,33 @@ public class QueryContext {
         return sources.get(identifier);
     }
 
+    public List<IdentifierResolution> resolveCaseIgnoredAliases(String identifier) {
+        List<IdentifierResolution> ret = new ArrayList<>();
+
+        List<String> caseIgnoredKeyMatches = sources.keySet().stream()
+                .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
+                .collect(Collectors.toList());
+
+        for (String key : caseIgnoredKeyMatches){
+            ret.add(IdentifierResolution.createMatch(identifier, MatchType.CASE_IGNORED, sources.get(key)));
+        }
+        return ret;
+    }
+
     public LetClause resolveLet(String identifier) {
         return lets.get(identifier);
+    }
+
+    public List<IdentifierResolution> resolveCaseIgnoredLets(String identifier) {
+        List<IdentifierResolution> ret = new ArrayList<>();
+        List<String> caseIgnoredKeyMatches = lets.keySet().stream()
+                .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
+                .collect(Collectors.toList());
+
+        for (String key : caseIgnoredKeyMatches){
+            ret.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, lets.get(key)));
+        }
+        return ret;
     }
 
     private boolean isSingularValue = true;

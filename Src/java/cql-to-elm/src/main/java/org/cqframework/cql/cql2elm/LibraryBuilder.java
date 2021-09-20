@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -15,14 +15,41 @@ import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * Created by Bryn on 12/29/2016.
  */
 public class LibraryBuilder {
+    public static final String SYSTEM = "System";
+    public static final String INTEGER = "Integer";
+    public static final String DECIMAL = "Decimal";
+    public static final String $_THIS = "$this";
+    public static final String HIGH = "high";
+    public static final String HIGH_CLOSED = "highClosed";
+    public static final String COMPATIBILITY_LEVEL_1_5 = "1.5";
+    public static final String $_INDEX = "$index";
+    public static final String $_TOTAL = "$total";
+    public static final String S_RESOLVED_AS_AN_EXPRESSION_DEFINITION = "%s resolved as an expression definition";
+    public static final String S_RESOLVED_AS_A_PARAMETER = "%s resolved as a parameter";
+    public static final String S_RESOLVED_AS_A_VALUE_SET = "%s resolved as a value set";
+    public static final String S_RESOLVED_AS_A_CODE_SYSTEM = "%s resolved as a code system";
+    public static final String S_RESOLVED_AS_A_CODE = "%s resolved as a code";
+    public static final String S_RESOLVED_AS_A_CONCEPT = "%s resolved as a concept";
+    public static final String S_RESOLVED_AS_A_LIBRARY = "%s resolved as a library";
+    public static final String S_RESOLVED_MORE_THAN_ONCE = "%s resolved more than once: ";
+    public static final String S_RESOLVED_AS_AN_ELEMENT_OF_THE_RESULT_OF_A_QUERY = "%s resolved as an element of the result of a query";
+    public static final String S_RESOLVED_AS_THE_INDEX_ITERATION_ACCESSOR = "%s resolved as the index iteration accessor";
+    public static final String S_RESOLVED_AS_THE_TOTAL_AGGREGATION_ACCESSOR = "%s resolved as the total aggregation accessor";
+    public static final String S_RESOLVED_AS_AN_ALIAS_OF_A_QUERY = "%s resolved as an alias of a query";
+    public static final String S_RESOLVED_AS_A_LET_OF_A_QUERY = "%s resolved as a let of a query";
+    public static final String S_RESOLVED_AS_AN_OPERAND_TO_A_FUNCTION = "%s resolved as an operand to a function";
+    public static final String S_RESOLVED_AS_A_CONTEXT_ACCESSOR = "%s resolved as a context accessor";
+    public static final String S_RESOLVED_AS_A_POTENTIAL_TYPE_NAME = "%s resolved as a potential type name";
+    public static final String COULD_NOT_VALIDATE_REFERENCE_TO_PARAMETER_S_BECAUSE_ITS_DEFINITION_CONTAINS_ERRORS = "Could not validate reference to parameter %s because its definition contains errors.";
+    public static final String COULD_NOT_RESOLVE_IDENTIFIER_S_IN_THE_CURRENT_LIBRARY = "Could not resolve identifier %s in the current library.";
+
     public static enum SignatureLevel {
         /*
         Indicates signatures will never be included in operator invocations
@@ -445,9 +472,9 @@ public class LibraryBuilder {
         }
 
         return getModel(new VersionedIdentifier()
-                .withSystem(NamespaceManager.getUriPart(usingDef.getUri()))
-                .withId(NamespaceManager.getNamePart(usingDef.getUri()))
-                .withVersion(usingDef.getVersion()),
+                        .withSystem(NamespaceManager.getUriPart(usingDef.getUri()))
+                        .withId(NamespaceManager.getNamePart(usingDef.getUri()))
+                        .withVersion(usingDef.getVersion()),
                 usingDef.getLocalIdentifier());
     }
 
@@ -614,7 +641,6 @@ public class LibraryBuilder {
                 .withVersion(includeDef.getVersion());
         return libraryManager.canResolveLibrary(libraryIdentifier);
     }
-
     public void addInclude(IncludeDef includeDef) {
         if (library.getIdentifier() == null || library.getIdentifier().getId() == null) {
             throw new IllegalArgumentException("Unnamed libraries cannot reference other libraries.");
@@ -721,6 +747,10 @@ public class LibraryBuilder {
 
     public Element resolve(String identifier) {
         return translatedLibrary.resolve(identifier);
+    }
+
+    public List<Pair<String, Object>> resolveCaseIgnored(String identifier) {
+        return translatedLibrary.resolveCaseIgnored(identifier);
     }
 
     public IncludeDef resolveIncludeRef(String identifier) {
@@ -906,11 +936,13 @@ public class LibraryBuilder {
 
     public Expression resolveIn(Expression left, Expression right) {
         if (right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet"))) {
+            //if (right instanceof ValueSetRef) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
                         .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
                         .withValuesetExpression(right instanceof ValueSetRef ? null : right);
+
 
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
@@ -920,16 +952,19 @@ public class LibraryBuilder {
                     .withCode(left)
                     .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
                     .withValuesetExpression(right instanceof ValueSetRef ? null : right);
+
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
         }
 
         if (right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem"))) {
+
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
                         .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
                         .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
+
                 resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
             }
@@ -938,6 +973,7 @@ public class LibraryBuilder {
                     .withCode(left)
                     .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
                     .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
+
             resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
         }
@@ -1116,7 +1152,7 @@ public class LibraryBuilder {
             }
 
             if (options.getSignatureLevel() == SignatureLevel.All || (options.getSignatureLevel() == SignatureLevel.Differing
-                && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
+                    && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
                     || (options.getSignatureLevel() == SignatureLevel.Overloads && resolution.getOperatorHasOverloads())) {
                 invocation.setSignature(dataTypesToTypeSpecifiers(resolution.getOperator().getSignature().getOperandTypes()));
             }
@@ -1240,8 +1276,8 @@ public class LibraryBuilder {
         }
 
         // If it didn't resolve, there are two possibilities
-            // 1. It is a special system function resolution that only resolves with the systemFunctionResolver
-            // 2. It is an error condition that needs to be reported
+        // 1. It is a special system function resolution that only resolves with the systemFunctionResolver
+        // 2. It is an error condition that needs to be reported
         if (fun == null) {
             fun = buildFunctionRef(libraryName, functionName, paramList);
             Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
@@ -1516,8 +1552,8 @@ public class LibraryBuilder {
                 for (Conversion alternative : conversion.getAlternativeConversions()) {
                     caseResult.withCaseItem(
                             of.createCaseItem()
-                                .withWhen(buildIs(expression, alternative.getFromType()))
-                                .withThen(convertExpression(buildAs(expression, alternative.getFromType()), alternative))
+                                    .withWhen(buildIs(expression, alternative.getFromType()))
+                                    .withThen(convertExpression(buildAs(expression, alternative.getFromType()), alternative))
                     );
                 }
 
@@ -1752,7 +1788,7 @@ public class LibraryBuilder {
             case "millisecond":
             case "milliseconds":
                 // CQL-defined temporal precisions are valid units
-            break;
+                break;
 
             default:
                 if (ucumService != null) {
@@ -1762,7 +1798,7 @@ public class LibraryBuilder {
                         throw new IllegalArgumentException(message);
                     }
                 }
-            break;
+                break;
         }
     }
 
@@ -2070,6 +2106,139 @@ public class LibraryBuilder {
         return null;
     }
 
+    // TODO: Support case-insensitive models
+    public List<IdentifierResolution> resolveProperties(DataType sourceType, String identifier, boolean mustResolve) {
+        List<IdentifierResolution> matchList = new ArrayList<>();
+
+        DataType currentType = sourceType;
+        while (currentType != null) {
+            if (currentType instanceof ClassType) {
+                ClassType classType = (ClassType)currentType;
+                if (identifier.startsWith("?") && isCompatibleWith(COMPATIBILITY_LEVEL_1_5)) {
+                    String searchPath = identifier.substring(1);
+                    for (SearchType s : classType.getSearches()) {
+                        matchList.add(IdentifierResolution.getMatchType(identifier, s.getName(), searchPath, new PropertyResolution(s)));
+                    }
+                }
+                else {
+                    for (ClassTypeElement e : classType.getElements()) {
+                        IdentifierResolution mi = IdentifierResolution.getMatchType(identifier, e.getName(), identifier, new PropertyResolution(e));
+                        if (mi.getMatchType() != MatchType.NONE){
+                            if (e.isProhibited()) {
+                                throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
+                            }
+                            matchList.add(mi);
+                        }
+                    }
+                }
+            }
+            else if (currentType instanceof TupleType) {
+                TupleType tupleType = (TupleType)currentType;
+                for (TupleTypeElement e : tupleType.getElements()) {
+                    matchList.add(IdentifierResolution.getMatchType(identifier, e.getName(), identifier, new PropertyResolution(e)));
+                }
+            }
+            else if (currentType instanceof IntervalType) {
+                IntervalType intervalType = (IntervalType)currentType;
+
+                IdentifierResolution high = IdentifierResolution.getMatchType(identifier, identifier, HIGH, new PropertyResolution(intervalType.getPointType(), identifier));
+                IdentifierResolution highClosed = IdentifierResolution.getMatchType(identifier, identifier, HIGH_CLOSED, new PropertyResolution(resolveTypeName("System", "Boolean"), identifier));
+
+                if (high.getMatchType().equals(MatchType.NONE) && highClosed.getMatchType().equals(MatchType.NONE)){
+                    throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
+                }
+                matchList.add(high);
+                matchList.add(highClosed);
+
+            }
+            else if (currentType instanceof ChoiceType) {
+                ChoiceType choiceType = (ChoiceType)currentType;
+                // TODO: Issue a warning if the property does not resolve against every type in the choice
+
+                // Resolve the property against each type in the choice
+                Set<DataType> resultTypes = new HashSet<>();
+                Map<DataType, String> resultTargetMaps = new HashMap<DataType, String>();
+                String name = null;
+                for (DataType choice : choiceType.getTypes()) {
+                    PropertyResolution resolution = resolveProperty(choice, identifier, false);
+                    if (resolution != null) {
+                        resultTypes.add(resolution.getType());
+                        if (resolution.getTargetMap() != null) {
+                            if (resultTargetMaps.containsKey(resolution.getType())) {
+                                if (!resultTargetMaps.get(resolution.getType()).equals(resolution.getTargetMap())) {
+                                    throw new IllegalArgumentException(String.format("Inconsistent target maps %s and %s for choice type %s",
+                                            resultTargetMaps.get(resolution.getType()), resolution.getTargetMap(), resolution.getType().toString()));
+                                }
+                            }
+                            else {
+                                resultTargetMaps.put(resolution.getType(), resolution.getTargetMap());
+                            }
+                        }
+
+                        if (name == null) {
+                            name = resolution.getName();
+                        }
+                        else if (!name.equals(resolution.getName())) {
+                            throw new IllegalArgumentException(String.format("Inconsistent property resolution for choice type %s (was %s, is %s)",
+                                    choice.toString(), name, resolution.getName()));
+                        }
+
+                        if (name == null) {
+                            name = resolution.getName();
+                        }
+                        else if (!name.equals(resolution.getName())) {
+                            throw new IllegalArgumentException(String.format("Inconsistent property resolution for choice type %s (was %s, is %s)",
+                                    choice.toString(), name, resolution.getName()));
+                        }
+                    }
+                }
+
+                // The result type is a choice of all the resolved types
+                if (resultTypes.size() > 1) {
+                    matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, new PropertyResolution(new ChoiceType(resultTypes), name, resultTargetMaps)));
+
+                }
+
+                if (resultTypes.size() == 1) {
+                    for (DataType resultType : resultTypes) {
+                        matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name)));
+                    }
+                }
+            }
+            else if (currentType instanceof ListType && listTraversal) {
+                // NOTE: FHIRPath path traversal support
+                // Resolve property as a list of items of property of the element type
+                ListType listType = (ListType)currentType;
+                PropertyResolution resolution = resolveProperty(listType.getElementType(), identifier);
+
+                matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, new PropertyResolution(new ListType(resolution.getType()), resolution.getTargetMap())));
+            }
+
+            if (currentType.getBaseType() != null) {
+                currentType = currentType.getBaseType();
+            }
+            else {
+                break;
+            }
+        }
+
+        if (mustResolve) {
+            // ERROR:
+            throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
+        }
+
+        return matchList;
+    }
+
+    /**
+     * resolveIdentifier serves the function of both attempting to resolve an identifier as well as
+     * inform the user when various scenarios occur such as no resolution, multiple resolutions, or a
+     * case mis-matched resolution occurred.
+     *
+     * @param identifier  String value of identifier to be resolved
+     * @param mustResolve boolean determining whether IllegalArgumentException should be thrown if no match made
+     * @return
+     */
     public Expression resolveIdentifier(String identifier, boolean mustResolve) {
         // An Identifier will always be:
         // 1: The name of an alias
@@ -2084,60 +2253,185 @@ public class LibraryBuilder {
         // 10: The name of a property on a specific context
         // 11: An unresolved identifier error is thrown
 
+//        IdentifierResolution resolvedIdentifierResultHolder = new IdentifierResolution();
+
+        List<IdentifierResolution> matchList = new ArrayList<>();
+
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
         if (inTypeSpecifierContext()) {
-            return this.createLiteral(identifier);
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, this.createLiteral(identifier)));
         }
 
-        // In the sort clause of a plural query, names may be resolved based on the result type of the query
-        IdentifierRef resultElement = resolveQueryResultElement(identifier);
-        if (resultElement != null) {
-            return resultElement;
-        }
+        //In the sort clause of a plural query, names may be resolved based on the result type of the query
+        matchList.addAll(resolveQueryResultElements(identifier));
 
         // In the case of a $this alias, names may be resolved as implicit property references
-        Expression thisElement = resolveQueryThisElement(identifier);
-        if (thisElement != null) {
-            return thisElement;
-        }
+        matchList.addAll(resolveQueryThisElements(identifier));
 
-        if (identifier.equals("$index")) {
+        if (MatchType.checkMatch(identifier, $_INDEX) != MatchType.NONE) {
             Iteration result = of.createIteration();
-            result.setResultType(resolveTypeName("System", "Integer"));
-            return result;
+            result.setResultType(resolveTypeName(SYSTEM, INTEGER));
+            matchList.add(IdentifierResolution.getMatchType(identifier, identifier, $_INDEX, result));
         }
 
-        if (identifier.equals("$total")) {
+        if (MatchType.checkMatch(identifier, $_TOTAL) != MatchType.NONE) {
             Total result = of.createTotal();
-            result.setResultType(resolveTypeName("System", "Decimal")); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            return result;
+            result.setResultType(resolveTypeName(SYSTEM, DECIMAL)); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
+            matchList.add(IdentifierResolution.getMatchType(identifier, identifier, $_TOTAL, result));
         }
 
-        AliasedQuerySource alias = resolveAlias(identifier);
-        if (alias != null) {
+
+        List<IdentifierResolution> aliasMatches = resolveAliases(identifier);
+        IdentifierResolution aliasFirstCaseMatch = IdentifierResolution.getFirstCaseMatch(aliasMatches);
+        if (aliasFirstCaseMatch != null) {
             AliasRef result = of.createAliasRef().withName(identifier);
-            if (alias.getResultType() instanceof ListType) {
-                result.setResultType(((ListType)alias.getResultType()).getElementType());
+            AliasedQuerySource aqs = (AliasedQuerySource) aliasFirstCaseMatch.getResolvedElement();
+            if (aqs.getResultType() instanceof ListType) {
+                result.setResultType(((ListType) aqs.getResultType()).getElementType());
+            } else {
+                result.setResultType(aqs.getResultType());
             }
-            else {
-                result.setResultType(alias.getResultType());
-            }
-            return result;
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, result));
         }
+        matchList.addAll(aliasMatches);
 
-        LetClause let = resolveQueryLet(identifier);
-        if (let != null) {
+
+        List<IdentifierResolution> letsMatches = resolveQueryLets(identifier);
+        IdentifierResolution letsFirstCaseMatch = IdentifierResolution.getFirstCaseMatch(letsMatches);
+        if (letsFirstCaseMatch != null) {
             QueryLetRef result = of.createQueryLetRef().withName(identifier);
+            LetClause let = (LetClause) letsFirstCaseMatch.getResolvedElement();
             result.setResultType(let.getResultType());
-            return result;
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, result));
+        }
+        matchList.addAll(letsMatches);
+
+        List<IdentifierResolution> operandRefMatches = resolveOperandRefs(identifier);
+        IdentifierResolution operandFirstCaseMatch = IdentifierResolution.getFirstCaseMatch(operandRefMatches);
+        if (operandFirstCaseMatch != null) {
+            OperandRef operandRef = (OperandRef) operandFirstCaseMatch.getResolvedElement();
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, operandRef));
+        }
+        matchList.addAll(operandRefMatches);
+
+
+        List<IdentifierResolution> resolvedElementsMatches = resolveElements(identifier);
+        IdentifierResolution resolvedElementsFirstCaseMatch = IdentifierResolution.getFirstCaseMatch(resolvedElementsMatches);
+        if (resolvedElementsFirstCaseMatch != null) {
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, resolvedElementsFirstCaseMatch.getResolvedElement()));
+        }
+        matchList.addAll(resolvedElementsMatches);
+
+        // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
+        // the identifier may be resolved as an implicit property reference on that context.
+        if (!inLiteralContext() && inSpecificContext()) {
+            Element contextElement = resolve(currentExpressionContext());
+            if (contextElement instanceof ParameterDef) {
+                ParameterDef contextParameter = (ParameterDef) contextElement;
+
+                checkLiteralContext();
+                ParameterRef parameterRef = of.createParameterRef().withName(contextParameter.getName());
+                parameterRef.setResultType(contextParameter.getResultType());
+                if (parameterRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format(COULD_NOT_VALIDATE_REFERENCE_TO_PARAMETER_S_BECAUSE_ITS_DEFINITION_CONTAINS_ERRORS,
+                            parameterRef.getName()));
+                }
+
+                PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
+                if (resolution != null) {
+                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
+                    contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
+                    matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, contextAccessor));
+                }
+            }
         }
 
-        OperandRef operandRef = resolveOperandRef(identifier);
-        if (operandRef != null) {
-            return operandRef;
+        IdentifierResolution firstCaseMatch = IdentifierResolution.getFirstCaseMatch(matchList);
+        if (firstCaseMatch != null) {
+
+            List<IdentifierResolution> allHiddenCaseMatches = IdentifierResolution.getAllMatches(matchList, MatchType.EXACT);
+            //remove first element to filter out our "first come first serve" rule in deciding a match:
+            allHiddenCaseMatches.remove(0);
+
+            List<IdentifierResolution> allCaseIgnoredMatches = IdentifierResolution.getAllMatches(matchList, MatchType.EXACT);
+            //List<MatchIdentifier> allSoundsLikeMatches = MatchIdentifier.getAllMatches(matchList, Match.SOUNDS_LIKE);
+
+            //issue warning that multiple matches occurred:
+            if (allHiddenCaseMatches.size() >= 1) {
+                this.reportWarning("Identifier hiding detected: " +
+                                "Identifier" + (allHiddenCaseMatches.size() > 1 ? "s" : "") + " in a broader scope hidden: " +
+                                this.formatMatchedMessage(allHiddenCaseMatches),
+                        (Expression) firstCaseMatch.getResolvedElement());
+            }
+            //return first match:
+            return (Expression) firstCaseMatch.getResolvedElement();
+        } else if (mustResolve) {
+            // ERROR:
+            throw new IllegalArgumentException(String.format(COULD_NOT_RESOLVE_IDENTIFIER_S_IN_THE_CURRENT_LIBRARY, identifier));
         }
+
+        return null;
+
+    }
+
+    private String lookupElementWarning(Object element) {
+        if (element instanceof ExpressionDef) {
+            return S_RESOLVED_AS_AN_EXPRESSION_DEFINITION;
+        }
+        else if (element instanceof ParameterDef) {
+            return S_RESOLVED_AS_A_PARAMETER;
+        }
+        else if (element instanceof ValueSetDef) {
+            return S_RESOLVED_AS_A_VALUE_SET;
+        }
+        else if (element instanceof CodeSystemDef) {
+            return S_RESOLVED_AS_A_CODE_SYSTEM;
+        }
+        else if (element instanceof CodeDef) {
+            return S_RESOLVED_AS_A_CODE;
+        }
+        else if (element instanceof ConceptDef) {
+            return S_RESOLVED_AS_A_CONCEPT;
+        }
+        else if (element instanceof IncludeDef) {
+            return S_RESOLVED_AS_A_LIBRARY;
+        }
+        else if (element instanceof IdentifierRef) {
+            return S_RESOLVED_AS_AN_ELEMENT_OF_THE_RESULT_OF_A_QUERY;
+        }
+        else if (element instanceof Iteration) {
+            return S_RESOLVED_AS_THE_INDEX_ITERATION_ACCESSOR;
+        }
+        else if (element instanceof Total) {
+            return S_RESOLVED_AS_THE_TOTAL_AGGREGATION_ACCESSOR;
+        }
+        else if (element instanceof AliasRef) {
+            return S_RESOLVED_AS_AN_ALIAS_OF_A_QUERY;
+        }
+        else if (element instanceof QueryLetRef ) {
+            return S_RESOLVED_AS_A_LET_OF_A_QUERY;
+        }
+        else if (element instanceof OperandRef ) {
+            return S_RESOLVED_AS_AN_OPERAND_TO_A_FUNCTION;
+        }
+        else if (element instanceof Literal) {
+            return S_RESOLVED_AS_A_POTENTIAL_TYPE_NAME;
+        }
+        else if (element instanceof Expression ) {
+            return S_RESOLVED_AS_A_CONTEXT_ACCESSOR;
+        }
+        //default message if no match is made:
+        return S_RESOLVED_MORE_THAN_ONCE + element.getClass();
+    }
+
+    private List<IdentifierResolution> resolveElements(String identifier) {
+
+        List<IdentifierResolution> matchList = new ArrayList<>();
 
         Element element = resolve(identifier);
+
+        List<Pair<String, Object>> caseIgnoredElements = resolveCaseIgnored(identifier);
 
         if (element instanceof ExpressionDef) {
             checkLiteralContext();
@@ -2148,7 +2442,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
                         expressionRef.getName()));
             }
-            return expressionRef;
+
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, expressionRef));
+
+            matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
         }
 
         if (element instanceof ParameterDef) {
@@ -2160,7 +2457,11 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
-            return parameterRef;
+
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, parameterRef));
+
+            matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
+
         }
 
         if (element instanceof ValueSetDef) {
@@ -2172,7 +2473,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
             }
-            return valuesetRef;
+
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, valuesetRef));
+
+            matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
         }
 
         if (element instanceof CodeSystemDef) {
@@ -2184,8 +2488,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
-            return codesystemRef;
 
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, codesystemRef));
+
+            matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
         }
 
         if (element instanceof CodeDef) {
@@ -2197,7 +2503,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
-            return codeRef;
+
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, codeRef));
+
+            matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
         }
 
         if (element instanceof ConceptDef) {
@@ -2209,47 +2518,41 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
-            return conceptRef;
+
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, conceptRef));
+
+            matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
         }
 
         if (element instanceof IncludeDef) {
             checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-            return libraryRef;
+
+            matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, libraryRef));
+
+            matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
+
         }
 
-        // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
-        // the identifier may be resolved as an implicit property reference on that context.
-        if (!inLiteralContext() && inSpecificContext()) {
-            Element contextElement = resolve(currentExpressionContext());
-            if (contextElement instanceof ParameterDef) {
-                ParameterDef contextParameter = (ParameterDef)contextElement;
+        return matchList;
+    }
 
-                checkLiteralContext();
-                ParameterRef parameterRef = of.createParameterRef().withName(contextParameter.getName());
-                parameterRef.setResultType(contextParameter.getResultType());
-                if (parameterRef.getResultType() == null) {
-                    // ERROR:
-                    throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
-                            parameterRef.getName()));
-                }
-
-                PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
-                if (resolution != null) {
-                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
-                    contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
-                    return contextAccessor;
-                }
-            }
+    private String formatPairedMessage(List<Pair<String, Object>> list) {
+        StringBuilder sb = new StringBuilder();
+        for (Pair<String, Object> p : list){
+            sb.append(String.format(lookupElementWarning(p.getRight()), p.getLeft()) + "\n");
         }
+        return sb.toString();
+    }
 
-        if (mustResolve) {
-            // ERROR:
-            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
+    private String formatMatchedMessage(List<IdentifierResolution> list) {
+        StringBuilder sb = new StringBuilder();
+
+        for (IdentifierResolution p : list){
+            sb.append(String.format(lookupElementWarning(p.getResolvedElement()), p.getIdentifier()) + "\n");
         }
-
-        return null;
+        return sb.toString();
     }
 
     public Property buildProperty(String scope, String path, boolean isSearch, DataType resultType) {
@@ -2340,18 +2643,18 @@ public class LibraryBuilder {
 
         // TODO: This only works for simple mappings, nested mappings will require the targetMap.g4 parser
         // Supported target mapping syntax:
-          // %value.<property name>
-            // Resolves as a property accessor with the given source and <property name> as the path
-          // <qualified function name>(%value)
-            // Resolves as a function ref with the given function name and the source as an operand
-          // <type name>:<map>;<type name>:<map>...
-            // Semi-colon delimited list of type names and associated maps
-            // Resolves as a case with whens for each type, with target mapping applied per the target map for that type
-          // %parent.<qualified path>[<key path>=<key value>,<key path>=<key value>,...].<qualified path>
-            // Resolves as a replacement of the property on which it appears
-            // Replaces the path of the property on which it appears with the given qualified path, which then becomes the
-            // source of a query with a where clause with criteria built for each comparison in the indexer
-            // If there is a trailing qualified path, the query is wrapped in a singletonFrom and a property access
+        // %value.<property name>
+        // Resolves as a property accessor with the given source and <property name> as the path
+        // <qualified function name>(%value)
+        // Resolves as a function ref with the given function name and the source as an operand
+        // <type name>:<map>;<type name>:<map>...
+        // Semi-colon delimited list of type names and associated maps
+        // Resolves as a case with whens for each type, with target mapping applied per the target map for that type
+        // %parent.<qualified path>[<key path>=<key value>,<key path>=<key value>,...].<qualified path>
+        // Resolves as a replacement of the property on which it appears
+        // Replaces the path of the property on which it appears with the given qualified path, which then becomes the
+        // source of a query with a where clause with criteria built for each comparison in the indexer
+        // If there is a trailing qualified path, the query is wrapped in a singletonFrom and a property access
         // Any other target map results in an exception
 
         if (targetMap.contains(";")) {
@@ -2384,7 +2687,7 @@ public class LibraryBuilder {
 
                 ensureLibraryIncluded(libraryName, source);
             }
-            
+
             String functionArgument = targetMap.substring(invocationStart + 1, targetMap.lastIndexOf(')'));
             Expression argumentSource = functionArgument.equals("%value") ? source : applyTargetMap(source, functionArgument);
             if (argumentSource.getResultType() instanceof ListType) {
@@ -2671,6 +2974,38 @@ public class LibraryBuilder {
         return null;
     }
 
+
+    private List<IdentifierResolution> resolveQueryResultElements(String identifier) {
+
+        List<IdentifierResolution> matchList = new ArrayList<>();
+
+        if (inQueryContext()) {
+            QueryContext query = peekQueryContext();
+            if (query.inSortClause() && !query.isSingular()) {
+                {
+                    IdentifierRef result = new IdentifierRef().withName(identifier);
+                    result.setResultType(query.getResultElementType());
+                    matchList.add(IdentifierResolution.getMatchType(identifier, identifier, $_THIS, result));
+                }
+
+                IdentifierResolution propertyMatch = IdentifierResolution.getFirstCaseMatch(resolveProperties(query.getResultElementType(), identifier, false));
+
+                if (propertyMatch != null) {
+                    PropertyResolution pr = (PropertyResolution) propertyMatch.getResolvedElement();
+                    IdentifierRef result = new IdentifierRef().withName(pr.getName());
+                    result.setResultType(pr.getType());
+                    if (pr.getTargetMap() != null) {
+                        throw new IllegalArgumentException("Target mapping not supported in this context");
+                    }
+                    matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, result));
+                }
+            }
+        }
+
+        return matchList;
+    }
+
+
     private AliasedQuerySource resolveAlias(String identifier) {
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
@@ -2683,6 +3018,22 @@ public class LibraryBuilder {
         }
 
         return null;
+    }
+
+    private List<IdentifierResolution> resolveAliases(String identifier) {
+        List<IdentifierResolution> matchList = new ArrayList<>();
+        // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
+        if (inQueryContext()) {
+            for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
+                AliasedQuerySource source = getScope().getQueries().get(i).resolveAlias(identifier);
+                if (source != null) {
+                    matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, source));
+                }
+                matchList.addAll(getScope().getQueries().get(i).resolveCaseIgnoredAliases(identifier));
+            }
+        }
+
+        return matchList;
     }
 
     private Expression resolveQueryThisElement(String identifier) {
@@ -2710,6 +3061,41 @@ public class LibraryBuilder {
         return null;
     }
 
+    private List<IdentifierResolution> resolveQueryThisElements(String identifier) {
+
+        List<IdentifierResolution> matchList = new ArrayList<>();
+
+        if (inQueryContext()) {
+            QueryContext query = peekQueryContext();
+            if (query.isImplicit()) {
+
+                List<IdentifierResolution> aliasMatches =  resolveAliases($_THIS);
+
+                IdentifierResolution aliasCaseMatch = IdentifierResolution.getFirstCaseMatch(aliasMatches);
+
+                if (aliasCaseMatch != null) {
+
+                    AliasedQuerySource src = (AliasedQuerySource) aliasCaseMatch.getResolvedElement();
+
+                    AliasRef aliasRef = of.createAliasRef().withName($_THIS);
+                    if (src.getResultType() instanceof ListType) {
+                        aliasRef.setResultType(((ListType)src.getResultType()).getElementType());
+                    }
+                    else {
+                        aliasRef.setResultType(src.getResultType());
+                    }
+
+                    matchList.addAll(resolveProperties(aliasRef.getResultType(), identifier, false));
+
+                }
+
+                matchList.addAll(aliasMatches);
+            }
+        }
+
+        return matchList;
+    }
+
     private LetClause resolveQueryLet(String identifier) {
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
@@ -2724,6 +3110,22 @@ public class LibraryBuilder {
         return null;
     }
 
+    private List<IdentifierResolution> resolveQueryLets(String identifier) {
+        List<IdentifierResolution> ri = new ArrayList<>();
+        // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
+        if (inQueryContext()) {
+            for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
+                LetClause source = getScope().getQueries().get(i).resolveLet(identifier);
+                if (source != null) {
+                    ri.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, source));
+                }
+                ri.addAll(getScope().getQueries().get(i).resolveCaseIgnoredLets(identifier));
+            }
+        }
+
+        return ri;
+    }
+
     private OperandRef resolveOperandRef(String identifier) {
         if (!functionDefs.empty()) {
             for (OperandDef operand : functionDefs.peek().getOperand()) {
@@ -2736,6 +3138,21 @@ public class LibraryBuilder {
         }
 
         return null;
+    }
+
+    private List<IdentifierResolution> resolveOperandRefs(String identifier) {
+        List<IdentifierResolution> ri = new ArrayList<>();
+        if (!functionDefs.empty()) {
+            for (OperandDef operand : functionDefs.peek().getOperand()) {
+
+                ri.add(IdentifierResolution.getMatchType(identifier, operand.getName(), identifier, of.createOperandRef()
+                        .withName(identifier)
+                        .withResultType(operand.getResultType())));
+
+            }
+        }
+
+        return ri;
     }
 
     private DataType getExpressionDefResultType(ExpressionDef expressionDef) {
