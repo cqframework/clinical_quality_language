@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.hl7.elm.r1.Expression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,15 @@ public class IdentifierResolution {
         return null;
     }
 
+    public static IdentifierResolution getFirstCaseMatchExpression(List<IdentifierResolution> list){
+        for (IdentifierResolution match : list){
+            if (match.getMatchType().equals(MatchType.EXACT) && canResolveToExpression(match.getResolvedElement())){
+                return match;
+            }
+        }
+        return null;
+    }
+
     public static List<IdentifierResolution> getAllMatches(List<IdentifierResolution> list, MatchType matchType){
         return list.stream()
                 .filter(s -> s.getMatchType().equals(matchType) )
@@ -69,5 +79,14 @@ public class IdentifierResolution {
             }
         }
         return ri;
+    }
+
+    private static boolean canResolveToExpression(Object in) {
+        try {
+            Expression e = (Expression) in;
+            return true;
+        }catch (Exception e){
+            return false;
+        }
     }
 }

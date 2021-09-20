@@ -1193,7 +1193,6 @@ public class LibraryBuilder {
                             throw new IllegalArgumentException(String.format("Operator name %s is ambiguous between %s and %s.",
                                     callContext.getOperatorName(), result.getOperator().getName(), libraryResult.getOperator().getName()));
                         }
-
                         result = libraryResult;
                     }
                 }
@@ -2222,7 +2221,7 @@ public class LibraryBuilder {
             }
         }
 
-        if (mustResolve) {
+        if (mustResolve && IdentifierResolution.getFirstCaseMatch(matchList) == null) {
             // ERROR:
             throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
         }
@@ -2347,7 +2346,7 @@ public class LibraryBuilder {
             }
         }
 
-        IdentifierResolution firstCaseMatch = IdentifierResolution.getFirstCaseMatch(matchList);
+        IdentifierResolution firstCaseMatch = IdentifierResolution.getFirstCaseMatchExpression(matchList);
         if (firstCaseMatch != null) {
 
             List<IdentifierResolution> allHiddenCaseMatches = IdentifierResolution.getAllMatches(matchList, MatchType.EXACT);
@@ -3085,7 +3084,10 @@ public class LibraryBuilder {
                         aliasRef.setResultType(src.getResultType());
                     }
 
-                    matchList.addAll(resolveProperties(aliasRef.getResultType(), identifier, false));
+                    PropertyResolution result = resolveProperty(aliasRef.getResultType(), identifier, false);
+                    if (result != null) {
+                        matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, resolveAccessor(aliasRef, identifier)));
+                    }
 
                 }
 
