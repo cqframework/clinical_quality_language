@@ -219,6 +219,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             case ")": return !inFunctionDefinition() && !inFunctionInvocation();
             case "[": return inRetrieve();
             case "]": return false;
+            case "starts": return !inFunctionDefinition() || !inFunctionInvocation();
             default: return true;
         }
     }
@@ -229,7 +230,7 @@ public class CqlFormatterVisitor extends cqlBaseVisitor<Object> {
             case "<": return !inTypeSpecifier();
             case ">": return !inTypeSpecifier();
             case "(": return !inFunctionDefinition() && !inFunctionInvocation();
-            case ")": return !inFunctionDefinition() && !inFunctionInvocation();
+            case ")": return !inFunctionDefinition() || !inFunctionInvocation();
             case "[": return false;
             case "]": return inRetrieve();
             default: return true;
