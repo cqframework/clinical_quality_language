@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.Library;
 
 import java.util.EnumSet;
@@ -47,6 +48,15 @@ public class TranslatorOptionsUtil {
                     continue;
                 }
 
+            } else if (o instanceof CqlToElmInfo) {
+                try {
+                    CqlToElmInfo info = (CqlToElmInfo) o;
+                    if (info.getTranslatorOptions() != null) {
+                        return info.getTranslatorOptions();
+                    }
+                } catch (Exception e) {
+                    continue;
+                }
             }
         }
 
