@@ -11,6 +11,7 @@ import javax.xml.bind.JAXBException;
 
 import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.Query;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.SingletonFrom;
 import org.testng.Assert;
@@ -32,10 +33,9 @@ public class ElmDeserializeTests {
 
 
     @Test
-    public void TestJsonLibraryLoad() {
+    public void TestJxsonLibraryLoad() {
         try {
-            Library library = CqlJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ANCFHIRDummy.json")));
-            System.out.println("LIB:"+ library);
+            Library library = CqlJxsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ANCFHIRDummy.json")));
             Assert.assertTrue(library != null);
             Assert.assertTrue(library.getStatements() != null);
             Assert.assertTrue(library.getStatements().getDef() != null);
@@ -51,9 +51,32 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void TestJsonTerminologyLibraryLoad() {
+    public void TestJsonLibraryLoad() {
         try {
-            Library library = CqlJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ANCFHIRTerminologyDummy.json")));
+            Library library = CqlJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("EmlDeserializeRegression/fhir/json/AdultOutpatientEncounters_FHIR4-2.0.000.json")));
+            Assert.assertTrue(library != null);
+            Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
+            Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
+            Assert.assertTrue(library.getUsings() != null);
+            Assert.assertTrue(library.getUsings().getDef() != null);
+            Assert.assertTrue(library.getUsings().getDef().size() >= 2);
+            Assert.assertTrue(library.getStatements() != null);
+            Assert.assertTrue(library.getStatements().getDef() != null);
+            Assert.assertTrue(library.getStatements().getDef().get(0) instanceof ExpressionDef);
+            Assert.assertTrue(library.getStatements().getDef().get(0).getExpression() instanceof SingletonFrom);
+            Assert.assertTrue(((SingletonFrom)library.getStatements().getDef().get(0).getExpression()).getOperand() instanceof Retrieve);
+            Assert.assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
+            Assert.assertTrue(library.getStatements().getDef().get(1) instanceof ExpressionDef);
+            Assert.assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
+        } catch (IOException | JAXBException e) {
+            throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void TestJxsonTerminologyLibraryLoad() {
+        try {
+            Library library = CqlJxsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ANCFHIRTerminologyDummy.json")));
             Assert.assertTrue(library != null);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
@@ -69,16 +92,24 @@ public class ElmDeserializeTests {
             throw new IllegalArgumentException(String.format("Errors occurred reading ELM from xml %s: %s", xmlFileName, e.getMessage()));
         }
 
-        Library jsonLibrary = null;
+        Library jxsonLibrary = null;
         try {
-            jsonLibrary = CqlJsonLibraryReader.read(new FileReader(path + "/" + jsonFileName));
+            jxsonLibrary = CqlJxsonLibraryReader.read(new FileReader(path + "/jxson/" + jsonFileName));
         }
         catch (Exception e) {
             throw new IllegalArgumentException(String.format("Errors occurred reading ELM from json %s: %s", jsonFileName, e.getMessage()));
         }
 
-        if (xmlLibrary != null && jsonLibrary != null) {
-            Assert.assertTrue(equivalent(xmlLibrary, jsonLibrary));
+        Library jsonLibrary = null;
+        try {
+            jsonLibrary = CqlJsonLibraryReader.read(new FileReader(path + "/json/" + jsonFileName));
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException(String.format("Errors occurred reading ELM from json %s: %s", jsonFileName, e.getMessage()));
+        }
+
+        if (xmlLibrary != null && jxsonLibrary != null) {
+            Assert.assertTrue(equivalent(xmlLibrary, jxsonLibrary, jsonLibrary));
         }
     }
 
@@ -106,51 +137,61 @@ public class ElmDeserializeTests {
         testElmDeserialization("qdm2020");
     }
 
-    private static boolean equivalent(Library left, Library right) {
-        if (left == null && right == null) {
+    private static boolean equivalent(Library xmlLibrary, Library jxsonLibrary, Library jsonLibrary) {
+        if (xmlLibrary == null && jxsonLibrary == null && jsonLibrary == null) {
             return true;
         }
 
         boolean result = true;
 
-        if (left != null) {
-            result = result && left.getIdentifier().equals(right.getIdentifier());
+        if (xmlLibrary != null) {
+            result = result && xmlLibrary.getIdentifier().equals(jxsonLibrary.getIdentifier());
+            result = result && xmlLibrary.getIdentifier().equals(jsonLibrary.getIdentifier());
         }
 
-        if(left.getIncludes() != null && left.getIncludes().getDef() != null) {
-            result = result && left.getIncludes().getDef().size() == right.getIncludes().getDef().size();
+        if(xmlLibrary.getIncludes() != null && xmlLibrary.getIncludes().getDef() != null) {
+            result = result && xmlLibrary.getIncludes().getDef().size() == jxsonLibrary.getIncludes().getDef().size();
+            result = result && xmlLibrary.getIncludes().getDef().size() == jsonLibrary.getIncludes().getDef().size();
         }
 
-        if(left.getUsings() != null && left.getUsings().getDef() != null) {
-            result = result && left.getUsings().getDef().size() == right.getUsings().getDef().size();
+        if(xmlLibrary.getUsings() != null && xmlLibrary.getUsings().getDef() != null) {
+            result = result && xmlLibrary.getUsings().getDef().size() == jxsonLibrary.getUsings().getDef().size();
+            result = result && xmlLibrary.getUsings().getDef().size() == jsonLibrary.getUsings().getDef().size();
         }
 
-        if(left.getValueSets() != null && left.getValueSets().getDef() != null) {
-            result = result && left.getValueSets().getDef().size() == right.getValueSets().getDef().size();
+        if(xmlLibrary.getValueSets() != null && xmlLibrary.getValueSets().getDef() != null) {
+            result = result && xmlLibrary.getValueSets().getDef().size() == jxsonLibrary.getValueSets().getDef().size();
+            result = result && xmlLibrary.getValueSets().getDef().size() == jsonLibrary.getValueSets().getDef().size();
         }
 
-        if(left.getCodeSystems() != null && left.getCodeSystems().getDef() != null) {
-            result = result && left.getCodeSystems().getDef().size() == right.getCodeSystems().getDef().size();
+        if(xmlLibrary.getCodeSystems() != null && xmlLibrary.getCodeSystems().getDef() != null) {
+            result = result && xmlLibrary.getCodeSystems().getDef().size() == jxsonLibrary.getCodeSystems().getDef().size();
+            result = result && xmlLibrary.getCodeSystems().getDef().size() == jsonLibrary.getCodeSystems().getDef().size();
         }
 
-        if(left.getCodes() != null && left.getCodes().getDef() != null) {
-            result = result && left.getCodes().getDef().size() == right.getCodes().getDef().size();
+        if(xmlLibrary.getCodes() != null && xmlLibrary.getCodes().getDef() != null) {
+            result = result && xmlLibrary.getCodes().getDef().size() == jxsonLibrary.getCodes().getDef().size();
+            result = result && xmlLibrary.getCodes().getDef().size() == jsonLibrary.getCodes().getDef().size();
         }
 
-        if(left.getConcepts() != null && left.getConcepts().getDef() != null) {
-            result = result && left.getConcepts().getDef().size() == right.getConcepts().getDef().size();
+        if(xmlLibrary.getConcepts() != null && xmlLibrary.getConcepts().getDef() != null) {
+            result = result && xmlLibrary.getConcepts().getDef().size() == jxsonLibrary.getConcepts().getDef().size();
+            result = result && xmlLibrary.getConcepts().getDef().size() == jsonLibrary.getConcepts().getDef().size();
         }
 
-        if(left.getParameters() != null && left.getParameters().getDef() != null) {
-            result = result && left.getParameters().getDef().size() == right.getParameters().getDef().size();
+        if(xmlLibrary.getParameters() != null && xmlLibrary.getParameters().getDef() != null) {
+            result = result && xmlLibrary.getParameters().getDef().size() == jxsonLibrary.getParameters().getDef().size();
+            result = result && xmlLibrary.getParameters().getDef().size() == jsonLibrary.getParameters().getDef().size();
         }
 
-        if(left.getStatements() != null && left.getStatements().getDef() != null) {
-            result = result && left.getStatements().getDef().size() == right.getStatements().getDef().size();
+        if(xmlLibrary.getStatements() != null && xmlLibrary.getStatements().getDef() != null) {
+            result = result && xmlLibrary.getStatements().getDef().size() == jxsonLibrary.getStatements().getDef().size();
+            result = result && xmlLibrary.getStatements().getDef().size() == jsonLibrary.getStatements().getDef().size();
         }
 
-        if(left.getContexts() != null && left.getContexts().getDef() != null) {
-            result = result && left.getContexts().getDef().size() == right.getContexts().getDef().size();
+        if(xmlLibrary.getContexts() != null && xmlLibrary.getContexts().getDef() != null) {
+            result = result && xmlLibrary.getContexts().getDef().size() == jxsonLibrary.getContexts().getDef().size();
+            result = result && xmlLibrary.getContexts().getDef().size() == jsonLibrary.getContexts().getDef().size();
         }
 
         return result;
