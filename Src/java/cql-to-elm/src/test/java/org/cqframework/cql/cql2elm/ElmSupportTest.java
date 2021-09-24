@@ -3,10 +3,12 @@ package org.cqframework.cql.cql2elm;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.AfterClass;
@@ -32,14 +34,14 @@ public class ElmSupportTest {
 
 
     @Test
-    public void testIncludedLibraryWithJsonEml() {
+    public void testIncludedLibraryWithJxsonEml() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new ElmJxsonLibrarySourceProvider());
 
         CqlTranslatorOptions options = createOptions();
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryEml.cql"),
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJxsonElm.cql"),
                     modelManager,
                     libraryManager,
                     CqlTranslatorException.ErrorSeverity.Info,
@@ -69,13 +71,45 @@ public class ElmSupportTest {
     }
 
     @Test
+    public void testIncludedLibraryWithJsonEml() {
+        CqlTranslator translator = null;
+        libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
+        try {
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"),
+                    modelManager,
+                    libraryManager,
+                    CqlTranslatorException.ErrorSeverity.Info,
+                    SignatureLevel.All, CqlTranslator.Options.EnableAnnotations, CqlTranslator.Options.EnableLocators);
+
+            assertThat(translator.getErrors().size(), is(0));
+
+            Map<String, ExpressionDef> includedLibDefs = new HashMap<>();
+            Map<String, Library> includedLibraries = translator.getLibraries();
+            includedLibraries.values().stream().forEach(includedLibrary -> {
+                if (includedLibrary.getStatements() != null) {
+                    for (ExpressionDef def : includedLibrary.getStatements().getDef()) {
+                        includedLibDefs.put(def.getName(), def);
+                    }
+                }
+            });
+
+            ExpressionDef baseLibDef = includedLibDefs.get("BaseLibSum");
+            assertTrue(((Sum) baseLibDef.getExpression()).getSource() instanceof List);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
     public void testIncludedLibraryWithXmlEml() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmXmlLibrarySourceProvider());
 
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryEml.cql"),
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryXmlElm.cql"),
                     modelManager,
                     libraryManager,
                     CqlTranslatorException.ErrorSeverity.Info,
@@ -103,7 +137,7 @@ public class ElmSupportTest {
         }
     }
 
-    private CqlTranslatorOptions createOptions(){
+    private CqlTranslatorOptions createOptions() {
         CqlTranslatorOptions result = new CqlTranslatorOptions();
         result.setOptions(CqlTranslator.Options.EnableDateRangeOptimization,
                 CqlTranslator.Options.EnableAnnotations,

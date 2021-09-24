@@ -5,22 +5,22 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import java.io.InputStream;
 
 
-public class ElmJsonLibrarySourceProvider implements LibrarySourceProviderExt {
+public class ElmJxsonLibrarySourceProvider implements LibrarySourceProviderExt {
 
     @Override
     public boolean isLibrarySourceAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.JSON)) {
+        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.JXSON)) {
             return false;
         }
-        return ElmJsonLibrarySourceProvider.class.getResource(getFileName(libraryIdentifier)) != null;
+        return ElmJxsonLibrarySourceProvider.class.getResource(getFileName(libraryIdentifier)) != null;
     }
 
     @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.JSON)) {
+        if (!type.equals(LibraryContentType.ANY) && !type.equals(LibraryContentType.JXSON)) {
             return null;
         }
-        InputStream is = ElmJsonLibrarySourceProvider.class.getResourceAsStream(getFileName(libraryIdentifier));
+        InputStream is = ElmJxsonLibrarySourceProvider.class.getResourceAsStream(getFileName(libraryIdentifier));
         return is;
     }
 
@@ -30,7 +30,7 @@ public class ElmJsonLibrarySourceProvider implements LibrarySourceProviderExt {
     }
 
     private String getFileName(VersionedIdentifier libraryIdentifier) {
-        return String.format("LibraryTests/json/%s%s.json",
+        return String.format("LibraryTests/jxson/%s%s.json",
                 libraryIdentifier.getId(), libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
     }
 

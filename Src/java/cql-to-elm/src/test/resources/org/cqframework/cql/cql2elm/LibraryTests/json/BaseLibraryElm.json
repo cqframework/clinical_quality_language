@@ -1,0 +1,288 @@
+{
+  "library" : {
+    "annotation" : [ {
+      "translatorOptions" : "EnableAnnotations,EnableLocators",
+      "type" : "CqlToElmInfo"
+    }, {
+      "type" : "Annotation",
+      "s" : {
+        "r" : "19",
+        "s" : [ {
+          "value" : [ "","library BaseLibrary" ]
+        } ]
+      }
+    } ],
+    "identifier" : {
+      "id" : "BaseLibrary"
+    },
+    "schemaIdentifier" : {
+      "id" : "urn:hl7-org:elm",
+      "version" : "r1"
+    },
+    "usings" : {
+      "def" : [ {
+        "localIdentifier" : "System",
+        "uri" : "urn:hl7-org:elm-types:r1"
+      } ]
+    },
+    "codeSystems" : {
+      "def" : [ {
+        "localId" : "1",
+        "locator" : "3:1-3:55",
+        "name" : "SNOMED-CT:2014",
+        "id" : "SNOMED-CT",
+        "version" : "2014",
+        "accessLevel" : "Public",
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "r" : "1",
+            "s" : [ {
+              "value" : [ "","codesystem ","\"SNOMED-CT:2014\"",": ","'SNOMED-CT'"," version ","'2014'" ]
+            } ]
+          }
+        } ]
+      }, {
+        "localId" : "2",
+        "locator" : "4:1-4:47",
+        "name" : "ICD-9:2014",
+        "id" : "ICD-9",
+        "version" : "2014",
+        "accessLevel" : "Public",
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "r" : "2",
+            "s" : [ {
+              "value" : [ "","codesystem ","\"ICD-9:2014\"",": ","'ICD-9'"," version ","'2014'" ]
+            } ]
+          }
+        } ]
+      }, {
+        "localId" : "3",
+        "locator" : "5:1-5:57",
+        "name" : "ICD-10:2014",
+        "id" : "ICD-10",
+        "version" : "2014",
+        "accessLevel" : "Private",
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "r" : "3",
+            "s" : [ {
+              "value" : [ "","private"," codesystem ","\"ICD-10:2014\"",": ","'ICD-10'"," version ","'2014'" ]
+            } ]
+          }
+        } ]
+      } ]
+    },
+    "valueSets" : {
+      "def" : [ {
+        "localId" : "4",
+        "locator" : "7:1-7:69",
+        "name" : "Female Administrative Sex",
+        "id" : "2.16.840.1.113883.3.560.100.2",
+        "accessLevel" : "Public",
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "r" : "4",
+            "s" : [ {
+              "value" : [ "","valueset ","\"Female Administrative Sex\"",": ","'2.16.840.1.113883.3.560.100.2'" ]
+            } ]
+          }
+        } ]
+      }, {
+        "localId" : "7",
+        "locator" : "8:1-8:116",
+        "name" : "Pregnancy Test",
+        "id" : "2.16.840.1.113883.3.464.1003.111.12.1011",
+        "accessLevel" : "Public",
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "r" : "7",
+            "s" : [ {
+              "value" : [ "","valueset ","\"Pregnancy Test\"",": ","'2.16.840.1.113883.3.464.1003.111.12.1011'"," codesystems { " ]
+            }, {
+              "r" : "5",
+              "s" : [ {
+                "value" : [ "\"SNOMED-CT:2014\"" ]
+              } ]
+            }, {
+              "value" : [ ", " ]
+            }, {
+              "r" : "6",
+              "s" : [ {
+                "value" : [ "\"ICD-9:2014\"" ]
+              } ]
+            }, {
+              "value" : [ " }" ]
+            } ]
+          }
+        } ],
+        "codeSystem" : [ {
+          "localId" : "5",
+          "locator" : "8:85-8:100",
+          "name" : "SNOMED-CT:2014"
+        }, {
+          "localId" : "6",
+          "locator" : "8:103-8:114",
+          "name" : "ICD-9:2014"
+        } ]
+      } ]
+    },
+    "statements" : {
+      "def" : [ {
+        "localId" : "11",
+        "locator" : "10:1-10:75",
+        "name" : "PrivateExpression",
+        "context" : "Patient",
+        "accessLevel" : "Private",
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "r" : "11",
+            "s" : [ {
+              "value" : [ "","define ","private"," ","PrivateExpression",": " ]
+            }, {
+              "r" : "10",
+              "s" : [ {
+                "value" : [ "Tuple { " ]
+              }, {
+                "s" : [ {
+                  "value" : [ "Id"," : " ]
+                }, {
+                  "r" : "8",
+                  "s" : [ {
+                    "value" : [ "'12345'" ]
+                  } ]
+                } ]
+              }, {
+                "value" : [ ", " ]
+              }, {
+                "s" : [ {
+                  "value" : [ "Name"," : " ]
+                }, {
+                  "r" : "9",
+                  "s" : [ {
+                    "value" : [ "'John Doe'" ]
+                  } ]
+                } ]
+              }, {
+                "value" : [ " }" ]
+              } ]
+            } ]
+          }
+        } ],
+        "expression" : {
+          "localId" : "10",
+          "locator" : "10:35-10:75",
+          "type" : "Tuple",
+          "element" : [ {
+            "name" : "Id",
+            "value" : {
+              "localId" : "8",
+              "locator" : "10:48-10:54",
+              "valueType" : "{urn:hl7-org:elm-types:r1}String",
+              "value" : "12345",
+              "type" : "Literal"
+            }
+          }, {
+            "name" : "Name",
+            "value" : {
+              "localId" : "9",
+              "locator" : "10:64-10:73",
+              "valueType" : "{urn:hl7-org:elm-types:r1}String",
+              "value" : "John Doe",
+              "type" : "Literal"
+            }
+          } ]
+        }
+      }, {
+        "localId" : "13",
+        "locator" : "11:1-11:40",
+        "name" : "BaseExpression",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "r" : "13",
+            "s" : [ {
+              "value" : [ "","define ","BaseExpression",": " ]
+            }, {
+              "r" : "12",
+              "s" : [ {
+                "value" : [ "PrivateExpression" ]
+              } ]
+            } ]
+          }
+        } ],
+        "expression" : {
+          "localId" : "12",
+          "locator" : "11:24-11:40",
+          "name" : "PrivateExpression",
+          "type" : "ExpressionRef"
+        }
+      }, {
+        "localId" : "19",
+        "locator" : "13:1-13:31",
+        "name" : "BaseLibSum",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "r" : "19",
+            "s" : [ {
+              "value" : [ "","define ","BaseLibSum",": " ]
+            }, {
+              "r" : "18",
+              "s" : [ {
+                "value" : [ "Sum","(" ]
+              }, {
+                "r" : "17",
+                "s" : [ {
+                  "r" : "14",
+                  "value" : [ "{","1",",","2",",","3","}" ]
+                } ]
+              }, {
+                "value" : [ ")" ]
+              } ]
+            } ]
+          }
+        } ],
+        "expression" : {
+          "localId" : "18",
+          "locator" : "13:20-13:31",
+          "type" : "Sum",
+          "source" : {
+            "localId" : "17",
+            "locator" : "13:24-13:30",
+            "type" : "List",
+            "element" : [ {
+              "localId" : "14",
+              "locator" : "13:25",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "1",
+              "type" : "Literal"
+            }, {
+              "localId" : "15",
+              "locator" : "13:27",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "2",
+              "type" : "Literal"
+            }, {
+              "localId" : "16",
+              "locator" : "13:29",
+              "valueType" : "{urn:hl7-org:elm-types:r1}Integer",
+              "value" : "3",
+              "type" : "Literal"
+            } ]
+          }
+        }
+      } ]
+    }
+  }
+}

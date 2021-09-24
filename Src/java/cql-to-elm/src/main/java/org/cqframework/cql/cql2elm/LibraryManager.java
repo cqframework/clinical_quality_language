@@ -214,6 +214,9 @@ public class LibraryManager {
                 if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.JXSON)) {
                     contentType = LibraryContentType.JXSON;
                     librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.JXSON);
+                } else if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.JSON)) {
+                    contentType = LibraryContentType.JSON;
+                    librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.JSON);
                 } else if (sourceLoaderExt.isLibrarySourceAvailable(libraryIdentifier, LibraryContentType.XML)) {
                     contentType = LibraryContentType.XML;
                     librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, LibraryContentType.XML);
@@ -240,6 +243,8 @@ public class LibraryManager {
         TranslatedLibrary translatedLibrary = null;
         try {
             if (type.equals(LibraryContentType.JXSON)) {
+                library = CqlJxsonLibraryReader.read(new InputStreamReader(librarySource));
+            } else if (type.equals(LibraryContentType.JSON)) {
                 library = CqlJsonLibraryReader.read(new InputStreamReader(librarySource));
             } else if (type.equals(LibraryContentType.XML)) {
                 library = CqlLibraryReader.read(new InputStreamReader(librarySource));
@@ -249,6 +254,7 @@ public class LibraryManager {
         }
 
 
+        // refer to xml deserializer bug for annotations
         if (library != null &&
                 (type.equals(LibraryContentType.XML) ||
                         translatorOptionsMatch(library, options))) {
