@@ -2,7 +2,16 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.fhir.ucum.UcumService;
-import org.hl7.elm.r1.*;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.CodeDef;
+import org.hl7.elm.r1.CodeSystemDef;
+import org.hl7.elm.r1.ConceptDef;
+import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.IncludeDef;
+import org.hl7.elm.r1.ParameterDef;
+import org.hl7.elm.r1.UsingDef;
+import org.hl7.elm.r1.ValueSetDef;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
