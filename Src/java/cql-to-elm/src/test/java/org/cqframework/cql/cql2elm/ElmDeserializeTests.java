@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 
 import javax.xml.bind.JAXBException;
 
@@ -38,6 +40,9 @@ public class ElmDeserializeTests {
         try {
             Library library = ElmJxsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRDummy.json")));
             Assert.assertTrue(library != null);
+            String translatorOptions = "EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation";
+            LinkedHashMap<?,?> linkedHashMap = ((LinkedHashMap)library.getAnnotation().get(0));
+            Assert.assertEquals(((Collection)linkedHashMap.values()).iterator().next().toString(), translatorOptions);
             Assert.assertTrue(library.getStatements() != null);
             Assert.assertTrue(library.getStatements().getDef() != null);
             Assert.assertTrue(library.getStatements().getDef().size() >= 2);
@@ -56,6 +61,8 @@ public class ElmDeserializeTests {
         try {
             Library library = ElmJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/json/AdultOutpatientEncounters_FHIR4-2.0.000.json")));
             Assert.assertTrue(library != null);
+            String translatorOptions = "EnableAnnotations";
+            Assert.assertEquals(((CqlToElmInfo) library.getAnnotation().get(0)).getTranslatorOptions(), translatorOptions);
             Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
             Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
             Assert.assertTrue(library.getUsings() != null);
