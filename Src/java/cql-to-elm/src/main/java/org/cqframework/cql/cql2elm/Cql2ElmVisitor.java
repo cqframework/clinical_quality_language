@@ -2158,11 +2158,12 @@ DATETIME
                     parseExpression(ctx.expression(0)),
                     parseExpression(ctx.expression(1)));
 
+            libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+
             if (annotate) {
                 equivalent.setLocalId(Integer.toString(getNextLocalId()));
             }
 
-            libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
             if (!"~".equals(parseString(ctx.getChild(1)))) {
                 track(equivalent, ctx);
                 Not not = of.createNot().withOperand(equivalent);
