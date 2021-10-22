@@ -131,6 +131,7 @@ public class LibraryBuilder {
     private UcumService ucumService = null;
     private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
+    private Cql2ElmVisitor visitor = null;
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -159,6 +160,10 @@ public class LibraryBuilder {
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
+    }
+
+    public void setVisitor(Cql2ElmVisitor visitor) {
+        this.visitor = visitor;
     }
 
     private String compatibilityLevel = null;
@@ -874,6 +879,11 @@ public class LibraryBuilder {
         // TODO: Take advantage of nary unions
         BinaryWrapper wrapper = normalizeListTypes(left, right);
         Union union = of.createUnion().withOperand(wrapper.left, wrapper.right);
+
+        if (visitor.isAnnotationEnabled()) {
+            union.setLocalId(Integer.toString(visitor.getNextLocalId()));
+        }
+
         resolveNaryCall("System", "Union", union);
         return union;
     }
