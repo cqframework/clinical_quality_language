@@ -6389,7 +6389,7 @@
         <element name="description" elementType="FHIR.string"/>
         <element name="criteria" elementType="FHIR.Expression"/>
     </typeInfo>
-    <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="MeasureReport" identifier="http://hl7.org/fhir/StructureDefinition/MeasureReport" label="MeasureReport" retrievable="true" primaryCodePath="measure.topic" xsi:type="ClassInfo">
+    <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="MeasureReport" identifier="http://hl7.org/fhir/StructureDefinition/MeasureReport" label="MeasureReport" retrievable="true" primaryCodePath="MeasureReport.type" xsi:type="ClassInfo">
         <element name="identifier">
             <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
         </element>

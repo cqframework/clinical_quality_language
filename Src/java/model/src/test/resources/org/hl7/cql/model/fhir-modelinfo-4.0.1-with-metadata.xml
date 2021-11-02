@@ -17078,7 +17078,7 @@
         <element name="description" elementType="FHIR.string" description="The human readable description of this supplemental data" definition="The human readable description of this supplemental data."/>
         <element name="criteria" elementType="FHIR.Expression" description="Expression describing additional data to be reported" definition="The criteria for the supplemental data. This is typically the name of a valid expression defined within a referenced library, but it may also be a path to a specific data element. The criteria defines the data to be returned for this element."/>
     </typeInfo>
-    <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="MeasureReport" identifier="http://hl7.org/fhir/StructureDefinition/MeasureReport" label="MeasureReport" retrievable="true" primaryCodePath="measure.topic" xsi:type="ClassInfo">
+    <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="MeasureReport" identifier="http://hl7.org/fhir/StructureDefinition/MeasureReport" label="MeasureReport" retrievable="true" primaryCodePath="MeasureReport.type" xsi:type="ClassInfo">
         <element name="identifier" description="Additional identifier for the MeasureReport" definition="A formal identifier that is used to identify this MeasureReport when it is represented in other formats or referenced in a specification, model, design or an instance." comment="Typically, this is used for identifiers that can go in an HL7 V3 II data type - e.g. to identify this {{title}} outside of FHIR, where the logical URL is not possible to use.">
             <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
         </element>
