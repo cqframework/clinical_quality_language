@@ -2053,7 +2053,7 @@
         <element name="description" type="System.String" />
         <element name="type" type="System.String" />
     </typeInfo>
-    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="Communication" label="Communication" retrievable="true" primaryCodePath="category">
+    <typeInfo xsi:type="ClassInfo" baseType="QUICKFHIR.DomainResource" name="Communication" label="Communication" retrievable="true" primaryCodePath="reasonCode">
         <element name="id" type="System.String" />
         <element name="meta" type="QUICKFHIR.Meta" />
         <element name="implicitRules" type="System.String" />

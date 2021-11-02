@@ -406,7 +406,7 @@
         <ns4:element name="reason" elementType="System.Concept"/>
     </ns4:typeInfo>
     <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QUICK" name="ClaimStatus" retrievable="false" baseType="System.String"/>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QUICK" name="Communication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communication" label="Communication" retrievable="true" primaryCodePath="category" baseType="QUICK.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="QUICK" name="Communication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communication" label="Communication" retrievable="true" primaryCodePath="reasonCode" baseType="QUICK.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="QUICK.Identifier"/>
         </ns4:element>
