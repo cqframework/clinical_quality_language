@@ -1,5 +1,8 @@
 package org.cqframework.cql.elm.requirements.fhir;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.context.RuntimeSearchParam;
+import ca.uhn.fhir.util.HapiExtensions;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.NamespaceManager;
@@ -37,6 +40,12 @@ public class DataRequirementsProcessor {
     public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
                                           CqlTranslatorOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions) {
+        return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, includeLogicDefinitions, false);
+    }
+
+    public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
+                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          boolean includeLogicDefinitions, boolean recursive) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager required");
         }
@@ -45,27 +54,38 @@ public class DataRequirementsProcessor {
             throw new IllegalArgumentException("translatedLibrary required");
         }
 
+        if (expressions != null && !expressions.isEmpty() && recursive) {
+            throw new IllegalArgumentException("Recursive DataRequirements gathering for only specified expressions is not yet supported.");
+        }
+
+        List<TranslatedLibrary> librariesToVisit = new ArrayList<>();
+
         ElmRequirementsVisitor visitor = new ElmRequirementsVisitor();
         ElmRequirementsContext context = new ElmRequirementsContext(libraryManager, options, visitor);
 
-        List<ExpressionDef> expressionDefs = null;
+        List<ExpressionDef> expressionDefs = new ArrayList<>();
+
         if (expressions == null) {
             visitor.visitLibrary(translatedLibrary.getLibrary(), context);
-            if (translatedLibrary.getLibrary() != null && translatedLibrary.getLibrary().getStatements() != null) {
-                expressionDefs = translatedLibrary.getLibrary().getStatements().getDef();
+            if (recursive) {
+                librariesToVisit.addAll(new ArrayList<>(libraryManager.getTranslatedLibraries().values()));
+            } else {
+                librariesToVisit.add(translatedLibrary);
             }
-            else {
-                expressionDefs = new ArrayList<ExpressionDef>();
+
+            for (TranslatedLibrary lib : librariesToVisit) {
+                if (lib.getLibrary() != null && lib.getLibrary().getStatements() != null) {
+                    expressionDefs.addAll(lib.getLibrary().getStatements().getDef());
+                }
             }
         }
         else {
+            //TODO: Support recursive DataRequirements gathering for specified expressions
             context.enterLibrary(translatedLibrary.getIdentifier());
             try {
                 for (String expression : expressions) {
                     ExpressionDef ed = translatedLibrary.resolveExpressionRef(expression);
-                    if (expressionDefs == null) {
-                        expressionDefs = new ArrayList<ExpressionDef>();
-                    }
+
                     expressionDefs.add(ed);
                     visitor.visitElement(ed, context);
                 }
@@ -114,7 +134,6 @@ public class DataRequirementsProcessor {
             returnLibrary.getExtension().addAll(extractLogicDefinitions(context, requirements));
         }
         return returnLibrary;
-
     }
 
     private CodeableConcept extractSubject(ElmRequirementsContext context) {
