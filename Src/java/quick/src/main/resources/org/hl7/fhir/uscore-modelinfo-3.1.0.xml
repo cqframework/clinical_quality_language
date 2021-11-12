@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="USCore" version="3.1.0" url="http://hl7.org/fhir/us/core" targetQualifier="uscore" patientClassName="PatientProfile" patientBirthDatePropertyName="birthDate">
+<modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="USCore" version="3.1.0" url="http://hl7.org/fhir/us/core" targetUrl="http://hl7.org/fhir" targetQualifier="uscore" patientClassName="PatientProfile" patientBirthDatePropertyName="birthDate">
    <requiredModelInfo name="System" version="1.0.0"/>
    <typeInfo baseType="USCore.Element" namespace="USCore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" xsi:type="ClassInfo">
       <element name="use" elementType="USCore.AddressUse"/>
@@ -168,7 +168,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="CarePlanActivityKind" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="CarePlanActivityStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="CarePlanProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan" label="US Core CarePlan Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="CarePlanProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan" label="US Core CarePlan Profile" target="CarePlan" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -459,7 +459,7 @@
       <element name="comment" elementType="System.String" target="%value.value"/>
       <element name="link" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileLaboratoryReporting" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab" label="US Core DiagnosticReport Profile for Laboratory Results Reporting" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileLaboratoryReporting" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab" label="US Core DiagnosticReport Profile for Laboratory Results Reporting" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -509,7 +509,7 @@
          <elementTypeSpecifier elementType="USCore.Attachment" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileNoteExchange" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note" label="US Core DiagnosticReport Profile for Report and Note exchange" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileNoteExchange" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note" label="US Core DiagnosticReport Profile for Report and Note exchange" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -583,7 +583,7 @@
       <element name="code" elementType="USCore.DocumentRelationshipType"/>
       <element name="target" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DocumentReferenceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference" label="US Core DocumentReference Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DocumentReferenceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference" label="US Core DocumentReference Profile" target="DocumentReference" retrievable="true" xsi:type="ClassInfo">
       <element name="masterIdentifier" elementType="USCore.Identifier"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -668,7 +668,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo namespace="USCore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo baseType="System.Any" namespace="USCore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false" xsi:type="ClassInfo">
       <element name="id" elementType="System.String" target="%value.value"/>
       <element name="extension">
          <elementTypeSpecifier elementType="USCore.Extension" xsi:type="ListTypeSpecifier"/>
@@ -734,7 +734,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="EncounterLocationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="EncounterProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter" label="US Core Encounter Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="EncounterProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter" label="US Core Encounter Profile" target="Encounter" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -886,7 +886,7 @@
       </element>
       <element name="due" elementType="System.Date" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="GoalProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal" label="US Core Goal Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="GoalProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal" label="US Core Goal Profile" target="Goal" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -989,7 +989,7 @@
       <element name="detail" elementType="USCore.Reference"/>
       <element name="reported" elementType="System.Boolean" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ImmunizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization" label="US Core Immunization Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ImmunizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization" label="US Core Immunization Profile" target="Immunization" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1044,7 +1044,7 @@
          <elementTypeSpecifier elementType="USCore.Immunization.ProtocolApplied" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1090,7 +1090,7 @@
       </element>
       <element name="parent" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="LaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="LaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1227,7 +1227,7 @@
       <element name="isActive" elementType="System.Boolean" target="%value.value"/>
       <element name="strength" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="MedicationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="MedicationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" target="Medication" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1268,7 +1268,7 @@
       <element name="reason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="MedicationRequestPriority" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="MedicationRequestProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="MedicationRequestProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" target="MedicationRequest" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1417,7 +1417,7 @@
       </element>
       <element name="address" elementType="USCore.Address"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="OrganizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" label="US Core Organization Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="OrganizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" label="US Core Organization Profile" target="Organization" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1480,7 +1480,7 @@
       <element name="other" elementType="USCore.Reference"/>
       <element name="type" elementType="USCore.LinkType"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PatientProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PatientProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" target="Patient" retrievable="true" xsi:type="ClassInfo">
       <element name="race" elementType="USCore.RaceExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-race']"/>
       <element name="ethnicity" elementType="USCore.EthnicityExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity']"/>
       <element name="birthsex" elementType="USCore.BirthSexExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'].value.value"/>
@@ -1529,7 +1529,7 @@
          <elementTypeSpecifier elementType="USCore.Patient.Link" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1543,7 +1543,7 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
@@ -1587,7 +1587,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1601,7 +1601,7 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
@@ -1657,7 +1657,7 @@
       </element>
       <element name="issuer" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PractitionerProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" label="US Core Practitioner Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PractitionerProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" label="US Core Practitioner Profile" target="Practitioner" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1700,7 +1700,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PractitionerRoleProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" label="US Core PractitionerRole Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PractitionerRoleProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" label="US Core PractitionerRole Profile" target="PractitionerRole" retrievable="true" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1747,7 +1747,7 @@
       <element name="actor" elementType="USCore.Reference"/>
       <element name="onBehalfOf" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ProcedureProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure" label="US Core Procedure Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ProcedureProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure" label="US Core Procedure Profile" target="Procedure" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1874,7 +1874,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="ProvenanceEntityRole" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1888,10 +1888,10 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'].value)"/>
-      <element name="PulseOx" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='59408-5'].value)"/>
+      <element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'])"/>
+      <element name="PulseOx" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='59408-5'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -1964,7 +1964,7 @@
       <element name="resource" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="RelatedArtifactType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo namespace="USCore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="System.Any" namespace="USCore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true" xsi:type="ClassInfo">
       <element name="id" elementType="System.String" target="%value.value"/>
       <element name="meta" elementType="USCore.Meta"/>
       <element name="implicitRules" elementType="System.String" target="%value.value"/>
@@ -1990,7 +1990,7 @@
       <element name="sigFormat" elementType="USCore.MimeType"/>
       <element name="data" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="SmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="SmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2123,7 +2123,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2137,9 +2137,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BMICode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='39156-5'].value)"/>
+      <element name="BMICode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='39156-5'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2182,7 +2182,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2196,9 +2196,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BodyHeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8302-2'].value)"/>
+      <element name="BodyHeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8302-2'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2241,7 +2241,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2255,9 +2255,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BodyTempCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8310-5'].value)"/>
+      <element name="BodyTempCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8310-5'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2300,7 +2300,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2314,9 +2314,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BodyWeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='29463-7'].value)"/>
+      <element name="BodyWeightCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='29463-7'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2359,7 +2359,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2373,9 +2373,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="BPCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85354-9'].value)"/>
+      <element name="BPCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85354-9'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2420,7 +2420,7 @@
       <element name="SystolicBP" elementType="USCore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8480-6']"/>
       <element name="DiastolicBP" elementType="USCore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8462-4']"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2434,9 +2434,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="HeadCircumCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9843-4'].value)"/>
+      <element name="HeadCircumCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9843-4'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2479,7 +2479,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2493,9 +2493,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="HeartRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8867-4'].value)"/>
+      <element name="HeartRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='8867-4'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2538,7 +2538,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2552,9 +2552,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'].value)"/>
+      <element name="OxygenSatCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='2708-6'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2597,7 +2597,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2611,9 +2611,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="RespRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9279-1'].value)"/>
+      <element name="RespRateCode" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='9279-1'])"/>
       <element name="subject" elementType="USCore.Reference"/>
       <element name="focus">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -2656,7 +2656,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2670,9 +2670,9 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'].value)"/>
+      <element name="VSCat" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="VitalsPanelCode" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85353-1'].value)">
+      <element name="VitalsPanelCode" target="FHIRHelpers.ToCode(%parent.code.coding[system='http://loinc.org',code='85353-1'])">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="subject" elementType="USCore.Reference"/>

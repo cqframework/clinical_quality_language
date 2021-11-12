@@ -75,6 +75,7 @@ public class DataRequirementsProcessor {
             }
         }
 
+        // TODO: Handle the non-recursive case...
         ElmRequirements requirements = new ElmRequirements(translatedLibrary.getIdentifier(), translatedLibrary.getLibrary());
         // Collect all the dependencies
         requirements.reportRequirement(context.getRequirements());
@@ -82,8 +83,13 @@ public class DataRequirementsProcessor {
         for (ExpressionDef ed : expressionDefs) {
             // Just being defensive here, can happen when there are errors deserializing the measure
             if (ed != null) {
+                // Collect both inferred and reported requirements here, since reported requirements will not include
+                // directly inferred requirements
                 ElmRequirements reportedRequirements = context.getReportedRequirements(ed);
                 requirements.reportRequirement(reportedRequirements);
+
+                ElmRequirement inferredRequirement = context.getInferredRequirements(ed);
+                requirements.reportRequirement(inferredRequirement);
             }
         }
 
