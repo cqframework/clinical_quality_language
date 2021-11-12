@@ -93,9 +93,9 @@ Note that changes must always align with the CQL specification. Any changes to t
 # Communication Channels
 Communication should be done in an open and public manner. The project uses many different channels for open communication, including:
 
-* Mailing List: [cql-tooling@googlegroups.com](https://groups.google.com/forum/?hl=en#!forum/cql-tooling)
 * [Chat](https://chat.fhir.org/#narrow/stream/cql)
 * [Github Issues](https://github.com/cqframework/clinical_quality_language/issues)
+* _deprecated_ Mailing List: [cql-tooling@googlegroups.com](https://groups.google.com/forum/?hl=en#!forum/cql-tooling)
 
 Sometimes, communication occurs outside of these public channels, and that is okay; however, committers must summarize any private discussions that impact the tooling project in a public channel.
 
