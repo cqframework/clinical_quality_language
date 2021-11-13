@@ -483,6 +483,38 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
+    public void TestLibraryDataRequirementsRecursive() {
+        CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
+        cqlTranslatorOptions.setCollapseDataRequirements(true);
+        try {
+            CqlTranslator translator = createTranslator("DataRequirements/DataRequirementsLibraryTest.cql", cqlTranslatorOptions);
+            translator.toELM();
+            assertTrue(translator.getErrors().isEmpty());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
+
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
+            assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+            DataRequirement encounterRequirement = null;
+            for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
+                if (dr.getType() == Enumerations.FHIRAllTypes.ENCOUNTER) {
+                    encounterRequirement = dr;
+                    break;
+                }
+            }
+            assertTrue(encounterRequirement != null);
+
+            FhirContext context =  FhirContext.forR5();
+            IParser parser = context.newJsonParser();
+            String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
+            logger.debug(moduleDefString);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    @Test
     public void TestDataRequirementsFHIRReferences() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
         cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
