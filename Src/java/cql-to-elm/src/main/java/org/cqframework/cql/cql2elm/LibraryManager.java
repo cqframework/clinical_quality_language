@@ -137,31 +137,28 @@ public class LibraryManager {
         }
 
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
-        TranslatedLibrary library = libraries.get(libraryPath);
-
+        TranslatedLibrary library = null;
         if (enableCache) {
-            if (library != null
-                    && libraryIdentifier.getVersion() != null
-                    && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
-                throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
-                        libraryPath, libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
-            } else if (library != null) {
-                if (libraryIdentifier.getSystem() == null && library.getIdentifier().getSystem() != null) {
-                    libraryIdentifier.setSystem(library.getIdentifier().getSystem());
-                }
-                return library;
-            } else {
-                library = translateLibrary(libraryIdentifier, options, errors);
-                if (!HasErrors(errors)) {
-                    libraries.put(libraryPath, library);
-                }
+            library = libraries.get(libraryPath);
+        }
+
+        if (library != null
+                && libraryIdentifier.getVersion() != null
+                && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
+            throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
+                    libraryPath, libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
+        } else if (library != null) {
+            if (libraryIdentifier.getSystem() == null && library.getIdentifier().getSystem() != null) {
+                libraryIdentifier.setSystem(library.getIdentifier().getSystem());
             }
+            return library;
         } else {
             library = translateLibrary(libraryIdentifier, options, errors);
             if (!HasErrors(errors)) {
                 libraries.put(libraryPath, library);
             }
         }
+
 
         return library;
     }
