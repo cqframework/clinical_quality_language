@@ -25,6 +25,7 @@ public class LibraryManager {
     private final Map<String, TranslatedLibrary> libraries;
     private final Stack<String> translationStack;
     private LibrarySourceLoader librarySourceLoader;
+    private boolean enableCache;
 
     public LibraryManager(ModelManager modelManager) {
         if (modelManager == null) {
@@ -39,6 +40,7 @@ public class LibraryManager {
         }
         libraries = new HashMap<>();
         translationStack = new Stack<>();
+        this.enableCache = true;
         this.librarySourceLoader = new PriorityLibrarySourceLoader();
     }
 
@@ -59,12 +61,18 @@ public class LibraryManager {
     }
 
     public LibrarySourceLoader getLibrarySourceLoader() {
-      return librarySourceLoader;
+        return librarySourceLoader;
     }
 
     public void setLibrarySourceLoader(LibrarySourceLoader librarySourceLoader) {
         this.librarySourceLoader = librarySourceLoader;
     }
+
+    public void enableCache() { this.enableCache = true; }
+
+    public void disableCache() { this.enableCache = false; }
+
+    public boolean isCacheEnabled() { return enableCache; }
 
     public Map<String, TranslatedLibrary> getTranslatedLibraries() {
         return libraries;
@@ -101,9 +109,11 @@ public class LibraryManager {
         }
 
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
-        TranslatedLibrary library = libraries.get(libraryPath);
-        if (library != null) {
-            return true;
+        if (enableCache) {
+            TranslatedLibrary library = libraries.get(libraryPath);
+            if (library != null) {
+                return true;
+            }
         }
 
         InputStream librarySource = null;
@@ -129,21 +139,24 @@ public class LibraryManager {
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
         TranslatedLibrary library = libraries.get(libraryPath);
 
-        if (library != null
-                && libraryIdentifier.getVersion() != null
-                && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
-            throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
-                    libraryPath, libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
-        }
-
-        else if (library != null) {
-            if (libraryIdentifier.getSystem() == null && library.getIdentifier().getSystem() != null) {
-                libraryIdentifier.setSystem(library.getIdentifier().getSystem());
+        if (enableCache) {
+            if (library != null
+                    && libraryIdentifier.getVersion() != null
+                    && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
+                throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
+                        libraryPath, libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
+            } else if (library != null) {
+                if (libraryIdentifier.getSystem() == null && library.getIdentifier().getSystem() != null) {
+                    libraryIdentifier.setSystem(library.getIdentifier().getSystem());
+                }
+                return library;
+            } else {
+                library = translateLibrary(libraryIdentifier, options, errors);
+                if (!HasErrors(errors)) {
+                    libraries.put(libraryPath, library);
+                }
             }
-            return library;
-        }
-
-        else {
+        } else {
             library = translateLibrary(libraryIdentifier, options, errors);
             if (!HasErrors(errors)) {
                 libraries.put(libraryPath, library);

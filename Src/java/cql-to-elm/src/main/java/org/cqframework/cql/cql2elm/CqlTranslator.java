@@ -47,7 +47,8 @@ public class CqlTranslator {
         EnableIntervalDemotion,
         EnableIntervalPromotion,
         DisableMethodInvocation,
-        RequireFromKeyword
+        RequireFromKeyword,
+        DisableCache
     }
     public static enum Format { XML, JSON, JXSON, COFFEE }
     private static JAXBContext jaxbContext;
