@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -11,18 +10,16 @@ import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
-import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
 /**
  * Created by Bryn on 12/29/2016.
  */
-public class LibraryBuilder {
+public class LibraryBuilder implements ModelResolver {
     public static enum SignatureLevel {
         /*
         Indicates signatures will never be included in operator invocations
@@ -61,6 +58,7 @@ public class LibraryBuilder {
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
+        this.typeBuilder = new TypeBuilder(of, this);
 
         this.library = of.createLibrary()
                 .withSchemaIdentifier(of.createVersionedIdentifier()
@@ -131,6 +129,7 @@ public class LibraryBuilder {
     private UcumService ucumService = null;
     private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
+    private TypeBuilder typeBuilder = null;
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -452,7 +451,7 @@ public class LibraryBuilder {
     }
 
     private void loadSystemLibrary() {
-        TranslatedLibrary systemLibrary = SystemLibraryHelper.load(getSystemModel());
+        TranslatedLibrary systemLibrary = SystemLibraryHelper.load(getSystemModel(), typeBuilder);
         libraries.put(systemLibrary.getIdentifier().getId(), systemLibrary);
         loadConversionMap(systemLibrary);
     }
@@ -1839,91 +1838,15 @@ public class LibraryBuilder {
     }
 
     public QName dataTypeToQName(DataType type) {
-        if (type instanceof NamedType) {
-            NamedType namedType = (NamedType)type;
-            ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
-            return new QName(modelInfo.getTargetUrl() != null ? modelInfo.getTargetUrl() : modelInfo.getUrl(),
-                    namedType.getTarget() != null ? namedType.getTarget() : namedType.getSimpleName());
-        }
-
-        // ERROR:
-        throw new IllegalArgumentException("A named type is required in this context.");
+        return typeBuilder.dataTypeToQName(type);
     }
 
     public Iterable<TypeSpecifier> dataTypesToTypeSpecifiers(Iterable<DataType> types) {
-        ArrayList<TypeSpecifier> result = new ArrayList<TypeSpecifier>();
-        for (DataType type : types) {
-            result.add(dataTypeToTypeSpecifier(type));
-        }
-        return result;
+        return typeBuilder.dataTypesToTypeSpecifiers(types);
     }
 
     public TypeSpecifier dataTypeToTypeSpecifier(DataType type) {
-        // Convert the given type into an ELM TypeSpecifier representation.
-        if (type instanceof NamedType) {
-            return (TypeSpecifier)of.createNamedTypeSpecifier().withName(dataTypeToQName(type)).withResultType(type);
-        }
-        else if (type instanceof ListType) {
-            return listTypeToTypeSpecifier((ListType)type);
-        }
-        else if (type instanceof IntervalType) {
-            return intervalTypeToTypeSpecifier((IntervalType)type);
-        }
-        else if (type instanceof TupleType) {
-            return tupleTypeToTypeSpecifier((TupleType)type);
-        }
-        else if (type instanceof ChoiceType) {
-            return choiceTypeToTypeSpecifier((ChoiceType)type);
-        }
-        else {
-            throw new IllegalArgumentException(String.format("Could not convert type %s to a type specifier.", type));
-        }
-    }
-
-    private TypeSpecifier listTypeToTypeSpecifier(ListType type) {
-        return (TypeSpecifier)of.createListTypeSpecifier()
-                .withElementType(dataTypeToTypeSpecifier(type.getElementType()))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier intervalTypeToTypeSpecifier(IntervalType type) {
-        return (TypeSpecifier)of.createIntervalTypeSpecifier()
-                .withPointType(dataTypeToTypeSpecifier(type.getPointType()))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier tupleTypeToTypeSpecifier(TupleType type) {
-        return (TypeSpecifier)of.createTupleTypeSpecifier()
-                .withElement(tupleTypeElementsToTupleElementDefinitions(type.getElements()))
-                .withResultType(type);
-    }
-
-    private TupleElementDefinition[] tupleTypeElementsToTupleElementDefinitions(Iterable<TupleTypeElement> elements) {
-        List<TupleElementDefinition> definitions = new ArrayList<>();
-
-        for (TupleTypeElement element : elements) {
-            definitions.add(of.createTupleElementDefinition()
-                    .withName(element.getName())
-                    .withElementType(dataTypeToTypeSpecifier(element.getType())));
-        }
-
-        return definitions.toArray(new TupleElementDefinition[definitions.size()]);
-    }
-
-    private TypeSpecifier choiceTypeToTypeSpecifier(ChoiceType type) {
-        return (TypeSpecifier)of.createChoiceTypeSpecifier()
-                .withChoice(choiceTypeTypesToTypeSpecifiers(type))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier[] choiceTypeTypesToTypeSpecifiers(ChoiceType choiceType) {
-        List<TypeSpecifier> specifiers = new ArrayList<>();
-
-        for (DataType type : choiceType.getTypes()) {
-            specifiers.add(dataTypeToTypeSpecifier(type));
-        }
-
-        return specifiers.toArray(new TypeSpecifier[specifiers.size()]);
+        return typeBuilder.dataTypeToTypeSpecifier(type);
     }
 
     public DataType resolvePath(DataType sourceType, String path) {

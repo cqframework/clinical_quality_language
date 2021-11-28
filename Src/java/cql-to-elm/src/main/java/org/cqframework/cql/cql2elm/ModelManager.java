@@ -18,6 +18,7 @@ public class ModelManager {
     private ModelInfoLoader modelInfoLoader;
     private final Map<String, Model> models = new HashMap<>();
     private final Set<String> loadingModels = new HashSet<>();
+    private final Map<String, Model> modelsByUri = new HashMap<>();
 
     public ModelManager() {
         namespaceManager = new NamespaceManager();
@@ -116,11 +117,21 @@ public class ModelManager {
         if (model == null) {
             model = buildModel(modelIdentifier);
             models.put(modelPath, model);
+            modelsByUri.put(model.getModelInfo().getUrl(), model);
         }
 
         if (modelIdentifier.getVersion() != null && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {
             throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s because version %s is already loaded.",
                     modelIdentifier.getId(), modelIdentifier.getVersion(), model.getModelInfo().getVersion()));
+        }
+
+        return model;
+    }
+
+    public Model resolveModelByUri(String namespaceUri) {
+        Model model = modelsByUri.get(namespaceUri);
+        if (model == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve model with namespace %s", namespaceUri));
         }
 
         return model;
