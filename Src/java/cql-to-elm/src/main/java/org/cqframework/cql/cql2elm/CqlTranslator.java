@@ -587,6 +587,7 @@ public class CqlTranslator {
         LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager, ucumService);
         builder.setTranslatorOptions(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
+        builder.setVisitor(visitor);
         visitor.setTranslatorOptions(options);
 
         CqlTranslator.CqlErrorListener errorListener = new CqlTranslator.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
