@@ -130,6 +130,7 @@ public class LibraryBuilder implements ModelResolver {
     private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
     private TypeBuilder typeBuilder = null;
+    private Cql2ElmVisitor visitor = null;
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -158,6 +159,10 @@ public class LibraryBuilder implements ModelResolver {
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
+    }
+
+    public void setVisitor(Cql2ElmVisitor visitor) {
+        this.visitor = visitor;
     }
 
     private String compatibilityLevel = null;
@@ -873,6 +878,11 @@ public class LibraryBuilder implements ModelResolver {
         // TODO: Take advantage of nary unions
         BinaryWrapper wrapper = normalizeListTypes(left, right);
         Union union = of.createUnion().withOperand(wrapper.left, wrapper.right);
+
+        if (visitor.isAnnotationEnabled()) {
+            union.setLocalId(Integer.toString(visitor.getNextLocalId()));
+        }
+
         resolveNaryCall("System", "Union", union);
         return union;
     }
@@ -1754,13 +1764,7 @@ public class LibraryBuilder implements ModelResolver {
             break;
 
             default:
-                if (ucumService != null) {
-                    String message = ucumService.validate(unit);
-                    if (message != null) {
-                        // ERROR:
-                        throw new IllegalArgumentException(message);
-                    }
-                }
+                validateUcumUnit(unit);
             break;
         }
     }
@@ -1793,17 +1797,21 @@ public class LibraryBuilder implements ModelResolver {
                 return "ms";
 
             default:
-                if (ucumService != null) {
-                    String message = ucumService.validate(unit);
-                    if (message != null) {
-                        // ERROR:
-                        throw new IllegalArgumentException(message);
-                    }
-                }
+                validateUcumUnit(unit);
                 break;
         }
 
         return unit;
+    }
+
+    private void validateUcumUnit(String unit) {
+        if (ucumService != null) {
+            String message = ucumService.validate(unit);
+            if (message != null) {
+                // ERROR:
+                throw new IllegalArgumentException(message);
+            }
+        }
     }
 
     public Quantity createQuantity(BigDecimal value, String unit) {

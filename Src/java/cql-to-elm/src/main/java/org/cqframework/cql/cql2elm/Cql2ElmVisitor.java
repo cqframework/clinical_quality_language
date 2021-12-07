@@ -188,8 +188,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return expressions;
     }
 
-    private int getNextLocalId() {
+    public int getNextLocalId() {
         return nextLocalId++;
+    }
+
+    public boolean isAnnotationEnabled(){
+        return annotate;
     }
 
     private void pushChunk(ParseTree tree) {
@@ -2167,6 +2171,11 @@ DATETIME
                     parseExpression(ctx.expression(1)));
 
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+
+            if (annotate) {
+                equivalent.setLocalId(Integer.toString(getNextLocalId()));
+            }
+
             if (!"~".equals(parseString(ctx.getChild(1)))) {
                 track(equivalent, ctx);
                 Not not = of.createNot().withOperand(equivalent);

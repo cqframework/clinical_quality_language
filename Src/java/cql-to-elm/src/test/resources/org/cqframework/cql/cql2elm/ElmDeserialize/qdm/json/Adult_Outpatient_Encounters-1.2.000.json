@@ -1,0 +1,166 @@
+{
+  "library" : {
+    "annotation" : [ {
+      "translatorOptions" : "",
+      "type" : "CqlToElmInfo"
+    } ],
+    "identifier" : {
+      "id" : "Adult_Outpatient_Encounters",
+      "version" : "1.2.000"
+    },
+    "schemaIdentifier" : {
+      "id" : "urn:hl7-org:elm",
+      "version" : "r1"
+    },
+    "usings" : {
+      "def" : [ {
+        "localIdentifier" : "System",
+        "uri" : "urn:hl7-org:elm-types:r1"
+      }, {
+        "localIdentifier" : "QDM",
+        "uri" : "urn:healthit-gov:qdm:v5_4",
+        "version" : "5.4"
+      } ]
+    },
+    "parameters" : {
+      "def" : [ {
+        "name" : "Measurement Period",
+        "accessLevel" : "Public",
+        "parameterTypeSpecifier" : {
+          "type" : "IntervalTypeSpecifier",
+          "pointType" : {
+            "name" : "{urn:hl7-org:elm-types:r1}DateTime",
+            "type" : "NamedTypeSpecifier"
+          }
+        }
+      } ]
+    },
+    "valueSets" : {
+      "def" : [ {
+        "name" : "Annual Wellness Visit",
+        "id" : "urn:oid:2.16.840.1.113883.3.526.3.1240",
+        "accessLevel" : "Public"
+      }, {
+        "name" : "Home Healthcare Services",
+        "id" : "urn:oid:2.16.840.1.113883.3.464.1003.101.12.1016",
+        "accessLevel" : "Public"
+      }, {
+        "name" : "Office Visit",
+        "id" : "urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001",
+        "accessLevel" : "Public"
+      }, {
+        "name" : "Preventive Care Services - Established Office Visit, 18 and Up",
+        "id" : "urn:oid:2.16.840.1.113883.3.464.1003.101.12.1025",
+        "accessLevel" : "Public"
+      }, {
+        "name" : "Preventive Care Services-Initial Office Visit, 18 and Up",
+        "id" : "urn:oid:2.16.840.1.113883.3.464.1003.101.12.1023",
+        "accessLevel" : "Public"
+      } ]
+    },
+    "contexts" : {
+      "def" : [ {
+        "name" : "Patient"
+      } ]
+    },
+    "statements" : {
+      "def" : [ {
+        "name" : "Patient",
+        "context" : "Patient",
+        "expression" : {
+          "type" : "SingletonFrom",
+          "operand" : {
+            "dataType" : "{urn:healthit-gov:qdm:v5_4}Patient",
+            "templateId" : "Patient",
+            "type" : "Retrieve"
+          }
+        }
+      }, {
+        "name" : "Qualifying Encounters",
+        "context" : "Patient",
+        "accessLevel" : "Public",
+        "expression" : {
+          "type" : "Query",
+          "source" : [ {
+            "alias" : "ValidEncounter",
+            "expression" : {
+              "type" : "Union",
+              "operand" : [ {
+                "type" : "Union",
+                "operand" : [ {
+                  "type" : "Union",
+                  "operand" : [ {
+                    "dataType" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed",
+                    "templateId" : "PositiveEncounterPerformed",
+                    "codeProperty" : "code",
+                    "codeComparator" : "in",
+                    "type" : "Retrieve",
+                    "codes" : {
+                      "name" : "Office Visit",
+                      "type" : "ValueSetRef"
+                    }
+                  }, {
+                    "dataType" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed",
+                    "templateId" : "PositiveEncounterPerformed",
+                    "codeProperty" : "code",
+                    "codeComparator" : "in",
+                    "type" : "Retrieve",
+                    "codes" : {
+                      "name" : "Annual Wellness Visit",
+                      "type" : "ValueSetRef"
+                    }
+                  } ]
+                }, {
+                  "type" : "Union",
+                  "operand" : [ {
+                    "dataType" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed",
+                    "templateId" : "PositiveEncounterPerformed",
+                    "codeProperty" : "code",
+                    "codeComparator" : "in",
+                    "type" : "Retrieve",
+                    "codes" : {
+                      "name" : "Preventive Care Services - Established Office Visit, 18 and Up",
+                      "type" : "ValueSetRef"
+                    }
+                  }, {
+                    "dataType" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed",
+                    "templateId" : "PositiveEncounterPerformed",
+                    "codeProperty" : "code",
+                    "codeComparator" : "in",
+                    "type" : "Retrieve",
+                    "codes" : {
+                      "name" : "Preventive Care Services-Initial Office Visit, 18 and Up",
+                      "type" : "ValueSetRef"
+                    }
+                  } ]
+                } ]
+              }, {
+                "dataType" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed",
+                "templateId" : "PositiveEncounterPerformed",
+                "codeProperty" : "code",
+                "codeComparator" : "in",
+                "type" : "Retrieve",
+                "codes" : {
+                  "name" : "Home Healthcare Services",
+                  "type" : "ValueSetRef"
+                }
+              } ]
+            }
+          } ],
+          "relationship" : [ ],
+          "where" : {
+            "type" : "IncludedIn",
+            "operand" : [ {
+              "path" : "relevantPeriod",
+              "scope" : "ValidEncounter",
+              "type" : "Property"
+            }, {
+              "name" : "Measurement Period",
+              "type" : "ParameterRef"
+            } ]
+          }
+        }
+      } ]
+    }
+  }
+}

@@ -1153,7 +1153,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     public ElmRequirement visitChildren(AliasedQuerySource elm, ElmRequirementsContext context) {
         // Override visit behavior because we need to exit the definition context prior to traversing the such that condition
         // Such that traversal happens in the visitChildren relationship
-        ElmRequirement result = defaultResult();
+        ElmRequirement result = defaultResult(elm, context);
         ElmQueryAliasContext aliasContext = null;
         context.getCurrentQueryContext().enterAliasDefinitionContext(elm);
         try {
@@ -1175,7 +1175,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitLetClause(LetClause elm, ElmRequirementsContext context) {
-        ElmRequirement result = defaultResult();
+        ElmRequirement result = defaultResult(elm, context);
         ElmQueryLetContext letContext = null;
         context.getCurrentQueryContext().enterLetDefinitionContext(elm);
         try {

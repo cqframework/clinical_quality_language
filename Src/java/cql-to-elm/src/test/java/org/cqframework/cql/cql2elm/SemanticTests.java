@@ -1,13 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -266,6 +262,24 @@ public class SemanticTests {
     }
 
     @Test
+    public void testIssue616() throws IOException {
+        TestUtils.runSemanticTest("Issue616.cql", 1);
+    }
+
+    public void testIssue617() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue617.cql", 0);
+        Library library = translator.toELM();
+        assertThat(library.getStatements(), notNullValue());
+        assertThat(library.getStatements().getDef(), notNullValue());
+        assertThat(library.getStatements().getDef().size(), equalTo(2));
+        assertThat(library.getStatements().getDef().get(1), instanceOf(ExpressionDef.class));
+        ExpressionDef expressionDef = (ExpressionDef)library.getStatements().getDef().get(1);
+        assertThat(expressionDef.getExpression(), instanceOf(Implies.class));
+        assertThat( expressionDef.getName(), is("Boolean Implies"));
+        assertThat(((Implies)expressionDef.getExpression()).getOperand().size(), is(2));
+    }
+
+    @Test
     public void testIssue547() throws IOException {
         TestUtils.runSemanticTest("Issue547.cql", 3);
     }
@@ -287,6 +301,25 @@ public class SemanticTests {
         assertThat(fd.getExpression(), instanceOf(If.class));
         If i = (If)fd.getExpression();
         assertThat(i.getCondition(), instanceOf(Not.class));
+    }
+
+    @Test
+    public void testIssue405() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue405.cql", 0, CqlTranslator.Options.EnableAnnotations);
+        Library library = translator.toELM();
+        assertThat(library.getStatements().getDef().size(), equalTo(6));
+        assertThat(library.getStatements().getDef().get(3), instanceOf(ExpressionDef.class));
+        ExpressionDef expressionDef = (ExpressionDef) library.getStatements().getDef().get(3);
+        assertThat(expressionDef.getExpression().getLocalId(), notNullValue());
+
+    }
+
+    @Test
+    public void testIssue395() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue395.cql", 0, CqlTranslator.Options.EnableAnnotations);
+        Library library = translator.toELM();
+        ExpressionDef expressionDef = (ExpressionDef) library.getStatements().getDef().get(2);
+        assertThat(expressionDef.getExpression().getLocalId(), notNullValue());
     }
 
     @Test
