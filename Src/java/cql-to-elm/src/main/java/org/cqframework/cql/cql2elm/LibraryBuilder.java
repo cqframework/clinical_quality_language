@@ -1765,13 +1765,7 @@ public class LibraryBuilder {
             break;
 
             default:
-                if (ucumService != null) {
-                    String message = ucumService.validate(unit);
-                    if (message != null) {
-                        // ERROR:
-                        throw new IllegalArgumentException(message);
-                    }
-                }
+                validateUcumUnit(unit);
             break;
         }
     }
@@ -1804,17 +1798,21 @@ public class LibraryBuilder {
                 return "ms";
 
             default:
-                if (ucumService != null) {
-                    String message = ucumService.validate(unit);
-                    if (message != null) {
-                        // ERROR:
-                        throw new IllegalArgumentException(message);
-                    }
-                }
+                validateUcumUnit(unit);
                 break;
         }
 
         return unit;
+    }
+
+    private void validateUcumUnit(String unit) {
+        if (ucumService != null) {
+            String message = ucumService.validate(unit);
+            if (message != null) {
+                // ERROR:
+                throw new IllegalArgumentException(message);
+            }
+        }
     }
 
     public Quantity createQuantity(BigDecimal value, String unit) {

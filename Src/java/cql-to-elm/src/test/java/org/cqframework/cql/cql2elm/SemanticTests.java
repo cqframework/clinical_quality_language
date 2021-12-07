@@ -262,6 +262,10 @@ public class SemanticTests {
     }
 
     @Test
+    public void testIssue616() throws IOException {
+        TestUtils.runSemanticTest("Issue616.cql", 1);
+    }
+
     public void testIssue617() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("Issue617.cql", 0);
         Library library = translator.toELM();
@@ -274,7 +278,6 @@ public class SemanticTests {
         assertThat( expressionDef.getName(), is("Boolean Implies"));
         assertThat(((Implies)expressionDef.getExpression()).getOperand().size(), is(2));
     }
-
 
     @Test
     public void testIssue547() throws IOException {
