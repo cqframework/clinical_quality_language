@@ -266,6 +266,21 @@ public class SemanticTests {
     }
 
     @Test
+    public void testIssue617() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue617.cql", 0);
+        Library library = translator.toELM();
+        assertThat(library.getStatements(), notNullValue());
+        assertThat(library.getStatements().getDef(), notNullValue());
+        assertThat(library.getStatements().getDef().size(), equalTo(2));
+        assertThat(library.getStatements().getDef().get(1), instanceOf(ExpressionDef.class));
+        ExpressionDef expressionDef = (ExpressionDef)library.getStatements().getDef().get(1);
+        assertThat(expressionDef.getExpression(), instanceOf(Implies.class));
+        assertThat( expressionDef.getName(), is("Boolean Implies"));
+        assertThat(((Implies)expressionDef.getExpression()).getOperand().size(), is(2));
+    }
+
+
+    @Test
     public void testIssue547() throws IOException {
         TestUtils.runSemanticTest("Issue547.cql", 3);
     }
