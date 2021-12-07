@@ -270,6 +270,19 @@ public class SemanticTests {
         TestUtils.runSemanticTest("Issue616.cql", 1);
     }
 
+    public void testIssue617() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue617.cql", 0);
+        Library library = translator.toELM();
+        assertThat(library.getStatements(), notNullValue());
+        assertThat(library.getStatements().getDef(), notNullValue());
+        assertThat(library.getStatements().getDef().size(), equalTo(2));
+        assertThat(library.getStatements().getDef().get(1), instanceOf(ExpressionDef.class));
+        ExpressionDef expressionDef = (ExpressionDef)library.getStatements().getDef().get(1);
+        assertThat(expressionDef.getExpression(), instanceOf(Implies.class));
+        assertThat( expressionDef.getName(), is("Boolean Implies"));
+        assertThat(((Implies)expressionDef.getExpression()).getOperand().size(), is(2));
+    }
+
     @Test
     public void testIssue547() throws IOException {
         TestUtils.runSemanticTest("Issue547.cql", 3);
@@ -347,6 +360,83 @@ public class SemanticTests {
         assertThat(isNull.getOperand(), instanceOf(As.class));
         As a = (As)isNull.getOperand();
         assertThat(a.getOperand(), instanceOf(Null.class));
+    }
+
+    private FunctionDef resolveFunctionDef(Library library, String functionName) {
+        FunctionDef fd = null;
+        for (ExpressionDef ed : library.getStatements().getDef()) {
+            if (ed instanceof FunctionDef && ed.getName().equals(functionName)) {
+                return (FunctionDef)ed;
+            }
+        }
+        return null;
+    }
+
+    @Test
+    public void testIssue643() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue643.cql", 0);
+        /*
+            define function EncountersWithCoding(encounters List<Encounter>, valueSet System.ValueSet):
+              encounters E
+                where E.class in valueSet
+
+            <query>
+              <source>
+                <operandRef encounters/>
+              </source>
+              <where>
+                <inValueSet>
+                  <functionRef ToConcept>
+                      <property class/>
+                        <aliasRef E/>
+                      </property>
+                  </functionRef>
+                  <operandRef valueSet/>
+                </inValueSet>
+              </where>
+            </query>
+
+         */
+
+        FunctionDef fd = resolveFunctionDef(translator.getTranslatedLibrary().getLibrary(), "EncountersWithCoding");
+        assertThat(fd.getExpression(), instanceOf(Query.class));
+        Query q = (Query)fd.getExpression();
+        assertThat(q.getWhere(), instanceOf(InValueSet.class));
+        InValueSet ivs = (InValueSet)q.getWhere();
+        assertThat(ivs.getCode(), instanceOf(FunctionRef.class));
+        assertThat(ivs.getValueset(), nullValue());
+        assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
+
+        /*
+            define function EncountersWithType(encounters List<Encounter>, valueSet System.ValueSet):
+              encounters E
+                where E.type in valueSet
+
+         */
+
+        fd = resolveFunctionDef(translator.getTranslatedLibrary().getLibrary(), "EncountersWithType");
+        assertThat(fd.getExpression(), instanceOf(Query.class));
+        q = (Query)fd.getExpression();
+        assertThat(q.getWhere(), instanceOf(AnyInValueSet.class));
+        AnyInValueSet aivs = (AnyInValueSet)q.getWhere();
+        assertThat(aivs.getCodes(), instanceOf(Query.class));
+        assertThat(aivs.getValueset(), nullValue());
+        assertThat(aivs.getValuesetExpression(), instanceOf(OperandRef.class));
+
+        /*
+            define function EncountersWithServiceType(encounters List<Encounter>, valueSet System.ValueSet):
+              encounters E
+                where E.serviceType in valueSet
+         */
+
+        fd = resolveFunctionDef(translator.getTranslatedLibrary().getLibrary(), "EncountersWithServiceType");
+        assertThat(fd.getExpression(), instanceOf(Query.class));
+        q = (Query)fd.getExpression();
+        assertThat(q.getWhere(), instanceOf(InValueSet.class));
+        ivs = (InValueSet)q.getWhere();
+        assertThat(ivs.getCode(), instanceOf(FunctionRef.class));
+        assertThat(ivs.getValueset(), nullValue());
+        assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

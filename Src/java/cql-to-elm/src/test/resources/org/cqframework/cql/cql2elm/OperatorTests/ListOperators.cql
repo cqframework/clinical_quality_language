@@ -6,6 +6,7 @@ define ListExcept: { 1, 2, 3, 4, 5 } except { 2, 3, 4 }
 define ListExists: exists { 1, 2, 3, 4, 5 }
 define ListExistsNull: exists null
 define ListFlatten: flatten { { 1, 2, 3 }, { 4, 5, 6 } }
+define "Flatten Lists and Elements": flatten { { 1, 2, 3 }, 2, 3, 4 }
 define ListFlattenNull: flatten null
 define ListFirst: First({ 1, 2, 3, 4, 5 })
 define ListIn: 2 in { 1, 2, 3 }

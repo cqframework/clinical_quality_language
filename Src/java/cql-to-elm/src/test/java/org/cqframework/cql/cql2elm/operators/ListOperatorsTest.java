@@ -99,6 +99,18 @@ public class ListOperatorsTest {
     }
 
     @Test
+    public void testFlatten() {
+        ExpressionDef def = defs.get("ListFlatten");
+        Flatten flatten = (Flatten) def.getExpression();
+        assertThat(flatten.getOperand() instanceof List, is(true));
+
+        ExpressionDef defFlatten = defs.get("Flatten Lists and Elements");
+        Flatten flatten2 = (Flatten) defFlatten.getExpression();
+        assertThat(flatten2.getOperand() instanceof List, is(true));
+
+    }
+
+    @Test
     public void testLength() {
         ExpressionDef def = defs.get("ListLength");
         assertThat(def, hasTypeAndResult(Length.class, "System.Integer"));
