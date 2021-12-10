@@ -518,6 +518,8 @@ public class CqlTranslator {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             JaxbAnnotationModule annotationModule = new JaxbAnnotationModule();
             mapper.registerModule(annotationModule);
+            // Ensure that empty strings are included in output
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             jxsonMapper = mapper;
         }
 
