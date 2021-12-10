@@ -1,9 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
@@ -12,11 +9,7 @@ import java.util.LinkedHashMap;
 import javax.xml.bind.JAXBException;
 
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.Query;
-import org.hl7.elm.r1.Retrieve;
-import org.hl7.elm.r1.SingletonFrom;
+import org.hl7.elm.r1.*;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -229,4 +222,59 @@ public class ElmDeserializeTests {
 
         return result;
     }
+
+    private void validateEmptyStringsTest(Library library) {
+        // Null
+        // Empty
+        // Space
+        for (ExpressionDef ed : library.getStatements().getDef()) {
+            switch (ed.getName()) {
+                case "Null": Assert.assertTrue(ed.getExpression() instanceof Null);
+                break;
+
+                case "Empty": {
+                    Assert.assertTrue(ed.getExpression() instanceof Literal);
+                    Literal l = (Literal)ed.getExpression();
+                    Assert.assertTrue(l.getValue() != null && l.getValue().equals(""));
+                }
+                break;
+
+                case "Space": {
+                    Assert.assertTrue(ed.getExpression() instanceof Literal);
+                    Literal l = (Literal)ed.getExpression();
+                    Assert.assertTrue(l.getValue() != null && l.getValue().equals(" "));
+                }
+                break;
+            }
+        }
+    }
+
+    @Test
+    public void EmptyStringsTest() throws IOException {
+        InputStream inputStream = ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/EmptyStringsTest.cql");
+        CqlTranslator translator = TestUtils.createTranslatorFromStream(inputStream);
+        Assert.assertTrue(translator.getErrors().size() == 0);
+
+        String xml = translator.toXml();
+        String json = translator.toJson();
+        String jxson = translator.toJxson();
+
+        try {
+            Library xmlLibrary = ElmXmlLibraryReader.read(new StringReader(xml));
+            validateEmptyStringsTest(xmlLibrary);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Library jsonLibrary = ElmJsonLibraryReader.read(new StringReader(json));
+            validateEmptyStringsTest(jsonLibrary);
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+
+        Library jxsonLibrary = ElmJxsonLibraryReader.read(new StringReader(jxson));
+        validateEmptyStringsTest(jxsonLibrary);
+    }
+
 }
