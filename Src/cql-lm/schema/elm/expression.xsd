@@ -122,6 +122,16 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+	<xs:complexType name="ParameterTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>A type which is generic class parameter such as T in MyGeneric&lt;T extends SomeType&gt;.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:attribute name="parameterName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 	<xs:complexType name="Expression" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The Expression type defines the abstract base type for all expressions used in the ELM expression language.</xs:documentation>

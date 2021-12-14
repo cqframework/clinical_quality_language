@@ -1,15 +1,14 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
-import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.NamespaceManager;
+import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.*;
 
 import javax.xml.namespace.QName;
 import java.util.*;
+import java.util.List;
 
 public class ElmRequirementsContext {
 
@@ -20,6 +19,7 @@ public class ElmRequirementsContext {
         this.libraryManager = libraryManager;
         this.options = options;
         this.typeResolver = new TypeResolver(libraryManager);
+        this.typeBuilder = new TypeBuilder(this.libraryManager.getModelManager());
 
         if (visitor == null) {
             throw new IllegalArgumentException("visitor required");
@@ -45,6 +45,8 @@ public class ElmRequirementsContext {
     public TypeResolver getTypeResolver() {
         return this.typeResolver;
     }
+
+    private TypeBuilder typeBuilder;
 
     // Arbitrary starting point for generated local Ids.
     // If the input ELM does not have local Ids, some of the optimization
@@ -91,6 +93,9 @@ public class ElmRequirementsContext {
     the visit is complete
      */
     private Map<ExpressionDef, ElmRequirements> reportedRequirements = new HashMap<ExpressionDef, ElmRequirements>();
+    public Iterable<ElmRequirements> getReportedRequirements() {
+        return reportedRequirements.values();
+    }
     public ElmRequirements getReportedRequirements(ExpressionDef ed) {
         return reportedRequirements.get(ed);
     }
@@ -100,6 +105,9 @@ public class ElmRequirementsContext {
     These are calculated by the visit and reported to the context here after the visit is complete
      */
     private Map<ExpressionDef, ElmRequirement> inferredRequirements = new HashMap<ExpressionDef, ElmRequirement>();
+    public Iterable<ElmRequirement> getInferredRequirements() {
+        return inferredRequirements.values();
+    }
     public ElmRequirement getInferredRequirements(ExpressionDef ed) {
         return inferredRequirements.get(ed);
     }
@@ -342,13 +350,36 @@ public class ElmRequirementsContext {
     public void reportFunctionRef(FunctionRef functionRef) {
         TranslatedLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), functionRef.getLibraryName());
         try {
-            // TODO: Needs full operator resolution to be able to distinguish overloads.
-            // For now, reports all overloads
-            for (ExpressionDef def : targetLibrary.getLibrary().getStatements().getDef()) {
-                if (def instanceof FunctionDef && def.getName().equals(functionRef.getName())) {
-                    if (!visited.contains(def)) {
-                        visitor.visitElement(def, this);
+
+            List<DataType> signature;
+            signature = new ArrayList<DataType>();
+            for (TypeSpecifier ts : functionRef.getSignature()) {
+                signature.add(typeResolver.resolveTypeSpecifier(ts));
+            }
+            // Signature sizes will only be different in the case that the signature is not present in the ELM, so needs to be constructed
+            if (signature.size() != functionRef.getOperand().size()) {
+                for (Expression e : functionRef.getOperand()) {
+                    if (e.getResultType() != null) {
+                        signature.add(e.getResultType());
                     }
+                    else if (e.getResultTypeName() != null) {
+                        signature.add(typeResolver.resolveTypeName(e.getResultTypeName()));
+                    }
+                    else if (e.getResultTypeSpecifier() != null) {
+                        signature.add(typeResolver.resolveTypeSpecifier(e.getResultTypeSpecifier()));
+                    }
+                    else {
+                        // Signature could not be constructed, fall back to reporting all function defs
+                        signature = null;
+                        break;
+                    }
+                }
+            }
+
+            Iterable<FunctionDef> fds = targetLibrary.resolveFunctionRef(functionRef.getName(), signature);
+            for (FunctionDef fd : fds) {
+                if (!visited.contains(fd)) {
+                    visitor.visitElement(fd, this);
                 }
             }
         }

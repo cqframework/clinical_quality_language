@@ -34,7 +34,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitLibrary(Library elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getUsings() != null && elm.getUsings().getDef() != null && !elm.getUsings().getDef().isEmpty()) {
             for (UsingDef def : elm.getUsings().getDef()) {
                 T childResult = visitElement(def, context);
@@ -101,7 +101,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitUsingDef(UsingDef elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 
     /**
@@ -113,7 +113,7 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitIncludeDef(IncludeDef elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 
     /**
@@ -125,6 +125,6 @@ public class ElmBaseLibraryVisitor<T, C> extends ElmBaseClinicalVisitor<T, C> im
      * @return the visitor result
      */
     public T visitContextDef(ContextDef elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 }
