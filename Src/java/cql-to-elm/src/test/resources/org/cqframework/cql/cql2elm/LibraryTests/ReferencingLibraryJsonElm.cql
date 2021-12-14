@@ -1,9 +1,9 @@
 library ReferencingLibraryJsonElm
 
-include BaseLibraryElm called Base
+include SupplementalDataElements_FHIR4 version '2.0.0' called SDE
 
-valueset "Chlamydia Screening": '2.16.840.1.113883.3.464.1003.110.12.1052'
-    codesystems { Base."SNOMED-CT:2014", Base."ICD-9:2014" }
+valueset "Race": 'http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.114222.4.11.836'
 
-define ReferenceExpression: Base.BaseLibSum
+define "SDE Ethnicity":
+  SDE."SDE Ethnicity"
 

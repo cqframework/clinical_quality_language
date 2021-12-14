@@ -65,7 +65,7 @@ public class ElmSupportTest {
             ExpressionDef sdeLibDef = includedLibDefs.get("SDE Ethnicity");
             assertNotNull(sdeLibDef);
             assertThat(includedLibraries.size(), is(1));
-            assertThat(includedLibDefs.size(), is(5));
+            assertThat(includedLibDefs.size(), is(4));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -78,11 +78,13 @@ public class ElmSupportTest {
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
         try {
+            CqlTranslatorOptions options = createOptions();
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"),
                     modelManager,
                     libraryManager,
                     CqlTranslatorException.ErrorSeverity.Info,
-                    SignatureLevel.All, CqlTranslator.Options.EnableAnnotations, CqlTranslator.Options.EnableLocators);
+                    SignatureLevel.All,
+                    options.getOptions().toArray(new CqlTranslator.Options[0]));
 
             assertThat(translator.getErrors().size(), is(0));
 
@@ -96,10 +98,10 @@ public class ElmSupportTest {
                 }
             });
 
-            ExpressionDef baseLibDef = includedLibDefs.get("BaseLibSum");
-            assertTrue(((Sum) baseLibDef.getExpression()).getSource() instanceof List);
+            ExpressionDef sdeLibDef = includedLibDefs.get("SDE Ethnicity");
+            assertNotNull(sdeLibDef);
             assertThat(includedLibraries.size(), is(1));
-            assertThat(includedLibDefs.size(), is(3));
+            assertThat(includedLibDefs.size(), is(4));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -135,7 +137,7 @@ public class ElmSupportTest {
             ExpressionDef sdeLibDef = includedLibDefs.get("SDE Ethnicity");
             assertNotNull(sdeLibDef);
             assertThat(includedLibraries.size(), is(1));
-            assertThat(includedLibDefs.size(), is(5));
+            assertThat(includedLibDefs.size(), is(4));
 
         } catch (IOException e) {
             e.printStackTrace();

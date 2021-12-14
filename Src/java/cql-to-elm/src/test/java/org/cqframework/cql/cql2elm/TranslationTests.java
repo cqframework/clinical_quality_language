@@ -32,6 +32,22 @@ public class TranslationTests {
     }
 
     @Test(enabled=false)
+    public void testForPrintElm() throws IOException, JAXBException{
+        File propertyTestFile = new File(TranslationTests.class.getResource("LibraryTests/SupplementalDataElements_FHIR4-2.0.0.cql").getFile());
+        ModelManager modelManager = new ModelManager();
+        CqlTranslator translator = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager),
+                CqlTranslatorException.ErrorSeverity.Info,
+                LibraryBuilder.SignatureLevel.All, CqlTranslator.Options.EnableDateRangeOptimization,
+                CqlTranslator.Options.EnableAnnotations,
+                CqlTranslator.Options.EnableLocators,
+                CqlTranslator.Options.EnableResultTypes,
+                CqlTranslator.Options.DisableListDemotion,
+                CqlTranslator.Options.DisableListPromotion,
+                CqlTranslator.Options.DisableMethodInvocation);
+        System.out.println(translator.toJson());
+    }
+
+    @Test(enabled=false)
     public void testCMS146v2XML() throws IOException {
         String expectedXml = "";
         File cqlFile = new File(Cql2ElmVisitorTest.class.getResource("CMS146v2_Test_CQM.cql").getFile());

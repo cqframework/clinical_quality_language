@@ -9,6 +9,7 @@ import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.IncludeDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ParameterDef;
+import org.hl7.elm.r1.SingletonFrom;
 import org.hl7.elm.r1.UsingDef;
 import org.hl7.elm.r1.ValueSetDef;
 import org.hl7.elm.r1.VersionedIdentifier;
@@ -325,7 +326,17 @@ public class LibraryManager {
             }
             if (library.getStatements() != null && library.getStatements().getDef() != null) {
                 for (ExpressionDef expressionDef : library.getStatements().getDef()) {
-                    translatedLibrary.add(expressionDef);
+
+                    //to do implement an ElmTypeInferencingVisitor; make sure that the resultType is set for each node
+                    if(!(expressionDef.getExpression() instanceof  SingletonFrom)) {
+                        if (expressionDef.getResultTypeSpecifier() != null || expressionDef.getResultType() != null) {
+                            translatedLibrary.add(expressionDef);
+                        } else
+                        {
+                            translationSuccess = false;
+                            break;
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
