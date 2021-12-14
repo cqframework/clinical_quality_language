@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm;
 
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.TypeSpecifier;
 
 import javax.xml.bind.*;
 import java.io.*;
@@ -16,7 +15,7 @@ public class ElmJsonLibraryReader {
     public static JAXBContext getJaxbContext() {
         if (jaxbContext == null) {
             try {
-                jaxbContext = JAXBContext.newInstance(Library.class, Annotation.class, TypeSpecifier.class);
+                jaxbContext = JAXBContext.newInstance(Library.class, Annotation.class);
             } catch (JAXBException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Error creating JAXBContext - " + e.getMessage());

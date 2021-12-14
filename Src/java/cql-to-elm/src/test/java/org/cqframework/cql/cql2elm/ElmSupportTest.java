@@ -144,6 +144,27 @@ public class ElmSupportTest {
         }
     }
 
+    @Test
+    public void testIncludedLibraryWithJsonWithNullTypeSpecifierEml() {
+        CqlTranslator translator = null;
+        libraryManager = new LibraryManager(modelManager);
+        libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
+        try {
+            CqlTranslatorOptions options = createOptions();
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryWithNullTypeSpecifierJsonElm.cql"),
+                    modelManager,
+                    libraryManager,
+                    CqlTranslatorException.ErrorSeverity.Info,
+                    SignatureLevel.All,
+                    options.getOptions().toArray(new CqlTranslator.Options[0]));
+
+            assertTrue(translator.getErrors().size() > 0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private CqlTranslatorOptions createOptions() {
         CqlTranslatorOptions result = new CqlTranslatorOptions();
         result.setOptions(CqlTranslator.Options.EnableDateRangeOptimization,
