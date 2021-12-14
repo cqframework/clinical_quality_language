@@ -27,7 +27,7 @@ public class ElmSupportTest {
 
 
     @Test
-    public void testIncludedLibraryWithJxsonEml() {
+    public void testIncludedLibraryWithJxsonElm() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmJxsonLibrarySourceProvider());
@@ -51,7 +51,7 @@ public class ElmSupportTest {
     }
 
     @Test
-    public void testIncludedLibraryWithJsonEml() {
+    public void testIncludedLibraryWithJsonElm() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
@@ -72,7 +72,7 @@ public class ElmSupportTest {
     }
 
     @Test
-    public void testIncludedLibraryWithXmlEml() {
+    public void testIncludedLibraryWithXmlElm() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmXmlLibrarySourceProvider());
@@ -93,7 +93,7 @@ public class ElmSupportTest {
     }
 
     @Test
-    public void testIncludedLibraryWithJsonWithNullTypeSpecifierEml() {
+    public void testIncludedLibraryWithJsonWithNullTypeSpecifierElm() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());

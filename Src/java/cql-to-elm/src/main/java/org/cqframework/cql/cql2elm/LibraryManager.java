@@ -9,7 +9,6 @@ import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.IncludeDef;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.ParameterDef;
-import org.hl7.elm.r1.SingletonFrom;
 import org.hl7.elm.r1.UsingDef;
 import org.hl7.elm.r1.ValueSetDef;
 import org.hl7.elm.r1.VersionedIdentifier;
@@ -233,7 +232,7 @@ public class LibraryManager {
                             continue;
                         }
 
-                        result = generateTranslatedLibraryFromEml(libraryIdentifier, librarySource, type, options);
+                        result = generateTranslatedLibraryFromElm(libraryIdentifier, librarySource, type, options);
 
                         if (result != null) {
                             break;
@@ -248,7 +247,7 @@ public class LibraryManager {
     }
 
 
-    private TranslatedLibrary generateTranslatedLibraryFromEml(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlTranslatorOptions options) {
+    private TranslatedLibrary generateTranslatedLibraryFromElm(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlTranslatorOptions options) {
 
         Library library = null;
         TranslatedLibrary translatedLibrary = null;
