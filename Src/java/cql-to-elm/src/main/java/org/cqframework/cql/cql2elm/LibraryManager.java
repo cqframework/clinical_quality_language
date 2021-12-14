@@ -328,14 +328,13 @@ public class LibraryManager {
                 for (ExpressionDef expressionDef : library.getStatements().getDef()) {
 
                     //to do implement an ElmTypeInferencingVisitor; make sure that the resultType is set for each node
-                    if (!(expressionDef.getExpression() instanceof SingletonFrom)) {
-                        if (expressionDef.getResultTypeSpecifier() != null || expressionDef.getResultType() != null) {
-                            translatedLibrary.add(expressionDef);
-                        } else {
-                            translationSuccess = false;
-                            break;
-                        }
+                    if (expressionDef.getResultType() != null) {
+                        translatedLibrary.add(expressionDef);
+                    } else {
+                        translationSuccess = false;
+                        break;
                     }
+
                 }
             }
         } catch (Exception e) {

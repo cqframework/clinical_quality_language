@@ -1,16 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
-import org.hl7.elm.r1.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -48,24 +41,9 @@ public class ElmSupportTest {
                     SignatureLevel.All,
                     options.getOptions().toArray(new CqlTranslator.Options[0]));
 
-            System.out.println(translator.getErrors());
+            assertTrue(translator.getErrors().size() > 0);
 
-            assertThat(translator.getErrors().size(), is(0));
 
-            Map<String, ExpressionDef> includedLibDefs = new HashMap<>();
-            Map<String, Library> includedLibraries = translator.getLibraries();
-            includedLibraries.values().stream().forEach(includedLibrary -> {
-                if (includedLibrary.getStatements() != null) {
-                    for (ExpressionDef def : includedLibrary.getStatements().getDef()) {
-                        includedLibDefs.put(def.getName(), def);
-                    }
-                }
-            });
-
-            ExpressionDef sdeLibDef = includedLibDefs.get("SDE Ethnicity");
-            assertNotNull(sdeLibDef);
-            assertThat(includedLibraries.size(), is(1));
-            assertThat(includedLibDefs.size(), is(4));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -86,22 +64,7 @@ public class ElmSupportTest {
                     SignatureLevel.All,
                     options.getOptions().toArray(new CqlTranslator.Options[0]));
 
-            assertThat(translator.getErrors().size(), is(0));
-
-            Map<String, ExpressionDef> includedLibDefs = new HashMap<>();
-            Map<String, Library> includedLibraries = translator.getLibraries();
-            includedLibraries.values().stream().forEach(includedLibrary -> {
-                if (includedLibrary.getStatements() != null) {
-                    for (ExpressionDef def : includedLibrary.getStatements().getDef()) {
-                        includedLibDefs.put(def.getName(), def);
-                    }
-                }
-            });
-
-            ExpressionDef sdeLibDef = includedLibDefs.get("SDE Ethnicity");
-            assertNotNull(sdeLibDef);
-            assertThat(includedLibraries.size(), is(1));
-            assertThat(includedLibDefs.size(), is(4));
+            assertTrue(translator.getErrors().size() > 0);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -122,22 +85,7 @@ public class ElmSupportTest {
                     CqlTranslatorException.ErrorSeverity.Info,
                     SignatureLevel.All, options.getOptions().toArray(new CqlTranslator.Options[0]));
 
-            assertThat(translator.getErrors().size(), is(0));
-
-            Map<String, ExpressionDef> includedLibDefs = new HashMap<>();
-            Map<String, Library> includedLibraries = translator.getLibraries();
-            includedLibraries.values().stream().forEach(includedLibrary -> {
-                if (includedLibrary.getStatements() != null) {
-                    for (ExpressionDef def : includedLibrary.getStatements().getDef()) {
-                        includedLibDefs.put(def.getName(), def);
-                    }
-                }
-            });
-
-            ExpressionDef sdeLibDef = includedLibDefs.get("SDE Ethnicity");
-            assertNotNull(sdeLibDef);
-            assertThat(includedLibraries.size(), is(1));
-            assertThat(includedLibDefs.size(), is(4));
+            assertTrue(translator.getErrors().size() > 0);
 
         } catch (IOException e) {
             e.printStackTrace();
