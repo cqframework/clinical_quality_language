@@ -46,8 +46,7 @@ public class LibraryTests {
     public void testLibraryReferencesWithCacheDisabled() {
         CqlTranslator translator = null;
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"), modelManager, libraryManager,
-                    CqlTranslator.Options.DisableCache);
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"), modelManager, libraryManager.withDisableCache());
             assertThat(translator.getErrors().size(), is(0));
         } catch (IOException e) {
             e.printStackTrace();

@@ -70,7 +70,17 @@ public class LibraryManager {
 
     public void enableCache() { this.enableCache = true; }
 
+    public LibraryManager withEnableCache() {
+        enableCache();
+        return this;
+    }
+
     public void disableCache() { this.enableCache = false; }
+
+    public LibraryManager withDisableCache() {
+        disableCache();
+        return this;
+    }
 
     public boolean isCacheEnabled() { return enableCache; }
 

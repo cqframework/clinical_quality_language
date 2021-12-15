@@ -157,9 +157,6 @@ public class LibraryBuilder implements ModelResolver {
         if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.DisableCache)) {
-            this.libraryManager.disableCache();
-        }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
     }
