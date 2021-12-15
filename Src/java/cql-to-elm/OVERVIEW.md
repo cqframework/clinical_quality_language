@@ -17,22 +17,22 @@ The `cql`, `model`, `elm`, and `cql-to-elm` packages are required to use the tra
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.5</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>model</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.5</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>elm</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.5</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql-to-elm</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.5</version>
     </dependency>
 
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
@@ -40,13 +40,23 @@ In addition, to use the translator with QDM, FHIR, and QUICK, the model info pac
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>quick</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.5</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>qdm</artifactId>
-      <version>1.5.2</version>
+      <version>1.5.5</version>
     </dependency>
+
+To use the DataRequirementsProcessor, a component that performs data requirements analysis on ELM, as well as converts those data requirements to FHIR [DataRequirement](https://hl7.org/fhir/metadatatypes.html#DataRequirement) instances and renders the metadata for a CQL Library as a [FHIR ModuleDefinition Library](https://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-module-definition-library-cqfm.html), the elm-fhir package must be included:
+
+    <dependency>
+      <groupId>info.cqframework</groupId>
+      <artifactId>elm-fhir</artifact>
+      <version>1.5.5</version>
+    </dependency>
+
+Note that this elm-fhir package includes a dependency on the HAPI FHIR Structures libraries (client-side dependencies) in order to provide FHIR object representation support. This is the only package from the translator that includes a specific dependency on FHIR.
 
 ## Technologies
 
@@ -56,19 +66,18 @@ CQL is defined using an [ANTLR4](http://www.antlr.org/) grammar. ANTLR4 is a sim
 
 The CQL-to-ELM Translator supports all normative language constructs of the latest version of CQL (Release 1 (1.5)), the trial-use functionality of the 1.5 specification, as well as a broad range of functionality to support use of the translator in an Integrated Development Environment. Implementations making use of the translator can submit issues and track resolution progress through the Issues tracker in the Github repository.
 
+The current release of the translator is version [1.5.5](https://github.com/cqframework/clinical_quality_language/releases/tag/v1.5.5), which includes support for QDM 5.6, enhanced model info to support more advanced authoring capabilities, including profile-informed authoring, as well as a new DataRequirementsProcessor to support data requirements inference and analysis and the 4.1.0 model info for QICore (also included in the QICore-ModelInfo library published as part of QICore).
+
 ## Roadmap
 
-### 1.5 Maintenance
+There is a significant backlog of issues currently being worked. The backlog is organized into a Maintenance milestone which has all planned maintenance updates. As new versions are released, items are worked from that maintenance list first. A high level summary of the current maintenance list is:
 
-* Enhanced model info to support advanced authoring capabilities
-* Improved profile-informed model info to support logical content authoring
-* Improved data-requirements inference capabilities
-* Improve retrieve filtering
 * Choice function invocation (if multiple overloads of a method support the different types of a choice, the return value is a choice of the results of the function invocation)
 * Inferred expression support for case features.
 * Multi-filter data-requirements
+* Improved errors and warnings (case-mismatch warning, identifier hiding, soundex mismatch)
 
-See the [1.5 Maintenance](https://github.com/cqframework/clinical_quality_language/milestone/11) milestone for details.
+See the [Maintenance](https://github.com/cqframework/clinical_quality_language/milestone/14) milestone for details.
 
 ## Usage
 

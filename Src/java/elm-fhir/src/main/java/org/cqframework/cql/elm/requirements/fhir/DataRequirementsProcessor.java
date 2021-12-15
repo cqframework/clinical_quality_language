@@ -37,6 +37,12 @@ public class DataRequirementsProcessor {
     public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
                                           CqlTranslatorOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions) {
+        return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, includeLogicDefinitions, true);
+    }
+
+    public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
+                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          boolean includeLogicDefinitions, boolean recursive) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager required");
         }
@@ -59,15 +65,27 @@ public class DataRequirementsProcessor {
             }
         }
         else {
+            if (expressionDefs == null) {
+                expressionDefs = new ArrayList<ExpressionDef>();
+            }
+
             context.enterLibrary(translatedLibrary.getIdentifier());
             try {
                 for (String expression : expressions) {
                     ExpressionDef ed = translatedLibrary.resolveExpressionRef(expression);
-                    if (expressionDefs == null) {
-                        expressionDefs = new ArrayList<ExpressionDef>();
+                    if (ed != null) {
+                        expressionDefs.add(ed);
+                        visitor.visitElement(ed, context);
                     }
-                    expressionDefs.add(ed);
-                    visitor.visitElement(ed, context);
+                    else {
+                        // If the expression is the name of any functions, include those in the gather
+                        // TODO: Provide a mechanism to specify a function def (need signature)
+                        Iterable<FunctionDef> fds = translatedLibrary.resolveFunctionRef(expression);
+                        for (FunctionDef fd : fds) {
+                            expressionDefs.add(fd);
+                            visitor.visitElement(fd, context);
+                        }
+                    }
                 }
             }
             finally {
@@ -75,15 +93,41 @@ public class DataRequirementsProcessor {
             }
         }
 
+        // In the non-recursive case
+            // Collect top-level dependencies that have the same library identifier as the primary library
+            // Collect data requirements reported or inferred on expressions in the library
+        // In the recursive case
+            // Collect all top-level dependencies
+            // Collect all reported or inferred data requirements
+
         ElmRequirements requirements = new ElmRequirements(translatedLibrary.getIdentifier(), translatedLibrary.getLibrary());
-        // Collect all the dependencies
-        requirements.reportRequirement(context.getRequirements());
-        // Collect reported data requirements from each expression
-        for (ExpressionDef ed : expressionDefs) {
-            // Just being defensive here, can happen when there are errors deserializing the measure
-            if (ed != null) {
-                ElmRequirements reportedRequirements = context.getReportedRequirements(ed);
+        if (recursive) {
+            // Collect all the dependencies
+            requirements.reportRequirement(context.getRequirements());
+            // Collect reported data requirements from each expression
+            for (ElmRequirements reportedRequirements : context.getReportedRequirements()) {
                 requirements.reportRequirement(reportedRequirements);
+            }
+            for (ElmRequirement inferredRequirement : context.getInferredRequirements()) {
+                requirements.reportRequirement(inferredRequirement);
+            }
+        }
+        else {
+            for (ElmRequirement requirement : context.getRequirements().getRequirements()) {
+                if (requirement.getLibraryIdentifier().equals(translatedLibrary.getIdentifier()))
+                    requirements.reportRequirement(requirement);
+            }
+            for (ExpressionDef ed : expressionDefs) {
+                // Just being defensive here, can happen when there are errors deserializing the measure
+                if (ed != null) {
+                    // Collect both inferred and reported requirements here, since reported requirements will not include
+                    // directly inferred requirements
+                    ElmRequirements reportedRequirements = context.getReportedRequirements(ed);
+                    requirements.reportRequirement(reportedRequirements);
+
+                    ElmRequirement inferredRequirement = context.getInferredRequirements(ed);
+                    requirements.reportRequirement(inferredRequirement);
+                }
             }
         }
 

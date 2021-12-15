@@ -2,9 +2,11 @@ package org.cqframework.cql.elm.requirements;
 
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.model.Model;
-import org.hl7.cql.model.DataType;
-import org.hl7.cql.model.IntervalType;
-import org.hl7.cql.model.ListType;
+import org.hl7.cql.model.*;
+import org.hl7.elm.r1.*;
+
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
 
 public class TypeResolver {
     public TypeResolver(LibraryManager libraryManager) {
@@ -17,6 +19,83 @@ public class TypeResolver {
     private LibraryManager libraryManager;
     public LibraryManager getLibraryManager() {
         return libraryManager;
+    }
+
+    public DataType resolveTypeName(QName typeName) {
+        if (typeName == null) {
+            throw new IllegalArgumentException("typeName is required");
+        }
+
+        // NOTE: This resolution path is ignoring prefix, namespace is required
+        if (typeName.getNamespaceURI() == null || typeName.getNamespaceURI().equals("")) {
+            throw new IllegalArgumentException("namespaceURI is required");
+        }
+
+        Model model = libraryManager.getModelManager().resolveModelByUri(typeName.getNamespaceURI());
+        DataType result = model.resolveTypeName(typeName.getLocalPart());
+        if (result == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve type %s", typeName.toString()));
+        }
+        return result;
+    }
+
+    public DataType resolveTypeSpecifier(TypeSpecifier typeSpecifier) {
+        if (typeSpecifier == null) {
+            throw new IllegalArgumentException("typeSpecifier is required");
+        }
+
+        // If the typeSpecifier already has a type, use it
+        if (typeSpecifier.getResultType() != null) {
+            return typeSpecifier.getResultType();
+        }
+
+        if (typeSpecifier instanceof NamedTypeSpecifier) {
+            return resolveNamedTypeSpecifier((NamedTypeSpecifier)typeSpecifier);
+        }
+        else if (typeSpecifier instanceof TupleTypeSpecifier) {
+            return resolveTupleTypeSpecifier((TupleTypeSpecifier)typeSpecifier);
+        }
+        else if (typeSpecifier instanceof IntervalTypeSpecifier) {
+            return resolveIntervalTypeSpecifier((IntervalTypeSpecifier)typeSpecifier);
+        }
+        else if (typeSpecifier instanceof ListTypeSpecifier) {
+            return resolveListTypeSpecifier((ListTypeSpecifier)typeSpecifier);
+        }
+        else if (typeSpecifier instanceof ChoiceTypeSpecifier) {
+            return resolveChoiceTypeSpecifier((ChoiceTypeSpecifier)typeSpecifier);
+        }
+        else {
+            throw new IllegalArgumentException(String.format("Unknown type specifier category: %s", typeSpecifier.getClass().getSimpleName()));
+        }
+    }
+
+    private DataType resolveNamedTypeSpecifier(NamedTypeSpecifier typeSpecifier) {
+        return resolveTypeName(typeSpecifier.getName());
+    }
+
+    private DataType resolveTupleTypeSpecifier(TupleTypeSpecifier typeSpecifier) {
+        TupleType tupleType = new TupleType();
+        for (TupleElementDefinition element : typeSpecifier.getElement()) {
+            TupleTypeElement tupleElement = new TupleTypeElement(element.getName(), resolveTypeSpecifier(element.getElementType()));
+            tupleType.addElement(tupleElement);
+        }
+        return tupleType;
+    }
+
+    private DataType resolveIntervalTypeSpecifier(IntervalTypeSpecifier typeSpecifier) {
+        return new IntervalType(resolveTypeSpecifier(typeSpecifier.getPointType()));
+    }
+
+    private DataType resolveListTypeSpecifier(ListTypeSpecifier typeSpecifier) {
+        return new ListType(resolveTypeSpecifier(typeSpecifier.getElementType()));
+    }
+
+    private DataType resolveChoiceTypeSpecifier(ChoiceTypeSpecifier typeSpecifier) {
+        ArrayList<DataType> choiceTypes = new ArrayList<DataType>();
+        for (TypeSpecifier choiceType : typeSpecifier.getChoice()) {
+            choiceTypes.add(resolveTypeSpecifier(choiceType));
+        }
+        return new ChoiceType(choiceTypes);
     }
 
     public DataType resolveTypeName(String modelName, String typeName) {

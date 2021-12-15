@@ -2,9 +2,9 @@ package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
 import org.cqframework.cql.elm.tracking.*;
@@ -188,8 +188,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return expressions;
     }
 
-    private int getNextLocalId() {
+    public int getNextLocalId() {
         return nextLocalId++;
+    }
+
+    public boolean isAnnotationEnabled(){
+        return annotate;
     }
 
     private void pushChunk(ParseTree tree) {
@@ -468,6 +472,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 chunkContent = chunkContent.trim();
             }
             chunkContent = normalizeWhitespace(chunkContent);
+            chunkContent = makeSeparationBetweenCommentAndDefinition(chunkContent);
             narrative.getContent().add(chunkContent);
         }
 
@@ -476,6 +481,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private String normalizeWhitespace(String input) {
         return input.replace("\r\n", "\n");
+    }
+
+    private String makeSeparationBetweenCommentAndDefinition(String input) {
+        if(StringUtils.startsWith(input, "//") || StringUtils.endsWith(input, "*/")) {
+            return input + "\n";
+        }
+        return input;
     }
 
     private boolean hasChunks(Narrative narrative) {
@@ -2159,6 +2171,11 @@ DATETIME
                     parseExpression(ctx.expression(1)));
 
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+
+            if (annotate) {
+                equivalent.setLocalId(Integer.toString(getNextLocalId()));
+            }
+
             if (!"~".equals(parseString(ctx.getChild(1)))) {
                 track(equivalent, ctx);
                 Not not = of.createNot().withOperand(equivalent);

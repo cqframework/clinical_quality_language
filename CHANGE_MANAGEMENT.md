@@ -37,6 +37,8 @@ Committers are community members who have shown that they are committed to the c
 
 It is important to recognize that commitership is a privilege, not a right. That privilege must be earned and once earned it can be removed by the PMC (see next section) in extreme circumstances. However, under normal circumstances committership exists for as long as the committer wishes to continue engaging with the project.
 
+Committers are managed as members of the [cql-tooling](https://github.com/orgs/cqframework/teams/cql-tooling) team in this repository.
+
 A committer who shows an above-average level of contribution to the project, particularly with respect to its strategic direction and long-term health, may be nominated to become a member of the PMC. This role is described below.
 
 ### Project management committee
@@ -48,6 +50,11 @@ Membership of the PMC is by invitation from the existing PMC members. A nominati
 The PMC Chair is a single individual, voted for by the PMC members. Once someone has been appointed Chair, they remain in that role until they choose to retire, or the PMC casts a two-thirds majority vote to remove them.
 
 The PMC Chair has no additional authority over other members of the PMC: the role is one of coordinator and facilitator. The Chair is also expected to ensure that all governance processes are adhered to, and has the casting vote when the project fails to reach consensus.
+
+**PMC Membership**
+* [Bryn Rhodes](https://github.com/brynrhodes) (PMC Chair)
+* [Chris Moesel](https://github.com/cmoesel)
+* [Marc Hadley](https://github.com/hadleynet)
 
 ### Support
 All participants in the community are encouraged to provide support for new users within the project management infrastructure. This support is provided as a way of growing the community. Those seeking support should recognise that all support activity within the project is voluntary and is therefore provided as and when time allows. A user requiring guaranteed response times or results should therefore seek to purchase a support contract from a community member. However, for those willing to engage with the project on its own terms, and willing to help support other users, the community support channels are ideal.
@@ -86,9 +93,9 @@ Note that changes must always align with the CQL specification. Any changes to t
 # Communication Channels
 Communication should be done in an open and public manner. The project uses many different channels for open communication, including:
 
-* Mailing List: [cql-tooling@googlegroups.com](https://groups.google.com/forum/?hl=en#!forum/cql-tooling)
 * [Chat](https://chat.fhir.org/#narrow/stream/cql)
 * [Github Issues](https://github.com/cqframework/clinical_quality_language/issues)
+* _deprecated_ Mailing List: [cql-tooling@googlegroups.com](https://groups.google.com/forum/?hl=en#!forum/cql-tooling)
 
 Sometimes, communication occurs outside of these public channels, and that is okay; however, committers must summarize any private discussions that impact the tooling project in a public channel.
 
@@ -103,5 +110,5 @@ This project uses the Github Issues tracker to track all issues and feature requ
 # Releases
 All packages within the project shall use semantic versioning. Any stakeholder can propose a release, but the PMC must review and approve the contents and timing of any release. Specifically, releases must be coordinated with impacted stakeholders and timed with availability of published versions of the specifications involved.
 
-The PMC Chair is responsible for announcing releases to the community via the mailing list. When appropriate, the PMC Chair should also announce plans for upcoming releases to solicit feedback from the community on release content and timing.
+The PMC Chair is responsible for announcing releases to the community via the zulip chat. When appropriate, the PMC Chair should also announce plans for upcoming releases to solicit feedback from the community on release content and timing.
 

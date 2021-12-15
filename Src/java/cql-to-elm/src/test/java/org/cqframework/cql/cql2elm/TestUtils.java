@@ -196,6 +196,14 @@ public class TestUtils {
 
     public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, CqlTranslator.Options... options) throws IOException {
         InputStream inputStream = Cql2ElmVisitorTest.class.getResourceAsStream(testFileName);
+        return createTranslatorFromStream(null, inputStream, options);
+    }
+
+    public static CqlTranslator createTranslatorFromStream(InputStream inputStream, CqlTranslator.Options... options) throws IOException {
+        return createTranslatorFromStream(null, inputStream, options);
+    }
+
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, CqlTranslator.Options... options) throws IOException {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
@@ -217,10 +225,24 @@ public class TestUtils {
     }
 
     public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslatorOptions options) throws IOException {
+        String[] segments = testFileName.split("/");
+        String path = null;
+        if (segments.length > 1) {
+            for (int i = 0; i < segments.length - 1; i++) {
+                if (path == null) {
+                    path = segments[i];
+                }
+                else {
+                    path += "/" + segments[i];
+                }
+            }
+        }
+        String fileName = segments[segments.length - 1];
+
         File translationTestFile = new File(URLDecoder.decode(Cql2ElmVisitorTest.class.getResource(testFileName).getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(path == null ? new TestLibrarySourceProvider() : new TestLibrarySourceProvider(path));
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
         CqlTranslator translator = CqlTranslator.fromFile(namespaceInfo, translationTestFile, modelManager, libraryManager, getUcumService(), options);
         return translator;
