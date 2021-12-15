@@ -14,13 +14,17 @@ public class Operator {
         for (OperandDef operand : functionDef.getOperand()) {
             operandTypes.add(operand.getResultType());
         }
-        return new Operator(functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])),
+        return new Operator(functionDef, functionDef.getName(), new Signature(operandTypes.toArray(new DataType[operandTypes.size()])),
                 functionDef.getResultType()).withAccessLevel(functionDef.getAccessLevel())
                 .withFluent(functionDef.isFluent() != null ? functionDef.isFluent() : false)
                 .withExternal(functionDef.isExternal() != null ? functionDef.isExternal() : false);
     }
 
     public Operator(String name, Signature signature, DataType resultType) {
+        this(null, name, signature, resultType);
+    }
+
+    public Operator(FunctionDef functionDef, String name, Signature signature, DataType resultType) {
         if (name == null || name.equals("")) {
             throw new IllegalArgumentException("name is null or empty");
         }
@@ -29,6 +33,7 @@ public class Operator {
             throw new IllegalArgumentException("signature is null");
         }
 
+        this.functionDef = functionDef;
         this.name = name;
         this.signature = signature;
         this.resultType = resultType;
@@ -81,6 +86,18 @@ public class Operator {
     }
     public Operator withExternal(boolean isExternal) {
         setExternal(isExternal);
+        return this;
+    }
+
+    private FunctionDef functionDef;
+    public FunctionDef getFunctionDef() {
+        return this.functionDef;
+    }
+    public void setFunctionDef(FunctionDef functionDef) {
+        this.functionDef = functionDef;
+    }
+    public Operator withFunctionDef(FunctionDef functionDef) {
+        setFunctionDef(functionDef);
         return this;
     }
 

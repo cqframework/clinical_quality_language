@@ -519,6 +519,8 @@ public class CqlTranslator {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             JaxbAnnotationModule annotationModule = new JaxbAnnotationModule();
             mapper.registerModule(annotationModule);
+            // Ensure that empty strings are included in output
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             jxsonMapper = mapper;
         }
 
@@ -588,6 +590,7 @@ public class CqlTranslator {
         LibraryBuilder builder = new LibraryBuilder(namespaceInfo, modelManager, libraryManager, ucumService);
         builder.setTranslatorOptions(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
+        builder.setVisitor(visitor);
         visitor.setTranslatorOptions(options);
 
         CqlTranslator.CqlErrorListener errorListener = new CqlTranslator.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());

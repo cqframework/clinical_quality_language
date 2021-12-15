@@ -11,6 +11,7 @@ dependencies {
     compile group: 'org.fhir', name: 'ucum', version: '1.0.3'
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.10.1'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
+    compile group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
     runtime project(':quick')
     runtime project(':qdm')
 }

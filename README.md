@@ -1,3 +1,5 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm/badge.svg)](https://maven-badges.herokuapp.com/maven-central/info.cqframework/cql-to-elm) [![project chat](https://img.shields.io/badge/zulip-join_chat-brightgreen.svg)](https://chat.fhir.org/#narrow/stream/179220-cql)
+
 # Clinical Quality Language
 Clinical Quality Language ([CQL](http://www.hl7.org/implement/standards/product_brief.cfm?product_id=400)) is a Health Level 7 ([HL7](http://www.hl7.org/index.cfm)) standard for the expression of clinical knowledge that can be used within a broad range of clinical domains, including Clinical Decision Support (CDS), and Clinical Quality Measurement (CQM).
 

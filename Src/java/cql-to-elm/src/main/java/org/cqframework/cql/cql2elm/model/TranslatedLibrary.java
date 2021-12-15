@@ -7,12 +7,14 @@ import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.*;
 
 import java.util.*;
+import java.util.List;
 
 public class TranslatedLibrary {
     private VersionedIdentifier identifier;
     private Library library;
-    private final HashMap<String, Element> namespace = new HashMap<>();
+    private final Map<String, Element> namespace = new HashMap<>();
     private final OperatorMap operators = new OperatorMap();
+    private final Map<Operator, FunctionDef> functionDefs = new HashMap<>();
     private final java.util.List<Conversion> conversions = new ArrayList<>();
 
     public VersionedIdentifier getIdentifier() {
@@ -74,7 +76,7 @@ public class TranslatedLibrary {
     public void add(ExpressionDef expression) {
         if (expression instanceof FunctionDef) {
             // Register the operator signature
-            add(Operator.fromFunctionDef((FunctionDef)expression));
+            add((FunctionDef)expression, Operator.fromFunctionDef((FunctionDef)expression));
         }
         else {
             checkNamespace(expression.getName());
@@ -111,10 +113,11 @@ public class TranslatedLibrary {
         }
     }
 
-    public void add(Operator operator) {
+    public void add(FunctionDef functionDef, Operator operator) {
         ensureLibrary(operator);
         ensureResultType(operator);
         operators.addOperator(operator);
+        functionDefs.put(operator, functionDef);
     }
 
     public boolean contains(FunctionDef functionDef) {
@@ -220,6 +223,34 @@ public class TranslatedLibrary {
         }
 
         return null;
+    }
+
+    public Iterable<FunctionDef> resolveFunctionRef(String identifier) {
+        List<FunctionDef> results = new ArrayList<FunctionDef>();
+        for (ExpressionDef ed : getLibrary().getStatements().getDef()) {
+            if (ed instanceof FunctionDef) {
+                if (ed.getName().equals(identifier)) {
+                    results.add((FunctionDef)ed);
+                }
+            }
+        }
+
+        return results;
+    }
+
+    public Iterable<FunctionDef> resolveFunctionRef(String identifier, List<DataType> signature) {
+        if (signature == null) {
+            return resolveFunctionRef(identifier);
+        }
+        else {
+            CallContext cc = new CallContext(this.getIdentifier().getId(), identifier, false, false, false, signature.toArray(new DataType[signature.size()]));
+            OperatorResolution resolution = resolveCall(cc, null);
+            ArrayList<FunctionDef> results = new ArrayList<FunctionDef>();
+            if (resolution != null) {
+                results.add(resolution.getOperator().getFunctionDef());
+            }
+            return results;
+        }
     }
 
     public OperatorResolution resolveCall(CallContext callContext, ConversionMap conversionMap) {
