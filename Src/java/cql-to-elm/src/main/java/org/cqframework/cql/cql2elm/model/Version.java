@@ -74,6 +74,10 @@ public class Version implements Comparable<Version> {
         return true;
     }
 
+    public boolean isComparable(Version thatVersion) {
+        return this.version.matches("(\\.[0-9])+") && thatVersion.version.matches("(\\.[0-9])+");
+    }
+
     @Override
     public boolean equals(Object that) {
         if(this == that)

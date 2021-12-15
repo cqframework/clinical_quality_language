@@ -52,8 +52,10 @@ public class DefaultModelInfoProvider implements ModelInfoProvider {
                     String[] fileNameComponents = fileName.split("-");
                     if (fileNameComponents.length == 3) {
                         Version version = new Version(fileNameComponents[2]);
-                        if (requestedVersion == null || version.compatibleWith(requestedVersion)) {
-                            if (mostRecent == null || version.compareTo(mostRecent) > 0) {
+                        if (requestedVersion == null ||
+                                (version.isComparable(requestedVersion) && version.compatibleWith(requestedVersion))) {
+                            if (mostRecent == null ||
+                                    (version.isComparable(requestedVersion) && version.compareTo(mostRecent) > 0)) {
                                 mostRecent = version;
                                 mostRecentFile = file;
                             }

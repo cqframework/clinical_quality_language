@@ -50,8 +50,9 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
                 if (indexOfVersionSeparator >= 0) {
                     Version version = new Version(fileName.substring(indexOfVersionSeparator + 1));
                     // If the file has a version, make sure it is compatible with the version we are looking for
-                    if (indexOfVersionSeparator == libraryName.length() && requestedVersion == null || version.compatibleWith(requestedVersion)) {
-                        if (mostRecent == null || version.compareTo(mostRecent) > 0) {
+                    if (indexOfVersionSeparator == libraryName.length() && requestedVersion == null ||
+                            (version.isComparable(requestedVersion) && version.compatibleWith(requestedVersion))) {
+                        if (mostRecent == null || (version.isComparable(requestedVersion) && version.compareTo(mostRecent) > 0)) {
                             mostRecent = version;
                             mostRecentFile = file;
                         }
