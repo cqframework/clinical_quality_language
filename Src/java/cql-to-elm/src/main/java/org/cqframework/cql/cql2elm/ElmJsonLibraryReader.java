@@ -27,8 +27,14 @@ public class ElmJsonLibraryReader {
     public static Library read(Object object) throws IOException, JAXBException {
         Unmarshaller unmarshaller = getJaxbContext().createUnmarshaller();
         unmarshaller.setProperty("eclipselink.media-type", "application/json");
-        Library library = unmarshaller.unmarshal(LibraryReaderUtil.toSource(object), Library.class).getValue();
+        unmarshaller.setEventHandler(new ValidationEventHandler() {
+            @Override
+            public boolean handleEvent(ValidationEvent event) {
+                return true;
+            }
+        });
 
+        Library library = unmarshaller.unmarshal(LibraryReaderUtil.toSource(object), Library.class).getValue();
         return library;
     }
 
