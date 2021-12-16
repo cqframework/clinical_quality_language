@@ -879,7 +879,7 @@ public class LibraryBuilder implements ModelResolver {
         BinaryWrapper wrapper = normalizeListTypes(left, right);
         Union union = of.createUnion().withOperand(wrapper.left, wrapper.right);
 
-        if (visitor.isAnnotationEnabled()) {
+        if (visitor != null && visitor.isAnnotationEnabled()) {
             union.setLocalId(Integer.toString(visitor.getNextLocalId()));
         }
 
