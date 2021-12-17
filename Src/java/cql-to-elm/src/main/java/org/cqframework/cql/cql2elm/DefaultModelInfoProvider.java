@@ -53,7 +53,10 @@ public class DefaultModelInfoProvider implements ModelInfoProvider {
                     if (fileNameComponents.length == 3) {
                         Version version = new Version(fileNameComponents[2]);
                         if (requestedVersion == null || version.compatibleWith(requestedVersion)) {
-                            if (mostRecent == null || version.compareTo(mostRecent) > 0) {
+                            if (mostRecent == null ||
+                                    ((version != null && version.isComparable()) &&
+                                            (mostRecent != null && mostRecent.isComparable()) &&
+                                            version.compareTo(mostRecent) > 0)) {
                                 mostRecent = version;
                                 mostRecentFile = file;
                             }

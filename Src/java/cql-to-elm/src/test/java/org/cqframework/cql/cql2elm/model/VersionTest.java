@@ -12,11 +12,9 @@ public class VersionTest {
 
         Version versionNonComparable = new Version("0.0a.0b1");
         Assert.assertFalse(versionNonComparable.isComparable());
-    }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testVersionThrows() {
         Version version = new Version("0.0&.1");
+        Assert.assertFalse(version.isComparable());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
