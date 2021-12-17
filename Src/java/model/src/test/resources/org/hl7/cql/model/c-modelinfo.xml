@@ -1820,7 +1820,7 @@
         <element name="display" elementType="FHIR.string"/>
         <element name="userSelected" elementType="FHIR.boolean"/>
     </typeInfo>
-    <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="Communication" identifier="http://hl7.org/fhir/StructureDefinition/Communication" label="Communication" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+    <typeInfo baseType="FHIR.DomainResource" namespace="FHIR" name="Communication" identifier="http://hl7.org/fhir/StructureDefinition/Communication" label="Communication" retrievable="true" primaryCodePath="reasonCode" xsi:type="ClassInfo">
         <element name="identifier">
             <elementTypeSpecifier elementType="FHIR.Identifier" xsi:type="ListTypeSpecifier"/>
         </element>

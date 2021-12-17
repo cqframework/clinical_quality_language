@@ -599,7 +599,7 @@
       <element name="reason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ClaimStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Communication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communication" label="Communication" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Communication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communication" label="Communication" retrievable="true" primaryCodePath="reasonCode" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>

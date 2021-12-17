@@ -2184,7 +2184,7 @@
     <element name="display" type="FHIR.string" />
     <element name="userSelected" type="FHIR.boolean" />
   </typeInfo>
-  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Communication" label="Communication" retrievable="true" primaryCodePath="category">
+  <typeInfo xsi:type="ClassInfo" baseType="FHIR.DomainResource" name="Communication" label="Communication" retrievable="true" primaryCodePath="reasonCode">
     <element name="id" type="FHIR.id" />
     <element name="meta" type="FHIR.Meta" />
     <element name="implicitRules" type="FHIR.uri" />

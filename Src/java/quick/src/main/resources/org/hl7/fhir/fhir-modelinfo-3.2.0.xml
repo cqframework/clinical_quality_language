@@ -8772,7 +8772,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="DeviceUseStatementStatus" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="CommunicationRequest" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="CommunicationRequest" retrievable="true" primaryCodePath="reasonCode" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:typeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
