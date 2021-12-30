@@ -36,13 +36,18 @@
 				<xs:sequence>
 					<xs:element name="id" type="String" minOccurs="1" maxOccurs="1"/>
 					<xs:element name="version" type="String" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="name" type="String" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="ValueSet">
 		<xs:complexContent>
-			<xs:extension base="Vocabulary"/>
+			<xs:extension base="Vocabulary">
+				<xs:sequence>
+					<xs:element name="codesystem" type="CodeSystem" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="CodeSystem">

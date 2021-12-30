@@ -454,6 +454,128 @@ public class SemanticTests {
         assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
     }
 
+    @Test
+    public void TestVSCastFunction14() throws IOException {
+        CqlTranslatorOptions options = new CqlTranslatorOptions()
+                .withOptions(CqlTranslator.Options.DisableListDemotion, CqlTranslator.Options.DisableListPromotion, CqlTranslator.Options.DisableMethodInvocation)
+                .withCompatibilityLevel("1.4");
+        CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
+
+        /*
+          define TestConditionsViaFunction:
+            "Conditions in ValueSet"([Condition], "VS Cast Function"("Narcolepsy"))
+
+          <def localId="56" locator="26:1-27:73" name="TestConditionsViaFunction" context="Patient" accessLevel="Public">
+             <expression localId="55" locator="27:3-27:73" name="Conditions in ValueSet" xsi:type="FunctionRef">
+                <operand localId="52" locator="27:28-27:38" dataType="fhir:Condition" templateId="http://hl7.org/fhir/StructureDefinition/Condition" xsi:type="Retrieve"/>
+                <operand localId="54" locator="27:41-27:72" name="VS Cast Function" xsi:type="FunctionRef">
+                   <operand localId="53" locator="27:60-27:71" name="Narcolepsy" xsi:type="ValueSetRef"/>
+                </operand>
+             </expression>
+          </def>
+        */
+        assertThat(ed.getExpression(), instanceOf(FunctionRef.class));
+        FunctionRef fr = (FunctionRef)ed.getExpression();
+        assertThat(fr.getName(), equalTo("Conditions in ValueSet"));
+        assertThat(fr.getOperand().size(), equalTo(2));
+        assertThat(fr.getOperand().get(1), instanceOf(FunctionRef.class));
+        fr = (FunctionRef)fr.getOperand().get(1);
+        assertThat(fr.getName(), equalTo("VS Cast Function"));
+        assertThat(fr.getOperand().size(), equalTo(1));
+        assertThat(fr.getOperand().get(0), instanceOf(ValueSetRef.class));
+        ValueSetRef vsr = (ValueSetRef)fr.getOperand().get(0);
+        assertThat(vsr.getName(), equalTo("Narcolepsy"));
+        assertThat(vsr.isPreserve(), nullValue());
+
+        ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsDirectly");
+
+        /*
+          define TestConditionsDirectly:
+            "Conditions in ValueSet"([Condition], "Narcolepsy")
+
+          <def localId="60" locator="29:1-30:53" name="TestConditionsDirectly" context="Patient" accessLevel="Public">
+             <expression localId="59" locator="30:3-30:53" name="Conditions in ValueSet" xsi:type="FunctionRef">
+                <operand localId="57" locator="30:28-30:38" dataType="fhir:Condition" templateId="http://hl7.org/fhir/StructureDefinition/Condition" xsi:type="Retrieve"/>
+                <operand localId="58" locator="30:41-30:52" name="Narcolepsy" xsi:type="ValueSetRef"/>
+             </expression>
+          </def>
+        */
+        assertThat(ed.getExpression(), instanceOf(FunctionRef.class));
+        fr = (FunctionRef)ed.getExpression();
+        assertThat(fr.getName(), equalTo("Conditions in ValueSet"));
+        assertThat(fr.getOperand().size(), equalTo(2));
+        assertThat(fr.getOperand().get(1), instanceOf(ValueSetRef.class));
+        vsr = (ValueSetRef)fr.getOperand().get(1);
+        assertThat(vsr.getName(), equalTo("Narcolepsy"));
+        assertThat(vsr.isPreserve(), nullValue());
+    }
+
+    @Test
+    public void TestVSCastFunction15() throws IOException {
+        // TODO: This test needs to pass, most likely by implicitly converting a ValueSet to a ValueSetRef? Or maybe a new explicit ELM operation?
+        CqlTranslatorOptions options = new CqlTranslatorOptions()
+                .withOptions(CqlTranslator.Options.DisableListDemotion, CqlTranslator.Options.DisableListPromotion, CqlTranslator.Options.DisableMethodInvocation);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
+
+        /*
+          define TestConditionsViaFunction:
+            "Conditions in ValueSet"([Condition], "VS Cast Function"("Narcolepsy"))
+
+          <def localId="34" locator="38:1-39:73" name="TestConditionsViaFunction" context="Patient" accessLevel="Public">
+             <expression localId="33" locator="39:3-39:73" name="Conditions in ValueSet" xsi:type="FunctionRef">
+                <operand localId="30" locator="39:28-39:38" dataType="fhir:Condition" templateId="http://hl7.org/fhir/StructureDefinition/Condition" xsi:type="Retrieve"/>
+                <operand localId="32" locator="39:41-39:72" name="VS Cast Function" xsi:type="FunctionRef">
+                   <operand xsi:type="ExpandValueSet">
+                      <operand localId="31" locator="39:60-39:71" name="Narcolepsy" preserve="true" xsi:type="ValueSetRef"/>
+                   </operand>
+                </operand>
+             </expression>
+          </def>
+        */
+        assertThat(ed.getExpression(), instanceOf(FunctionRef.class));
+        FunctionRef fr = (FunctionRef)ed.getExpression();
+        assertThat(fr.getName(), equalTo("Conditions in ValueSet"));
+        assertThat(fr.getOperand().size(), equalTo(2));
+        assertThat(fr.getOperand().get(1), instanceOf(FunctionRef.class));
+        fr = (FunctionRef)fr.getOperand().get(1);
+        assertThat(fr.getName(), equalTo("VS Cast Function"));
+        assertThat(fr.getOperand().size(), equalTo(1));
+        assertThat(fr.getOperand().get(0), instanceOf(ExpandValueSet.class));
+        ExpandValueSet evs = (ExpandValueSet)fr.getOperand().get(0);
+        assertThat(evs.getOperand(), instanceOf(ValueSetRef.class));
+        ValueSetRef vsr = (ValueSetRef)evs.getOperand();
+        assertThat(vsr.getName(), equalTo("Narcolepsy"));
+        assertThat(vsr.isPreserve(), equalTo(true));
+
+        ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsDirectly");
+
+        /*
+          define TestConditionsDirectly:
+            "Conditions in ValueSet"([Condition], "Narcolepsy")
+
+          <def localId="38" locator="41:1-42:53" name="TestConditionsDirectly" context="Patient" accessLevel="Public">
+             <expression localId="37" locator="42:3-42:53" name="Conditions in ValueSet" xsi:type="FunctionRef">
+                <operand localId="35" locator="42:28-42:38" dataType="fhir:Condition" templateId="http://hl7.org/fhir/StructureDefinition/Condition" xsi:type="Retrieve"/>
+                <operand xsi:type="ExpandValueSet">
+                   <operand localId="36" locator="42:41-42:52" name="Narcolepsy" preserve="true" xsi:type="ValueSetRef"/>
+                </operand>
+             </expression>
+          </def>
+        */
+        assertThat(ed.getExpression(), instanceOf(FunctionRef.class));
+        fr = (FunctionRef)ed.getExpression();
+        assertThat(fr.getName(), equalTo("Conditions in ValueSet"));
+        assertThat(fr.getOperand().size(), equalTo(2));
+        assertThat(fr.getOperand().get(1), instanceOf(ExpandValueSet.class));
+        evs = (ExpandValueSet)fr.getOperand().get(1);
+        assertThat(evs.getOperand(), instanceOf(ValueSetRef.class));
+        vsr = (ValueSetRef)evs.getOperand();
+        assertThat(vsr.getName(), equalTo("Narcolepsy"));
+        assertThat(vsr.isPreserve(), equalTo(true));
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }
