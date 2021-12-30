@@ -897,9 +897,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codesystemId()))
-                .withVersion(parseString(ctx.versionSpecifier()))
-                .withResultType(libraryBuilder.resolveTypeName("System", "CodeSystem"));
-                //.withResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+                .withVersion(parseString(ctx.versionSpecifier()));
+
+        if (libraryBuilder.isCompatibleWith("1.5")) {
+            cs.setResultType(libraryBuilder.resolveTypeName("System", "CodeSystem"));
+        }
+        else {
+            cs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+        }
 
         libraryBuilder.addCodeSystem(cs);
         return cs;
@@ -966,8 +971,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 vs.getCodeSystem().add((CodeSystemRef)visit(codesystem));
             }
         }
-        vs.setResultType(libraryBuilder.resolveTypeName("System", "ValueSet"));
-        //vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+        if (libraryBuilder.isCompatibleWith("1.5")) {
+            vs.setResultType(libraryBuilder.resolveTypeName("System", "ValueSet"));
+        }
+        else {
+            vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+        }
         libraryBuilder.addValueSet(vs);
 
         return vs;
@@ -3359,7 +3368,8 @@ DATETIME
             // Resolve the terminology target using an in or ~ operator
             try {
                 if (codeComparator == null) {
-                    codeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                    codeComparator = terminology.getResultType() instanceof ListType ||
+                            terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
                 }
 
                 if (property == null) {
@@ -3457,7 +3467,8 @@ DATETIME
             catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
                 // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
-                if (!(terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")))) {
+                if ((libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))
+                    || (!libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType() instanceof ListType))) {
                     retrieve.setCodes(libraryBuilder.resolveToList(terminology));
                 }
                 else {

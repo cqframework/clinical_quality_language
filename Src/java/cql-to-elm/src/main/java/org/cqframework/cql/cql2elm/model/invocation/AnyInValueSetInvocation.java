@@ -20,10 +20,7 @@ public class AnyInValueSetInvocation extends OperatorExpressionInvocation {
     public Iterable<Expression> getOperands() {
         List<Expression> result = new ArrayList<>();
         result.add(((AnyInValueSet)expression).getCodes());
-        if (((AnyInValueSet)expression).getValueset() instanceof ValueSetRef) {
-            result.add(((AnyInValueSet)expression).getValueset());
-        }
-        else {
+        if (((AnyInValueSet)expression).getValuesetExpression() != null) {
             result.add(((AnyInValueSet)expression).getValuesetExpression());
         }
         return result;
@@ -35,21 +32,13 @@ public class AnyInValueSetInvocation extends OperatorExpressionInvocation {
         for (Expression operand : operands) {
             switch (i) {
                 case 0: ((AnyInValueSet)expression).setCodes(operand); break;
-                case 1:
-                    if (operand instanceof ValueSetRef) {
-                        ((AnyInValueSet)expression).setValueset((ValueSetRef)operand);
-                    }
-                    else {
-                        ((AnyInValueSet)expression).setValuesetExpression(operand);
-                    }
-                break;
+                case 1: ((AnyInValueSet)expression).setValuesetExpression(operand); break;
             }
             i++;
         }
 
-        if (i != 2) {
-            throw new IllegalArgumentException("Binary operator expected");
+        if (i > 2) {
+            throw new IllegalArgumentException("Unary or binary operator expected");
         }
-        //((AnyInValueSet) expression).setCodes(assertAndGetSingleOperand(operands));
     }
 }
