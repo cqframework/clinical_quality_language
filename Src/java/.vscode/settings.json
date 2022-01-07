@@ -1,7 +1,0 @@
-{
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "editor.codeActionsOnSave": {
-		"source.organizeImports": true,
-		"editor.formatOnSave": true
-	}
-}
