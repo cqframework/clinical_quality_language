@@ -929,20 +929,21 @@ public class LibraryBuilder implements ModelResolver {
 
     public Expression resolveIn(Expression left, Expression right) {
         if (right instanceof ValueSetRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet")))) {
+            boolean isLocalRef = (right instanceof ValueSetRef) && ((ValueSetRef)right).getLibraryName() == null;
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
-                        .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
-                        .withValuesetExpression(right instanceof ValueSetRef ? null : right);
+                        .withValueset(isLocalRef ? (ValueSetRef)right : null)
+                        .withValuesetExpression(isLocalRef ? null : right);
 
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
             }
-
+ 
             InValueSet in = of.createInValueSet()
                     .withCode(left)
-                    .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
-                    .withValuesetExpression(right instanceof ValueSetRef ? null : right);
+                    .withValueset(isLocalRef ? (ValueSetRef)right : null)
+                    .withValuesetExpression(isLocalRef ? null : right);
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
         }

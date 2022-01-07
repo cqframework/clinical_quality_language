@@ -1,14 +1,43 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.elm.r1.*;
-import org.testng.annotations.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.hl7.elm.r1.AliasedQuerySource;
+import org.hl7.elm.r1.And;
+import org.hl7.elm.r1.AnyInValueSet;
+import org.hl7.elm.r1.As;
+import org.hl7.elm.r1.Before;
+import org.hl7.elm.r1.ExpandValueSet;
+import org.hl7.elm.r1.ExpressionDef;
+import org.hl7.elm.r1.ExpressionRef;
+import org.hl7.elm.r1.FunctionDef;
+import org.hl7.elm.r1.FunctionRef;
+import org.hl7.elm.r1.If;
+import org.hl7.elm.r1.Implies;
+import org.hl7.elm.r1.In;
+import org.hl7.elm.r1.InValueSet;
+import org.hl7.elm.r1.Interval;
+import org.hl7.elm.r1.IsNull;
+import org.hl7.elm.r1.Last;
+import org.hl7.elm.r1.Library;
+import org.hl7.elm.r1.Not;
+import org.hl7.elm.r1.Null;
+import org.hl7.elm.r1.OperandRef;
+import org.hl7.elm.r1.Query;
+import org.hl7.elm.r1.Retrieve;
+import org.hl7.elm.r1.ValueSetRef;
+import org.testng.annotations.Test;
 
 public class SemanticTests {
 
@@ -452,6 +481,41 @@ public class SemanticTests {
         assertThat(ivs.getCode(), instanceOf(FunctionRef.class));
         assertThat(ivs.getValueset(), nullValue());
         assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
+    }
+
+    @Test
+    public void testIssue713() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue713IncludeValueSet.cql", 0);
+
+        // Single Code
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("IncludedIn");
+
+        assertNotNull(ed);
+        assertNotNull(ed.getExpression());
+        assertThat(ed.getExpression(), instanceOf(InValueSet.class)); 
+        InValueSet vs = (InValueSet)ed.getExpression();
+        assertNull(vs.getValueset());
+        assertNotNull(vs.getValuesetExpression());
+
+        assertThat(vs.getValuesetExpression(), instanceOf(ValueSetRef.class));
+        ValueSetRef vsf = (ValueSetRef)vs.getValuesetExpression();
+        assertThat(vsf.getLibraryName(), equalTo("VS"));
+        assertThat(vsf.getName(), equalTo("Female"));
+
+        // List of Codes
+        ed = translator.getTranslatedLibrary().resolveExpressionRef("AnyIncludedIn");
+
+        assertNotNull(ed);
+        assertNotNull(ed.getExpression());
+        assertThat(ed.getExpression(), instanceOf(AnyInValueSet.class)); 
+        AnyInValueSet avs = (AnyInValueSet)ed.getExpression();
+        assertNull(avs.getValueset());
+        assertNotNull(avs.getValuesetExpression());
+
+        assertThat(avs.getValuesetExpression(), instanceOf(ValueSetRef.class));
+        vsf = (ValueSetRef)vs.getValuesetExpression();
+        assertThat(vsf.getLibraryName(), equalTo("VS"));
+        assertThat(vsf.getName(), equalTo("Female"));
     }
 
     @Test

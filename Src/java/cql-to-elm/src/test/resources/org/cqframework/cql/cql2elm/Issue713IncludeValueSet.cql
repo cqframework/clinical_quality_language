@@ -2,6 +2,10 @@ library Issue713IncludeValueSet
 
 include Issue713Include called VS
 
-define ListOfCodes: { Code { code: 'M' } }
+define OneCode:
+    Code { code: 'M' } 
 
-define IsIncluded: ListOfCodes in VS."Female"
+define ListOfCodes: { OneCode }
+
+define IncludedIn: OneCode in VS."Female"
+define AnyIncludedIn: ListOfCodes in VS."Female"
