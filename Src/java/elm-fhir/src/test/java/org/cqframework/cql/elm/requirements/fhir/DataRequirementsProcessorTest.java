@@ -1251,6 +1251,15 @@ public class DataRequirementsProcessorTest {
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
+    @Test
+    public void TestHEDISBCSE() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        translatorOptions.setCompatibilityLevel("1.4");
+        CqlTranslator translator = setupDataRequirementsAnalysis("BCSE/BCSE_HEDIS_MY2022.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
+        assertNotNull(moduleDefinitionLibrary);
+    }
+
     private static void setup(String relativePath) {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);

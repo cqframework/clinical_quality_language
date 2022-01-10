@@ -3368,8 +3368,10 @@ DATETIME
             // Resolve the terminology target using an in or ~ operator
             try {
                 if (codeComparator == null) {
-                    codeComparator = terminology.getResultType() instanceof ListType ||
-                            terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                    codeComparator = (terminology.getResultType() instanceof ListType
+                            || (libraryBuilder.isCompatibleWith("1.5")
+                                    && terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))
+                            ? "in" : "~";
                 }
 
                 if (property == null) {
