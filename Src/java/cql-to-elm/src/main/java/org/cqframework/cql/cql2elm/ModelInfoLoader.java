@@ -4,9 +4,7 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ModelInfoLoader {
 
@@ -16,6 +14,12 @@ public class ModelInfoLoader {
         registerWellKnownModelInfoProviders();
     }
 
+    public ModelInfoLoader(boolean enableDefaultModelInfoLoading) {
+        if (enableDefaultModelInfoLoading) {
+            registerWellKnownModelInfoProviders();
+        }
+    }
+
     private void registerWellKnownModelInfoProviders() {
         registerModelInfoProvider(new SystemModelInfoProvider());
         registerModelInfoProvider(new QuickModelInfoProvider());
@@ -23,6 +27,10 @@ public class ModelInfoLoader {
         registerModelInfoProvider(new FhirModelInfoProvider());
         registerModelInfoProvider(new UsCoreModelInfoProvider());
         registerModelInfoProvider(new QICoreModelInfoProvider());
+    }
+
+    public void registerSystemModelInfoProvider() {
+        registerModelInfoProvider(new SystemModelInfoProvider());
     }
 
     public ModelInfo getModelInfo(VersionedIdentifier modelIdentifier) {
