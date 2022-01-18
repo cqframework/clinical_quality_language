@@ -1,7 +1,10 @@
 package org.cqframework.cql.cql2elm;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
@@ -12,6 +15,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.cqframework.cql.cql2elm.model.serialization.LibraryWrapper;
+import org.cqframework.cql.cql2elm.model.serialization.ModelInfoWrapper;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
@@ -673,6 +677,14 @@ public class CqlTranslator {
         final ModelInfoProvider modelProvider = (VersionedIdentifier modelIdentifier) -> modelInfo;
         final ModelInfoLoader modelInfoLoader = new ModelInfoLoader();
         modelInfoLoader.registerModelInfoProvider(modelProvider);
+    }
+
+    public static ModelInfo deserializeModelInfo(Reader reader) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        ModelInfo modelInfo = mapper.readValue(reader, ModelInfoWrapper.class).getModelInfo();
+        return modelInfo;
     }
 
     private static void outputExceptions(Iterable<CqlTranslatorException> exceptions) {

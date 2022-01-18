@@ -11,25 +11,38 @@ import java.util.Map;
 public class ModelInfoLoader {
 
     private final List<ModelInfoProvider> providers = new ArrayList<>();
+    private ModelManager.ModelInfoFormat modelInfoFormat;
 
     public ModelInfoLoader() {
+        modelInfoFormat = ModelManager.ModelInfoFormat.XML;
+        registerWellKnownModelInfoProviders();
+    }
+
+    public ModelInfoLoader(ModelManager.ModelInfoFormat modelInfoFormat) {
+        this.modelInfoFormat = modelInfoFormat;
         registerWellKnownModelInfoProviders();
     }
 
     private void registerWellKnownModelInfoProviders() {
+        System.out.println("model provider register..");
         registerModelInfoProvider(new SystemModelInfoProvider());
-        registerModelInfoProvider(new QuickModelInfoProvider());
-        registerModelInfoProvider(new QdmModelInfoProvider());
-        registerModelInfoProvider(new FhirModelInfoProvider());
-        registerModelInfoProvider(new UsCoreModelInfoProvider());
-        registerModelInfoProvider(new QICoreModelInfoProvider());
+//        registerModelInfoProvider(new QuickModelInfoProvider());
+//        registerModelInfoProvider(new QdmModelInfoProvider());
+//        registerModelInfoProvider(new FhirModelInfoProvider());
+//        registerModelInfoProvider(new UsCoreModelInfoProvider());
+//        registerModelInfoProvider(new QICoreModelInfoProvider());
     }
 
     public ModelInfo getModelInfo(VersionedIdentifier modelIdentifier) {
         ModelInfo modelInfo = null;
 
         for (ModelInfoProvider provider : providers) {
-            modelInfo = provider.load(modelIdentifier);
+            if (provider instanceof ModelInfoProviderExt) {
+                ModelInfoProviderExt providerExt = (ModelInfoProviderExt) provider;
+                modelInfo = providerExt.load(modelIdentifier, modelInfoFormat);
+            } else {
+                modelInfo = provider.load(modelIdentifier);
+            }
             if (modelInfo != null) {
                 break;
             }

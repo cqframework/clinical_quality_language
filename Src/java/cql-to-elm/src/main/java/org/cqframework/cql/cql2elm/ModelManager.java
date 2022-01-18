@@ -16,9 +16,17 @@ import java.util.Set;
 public class ModelManager {
     private NamespaceManager namespaceManager;
     private ModelInfoLoader modelInfoLoader;
+    public static enum ModelInfoFormat { XML, JXSON }
+    private ModelInfoFormat modelInfoFormat = ModelInfoFormat.XML;
     private final Map<String, Model> models = new HashMap<>();
     private final Set<String> loadingModels = new HashSet<>();
     private final Map<String, Model> modelsByUri = new HashMap<>();
+
+    public ModelManager(ModelInfoFormat modelInfoFormat) {
+        namespaceManager = new NamespaceManager();
+        this.modelInfoFormat = modelInfoFormat;
+        initialize();
+    }
 
     public ModelManager() {
         namespaceManager = new NamespaceManager();
@@ -30,8 +38,14 @@ public class ModelManager {
         initialize();
     }
 
+    public ModelManager(NamespaceManager namespaceManager, ModelInfoFormat modelInfoFormat) {
+        this.namespaceManager = namespaceManager;
+        this.modelInfoFormat = modelInfoFormat;
+        initialize();
+    }
+
     private void initialize() {
-        modelInfoLoader = new ModelInfoLoader();
+        modelInfoLoader = new ModelInfoLoader(modelInfoFormat);
     }
 
     public NamespaceManager getNamespaceManager() {
