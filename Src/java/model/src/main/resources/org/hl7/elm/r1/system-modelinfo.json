@@ -1,0 +1,99 @@
+{
+  "modelInfo" : {
+    "typeInfo" : [ {
+      "name" : "System.Any"
+    }, {
+      "baseType" : "System.Any",
+      "name" : "System.Boolean"
+    }, {
+      "baseType" : "System.Any",
+      "name" : "System.Integer"
+    }, {
+      "baseType" : "System.Any",
+      "name" : "System.Long"
+    }, {
+      "baseType" : "System.Any",
+      "name" : "System.Decimal"
+    }, {
+      "baseType" : "System.Any",
+      "name" : "System.String"
+    }, {
+      "baseType" : "System.Any",
+      "name" : "System.DateTime"
+    }, {
+      "baseType" : "System.Any",
+      "name" : "System.Date"
+    }, {
+      "baseType" : "System.Any",
+      "name" : "System.Time"
+    }, {
+      "element" : [ {
+        "name" : "value",
+        "type" : "System.Decimal"
+      }, {
+        "name" : "unit",
+        "type" : "System.String"
+      } ],
+      "baseType" : "System.Any",
+      "name" : "System.Quantity"
+    }, {
+      "element" : [ {
+        "name" : "numerator",
+        "type" : "System.Quantity"
+      }, {
+        "name" : "denominator",
+        "type" : "System.Quantity"
+      } ],
+      "baseType" : "System.Any",
+      "name" : "System.Ratio"
+    }, {
+      "element" : [ {
+        "name" : "code",
+        "type" : "System.String"
+      }, {
+        "name" : "system",
+        "type" : "System.String"
+      }, {
+        "name" : "version",
+        "type" : "System.String"
+      }, {
+        "name" : "display",
+        "type" : "System.String"
+      } ],
+      "baseType" : "System.Any",
+      "name" : "System.Code"
+    }, {
+      "element" : [ {
+        "typeSpecifier" : {
+          "elementType" : "System.Code"
+        },
+        "name" : "codes"
+      }, {
+        "name" : "display",
+        "type" : "System.String"
+      } ],
+      "baseType" : "System.Any",
+      "name" : "System.Concept"
+    }, {
+      "element" : [ {
+        "name" : "id",
+        "type" : "System.String"
+      }, {
+        "name" : "version",
+        "type" : "System.String"
+      } ],
+      "baseType" : "System.Any",
+      "name" : "System.Vocabulary"
+    }, {
+      "baseType" : "System.Vocabulary",
+      "name" : "System.ValueSet"
+    }, {
+      "baseType" : "System.Vocabulary",
+      "name" : "System.CodeSystem"
+    } ],
+    "name" : "System",
+    "version" : "1.0.0",
+    "url" : "urn:hl7-org:elm-types:r1",
+    "targetQualifier" : "system"
+  }
+}
