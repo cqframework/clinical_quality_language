@@ -4,6 +4,7 @@ mainClassName = 'org.cqframework.cql.cql2elm.CqlTranslator'
 run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql"]
 
 dependencies {
+    implementation 'org.testng:testng:7.1.0'
     compile project(':cql')
     compile project(':model')
     compile project(':elm')
@@ -12,6 +13,8 @@ dependencies {
     compile group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.10.1'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.1'
     compile group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
+    compile group: 'com.github.reinert', name: 'jjschema', version: '1.16'
+
     runtime project(':quick')
     runtime project(':qdm')
 }
