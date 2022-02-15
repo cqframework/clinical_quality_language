@@ -4,7 +4,6 @@ mainClassName = 'org.cqframework.cql.cql2elm.CqlTranslator'
 run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql"]
 
 dependencies {
-    implementation 'org.testng:testng:7.1.0'
     compile project(':cql')
     compile project(':model')
     compile project(':elm')
