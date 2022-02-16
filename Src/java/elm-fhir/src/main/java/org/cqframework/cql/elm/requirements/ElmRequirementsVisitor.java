@@ -356,7 +356,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
                     return right;
                 }
 
-                throw new IllegalArgumentException("Expected ElmExpressionRequirement");
+                return aggregateResult(left, right);
             }
 
             case "Or": {
@@ -375,7 +375,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
                     return right;
                 }
 
-                throw new IllegalArgumentException("Expected ElmExpressionRequirement");
+                return aggregateResult(left, right);
             }
 
             // TODO: Rewrite

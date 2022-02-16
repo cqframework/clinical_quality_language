@@ -744,6 +744,10 @@ public class SystemLibraryHelper {
         add(system, tb, new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getCode()), systemModel.getCodeSystem()), systemModel.getBoolean()));
         add(system, tb, new Operator("AnyInCodeSystem", new Signature(new ListType(systemModel.getConcept()), systemModel.getCodeSystem()), systemModel.getBoolean()));
 
+        Operator expandValueSet = new Operator("ExpandValueSet", new Signature(systemModel.getValueSet()), new ListType(systemModel.getCode()));
+        add(system, tb, expandValueSet);
+        add(system, tb, new Conversion(expandValueSet, true));
+
         add(system, tb, new Operator("Subsumes", new Signature(systemModel.getCode(), systemModel.getCode()), systemModel.getBoolean()));
         add(system, tb, new Operator("Subsumes", new Signature(systemModel.getConcept(), systemModel.getConcept()), systemModel.getBoolean()));
 

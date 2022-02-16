@@ -53,31 +53,31 @@ public class CMS146ElmTest {
                         .withTemplateId("condition-qicore-qicore-condition")
                         .withCodeProperty("code")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Acute Pharyngitis")),
+                        .withCodes(of.createValueSetRef().withName("Acute Pharyngitis").withPreserve(true)),
                 of.createRetrieve()
                         .withDataType(quickDataType("Condition"))
                         .withTemplateId("condition-qicore-qicore-condition")
                         .withCodeProperty("code")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Acute Tonsillitis")),
+                        .withCodes(of.createValueSetRef().withName("Acute Tonsillitis").withPreserve(true)),
                 of.createRetrieve()
                         .withDataType(quickDataType("MedicationPrescription"))
                         .withTemplateId("medicationprescription-qicore-qicore-medicationprescription")
                         .withCodeProperty("medication.code")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Antibiotic Medications")),
+                        .withCodes(of.createValueSetRef().withName("Antibiotic Medications").withPreserve(true)),
                 of.createRetrieve()
                         .withDataType(quickDataType("Encounter"))
                         .withTemplateId("encounter-qicore-qicore-encounter")
                         .withCodeProperty("type")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit")),
+                        .withCodes(of.createValueSetRef().withName("Ambulatory/ED Visit").withPreserve(true)),
                 of.createRetrieve()
                         .withDataType(quickDataType("Observation"))
                         .withTemplateId("observation-qicore-qicore-observation")
                         .withCodeProperty("code")
                         .withCodeComparator("in")
-                        .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test"))
+                        .withCodes(of.createValueSetRef().withName("Group A Streptococcus Test").withPreserve(true))
         );
 
         assertThat(actualCR, is(expectedCR));
