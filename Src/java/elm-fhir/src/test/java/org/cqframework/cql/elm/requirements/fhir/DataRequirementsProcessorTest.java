@@ -17,7 +17,10 @@ import org.cqframework.cql.elm.requirements.fhir.DataRequirementsProcessor;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -1247,6 +1250,145 @@ public class DataRequirementsProcessorTest {
             }
         }
         assertTrue(includedDataRequirement != null);
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestDataRequirementsAnalysisCase10a() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase10a.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
+
+        /*
+        Element that is a dateTime, referenced in a date comparison
+
+        define "ESRD Observations":
+          [Observation: "ESRD Diagnosis"] O
+            where O.instant same day or after @2022-02-15
+
+        {
+            type: Observation
+            mustSupport: [ 'code', 'issued' ]
+            codeFilter: {
+                path: 'code',
+                valueSet: 'http://fakeurl.com/ersd-diagnosis'
+            },
+            dateFilter: {
+                path: 'issued',
+                valuePeriod: {
+                    low: @2022-02-15
+                }
+            }
+        }
+        */
+
+        // Validate the ELM is correct
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("ESRD Observations");
+        assertTrue(ed.getExpression() instanceof Query);
+        Query q = (Query)ed.getExpression();
+        assertTrue(q.getSource() != null && q.getSource().size() == 1);
+        AliasedQuerySource source = q.getSource().get(0);
+        assertTrue(source.getExpression() instanceof Retrieve);
+        Retrieve r = (Retrieve)source.getExpression();
+        assertTrue(r.getDataType().getLocalPart().equals("Observation"));
+
+        // Validate the data requirement is reported in the module definition library
+        DataRequirement expectedDataRequirement = null;
+        for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+                expectedDataRequirement = dr;
+            }
+        }
+        assertTrue(expectedDataRequirement != null);
+
+        assertTrue(expectedDataRequirement.getMustSupport().size() == 2);
+        boolean hasCode = false;
+        assertTrue(expectedDataRequirement.getMustSupport().stream().filter(s -> s.getValue().equals("code")).count() == 1);
+        assertTrue(expectedDataRequirement.getMustSupport().stream().filter(s -> s.getValue().equals("issued")).count() == 1);
+
+        assertTrue(expectedDataRequirement.getCodeFilter().size() == 1);
+        DataRequirement.DataRequirementCodeFilterComponent drcfc = expectedDataRequirement.getCodeFilter().get(0);
+        assertTrue(drcfc.getPath().equals("code"));
+        assertTrue(drcfc.getValueSet().equals("http://fakeurl.com/ersd-diagnosis"));
+
+        assertTrue(expectedDataRequirement.getDateFilter().size() == 1);
+        DataRequirement.DataRequirementDateFilterComponent drdfc = expectedDataRequirement.getDateFilter().get(0);
+        LocalDate ld = LocalDate.of(2022, 2, 15);
+        assertTrue(drdfc.getValuePeriod().getStart().compareTo(Date.from(ld.atStartOfDay(ZoneId.systemDefault()).toInstant())) == 0);
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestDataRequirementsAnalysisCase10b() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase10b.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
+
+        /*
+        Multiple date elements referenced in a Coalesce
+
+        define "ESRD Observations":
+          [Observation: "ESRD Diagnosis"] O
+            where Coalesce(O.effective, O.issued) same day or after @2022-02-15
+        */
+
+        // Validate the ELM is correct
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("ESRD Observations");
+        assertTrue(ed.getExpression() instanceof Query);
+        Query q = (Query)ed.getExpression();
+        assertTrue(q.getSource() != null && q.getSource().size() == 1);
+        AliasedQuerySource source = q.getSource().get(0);
+        assertTrue(source.getExpression() instanceof Retrieve);
+        Retrieve r = (Retrieve)source.getExpression();
+        assertTrue(r.getDataType().getLocalPart().equals("Observation"));
+
+        // Validate the data requirement is reported in the module definition library
+        DataRequirement expectedDataRequirement = null;
+        for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+                expectedDataRequirement = dr;
+            }
+        }
+        assertTrue(expectedDataRequirement != null);
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestDataRequirementsAnalysisCase10c() throws IOException {
+        // TODO: Complete this test case
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase10c.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
+
+        /*
+        Element that is a choice, two of which are date-valued, referenced in a comparison
+
+        define "ESRD Observations":
+          [Observation: "ESRD Diagnosis"] O
+            where O.effective same day or after @2022-02-15
+        */
+
+        // Validate the ELM is correct
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("ESRD Observations");
+        assertTrue(ed.getExpression() instanceof Query);
+        Query q = (Query)ed.getExpression();
+        assertTrue(q.getSource() != null && q.getSource().size() == 1);
+        AliasedQuerySource source = q.getSource().get(0);
+        assertTrue(source.getExpression() instanceof Retrieve);
+        Retrieve r = (Retrieve)source.getExpression();
+        assertTrue(r.getDataType().getLocalPart().equals("Observation"));
+
+        // Validate the data requirement is reported in the module definition library
+        DataRequirement expectedDataRequirement = null;
+        for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == Enumerations.FHIRAllTypes.OBSERVATION) {
+                expectedDataRequirement = dr;
+            }
+        }
+        assertTrue(expectedDataRequirement != null);
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }

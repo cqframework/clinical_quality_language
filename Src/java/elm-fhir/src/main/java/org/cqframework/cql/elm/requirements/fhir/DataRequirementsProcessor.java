@@ -22,6 +22,7 @@ import org.cqframework.cql.elm.requirements.ElmRequirementsVisitor;
 
 import javax.xml.bind.JAXBElement;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.Date;
 import java.util.List;
@@ -550,6 +551,140 @@ public class DataRequirementsProcessor {
         return cfc;
     }
 
+    // Can't believe I have to write this, there seriously isn't a String.format option for this!!!!
+    private String padLeft(String input, int width, String padWith) {
+        if (input == null || padWith == null || padWith.length() == 0) {
+            return null;
+        }
+
+        // Can't believe I have to do this, why is repeat not available until Java 11!!!!!
+        while (input.length() < width) {
+            input = padWith + input;
+        }
+
+        return input;
+    }
+
+    private String padZero(String input, int width) {
+        return padLeft(input, width, "0");
+    }
+
+    // Ugly to have to do this here, but cannot reuse engine evaluation logic without a major refactor
+    // TODO: Consider refactoring to reuse engine evaluation logic here
+    private String toDateTimeString(DataType year, DataType month, DataType day, DataType hour, DataType minute, DataType second, DataType millisecond, DataType timezoneOffset) {
+        if (year == null) {
+            return null;
+        }
+
+        StringBuilder result = new StringBuilder();
+        if (year instanceof IntegerType) {
+            result.append(padZero(((IntegerType)year).getValue().toString(), 4));
+        }
+        if (month instanceof IntegerType) {
+            result.append("-");
+            result.append(padZero(((IntegerType)month).getValue().toString(), 2));
+        }
+        if (day instanceof IntegerType) {
+            result.append("-");
+            result.append(padZero(((IntegerType)day).getValue().toString(), 2));
+        }
+        if (hour instanceof IntegerType) {
+            result.append("T");
+            result.append(padZero(((IntegerType)hour).getValue().toString(), 2));
+        }
+        if (minute instanceof IntegerType) {
+            result.append(":");
+            result.append(padZero(((IntegerType)minute).getValue().toString(), 2));
+        }
+        if (second instanceof IntegerType) {
+            result.append(":");
+            result.append(padZero(((IntegerType)second).getValue().toString(), 2));
+        }
+        if (millisecond instanceof IntegerType) {
+            result.append(".");
+            result.append(padZero(((IntegerType)millisecond).getValue().toString(), 3));
+        }
+        if (timezoneOffset instanceof DecimalType) {
+            BigDecimal offset = ((DecimalType)timezoneOffset).getValue();
+            if (offset.intValue() >= 0) {
+                result.append("+");
+                result.append(padZero(Integer.toString(offset.intValue()), 2));
+            }
+            else {
+                result.append("-");
+                result.append(padZero(Integer.toString(Math.abs(offset.intValue())), 2));
+            }
+            int minutes = new BigDecimal("60").multiply(offset.remainder(BigDecimal.ONE)).intValue();
+            result.append(":");
+            result.append(padZero(Integer.toString(minutes), 2));
+        }
+
+        return result.toString();
+    }
+
+    private String toDateString(DataType year, DataType month, DataType day) {
+        if (year == null) {
+            return null;
+        }
+
+        StringBuilder result = new StringBuilder();
+        if (year instanceof IntegerType) {
+            result.append(padZero(((IntegerType)year).getValue().toString(), 4));
+        }
+        if (month instanceof IntegerType) {
+            result.append("-");
+            result.append(padZero(((IntegerType)month).getValue().toString(), 2));
+        }
+        if (day instanceof IntegerType) {
+            result.append("-");
+            result.append(padZero(((IntegerType)day).getValue().toString(), 2));
+        }
+
+        return result.toString();
+    }
+
+    private String toTimeString(DataType hour, DataType minute, DataType second, DataType millisecond) {
+        if (hour == null) {
+            return null;
+        }
+
+        StringBuilder result = new StringBuilder();
+        if (hour instanceof IntegerType) {
+            result.append(padZero(((IntegerType)hour).getValue().toString(), 2));
+        }
+        if (minute instanceof IntegerType) {
+            result.append(":");
+            result.append(padZero(((IntegerType)minute).getValue().toString(), 2));
+        }
+        if (second instanceof IntegerType) {
+            result.append(":");
+            result.append(padZero(((IntegerType)second).getValue().toString(), 2));
+        }
+        if (millisecond instanceof IntegerType) {
+            result.append(".");
+            result.append(padZero(((IntegerType)millisecond).getValue().toString(), 3));
+        }
+
+        return result.toString();
+    }
+
+    // TODO: Either handle conversions on a case-by-case, or implement conversion evaluation logic...
+    private DateTimeType toFhirDateTimeValue(ElmRequirementsContext context, Expression value) {
+        if (value == null) {
+            return null;
+        }
+
+        DataType result = toFhirValue(context, value);
+        if (result instanceof DateTimeType) {
+            return (DateTimeType)result;
+        }
+        if (result instanceof DateType) {
+            return new DateTimeType(((DateType)result).getValueAsString());
+        }
+
+        throw new IllegalArgumentException("Could not convert expression to a DateTime value");
+    }
+
     private DataType toFhirValue(ElmRequirementsContext context, Expression value) {
         if (value == null) {
             return null;
@@ -557,8 +692,8 @@ public class DataRequirementsProcessor {
 
         if (value instanceof Interval) {
             // TODO: Handle lowclosed/highclosed
-            return new Period().setStartElement((DateTimeType)toFhirValue(context, ((Interval)value).getLow()))
-                    .setEndElement((DateTimeType)toFhirValue(context, ((Interval)value).getHigh()));
+            return new Period().setStartElement(toFhirDateTimeValue(context, ((Interval)value).getLow()))
+                    .setEndElement(toFhirDateTimeValue(context, ((Interval)value).getHigh()));
         }
         else if (value instanceof Literal) {
             if (context.getTypeResolver().isDateTimeType(value.getResultType())) {
@@ -567,12 +702,35 @@ public class DataRequirementsProcessor {
             else if (context.getTypeResolver().isDateType(value.getResultType())) {
                 return new DateType(((Literal)value).getValue());
             }
+            else if (context.getTypeResolver().isIntegerType(value.getResultType())) {
+                return new IntegerType(((Literal)value).getValue());
+            }
+            else if (context.getTypeResolver().isDecimalType(value.getResultType())) {
+                return new DecimalType(((Literal)value).getValue());
+            }
+            else if (context.getTypeResolver().isStringType(value.getResultType())) {
+                return new StringType(((Literal)value).getValue());
+            }
         }
         else if (value instanceof DateTime) {
-            throw new IllegalArgumentException("toFhirValue not implemented for DateTime");
+            DateTime dateTime = (DateTime)value;
+            return new DateTimeType(toDateTimeString(
+                    toFhirValue(context, dateTime.getYear()),
+                    toFhirValue(context, dateTime.getMonth()),
+                    toFhirValue(context, dateTime.getDay()),
+                    toFhirValue(context, dateTime.getHour()),
+                    toFhirValue(context, dateTime.getMinute()),
+                    toFhirValue(context, dateTime.getSecond()),
+                    toFhirValue(context, dateTime.getMillisecond()),
+                    toFhirValue(context, dateTime.getTimezoneOffset())));
         }
         else if (value instanceof org.hl7.elm.r1.Date) {
-            throw new IllegalArgumentException("toFhirValue not implemented for Date");
+            org.hl7.elm.r1.Date date = (org.hl7.elm.r1.Date)value;
+            return new DateType(toDateString(
+                    toFhirValue(context, date.getYear()),
+                    toFhirValue(context, date.getMonth()),
+                    toFhirValue(context, date.getDay())
+            ));
         }
         throw new IllegalArgumentException(String.format("toFhirValue not implemented for %s", value.getClass().getSimpleName()));
     }

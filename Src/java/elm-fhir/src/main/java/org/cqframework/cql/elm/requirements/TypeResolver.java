@@ -168,6 +168,22 @@ public class TypeResolver {
         return dateTimeType;
     }
 
+    private DataType integerType;
+    public DataType getIntegerType() {
+        if (integerType == null) {
+            integerType = resolveTypeName("System", "Integer");
+        }
+        return integerType;
+    }
+
+    private DataType decimalType;
+    public DataType getDecimalType() {
+        if (decimalType == null) {
+            decimalType = resolveTypeName("System", "Decimal");
+        }
+        return decimalType;
+    }
+
     public boolean isTerminologyType(DataType dataType) {
         if (dataType != null) {
             return
@@ -200,6 +216,30 @@ public class TypeResolver {
         if (dataType != null) {
             return dataType.isSubTypeOf(getDateTimeType())
                     || (dataType instanceof IntervalType && ((IntervalType)dataType).getPointType().isSubTypeOf(getDateTimeType()));
+        }
+
+        return false;
+    }
+
+    public boolean isIntegerType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getIntegerType());
+        }
+
+        return false;
+    }
+
+    public boolean isDecimalType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getDecimalType());
+        }
+
+        return false;
+    }
+
+    public boolean isStringType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getStringType());
         }
 
         return false;

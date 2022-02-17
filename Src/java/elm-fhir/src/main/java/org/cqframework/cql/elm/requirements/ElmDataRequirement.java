@@ -220,7 +220,7 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                         codeFilter.setComparator("in");
                         break;
                 }
-                if (codeFilter.getComparator() != null) {
+                if (codeFilter.getComparator() != null && (conditionRequirement.isTargetable())) {
                     codeFilter.setValue(conditionRequirement.getComparand().getExpression());
                     retrieve.getCodeFilter().add(codeFilter);
                 }
@@ -237,63 +237,64 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                 // If right is interval-valued
                 // If the operation is equal, equivalent, same as, in, or included in, the date range is the comparand
                 Expression comparand = conditionRequirement.getComparand().getExpression();
-                if (context.getTypeResolver().isIntervalType(comparisonType)) {
-                    switch (conditionRequirement.getElement().getClass().getSimpleName()) {
-                        case "Equal":
-                        case "Equivalent":
-                        case "SameAs":
-                        case "In":
-                        case "IncludedIn":
-                            dateFilter.setValue(comparand);
-                            break;
-                        case "Before":
-                            dateFilter.setValue(new Interval().withLowClosed(true).withHigh(new Start().withOperand(comparand)).withHighClosed(false));
-                            break;
-                        case "SameOrBefore":
-                            dateFilter.setValue(new Interval().withLowClosed(true).withHigh(new Start().withOperand(comparand)).withHighClosed(true));
-                            break;
-                        case "After":
-                            dateFilter.setValue(new Interval().withLow(new End().withOperand(comparand)).withLowClosed(false).withHighClosed(true));
-                            break;
-                        case "SameOrAfter":
-                            dateFilter.setValue(new Interval().withLow(new End().withOperand(comparand)).withLowClosed(true).withHighClosed(true));
-                            break;
-                        case "Includes":
-                        case "Meets":
-                        case "MeetsBefore":
-                        case "MeetsAfter":
-                        case "Overlaps":
-                        case "OverlapsBefore":
-                        case "OverlapsAfter":
-                        case "Starts":
-                        case "Ends":
-                            // TODO: Might be better to turn these into date-based conjunctive requirements as part of condition requirement inference
-                            break;
-                    }
-                }
-                else {
-                    switch (conditionRequirement.getElement().getClass().getSimpleName()) {
-                        case "Equal":
-                        case "Equivalent":
-                        case "SameAs":
-                            dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(true).withHigh(comparand).withHighClosed(true));
-                            break;
-                        case "Less":
-                        case "Before":
-                            dateFilter.setValue(new Interval().withLowClosed(true).withHigh(comparand).withHighClosed(false));
-                            break;
-                        case "LessOrEqual":
-                        case "SameOrBefore":
-                            dateFilter.setValue(new Interval().withLowClosed(true).withHigh(comparand).withHighClosed(true));
-                            break;
-                        case "Greater":
-                        case "After":
-                            dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(false).withHighClosed(true));
-                            break;
-                        case "GreaterOrEqual":
-                        case "SameOrAfter":
-                            dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(true).withHighClosed(true));
-                            break;
+                if (conditionRequirement.isTargetable()) {
+                    if (context.getTypeResolver().isIntervalType(comparisonType)) {
+                        switch (conditionRequirement.getElement().getClass().getSimpleName()) {
+                            case "Equal":
+                            case "Equivalent":
+                            case "SameAs":
+                            case "In":
+                            case "IncludedIn":
+                                dateFilter.setValue(comparand);
+                                break;
+                            case "Before":
+                                dateFilter.setValue(new Interval().withLowClosed(true).withHigh(new Start().withOperand(comparand)).withHighClosed(false));
+                                break;
+                            case "SameOrBefore":
+                                dateFilter.setValue(new Interval().withLowClosed(true).withHigh(new Start().withOperand(comparand)).withHighClosed(true));
+                                break;
+                            case "After":
+                                dateFilter.setValue(new Interval().withLow(new End().withOperand(comparand)).withLowClosed(false).withHighClosed(true));
+                                break;
+                            case "SameOrAfter":
+                                dateFilter.setValue(new Interval().withLow(new End().withOperand(comparand)).withLowClosed(true).withHighClosed(true));
+                                break;
+                            case "Includes":
+                            case "Meets":
+                            case "MeetsBefore":
+                            case "MeetsAfter":
+                            case "Overlaps":
+                            case "OverlapsBefore":
+                            case "OverlapsAfter":
+                            case "Starts":
+                            case "Ends":
+                                // TODO: Might be better to turn these into date-based conjunctive requirements as part of condition requirement inference
+                                break;
+                        }
+                    } else {
+                        switch (conditionRequirement.getElement().getClass().getSimpleName()) {
+                            case "Equal":
+                            case "Equivalent":
+                            case "SameAs":
+                                dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(true).withHigh(comparand).withHighClosed(true));
+                                break;
+                            case "Less":
+                            case "Before":
+                                dateFilter.setValue(new Interval().withLowClosed(true).withHigh(comparand).withHighClosed(false));
+                                break;
+                            case "LessOrEqual":
+                            case "SameOrBefore":
+                                dateFilter.setValue(new Interval().withLowClosed(true).withHigh(comparand).withHighClosed(true));
+                                break;
+                            case "Greater":
+                            case "After":
+                                dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(false).withHighClosed(true));
+                                break;
+                            case "GreaterOrEqual":
+                            case "SameOrAfter":
+                                dateFilter.setValue(new Interval().withLow(comparand).withLowClosed(true).withHighClosed(true));
+                                break;
+                        }
                     }
                 }
 
