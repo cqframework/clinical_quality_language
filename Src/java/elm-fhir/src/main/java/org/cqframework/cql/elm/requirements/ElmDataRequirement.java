@@ -191,6 +191,12 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
             // If the retrieve has no data type, it is neither useful nor possible to apply requirements to it
             return;
         }
+
+        if (!conditionRequirement.isTargetable()) {
+            // If the comparand of the condition requirement is not targetable, requirements cannot be applied
+            return;
+        }
+
         // if the column is terminology-valued, express as a code filter
         // if the column is date-valued, express as a date filter
         // else express as an other filter

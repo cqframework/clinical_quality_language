@@ -13,6 +13,7 @@ import org.hl7.elm.r1.Expression;
 import org.hl7.elm.r1.Property;
 import org.hl7.fhir.r5.model.*;
 import org.hl7.fhir.r5.model.Library;
+import org.hl7.fhir.r5.model.Quantity;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.cqframework.cql.elm.requirements.ElmDataRequirement;
 import org.cqframework.cql.elm.requirements.ElmRequirement;
@@ -732,7 +733,99 @@ public class DataRequirementsProcessor {
                     toFhirValue(context, date.getDay())
             ));
         }
+        else if (value instanceof Start) {
+            DataType operand = toFhirValue(context, ((Start)value).getOperand());
+            if (operand != null) {
+                Period period = (Period)operand;
+                return period.getStartElement();
+            }
+        }
+        else if (value instanceof End) {
+            DataType operand = toFhirValue(context, ((End)value).getOperand());
+            if (operand != null) {
+                Period period = (Period)operand;
+                return period.getEndElement();
+            }
+
+        }
+        else if (value instanceof ParameterRef) {
+            if (context.getTypeResolver().isIntervalType(value.getResultType())) {
+                Extension e = toExpression(context, (ParameterRef)value);
+                org.hl7.cql.model.DataType pointType = ((IntervalType)value.getResultType()).getPointType();
+                if (context.getTypeResolver().isDateTimeType(pointType) || context.getTypeResolver().isDateType(pointType)) {
+                    Period period = new Period();
+                    period.addExtension(e);
+                    return period;
+                }
+                else if (context.getTypeResolver().isQuantityType(pointType) || context.getTypeResolver().isIntegerType(pointType) || context.getTypeResolver().isDecimalType(pointType)) {
+                    Range range = new Range();
+                    range.addExtension(e);
+                    return range;
+                }
+                else {
+                    throw new IllegalArgumentException(String.format("toFhirValue not implemented for interval of %s", pointType.toString()));
+                }
+            }
+            // Boolean, Integer, Decimal, String, Quantity, Date, DateTime, Time, Coding, CodeableConcept
+            else if (context.getTypeResolver().isBooleanType(value.getResultType())) {
+                BooleanType result = new BooleanType();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+            }
+            else if (context.getTypeResolver().isIntegerType(value.getResultType())) {
+                IntegerType result = new IntegerType();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+            }
+            else if (context.getTypeResolver().isDecimalType(value.getResultType())) {
+                DecimalType result = new DecimalType();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+            }
+            else if (context.getTypeResolver().isQuantityType(value.getResultType())) {
+                Quantity result = new Quantity();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+            }
+            else if (context.getTypeResolver().isCodeType(value.getResultType())) {
+                Coding result = new Coding();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+
+            }
+            else if (context.getTypeResolver().isConceptType(value.getResultType())) {
+                CodeableConcept result = new CodeableConcept();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+            }
+            else if (context.getTypeResolver().isDateType(value.getResultType())) {
+                DateType result = new DateType();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+            }
+            else if (context.getTypeResolver().isDateTimeType(value.getResultType())) {
+                DateTimeType result = new DateTimeType();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+            }
+            else if (context.getTypeResolver().isTimeType(value.getResultType())) {
+                TimeType result = new TimeType();
+                result.addExtension(toExpression(context, (ParameterRef)value));
+                return result;
+            }
+            else {
+                throw new IllegalArgumentException(String.format("toFhirValue not implemented for parameter of type %s", value.getResultType().toString()));
+            }
+        }
         throw new IllegalArgumentException(String.format("toFhirValue not implemented for %s", value.getClass().getSimpleName()));
+    }
+
+    private org.hl7.fhir.r5.model.Extension toExpression(ElmRequirementsContext context, ParameterRef parameterRef) {
+        String expression = parameterRef.getName();
+        if (parameterRef.getLibraryName() != null && !parameterRef.getLibraryName().equals(context.getCurrentLibraryIdentifier().getId())) {
+            expression = String.format("\"%s\".\"%s\"", parameterRef.getLibraryName(), parameterRef.getName());
+        }
+        return new Extension().setUrl("http://hl7.org/fhir/StructureDefinition/cqf-expression").setValue(new org.hl7.fhir.r5.model.Expression().setLanguage("text/cql-identifier").setExpression(expression));
     }
 
     private org.hl7.fhir.r5.model.DataRequirement.DataRequirementDateFilterComponent toDateFilterComponent(ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, String property, Expression value) {
@@ -741,13 +834,12 @@ public class DataRequirementsProcessor {
 
         dfc.setPath(property);
 
-        if (value instanceof ParameterRef) {
-            dfc.setValue(new DateTimeType());
-            dfc.getValue().addExtension("http://hl7.org/fhir/StructureDefinition/cqf-expression",
-                    new org.hl7.fhir.r5.model.Expression().setLanguage("text/cql-identifier").setExpression(((ParameterRef)value).getName()));
-        }
-        else {
+        context.enterLibrary(libraryIdentifier);
+        try {
             dfc.setValue(toFhirValue(context, value));
+        }
+        finally {
+            context.exitLibrary();
         }
 
         return dfc;
@@ -815,6 +907,8 @@ public class DataRequirementsProcessor {
         for (DateFilterElement dfe : retrieve.getDateFilter()) {
             dr.getDateFilter().add(toDateFilterComponent(context, libraryIdentifier, dfe.getProperty(), dfe.getValue()));
         }
+
+        // TODO: Add any other filters (use the cqfm-valueFilter extension until the content infrastructure IG is available)
 
         // Add any related data requirements
         if (retrieve.getIncludedIn() != null) {
