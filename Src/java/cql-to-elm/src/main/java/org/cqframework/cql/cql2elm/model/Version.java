@@ -82,7 +82,10 @@ public class Version implements Comparable<Version> {
     }
 
     public boolean matchStrictly(Version that) {
-        return this.version.equals(that.version);
+        if (that != null) {
+            return this.version.equals(that.version);
+        }
+        return false;
     }
 
     public boolean isComparable() {
