@@ -47,7 +47,8 @@ public class CqlTranslator {
         EnableIntervalDemotion,
         EnableIntervalPromotion,
         DisableMethodInvocation,
-        RequireFromKeyword
+        RequireFromKeyword,
+        DisableDefaultModelInfoLoad
     }
     public static enum Format { XML, JSON, JXSON, COFFEE }
     private static JAXBContext jaxbContext;
@@ -689,7 +690,13 @@ public class CqlTranslator {
         System.err.println("================================================================================");
         System.err.printf("TRANSLATE %s%n", inPath);
 
-        ModelManager modelManager = new ModelManager();
+        ModelManager modelManager;
+        if(options.getOptions().contains(Options.DisableDefaultModelInfoLoad)) {
+            modelManager = new ModelManager(false);
+        } else {
+            modelManager = new ModelManager();
+        }
+
         LibraryManager libraryManager = new LibraryManager(modelManager);
         UcumService ucumService = null;
         if (options.getValidateUnits()) {
@@ -748,6 +755,7 @@ public class CqlTranslator {
         OptionSpec<File> model = parser.accepts("model").withRequiredArg().ofType(File.class).describedAs("The name of an input file containing the model info to use for translation. Model info can also be provided through an implementation of ModelInfoProvider");
         OptionSpec<File> output = parser.accepts("output").withRequiredArg().ofType(File.class).describedAs("The name of the output file or directory. If no output is given, an output file name is constructed based on the input name and target format");
         OptionSpec<CqlTranslator.Format> format = parser.accepts("format").withRequiredArg().ofType(CqlTranslator.Format.class).defaultsTo(CqlTranslator.Format.XML).describedAs("The target format for the output");
+        OptionSpec disableDefaultModelInfoLoad = parser.accepts("disable-default-modelinfo-load");
         OptionSpec verify = parser.accepts("verify");
         OptionSpec optimization = parser.accepts("date-range-optimization");
         OptionSpec annotations = parser.accepts("annotations");
@@ -855,7 +863,7 @@ public class CqlTranslator {
                     options.has(enableIntervalPromotion),
                     options.has(strict) || options.has(disableMethodInvocation),
                     options.has(requireFromKeyword),
-                    options.has(validateUnits),
+                    options.has(validateUnits), options.has(disableDefaultModelInfoLoad),
                     signatureLevel,
                     options.has(compatibilityLevel) ? options.valueOf(compatibilityLevel) : null));
         }
