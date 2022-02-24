@@ -62,6 +62,7 @@ public class CqlTranslatorOptions {
                                 boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
                                 boolean enableIntervalDemotion, boolean enableIntervalPromotion,
                                 boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
+                                boolean disableDefaultModelInfoLoad,
                                 LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel) {
 
         formats.add(format);
@@ -106,6 +107,9 @@ public class CqlTranslatorOptions {
         }
         if (requireFromKeyword) {
             options.add(CqlTranslator.Options.RequireFromKeyword);
+        }
+        if (disableDefaultModelInfoLoad) {
+            options.add(CqlTranslator.Options.DisableDefaultModelInfoLoad);
         }
     }
 

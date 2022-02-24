@@ -19,9 +19,16 @@ public class ModelManager {
     private final Map<String, Model> models = new HashMap<>();
     private final Set<String> loadingModels = new HashSet<>();
     private final Map<String, Model> modelsByUri = new HashMap<>();
+    private boolean enableDefaultModelInfoLoading = true;
 
     public ModelManager() {
         namespaceManager = new NamespaceManager();
+        initialize();
+    }
+
+    public ModelManager(boolean enableDefaultModelInfoLoading) {
+        namespaceManager = new NamespaceManager();
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
     }
 
@@ -30,8 +37,14 @@ public class ModelManager {
         initialize();
     }
 
+    public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading) {
+        this.namespaceManager = namespaceManager;
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
     private void initialize() {
-        modelInfoLoader = new ModelInfoLoader();
+        modelInfoLoader = new ModelInfoLoader(enableDefaultModelInfoLoading);
     }
 
     public NamespaceManager getNamespaceManager() {
@@ -40,6 +53,10 @@ public class ModelManager {
 
     public ModelInfoLoader getModelInfoLoader() {
         return this.modelInfoLoader;
+    }
+
+    public boolean isDefaultModelInfoLoadingEnabled() {
+        return enableDefaultModelInfoLoading;
     }
 
     /*
