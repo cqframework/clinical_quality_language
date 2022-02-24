@@ -57,6 +57,9 @@ public class DefaultLibrarySourceProvider implements LibrarySourceProvider {
                                         version.compareTo(mostRecent) > 0)) {
                             mostRecent = version;
                             mostRecentFile = file;
+                        } else if (version != null && version.matchStrictly(mostRecent)) {
+                            mostRecent = version;
+                            mostRecentFile = file;
                         }
                     }
                 }

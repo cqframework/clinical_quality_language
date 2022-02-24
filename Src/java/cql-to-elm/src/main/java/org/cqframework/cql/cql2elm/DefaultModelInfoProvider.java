@@ -59,6 +59,9 @@ public class DefaultModelInfoProvider implements ModelInfoProvider {
                                             version.compareTo(mostRecent) > 0)) {
                                 mostRecent = version;
                                 mostRecentFile = file;
+                            } else if(version != null && version.matchStrictly(mostRecent)){
+                                mostRecent = version;
+                                mostRecentFile = file;
                             }
                         }
                     }
