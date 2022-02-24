@@ -28,7 +28,7 @@ public class ModelManager {
 
     public ModelManager(boolean enableDefaultModelInfoLoading) {
         namespaceManager = new NamespaceManager();
-        setEnableDefaultModelInfoLoading(enableDefaultModelInfoLoading);
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
     }
 
@@ -39,7 +39,7 @@ public class ModelManager {
 
     public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading) {
         this.namespaceManager = namespaceManager;
-        setEnableDefaultModelInfoLoading(enableDefaultModelInfoLoading);
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
     }
 
@@ -57,19 +57,6 @@ public class ModelManager {
 
     public boolean isDefaultModelInfoLoadingEnabled() {
         return enableDefaultModelInfoLoading;
-    }
-
-    public void setEnableDefaultModelInfoLoading(boolean enableDefaultModelInfoLoading) {
-        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
-    }
-
-    public void disableDefaultModelInfoLoading() {
-        this.enableDefaultModelInfoLoading = false;
-    }
-
-    public ModelManager withDisabledDefaultModelInfoLoading() {
-        disableDefaultModelInfoLoading();
-        return this;
     }
 
     /*
