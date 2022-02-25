@@ -9,18 +9,21 @@ public class Version implements Comparable<Version> {
 
     private String version;
 
+    private boolean isComparable;
+
     public Version(String version) {
         if(version == null)
             throw new IllegalArgumentException("Version can not be null");
-        if(!version.matches("[0-9]+(\\.[0-9]+)*"))
-            throw new IllegalArgumentException("Invalid version format");
         this.version = version;
+        this.setIsComparable();
     }
 
     @Override
     public int compareTo(Version that) {
         if(that == null)
             return 1;
+        validateComparability(that);
+
         String[] thisParts = this.version.split("\\.");
         String[] thatParts = that.version.split("\\.");
         int length = Math.max(thisParts.length, thatParts.length);
@@ -40,6 +43,10 @@ public class Version implements Comparable<Version> {
     public boolean compatibleWith(Version that) {
         if (that == null)
             return false;
+
+        if(!isComparable  || !that.isComparable) {
+            return matchStrictly(that);
+        }
 
         // this version is compatible with that version if:
             // this.major = that.major
@@ -72,6 +79,27 @@ public class Version implements Comparable<Version> {
         }
 
         return true;
+    }
+
+    public boolean matchStrictly(Version that) {
+        if (that != null) {
+            return this.version.equals(that.version);
+        }
+        return false;
+    }
+
+    public boolean isComparable() {
+        return this.isComparable;
+    }
+
+    private void setIsComparable() {
+        this.isComparable = this.version.matches("[0-9]+(\\.[0-9]+)*");
+    }
+
+    private void validateComparability(Version that) {
+        if(!this.isComparable || (that != null && !that.isComparable)) {
+            throw new IllegalArgumentException("The versions are not comparable");
+        }
     }
 
     @Override

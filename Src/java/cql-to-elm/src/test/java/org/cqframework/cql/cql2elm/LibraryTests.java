@@ -4,7 +4,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
@@ -83,6 +85,39 @@ public class LibraryTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testAlphanumericVersionIssue641() {
+        // the issue identified with using DefaultLibrarySourceLoader only; thus creating a fresh set below
+        ModelManager modelManager = new ModelManager();
+        LibraryManager libraryManager = new LibraryManager(modelManager);
+
+        File translationTestFile = new File(LibraryTests.class.getResource("LibraryTests/Issue641.cql").getFile());
+        libraryManager.getLibrarySourceLoader().registerProvider(new DefaultLibrarySourceProvider(Paths.get(translationTestFile.getParent())));
+
+        try {
+            CqlTranslator translator = CqlTranslator.fromFile(translationTestFile, modelManager, libraryManager, CqlTranslatorException.ErrorSeverity.Info,
+                    SignatureLevel.All);
+
+            System.out.println(translator.getErrors());
+
+            Map<String, ExpressionDef> includedLibDefs = new HashMap<>();
+            Map<String, Library> includedLibraries = translator.getLibraries();
+            includedLibraries.values().stream().forEach(includedLibrary -> {
+                if (includedLibrary.getStatements() != null) {
+                    for (ExpressionDef def : includedLibrary.getStatements().getDef()) {
+                        includedLibDefs.put(def.getName(), def);
+                    }
+                }
+            });
+
+            ExpressionDef baseLibDef = includedLibDefs.get("BaseLibSum");
+            assertThat(((AggregateExpression) baseLibDef.getExpression()).getSignature().size(), is(1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test
@@ -197,8 +232,7 @@ public class LibraryTests {
                 // Ensure that some annotations are present.
                 assertTrue(includedLibrary.getStatements().getDef().stream().filter(x -> x.getAnnotation().size() > 0).count() > 0);
             });
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
