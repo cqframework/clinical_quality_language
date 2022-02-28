@@ -19,7 +19,7 @@ public class CqlTranslatorOptionsToJSON {
     
 
     @Test
-    public void MapCqlTranslatorOptionsToJSON() {
+    public void CqlTranslatorOptionsToJsonSchema() {
 
         //delete file if exists:
         try {

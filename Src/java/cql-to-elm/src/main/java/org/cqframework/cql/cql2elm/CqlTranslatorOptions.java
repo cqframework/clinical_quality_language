@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import com.github.reinert.jjschema.Attributes;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -9,17 +8,11 @@ import java.util.List;
 /**
  * translation options for Cql source files
  */
-@Attributes(title="CqlTranslatorOptions", description="Translation options for Cql source files")
 public class CqlTranslatorOptions {
-    @Attributes(required=true, description="EnumSet of CqlTranslator.Options")
     private EnumSet<CqlTranslator.Options> options = EnumSet.noneOf(CqlTranslator.Options.class);
-    @Attributes(minItems=1,uniqueItems=true, description="List of CqlTranslator.Format")
     private List<CqlTranslator.Format> formats = new ArrayList<>();
-    @Attributes(required=true, description="Indicates units will be validated")
     private boolean validateUnits = true;
-    @Attributes(required=true, description="Indicates override of operations and verification alone will process")
     private boolean verifyOnly = false;
-    @Attributes(required=true, description="Indicates the compatibility level of this process.")
     private String compatibilityLevel = "1.5";
     private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
     private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
