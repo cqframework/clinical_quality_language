@@ -150,7 +150,6 @@ public class DataRequirementsProcessor {
         typeCoding.setSystem("http://terminology.hl7.org/CodeSystem/library-type");
         libraryType.addCoding(typeCoding);
         returnLibrary.setType(libraryType);
-        returnLibrary.setDate(new Date());
         returnLibrary.setSubject(extractSubject(context));
         returnLibrary.getExtension().addAll(extractDirectReferenceCodes(context, requirements));
         returnLibrary.getRelatedArtifact().addAll(extractRelatedArtifacts(context, requirements));
@@ -884,7 +883,7 @@ public class DataRequirementsProcessor {
         }
 
         // collect must supports
-        Set<String> ps = new HashSet<String>();
+        Set<String> ps = new LinkedHashSet<String>();
 
         // Set code path if specified
         if (retrieve.getCodeProperty() != null) {

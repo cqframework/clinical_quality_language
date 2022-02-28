@@ -92,7 +92,7 @@ public class ElmRequirementsContext {
     These are collected by the ElmExpressionDefContext as expression defs are visited, and reported to the context after
     the visit is complete
      */
-    private Map<ExpressionDef, ElmRequirements> reportedRequirements = new HashMap<ExpressionDef, ElmRequirements>();
+    private Map<ExpressionDef, ElmRequirements> reportedRequirements = new LinkedHashMap<ExpressionDef, ElmRequirements>();
     public Iterable<ElmRequirements> getReportedRequirements() {
         return reportedRequirements.values();
     }
@@ -104,7 +104,7 @@ public class ElmRequirementsContext {
     Inferred requirements are the result of the traversal, the computed/inferred data requirements for an expression.
     These are calculated by the visit and reported to the context here after the visit is complete
      */
-    private Map<ExpressionDef, ElmRequirement> inferredRequirements = new HashMap<ExpressionDef, ElmRequirement>();
+    private Map<ExpressionDef, ElmRequirement> inferredRequirements = new LinkedHashMap<ExpressionDef, ElmRequirement>();
     public Iterable<ElmRequirement> getInferredRequirements() {
         return inferredRequirements.values();
     }
@@ -174,7 +174,7 @@ public class ElmRequirementsContext {
         return getCurrentExpressionDefContext().resolveLet(letName);
     }
 
-    private Set<Element> visited = new HashSet<Element>();
+    private Set<Element> visited = new LinkedHashSet<Element>();
 
     private ElmRequirements requirements;
     public ElmRequirements getRequirements() {
@@ -445,7 +445,7 @@ public class ElmRequirementsContext {
         return null;
     }
 
-    private Map<QName, ElmDataRequirement> unboundDataRequirements = new HashMap<QName, ElmDataRequirement>();
+    private Map<QName, ElmDataRequirement> unboundDataRequirements = new LinkedHashMap<QName, ElmDataRequirement>();
 
     private ElmDataRequirement getDataRequirementForTypeName(QName typeName) {
         ElmDataRequirement requirement = unboundDataRequirements.get(typeName);

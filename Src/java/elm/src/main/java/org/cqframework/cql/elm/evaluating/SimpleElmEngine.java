@@ -145,6 +145,16 @@ public class SimpleElmEngine {
             }
         }
 
+        // TODO: Strictly speaking this would need to resolve the parameter library since it's not in the ELM if it's a local parameter reference
+        if (left instanceof ParameterRef) {
+            if (right instanceof ParameterRef) {
+                ParameterRef leftParameter = (ParameterRef)left;
+                ParameterRef rightParameter = (ParameterRef)right;
+                return stringsEqual(leftParameter.getLibraryName(), rightParameter.getLibraryName())
+                        && stringsEqual(leftParameter.getName(), rightParameter.getName());
+            }
+        }
+
         return false;
     }
 
@@ -167,6 +177,12 @@ public class SimpleElmEngine {
     public boolean codesEqual(Expression left, Expression right) {
         if (left == null && right == null) {
             return true;
+        }
+
+        if (left instanceof Literal) {
+            if (right instanceof Literal) {
+                return literalsEqual((Literal)left, (Literal)right);
+            }
         }
 
         if (left instanceof ValueSetRef) {

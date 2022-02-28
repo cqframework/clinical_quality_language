@@ -7,6 +7,7 @@ import org.hl7.cql.model.SearchType;
 import org.hl7.elm.r1.*;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ElmDataRequirement extends ElmExpressionRequirement {
@@ -120,14 +121,14 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
 
     public void addProperty(Property property) {
         if (propertySet == null) {
-            propertySet = new HashSet<Property>();
+            propertySet = new LinkedHashSet<Property>();
         }
         propertySet.add(property);
     }
 
     public void reportProperty(ElmPropertyRequirement propertyRequirement) {
         if (propertySet == null) {
-            propertySet = new HashSet<Property>();
+            propertySet = new LinkedHashSet<Property>();
         }
         propertySet.add(propertyRequirement.getProperty());
     }
@@ -228,7 +229,9 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                 }
                 if (codeFilter.getComparator() != null && (conditionRequirement.isTargetable())) {
                     codeFilter.setValue(conditionRequirement.getComparand().getExpression());
-                    retrieve.getCodeFilter().add(codeFilter);
+                    if (!ComparableElmRequirement.hasCodeFilter(retrieve.getCodeFilter(), codeFilter)) {
+                        retrieve.getCodeFilter().add(codeFilter);
+                    }
                 }
             }
             else if (context.getTypeResolver().isDateType(comparisonType)) {
@@ -305,7 +308,9 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
                 }
 
                 if (dateFilter.getValue() != null) {
-                    retrieve.getDateFilter().add(dateFilter);
+                    if (!ComparableElmRequirement.hasDateFilter(retrieve.getDateFilter(), dateFilter)) {
+                        retrieve.getDateFilter().add(dateFilter);
+                    }
                 }
             }
             else {

@@ -35,6 +35,10 @@ public class DataRequirementsProcessorTest {
     private static ModelManager modelManager;
     private static LibraryManager libraryManager;
     private static UcumService ucumService;
+    private static FhirContext fhirContext;
+    private static FhirContext getFhirContext() {
+        return FhirContext.forR5Cached();
+    }
 
     @Test
     public void TestDataRequirementsProcessor() {
@@ -72,7 +76,7 @@ public class DataRequirementsProcessorTest {
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
             assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
 
-            FhirContext context =  FhirContext.forR5();
+            FhirContext context =  getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -407,7 +411,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(diagnosisRequirement != null);
 
-            FhirContext context =  FhirContext.forR5();
+            FhirContext context =  getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -474,7 +478,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(diagnosisRequirement != null);
 
-            FhirContext context =  FhirContext.forR5();
+            FhirContext context =  getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -506,7 +510,7 @@ public class DataRequirementsProcessorTest {
             }
             assertTrue(encounterRequirement != null);
 
-            FhirContext context =  FhirContext.forR5();
+            FhirContext context =  getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -527,7 +531,7 @@ public class DataRequirementsProcessorTest {
             DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
             org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
 
-            FhirContext context =  FhirContext.forR5();
+            FhirContext context =  getFhirContext();
             IParser parser = context.newJsonParser();
             String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
             logger.debug(moduleDefString);
@@ -578,7 +582,7 @@ public class DataRequirementsProcessorTest {
     }
 
     private void outputModuleDefinitionLibrary(org.hl7.fhir.r5.model.Library moduleDefinitionLibrary) {
-        FhirContext context =  FhirContext.forR5();
+        FhirContext context =  getFhirContext();
         IParser parser = context.newJsonParser();
         String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
         System.out.println(moduleDefString);
@@ -1400,6 +1404,24 @@ public class DataRequirementsProcessorTest {
         CqlTranslator translator = setupDataRequirementsAnalysis("BCSE/BCSE_HEDIS_MY2022.cql", translatorOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
         assertNotNull(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestEXMLogic() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        translatorOptions.setAnalyzeDataRequirements(false);
+        CqlTranslator translator = setupDataRequirementsAnalysis("EXMLogic/EXMLogic.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
+        assertNotNull(moduleDefinitionLibrary);
+        FhirContext context =  getFhirContext();
+        IParser parser = context.newJsonParser();
+        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary = (org.hl7.fhir.r5.model.Library)parser.parseResource(DataRequirementsProcessorTest.class.getResourceAsStream("EXMLogic/Library-EXMLogic-data-requirements.json"));
+        assertNotNull(expectedModuleDefinitionLibrary);
+        moduleDefinitionLibrary.setDate(null);
+        expectedModuleDefinitionLibrary.setDate(null);
+        assertTrue(moduleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     private static void setup(String relativePath) {
