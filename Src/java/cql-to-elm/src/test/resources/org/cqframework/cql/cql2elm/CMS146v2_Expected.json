@@ -240,6 +240,7 @@
             "type" : "Retrieve",
             "codes" : {
               "name" : "Acute Pharyngitis",
+              "preserve" : true,
               "type" : "ValueSetRef"
             }
           }, {
@@ -250,6 +251,7 @@
             "type" : "Retrieve",
             "codes" : {
               "name" : "Acute Tonsillitis",
+              "preserve" : true,
               "type" : "ValueSetRef"
             }
           } ]
@@ -266,6 +268,7 @@
           "type" : "Retrieve",
           "codes" : {
             "name" : "Antibiotic Medications",
+            "preserve" : true,
             "type" : "ValueSetRef"
           }
         }
@@ -285,6 +288,7 @@
               "type" : "Retrieve",
               "codes" : {
                 "name" : "Ambulatory/ED Visit",
+                "preserve" : true,
                 "type" : "ValueSetRef"
               }
             }
@@ -560,6 +564,7 @@
                 "type" : "Retrieve",
                 "codes" : {
                   "name" : "Group A Streptococcus Test",
+                  "preserve" : true,
                   "type" : "ValueSetRef"
                 }
               }

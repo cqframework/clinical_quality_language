@@ -192,7 +192,7 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         if (sinceCompatibilityLevel == null || sinceCompatibilityLevel.isEmpty()) {
-            throw new IllegalArgumentException("Internal Translator Error: compatbility level is required to determine a compatibility check");
+            throw new IllegalArgumentException("Internal Translator Error: compatibility level is required to perform a compatibility check");
         }
 
         Version sinceVersion = new Version(sinceCompatibilityLevel);
@@ -392,6 +392,20 @@ public class LibraryBuilder implements ModelResolver {
                 }
             } else {
                 result = getModel(modelName).resolveTypeName(typeName);
+            }
+        }
+
+        // Types introduced in 1.5: Long, Vocabulary, ValueSet, CodeSystem
+        if (result != null && result instanceof NamedType) {
+            switch (((NamedType)result).getName()) {
+                case "System.Long":
+                case "System.Vocabulary":
+                case "System.CodeSystem":
+                case "System.ValueSet":
+                    if (!isCompatibleWith("1.5")) {
+                        throw new IllegalArgumentException(String.format("The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
+                                ((NamedType)result).getName(), getCompatibilityLevel()));
+                    }
             }
         }
 
@@ -914,7 +928,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public Expression resolveIn(Expression left, Expression right) {
-        if (right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet"))) {
+        if (right instanceof ValueSetRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
@@ -933,7 +947,7 @@ public class LibraryBuilder implements ModelResolver {
             return in;
         }
 
-        if (right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem"))) {
+        if (right instanceof CodeSystemRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
@@ -2102,6 +2116,9 @@ public class LibraryBuilder implements ModelResolver {
                 // ERROR:
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
+            }
+            if (isCompatibleWith("1.5")) {
+                valuesetRef.setPreserve(true);
             }
             return valuesetRef;
         }

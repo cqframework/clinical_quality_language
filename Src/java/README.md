@@ -6,6 +6,7 @@ It contains the following sub-projects:
 * **cql:** generates and builds Java lexers, parsers, listeners, and visitors using the CQL ANTLR4 grammar
 * **model:** generates and builds Java classes based on the ELM Model Info schema and CQL base type system
 * **elm:** generates and builds Java classes based on the ELM XML schema
+* **elm-fhir:** contains data requirements processor and fhir-related utilities 
 * **qdm:** contains schema and model info resources for QDM (4.2, 5.0, 5.0.1, 5.0.2, 5.3)
 * **quick:** contains schema and model info resources for QUICK and FHIR, DSTU2 (1.0.2), and STU3 (1.4, 1.6, 1.8, and 3.0.1)
 * **cql-to-elm:** generates Expression Logical Model (ELM) XML and JSON from CQL source

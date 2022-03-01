@@ -230,7 +230,8 @@ public class SystemFunctionResolver {
                 case "Exists":
                 case "Flatten":
                 case "Collapse":
-                case "SingletonFrom": {
+                case "SingletonFrom":
+                case "ExpandValueSet": {
                     return resolveUnary(fun);
                 }
 
