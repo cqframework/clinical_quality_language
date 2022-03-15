@@ -168,6 +168,46 @@ public class TypeResolver {
         return dateTimeType;
     }
 
+    private DataType timeType;
+    public DataType getTimeType() {
+        if (timeType == null) {
+            timeType = resolveTypeName("System", "Time");
+        }
+        return timeType;
+    }
+
+    private DataType booleanType;
+    public DataType getBooleanType() {
+        if (booleanType == null) {
+            booleanType = resolveTypeName("System", "Boolean");
+        }
+        return booleanType;
+    }
+
+    private DataType integerType;
+    public DataType getIntegerType() {
+        if (integerType == null) {
+            integerType = resolveTypeName("System", "Integer");
+        }
+        return integerType;
+    }
+
+    private DataType decimalType;
+    public DataType getDecimalType() {
+        if (decimalType == null) {
+            decimalType = resolveTypeName("System", "Decimal");
+        }
+        return decimalType;
+    }
+
+    private DataType quantityType;
+    public DataType getQuantityType() {
+        if (quantityType == null) {
+            quantityType = resolveTypeName("System", "Quantity");
+        }
+        return quantityType;
+    }
+
     public boolean isTerminologyType(DataType dataType) {
         if (dataType != null) {
             return
@@ -205,11 +245,75 @@ public class TypeResolver {
         return false;
     }
 
+    public boolean isTimeType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getTimeType());
+        }
+
+        return false;
+    }
+
+    public boolean isIntegerType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getIntegerType());
+        }
+
+        return false;
+    }
+
+    public boolean isDecimalType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getDecimalType());
+        }
+
+        return false;
+    }
+
+    public boolean isQuantityType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getQuantityType());
+        }
+
+        return false;
+    }
+
+    public boolean isBooleanType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getBooleanType());
+        }
+
+        return false;
+    }
+
+    public boolean isStringType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getStringType());
+        }
+
+        return false;
+    }
+
     public boolean isListType(DataType dataType) {
         return dataType instanceof ListType;
     }
 
     public boolean isIntervalType(DataType dataType) {
         return dataType instanceof IntervalType;
+    }
+
+    public boolean isCodeType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getCodeType());
+        }
+
+        return false;
+    }
+
+    public boolean isConceptType(DataType dataType) {
+        if (dataType != null) {
+            return dataType.isSubTypeOf(getConceptType());
+        }
+
+        return false;
     }
 }

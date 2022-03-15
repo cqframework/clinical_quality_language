@@ -323,10 +323,15 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
              */
             case "Equal":
             case "Equivalent":
+            case "SameAs":
             case "Greater":
             case "GreaterOrEqual":
+            case "SameOrAfter":
+            case "After":
             case "Less":
             case "LessOrEqual":
+            case "SameOrBefore":
+            case "Before":
             case "In":
             case "Contains": {
                 ElmRequirement left = visitElement(elm.getOperand().get(0), context);
@@ -383,11 +388,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
             case "Implies":
             //case "Not":
             //case "NotEqual":
-            case "SameAs":
-            case "SameOrBefore":
-            case "SameOrAfter":
-            case "Before":
-            case "After":
             case "Starts":
             case "Ends":
             case "Includes":
@@ -845,12 +845,110 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitDateTime(DateTime elm, ElmRequirementsContext context) {
-        return super.visitDateTime(elm, context);
+        ElmOperatorRequirement result = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if (elm.getYear() != null) {
+            ElmRequirement childResult = visitExpression(elm.getYear(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMonth() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMonth(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getDay() != null) {
+            ElmRequirement childResult = visitExpression(elm.getDay(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getHour() != null) {
+            ElmRequirement childResult = visitExpression(elm.getHour(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMinute() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMinute(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getSecond() != null) {
+            ElmRequirement childResult = visitExpression(elm.getSecond(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMillisecond() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMillisecond(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getTimezoneOffset() != null) {
+            ElmRequirement childResult = visitExpression(elm.getTimezoneOffset(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public ElmRequirement visitDate(Date elm, ElmRequirementsContext context) {
+        ElmOperatorRequirement result = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if (elm.getYear() != null) {
+            ElmRequirement childResult = visitExpression(elm.getYear(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMonth() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMonth(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getDay() != null) {
+            ElmRequirement childResult = visitExpression(elm.getDay(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        return result;
     }
 
     @Override
     public ElmRequirement visitTime(Time elm, ElmRequirementsContext context) {
-        return super.visitTime(elm, context);
+        ElmOperatorRequirement result = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if (elm.getHour() != null) {
+            ElmRequirement childResult = visitExpression(elm.getHour(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMinute() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMinute(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getSecond() != null) {
+            ElmRequirement childResult = visitExpression(elm.getSecond(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMillisecond() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMillisecond(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        return result;
     }
 
     @Override

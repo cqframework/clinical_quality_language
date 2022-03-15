@@ -1,7 +1,6 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.hl7.elm.r1.Expression;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.elm.r1.*;
 
 public class ElmExpressionRequirement extends ElmRequirement {
     public ElmExpressionRequirement(VersionedIdentifier libraryIdentifier, Expression expression) {
@@ -18,5 +17,20 @@ public class ElmExpressionRequirement extends ElmRequirement {
 
     public ElmExpressionRequirement combine(ElmExpressionRequirement requirement) {
         return this;
+    }
+
+    public boolean isLiteral() {
+        return this.element instanceof Literal;
+    }
+
+    public boolean isTerminologyReference() {
+        return this.element instanceof ValueSetRef
+                || this.element instanceof CodeSystemRef
+                || this.element instanceof ConceptRef
+                || this.element instanceof CodeRef;
+    }
+
+    public boolean isParameterReference() {
+        return this.element instanceof ParameterRef;
     }
 }
