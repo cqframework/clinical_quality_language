@@ -4,6 +4,8 @@ using FHIR version '4.0.1'
 
 include FHIRHelpers version '4.0.1'
 
+context Patient
+
 // Primitives
 // instant
 define TestInstant: instant { value: @2020-10-03T10:00:00.0 }
@@ -185,3 +187,9 @@ define TestQuantityWithComparator3: Quantity { value: decimal { value: 10.0 }, u
 define TestQuantityWithComparator3Converts: FHIRHelpers.ToInterval(TestQuantityWithComparator3) = Interval[10 'mg', null]
 define TestQuantityWithComparator4: Quantity { value: decimal { value: 10.0 }, unit: string { value: 'mg' }, comparator: FHIR.QuantityComparator { value: '>' } }
 define TestQuantityWithComparator4Converts: FHIRHelpers.ToInterval(TestQuantityWithComparator4) = Interval(10 'mg', null]
+
+// Extensions
+define TestExtensions: Patient.extension('http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex').single()
+define TestElementExtensions: Patient.birthDate.extension('http://hl7.org/fhir/StructureDefinition/patient-birthTime').single()
+define TestModifierExtensions: Patient.modifierExtension('http://hl7.org/fhir/StructureDefinition/request-doNotPerform').single()
+define TestElementModifierExtensions: Patient.contact.modifierExtension('http://hl7.org/fhir/StructureDefinition/request-doNotPerform').single()
