@@ -4317,6 +4317,15 @@ DATETIME
             }
         }
 
+        // If we are in an implicit context (i.e. a context named the same as a parameter), the function may be resolved as a method invocation
+        ParameterRef parameterRef = libraryBuilder.resolveImplicitContext();
+        if (parameterRef != null) {
+            Expression result = systemMethodResolver.resolveMethod(parameterRef, identifier, paramListCtx, false);
+            if (result != null) {
+                return result;
+            }
+        }
+
         // If there is no target, resolve as a system function
         return resolveFunction(null, identifier, paramListCtx);
     }

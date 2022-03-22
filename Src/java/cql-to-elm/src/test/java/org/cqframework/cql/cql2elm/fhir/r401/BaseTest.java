@@ -245,6 +245,21 @@ public class BaseTest {
     }
 
     @Test
+    public void testEncounterParameterContext() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestEncounterParameterContext.cql", 0);
+    }
+
+    @Test
+    public void testMeasureParameterContext() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestMeasureParameterContext.cql", 0);
+    }
+
+    @Test
+    public void testTrace() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestTrace.cql", 0);
+    }
+
+    @Test
     public void testFHIR() throws IOException {
         TestUtils.runSemanticTest("fhir/r401/TestFHIR.cql", 0);
     }

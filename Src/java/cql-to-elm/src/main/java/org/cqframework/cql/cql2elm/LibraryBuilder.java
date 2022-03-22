@@ -1267,12 +1267,14 @@ public class LibraryBuilder implements ModelResolver {
             // 2. It is an error condition that needs to be reported
         if (fun == null) {
             fun = buildFunctionRef(libraryName, functionName, paramList);
-            Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
-            if (systemFunction != null) {
-                return systemFunction;
-            }
 
-            if (mustResolve) {
+            if (!allowFluent) {
+                // Only attempt to resolve as a system function if this is not a fluent call or it is a required resolution
+                Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
+                if (systemFunction != null) {
+                    return systemFunction;
+                }
+
                 checkLiteralContext();
             }
 
@@ -2169,6 +2171,32 @@ public class LibraryBuilder implements ModelResolver {
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
         // the identifier may be resolved as an implicit property reference on that context.
+        ParameterRef parameterRef = resolveImplicitContext();
+        if (parameterRef != null) {
+            PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
+            if (resolution != null) {
+                Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
+                contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
+                return contextAccessor;
+            }
+        }
+
+        if (mustResolve) {
+            // ERROR:
+            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
+        }
+
+        return null;
+    }
+
+    /**
+     * An implicit context is one where the context has the same name as a parameter. Implicit contexts are used to
+     * allow FHIRPath expressions to resolve on the implicit context of the expression
+     *
+     * For example, in a Patient context, with a parameter of type Patient, the expression `birthDate` resolves to a property reference.
+     * @return A reference to the parameter providing the implicit context value
+     */
+    public ParameterRef resolveImplicitContext() {
         if (!inLiteralContext() && inSpecificContext()) {
             Element contextElement = resolve(currentExpressionContext());
             if (contextElement instanceof ParameterDef) {
@@ -2182,19 +2210,8 @@ public class LibraryBuilder implements ModelResolver {
                     throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                             parameterRef.getName()));
                 }
-
-                PropertyResolution resolution = resolveProperty(parameterRef.getResultType(), identifier, false);
-                if (resolution != null) {
-                    Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
-                    contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
-                    return contextAccessor;
-                }
+                return parameterRef;
             }
-        }
-
-        if (mustResolve) {
-            // ERROR:
-            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
         }
 
         return null;
