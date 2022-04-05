@@ -1406,6 +1406,16 @@ public class DataRequirementsProcessorTest {
         assertNotNull(moduleDefinitionLibrary);
     }
 
+    private void assertEqualToExpectedModuleDefinitionLibrary(org.hl7.fhir.r5.model.Library actualModuleDefinitionLibrary, String pathToExpectedModuleDefinitionLibrary) {
+        FhirContext context =  getFhirContext();
+        IParser parser = context.newJsonParser();
+        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary = (org.hl7.fhir.r5.model.Library)parser.parseResource(DataRequirementsProcessorTest.class.getResourceAsStream(pathToExpectedModuleDefinitionLibrary));
+        assertNotNull(expectedModuleDefinitionLibrary);
+        actualModuleDefinitionLibrary.setDate(null);
+        expectedModuleDefinitionLibrary.setDate(null);
+        assertTrue(actualModuleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
+    }
+
     @Test
     public void TestEXMLogic() throws IOException {
         CqlTranslatorOptions translatorOptions = getTranslatorOptions();
@@ -1413,13 +1423,19 @@ public class DataRequirementsProcessorTest {
         CqlTranslator translator = setupDataRequirementsAnalysis("EXMLogic/EXMLogic.cql", translatorOptions);
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
         assertNotNull(moduleDefinitionLibrary);
-        FhirContext context =  getFhirContext();
-        IParser parser = context.newJsonParser();
-        org.hl7.fhir.r5.model.Library expectedModuleDefinitionLibrary = (org.hl7.fhir.r5.model.Library)parser.parseResource(DataRequirementsProcessorTest.class.getResourceAsStream("EXMLogic/Library-EXMLogic-data-requirements.json"));
-        assertNotNull(expectedModuleDefinitionLibrary);
-        moduleDefinitionLibrary.setDate(null);
-        expectedModuleDefinitionLibrary.setDate(null);
-        assertTrue(moduleDefinitionLibrary.equalsDeep(expectedModuleDefinitionLibrary));
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "EXMLogic/Library-EXMLogic-data-requirements.json");
+
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestWithDependencies() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        translatorOptions.setAnalyzeDataRequirements(false);
+        CqlTranslator translator = setupDataRequirementsAnalysis("WithDependencies/BSElements.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
+        assertNotNull(moduleDefinitionLibrary);
+        assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }

@@ -1,0 +1,159 @@
+{
+  "resourceType": "Library",
+  "status": "active",
+  "type": {
+    "coding": [ {
+      "system": "http://terminology.hl7.org/CodeSystem/library-type",
+      "code": "module-definition"
+    } ]
+  },
+  "relatedArtifact": [ {
+    "type": "depends-on",
+    "display": "FHIR model information",
+    "resource": "http://fhir.org/guides/cqf/common/Library/FHIR-ModelInfo|4.0.1"
+  }, {
+    "type": "depends-on",
+    "display": "Library FHIRCommon",
+    "resource": "Library/FHIRCommon|4.0.1"
+  }, {
+    "type": "depends-on",
+    "display": "Library FHIRHelpers",
+    "resource": "Library/FHIRHelpers|4.0.1"
+  }, {
+    "type": "depends-on",
+    "display": "Library CommonCx",
+    "resource": "Library/CommonConcepts|1.0.000"
+  }, {
+    "type": "depends-on",
+    "display": "Library CommonEl",
+    "resource": "Library/CommonElements|1.0.000"
+  }, {
+    "type": "depends-on",
+    "display": "Library Ind2E31A37EB104A7D1",
+    "resource": "Library/Ind2E31A37EB104A7D1|1.0.000"
+  }, {
+    "type": "depends-on",
+    "display": "Value set rp_biliopancreaticDiversionWithDuodenalSwitch_cambia",
+    "resource": "http://example.com/fhir/ValueSet/rp_biliopancreaticDiversionWithDuodenalSwitch_cambia"
+  }, {
+    "type": "depends-on",
+    "display": "Value set ro_bodyMassIndex_kg_per_m2",
+    "resource": "http://example.com/fhir/ValueSet/ro_bodyMassIndex_kg_per_m2"
+  }, {
+    "type": "depends-on",
+    "display": "Value set ro_weight_kg",
+    "resource": "http://example.com/fhir/ValueSet/ro_weight_kg"
+  }, {
+    "type": "depends-on",
+    "display": "Value set ro_height_cm",
+    "resource": "http://example.com/fhir/ValueSet/ro_height_cm"
+  }, {
+    "type": "depends-on",
+    "display": "Value set ro_weight_lb",
+    "resource": "http://example.com/fhir/ValueSet/ro_weight_lb"
+  }, {
+    "type": "depends-on",
+    "display": "Value set ro_height_in",
+    "resource": "http://example.com/fhir/ValueSet/ro_height_in"
+  } ],
+  "parameter": [ {
+    "name": "Patient",
+    "use": "out",
+    "min": 0,
+    "max": "1",
+    "type": "Patient"
+  }, {
+    "name": "4. Biliopancreatic bypass with duodenal switch in patients ages greater than or equal to 18 years with BMI greater than or equal to 50 kg/(meter squared)",
+    "use": "out",
+    "min": 0,
+    "max": "1",
+    "type": "boolean"
+  } ],
+  "dataRequirement": [ {
+    "type": "Patient",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Patient" ]
+  }, {
+    "type": "ServiceRequest",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/ServiceRequest" ],
+    "mustSupport": [ "code", "authoredOn" ],
+    "codeFilter": [ {
+      "path": "code",
+      "valueSet": "http://example.com/fhir/ValueSet/rp_biliopancreaticDiversionWithDuodenalSwitch_cambia"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Observation" ],
+    "mustSupport": [ "category" ],
+    "codeFilter": [ {
+      "path": "category",
+      "code": [ {
+        "code": "vital-sign"
+      } ]
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Observation" ],
+    "mustSupport": [ "category", "code", "effective", "value" ],
+    "codeFilter": [ {
+      "path": "category",
+      "code": [ {
+        "code": "vital-sign"
+      } ]
+    }, {
+      "path": "code",
+      "valueSet": "http://example.com/fhir/ValueSet/ro_bodyMassIndex_kg_per_m2"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Observation" ],
+    "mustSupport": [ "category", "code", "effective", "value" ],
+    "codeFilter": [ {
+      "path": "category",
+      "code": [ {
+        "code": "vital-sign"
+      } ]
+    }, {
+      "path": "code",
+      "valueSet": "http://example.com/fhir/ValueSet/ro_weight_kg"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Observation" ],
+    "mustSupport": [ "category", "code", "effective", "value" ],
+    "codeFilter": [ {
+      "path": "category",
+      "code": [ {
+        "code": "vital-sign"
+      } ]
+    }, {
+      "path": "code",
+      "valueSet": "http://example.com/fhir/ValueSet/ro_height_cm"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Observation" ],
+    "mustSupport": [ "category", "code", "effective", "value" ],
+    "codeFilter": [ {
+      "path": "category",
+      "code": [ {
+        "code": "vital-sign"
+      } ]
+    }, {
+      "path": "code",
+      "valueSet": "http://example.com/fhir/ValueSet/ro_weight_lb"
+    } ]
+  }, {
+    "type": "Observation",
+    "profile": [ "http://hl7.org/fhir/StructureDefinition/Observation" ],
+    "mustSupport": [ "category", "code", "effective", "value" ],
+    "codeFilter": [ {
+      "path": "category",
+      "code": [ {
+        "code": "vital-sign"
+      } ]
+    }, {
+      "path": "code",
+      "valueSet": "http://example.com/fhir/ValueSet/ro_height_in"
+    } ]
+  } ]
+}

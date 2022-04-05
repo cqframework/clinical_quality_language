@@ -251,6 +251,14 @@ public class SimpleElmEngine {
             }
         }
 
+        else if (left instanceof ToList) {
+            if (right instanceof ToList) {
+                Expression leftSingleton = ((ToList)left).getOperand();
+                Expression rightSingleton = ((ToList)right).getOperand();
+                return codesEqual(leftSingleton, rightSingleton);
+            }
+        }
+
         return false;
     }
 }
