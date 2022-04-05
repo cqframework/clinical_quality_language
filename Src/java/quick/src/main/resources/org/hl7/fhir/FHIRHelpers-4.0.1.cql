@@ -124,8 +124,10 @@ define function reference(reference String):
 define function resolve(reference String) returns Resource: external
 define function resolve(reference Reference) returns Resource: external
 define function reference(resource Resource) returns Reference: external
-define function extension(element Element, url String) returns List<Element>: external
-define function extension(resource Resource, url String) returns List<Element>: external
+define function extension(element Element, url String) returns List<Extension>: external
+define function extension(resource DomainResource, url String) returns List<Extension>: external
+define function modifierExtension(element BackboneElement, url String) returns List<Extension>: external
+define function modifierExtension(resource DomainResource, url String) returns List<Extension>: external
 define function hasValue(element Element) returns Boolean: external
 define function getValue(element Element) returns Any: external
 define function ofType(identifier String) returns List<Any>: external
