@@ -366,7 +366,7 @@ public class CqlTranslatorOptions {
         this.analyzeDataRequirements = analyzeDataRequirements;
     }
 
-    /**
+    /**git 
      * Return this instance of CqlTranslatorOptions with addition of newly assigned analyzedDataRequirements boolean
      * @param analyzeDataRequirements
      * @return
