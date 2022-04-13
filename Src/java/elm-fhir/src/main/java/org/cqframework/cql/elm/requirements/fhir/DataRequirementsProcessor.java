@@ -4,6 +4,8 @@ import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.NamespaceManager;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql.model.IntervalType;
 import org.hl7.cql.model.ListType;
 import org.hl7.cql.model.NamedType;
@@ -518,6 +520,36 @@ public class DataRequirementsProcessor {
         return "Any";
     }
 
+    /**
+     * TODO: This function is used to determine the library identifier in which the reference element was declared
+     * This is only possible if the ELM includes trackbacks, which are typically only available in ELM coming straight from the translator
+     * (i.e. de-compiled ELM won't have this)
+     * The issue is that when code filter expressions are distributed, the references may cross declaration contexts (i.e. a code filter
+     * expression from the library in which it was first expressed may be evaluated in the context of a data requirement inferred
+     * from a retrieve in a different library. If the library aliases are consistent, this isn't an issue, but if the library aliases
+     * are different, this will result in a failure to resolve the reference (or worse, an incorrect reference).
+     * This is being reported as a warning currently, but it is really an issue with the data requirement distribution, it should be
+     * rewriting references as it distributes (or better yet, ELM should have a library identifier that is fully resolved, rather
+     * than relying on library-specific aliases for library referencing elements.
+     * @param trackable
+     * @param libraryIdentifier
+     * @return
+     */
+    private VersionedIdentifier getDeclaredLibraryIdentifier(Trackable trackable, VersionedIdentifier libraryIdentifier) {
+        if (trackable.getTrackbacks() != null) {
+            for (TrackBack tb : trackable.getTrackbacks()) {
+                if (tb.getLibrary() != null) {
+                    return tb.getLibrary();
+                }
+            }
+        }
+
+        validationMessages.add(new ValidationMessage(ValidationMessage.Source.Publisher, ValidationMessage.IssueType.PROCESSING, "Data requirements processing",
+                String.format("Library referencing element (%s) is potentially being resolved in a different context than it was declared. Ensure library aliases are consistent", trackable.getClass().getSimpleName()), ValidationMessage.IssueSeverity.WARNING));
+
+        return libraryIdentifier;
+    }
+
     private org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent toCodeFilterComponent(ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, String property, Expression value) {
         org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent cfc =
                 new org.hl7.fhir.r5.model.DataRequirement.DataRequirementCodeFilterComponent();
@@ -528,7 +560,8 @@ public class DataRequirementsProcessor {
 
         if (value instanceof ValueSetRef) {
             ValueSetRef vsr = (ValueSetRef)value;
-            cfc.setValueSet(toReference(context.resolveValueSetRef(libraryIdentifier, vsr)));
+            VersionedIdentifier declaredLibraryIdentifier = getDeclaredLibraryIdentifier(vsr, libraryIdentifier);
+            cfc.setValueSet(toReference(context.resolveValueSetRef(declaredLibraryIdentifier, vsr)));
         }
 
         if (value instanceof org.hl7.elm.r1.ToList) {
@@ -950,7 +983,8 @@ public class DataRequirementsProcessor {
                                         Expression e) {
         if (e instanceof org.hl7.elm.r1.CodeRef) {
             CodeRef cr = (CodeRef)e;
-            cfc.addCode(toCoding(context, libraryIdentifier, context.toCode(context.resolveCodeRef(libraryIdentifier, cr))));
+            VersionedIdentifier declaredLibraryIdentifier = getDeclaredLibraryIdentifier(cr, libraryIdentifier);
+            cfc.addCode(toCoding(context, libraryIdentifier, context.toCode(context.resolveCodeRef(declaredLibraryIdentifier, cr))));
         }
 
         if (e instanceof org.hl7.elm.r1.Code) {
@@ -959,8 +993,9 @@ public class DataRequirementsProcessor {
 
         if (e instanceof org.hl7.elm.r1.ConceptRef) {
             ConceptRef cr = (ConceptRef)e;
+            VersionedIdentifier declaredLibraryIdentifier = getDeclaredLibraryIdentifier(cr, libraryIdentifier);
             org.hl7.fhir.r5.model.CodeableConcept c = toCodeableConcept(context, libraryIdentifier,
-                    context.toConcept(libraryIdentifier, context.resolveConceptRef(libraryIdentifier, cr)));
+                    context.toConcept(libraryIdentifier, context.resolveConceptRef(declaredLibraryIdentifier, cr)));
             for (org.hl7.fhir.r5.model.Coding code : c.getCoding()) {
                 cfc.addCode(code);
             }
@@ -972,10 +1007,16 @@ public class DataRequirementsProcessor {
                 cfc.addCode(code);
             }
         }
+
+        if (e instanceof org.hl7.elm.r1.Literal) {
+            org.hl7.elm.r1.Literal literal = (org.hl7.elm.r1.Literal)e;
+            cfc.addCode().setCode(literal.getValue());
+        }
     }
 
     private org.hl7.fhir.r5.model.Coding toCoding(ElmRequirementsContext context, VersionedIdentifier libraryIdentifier, Code code) {
-        CodeSystemDef codeSystemDef = context.resolveCodeSystemRef(libraryIdentifier, code.getSystem());
+        VersionedIdentifier declaredLibraryIdentifier = getDeclaredLibraryIdentifier(code.getSystem(), libraryIdentifier);
+        CodeSystemDef codeSystemDef = context.resolveCodeSystemRef(declaredLibraryIdentifier, code.getSystem());
         org.hl7.fhir.r5.model.Coding coding = new org.hl7.fhir.r5.model.Coding();
         coding.setCode(code.getCode());
         coding.setDisplay(code.getDisplay());
