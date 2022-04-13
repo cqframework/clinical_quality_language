@@ -11,14 +11,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-public class CqlTranslatorOptionsToJSON {
+public class CqlTranslatorOptionsToJsonSchema {
     private static final String separator = System.getProperty("file.separator");
     private static final String JSON_LOC = "src" + separator + "test" + separator +
             "resources" + separator + "org" + separator + "cqframework" + separator + "cql" + separator + "cql2elm" +
             separator + "json" + separator + "CqlTranslatorOptions.json";
 
     @Test
-    public void CqlTranslatorOptionsToJsonSchema() {
+    public void BuildJsonSchemaFromCqlTranslatorOptions() {
         //delete file if exists:
         try {
             File jsonFile = new File(JSON_LOC);
