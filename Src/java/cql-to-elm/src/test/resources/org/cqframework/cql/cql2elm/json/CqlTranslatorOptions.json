@@ -1,0 +1,43 @@
+{
+  "type" : "object",
+  "properties" : {
+    "analyzeDataRequirements" : {
+      "type" : "boolean"
+    },
+    "collapseDataRequirements" : {
+      "type" : "boolean"
+    },
+    "compatibilityLevel" : {
+      "type" : "string"
+    },
+    "errorLevel" : {
+      "enum" : [ "Info", "Warning", "Error" ],
+      "type" : "string"
+    },
+    "formats" : {
+      "type" : "array",
+      "items" : {
+        "enum" : [ "XML", "JSON", "JXSON", "COFFEE" ],
+        "type" : "string"
+      }
+    },
+    "options" : {
+      "type" : "array",
+      "items" : {
+        "enum" : [ "EnableDateRangeOptimization", "EnableAnnotations", "EnableLocators", "EnableResultTypes", "EnableDetailedErrors", "DisableListTraversal", "DisableListDemotion", "DisableListPromotion", "EnableIntervalDemotion", "EnableIntervalPromotion", "DisableMethodInvocation", "RequireFromKeyword" ],
+        "type" : "string"
+      }
+    },
+    "signatureLevel" : {
+      "enum" : [ "None", "Differing", "Overloads", "All" ],
+      "type" : "string"
+    },
+    "validateUnits" : {
+      "type" : "boolean"
+    },
+    "verifyOnly" : {
+      "type" : "boolean"
+    }
+  },
+  "$schema" : "http://json-schema.org/draft-04/schema#"
+}
