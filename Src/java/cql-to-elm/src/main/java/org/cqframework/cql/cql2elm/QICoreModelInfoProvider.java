@@ -29,8 +29,11 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
                     return JAXB.unmarshal(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.0.0.xml"),
                             ModelInfo.class);
                 case "4.1.0":
-                default:
                     return JAXB.unmarshal(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.0.xml"),
+                            ModelInfo.class);
+                case "4.1.1":
+                default:
+                    return JAXB.unmarshal(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.1.xml"),
                             ModelInfo.class);
             }
         }
