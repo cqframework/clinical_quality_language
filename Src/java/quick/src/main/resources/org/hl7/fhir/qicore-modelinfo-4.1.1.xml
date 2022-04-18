@@ -50,7 +50,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period when address was/is in use" definition="Time period when address was/is in use.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period when address was/is in use" definition="Time period when address was/is in use.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -605,7 +605,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period plan covers" definition="Indicates when the plan did (or is intended to) come into effect and end." comment="Any activities scheduled as part of the plan should be constrained to the specified period regardless of whether the activities are planned within a single encounter/episode or across multiple encounters/episodes (e.g. the longitudinal management of a chronic condition).">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period plan covers" definition="Indicates when the plan did (or is intended to) come into effect and end." comment="Any activities scheduled as part of the plan should be constrained to the specified period regardless of whether the activities are planned within a single encounter/episode or across multiple encounters/episodes (e.g. the longitudinal management of a chronic condition).">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -851,7 +851,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period team covers" definition="Indicates when the team did (or is intended to) come into effect and end.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period team covers" definition="Indicates when the team did (or is intended to) come into effect and end.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -922,7 +922,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period of participant" definition="Indicates when the specific member or organization did (or is intended to) come into effect and end.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period of participant" definition="Indicates when the specific member or organization did (or is intended to) come into effect and end.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -967,7 +967,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="billablePeriod" description="Relevant time frame for the claim" definition="The period for which charges are being submitted." comment="Typically this would be today or in the past for a claim, and today or in the future for preauthorizations and predeterminations. Typically line item dates of service should fall within the billing period if one is specified." mustSupport="true">
+      <element name="billablePeriod" target="FHIRHelpers.ToInterval(%value)" description="Relevant time frame for the claim" definition="The period for which charges are being submitted." comment="Typically this would be today or in the past for a claim, and today or in the future for preauthorizations and predeterminations. Typically line item dates of service should fall within the billing period if one is specified." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -2304,7 +2304,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period when the contact point was/is in use" definition="Time period when the contact point was/is in use.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period when the contact point was/is in use" definition="Time period when the contact point was/is in use.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -2385,7 +2385,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Coverage start and end dates" definition="Time period during which the coverage is in force. A missing start date indicates the start date isn't known, a missing end date means the coverage is continuing to be in force." mustSupport="true">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Coverage start and end dates" definition="Time period during which the coverage is in force. A missing start date indicates the start date isn't known, a missing end date means the coverage is continuing to be in force." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -2488,7 +2488,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="The effective period of the exception" definition="The timeframe during when the exception is in force.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="The effective period of the exception" definition="The timeframe during when the exception is in force.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3817,7 +3817,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="The start and end time of the encounter" definition="The start and end time of the encounter." comment="If not (yet) known, the end of the Period may be omitted." mustSupport="true">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="The start and end time of the encounter" definition="The start and end time of the encounter." comment="If not (yet) known, the end of the Period may be omitted." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3887,7 +3887,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="The time that the episode was in the specified class" definition="The time that the episode was in the specified class.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="The time that the episode was in the specified class" definition="The time that the episode was in the specified class.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3996,7 +3996,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period during which the patient was present at the location" definition="Time period during which the patient was present at the location." mustSupport="true">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period during which the patient was present at the location" definition="Time period during which the patient was present at the location." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -4013,7 +4013,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Period of time during the encounter that the participant participated" definition="The period of time that the specified participant participated in the encounter. These can overlap or be sub-sets of the overall encounter's period." mustSupport="true">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Period of time during the encounter that the participant participated" definition="The period of time that the specified participant participated in the encounter. These can overlap or be sub-sets of the overall encounter's period." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -4034,7 +4034,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="The time that the episode was in the specified status" definition="The time that the episode was in the specified status.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="The time that the episode was in the specified status" definition="The time that the episode was in the specified status.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -4383,7 +4383,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period when flag is active" definition="The period of time from the activation of the flag to inactivation of the flag. If the flag is active, the end of the period should be unspecified." mustSupport="true">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period when flag is active" definition="The period of time from the activation of the flag to inactivation of the flag. If the flag is active, the end of the period should be unspecified." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -4578,7 +4578,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period when name was/is in use" definition="Indicates the period of time when this name was valid for the named person.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period when name was/is in use" definition="Indicates the period of time when this name was valid for the named person.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -4610,7 +4610,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Time period when id is/was valid for use" definition="Time period during which identifier is/was valid for use.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Time period when id is/was valid for use" definition="Time period during which identifier is/was valid for use.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -6783,7 +6783,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="validityPeriod" description="Time period supply is authorized for" definition="This indicates the validity period of a prescription (stale dating the Prescription)." comment="It reflects the prescribers' perspective for the validity of the prescription. Dispenses must not be made against the prescription outside of this period. The lower-bound of the Dispensing Window signifies the earliest date that the prescription can be filled for the first time. If an upper-bound is not specified then the Prescription is open-ended or will default to a stale-date based on regulations." mustSupport="true">
+      <element name="validityPeriod" target="FHIRHelpers.ToInterval(%value)" description="Time period supply is authorized for" definition="This indicates the validity period of a prescription (stale dating the Prescription)." comment="It reflects the prescribers' perspective for the validity of the prescription. Dispenses must not be made against the prescription outside of this period. The lower-bound of the Dispensing Window signifies the earliest date that the prescription can be filled for the first time. If an upper-bound is not specified then the Prescription is open-ended or will default to a stale-date based on regulations." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -7294,7 +7294,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="age" description="Applicable age range, if relevant" definition="The age at which this reference range is applicable. This is a neonatal age (e.g. number of weeks at term) if the meaning says so.">
+      <element name="age" target="FHIRHelpers.ToInterval(%value)" description="Applicable age range, if relevant" definition="The age at which this reference range is applicable. This is a neonatal age (e.g. number of weeks at term) if the meaning says so.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -7885,7 +7885,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="The period during which this contact person or organization is valid to be contacted relating to this patient" definition="The period during which this contact person or organization is valid to be contacted relating to this patient.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="The period during which this contact person or organization is valid to be contacted relating to this patient" definition="The period during which this contact person or organization is valid to be contacted relating to this patient.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -8007,7 +8007,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Period during which the qualification is valid" definition="Period during which the qualification is valid.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Period during which the qualification is valid" definition="Period during which the qualification is valid.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -8033,7 +8033,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="The period during which the practitioner is authorized to perform in these role(s)" definition="The period during which the person is authorized to act as a practitioner in these role(s) for the organization." mustSupport="true">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="The period during which the practitioner is authorized to perform in these role(s)" definition="The period during which the person is authorized to act as a practitioner in these role(s) for the organization." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -8138,7 +8138,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="during" description="Service not available from this date" definition="Service is not available (seasonally or for a public holiday) from this date.">
+      <element name="during" target="FHIRHelpers.ToInterval(%value)" description="Service not available from this date" definition="Service is not available (seasonally or for a public holiday) from this date.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -8491,7 +8491,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="effectivePeriod" description="When the questionnaire is expected to be used" definition="The period during which the questionnaire content was or is planned to be in active use." comment="The effective period for a questionnaire  determines when the content is applicable for usage and is independent of publication and review dates. For example, a measure intended to be used for the year 2016 might be published in 2015.">
+      <element name="effectivePeriod" target="FHIRHelpers.ToInterval(%value)" description="When the questionnaire is expected to be used" definition="The period during which the questionnaire content was or is planned to be in active use." comment="The effective period for a questionnaire  determines when the content is applicable for usage and is independent of publication and review dates. For example, a measure intended to be used for the year 2016 might be published in 2015.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -8972,7 +8972,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="Period of time that this relationship is considered valid" definition="The period of time during which this relationship is or was active. If there are no dates defined, then the interval is unknown." mustSupport="true">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="Period of time that this relationship is considered valid" definition="The period of time during which this relationship is or was active. If there are no dates defined, then the interval is unknown." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -9987,7 +9987,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="executionPeriod" description="Start and end time of execution" definition="Identifies the time action was first taken against the task (start) and/or the time final action was taken against the task prior to marking it as completed (end)." mustSupport="false">
+      <element name="executionPeriod" target="FHIRHelpers.ToInterval(%value)" description="Start and end time of execution" definition="Identifies the time action was first taken against the task (start) and/or the time final action was taken against the task prior to marking it as completed (end)." mustSupport="false">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -10218,7 +10218,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="period" description="When fulfillment sought" definition="Over what time-period is fulfillment sought." comment="Note that period.high is the due date representing the time by which the task should be completed.">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)" description="When fulfillment sought" definition="Over what time-period is fulfillment sought." comment="Note that period.high is the due date representing the time by which the task should be completed.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -10332,7 +10332,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="executionPeriod" description="The timing the task was rejected and the reason." definition="Identifies the time action was first taken against the task (start) and/or the time final action was taken against the task prior to marking it as completed (end)." mustSupport="true">
+      <element name="executionPeriod" target="FHIRHelpers.ToInterval(%value)" description="The timing the task was rejected and the reason." definition="Identifies the time action was first taken against the task (start) and/or the time final action was taken against the task prior to marking it as completed (end)." mustSupport="true">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -11701,7 +11701,7 @@
             <expression language="text/fhirpath" expression="extension.exists() != value.exists()"/>
          </constraint>
       </element>
-      <element name="period" target="%parent.extension[url='period']" description="Nationality Period" definition="Period when nationality was effective.">
+      <element name="period" target="FHIRHelpers.ToInterval(%parent.extension[url='period'].value)" description="Nationality Period" definition="Period when nationality was effective.">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
