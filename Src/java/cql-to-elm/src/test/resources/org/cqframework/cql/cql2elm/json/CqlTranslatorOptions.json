@@ -24,7 +24,7 @@
     "options" : {
       "type" : "array",
       "items" : {
-        "enum" : [ "EnableDateRangeOptimization", "EnableAnnotations", "EnableLocators", "EnableResultTypes", "EnableDetailedErrors", "DisableListTraversal", "DisableListDemotion", "DisableListPromotion", "EnableIntervalDemotion", "EnableIntervalPromotion", "DisableMethodInvocation", "RequireFromKeyword" ],
+        "enum" : [ "EnableDateRangeOptimization", "EnableAnnotations", "EnableLocators", "EnableResultTypes", "EnableDetailedErrors", "DisableListTraversal", "DisableListDemotion", "DisableListPromotion", "EnableIntervalDemotion", "EnableIntervalPromotion", "DisableMethodInvocation", "RequireFromKeyword", "DisableDefaultModelInfoLoad" ],
         "type" : "string"
       }
     },

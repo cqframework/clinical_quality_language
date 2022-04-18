@@ -26,8 +26,11 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
             switch (localVersion) {
                 case "3.1.0":
-                default:
                     return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"),
+                            ModelInfo.class);
+                case "3.1.1":
+                default:
+                    return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"),
                             ModelInfo.class);
             }
         }
