@@ -77,7 +77,7 @@ public class BaseTest {
     }
 
     @Test
-    public void testAdultOutpatientEcnounters() throws IOException {
+    public void testAdultOutpatientEncounters() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/AdultOutpatientEncounters_QICore4-2.0.000.cql", 0);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
@@ -113,5 +113,47 @@ public class BaseTest {
         FunctionRef functionRef = (FunctionRef)includedIn.getOperand().get(0);
         assertThat(functionRef.getName(), equalTo("ToInterval"));
         assertThat(functionRef.getLibraryName(), equalTo("FHIRHelpers"));
+    }
+
+    @Test
+    public void testPapTestWithResults() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("qicore/v411/EXM124_QICore4-8.2.000.cql", 0);
+        Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("Pap Test with Results");
+        assertThat(def, notNullValue());
+
+        /*
+        ExpressionDef: Pap Test with Results
+            Query
+                Source
+                Where: And
+                    Operand[0]: Not
+                        Operand[0]: IsNull
+                            Operand[0]: FunctionRef: FHIRHelpers.ToValue
+         */
+        assertThat(def.getExpression(), instanceOf(Query.class));
+        Query q = (Query)def.getExpression();
+        assertThat(q.getWhere(), instanceOf(And.class));
+        And a = (And)q.getWhere();
+        assertThat(a.getOperand().get(0), instanceOf(Not.class));
+        Not n = (Not)a.getOperand().get(0);
+        assertThat(n.getOperand(), instanceOf(IsNull.class));
+        IsNull i = (IsNull)n.getOperand();
+        assertThat(i.getOperand(), instanceOf(FunctionRef.class));
+        FunctionRef fr = (FunctionRef)i.getOperand();
+        assertThat(fr.getLibraryName(), equalTo("FHIRHelpers"));
+        assertThat(fr.getName(), equalTo("ToValue"));
+        assertThat(fr.getOperand().get(0), instanceOf(Property.class));
+        Property p = (Property)fr.getOperand().get(0);
+        assertThat(p.getPath(), equalTo("value"));
+        assertThat(p.getScope(), equalTo("PapTest"));
     }
 }

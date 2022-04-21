@@ -4,6 +4,7 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.*;
@@ -222,6 +223,11 @@ public class BaseTest {
         assertResultType(translatedLibrary, "TestElementExtensions", "FHIR", "Extension");
         assertResultType(translatedLibrary, "TestModifierExtensions", "FHIR", "Extension");
         assertResultType(translatedLibrary, "TestElementModifierExtensions", "FHIR", "Extension");
+
+        ExpressionDef ed = translatedLibrary.resolveExpressionRef("TestChoiceConverts");
+        DataType resultType = ed.getExpression().getResultType();
+        assertThat(resultType, instanceOf(ChoiceType.class));
+        assertThat(resultType.toString(), equalTo("choice<System.String,System.Boolean,System.Date,System.DateTime,System.Decimal,System.Integer,System.Time,System.Quantity,System.Concept,System.Code,interval<System.Quantity>,interval<System.DateTime>,System.Ratio,FHIR.Address,FHIR.Annotation,FHIR.Attachment,FHIR.ContactPoint,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.ContactDetail,FHIR.Contributor,FHIR.DataRequirement,FHIR.Expression,FHIR.ParameterDefinition,FHIR.RelatedArtifact,FHIR.TriggerDefinition,FHIR.UsageContext,FHIR.Dosage,FHIR.Meta>"));
     }
 
     @Test
