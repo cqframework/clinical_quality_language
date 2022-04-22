@@ -2,13 +2,13 @@
 <modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="QICore" version="4.1.1" url="http://hl7.org/fhir/us/qicore" targetUrl="http://hl7.org/fhir" targetQualifier="qicore" patientClassName="Patient" patientBirthDatePropertyName="birthDate">
    <requiredModelInfo name="System" version="1.0.0"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" xsi:type="ClassInfo">
-      <element name="use" elementType="QICore.AddressUse" description="home | work | temp | old | billing - purpose of this address" definition="The purpose of this address." comment="Applications can assume that an address is current unless it explicitly says that it is temporary or old.">
+      <element name="use" elementType="QICore.AddressUse" target="%value.value" description="home | work | temp | old | billing - purpose of this address" definition="The purpose of this address." comment="Applications can assume that an address is current unless it explicitly says that it is temporary or old.">
          <binding name="AddressUse" description="The use of an address." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="type" elementType="QICore.AddressType" description="postal | physical | both" definition="Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both." comment="The definition of Address states that &quot;address is intended to describe postal addresses, not physical locations&quot;. However, many applications track whether an address has a dual purpose of being a location that can be visited as well as being a valid delivery destination, and Postal addresses are often used as proxies for physical locations (also see the [Location](location.html#) resource).">
+      <element name="type" elementType="QICore.AddressType" target="%value.value" description="postal | physical | both" definition="Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both." comment="The definition of Address states that &quot;address is intended to describe postal addresses, not physical locations&quot;. However, many applications track whether an address has a dual purpose of being a location that can be visited as well as being a valid delivery destination, and Postal addresses are often used as proxies for physical locations (also see the [Location](location.html#) resource).">
          <binding name="AddressType" description="The type of an address (physical / postal)." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -68,7 +68,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="actuality" elementType="QICore.AdverseEventActuality" description="actual | potential" definition="Whether the event actually happened, or just had the potential to. Note that this is independent of whether anyone was affected or harmed or how severely." mustSupport="true">
+      <element name="actuality" elementType="QICore.AdverseEventActuality" target="%value.value" description="actual | potential" definition="Whether the event actually happened, or just had the potential to. Note that this is independent of whether anyone was affected or harmed or how severely." mustSupport="true">
          <binding name="AdverseEventActuality" description="Overall nature of the adverse event, e.g. real or potential." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -252,20 +252,20 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="type" elementType="QICore.AllergyIntoleranceType" description="allergy | intolerance - Underlying mechanism (if known)" definition="Identification of the underlying physiological mechanism for the reaction risk." comment="Allergic (typically immune-mediated) reactions have been traditionally regarded as an indicator for potential escalation to significant future risk. Contemporary knowledge suggests that some reactions previously thought to be immune-mediated are, in fact, non-immune, but in some cases can still pose a life threatening risk. It is acknowledged that many clinicians might not be in a position to distinguish the mechanism of a particular reaction. Often the term &quot;allergy&quot; is used rather generically and may overlap with the use of &quot;intolerance&quot; - in practice the boundaries between these two concepts might not be well-defined or understood. This data element is included nevertheless, because many legacy systems have captured this attribute. Immunologic testing may provide supporting evidence for the basis of the reaction and the causative substance, but no tests are 100% sensitive or specific for sensitivity to a particular substance. If, as is commonly the case, it is unclear whether the reaction is due to an allergy or an intolerance, then the type element should be omitted from the resource." mustSupport="true">
+      <element name="type" elementType="QICore.AllergyIntoleranceType" target="%value.value" description="allergy | intolerance - Underlying mechanism (if known)" definition="Identification of the underlying physiological mechanism for the reaction risk." comment="Allergic (typically immune-mediated) reactions have been traditionally regarded as an indicator for potential escalation to significant future risk. Contemporary knowledge suggests that some reactions previously thought to be immune-mediated are, in fact, non-immune, but in some cases can still pose a life threatening risk. It is acknowledged that many clinicians might not be in a position to distinguish the mechanism of a particular reaction. Often the term &quot;allergy&quot; is used rather generically and may overlap with the use of &quot;intolerance&quot; - in practice the boundaries between these two concepts might not be well-defined or understood. This data element is included nevertheless, because many legacy systems have captured this attribute. Immunologic testing may provide supporting evidence for the basis of the reaction and the causative substance, but no tests are 100% sensitive or specific for sensitivity to a particular substance. If, as is commonly the case, it is unclear whether the reaction is due to an allergy or an intolerance, then the type element should be omitted from the resource." mustSupport="true">
          <binding name="AllergyIntoleranceType" description="Identification of the underlying physiological mechanism for a Reaction Risk." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="category" description="food | medication | environment | biologic" definition="Category of the identified substance." comment="This data element has been included because it is currently being captured in some clinical systems. This data can be derived from the substance where coding systems are used, and is effectively redundant in that situation.  When searching on category, consider the implications of AllergyIntolerance resources without a category.  For example, when searching on category = medication, medication allergies that don't have a category valued will not be returned.  Refer to [search](http://hl7.org/fhir/R4/search.html) for more information on how to search category with a :missing modifier to get allergies that don't have a category.  Additionally, category should be used with caution because category can be subjective based on the sender." mustSupport="true">
+      <element name="category" target="%value.value" description="food | medication | environment | biologic" definition="Category of the identified substance." comment="This data element has been included because it is currently being captured in some clinical systems. This data can be derived from the substance where coding systems are used, and is effectively redundant in that situation.  When searching on category, consider the implications of AllergyIntolerance resources without a category.  For example, when searching on category = medication, medication allergies that don't have a category valued will not be returned.  Refer to [search](http://hl7.org/fhir/R4/search.html) for more information on how to search category with a :missing modifier to get allergies that don't have a category.  Additionally, category should be used with caution because category can be subjective based on the sender." mustSupport="true">
          <elementTypeSpecifier elementType="QICore.AllergyIntoleranceCategory" xsi:type="ListTypeSpecifier"/>
          <binding name="AllergyIntoleranceCategory" description="Category of an identified substance associated with allergies or intolerances." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="criticality" elementType="QICore.AllergyIntoleranceCriticality" description="low | high | unable-to-assess" definition="Estimate of the potential clinical harm, or seriousness, of the reaction to the identified substance." comment="The default criticality value for any propensity to an adverse reaction should be 'Low Risk', indicating at the very least a relative contraindication to deliberate or voluntary exposure to the substance. 'High Risk' is flagged if the clinician has identified a propensity for a more serious or potentially life-threatening reaction, such as anaphylaxis, and implies an absolute contraindication to deliberate or voluntary exposure to the substance. If this element is missing, the criticality is unknown (though it may be known elsewhere).  Systems that capture a severity at the condition level are actually representing the concept of criticality whereas the severity documented at the reaction level is representing the true reaction severity.  Existing systems that are capturing both condition criticality and reaction severity may use the term &quot;severity&quot; to represent both.  Criticality is the worst it could be in the future (i.e. situation-agnostic) whereas severity is situation-dependent." mustSupport="true">
+      <element name="criticality" elementType="QICore.AllergyIntoleranceCriticality" target="%value.value" description="low | high | unable-to-assess" definition="Estimate of the potential clinical harm, or seriousness, of the reaction to the identified substance." comment="The default criticality value for any propensity to an adverse reaction should be 'Low Risk', indicating at the very least a relative contraindication to deliberate or voluntary exposure to the substance. 'High Risk' is flagged if the clinician has identified a propensity for a more serious or potentially life-threatening reaction, such as anaphylaxis, and implies an absolute contraindication to deliberate or voluntary exposure to the substance. If this element is missing, the criticality is unknown (though it may be known elsewhere).  Systems that capture a severity at the condition level are actually representing the concept of criticality whereas the severity documented at the reaction level is representing the true reaction severity.  Existing systems that are capturing both condition criticality and reaction severity may use the term &quot;severity&quot; to represent both.  Criticality is the worst it could be in the future (i.e. situation-agnostic) whereas severity is situation-dependent." mustSupport="true">
          <binding name="AllergyIntoleranceCriticality" description="Estimate of the potential clinical harm, or seriousness, of a reaction to an identified substance." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -364,7 +364,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="severity" elementType="QICore.AllergyIntoleranceSeverity" description="mild | moderate | severe (of event as a whole)" definition="Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations." comment="It is acknowledged that this assessment is very subjective. There may be some specific practice domains where objective scales have been applied. Objective scales can be included in this model as extensions." mustSupport="true">
+      <element name="severity" elementType="QICore.AllergyIntoleranceSeverity" target="%value.value" description="mild | moderate | severe (of event as a whole)" definition="Clinical assessment of the severity of the reaction event as a whole, potentially considering multiple different manifestations." comment="It is acknowledged that this assessment is very subjective. There may be some specific practice domains where objective scales have been applied. Objective scales can be included in this model as extensions." mustSupport="true">
          <binding name="AllergyIntoleranceSeverity" description="Clinical assessment of the severity of a reaction event as a whole, potentially considering multiple different manifestations." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -417,7 +417,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false" xsi:type="ClassInfo">
-      <element name="contentType" elementType="QICore.MimeType" description="Mime type of the content, with charset etc." definition="Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.">
+      <element name="contentType" elementType="QICore.MimeType" target="%value.value" description="Mime type of the content, with charset etc." definition="Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.">
          <binding name="MimeType" description="The mime type of an attachment. Any valid mime type is allowed." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -706,7 +706,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="CarePlan.Activity.Detail" retrievable="false" xsi:type="ClassInfo">
-      <element name="kind" elementType="QICore.CarePlanActivityKind" description="Appointment | CommunicationRequest | DeviceRequest | MedicationRequest | NutritionOrder | Task | ServiceRequest | VisionPrescription" definition="A description of the kind of resource the in-line definition of a care plan activity is representing.  The CarePlan.activity.detail is an in-line definition when a resource is not referenced using CarePlan.activity.reference.  For example, a MedicationRequest, a ServiceRequest, or a CommunicationRequest.">
+      <element name="kind" elementType="QICore.CarePlanActivityKind" target="%value.value" description="Appointment | CommunicationRequest | DeviceRequest | MedicationRequest | NutritionOrder | Task | ServiceRequest | VisionPrescription" definition="A description of the kind of resource the in-line definition of a care plan activity is representing.  The CarePlan.activity.detail is an in-line definition when a resource is not referenced using CarePlan.activity.reference.  For example, a MedicationRequest, a ServiceRequest, or a CommunicationRequest.">
          <binding name="CarePlanActivityKind" description="Resource types defined as part of FHIR that can be represented as in-line definitions of a care plan activity." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -749,7 +749,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.CarePlanActivityStatus" description="not-started | scheduled | in-progress | on-hold | completed | cancelled | stopped | unknown | entered-in-error" definition="Identifies what progress is being made for the specific activity." comment="Some aspects of status can be inferred based on the resources linked in actionTaken.  Note that &quot;status&quot; is only as current as the plan was most recently updated.  &#xa;The unknown code is not to be used to convey other statuses.  The unknown code should be used when one of the statuses applies, but the authoring system doesn't know the current state of the activity.">
+      <element name="status" elementType="QICore.CarePlanActivityStatus" target="%value.value" description="not-started | scheduled | in-progress | on-hold | completed | cancelled | stopped | unknown | entered-in-error" definition="Identifies what progress is being made for the specific activity." comment="Some aspects of status can be inferred based on the resources linked in actionTaken.  Note that &quot;status&quot; is only as current as the plan was most recently updated.  &#xa;The unknown code is not to be used to convey other statuses.  The unknown code should be used when one of the statuses applies, but the authoring system doesn't know the current state of the activity.">
          <binding name="CarePlanActivityStatus" description="Codes that reflect the current state of a care plan activity within its overall life cycle." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -938,7 +938,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.ClaimStatus" description="active | cancelled | draft | entered-in-error" definition="The status of the resource instance." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid.">
+      <element name="status" elementType="QICore.ClaimStatus" target="%value.value" description="active | cancelled | draft | entered-in-error" definition="The status of the resource instance." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid.">
          <binding name="ClaimStatus" description="A code specifying the state of the resource instance." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -956,7 +956,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="use" elementType="QICore.Use" description="claim | preauthorization | predetermination" definition="A code to indicate whether the nature of the request is: to request adjudication of products and services previously rendered; or requesting authorization and adjudication for provision in the future; or requesting the non-binding adjudication of the listed products and services which could be provided in the future.">
+      <element name="use" elementType="QICore.Use" target="%value.value" description="claim | preauthorization | predetermination" definition="A code to indicate whether the nature of the request is: to request adjudication of products and services previously rendered; or requesting authorization and adjudication for provision in the future; or requesting the non-binding adjudication of the listed products and services which could be provided in the future.">
          <binding name="Use" description="The purpose of the Claim: predetermination, preauthorization, claim." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1646,7 +1646,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.CommunicationStatus" description="preparation | in-progress | not-done | on-hold | stopped | completed | entered-in-error | unknown" definition="The status of the transmission." comment="This element is labeled as a modifier because the status contains the codes aborted and entered-in-error that mark the communication as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.CommunicationStatus" target="%value.value" description="preparation | in-progress | not-done | on-hold | stopped | completed | entered-in-error | unknown" definition="The status of the transmission." comment="This element is labeled as a modifier because the status contains the codes aborted and entered-in-error that mark the communication as not currently valid." mustSupport="true">
          <binding name="CommunicationStatus" description="The status of the communication." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1665,7 +1665,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.CommunicationPriority" description="routine | urgent | asap | stat" definition="Characterizes how quickly the planned or in progress communication must be addressed. Includes concepts such as stat, urgent, routine." comment="Used to prioritize workflow (such as which communication to read first) when the communication is planned or in progress.">
+      <element name="priority" elementType="QICore.CommunicationPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Characterizes how quickly the planned or in progress communication must be addressed. Includes concepts such as stat, urgent, routine." comment="Used to prioritize workflow (such as which communication to read first) when the communication is planned or in progress.">
          <binding name="CommunicationPriority" description="Codes indicating the relative importance of a communication." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1814,7 +1814,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.CommunicationStatus" description="preparation | in-progress | not-done | on-hold | stopped | completed | entered-in-error | unknown" definition="The status of the transmission." comment="This element is labeled as a modifier because the status contains the codes aborted and entered-in-error that mark the communication as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.CommunicationStatus" target="%value.value" description="preparation | in-progress | not-done | on-hold | stopped | completed | entered-in-error | unknown" definition="The status of the transmission." comment="This element is labeled as a modifier because the status contains the codes aborted and entered-in-error that mark the communication as not currently valid." mustSupport="true">
          <binding name="CommunicationStatus" description="The status of the communication." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1833,7 +1833,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.CommunicationPriority" description="routine | urgent | asap | stat" definition="Characterizes how quickly the planned or in progress communication must be addressed. Includes concepts such as stat, urgent, routine." comment="Used to prioritize workflow (such as which communication to read first) when the communication is planned or in progress.">
+      <element name="priority" elementType="QICore.CommunicationPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Characterizes how quickly the planned or in progress communication must be addressed. Includes concepts such as stat, urgent, routine." comment="Used to prioritize workflow (such as which communication to read first) when the communication is planned or in progress.">
          <binding name="CommunicationPriority" description="Codes indicating the relative importance of a communication." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1947,7 +1947,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.CommunicationRequestStatus" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the proposal or order." mustSupport="true">
+      <element name="status" elementType="QICore.CommunicationRequestStatus" target="%value.value" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the proposal or order." mustSupport="true">
          <binding name="CommunicationRequestStatus" description="The status of the communication request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1966,7 +1966,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.CommunicationPriority" description="routine | urgent | asap | stat" definition="Characterizes how quickly the proposed act must be initiated. Includes concepts such as stat, urgent, routine.">
+      <element name="priority" elementType="QICore.CommunicationPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Characterizes how quickly the proposed act must be initiated. Includes concepts such as stat, urgent, routine.">
          <binding name="CommunicationPriority" description="Codes indicating the relative importance of a communication request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2282,7 +2282,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false" xsi:type="ClassInfo">
-      <element name="system" elementType="QICore.ContactPointSystem" description="phone | fax | email | pager | url | sms | other" definition="Telecommunications form for contact point - what communications system is required to make use of the contact.">
+      <element name="system" elementType="QICore.ContactPointSystem" target="%value.value" description="phone | fax | email | pager | url | sms | other" definition="Telecommunications form for contact point - what communications system is required to make use of the contact.">
          <binding name="ContactPointSystem" description="Telecommunications form for contact point." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2293,7 +2293,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="use" elementType="QICore.ContactPointUse" description="home | work | temp | old | mobile - purpose of this contact point" definition="Identifies the purpose for the contact point." comment="Applications can assume that a contact is current unless it explicitly says that it is temporary or old.">
+      <element name="use" elementType="QICore.ContactPointUse" target="%value.value" description="home | work | temp | old | mobile - purpose of this contact point" definition="Identifies the purpose for the contact point." comment="Applications can assume that a contact is current unless it explicitly says that it is temporary or old.">
          <binding name="ContactPointUse" description="Use of contact point." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2316,7 +2316,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="ContactPointSystem" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="ContactPointUse" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false" xsi:type="ClassInfo">
-      <element name="type" elementType="QICore.ContributorType" description="author | editor | reviewer | endorser" definition="The type of contributor.">
+      <element name="type" elementType="QICore.ContributorType" target="%value.value" description="author | editor | reviewer | endorser" definition="The type of contributor.">
          <binding name="ContributorType" description="The type of contributor." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2342,7 +2342,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.CoverageStatus" description="active | cancelled | draft | entered-in-error" definition="The status of the resource instance." comment="This element is labeled as a modifier because the status contains the code entered-in-error that marks the coverage as not currently valid.">
+      <element name="status" elementType="QICore.CoverageStatus" target="%value.value" description="active | cancelled | draft | entered-in-error" definition="The status of the resource instance." comment="This element is labeled as a modifier because the status contains the code entered-in-error that marks the coverage as not currently valid.">
          <binding name="CoverageStatus" description="A code specifying the state of the resource instance." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2501,7 +2501,7 @@
    <typeInfo baseType="QICore.DataAbsentReason" namespace="QICore" name="Data Absent Reason" identifier="http://hl7.org/fhir/StructureDefinition/data-absent-reason" label="Why value is missing" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="DataAbsentReason" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false" xsi:type="ClassInfo">
-      <element name="type" elementType="QICore.FHIRAllTypes" description="The type of the required data" definition="The type of the required data, specified as the type name of a resource. For profiles, this value is set to the type of the base resource of the profile.">
+      <element name="type" elementType="QICore.FHIRAllTypes" target="%value.value" description="The type of the required data" definition="The type of the required data, specified as the type name of a resource. For profiles, this value is set to the type of the base resource of the profile.">
          <binding name="FHIRAllTypes" description="A list of all the concrete types defined in this version of the FHIR specification - Abstract Types, Data Types and Resource Types." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2612,7 +2612,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="direction" elementType="QICore.SortDirection" description="ascending | descending" definition="The direction of the sort, ascending or descending.">
+      <element name="direction" elementType="QICore.SortDirection" target="%value.value" description="ascending | descending" definition="The direction of the sort, ascending or descending.">
          <binding name="SortDirection" description="The possible sort directions, ascending or descending." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2639,7 +2639,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.FHIRDeviceStatus" description="active | inactive | entered-in-error | unknown" definition="Status of the Device availability." comment="This element is labeled as a modifier because the status contains the codes inactive and entered-in-error that mark the device (record)as not currently valid.">
+      <element name="status" elementType="QICore.FHIRDeviceStatus" target="%value.value" description="active | inactive | entered-in-error | unknown" definition="Status of the Device availability." comment="This element is labeled as a modifier because the status contains the codes inactive and entered-in-error that mark the device (record)as not currently valid.">
          <binding name="FHIRDeviceStatus" description="The availability status of the device." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2772,7 +2772,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="type" elementType="QICore.DeviceNameType" description="udi-label-name | user-friendly-name | patient-reported-name | manufacturer-name | model-name | other" definition="The type of deviceName.&#xa;UDILabelName | UserFriendlyName | PatientReportedName | ManufactureDeviceName | ModelName.">
+      <element name="type" elementType="QICore.DeviceNameType" target="%value.value" description="udi-label-name | user-friendly-name | patient-reported-name | manufacturer-name | model-name | other" definition="The type of deviceName.&#xa;UDILabelName | UserFriendlyName | PatientReportedName | ManufactureDeviceName | ModelName.">
          <binding name="DeviceNameType" description="The type of name the device is referred by." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2836,7 +2836,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="entryType" elementType="QICore.UDIEntryType" description="barcode | rfid | manual +" definition="A coded entry to indicate how the data was entered.">
+      <element name="entryType" elementType="QICore.UDIEntryType" target="%value.value" description="barcode | rfid | manual +" definition="A coded entry to indicate how the data was entered.">
          <binding name="UDIEntryType" description="Codes to identify how UDI data was entered." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2913,19 +2913,19 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.DeviceRequestStatus" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the request." comment="This element is labeled as a modifier because the status contains the codes cancelled and entered-in-error that mark the request as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.DeviceRequestStatus" target="%value.value" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the request." comment="This element is labeled as a modifier because the status contains the codes cancelled and entered-in-error that mark the request as not currently valid." mustSupport="true">
          <binding name="DeviceRequestStatus" description="Codes representing the status of the request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="intent" elementType="QICore.RequestIntent" description="proposal | plan | directive | order | original-order | reflex-order | filler-order | instance-order | option" definition="Whether the request is a proposal, plan, an original order or a reflex order." mustSupport="true">
+      <element name="intent" elementType="QICore.RequestIntent" target="%value.value" description="proposal | plan | directive | order | original-order | reflex-order | filler-order | instance-order | option" definition="Whether the request is a proposal, plan, an original order or a reflex order." mustSupport="true">
          <binding name="RequestIntent" description="The kind of diagnostic request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.RequestPriority" description="routine | urgent | asap | stat" definition="Indicates how quickly the {{title}} should be addressed with respect to other requests.">
+      <element name="priority" elementType="QICore.RequestPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Indicates how quickly the {{title}} should be addressed with respect to other requests.">
          <binding name="RequestPriority" description="Identifies the level of importance to be assigned to actioning the request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3068,19 +3068,19 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.DeviceRequestStatus" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the request." comment="This element is labeled as a modifier because the status contains the codes cancelled and entered-in-error that mark the request as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.DeviceRequestStatus" target="%value.value" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the request." comment="This element is labeled as a modifier because the status contains the codes cancelled and entered-in-error that mark the request as not currently valid." mustSupport="true">
          <binding name="DeviceRequestStatus" description="Codes representing the status of the request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="intent" elementType="QICore.RequestIntent" description="proposal | plan | directive | order | original-order | reflex-order | filler-order | instance-order | option" definition="Whether the request is a proposal, plan, an original order or a reflex order." mustSupport="true">
+      <element name="intent" elementType="QICore.RequestIntent" target="%value.value" description="proposal | plan | directive | order | original-order | reflex-order | filler-order | instance-order | option" definition="Whether the request is a proposal, plan, an original order or a reflex order." mustSupport="true">
          <binding name="RequestIntent" description="The kind of diagnostic request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.RequestPriority" description="routine | urgent | asap | stat" definition="Indicates how quickly the {{title}} should be addressed with respect to other requests.">
+      <element name="priority" elementType="QICore.RequestPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Indicates how quickly the {{title}} should be addressed with respect to other requests.">
          <binding name="RequestPriority" description="Identifies the level of importance to be assigned to actioning the request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3227,7 +3227,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.DeviceUseStatementStatus" description="active | completed | entered-in-error +" definition="A code representing the patient or other source's judgment about the state of the device used that this statement is about.  Generally this will be active or completed." comment="DeviceUseStatment is a statement at a point in time.  The status is only representative at the point when it was asserted.  The value set for contains codes that assert the status of the use  by the patient (for example, stopped or on hold) as well as codes that assert the status of the resource itself (for example, entered in error).&#xd;&#xd;This element is labeled as a modifier because the status contains the codes that mark the statement as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.DeviceUseStatementStatus" target="%value.value" description="active | completed | entered-in-error +" definition="A code representing the patient or other source's judgment about the state of the device used that this statement is about.  Generally this will be active or completed." comment="DeviceUseStatment is a statement at a point in time.  The status is only representative at the point when it was asserted.  The value set for contains codes that assert the status of the use  by the patient (for example, stopped or on hold) as well as codes that assert the status of the resource itself (for example, entered in error).&#xd;&#xd;This element is labeled as a modifier because the status contains the codes that mark the statement as not currently valid." mustSupport="true">
          <binding name="DeviceUseStatementStatus" description="A coded concept indicating the current status of the Device Usage." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3745,7 +3745,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.EncounterStatus" description="planned | arrived | triaged | in-progress | onleave | finished | cancelled +" definition="planned | arrived | triaged | in-progress | onleave | finished | cancelled +." comment="Note that internal business rules will determine the appropriate transitions that may occur between statuses (and also classes)." mustSupport="true">
+      <element name="status" elementType="QICore.EncounterStatus" target="%value.value" description="planned | arrived | triaged | in-progress | onleave | finished | cancelled +" definition="planned | arrived | triaged | in-progress | onleave | finished | cancelled +." comment="Note that internal business rules will determine the appropriate transitions that may occur between statuses (and also classes)." mustSupport="true">
          <binding name="EncounterStatus" description="Current state of the encounter." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3984,7 +3984,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.EncounterLocationStatus" description="planned | active | reserved | completed" definition="The status of the participants' presence at the specified location during the period specified. If the participant is no longer at the location, then the period will have an end date/time." comment="When the patient is no longer active at a location, then the period end date is entered, and the status may be changed to completed.">
+      <element name="status" elementType="QICore.EncounterLocationStatus" target="%value.value" description="planned | active | reserved | completed" definition="The status of the participants' presence at the specified location during the period specified. If the participant is no longer at the location, then the period will have an end date/time." comment="When the patient is no longer active at a location, then the period end date is entered, and the status may be changed to completed.">
          <binding name="EncounterLocationStatus" description="The status of the location." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -4028,7 +4028,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.StatusHistory" retrievable="false" xsi:type="ClassInfo">
-      <element name="status" elementType="QICore.EncounterStatus" description="planned | arrived | triaged | in-progress | onleave | finished | cancelled +" definition="planned | arrived | triaged | in-progress | onleave | finished | cancelled +.">
+      <element name="status" elementType="QICore.EncounterStatus" target="%value.value" description="planned | arrived | triaged | in-progress | onleave | finished | cancelled +" definition="planned | arrived | triaged | in-progress | onleave | finished | cancelled +.">
          <binding name="EncounterStatus" description="Current state of the encounter." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -4188,7 +4188,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.FamilyHistoryStatus" description="partial | completed | entered-in-error | health-unknown" definition="A code specifying the status of the record of the family history of a specific family member." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid.">
+      <element name="status" elementType="QICore.FamilyHistoryStatus" target="%value.value" description="partial | completed | entered-in-error | health-unknown" definition="A code specifying the status of the record of the family history of a specific family member." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid.">
          <binding name="FamilyHistoryStatus" description="A code that identifies the status of the family history record." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -4359,7 +4359,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.FlagStatus" description="active | inactive | entered-in-error" definition="Supports basic workflow." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.FlagStatus" target="%value.value" description="active | inactive | entered-in-error" definition="Supports basic workflow." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="FlagStatus" description="Indicates whether this flag is active and needs to be displayed to a user, or whether it is no longer needed or was entered in error." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -4544,7 +4544,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false" xsi:type="ClassInfo">
-      <element name="use" elementType="QICore.NameUse" description="usual | official | temp | nickname | anonymous | old | maiden" definition="Identifies the purpose for this name." comment="Applications can assume that a name is current unless it explicitly says that it is temporary or old.">
+      <element name="use" elementType="QICore.NameUse" target="%value.value" description="usual | official | temp | nickname | anonymous | old | maiden" definition="Identifies the purpose for this name." comment="Applications can assume that a name is current unless it explicitly says that it is temporary or old.">
          <binding name="NameUse" description="The use of a human name." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -4588,7 +4588,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false" xsi:type="ClassInfo">
-      <element name="use" elementType="QICore.IdentifierUse" description="usual | official | temp | secondary | old (If known)" definition="The purpose of this identifier." comment="Applications can assume that an identifier is permanent unless it explicitly says that it is temporary.">
+      <element name="use" elementType="QICore.IdentifierUse" target="%value.value" description="usual | official | temp | secondary | old (If known)" definition="The purpose of this identifier." comment="Applications can assume that an identifier is permanent unless it explicitly says that it is temporary.">
          <binding name="IdentifierUse" description="Identifies the purpose for this identifier, if known ." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -4632,7 +4632,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.ImagingStudyStatus" description="registered | available | cancelled | entered-in-error | unknown" definition="The current state of the ImagingStudy." comment="Unknown does not represent &quot;other&quot; - one of the defined statuses must apply.  Unknown is used when the authoring system is not sure what the current status is.">
+      <element name="status" elementType="QICore.ImagingStudyStatus" target="%value.value" description="registered | available | cancelled | entered-in-error | unknown" definition="The current state of the ImagingStudy." comment="Unknown does not represent &quot;other&quot; - one of the defined statuses must apply.  Unknown is used when the authoring system is not sure what the current status is.">
          <binding name="ImagingStudyStatus" description="The status of the ImagingStudy." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -5114,7 +5114,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.ImmunizationEvaluationStatus" description="completed | entered-in-error" definition="Indicates the current status of the evaluation of the vaccination administration event." mustSupport="true">
+      <element name="status" elementType="QICore.ImmunizationEvaluationStatus" target="%value.value" description="completed | entered-in-error" definition="Indicates the current status of the evaluation of the vaccination administration event." mustSupport="true">
          <binding name="ImmunizationEvaluationStatus" description="The status of the evaluation being done." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -5506,7 +5506,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.LocationStatus" description="active | suspended | inactive" definition="The status property covers the general availability of the resource, not the current value which may be covered by the operationStatus, or by a schedule/slots if they are configured for the location." mustSupport="true">
+      <element name="status" elementType="QICore.LocationStatus" target="%value.value" description="active | suspended | inactive" definition="The status property covers the general availability of the resource, not the current value which may be covered by the operationStatus, or by a schedule/slots if they are configured for the location." mustSupport="true">
          <binding name="LocationStatus" description="Indicates whether the location is still in use." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -5534,7 +5534,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="mode" elementType="QICore.LocationMode" description="instance | kind" definition="Indicates whether a resource instance represents a specific location or a class of locations." comment="This is labeled as a modifier because whether or not the location is a class of locations changes how it can be used and understood." mustSupport="true">
+      <element name="mode" elementType="QICore.LocationMode" target="%value.value" description="instance | kind" definition="Indicates whether a resource instance represents a specific location or a class of locations." comment="This is labeled as a modifier because whether or not the location is a class of locations changes how it can be used and understood." mustSupport="true">
          <binding name="LocationMode" description="Indicates whether a resource instance represents a specific location or a class of locations." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -5598,7 +5598,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Location.HoursOfOperation" retrievable="false" xsi:type="ClassInfo">
-      <element name="daysOfWeek" description="mon | tue | wed | thu | fri | sat | sun" definition="Indicates which days of the week are available between the start and end Times.">
+      <element name="daysOfWeek" target="%value.value" description="mon | tue | wed | thu | fri | sat | sun" definition="Indicates which days of the week are available between the start and end Times.">
          <elementTypeSpecifier elementType="QICore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
          <binding name="DaysOfWeek" description="The days of the week." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5653,7 +5653,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.MedicationStatus" description="active | inactive | entered-in-error" definition="A code to indicate if the medication is in active use." comment="This status is intended to identify if the medication in a local system is in active use within a drug database or inventory.  For example, a pharmacy system may create a new drug file record for a compounded product &quot;ABC Hospital Special Cream&quot; with an active status.  At some point in the future, it may be determined that the drug record was created with an error and the status is changed to &quot;entered in error&quot;.   This status is not intended to specify if a medication is part of a particular formulary.  It is possible that the drug record may be referenced by multiple formularies or catalogues and each of those entries would have a separate status.">
+      <element name="status" elementType="QICore.MedicationStatus" target="%value.value" description="active | inactive | entered-in-error" definition="A code to indicate if the medication is in active use." comment="This status is intended to identify if the medication in a local system is in active use within a drug database or inventory.  For example, a pharmacy system may create a new drug file record for a compounded product &quot;ABC Hospital Special Cream&quot; with an active status.  At some point in the future, it may be determined that the drug record was created with an error and the status is changed to &quot;entered in error&quot;.   This status is not intended to specify if a medication is part of a particular formulary.  It is possible that the drug record may be referenced by multiple formularies or catalogues and each of those entries would have a separate status.">
          <binding name="MedicationStatus" description="A coded concept defining if the medication is in active use." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -5739,7 +5739,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.MedicationAdministrationStatus" description="in-progress | not-done | on-hold | completed | entered-in-error | stopped | unknown" definition="Will generally be set to show that the administration has been completed.  For some long running administrations such as infusions, it is possible for an administration to be started but not completed or it may be paused while some other process is under way." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.MedicationAdministrationStatus" target="%value.value" description="in-progress | not-done | on-hold | completed | entered-in-error | stopped | unknown" definition="Will generally be set to show that the administration has been completed.  For some long running administrations such as infusions, it is possible for an administration to be started but not completed or it may be paused while some other process is under way." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="MedicationAdministrationStatus" description="A set of codes indicating the current status of a MedicationAdministration." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -5932,7 +5932,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.MedicationAdministrationStatus" description="in-progress | not-done | on-hold | completed | entered-in-error | stopped | unknown" definition="Will generally be set to show that the administration has been completed.  For some long running administrations such as infusions, it is possible for an administration to be started but not completed or it may be paused while some other process is under way." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.MedicationAdministrationStatus" target="%value.value" description="in-progress | not-done | on-hold | completed | entered-in-error | stopped | unknown" definition="Will generally be set to show that the administration has been completed.  For some long running administrations such as infusions, it is possible for an administration to be started but not completed or it may be paused while some other process is under way." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="MedicationAdministrationStatus" description="A set of codes indicating the current status of a MedicationAdministration." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -6057,7 +6057,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.MedicationDispenseStatus" description="preparation | in-progress | cancelled | on-hold | completed | entered-in-error | stopped | declined | unknown" definition="A code specifying the state of the set of dispense events." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.MedicationDispenseStatus" target="%value.value" description="preparation | in-progress | cancelled | on-hold | completed | entered-in-error | stopped | declined | unknown" definition="A code specifying the state of the set of dispense events." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="MedicationDispenseStatus" description="A coded concept specifying the state of the dispense event." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -6254,7 +6254,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.MedicationDispenseStatus" description="preparation | in-progress | cancelled | on-hold | completed | entered-in-error | stopped | declined | unknown" definition="A code specifying the state of the set of dispense events." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.MedicationDispenseStatus" target="%value.value" description="preparation | in-progress | cancelled | on-hold | completed | entered-in-error | stopped | declined | unknown" definition="A code specifying the state of the set of dispense events." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="MedicationDispenseStatus" description="A coded concept specifying the state of the dispense event." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -6419,7 +6419,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.MedicationRequestPriority" description="routine | urgent | asap | stat" definition="Indicates how quickly the Medication Request should be addressed with respect to other requests.">
+      <element name="priority" elementType="QICore.MedicationRequestPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Indicates how quickly the Medication Request should be addressed with respect to other requests.">
          <binding name="MedicationRequestPriority" description="Identifies the level of importance to be assigned to actioning the request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -6614,7 +6614,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.MedicationRequestPriority" description="routine | urgent | asap | stat" definition="Indicates how quickly the Medication Request should be addressed with respect to other requests.">
+      <element name="priority" elementType="QICore.MedicationRequestPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Indicates how quickly the Medication Request should be addressed with respect to other requests.">
          <binding name="MedicationRequestPriority" description="Identifies the level of importance to be assigned to actioning the request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -6862,7 +6862,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.MedicationStatementStatus" description="active | completed | entered-in-error | intended | stopped | on-hold | unknown | not-taken" definition="A code representing the patient or other source's judgment about the state of the medication used that this statement is about.  Generally, this will be active or completed." comment="MedicationStatement is a statement at a point in time.  The status is only representative at the point when it was asserted.  The value set for MedicationStatement.status contains codes that assert the status of the use of the medication by the patient (for example, stopped or on hold) as well as codes that assert the status of the medication statement itself (for example, entered in error).&#xd;&#xd;This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.MedicationStatementStatus" target="%value.value" description="active | completed | entered-in-error | intended | stopped | on-hold | unknown | not-taken" definition="A code representing the patient or other source's judgment about the state of the medication used that this statement is about.  Generally, this will be active or completed." comment="MedicationStatement is a statement at a point in time.  The status is only representative at the point when it was asserted.  The value set for MedicationStatement.status contains codes that assert the status of the use of the medication by the patient (for example, stopped or on hold) as well as codes that assert the status of the medication statement itself (for example, entered in error).&#xd;&#xd;This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="MedicationStatementStatus" description="A coded concept indicating the current status of a MedicationStatement." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -6999,7 +6999,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="MimeType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="NameUse" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false" xsi:type="ClassInfo">
-      <element name="status" elementType="QICore.NarrativeStatus" description="generated | extensions | additional | empty" definition="The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data.">
+      <element name="status" elementType="QICore.NarrativeStatus" target="%value.value" description="generated | extensions | additional | empty" definition="The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data.">
          <binding name="NarrativeStatus" description="The status of a resource narrative." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -7056,7 +7056,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.ObservationStatus" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.ObservationStatus" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="ObservationStatus" description="Codes providing the status of an observation." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -7335,7 +7335,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.ObservationStatus" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.ObservationStatus" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="ObservationStatus" description="Codes providing the status of an observation." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -7610,7 +7610,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="use" elementType="QICore.ParameterUse" description="in | out" definition="Whether the parameter is input or output for the module.">
+      <element name="use" elementType="QICore.ParameterUse" target="%value.value" description="in | out" definition="Whether the parameter is input or output for the module.">
          <binding name="ParameterUse" description="Whether the parameter is input or output." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -7631,7 +7631,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="type" elementType="QICore.FHIRAllTypes" description="What type of value" definition="The type of the parameter.">
+      <element name="type" elementType="QICore.FHIRAllTypes" target="%value.value" description="What type of value" definition="The type of the parameter.">
          <binding name="FHIRAllTypes" description="A list of all the concrete types defined in this version of the FHIR specification - Abstract Types, Data Types and Resource Types." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -7874,7 +7874,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="gender" elementType="QICore.AdministrativeGender" description="male | female | other | unknown" definition="Administrative Gender - the gender that the contact person is considered to have for administration and record keeping purposes.">
+      <element name="gender" elementType="QICore.AdministrativeGender" target="%value.value" description="male | female | other | unknown" definition="Administrative Gender - the gender that the contact person is considered to have for administration and record keeping purposes.">
          <binding name="AdministrativeGender" description="The gender of a person used for administrative purposes." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -7900,7 +7900,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="type" elementType="QICore.LinkType" description="replaced-by | replaces | refer | seealso" definition="The type of link between this patient resource and another patient resource.">
+      <element name="type" elementType="QICore.LinkType" target="%value.value" description="replaced-by | replaces | refer | seealso" definition="The type of link between this patient resource and another patient resource.">
          <binding name="LinkType" description="The type of link between this patient resource and another patient resource." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -7963,7 +7963,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="gender" elementType="QICore.AdministrativeGender" description="male | female | other | unknown" definition="Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes.">
+      <element name="gender" elementType="QICore.AdministrativeGender" target="%value.value" description="male | female | other | unknown" definition="Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes.">
          <binding name="AdministrativeGender" description="The gender of a person used for administrative purposes." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -8109,7 +8109,7 @@
       <contextRelationship context="Practitioner" relatedKeyElement="practitioner"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="PractitionerRole.AvailableTime" retrievable="false" xsi:type="ClassInfo">
-      <element name="daysOfWeek" description="mon | tue | wed | thu | fri | sat | sun" definition="Indicates which days of the week are available between the start and end Times.">
+      <element name="daysOfWeek" target="%value.value" description="mon | tue | wed | thu | fri | sat | sun" definition="Indicates which days of the week are available between the start and end Times.">
          <elementTypeSpecifier elementType="QICore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
          <binding name="DaysOfWeek" description="The days of the week." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -8419,7 +8419,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.PublicationStatus" description="draft | active | retired | unknown" definition="The status of this questionnaire. Enables tracking the life-cycle of the content." comment="Allows filtering of questionnaires that are appropriate for use versus not.">
+      <element name="status" elementType="QICore.PublicationStatus" target="%value.value" description="draft | active | retired | unknown" definition="The status of this questionnaire. Enables tracking the life-cycle of the content." comment="Allows filtering of questionnaires that are appropriate for use versus not.">
          <binding name="PublicationStatus" description="The lifecycle status of an artifact." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -8430,7 +8430,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="subjectType" description="Resource that can be subject of QuestionnaireResponse" definition="The types of subjects that can be the subject of responses created for the questionnaire." comment="If none are specified, then the subject is unlimited.">
+      <element name="subjectType" target="%value.value" description="Resource that can be subject of QuestionnaireResponse" definition="The types of subjects that can be the subject of responses created for the questionnaire." comment="If none are specified, then the subject is unlimited.">
          <elementTypeSpecifier elementType="QICore.ResourceType" xsi:type="ListTypeSpecifier"/>
          <binding name="ResourceType" description="One of the resource types defined as part of this version of FHIR." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -8574,7 +8574,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="type" elementType="QICore.QuestionnaireItemType" description="group | display | boolean | decimal | integer | date | dateTime +" definition="The type of questionnaire item this is - whether text for display, a grouping of other items or a particular type of data to be captured (string, integer, coded choice, etc.)." comment="Additional constraints on the type of answer can be conveyed by extensions. The value may come from the ElementDefinition referred to by .definition.">
+      <element name="type" elementType="QICore.QuestionnaireItemType" target="%value.value" description="group | display | boolean | decimal | integer | date | dateTime +" definition="The type of questionnaire item this is - whether text for display, a grouping of other items or a particular type of data to be captured (string, integer, coded choice, etc.)." comment="Additional constraints on the type of answer can be conveyed by extensions. The value may come from the ElementDefinition referred to by .definition.">
          <binding name="QuestionnaireItemType" description="Distinguishes groups from questions and display text and indicates data type for questions." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -8589,7 +8589,7 @@
             <expression language="text/fhirpath" expression="operator = 'exists' implies (answer is Boolean)"/>
          </constraint>
       </element>
-      <element name="enableBehavior" elementType="QICore.EnableWhenBehavior" description="all | any" definition="Controls how multiple enableWhen values are interpreted -  whether all or any must be true." comment="This element must be specified if more than one enableWhen value is provided.">
+      <element name="enableBehavior" elementType="QICore.EnableWhenBehavior" target="%value.value" description="all | any" definition="Controls how multiple enableWhen values are interpreted -  whether all or any must be true." comment="This element must be specified if more than one enableWhen value is provided.">
          <binding name="EnableWhenBehavior" description="Controls how multiple enableWhen values are interpreted -  whether all or any must be true." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -8668,7 +8668,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="operator" elementType="QICore.QuestionnaireItemOperator" description="exists | = | != | > | &lt; | >= | &lt;=" definition="Specifies the criteria by which the question is enabled.">
+      <element name="operator" elementType="QICore.QuestionnaireItemOperator" target="%value.value" description="exists | = | != | > | &lt; | >= | &lt;=" definition="Specifies the criteria by which the question is enabled.">
          <binding name="QuestionnaireItemOperator" description="The criteria by which a question is enabled." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -8740,7 +8740,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.QuestionnaireResponseStatus" description="in-progress | completed | amended | entered-in-error | stopped" definition="The position of the questionnaire response within its overall lifecycle." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid.">
+      <element name="status" elementType="QICore.QuestionnaireResponseStatus" target="%value.value" description="in-progress | completed | amended | entered-in-error | stopped" definition="The position of the questionnaire response within its overall lifecycle." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid.">
          <binding name="QuestionnaireResponseStatus" description="Lifecycle status of the questionnaire response." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -8875,7 +8875,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false" xsi:type="ClassInfo">
-      <element name="type" elementType="QICore.RelatedArtifactType" description="documentation | justification | citation | predecessor | successor | derived-from | depends-on | composed-of" definition="The type of relationship to the related artifact.">
+      <element name="type" elementType="QICore.RelatedArtifactType" target="%value.value" description="documentation | justification | citation | predecessor | successor | derived-from | depends-on | composed-of" definition="The type of relationship to the related artifact.">
          <binding name="RelatedArtifactType" description="The type of relationship to the related artifact." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -8949,7 +8949,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="gender" elementType="QICore.AdministrativeGender" description="male | female | other | unknown" definition="Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes." mustSupport="true">
+      <element name="gender" elementType="QICore.AdministrativeGender" target="%value.value" description="male | female | other | unknown" definition="Administrative Gender - the gender that the person is considered to have for administration and record keeping purposes." mustSupport="true">
          <binding name="AdministrativeGender" description="The gender of a person used for administrative purposes." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9129,13 +9129,13 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.ServiceRequestStatus" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the order." comment="The status is generally fully in the control of the requester - they determine whether the order is draft or active and, after it has been activated, competed, cancelled or suspended. States relating to the activities of the performer are reflected on either the corresponding event (see [Event Pattern](event.html) for general discussion) or using the [Task](http://hl7.org/fhir/R4/task.html) resource." mustSupport="true">
+      <element name="status" elementType="QICore.ServiceRequestStatus" target="%value.value" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the order." comment="The status is generally fully in the control of the requester - they determine whether the order is draft or active and, after it has been activated, competed, cancelled or suspended. States relating to the activities of the performer are reflected on either the corresponding event (see [Event Pattern](event.html) for general discussion) or using the [Task](http://hl7.org/fhir/R4/task.html) resource." mustSupport="true">
          <binding name="ServiceRequestStatus" description="The status of a service order." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="intent" elementType="QICore.ServiceRequestIntent" description="proposal | plan | directive | order | original-order | reflex-order | filler-order | instance-order | option" definition="Whether the request is a proposal, plan, an original order or a reflex order." comment="This element is labeled as a modifier because the intent alters when and how the resource is actually applicable.">
+      <element name="intent" elementType="QICore.ServiceRequestIntent" target="%value.value" description="proposal | plan | directive | order | original-order | reflex-order | filler-order | instance-order | option" definition="Whether the request is a proposal, plan, an original order or a reflex order." comment="This element is labeled as a modifier because the intent alters when and how the resource is actually applicable.">
          <binding name="ServiceRequestIntent" description="The kind of service request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9148,7 +9148,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.ServiceRequestPriority" description="routine | urgent | asap | stat" definition="Indicates how quickly the ServiceRequest should be addressed with respect to other requests.">
+      <element name="priority" elementType="QICore.ServiceRequestPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Indicates how quickly the ServiceRequest should be addressed with respect to other requests.">
          <binding name="ServiceRequestPriority" description="Identifies the level of importance to be assigned to actioning the request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9384,13 +9384,13 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.ServiceRequestStatus" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the order." comment="The status is generally fully in the control of the requester - they determine whether the order is draft or active and, after it has been activated, competed, cancelled or suspended. States relating to the activities of the performer are reflected on either the corresponding event (see [Event Pattern](event.html) for general discussion) or using the [Task](http://hl7.org/fhir/R4/task.html) resource." mustSupport="true">
+      <element name="status" elementType="QICore.ServiceRequestStatus" target="%value.value" description="draft | active | on-hold | revoked | completed | entered-in-error | unknown" definition="The status of the order." comment="The status is generally fully in the control of the requester - they determine whether the order is draft or active and, after it has been activated, competed, cancelled or suspended. States relating to the activities of the performer are reflected on either the corresponding event (see [Event Pattern](event.html) for general discussion) or using the [Task](http://hl7.org/fhir/R4/task.html) resource." mustSupport="true">
          <binding name="ServiceRequestStatus" description="The status of a service order." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="intent" elementType="QICore.ServiceRequestIntent" description="proposal | plan | directive | order | original-order | reflex-order | filler-order | instance-order | option" definition="Whether the request is a proposal, plan, an original order or a reflex order." comment="This element is labeled as a modifier because the intent alters when and how the resource is actually applicable." mustSupport="true">
+      <element name="intent" elementType="QICore.ServiceRequestIntent" target="%value.value" description="proposal | plan | directive | order | original-order | reflex-order | filler-order | instance-order | option" definition="Whether the request is a proposal, plan, an original order or a reflex order." comment="This element is labeled as a modifier because the intent alters when and how the resource is actually applicable." mustSupport="true">
          <binding name="ServiceRequestIntent" description="The kind of service request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9403,7 +9403,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.ServiceRequestPriority" description="routine | urgent | asap | stat" definition="Indicates how quickly the ServiceRequest should be addressed with respect to other requests.">
+      <element name="priority" elementType="QICore.ServiceRequestPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Indicates how quickly the ServiceRequest should be addressed with respect to other requests.">
          <binding name="ServiceRequestPriority" description="Identifies the level of importance to be assigned to actioning the request." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9597,13 +9597,13 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="targetFormat" elementType="QICore.MimeType" description="The technical format of the signed resources" definition="A mime type that indicates the technical format of the target resources signed by the signature." comment="&quot;xml&quot;, &quot;json&quot; and &quot;ttl&quot; are allowed, which describe the simple encodings described in the specification (and imply appropriate bundle support). Otherwise, mime types are legal here.">
+      <element name="targetFormat" elementType="QICore.MimeType" target="%value.value" description="The technical format of the signed resources" definition="A mime type that indicates the technical format of the target resources signed by the signature." comment="&quot;xml&quot;, &quot;json&quot; and &quot;ttl&quot; are allowed, which describe the simple encodings described in the specification (and imply appropriate bundle support). Otherwise, mime types are legal here.">
          <binding name="MimeType" description="The mime type of an attachment. Any valid mime type is allowed." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="sigFormat" elementType="QICore.MimeType" description="The technical format of the signature" definition="A mime type that indicates the technical format of the signature. Important mime types are application/signature+xml for X ML DigSig, application/jose for JWS, and image/* for a graphical image of a signature, etc.">
+      <element name="sigFormat" elementType="QICore.MimeType" target="%value.value" description="The technical format of the signature" definition="A mime type that indicates the technical format of the signature. Important mime types are application/signature+xml for X ML DigSig, application/jose for JWS, and image/* for a graphical image of a signature, etc.">
          <binding name="MimeType" description="The mime type of an attachment. Any valid mime type is allowed." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9628,7 +9628,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.SpecimenStatus" description="available | unavailable | unsatisfactory | entered-in-error" definition="The availability of the specimen." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid.">
+      <element name="status" elementType="QICore.SpecimenStatus" target="%value.value" description="available | unavailable | unsatisfactory | entered-in-error" definition="The availability of the specimen." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid.">
          <binding name="SpecimenStatus" description="Codes providing the status/availability of a specimen." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9831,7 +9831,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.FHIRSubstanceStatus" description="active | inactive | entered-in-error" definition="A code to indicate if the substance is actively used.">
+      <element name="status" elementType="QICore.FHIRSubstanceStatus" target="%value.value" description="active | inactive | entered-in-error" definition="A code to indicate if the substance is actively used.">
          <binding name="FHIRSubstanceStatus" description="A code to indicate if the substance is actively used." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9931,7 +9931,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.TaskStatus" description="draft | requested | received | accepted | +" definition="The current status of the task." mustSupport="true">
+      <element name="status" elementType="QICore.TaskStatus" target="%value.value" description="draft | requested | received | accepted | +" definition="The current status of the task." mustSupport="true">
          <binding name="TaskStatus" description="The current status of the task." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -9949,13 +9949,13 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="intent" elementType="QICore.TaskIntent" description="unknown | proposal | plan | order | original-order | reflex-order | filler-order | instance-order | option" definition="Indicates the &quot;level&quot; of actionability associated with the Task, i.e. i+R[9]Cs this a proposed task, a planned task, an actionable task, etc." comment="This element is immutable.  Proposed tasks, planned tasks, etc. must be distinct instances.&#xa;&#xa;In most cases, Tasks will have an intent of &quot;order&quot;." mustSupport="true">
+      <element name="intent" elementType="QICore.TaskIntent" target="%value.value" description="unknown | proposal | plan | order | original-order | reflex-order | filler-order | instance-order | option" definition="Indicates the &quot;level&quot; of actionability associated with the Task, i.e. i+R[9]Cs this a proposed task, a planned task, an actionable task, etc." comment="This element is immutable.  Proposed tasks, planned tasks, etc. must be distinct instances.&#xa;&#xa;In most cases, Tasks will have an intent of &quot;order&quot;." mustSupport="true">
          <binding name="TaskIntent" description="Distinguishes whether the task is a proposal, plan or full order." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.TaskPriority" description="routine | urgent | asap | stat" definition="Indicates how quickly the Task should be addressed with respect to other requests." mustSupport="true">
+      <element name="priority" elementType="QICore.TaskPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Indicates how quickly the Task should be addressed with respect to other requests." mustSupport="true">
          <binding name="TaskPriority" description="The task's priority." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -10268,7 +10268,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.TaskStatus" description="The potential performer who claimed ownership of the task has decided not to execute it prior to performing any action" definition="The current status of the task." mustSupport="true">
+      <element name="status" elementType="QICore.TaskStatus" target="%value.value" description="The potential performer who claimed ownership of the task has decided not to execute it prior to performing any action" definition="The current status of the task." mustSupport="true">
          <binding name="TaskStatus" description="The current status of the task." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -10286,13 +10286,13 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="intent" elementType="QICore.TaskIntent" description="unknown | proposal | plan | order | original-order | reflex-order | filler-order | instance-order | option" definition="Indicates the &quot;level&quot; of actionability associated with the Task, i.e. i+R[9]Cs this a proposed task, a planned task, an actionable task, etc." comment="This element is immutable.  Proposed tasks, planned tasks, etc. must be distinct instances.&#xa;&#xa;In most cases, Tasks will have an intent of &quot;order&quot;.">
+      <element name="intent" elementType="QICore.TaskIntent" target="%value.value" description="unknown | proposal | plan | order | original-order | reflex-order | filler-order | instance-order | option" definition="Indicates the &quot;level&quot; of actionability associated with the Task, i.e. i+R[9]Cs this a proposed task, a planned task, an actionable task, etc." comment="This element is immutable.  Proposed tasks, planned tasks, etc. must be distinct instances.&#xa;&#xa;In most cases, Tasks will have an intent of &quot;order&quot;.">
          <binding name="TaskIntent" description="Distinguishes whether the task is a proposal, plan or full order." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="priority" elementType="QICore.TaskPriority" description="routine | urgent | asap | stat" definition="Indicates how quickly the Task should be addressed with respect to other requests.">
+      <element name="priority" elementType="QICore.TaskPriority" target="%value.value" description="routine | urgent | asap | stat" definition="Indicates how quickly the Task should be addressed with respect to other requests.">
          <binding name="TaskPriority" description="The task's priority." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -10502,7 +10502,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="durationUnit" elementType="QICore.UnitsOfTime" description="s | min | h | d | wk | mo | a - unit of time (UCUM)" definition="The units of time for the duration, in UCUM units.">
+      <element name="durationUnit" elementType="QICore.UnitsOfTime" target="%value.value" description="s | min | h | d | wk | mo | a - unit of time (UCUM)" definition="The units of time for the duration, in UCUM units.">
          <binding name="UnitsOfTime" description="A unit of time (units from UCUM)." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -10528,13 +10528,13 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="periodUnit" elementType="QICore.UnitsOfTime" description="s | min | h | d | wk | mo | a - unit of time (UCUM)" definition="The units of time for the period in UCUM units.">
+      <element name="periodUnit" elementType="QICore.UnitsOfTime" target="%value.value" description="s | min | h | d | wk | mo | a - unit of time (UCUM)" definition="The units of time for the period in UCUM units.">
          <binding name="UnitsOfTime" description="A unit of time (units from UCUM)." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="dayOfWeek" description="mon | tue | wed | thu | fri | sat | sun" definition="If one or more days of week is provided, then the action happens only on the specified day(s)." comment="If no days are specified, the action is assumed to happen every day as otherwise specified. The elements frequency and period cannot be used as well as dayOfWeek.">
+      <element name="dayOfWeek" target="%value.value" description="mon | tue | wed | thu | fri | sat | sun" definition="If one or more days of week is provided, then the action happens only on the specified day(s)." comment="If no days are specified, the action is assumed to happen every day as otherwise specified. The elements frequency and period cannot be used as well as dayOfWeek.">
          <elementTypeSpecifier elementType="QICore.DayOfWeek" xsi:type="ListTypeSpecifier"/>
          <binding name="DayOfWeek" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -10547,7 +10547,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="when" description="Code for time period of occurrence" definition="An approximate time period during the day, potentially linked to an event of daily living that indicates when the action should occur." comment="When more than one event is listed, the event is tied to the union of the specified events.">
+      <element name="when" target="%value.value" description="Code for time period of occurrence" definition="An approximate time period during the day, potentially linked to an event of daily living that indicates when the action should occur." comment="When more than one event is listed, the event is tied to the union of the specified events.">
          <elementTypeSpecifier elementType="QICore.EventTiming" xsi:type="ListTypeSpecifier"/>
          <binding name="EventTiming" description="Real world event relating to the schedule." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -10561,7 +10561,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false" xsi:type="ClassInfo">
-      <element name="type" elementType="QICore.TriggerType" description="named-event | periodic | data-changed | data-added | data-modified | data-removed | data-accessed | data-access-ended" definition="The type of triggering event.">
+      <element name="type" elementType="QICore.TriggerType" target="%value.value" description="named-event | periodic | data-changed | data-added | data-modified | data-removed | data-accessed | data-access-ended" definition="The type of triggering event.">
          <binding name="TriggerType" description="The type of trigger." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -10643,7 +10643,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.FHIRDeviceStatus" description="active | inactive | entered-in-error | unknown" definition="Status of the Device availability." comment="This element is labeled as a modifier because the status contains the codes inactive and entered-in-error that mark the device (record)as not currently valid.">
+      <element name="status" elementType="QICore.FHIRDeviceStatus" target="%value.value" description="active | inactive | entered-in-error | unknown" definition="Status of the Device availability." comment="This element is labeled as a modifier because the status contains the codes inactive and entered-in-error that mark the device (record)as not currently valid.">
          <binding name="FHIRDeviceStatus" description="The availability status of the device." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -10971,7 +10971,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -11133,7 +11133,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -11295,7 +11295,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -11733,7 +11733,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -11900,7 +11900,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -12067,7 +12067,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -12234,7 +12234,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -12401,7 +12401,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -12584,7 +12584,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -12751,7 +12751,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -12918,7 +12918,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -13085,7 +13085,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -13252,7 +13252,7 @@
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
          </constraint>
       </element>
-      <element name="status" elementType="QICore.Status" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
+      <element name="status" elementType="QICore.Status" target="%value.value" description="registered | preliminary | final | amended +" definition="The status of the result value." comment="This element is labeled as a modifier because the status contains codes that mark the resource as not currently valid." mustSupport="true">
          <binding name="Status" strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
