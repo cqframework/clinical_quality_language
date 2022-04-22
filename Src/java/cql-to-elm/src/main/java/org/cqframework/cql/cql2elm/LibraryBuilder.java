@@ -1121,22 +1121,24 @@ public class LibraryBuilder implements ModelResolver {
         if (resolution != null || mustResolve) {
             checkOperator(callContext, resolution);
 
-            if (resolution.hasConversions()) {
-                List<Expression> convertedOperands = new ArrayList<>();
-                Iterator<Expression> operandIterator = operands.iterator();
-                Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
-                while (operandIterator.hasNext()) {
-                    Expression operand = operandIterator.next();
-                    Conversion conversion = conversionIterator.next();
-                    if (conversion != null) {
-                        convertedOperands.add(convertExpression(operand, conversion));
-                    } else {
-                        convertedOperands.add(operand);
-                    }
+            List<Expression> convertedOperands = new ArrayList<>();
+            Iterator<Expression> operandIterator = operands.iterator();
+            Iterator<DataType> signatureTypes = resolution.getOperator().getSignature().getOperandTypes().iterator();
+            Iterator<Conversion> conversionIterator = resolution.hasConversions() ? resolution.getConversions().iterator() : null;
+            while (operandIterator.hasNext()) {
+                Expression operand = operandIterator.next();
+                Conversion conversion = conversionIterator != null ? conversionIterator.next() : null;
+                if (conversion != null) {
+                    operand = convertExpression(operand, conversion);
                 }
 
-                invocation.setOperands(convertedOperands);
+                DataType signatureType = signatureTypes.next();
+                operand = pruneChoices(operand, signatureType);
+
+                convertedOperands.add(operand);
             }
+
+            invocation.setOperands(convertedOperands);
 
             if (options.getSignatureLevel() == SignatureLevel.All || (options.getSignatureLevel() == SignatureLevel.Differing
                 && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
@@ -1152,6 +1154,12 @@ public class LibraryBuilder implements ModelResolver {
             return invocation;
         }
         return null;
+    }
+
+    private Expression pruneChoices(Expression expression, DataType targetType) {
+        // TODO: In theory, we could collapse expressions that are unnecessarily broad, given the targetType (type leading)
+        // This is a placeholder for where this functionality would be added in the future.
+        return expression;
     }
 
     public OperatorResolution resolveCall(CallContext callContext) {
@@ -1670,14 +1678,17 @@ public class LibraryBuilder implements ModelResolver {
             return second;
         }
 
-        Conversion conversion = findConversion(second, first, true, false);
-        if (conversion != null) {
-            return first;
-        }
+        // If either side is a choice type, don't allow conversions because they will incorrectly eliminate choices based on convertibility
+        if (!(first instanceof ChoiceType || second instanceof ChoiceType)) {
+            Conversion conversion = findConversion(second, first, true, false);
+            if (conversion != null) {
+                return first;
+            }
 
-        conversion = findConversion(first, second, true, false);
-        if (conversion != null) {
-            return second;
+            conversion = findConversion(first, second, true, false);
+            if (conversion != null) {
+                return second;
+            }
         }
 
         return null;
@@ -1689,6 +1700,11 @@ public class LibraryBuilder implements ModelResolver {
             return compatibleType;
         }
 
+        if (!second.isSubTypeOf(first)) {
+            return new ChoiceType(Arrays.asList(first, second));
+        }
+
+        // The above construction of a choice type guarantees this will never be hit
         DataTypes.verifyType(second, first);
         return first;
     }
@@ -2037,7 +2053,7 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         // In the sort clause of a plural query, names may be resolved based on the result type of the query
-        IdentifierRef resultElement = resolveQueryResultElement(identifier);
+        Expression resultElement = resolveQueryResultElement(identifier);
         if (resultElement != null) {
             return resultElement;
         }
@@ -2333,9 +2349,17 @@ public class LibraryBuilder implements ModelResolver {
                     c.getCaseItem().add(ci);
                 }
             }
-            c.setElse(this.buildNull(source.getResultType()));
-            c.setResultType(source.getResultType());
-            return c;
+            if (c.getCaseItem().size() == 0) {
+                return this.buildNull(source.getResultType());
+            }
+            else if (c.getCaseItem().size() == 1) {
+                return c.getCaseItem().get(0).getThen();
+            }
+            else {
+                c.setElse(this.buildNull(source.getResultType()));
+                c.setResultType(source.getResultType());
+                return c;
+            }
         }
         else if (targetMap.contains("(")) {
             int invocationStart = targetMap.indexOf("(");
@@ -2611,7 +2635,7 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
-    private IdentifierRef resolveQueryResultElement(String identifier) {
+    private Expression resolveQueryResultElement(String identifier) {
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
@@ -2625,10 +2649,7 @@ public class LibraryBuilder implements ModelResolver {
                 if (resolution != null) {
                     IdentifierRef result = new IdentifierRef().withName(resolution.getName());
                     result.setResultType(resolution.getType());
-                    if (resolution.getTargetMap() != null) {
-                        throw new IllegalArgumentException("Target mapping not supported in this context");
-                    }
-                    return result;
+                    return applyTargetMap(result, resolution.getTargetMap());
                 }
             }
         }

@@ -193,3 +193,7 @@ define TestExtensions: Patient.extension('http://hl7.org/fhir/us/core/StructureD
 define TestElementExtensions: Patient.birthDate.extension('http://hl7.org/fhir/StructureDefinition/patient-birthTime').single()
 define TestModifierExtensions: Patient.modifierExtension('http://hl7.org/fhir/StructureDefinition/request-doNotPerform').single()
 define TestElementModifierExtensions: Patient.contact.modifierExtension('http://hl7.org/fhir/StructureDefinition/request-doNotPerform').single()
+
+// Choice type conversions
+define TestChoice: TestExtensions.value
+define TestChoiceConverts: FHIRHelpers.ToValue(TestChoice)

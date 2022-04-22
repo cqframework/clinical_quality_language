@@ -1,5 +1,17 @@
 codesystem "FAKECS": '1.2.3.4.5.6.7.8.9' version '1'
 
+define TestAny: 1 as System.Any
+define TestIf:
+    if true then 'true'
+    else if false then false
+    else null
+define TestCase:
+    case
+        when true then 'true'
+        when false then false
+        else null
+    end
+
 define AsExpression: null as Boolean
 define CastExpression: cast null as Boolean
 define IsExpression: null is Boolean

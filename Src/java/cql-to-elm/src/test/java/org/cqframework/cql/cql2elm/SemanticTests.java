@@ -1,5 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
+import org.hl7.cql.model.ChoiceType;
+import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.NamedType;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
@@ -127,7 +130,47 @@ public class SemanticTests {
     }
     @Test
     public void testTypeOperators() throws IOException {
-        runSemanticTest("OperatorTests/TypeOperators.cql");
+        CqlTranslator translator = runSemanticTest("OperatorTests/TypeOperators.cql");
+        org.hl7.elm.r1.Library library = translator.toELM();
+        Map<String, ExpressionDef> defs = new HashMap<>();
+
+        if (library.getStatements() != null) {
+            for (ExpressionDef def : library.getStatements().getDef()) {
+                defs.put(def.getName(), def);
+            }
+        }
+
+        ExpressionDef def = defs.get("TestIf");
+        assertThat(def.getResultType(), instanceOf(ChoiceType.class));
+        ChoiceType choiceType = (ChoiceType)def.getResultType();
+        DataType type = null;
+        for (DataType dt : choiceType.getTypes()) {
+            if (type == null) {
+                type = dt;
+                assertThat(dt, instanceOf(NamedType.class));
+                assertThat(((NamedType)dt).getName(), equalTo("System.String"));
+            }
+            else {
+                assertThat(dt, instanceOf(NamedType.class));
+                assertThat(((NamedType)dt).getName(), equalTo("System.Boolean"));
+            }
+        }
+
+        def = defs.get("TestCase");
+        assertThat(def.getResultType(), instanceOf(ChoiceType.class));
+        choiceType = (ChoiceType)def.getResultType();
+        type = null;
+        for (DataType dt : choiceType.getTypes()) {
+            if (type == null) {
+                type = dt;
+                assertThat(dt, instanceOf(NamedType.class));
+                assertThat(((NamedType)dt).getName(), equalTo("System.String"));
+            }
+            else {
+                assertThat(dt, instanceOf(NamedType.class));
+                assertThat(((NamedType)dt).getName(), equalTo("System.Boolean"));
+            }
+        }
     }
 
     @Test
