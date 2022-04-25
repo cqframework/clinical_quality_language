@@ -8,9 +8,22 @@ package org.cqframework.fhir.api;
  * https://github.com/DBCG/cql-evaluator/discussions/90
  */
 public interface FhirPlatform {
+    /**
+     * Returns an implementation of the FhirDal interface appropriate to the environment.
+     * @return
+     */
     FhirDal dal();
+
+    /**
+     * Returns an implementation of the FhirCapabilities interface appropriate to the environment.
+     * @return
+     */
     FhirCapabilities capabilities();
 
+    /**
+     * Returns an implementation of the FhirTransactions interface appropriate to the environment.
+     * @return
+     */
     FhirTransactions transactions();
 
     /**
@@ -21,8 +34,8 @@ public interface FhirPlatform {
 
     /**
      * Supports accessing specific services through the platform API such as terminology services and knowledge repositories
-     * @param <T>
-     * @return
+     * @param <T> The type of FhirService being requested
+     * @return An implementation of the requested interface appropriate to the environment
      */
     <T extends FhirService> T getService();
 }

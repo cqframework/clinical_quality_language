@@ -8,5 +8,9 @@ import org.hl7.fhir.instance.model.api.IBaseConformance;
  * [capabilities](https://hl7.org/fhir/http.html#capabilities) interaction.
  */
 public interface FhirCapabilities {
+    /**
+     * Returns a resource describing the capabilities of this FHIR service.
+     * @return
+     */
     IBaseConformance capabilities();
 }
