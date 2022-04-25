@@ -1,0 +1,25 @@
+// Most build configuration comes from the cql-all parent build!
+
+dependencies {
+    // fhir core dependencies
+    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.5.16'
+    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.5.16'
+    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation', version: '5.5.16'
+    compile group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.5.16'
+
+    // HAPI base
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '5.5.3'
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '5.5.3'
+
+    // FHIR STU3
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '5.5.3'
+
+    // FHIR r4
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '5.5.3'
+
+    // FHIR r5
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '5.5.3'
+
+    // HAPI client (for FHIR API)
+    compile group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-client', version: '5.5.3'
+}
