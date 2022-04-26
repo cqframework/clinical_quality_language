@@ -1,9 +1,9 @@
-package org.cqframework.fhir.api;
+package org.cqframework.fhir.api.stu3;
 
-import org.hl7.fhir.instance.model.api.IBaseBundle;
-import org.hl7.fhir.instance.model.api.IBaseResource;
-import org.hl7.fhir.instance.model.api.IIdType;
 import ca.uhn.fhir.model.api.IQueryParameterType;
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.instance.model.api.IIdType;
 
 import java.util.List;
 import java.util.Map;
@@ -14,15 +14,15 @@ import java.util.Map;
  * operations necessary for the cql-evaluator modules to function.
  * @see <a href="https://www.hl7.org/fhir/http.html">https://www.hl7.org/fhir/http.html</a>
  */
-public interface FhirDal {
+public interface FhirDal extends org.cqframework.fhir.api.FhirDal {
     /**
-     * Fetches an {@code IBaseResource} by {@code id}. The {@code IIdType} must have the resourceType defined.
+     * Fetches an {@code Resource} by {@code id}. The {@code IIdType} must have the resourceType defined.
      *
      * Returns null if no resource is found.
      * @param id the id of the resource
      * @return the resource
      */
-    IBaseResource read(IIdType id);
+    Resource read(IIdType id);
 
     /**
      * Creates the {@code IBaseResource}.
@@ -30,7 +30,7 @@ public interface FhirDal {
      * Default behavior is to overwrite the resource if it already exists.
      * @param resource the resource
      */
-    void create(IBaseResource resource);
+    void create(Resource resource);
 
     /**
      * Updates the {@code IBaseResource}.
@@ -38,7 +38,7 @@ public interface FhirDal {
      * Default behavior is to create the resource if it does not exist.
      * @param resource the resource
      */
-    void update(IBaseResource resource);
+    void update(Resource resource);
 
     /**
      * Deletes an {@code IBaseResource} by {@code id}. The {@code IIdType} must have the resourceType defined.
@@ -55,5 +55,5 @@ public interface FhirDal {
      * @param resourceType the type of resources to return.
      * @return the resources
      */
-    IBaseBundle search(String resourceType, Map<String, List<IQueryParameterType>> searchParameters);
+    Bundle search(String resourceType, Map<String, List<IQueryParameterType>> searchParameters);
 }

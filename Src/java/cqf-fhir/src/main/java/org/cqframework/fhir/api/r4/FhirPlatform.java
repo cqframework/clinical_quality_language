@@ -1,4 +1,4 @@
-package org.cqframework.fhir.api;
+package org.cqframework.fhir.api.r4;
 
 /**
  * FhirPlatform defines the base interface for accessing Fhir API features including the data access layer, capabilities,
@@ -7,7 +7,7 @@ package org.cqframework.fhir.api;
  * Initial design discussion for this interface is taking place here:
  * https://github.com/DBCG/cql-evaluator/discussions/90
  */
-public interface FhirPlatform {
+public interface FhirPlatform extends org.cqframework.fhir.api.FhirPlatform {
     /**
      * Returns an implementation of the FhirDal interface appropriate to the environment.
      * @return
@@ -25,11 +25,4 @@ public interface FhirPlatform {
      * @return
      */
     FhirTransactions transactions();
-
-    /**
-     * Supports accessing specific services through the platform API such as terminology services and knowledge repositories
-     * @param <T> The type of FhirService being requested
-     * @return An implementation of the requested interface appropriate to the environment
-     */
-    <T extends FhirService> T getService();
 }
