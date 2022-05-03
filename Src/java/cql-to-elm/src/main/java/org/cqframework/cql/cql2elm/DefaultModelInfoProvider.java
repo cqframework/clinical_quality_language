@@ -3,8 +3,8 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.Version;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-import javax.xml.bind.JAXB;
 import java.io.*;
 import java.nio.file.Path;
 
@@ -81,11 +81,13 @@ public class DefaultModelInfoProvider implements ModelInfoProvider {
         try {
             if (modelFile != null) {
                 InputStream is = new FileInputStream(modelFile);
-                return JAXB.unmarshal(is, ModelInfo.class);
+
+                return JacksonXML.readValue(is, ModelInfo.class);
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException(String.format("Could not load definition for model info %s.", modelIdentifier.getId()), e);
-        }
+        } 
 
         return null;
     }

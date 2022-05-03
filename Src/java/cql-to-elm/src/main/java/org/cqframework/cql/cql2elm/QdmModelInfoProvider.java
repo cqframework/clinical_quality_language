@@ -3,7 +3,8 @@ package org.cqframework.cql.cql2elm;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
-import javax.xml.bind.JAXB;
+import java.io.IOException;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * Created by Bryn on 2/3/2016.
@@ -27,42 +28,48 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
         if (isQDMModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-            switch (localVersion) {
-                case "4.1.2":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo.xml"),
-                            ModelInfo.class);
-                case "4.2":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml"),
-                            ModelInfo.class);
-                case "4.3":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.3.xml"),
-                            ModelInfo.class);
-                case "5.0":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.xml"),
-                            ModelInfo.class);
-                case "5.0.1":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.1.xml"),
-                            ModelInfo.class);
-                case "5.0.2":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.2.xml"),
-                            ModelInfo.class);
-                case "5.3":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.3.xml"),
-                            ModelInfo.class);
-                case "5.4":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.4.xml"),
-                            ModelInfo.class);
-                case "5.5":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.5.xml"),
-                            ModelInfo.class);
-                case "5.6":
-                case "":
-                    return JAXB.unmarshal(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.6.xml"),
-                            ModelInfo.class);
-
-                // Do not throw, allow other providers to resolve
-                //default:
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
+            try {
+                switch (localVersion) {
+                    case "4.1.2":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo.xml"),
+                                ModelInfo.class);
+                    case "4.2":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml"),
+                                ModelInfo.class);
+                    case "4.3":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.3.xml"),
+                                ModelInfo.class);
+                    case "5.0":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.xml"),
+                                ModelInfo.class);
+                    case "5.0.1":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.1.xml"),
+                                ModelInfo.class);
+                    case "5.0.2":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.2.xml"),
+                                ModelInfo.class);
+                    case "5.3":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.3.xml"),
+                                ModelInfo.class);
+                    case "5.4":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.4.xml"),
+                                ModelInfo.class);
+                    case "5.5":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.5.xml"),
+                                ModelInfo.class);
+                    case "5.6":
+                    case "":
+                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.6.xml"),
+                                ModelInfo.class);
+    
+                    // Do not throw, allow other providers to resolve
+                    //default:
+                    //    throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            // Do not throw, allow other providers to resolve
+            //    throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
             }
         }
 
