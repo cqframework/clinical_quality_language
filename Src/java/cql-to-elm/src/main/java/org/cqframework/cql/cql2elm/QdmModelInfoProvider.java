@@ -4,7 +4,6 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.io.IOException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * Created by Bryn on 2/3/2016.
@@ -61,10 +60,6 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
                     case "":
                         return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.6.xml"),
                                 ModelInfo.class);
-    
-                    // Do not throw, allow other providers to resolve
-                    //default:
-                    //    throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

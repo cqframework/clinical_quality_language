@@ -4,7 +4,6 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.io.IOException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * Created by Bryn on 4/15/2016.
@@ -34,14 +33,11 @@ public class QuickFhirModelInfoProvider implements ModelInfoProvider {
                     case "":
                         return JacksonXML.readValue(QuickFhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quickfhir-modelinfo-3.0.1.xml"),
                                 ModelInfo.class);
-    
-                    //default:
-                    //    throw new IllegalArgumentException(String.format("Unknown version %s of the QUICKFHIR model.", localVersion));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
+                //    throw new IllegalArgumentException(String.format("Unknown version %s of the QUICKFHIR model.", localVersion));
             }
 
         }

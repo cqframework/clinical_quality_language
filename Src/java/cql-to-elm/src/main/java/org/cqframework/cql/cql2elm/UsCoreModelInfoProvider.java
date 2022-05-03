@@ -4,7 +4,6 @@ import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.io.IOException;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 public class UsCoreModelInfoProvider implements ModelInfoProvider {
     private NamespaceManager namespaceManager;

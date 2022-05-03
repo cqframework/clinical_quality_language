@@ -27,10 +27,9 @@ public class SystemModelInfoProvider implements ModelInfoProvider {
                 return JacksonXML.readValue(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"),
                 ModelInfo.class);
             } catch (IOException e) {
-                System.out.println("oh no");
                 e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
+                //    throw new IllegalArgumentException(String.format("Unknown version %s of the System model.", localVersion));
             }
         }
 
