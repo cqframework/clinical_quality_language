@@ -38,7 +38,7 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
             } catch (IOException e) {
                 e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the QDM model.", localVersion));
+                //    throw new IllegalArgumentException(String.format("Unknown version %s of the Fhir model.", localVersion));
             }
             
         }

@@ -40,7 +40,7 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
             } catch (IOException e) {
                 e.printStackTrace();
                 // Do not throw, allow other providers to resolve
-                //    throw new IllegalArgumentException(String.format("Unknown version %s of the Quick model.", localVersion));
+                //    throw new IllegalArgumentException(String.format("Unknown version %s of the Fhir model.", localVersion));
             }
             
         }
