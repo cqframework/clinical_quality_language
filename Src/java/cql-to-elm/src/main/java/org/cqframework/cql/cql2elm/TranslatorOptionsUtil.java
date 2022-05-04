@@ -24,7 +24,7 @@ public class TranslatorOptionsUtil {
      * @param library The library to extracts the options from.
      * @return The set of options used to translate the library.
      */
-    public static EnumSet<CqlTranslator.Options> getTranslatorOptions(Library library) {
+    public static EnumSet<CqlCompilerOptions.Options> getTranslatorOptions(Library library) {
         requireNonNull(library, "library can not be null");
         if (library.getAnnotation() == null || library.getAnnotation().isEmpty()) {
             return null;
@@ -71,16 +71,16 @@ public class TranslatorOptionsUtil {
      * @param translatorOptions the string to parse
      * @return the set of options
      */
-    public static EnumSet<CqlTranslator.Options> parseTranslatorOptions(String translatorOptions) {
+    public static EnumSet<CqlCompilerOptions.Options> parseTranslatorOptions(String translatorOptions) {
         if (translatorOptions == null) {
             return null;
         }
 
-        EnumSet<CqlTranslator.Options> optionSet = EnumSet.noneOf(CqlTranslator.Options.class);
+        EnumSet<CqlCompilerOptions.Options> optionSet = EnumSet.noneOf(CqlCompilerOptions.Options.class);
         String[] options = translatorOptions.trim().split(",");
 
         for (String option : options) {
-            optionSet.add(CqlTranslator.Options.valueOf(option));
+            optionSet.add(CqlCompilerOptions.Options.valueOf(option));
         }
 
         return optionSet;

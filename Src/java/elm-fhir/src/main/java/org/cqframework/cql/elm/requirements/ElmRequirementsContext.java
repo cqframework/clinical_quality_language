@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ElmRequirementsContext {
 
-    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor) {
+    public ElmRequirementsContext(LibraryManager libraryManager, CqlCompilerOptions options, ElmRequirementsVisitor visitor) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("Library Manager required");
         }
@@ -28,11 +28,11 @@ public class ElmRequirementsContext {
         this.requirements = new ElmRequirements(new VersionedIdentifier().withId("result"), new Null());
     }
 
-    private CqlTranslatorOptions options;
-    public CqlTranslatorOptions getOptions() {
+    private CqlCompilerOptions options;
+    public CqlCompilerOptions getOptions() {
         return options;
     }
-    public void setOptions(CqlTranslatorOptions options) {
+    public void setOptions(CqlCompilerOptions options) {
         this.options = options;
     }
 
@@ -618,7 +618,7 @@ public class ElmRequirementsContext {
 
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier) {
         // TODO: Need to support loading from ELM so we don't need options.
-        ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
+        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
         TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, options, errors);
         // TODO: Report translation errors here...
         //for (CqlTranslatorException error : errors) {

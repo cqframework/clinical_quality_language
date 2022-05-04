@@ -114,22 +114,22 @@ public class TestUtils {
     }
 
     public static Object visitData(String cqlData, boolean enableAnnotations, boolean enableDateRangeOptimization) {
-        List<CqlTranslator.Options> options = new ArrayList<>();
+        List<CqlCompilerOptions.Options> options = new ArrayList<>();
         if (enableAnnotations) {
-            options.add(CqlTranslator.Options.EnableAnnotations);
+            options.add(CqlCompilerOptions.Options.EnableAnnotations);
         }
         if (enableDateRangeOptimization) {
-            options.add(CqlTranslator.Options.EnableDateRangeOptimization);
+            options.add(CqlCompilerOptions.Options.EnableDateRangeOptimization);
         }
         CqlTranslator translator = CqlTranslator.fromText(cqlData, getModelManager(), getLibraryManager(), getUcumService(),
-                options.toArray(new CqlTranslator.Options[options.size()]));
+                options.toArray(new CqlCompilerOptions.Options[options.size()]));
         ensureValid(translator);
         return translator.toObject();
     }
 
     private static void ensureValid(CqlTranslator translator) {
         StringBuilder builder = new StringBuilder();
-        for (CqlTranslatorException error : translator.getErrors()) {
+        for (CqlCompilerException error : translator.getErrors()) {
             builder.append(String.format("%s%n", error.getMessage()));
         }
         if (builder.length() > 0) {
@@ -160,21 +160,21 @@ public class TestUtils {
         return new CommonTokenStream(lexer);
     }
 
-    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
-    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
+    public static CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
         return runSemanticTest(null, testFileName, expectedErrors, options);
     }
 
-    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
-        return runSemanticTest(namespaceInfo, testFileName, expectedErrors, new CqlTranslatorOptions(options));
+    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
+        return runSemanticTest(namespaceInfo, testFileName, expectedErrors, new CqlCompilerOptions(options));
     }
 
-    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
+    public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
         CqlTranslator translator = TestUtils.createTranslator(namespaceInfo, testFileName, options);
-        for (CqlTranslatorException error : translator.getErrors()) {
+        for (CqlCompilerException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
         }
@@ -182,7 +182,7 @@ public class TestUtils {
         return translator;
     }
 
-    public static CqlTranslator createTranslatorFromText(String cqlText, CqlTranslator.Options... options) {
+    public static CqlTranslator createTranslatorFromText(String cqlText, CqlCompilerOptions.Options... options) {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new FhirLibrarySourceProvider());
@@ -190,20 +190,20 @@ public class TestUtils {
         return translator;
     }
 
-    public static CqlTranslator createTranslatorFromStream(String testFileName, CqlTranslator.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
         return createTranslatorFromStream(null, testFileName, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, CqlTranslator.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
         InputStream inputStream = Cql2ElmVisitorTest.class.getResourceAsStream(testFileName);
         return createTranslatorFromStream(null, inputStream, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(InputStream inputStream, CqlTranslator.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(InputStream inputStream, CqlCompilerOptions.Options... options) throws IOException {
         return createTranslatorFromStream(null, inputStream, options);
     }
 
-    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, CqlTranslator.Options... options) throws IOException {
+    public static CqlTranslator createTranslatorFromStream(NamespaceInfo namespaceInfo, InputStream inputStream, CqlCompilerOptions.Options... options) throws IOException {
         ModelManager modelManager = new ModelManager();
         LibraryManager libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
@@ -212,19 +212,19 @@ public class TestUtils {
         return translator;
     }
 
-    public static CqlTranslator createTranslator(String testFileName, CqlTranslator.Options... options) throws IOException {
-        return createTranslator(null, testFileName, new CqlTranslatorOptions(options));
+    public static CqlTranslator createTranslator(String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        return createTranslator(null, testFileName, new CqlCompilerOptions(options));
     }
 
-    public static CqlTranslator createTranslator(String testFileName, CqlTranslatorOptions options) throws IOException {
+    public static CqlTranslator createTranslator(String testFileName, CqlCompilerOptions options) throws IOException {
         return createTranslator(null, testFileName, options);
     }
 
-    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslator.Options... options) throws IOException {
-        return createTranslator(namespaceInfo, testFileName, new CqlTranslatorOptions(options));
+    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions.Options... options) throws IOException {
+        return createTranslator(namespaceInfo, testFileName, new CqlCompilerOptions(options));
     }
 
-    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslatorOptions options) throws IOException {
+    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlCompilerOptions options) throws IOException {
         String[] segments = testFileName.split("/");
         String path = null;
         if (segments.length > 1) {

@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import static org.cqframework.cql.cql2elm.CqlTranslatorException.HasErrors;
+import static org.cqframework.cql.cql2elm.CqlCompilerException.HasErrors;
 
 /**
  * Manages a set of CQL libraries. As new library references are encountered
@@ -149,13 +149,13 @@ public class LibraryManager {
             }
 
         } catch (Exception e) {
-            throw new CqlTranslatorIncludeException(e.getMessage(), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
+            throw new CqlCompilerIncludeException(e.getMessage(), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
 
         return source != null;
     }
 
-    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
+    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options, List<CqlCompilerException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -173,7 +173,7 @@ public class LibraryManager {
         if (library != null
                 && libraryIdentifier.getVersion() != null
                 && !libraryIdentifier.getVersion().equals(library.getIdentifier().getVersion())) {
-            throw new CqlTranslatorIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
+            throw new CqlCompilerIncludeException(String.format("Could not resolve reference to library %s, version %s because version %s is already loaded.",
                     libraryPath, libraryIdentifier.getVersion(), library.getIdentifier().getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         } else if (library != null) {
             if (libraryIdentifier.getSystem() == null && library.getIdentifier().getSystem() != null) {
@@ -191,7 +191,7 @@ public class LibraryManager {
         return library;
     }
 
-    private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
+    private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options, List<CqlCompilerException> errors) {
 
         TranslatedLibrary result = null;
         result = tryTranslatedLibraryElm(libraryIdentifier, options);
@@ -218,25 +218,25 @@ public class LibraryManager {
 
             result = translator.getTranslatedLibrary();
             if (libraryIdentifier.getVersion() != null && !libraryIdentifier.getVersion().equals(result.getIdentifier().getVersion())) {
-                throw new CqlTranslatorIncludeException(String.format("Library %s was included as version %s, but version %s of the library was found.",
+                throw new CqlCompilerIncludeException(String.format("Library %s was included as version %s, but version %s of the library was found.",
                         libraryPath, libraryIdentifier.getVersion(), result.getIdentifier().getVersion()),
                         libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
             }
 
         } catch (IOException e) {
-            throw new CqlTranslatorIncludeException(String.format("Errors occurred translating library %s, version %s.",
+            throw new CqlCompilerIncludeException(String.format("Errors occurred translating library %s, version %s.",
                     libraryPath, libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
 
         if (result == null) {
-            throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
+            throw new CqlCompilerIncludeException(String.format("Could not load source for library %s, version %s.",
                     libraryPath, libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         } else {
             return result;
         }
     }
 
-    private TranslatedLibrary tryTranslatedLibraryElm(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options) {
+    private TranslatedLibrary tryTranslatedLibraryElm(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options) {
         TranslatedLibrary result = null;
         InputStream librarySource = null;
 
@@ -267,7 +267,7 @@ public class LibraryManager {
     }
 
 
-    private TranslatedLibrary generateTranslatedLibraryFromElm(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlTranslatorOptions options) {
+    private TranslatedLibrary generateTranslatedLibraryFromElm(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlCompilerOptions options) {
 
         Library library = null;
         TranslatedLibrary translatedLibrary = null;
@@ -367,8 +367,8 @@ public class LibraryManager {
         return null;
     }
 
-    protected Boolean translatorOptionsMatch(Library library, CqlTranslatorOptions options) {
-        EnumSet<CqlTranslator.Options> translatorOptions = TranslatorOptionsUtil.getTranslatorOptions(library);
+    protected Boolean translatorOptionsMatch(Library library, CqlCompilerOptions options) {
+        EnumSet<CqlCompilerOptions.Options> translatorOptions = TranslatorOptionsUtil.getTranslatorOptions(library);
         if (translatorOptions == null) {
             return false;
         }

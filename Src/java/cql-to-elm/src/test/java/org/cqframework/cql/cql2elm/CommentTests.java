@@ -22,7 +22,7 @@ public class CommentTests {
 
     @Test
     public void testComments() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, CqlTranslator.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
         TranslatedLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
     }

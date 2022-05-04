@@ -275,12 +275,12 @@ public class SemanticTests {
     @Test
     public void testCompatibilityLevel3() throws IOException {
         runSemanticTest("TestCompatibilityLevel3.cql", 1);
-        runSemanticTest("TestCompatibilityLevel3.cql", 0, new CqlTranslatorOptions().withCompatibilityLevel("1.3"));
+        runSemanticTest("TestCompatibilityLevel3.cql", 0, new CqlCompilerOptions().withCompatibilityLevel("1.3"));
     }
 
     @Test
     public void invalidEquality() throws IOException {
-        runSemanticTest("InvalidEquality.cql", 1, CqlTranslator.Options.DisableListPromotion);
+        runSemanticTest("InvalidEquality.cql", 1, CqlCompilerOptions.Options.DisableListPromotion);
     }
 
     @Test
@@ -348,7 +348,7 @@ public class SemanticTests {
 
     @Test
     public void testIssue405() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("Issue405.cql", 0, CqlTranslator.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue405.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
         Library library = translator.toELM();
         assertThat(library.getStatements().getDef().size(), equalTo(6));
         assertThat(library.getStatements().getDef().get(3), instanceOf(ExpressionDef.class));
@@ -359,7 +359,7 @@ public class SemanticTests {
 
     @Test
     public void testIssue395() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("Issue395.cql", 0, CqlTranslator.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest("Issue395.cql", 0, CqlCompilerOptions.Options.EnableAnnotations);
         Library library = translator.toELM();
         ExpressionDef expressionDef = (ExpressionDef) library.getStatements().getDef().get(2);
         assertThat(expressionDef.getExpression().getLocalId(), notNullValue());
@@ -376,7 +376,7 @@ public class SemanticTests {
 
     @Test
     public void testIssue592() throws IOException {
-        TestUtils.runSemanticTest("Issue592.cql", 0, new CqlTranslatorOptions().withCompatibilityLevel("1.3"));
+        TestUtils.runSemanticTest("Issue592.cql", 0, new CqlCompilerOptions().withCompatibilityLevel("1.3"));
     }
 
     @Test
@@ -499,8 +499,8 @@ public class SemanticTests {
 
     @Test
     public void TestVSCastFunction14() throws IOException {
-        CqlTranslatorOptions options = new CqlTranslatorOptions()
-                .withOptions(CqlTranslator.Options.DisableListDemotion, CqlTranslator.Options.DisableListPromotion, CqlTranslator.Options.DisableMethodInvocation)
+        CqlCompilerOptions options = new CqlCompilerOptions()
+                .withOptions(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableMethodInvocation)
                 .withCompatibilityLevel("1.4");
         CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
         ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
@@ -557,8 +557,8 @@ public class SemanticTests {
     @Test
     public void TestVSCastFunction15() throws IOException {
         // TODO: This test needs to pass, most likely by implicitly converting a ValueSet to a ValueSetRef? Or maybe a new explicit ELM operation?
-        CqlTranslatorOptions options = new CqlTranslatorOptions()
-                .withOptions(CqlTranslator.Options.DisableListDemotion, CqlTranslator.Options.DisableListPromotion, CqlTranslator.Options.DisableMethodInvocation);
+        CqlCompilerOptions options = new CqlCompilerOptions()
+                .withOptions(CqlCompilerOptions.Options.DisableListDemotion, CqlCompilerOptions.Options.DisableListPromotion, CqlCompilerOptions.Options.DisableMethodInvocation);
         CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
         ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
 
@@ -627,11 +627,11 @@ public class SemanticTests {
         return TestUtils.runSemanticTest(testFileName, expectedErrors);
     }
 
-    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslator.Options... options) throws IOException {
+    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions.Options... options) throws IOException {
         return TestUtils.runSemanticTest(testFileName, expectedErrors, options);
     }
 
-    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
+    private CqlTranslator runSemanticTest(String testFileName, int expectedErrors, CqlCompilerOptions options) throws IOException {
         return TestUtils.runSemanticTest(testFileName, expectedErrors, options);
     }
 }

@@ -1,6 +1,6 @@
 package org.cqframework.cql.elm.requirements.fhir;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.cql2elm.CqlCompilerOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.NamespaceManager;
 import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
@@ -27,7 +27,6 @@ import javax.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -39,13 +38,13 @@ public class DataRequirementsProcessor {
     }
 
     public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
-                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          CqlCompilerOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions) {
         return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, includeLogicDefinitions, true);
     }
 
     public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
-                                          CqlTranslatorOptions options, Set<String> expressions,
+                                          CqlCompilerOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions, boolean recursive) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("libraryManager required");
