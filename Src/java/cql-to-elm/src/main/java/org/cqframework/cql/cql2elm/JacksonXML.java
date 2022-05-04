@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import org.hl7.elm_modelinfo.r1.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,16 +40,12 @@ interface TypeInfoMixIn {}
 })
 interface TypeSpecifierMixIn {}
 
-/**
- * Waiting for a solution to this issue: https://github.com/FasterXML/jackson-databind/issues/2968
- */
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         defaultImpl = NamedTypeSpecifier.class)
 interface NamedTypeSpecifierMixIn {}
 
 public class JacksonXML {
-
     static XmlMapper mapper = new XmlMapper().builder()
             .defaultUseWrapper(false)
             .addMixIn(TypeInfo.class, TypeInfoMixIn.class)
