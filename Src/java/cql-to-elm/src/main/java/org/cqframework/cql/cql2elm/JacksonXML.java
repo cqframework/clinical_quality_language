@@ -2,11 +2,9 @@ package org.cqframework.cql.cql2elm;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import org.hl7.elm_modelinfo.r1.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,12 +47,10 @@ interface TypeSpecifierMixIn {}
         defaultImpl = NamedTypeSpecifier.class)
 interface NamedTypeSpecifierMixIn {}
 
-
 public class JacksonXML {
 
     static XmlMapper mapper = new XmlMapper().builder()
             .defaultUseWrapper(false)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .addMixIn(TypeInfo.class, TypeInfoMixIn.class)
             .addMixIn(TypeSpecifier.class, TypeSpecifierMixIn.class)
             .addMixIn(NamedTypeSpecifier.class, NamedTypeSpecifierMixIn.class)
