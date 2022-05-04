@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.eclipse.persistence.jaxb.json.JsonSchemaOutputResolver;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.Library;
 
