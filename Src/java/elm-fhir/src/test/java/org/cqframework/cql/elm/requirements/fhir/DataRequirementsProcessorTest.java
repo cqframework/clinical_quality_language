@@ -39,7 +39,6 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsProcessor() {
         CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        cqlCompilerOptions.getFormats().add(CqlTranslator.Format.JSON);
         cqlCompilerOptions.getOptions().add(CqlCompilerOptions.Options.EnableAnnotations);
         try {
             /*
@@ -105,7 +104,6 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsProcessorOpioidIssueExpression() {
         CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        cqlCompilerOptions.getFormats().add(CqlTranslator.Format.JSON);
         cqlCompilerOptions.setCollapseDataRequirements(true);
         cqlCompilerOptions.setAnalyzeDataRequirements(true);
         try {
@@ -188,7 +186,6 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsProcessorOpioidIssueLibrary() {
         CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        cqlCompilerOptions.getFormats().add(CqlTranslator.Format.JSON);
         cqlCompilerOptions.setCollapseDataRequirements(true);
         cqlCompilerOptions.setAnalyzeDataRequirements(true);
         try {
@@ -349,7 +346,6 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsProcessorWithExpressions() {
         CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        cqlCompilerOptions.getFormats().add(CqlTranslator.Format.JSON);
         try {
             Set<String> expressions = new HashSet<>();
             // TODO - add expressions to expressions
@@ -419,7 +415,6 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestLibraryDataRequirements() {
         CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        cqlCompilerOptions.getFormats().add(CqlTranslator.Format.JSON);
         try {
 //            CqlTranslator translator = createTranslator("/ecqm/resources/library-EXM506-2.2.000.json", cqlTranslatorOptions);
             CqlTranslator translator = createTranslator("CompositeMeasures/cql/BCSComponent.cql", cqlCompilerOptions);
@@ -486,7 +481,6 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestLibraryDataRequirementsRecursive() {
         CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        cqlCompilerOptions.getFormats().add(CqlTranslator.Format.JSON);
         cqlCompilerOptions.setCollapseDataRequirements(true);
         try {
             CqlTranslator translator = createTranslator("DataRequirements/DataRequirementsLibraryTest.cql", cqlCompilerOptions);
@@ -518,7 +512,6 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsFHIRReferences() {
         CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        cqlCompilerOptions.getFormats().add(CqlTranslator.Format.JSON);
         try {
             CqlTranslator translator = createTranslator("FHIRReferencesRevisited.cql", cqlCompilerOptions);
             translator.toELM();
@@ -539,7 +532,6 @@ public class DataRequirementsProcessorTest {
 
     private CqlCompilerOptions getTranslatorOptions() {
         CqlCompilerOptions cqlCompilerOptions = new CqlCompilerOptions();
-        cqlCompilerOptions.getFormats().add(CqlTranslator.Format.JSON);
         return cqlCompilerOptions;
     }
 
