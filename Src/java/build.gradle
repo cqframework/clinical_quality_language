@@ -1,6 +1,8 @@
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
     group = 'info.cqframework'
     version = '1.5.9-SNAPSHOT'
@@ -180,74 +182,84 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-
    - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
  */
 configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'elm-fhir', 'quick', 'cql-to-elm', 'qdm', 'cql-formatter']}) {
-    apply plugin: 'maven'
-    apply plugin: 'signing'
-
-    signing {
-        required { gradle.taskGraph.hasTask(uploadArchives) }
-        sign configurations.archives
+    java {
+        withJavadocJar()
+        withSourcesJar()
     }
 
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+    publishing {
+        publications {
+            mavenDeployer(MavenPublication) {
+                from components.java
 
-                /* Use these to test locally (but don't forget to comment out others!)
-                repository(url: "file://${buildDir}/repo")
-                snapshotRepository(url: "file://${buildDir}/ssRepo")
-                */
-
-                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    authentication(userName: project.hasProperty("ossrhUsername") ? ossrhUsername : "", password: project.hasProperty("ossrhPassword") ? ossrhPassword : "")
-                }
-
-                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                    authentication(userName: project.hasProperty("ossrhUsername") ? ossrhUsername : "", password: project.hasProperty("ossrhPassword") ? ossrhPassword : "")
-                }
-
-                pom.project {
-                    name project.name
-                    packaging 'jar'
-                    description "The ${project.name} library for the Clinical Quality Language Java reference implementation"
-                    url 'http://cqframework.info'
+                pom {
+                    name = project.name
+                    packaging = 'jar'
+                    description = "The ${project.name} library for the Clinical Quality Language Java reference implementation"
+                    url = 'http://cqframework.info'
 
                     scm {
-                        connection 'scm:git:git@github.com:cqframework/clinical_quality_language.git'
-                        developerConnection 'scm:git:git@github.com:cqframework/clinical_quality_language.git'
-                        url 'git@github.com:cqframework/clinical_quality_language.git'
+                        connection = 'scm:git:git@github.com:cqframework/clinical_quality_language.git'
+                        developerConnection = 'scm:git:git@github.com:cqframework/clinical_quality_language.git'
+                        url = 'git@github.com:cqframework/clinical_quality_language.git'
                     }
 
                     licenses {
                         license {
-                            name 'The Apache License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            name ='The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                         }
                     }
 
                     developers {
                         developer {
-                            name 'Bryn Rhodes'
+                            name = 'Bryn Rhodes'
                         }
                         developer {
-                            name 'Chris Moesel'
+                            name = 'Chris Moesel'
                         }
                         developer {
-                            name 'Rob Dingwell'
+                            name = 'Rob Dingwell'
                         }
                         developer {
-                            name 'Jason Walonoski'
+                            name = 'Jason Walonoski'
                         }
                         developer {
-                            name 'Marc Hadley'
+                            name = 'Marc Hadley'
                         }
                     }
                 }
             }
         }
+        repositories {
+            maven {
+                credentials {
+                    username project.hasProperty("ossrhUsername") ? ossrhUsername : ""
+                    password project.hasProperty("ossrhPassword") ? ossrhPassword : ""
+                }
+
+                /* Use these to test locally (but don't forget to comment out others!)
+                def releasesRepoUrl = "file://${buildDir}/repo"
+                def snapshotsRepoUrl = "file://${buildDir}/ssRepo"
+                */
+
+                // change URLs to point to your repos, e.g. http://my.org/repo
+                def releasesRepoUrl = "file://${buildDir}/repo" //"https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "file://${buildDir}/ssRepo" //"https://oss.sonatype.org/content/repositories/snapshots/"
+                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            }
+        }
     }
-    uploadArchives.dependsOn javadocJar
-    uploadArchives.dependsOn sourcesJar
+
+    signing {
+        sign publishing.publications.mavenDeployer
+    }
+
+    javadoc {
+        if(JavaVersion.current().isJava9Compatible()) {
+            options.addBooleanOption('html5', true)
+        }
+    }
 }
 
 idea {
