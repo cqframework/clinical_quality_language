@@ -10,7 +10,8 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'jacoco'
 
-    sourceCompatibility = '1.8'
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 
     repositories {
         mavenLocal()
@@ -252,7 +253,7 @@ configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'elm-fhir', 'q
 
 idea {
   project {
-    languageLevel = '1.8'
+    languageLevel = JavaVersion.VERSION_11
     ipr {
       withXml { provider ->
         provider.node.component.find { it.@name == 'VcsDirectoryMappings' }.mapping.@vcs = 'Git'
