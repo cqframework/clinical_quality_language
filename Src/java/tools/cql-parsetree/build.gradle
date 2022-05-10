@@ -3,8 +3,8 @@ apply plugin: 'application'
 mainClassName = 'org.cqframework.cql.tools.parsetree.Main'
 
 dependencies {
-    compile project(':cql')
-    compile (group: "org.antlr", name: "antlr4", version: "4.9.1") {
+    implementation project(':cql')
+    implementation (group: "org.antlr", name: "antlr4", version: "4.9.1") {
         // antlr 4.5 includes these classes directly
         exclude(group: "org.abego.treelayout", module: "org.abego.treelayout.core")
     }

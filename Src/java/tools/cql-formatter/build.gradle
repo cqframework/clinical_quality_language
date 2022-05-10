@@ -3,8 +3,8 @@ apply plugin: 'application'
 mainClassName = 'org.cqframework.cql.tools.formatter.Main'
 
 dependencies {
-    testCompile project(":cql-to-elm")
-    compile project(":cql")
+    testImplementation project(":cql-to-elm")
+    implementation project(":cql")
 }
 
 sourceSets.test.resources.srcDir "../../cql-to-elm/src/test/resources"
