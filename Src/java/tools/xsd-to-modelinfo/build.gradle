@@ -7,4 +7,5 @@ dependencies {
     compile group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
     compile group: 'org.apache.ws.xmlschema', name: 'xmlschema-core', version: '2.2.5'
     compile group: 'org.apache.ws.xmlschema', name: 'xmlschema-walker', version: '2.2.5'
+    implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '1.11.1'
 }
