@@ -37,13 +37,13 @@ public class TranslationTests {
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager),
                 CqlTranslatorException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All, CqlCompilerOptions.Options.EnableDateRangeOptimization,
-                CqlCompilerOptions.Options.EnableAnnotations,
-                CqlCompilerOptions.Options.EnableLocators,
-                CqlCompilerOptions.Options.EnableResultTypes,
-                CqlCompilerOptions.Options.DisableListDemotion,
-                CqlCompilerOptions.Options.DisableListPromotion,
-                CqlCompilerOptions.Options.DisableMethodInvocation);
+                LibraryBuilder.SignatureLevel.All, CqlTranslatorOptions.Options.EnableDateRangeOptimization,
+                CqlTranslatorOptions.Options.EnableAnnotations,
+                CqlTranslatorOptions.Options.EnableLocators,
+                CqlTranslatorOptions.Options.EnableResultTypes,
+                CqlTranslatorOptions.Options.DisableListDemotion,
+                CqlTranslatorOptions.Options.DisableListPromotion,
+                CqlTranslatorOptions.Options.DisableMethodInvocation);
         System.out.println(translator.toJson());
     }
 
@@ -73,7 +73,7 @@ public class TranslationTests {
 
     @Test
     public void testAnnotationsPresent() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlCompilerOptions.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslatorOptions.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
         List<ExpressionDef> defs = translator.getTranslatedLibrary().getLibrary().getStatements().getDef();
         assertNotNull(defs.get(1).getAnnotation());
@@ -90,7 +90,7 @@ public class TranslationTests {
 
     @Test
     public void testTranslatorOptionsPresent() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlCompilerOptions.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslatorOptions.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
         Library library = translator.getTranslatedLibrary().getLibrary();
         assertNotNull(library.getAnnotation());

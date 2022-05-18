@@ -32,14 +32,14 @@ public class ElmSupportTest {
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmJxsonLibrarySourceProvider());
 
-        CqlCompilerOptions options = createOptions();
+        CqlTranslatorOptions options = createOptions();
         try {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJxsonElm.cql"),
                     modelManager,
                     libraryManager,
                     CqlTranslatorException.ErrorSeverity.Info,
                     SignatureLevel.All,
-                    options.getOptions().toArray(new CqlCompilerOptions.Options[0]));
+                    options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
 
@@ -56,13 +56,13 @@ public class ElmSupportTest {
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
         try {
-            CqlCompilerOptions options = createOptions();
+            CqlTranslatorOptions options = createOptions();
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"),
                     modelManager,
                     libraryManager,
                     CqlTranslatorException.ErrorSeverity.Info,
                     SignatureLevel.All,
-                    options.getOptions().toArray(new CqlCompilerOptions.Options[0]));
+                    options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
 
@@ -77,13 +77,13 @@ public class ElmSupportTest {
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmXmlLibrarySourceProvider());
 
-        CqlCompilerOptions options = createOptions();
+        CqlTranslatorOptions options = createOptions();
         try {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryXmlElm.cql"),
                     modelManager,
                     libraryManager,
                     CqlTranslatorException.ErrorSeverity.Info,
-                    SignatureLevel.All, options.getOptions().toArray(new CqlCompilerOptions.Options[0]));
+                    SignatureLevel.All, options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
 
@@ -98,13 +98,13 @@ public class ElmSupportTest {
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
         try {
-            CqlCompilerOptions options = createOptions();
+            CqlTranslatorOptions options = createOptions();
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryWithNullTypeSpecifierJsonElm.cql"),
                     modelManager,
                     libraryManager,
                     CqlTranslatorException.ErrorSeverity.Info,
                     SignatureLevel.All,
-                    options.getOptions().toArray(new CqlCompilerOptions.Options[0]));
+                    options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
 
@@ -113,15 +113,15 @@ public class ElmSupportTest {
         }
     }
 
-    private CqlCompilerOptions createOptions() {
-        CqlCompilerOptions result = new CqlCompilerOptions();
-        result.setOptions(CqlCompilerOptions.Options.EnableDateRangeOptimization,
-                CqlCompilerOptions.Options.EnableAnnotations,
-                CqlCompilerOptions.Options.EnableLocators,
-                CqlCompilerOptions.Options.EnableResultTypes,
-                CqlCompilerOptions.Options.DisableListDemotion,
-                CqlCompilerOptions.Options.DisableListPromotion,
-                CqlCompilerOptions.Options.DisableMethodInvocation);
+    private CqlTranslatorOptions createOptions() {
+        CqlTranslatorOptions result = new CqlTranslatorOptions();
+        result.setOptions(CqlTranslatorOptions.Options.EnableDateRangeOptimization,
+                CqlTranslatorOptions.Options.EnableAnnotations,
+                CqlTranslatorOptions.Options.EnableLocators,
+                CqlTranslatorOptions.Options.EnableResultTypes,
+                CqlTranslatorOptions.Options.DisableListDemotion,
+                CqlTranslatorOptions.Options.DisableListPromotion,
+                CqlTranslatorOptions.Options.DisableMethodInvocation);
 
         return result;
     }

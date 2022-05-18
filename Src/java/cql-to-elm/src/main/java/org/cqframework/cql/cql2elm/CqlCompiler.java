@@ -158,59 +158,59 @@ public class CqlCompiler {
     }
 
     public Library run(String cqlText,
-                       CqlCompilerOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlCompilerOptions(options));
+                       CqlTranslatorOptions.Options... options) throws IOException {
+        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(options));
     }
 
     public Library run(String cqlText,
                        CqlTranslatorException.ErrorSeverity errorLevel,
-                       CqlCompilerOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlCompilerOptions(errorLevel, options));
+                       CqlTranslatorOptions.Options... options) throws IOException {
+        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(errorLevel, options));
     }
 
     public Library run(String cqlText,
                        CqlTranslatorException.ErrorSeverity errorLevel,
                        LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlCompilerOptions.Options... options) throws IOException {
-        return run(CharStreams.fromString(cqlText), new CqlCompilerOptions(errorLevel, signatureLevel, options));
+                       CqlTranslatorOptions.Options... options) throws IOException {
+        return run(CharStreams.fromString(cqlText), new CqlTranslatorOptions(errorLevel, signatureLevel, options));
     }
 
     public Library run(InputStream is,
-                       CqlCompilerOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlCompilerOptions(options));
+                       CqlTranslatorOptions.Options... options) throws IOException {
+        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(options));
     }
 
     public Library run(InputStream is,
                        CqlTranslatorException.ErrorSeverity errorLevel,
-                       CqlCompilerOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlCompilerOptions(errorLevel, options));
+                       CqlTranslatorOptions.Options... options) throws IOException {
+        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(errorLevel, options));
     }
 
     public Library run(InputStream is,
                        CqlTranslatorException.ErrorSeverity errorLevel,
                        LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlCompilerOptions.Options... options) throws IOException {
-        return run(CharStreams.fromStream(is), new CqlCompilerOptions(errorLevel, signatureLevel, options));
+                       CqlTranslatorOptions.Options... options) throws IOException {
+        return run(CharStreams.fromStream(is), new CqlTranslatorOptions(errorLevel, signatureLevel, options));
     }
 
     public Library run(CharStream is,
-                       CqlCompilerOptions.Options... options) {
-        return run(is, new CqlCompilerOptions(options));
+                       CqlTranslatorOptions.Options... options) {
+        return run(is, new CqlTranslatorOptions(options));
     }
 
     public Library run(CharStream is,
                        CqlTranslatorException.ErrorSeverity errorLevel,
-                       CqlCompilerOptions.Options... options) {
-        return run(is, new CqlCompilerOptions(errorLevel, LibraryBuilder.SignatureLevel.None, options));
+                       CqlTranslatorOptions.Options... options) {
+        return run(is, new CqlTranslatorOptions(errorLevel, LibraryBuilder.SignatureLevel.None, options));
     }
 
     public Library run(CharStream is,
                        CqlTranslatorException.ErrorSeverity errorLevel,
                        LibraryBuilder.SignatureLevel signatureLevel,
-                       CqlCompilerOptions.Options... options) {
-        return run(is, new CqlCompilerOptions(errorLevel, signatureLevel, options));
+                       CqlTranslatorOptions.Options... options) {
+        return run(is, new CqlTranslatorOptions(errorLevel, signatureLevel, options));
     }
-    public Library run(CharStream is, CqlCompilerOptions options) {
+    public Library run(CharStream is, CqlTranslatorOptions options) {
         exceptions = new ArrayList<>();
         errors = new ArrayList<>();
         warnings = new ArrayList<>();

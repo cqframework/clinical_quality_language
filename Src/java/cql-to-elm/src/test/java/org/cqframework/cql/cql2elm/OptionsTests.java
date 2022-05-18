@@ -12,18 +12,18 @@ public class OptionsTests {
 
     @Test
     public void testTranslatorOptions() throws IOException {
-        CqlCompilerOptions options = CqlCompilerOptions.defaultOptions();
+        CqlTranslatorOptions options = CqlTranslatorOptions.defaultOptions();
         StringWriter sw = new StringWriter();
-        CqlCompilerOptionsMapper.toWriter(sw, options);
+        CqlTranslatorOptionsMapper.toWriter(sw, options);
         String result = sw.toString();
         Assert.assertTrue(result != null);
 
         InputStream input = OptionsTests.class.getResourceAsStream("options.json");
-        CqlCompilerOptions readOptions = CqlCompilerOptionsMapper.fromReader(new InputStreamReader(input));
+        CqlTranslatorOptions readOptions = CqlTranslatorOptionsMapper.fromReader(new InputStreamReader(input));
         Assert.assertTrue(readOptions != null);
 
         StringWriter sw2 = new StringWriter();
-        CqlCompilerOptionsMapper.toWriter(sw2, readOptions);
+        CqlTranslatorOptionsMapper.toWriter(sw2, readOptions);
         String result2 = sw2.toString();
         Assert.assertTrue(result.equals(result2));
     }

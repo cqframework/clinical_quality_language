@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.fhir.r401;
 
-import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
@@ -127,7 +127,7 @@ public class BaseTest {
 
     @Test
     public void testChoiceDateRangeOptimization() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestChoiceDateRangeOptimization.cql", 0, CqlCompilerOptions.Options.EnableDateRangeOptimization);
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestChoiceDateRangeOptimization.cql", 0, CqlTranslatorOptions.Options.EnableDateRangeOptimization);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
 

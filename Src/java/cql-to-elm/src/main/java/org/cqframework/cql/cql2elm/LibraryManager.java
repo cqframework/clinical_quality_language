@@ -155,7 +155,7 @@ public class LibraryManager {
         return source != null;
     }
 
-    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options, List<CqlTranslatorException> errors) {
+    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -191,7 +191,7 @@ public class LibraryManager {
         return library;
     }
 
-    private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options, List<CqlTranslatorException> errors) {
+    private TranslatedLibrary translateLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
 
         TranslatedLibrary result = null;
         result = tryTranslatedLibraryElm(libraryIdentifier, options);
@@ -236,7 +236,7 @@ public class LibraryManager {
         }
     }
 
-    private TranslatedLibrary tryTranslatedLibraryElm(VersionedIdentifier libraryIdentifier, CqlCompilerOptions options) {
+    private TranslatedLibrary tryTranslatedLibraryElm(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options) {
         TranslatedLibrary result = null;
         InputStream librarySource = null;
 
@@ -267,7 +267,7 @@ public class LibraryManager {
     }
 
 
-    private TranslatedLibrary generateTranslatedLibraryFromElm(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlCompilerOptions options) {
+    private TranslatedLibrary generateTranslatedLibraryFromElm(VersionedIdentifier libraryIdentifier, InputStream librarySource, LibraryContentType type, CqlTranslatorOptions options) {
 
         Library library = null;
         TranslatedLibrary translatedLibrary = null;
@@ -367,8 +367,8 @@ public class LibraryManager {
         return null;
     }
 
-    protected Boolean translatorOptionsMatch(Library library, CqlCompilerOptions options) {
-        EnumSet<CqlCompilerOptions.Options> translatorOptions = TranslatorOptionsUtil.getTranslatorOptions(library);
+    protected Boolean translatorOptionsMatch(Library library, CqlTranslatorOptions options) {
+        EnumSet<CqlTranslatorOptions.Options> translatorOptions = TranslatorOptionsUtil.getTranslatorOptions(library);
         if (translatorOptions == null) {
             return false;
         }

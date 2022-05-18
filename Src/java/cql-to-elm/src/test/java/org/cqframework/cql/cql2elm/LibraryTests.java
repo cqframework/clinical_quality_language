@@ -228,7 +228,7 @@ public class LibraryTests {
             compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
                     CqlTranslatorException.ErrorSeverity.Info,
                     SignatureLevel.All,
-                    CqlCompilerOptions.Options.EnableAnnotations);
+                    CqlTranslatorOptions.Options.EnableAnnotations);
 
             assertThat(compiler.getErrors().size(), is(0));
             Map<String, Library> includedLibraries = compiler.getLibraries();

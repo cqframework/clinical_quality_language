@@ -4,7 +4,7 @@ package org.cqframework.cql.cql2elm.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.reinert.jjschema.v1.JsonSchemaFactory;
 import com.github.reinert.jjschema.v1.JsonSchemaV4Factory;
-import org.cqframework.cql.cql2elm.CqlCompilerOptions;
+import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -34,7 +34,7 @@ public class CqlTranslatorOptionsToJsonSchema {
             JsonSchemaFactory schemaFactory = new JsonSchemaV4Factory();
             schemaFactory.setAutoPutDollarSchema(true);
             BufferedWriter writer = new BufferedWriter(new FileWriter(JSON_LOC));
-            JsonNode jNode = schemaFactory.createSchema(CqlCompilerOptions.class);
+            JsonNode jNode = schemaFactory.createSchema(CqlTranslatorOptions.class);
             writer.write(jNode.toPrettyString());
             writer.close();
         } catch (Exception e) {

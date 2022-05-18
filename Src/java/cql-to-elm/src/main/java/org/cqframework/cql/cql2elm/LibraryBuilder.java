@@ -127,7 +127,7 @@ public class LibraryBuilder implements ModelResolver {
     private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
     private boolean listTraversal = true;
     private UcumService ucumService = null;
-    private CqlCompilerOptions options;
+    private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
     private TypeBuilder typeBuilder = null;
     private Cql2ElmVisitor visitor = null;
@@ -136,25 +136,25 @@ public class LibraryBuilder implements ModelResolver {
         listTraversal = true;
     }
 
-    public void setTranslatorOptions(CqlCompilerOptions options) {
+    public void setTranslatorOptions(CqlTranslatorOptions options) {
         if (options == null) {
             throw new IllegalArgumentException("Options cannot be null");
         }
 
         this.options = options;
-        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListTraversal)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListTraversal)) {
             this.listTraversal = false;
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListDemotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListDemotion)) {
             this.getConversionMap().disableListDemotion();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableListPromotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListPromotion)) {
             this.getConversionMap().disableListPromotion();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalDemotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalDemotion)) {
             this.getConversionMap().enableIntervalDemotion();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableIntervalPromotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
         setCompatibilityLevel(options.getCompatibilityLevel());

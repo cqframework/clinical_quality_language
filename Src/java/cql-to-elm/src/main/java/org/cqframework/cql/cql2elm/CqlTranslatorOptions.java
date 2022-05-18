@@ -6,7 +6,7 @@ import java.util.EnumSet;
 /**
  * translation options for Cql source files
  */
-public class CqlCompilerOptions {
+public class CqlTranslatorOptions {
     public static enum Options {
         EnableDateRangeOptimization,
         EnableAnnotations,
@@ -42,9 +42,9 @@ public class CqlCompilerOptions {
      * SignatureLevel.None
      * @return
      */
-    public static CqlCompilerOptions defaultOptions() {
+    public static CqlTranslatorOptions defaultOptions() {
         // Default options based on recommended settings: http://build.fhir.org/ig/HL7/cqf-measures/using-cql.html#translation-to-elm
-        CqlCompilerOptions result = new CqlCompilerOptions();
+        CqlTranslatorOptions result = new CqlTranslatorOptions();
         result.options.add(Options.EnableAnnotations);
         result.options.add(Options.EnableLocators);
         result.options.add(Options.DisableListDemotion);
@@ -56,18 +56,18 @@ public class CqlCompilerOptions {
 //    }
     }
 
-    public CqlCompilerOptions() {
+    public CqlTranslatorOptions() {
     }
 
     /**
      * Constructor with arbitrary number of options utilizing default ErrorSeverity (Info) and SignatureLevel (None)
      * @param options
      */
-    public CqlCompilerOptions(Options... options) {
+    public CqlTranslatorOptions(Options... options) {
         this(CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
-    public CqlCompilerOptions(CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
+    public CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
         this(errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
@@ -78,7 +78,7 @@ public class CqlCompilerOptions {
      * @param signatureLevel
      * @param options
      */
-    public CqlCompilerOptions(CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, Options... options) {
+    public CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, Options... options) {
         this.setOptions(options);
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
@@ -105,14 +105,14 @@ public class CqlCompilerOptions {
      * @param signatureLevel LibraryBuilder.SignatureLevel
      * @param compatibilityLevel String
      */
-    public CqlCompilerOptions(boolean dateRangeOptimizations,
-                              boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                              boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
-                              boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
-                              boolean enableIntervalDemotion, boolean enableIntervalPromotion,
-                              boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
-                              boolean disableDefaultModelInfoLoad,
-                              LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel) {
+    public CqlTranslatorOptions(boolean dateRangeOptimizations,
+                                boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
+                                boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
+                                boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
+                                boolean enableIntervalDemotion, boolean enableIntervalPromotion,
+                                boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
+                                boolean disableDefaultModelInfoLoad,
+                                LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel) {
         this.verifyOnly = verifyOnly;
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
@@ -186,7 +186,7 @@ public class CqlCompilerOptions {
      * @param options
      * @return
      */
-    public CqlCompilerOptions withOptions(Options... options) {
+    public CqlTranslatorOptions withOptions(Options... options) {
         setOptions(options);
         return this;
     }
@@ -212,7 +212,7 @@ public class CqlCompilerOptions {
      * @param compatibilityLevel
      * @return
      */
-    public CqlCompilerOptions withCompatibilityLevel(String compatibilityLevel) {
+    public CqlTranslatorOptions withCompatibilityLevel(String compatibilityLevel) {
         setCompatibilityLevel(compatibilityLevel);
         return this;
     }
@@ -238,7 +238,7 @@ public class CqlCompilerOptions {
      * @param verifyOnly
      * @return
      */
-    public CqlCompilerOptions withVerifyOnly(boolean verifyOnly) {
+    public CqlTranslatorOptions withVerifyOnly(boolean verifyOnly) {
         setVerifyOnly(verifyOnly);
         return this;
     }
@@ -264,7 +264,7 @@ public class CqlCompilerOptions {
      * @param validateUnits
      * @return
      */
-    public CqlCompilerOptions withValidateUnits(boolean validateUnits) {
+    public CqlTranslatorOptions withValidateUnits(boolean validateUnits) {
         setValidateUnits(validateUnits);
         return this;
     }
@@ -290,7 +290,7 @@ public class CqlCompilerOptions {
      * @param errorLevel
      * @return
      */
-    public CqlCompilerOptions withErrorLevel(CqlTranslatorException.ErrorSeverity errorLevel) {
+    public CqlTranslatorOptions withErrorLevel(CqlTranslatorException.ErrorSeverity errorLevel) {
         setErrorLevel(errorLevel);
         return this;
     }
@@ -316,7 +316,7 @@ public class CqlCompilerOptions {
      * @param signatureLevel
      * @return
      */
-    public CqlCompilerOptions withSignatureLevel(LibraryBuilder.SignatureLevel signatureLevel) {
+    public CqlTranslatorOptions withSignatureLevel(LibraryBuilder.SignatureLevel signatureLevel) {
         setSignatureLevel(signatureLevel);
         return this;
     }
@@ -342,7 +342,7 @@ public class CqlCompilerOptions {
      * @param collapseDataRequirements
      * @return
      */
-    public CqlCompilerOptions withCollapseDataRequirements(boolean collapseDataRequirements) {
+    public CqlTranslatorOptions withCollapseDataRequirements(boolean collapseDataRequirements) {
         setCollapseDataRequirements(collapseDataRequirements);
         return this;
     }
@@ -368,7 +368,7 @@ public class CqlCompilerOptions {
      * @param analyzeDataRequirements
      * @return
      */
-    public CqlCompilerOptions withAnalyzeDataRequirements(boolean analyzeDataRequirements) {
+    public CqlTranslatorOptions withAnalyzeDataRequirements(boolean analyzeDataRequirements) {
         setAnalyzeDataRequirements(analyzeDataRequirements);
         return this;
     }

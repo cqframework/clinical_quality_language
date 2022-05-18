@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ElmRequirementsContext {
 
-    public ElmRequirementsContext(LibraryManager libraryManager, CqlCompilerOptions options, ElmRequirementsVisitor visitor) {
+    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("Library Manager required");
         }
@@ -28,11 +28,11 @@ public class ElmRequirementsContext {
         this.requirements = new ElmRequirements(new VersionedIdentifier().withId("result"), new Null());
     }
 
-    private CqlCompilerOptions options;
-    public CqlCompilerOptions getOptions() {
+    private CqlTranslatorOptions options;
+    public CqlTranslatorOptions getOptions() {
         return options;
     }
-    public void setOptions(CqlCompilerOptions options) {
+    public void setOptions(CqlTranslatorOptions options) {
         this.options = options;
     }
 

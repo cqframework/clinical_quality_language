@@ -147,26 +147,26 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         fromKeywordRequired = false;
     }
 
-    public void setCompilerOptions(CqlCompilerOptions options) {
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDateRangeOptimization)) {
+    public void setCompilerOptions(CqlTranslatorOptions options) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableDateRangeOptimization)) {
             this.enableDateRangeOptimization();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableAnnotations)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableAnnotations)) {
             this.enableAnnotations();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableLocators)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableLocators)) {
             this.enableLocators();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableResultTypes)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableResultTypes)) {
             this.enableResultTypes();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.EnableDetailedErrors)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableDetailedErrors)) {
             this.enableDetailedErrors();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.DisableMethodInvocation)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableMethodInvocation)) {
             this.disableMethodInvocation();
         }
-        if (options.getOptions().contains(CqlCompilerOptions.Options.RequireFromKeyword)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.RequireFromKeyword)) {
             this.enableFromKeywordRequired();
         }
         libraryBuilder.setCompatibilityLevel(options.getCompatibilityLevel());
