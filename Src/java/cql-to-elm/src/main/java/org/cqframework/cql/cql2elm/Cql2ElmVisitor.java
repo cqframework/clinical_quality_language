@@ -147,7 +147,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         fromKeywordRequired = false;
     }
 
-    public void setCompilerOptions(CqlTranslatorOptions options) {
+    public void setTranslatorOptions(CqlTranslatorOptions options) {
         if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableDateRangeOptimization)) {
             this.enableDateRangeOptimization();
         }
