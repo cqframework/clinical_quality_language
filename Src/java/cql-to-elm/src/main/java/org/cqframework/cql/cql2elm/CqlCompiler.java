@@ -219,7 +219,7 @@ public class CqlCompiler {
         builder.setTranslatorOptions(options);
         Cql2ElmVisitor visitor = new Cql2ElmVisitor(builder);
         builder.setVisitor(visitor);
-        visitor.setCompilerOptions(options);
+        visitor.setTranslatorOptions(options);
 
         CqlCompiler.CqlErrorListener errorListener = new CqlCompiler.CqlErrorListener(builder, visitor.isDetailedErrorsEnabled());
 
