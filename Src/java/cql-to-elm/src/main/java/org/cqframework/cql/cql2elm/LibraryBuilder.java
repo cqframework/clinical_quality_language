@@ -580,8 +580,8 @@ public class LibraryBuilder implements ModelResolver {
                 err.setEndChar(e.getLocator().getEndChar());
             }
 
-            if (e.getCause() != null && e.getCause() instanceof CqlCompilerIncludeException) {
-                CqlCompilerIncludeException incEx = (CqlCompilerIncludeException) e.getCause();
+            if (e.getCause() != null && e.getCause() instanceof CqlTranslatorIncludeException) {
+                CqlTranslatorIncludeException incEx = (CqlTranslatorIncludeException) e.getCause();
                 err.setTargetIncludeLibrarySystem(incEx.getLibrarySystem());
                 err.setTargetIncludeLibraryId(incEx.getLibraryId());
                 err.setTargetIncludeLibraryVersionId(incEx.getVersionId());

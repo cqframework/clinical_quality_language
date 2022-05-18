@@ -535,7 +535,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             // ERROR:
             try {
                 o = super.visit(tree);
-            } catch (CqlCompilerIncludeException e) {
+            } catch (CqlTranslatorIncludeException e) {
                 CqlCompilerException translatorException = new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
                 if (translatorException.getLocator() == null) {
                     throw translatorException;
