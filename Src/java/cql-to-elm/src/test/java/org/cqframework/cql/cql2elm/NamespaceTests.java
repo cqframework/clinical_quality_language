@@ -114,7 +114,7 @@ public class NamespaceTests {
         try {
             translator = CqlTranslator.fromStream(defaultNamespaceInfo, NamespaceTests.class.getResourceAsStream("NamespaceTests/ReferencingInvalidBaseLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(1));
-            assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
+            assertThat(translator.getErrors().get(0), instanceOf(CqlTranslatorException.class));
             assertThat(translator.getErrors().get(0).getLocator(), notNullValue());
             assertThat(translator.getErrors().get(0).getLocator().getLibrary(), notNullValue());
             assertThat(translator.getErrors().get(0).getLocator().getLibrary().getSystem(), is(defaultNamespaceInfo.getUri()));

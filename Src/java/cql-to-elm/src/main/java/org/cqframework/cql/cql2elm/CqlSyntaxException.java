@@ -5,7 +5,7 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 /**
  * Created by Bryn on 3/27/2017.
  */
-public class CqlSyntaxException extends CqlCompilerException {
+public class CqlSyntaxException extends CqlTranslatorException {
     public CqlSyntaxException(String message) {
         super(message);
     }

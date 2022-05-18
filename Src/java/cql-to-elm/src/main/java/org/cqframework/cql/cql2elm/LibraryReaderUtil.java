@@ -19,7 +19,7 @@ public class LibraryReaderUtil {
      */
     public static Source toSource(Object json) throws IOException {
         if (json == null)
-            throw new CqlCompilerException("no JSON is given");
+            throw new CqlTranslatorException("no JSON is given");
 
         if (json instanceof String) {
             try {
@@ -53,6 +53,6 @@ public class LibraryReaderUtil {
             return (Source)json;
         }
 
-        throw new CqlCompilerException(String.format("Could not determine access path for input of type %s.", json.getClass()));
+        throw new CqlTranslatorException(String.format("Could not determine access path for input of type %s.", json.getClass()));
     }
 }

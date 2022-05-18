@@ -618,7 +618,7 @@ public class ElmRequirementsContext {
 
     public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier) {
         // TODO: Need to support loading from ELM so we don't need options.
-        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
+        ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
         TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, options, errors);
         // TODO: Report translation errors here...
         //for (CqlTranslatorException error : errors) {

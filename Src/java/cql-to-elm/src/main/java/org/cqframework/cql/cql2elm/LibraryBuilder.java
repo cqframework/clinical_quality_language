@@ -76,26 +76,26 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     // Only exceptions of severity Error
-    private final java.util.List<CqlCompilerException> errors = new ArrayList<>();
-    public List<CqlCompilerException> getErrors() {
+    private final java.util.List<CqlTranslatorException> errors = new ArrayList<>();
+    public List<CqlTranslatorException> getErrors() {
         return errors;
     }
 
     // Only exceptions of severity Warning
-    private final java.util.List<CqlCompilerException> warnings = new ArrayList<>();
-    public List<CqlCompilerException> getWarnings() {
+    private final java.util.List<CqlTranslatorException> warnings = new ArrayList<>();
+    public List<CqlTranslatorException> getWarnings() {
         return warnings;
     }
 
     // Only exceptions of severity Info
-    private final java.util.List<CqlCompilerException> messages = new ArrayList<>();
-    public List<CqlCompilerException> getMessages() {
+    private final java.util.List<CqlTranslatorException> messages = new ArrayList<>();
+    public List<CqlTranslatorException> getMessages() {
         return messages;
     }
 
     // All exceptions
-    private final java.util.List<CqlCompilerException> exceptions = new ArrayList<>();
-    public List<CqlCompilerException> getExceptions() {
+    private final java.util.List<CqlTranslatorException> exceptions = new ArrayList<>();
+    public List<CqlTranslatorException> getExceptions() {
         return exceptions;
     }
 
@@ -508,14 +508,14 @@ public class LibraryBuilder implements ModelResolver {
         return namespaceUri;
     }
 
-    private ErrorSeverity toErrorSeverity(CqlCompilerException.ErrorSeverity severity) {
-        if (severity == CqlCompilerException.ErrorSeverity.Info) {
+    private ErrorSeverity toErrorSeverity(CqlTranslatorException.ErrorSeverity severity) {
+        if (severity == CqlTranslatorException.ErrorSeverity.Info) {
             return ErrorSeverity.INFO;
         }
-        else if (severity == CqlCompilerException.ErrorSeverity.Warning) {
+        else if (severity == CqlTranslatorException.ErrorSeverity.Warning) {
             return ErrorSeverity.WARNING;
         }
-        else if (severity == CqlCompilerException.ErrorSeverity.Error) {
+        else if (severity == CqlTranslatorException.ErrorSeverity.Error) {
             return ErrorSeverity.ERROR;
         }
         else {
@@ -523,34 +523,34 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
-    private void addException(CqlCompilerException e) {
+    private void addException(CqlTranslatorException e) {
         // Always add to the list of all exceptions
         exceptions.add(e);
 
-        if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Error) {
+        if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Error) {
             errors.add(e);
         }
-        else if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Warning) {
+        else if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Warning) {
             warnings.add(e);
         }
-        else if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Info) {
+        else if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Info) {
             messages.add(e);
         }
     }
 
-    private boolean shouldReport(CqlCompilerException.ErrorSeverity errorSeverity) {
+    private boolean shouldReport(CqlTranslatorException.ErrorSeverity errorSeverity) {
         switch (options.getErrorLevel()) {
             case Info:
                 return
-                        errorSeverity == CqlCompilerException.ErrorSeverity.Info
-                                || errorSeverity == CqlCompilerException.ErrorSeverity.Warning
-                                || errorSeverity == CqlCompilerException.ErrorSeverity.Error;
+                        errorSeverity == CqlTranslatorException.ErrorSeverity.Info
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
             case Warning:
                 return
-                        errorSeverity == CqlCompilerException.ErrorSeverity.Warning
-                                || errorSeverity == CqlCompilerException.ErrorSeverity.Error;
+                        errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
+                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
             case Error:
-                return errorSeverity == CqlCompilerException.ErrorSeverity.Error;
+                return errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
             default:
                 throw new IllegalArgumentException(String.format("Unknown error severity %s", errorSeverity.toString()));
         }
@@ -561,7 +561,7 @@ public class LibraryBuilder implements ModelResolver {
      * itself so they can be processed easily by a remote client
      * @param e the exception to record
      */
-    public void recordParsingException(CqlCompilerException e) {
+    public void recordParsingException(CqlTranslatorException e) {
         addException(e);
         if (shouldReport(e.getSeverity())) {
             CqlToElmError err = af.createCqlToElmError();
@@ -650,9 +650,9 @@ public class LibraryBuilder implements ModelResolver {
                 .withId(NamespaceManager.getNamePart(includeDef.getPath()))
                 .withVersion(includeDef.getVersion());
 
-        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
+        ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
         TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
-        for (CqlCompilerException error : errors) {
+        for (CqlTranslatorException error : errors) {
             this.recordParsingException(error);
         }
 
@@ -1335,7 +1335,7 @@ public class LibraryBuilder implements ModelResolver {
 
     private void reportWarning(String message, Expression expression) {
         TrackBack trackback = expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
-        CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
+        CqlSemanticException warning = new CqlSemanticException(message, CqlTranslatorException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
     }
 

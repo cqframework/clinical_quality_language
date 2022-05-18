@@ -36,7 +36,7 @@ public class TranslationTests {
         File propertyTestFile = new File(TranslationTests.class.getResource("LibraryTests/SupplementalDataElements_FHIR4-2.0.0.cql").getFile());
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager),
-                CqlCompilerException.ErrorSeverity.Info,
+                CqlTranslatorException.ErrorSeverity.Info,
                 LibraryBuilder.SignatureLevel.All, CqlCompilerOptions.Options.EnableDateRangeOptimization,
                 CqlCompilerOptions.Options.EnableAnnotations,
                 CqlCompilerOptions.Options.EnableLocators,
@@ -61,7 +61,7 @@ public class TranslationTests {
         CqlTranslator translator = TestUtils.createTranslator("TranslatorTests/UnknownIdentifier.cql");
         assertEquals(1, translator.getErrors().size());
 
-        CqlCompilerException e = translator.getErrors().get(0);
+        CqlTranslatorException e = translator.getErrors().get(0);
         TrackBack tb = e.getLocator();
 
         assertEquals(6, tb.getStartLine());

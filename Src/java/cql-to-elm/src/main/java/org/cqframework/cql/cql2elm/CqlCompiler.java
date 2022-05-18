@@ -24,10 +24,10 @@ public class CqlCompiler {
     private TranslatedLibrary translatedLibrary = null;
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
-    private List<CqlCompilerException> exceptions = null;
-    private List<CqlCompilerException> errors = null;
-    private List<CqlCompilerException> warnings = null;
-    private List<CqlCompilerException> messages = null;
+    private List<CqlTranslatorException> exceptions = null;
+    private List<CqlTranslatorException> errors = null;
+    private List<CqlTranslatorException> warnings = null;
+    private List<CqlTranslatorException> messages = null;
     private VersionedIdentifier sourceInfo = null;
     private NamespaceInfo namespaceInfo = null;
     private ModelManager modelManager = null;
@@ -97,10 +97,10 @@ public class CqlCompiler {
         return result;
     }
 
-    public List<CqlCompilerException> getExceptions() { return exceptions; }
-    public List<CqlCompilerException> getErrors() { return errors; }
-    public List<CqlCompilerException> getWarnings() { return warnings; }
-    public List<CqlCompilerException> getMessages() { return messages; }
+    public List<CqlTranslatorException> getExceptions() { return exceptions; }
+    public List<CqlTranslatorException> getErrors() { return errors; }
+    public List<CqlTranslatorException> getWarnings() { return warnings; }
+    public List<CqlTranslatorException> getMessages() { return messages; }
 
     private class CqlErrorListener extends BaseErrorListener {
 
@@ -144,7 +144,7 @@ public class CqlCompiler {
 
             if (detailedErrors) {
                 builder.recordParsingException(new CqlSyntaxException(msg, trackback, e));
-                builder.recordParsingException(new CqlCompilerException(msg, trackback, e));
+                builder.recordParsingException(new CqlTranslatorException(msg, trackback, e));
             }
             else {
                 if (offendingSymbol instanceof CommonToken) {
@@ -163,13 +163,13 @@ public class CqlCompiler {
     }
 
     public Library run(String cqlText,
-                       CqlCompilerException.ErrorSeverity errorLevel,
+                       CqlTranslatorException.ErrorSeverity errorLevel,
                        CqlCompilerOptions.Options... options) throws IOException {
         return run(CharStreams.fromString(cqlText), new CqlCompilerOptions(errorLevel, options));
     }
 
     public Library run(String cqlText,
-                       CqlCompilerException.ErrorSeverity errorLevel,
+                       CqlTranslatorException.ErrorSeverity errorLevel,
                        LibraryBuilder.SignatureLevel signatureLevel,
                        CqlCompilerOptions.Options... options) throws IOException {
         return run(CharStreams.fromString(cqlText), new CqlCompilerOptions(errorLevel, signatureLevel, options));
@@ -181,13 +181,13 @@ public class CqlCompiler {
     }
 
     public Library run(InputStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
+                       CqlTranslatorException.ErrorSeverity errorLevel,
                        CqlCompilerOptions.Options... options) throws IOException {
         return run(CharStreams.fromStream(is), new CqlCompilerOptions(errorLevel, options));
     }
 
     public Library run(InputStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
+                       CqlTranslatorException.ErrorSeverity errorLevel,
                        LibraryBuilder.SignatureLevel signatureLevel,
                        CqlCompilerOptions.Options... options) throws IOException {
         return run(CharStreams.fromStream(is), new CqlCompilerOptions(errorLevel, signatureLevel, options));
@@ -199,13 +199,13 @@ public class CqlCompiler {
     }
 
     public Library run(CharStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
+                       CqlTranslatorException.ErrorSeverity errorLevel,
                        CqlCompilerOptions.Options... options) {
         return run(is, new CqlCompilerOptions(errorLevel, LibraryBuilder.SignatureLevel.None, options));
     }
 
     public Library run(CharStream is,
-                       CqlCompilerException.ErrorSeverity errorLevel,
+                       CqlTranslatorException.ErrorSeverity errorLevel,
                        LibraryBuilder.SignatureLevel signatureLevel,
                        CqlCompilerOptions.Options... options) {
         return run(is, new CqlCompilerOptions(errorLevel, signatureLevel, options));

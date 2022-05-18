@@ -1,9 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 
 /**
  * translation options for Cql source files
@@ -29,7 +27,7 @@ public class CqlCompilerOptions {
     private boolean validateUnits = true;
     private boolean verifyOnly = false;
     private String compatibilityLevel = "1.5";
-    private CqlCompilerException.ErrorSeverity errorLevel = CqlCompilerException.ErrorSeverity.Info;
+    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
     private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
     private boolean analyzeDataRequirements = false;
     private boolean collapseDataRequirements = false;
@@ -66,10 +64,10 @@ public class CqlCompilerOptions {
      * @param options
      */
     public CqlCompilerOptions(Options... options) {
-        this(CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+        this(CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
     }
 
-    public CqlCompilerOptions(CqlCompilerException.ErrorSeverity errorLevel, Options... options) {
+    public CqlCompilerOptions(CqlTranslatorException.ErrorSeverity errorLevel, Options... options) {
         this(errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
@@ -80,7 +78,7 @@ public class CqlCompilerOptions {
      * @param signatureLevel
      * @param options
      */
-    public CqlCompilerOptions(CqlCompilerException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, Options... options) {
+    public CqlCompilerOptions(CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, Options... options) {
         this.setOptions(options);
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
@@ -109,7 +107,7 @@ public class CqlCompilerOptions {
      */
     public CqlCompilerOptions(boolean dateRangeOptimizations,
                               boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                              boolean detailedErrors, CqlCompilerException.ErrorSeverity errorLevel,
+                              boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
                               boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
                               boolean enableIntervalDemotion, boolean enableIntervalPromotion,
                               boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
@@ -275,7 +273,7 @@ public class CqlCompilerOptions {
      * Return instance of CqlTranslatorOptions errorLevel (CqlTranslatorException.ErrorSeverity)
      * @return
      */
-    public CqlCompilerException.ErrorSeverity getErrorLevel() {
+    public CqlTranslatorException.ErrorSeverity getErrorLevel() {
         return this.errorLevel;
     }
 
@@ -283,7 +281,7 @@ public class CqlCompilerOptions {
      * Set new errorLevel (CqlTranslatorException.ErrorSeverity)
      * @param errorLevel
      */
-    public void setErrorLevel(CqlCompilerException.ErrorSeverity errorLevel) {
+    public void setErrorLevel(CqlTranslatorException.ErrorSeverity errorLevel) {
         this.errorLevel = errorLevel;
     }
 
@@ -292,7 +290,7 @@ public class CqlCompilerOptions {
      * @param errorLevel
      * @return
      */
-    public CqlCompilerOptions withErrorLevel(CqlCompilerException.ErrorSeverity errorLevel) {
+    public CqlCompilerOptions withErrorLevel(CqlTranslatorException.ErrorSeverity errorLevel) {
         setErrorLevel(errorLevel);
         return this;
     }
