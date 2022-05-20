@@ -21,6 +21,7 @@ import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import javax.xml.bind.*;
 import java.io.*;
@@ -517,12 +518,17 @@ public class CqlTranslator {
         return getJxsonMapper().writeValueAsString(wrapper);
     }
 
-    public static void loadModelInfo(File modelInfoXML) {
-        final ModelInfo modelInfo = JAXB.unmarshal(modelInfoXML, ModelInfo.class);
-        final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
-        final ModelInfoProvider modelProvider = (VersionedIdentifier modelIdentifier) -> modelInfo;
-        final ModelInfoLoader modelInfoLoader = new ModelInfoLoader();
-        modelInfoLoader.registerModelInfoProvider(modelProvider);
+    public static void loadModelInfo(File modelInfoXML)  {
+        try {
+            final ModelInfo modelInfo = JacksonXML.readValue(modelInfoXML, ModelInfo.class);
+            final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
+            final ModelInfoProvider modelProvider = (VersionedIdentifier modelIdentifier) -> modelInfo;
+            final ModelInfoLoader modelInfoLoader = new ModelInfoLoader();
+            modelInfoLoader.registerModelInfoProvider(modelProvider);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
     }
 
     private static void outputExceptions(Iterable<CqlTranslatorException> exceptions) {

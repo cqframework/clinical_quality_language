@@ -3,7 +3,7 @@ package org.cqframework.cql.cql2elm;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
-import javax.xml.bind.JAXB;
+import java.io.IOException;
 
 public class UsCoreModelInfoProvider implements ModelInfoProvider {
     private NamespaceManager namespaceManager;
@@ -24,15 +24,23 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
         if (isUSCoreModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-            switch (localVersion) {
-                case "3.1.0":
-                    return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"),
-                            ModelInfo.class);
-                case "3.1.1":
-                default:
-                    return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"),
-                            ModelInfo.class);
+
+            try {
+                switch (localVersion) {
+                    case "3.1.0":
+                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"),
+                                ModelInfo.class);
+                    case "3.1.1":
+                    default:
+                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"),
+                                ModelInfo.class);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Do not throw, allow other providers to resolve
+                //    throw new IllegalArgumentException(String.format("Unknown version %s of the Fhir model.", localVersion));
             }
+            
         }
 
         return null;
