@@ -129,9 +129,9 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-
         xjc group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
         implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '1.11.1'
         implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
-		implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2'
-        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.2'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2'
         implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.2'
         implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
         implementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
     }
