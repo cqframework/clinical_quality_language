@@ -3,7 +3,7 @@ package org.cqframework.cql.cql2elm;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
-import javax.xml.bind.JAXB;
+import java.io.IOException;
 
 public class QuickModelInfoProvider implements ModelInfoProvider {
     private NamespaceManager namespaceManager;
@@ -24,17 +24,25 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
         if (isQuickModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
-            switch (localVersion) {
-                case "3.3.0":
-                    return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.3.0.xml"),
-                            ModelInfo.class);
-                case "3.0.0":
-                    return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.0.0.xml"),
-                            ModelInfo.class);
-                default:
-                    return JAXB.unmarshal(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo.xml"),
-                            ModelInfo.class);
+            
+            try {
+                switch (localVersion) {
+                    case "3.3.0":
+                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.3.0.xml"),
+                                ModelInfo.class);
+                    case "3.0.0":
+                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.0.0.xml"),
+                                ModelInfo.class);
+                    default:
+                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo.xml"),
+                                ModelInfo.class);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Do not throw, allow other providers to resolve
+                //    throw new IllegalArgumentException(String.format("Unknown version %s of the Fhir model.", localVersion));
             }
+            
         }
 
         return null;

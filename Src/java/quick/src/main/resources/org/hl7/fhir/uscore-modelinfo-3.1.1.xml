@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="USCore" version="3.1.1" url="http://hl7.org/fhir/us/core" targetUrl="http://hl7.org/fhir" targetQualifier="uscore" patientClassName="PatientProfile" patientBirthDatePropertyName="birthDate">
    <requiredModelInfo name="System" version="1.0.0"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false">
       <element name="use" elementType="USCore.AddressUse" description="home | work | temp | old | billing - purpose of this address" definition="The purpose of this address." comment="Applications can assume that an address is current unless it explicitly says that it is temporary or old.">
          <binding name="AddressUse" description="The use of an address." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -62,7 +62,7 @@
    <typeInfo baseType="System.String" namespace="USCore" name="AddressType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="AddressUse" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="AdministrativeGender" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="AllergyIntolerance" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-allergyintolerance" label="US  Core AllergyIntolerance Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="AllergyIntolerance" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-allergyintolerance" label="US  Core AllergyIntolerance Profile" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="External ids for this item" definition="Business identifiers assigned to this AllergyIntolerance by the performer or other systems which remain constant as the resource is updated and propagates from server to server." comment="This is a business identifier, not a resource identifier (see [discussion](http://hl7.org/fhir/R4/resource.html#identifiers)).  It is best practice for the identifier to only appear on a single resource instance, however business practices may occasionally dictate that multiple resource instances with the same identifier can exist - possibly even with different resource types.  For example, multiple Patient and a Person resource instance might share the same social insurance number.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -168,7 +168,7 @@
       <contextRelationship context="Patient" relatedKeyElement="recorder"/>
       <contextRelationship context="Patient" relatedKeyElement="asserter"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="AllergyIntolerance.Reaction" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="AllergyIntolerance.Reaction" retrievable="false">
       <element name="substance" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Specific substance or pharmaceutical product considered to be responsible for event" definition="Identification of the specific substance (or pharmaceutical product) considered to be responsible for the Adverse Reaction event. Note: the substance for a specific reaction may be different from the substance identified as the cause of the risk, but it must be consistent with it. For instance, it may be a more specific substance (e.g. a brand medication) or a composite product that includes the identified substance. It must be clinically safe to only process the 'code' and ignore the 'reaction.substance'.  If a receiving system is unable to confirm that AllergyIntolerance.reaction.substance falls within the semantic scope of AllergyIntolerance.code, then the receiving system should ignore AllergyIntolerance.reaction.substance." comment="Coding of the specific substance (or pharmaceutical product) with a terminology capable of triggering decision support should be used wherever possible.  The 'code' element allows for the use of a specific substance or pharmaceutical product, or a group or class of substances. In the case of an allergy or intolerance to a class of substances, (for example, &quot;penicillins&quot;), the 'reaction.substance' element could be used to code the specific substance that was identified as having caused the reaction (for example, &quot;amoxycillin&quot;). Duplication of the value in the 'code' and 'reaction.substance' elements is acceptable when a specific substance has been recorded in 'code'.">
          <binding name="SubstanceCode" description="Codes defining the type of the substance (including pharmaceutical products)." strength="Example"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -215,7 +215,7 @@
    <typeInfo baseType="System.String" namespace="USCore" name="AllergyIntoleranceCriticality" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="AllergyIntoleranceSeverity" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="AllergyIntoleranceType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Annotation" identifier="http://hl7.org/fhir/StructureDefinition/Annotation" label="Annotation" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Annotation" identifier="http://hl7.org/fhir/StructureDefinition/Annotation" label="Annotation" retrievable="false">
       <element name="author" target="USCore.Reference:null;System.String:%value.value" description="Individual responsible for the annotation" definition="The individual responsible for making the annotation." comment="Organization is used when there's no need for specific attribution as to who made the comment.">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="USCore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -236,7 +236,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false">
       <element name="contentType" elementType="USCore.MimeType" description="Mime type of the content, with charset etc." definition="Identifies the type of the data in the attachment and allows a method to be chosen to interpret or render the data. Includes mime type parameters such as charset where appropriate.">
          <binding name="MimeType" description="The mime type of an attachment. Any valid mime type is allowed." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -280,7 +280,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="BackboneElement" identifier="http://hl7.org/fhir/StructureDefinition/BackboneElement" label="BackboneElement" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="BackboneElement" identifier="http://hl7.org/fhir/StructureDefinition/BackboneElement" label="BackboneElement" retrievable="false">
       <element name="modifierExtension" description="Extensions that cannot be ignored even if unrecognized" definition="May be used to represent additional information that is not part of the basic definition of the element and that modifies the understanding of the element in which it is contained and/or the understanding of the containing element's descendants. Usually modifier elements provide negation or qualification. To make the use of extensions safe and manageable, there is a strict set of governance applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension. Applications processing a resource are required to check for modifier extensions.&#xa;&#xa;Modifier extensions SHALL NOT change the meaning of any elements on Resource or DomainResource (including cannot change the meaning of modifierExtension itself)." comment="There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.">
          <elementTypeSpecifier elementType="USCore.Extension" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -295,7 +295,7 @@
    <typeInfo baseType="System.String" namespace="USCore" name="BodyLengthUnits" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="BodyTempUnits" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="BodyWeightUnits" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="CarePlan.Activity" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="CarePlan.Activity" retrievable="false">
       <element name="outcomeCodeableConcept" target="FHIRHelpers.ToConcept(%value)" description="Results of the activity" definition="Identifies the outcome at the point when the status of the activity is assessed.  For example, the outcome of an education activity could be patient understands (or not)." comment="Note that this should not duplicate the activity status (e.g. completed or in progress).">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
          <binding name="CarePlanActivityOutcome" description="Identifies the results of the activity." strength="Example"/>
@@ -326,7 +326,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="CarePlan.Activity.Detail" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="CarePlan.Activity.Detail" retrievable="false">
       <element name="kind" elementType="USCore.CarePlanActivityKind" description="Appointment | CommunicationRequest | DeviceRequest | MedicationRequest | NutritionOrder | Task | ServiceRequest | VisionPrescription" definition="A description of the kind of resource the in-line definition of a care plan activity is representing.  The CarePlan.activity.detail is an in-line definition when a resource is not referenced using CarePlan.activity.reference.  For example, a MedicationRequest, a ServiceRequest, or a CommunicationRequest.">
          <binding name="CarePlanActivityKind" description="Resource types defined as part of FHIR that can be represented as in-line definitions of a care plan activity." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -437,7 +437,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="CarePlanActivityKind" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="CarePlanActivityStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="CarePlanProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan" label="US Core CarePlan Profile" target="CarePlan" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="CarePlanProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan" label="US Core CarePlan Profile" target="CarePlan" retrievable="true">
       <element name="identifier" description="External Ids for this plan" definition="Business identifiers assigned to this care plan by the performer or other systems which remain constant as the resource is updated and propagates from server to server." comment="This is a business identifier, not a resource identifier (see [discussion](http://hl7.org/fhir/R4/resource.html#identifiers)).  It is best practice for the identifier to only appear on a single resource instance, however business practices may occasionally dictate that multiple resource instances with the same identifier can exist - possibly even with different resource types.  For example, multiple Patient and a Person resource instance might share the same social insurance number.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -583,7 +583,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="CareTeam" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careteam" label="US Core CareTeam Profile" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="CareTeam" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careteam" label="US Core CareTeam Profile" retrievable="true" primaryCodePath="category">
       <element name="identifier" description="External Ids for this team" definition="Business identifiers assigned to this care team by the performer or other systems which remain constant as the resource is updated and propagates from server to server." comment="This is a business identifier, not a resource identifier (see [discussion](http://hl7.org/fhir/R4/resource.html#identifiers)).  It is best practice for the identifier to only appear on a single resource instance, however business practices may occasionally dictate that multiple resource instances with the same identifier can exist - possibly even with different resource types.  For example, multiple Patient and a Person resource instance might share the same social insurance number.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -669,7 +669,7 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
       <contextRelationship context="Patient" relatedKeyElement="member"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="CareTeam.Participant" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="CareTeam.Participant" retrievable="false">
       <element name="role" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Type of involvement" definition="Indicates specific responsibility of an individual within the care team, such as &quot;Primary care physician&quot;, &quot;Trained social worker counselor&quot;, &quot;Caregiver&quot;, etc." comment="Roles may sometimes be inferred by type of Practitioner.  These are relationships that hold only within the context of the care team.  General relationships should be handled as properties of the Patient resource directly." mustSupport="true">
          <binding description="Indicates specific responsibility of an individual within the care team, such as Primary physician, Team coordinator, Caregiver, etc." strength="Extensible"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -695,7 +695,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="Condition" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition" label="US Core Condition Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="Condition" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition" label="US Core Condition Profile" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="External Ids for this condition" definition="Business identifiers assigned to this condition by the performer or other systems which remain constant as the resource is updated and propagates from server to server." comment="This is a business identifier, not a resource identifier (see [discussion](http://hl7.org/fhir/R4/resource.html#identifiers)).  It is best practice for the identifier to only appear on a single resource instance, however business practices may occasionally dictate that multiple resource instances with the same identifier can exist - possibly even with different resource types.  For example, multiple Patient and a Person resource instance might share the same social insurance number.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -824,7 +824,7 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
       <contextRelationship context="Patient" relatedKeyElement="asserter"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Condition.Evidence" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Condition.Evidence" retrievable="false">
       <element name="code" target="FHIRHelpers.ToConcept(%value)" description="Manifestation/symptom" definition="A manifestation or symptom that led to the recording of this condition.">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
          <binding name="ManifestationOrSymptom" description="Codes that describe the manifestation or symptoms of a condition." strength="Example"/>
@@ -839,7 +839,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Condition.Stage" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Condition.Stage" retrievable="false">
       <element name="summary" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Simple summary (disease specific)" definition="A simple summary of the stage such as &quot;Stage 3&quot;. The determination of the stage is disease-specific.">
          <binding name="ConditionStage" description="Codes describing condition stages (e.g. Cancer stages)." strength="Example"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -859,7 +859,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="ContactDetail" identifier="http://hl7.org/fhir/StructureDefinition/ContactDetail" label="ContactDetail" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="ContactDetail" identifier="http://hl7.org/fhir/StructureDefinition/ContactDetail" label="ContactDetail" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value" description="Name of an individual to contact" definition="The name of an individual to contact." comment="If there is no named individual, the telecom information is for the organization as a whole.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -872,7 +872,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false">
       <element name="system" elementType="USCore.ContactPointSystem" description="phone | fax | email | pager | url | sms | other" definition="Telecommunications form for contact point - what communications system is required to make use of the contact.">
          <binding name="ContactPointSystem" description="Telecommunications form for contact point." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -906,7 +906,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="ContactPointSystem" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="ContactPointUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false">
       <element name="type" elementType="USCore.ContributorType" description="author | editor | reviewer | endorser" definition="The type of contributor.">
          <binding name="ContributorType" description="The type of contributor." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -926,7 +926,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="ContributorType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false">
       <element name="type" elementType="USCore.FHIRAllTypes" description="The type of the required data" definition="The type of the required data, specified as the type name of a resource. For profiles, this value is set to the type of the base resource of the profile.">
          <binding name="FHIRAllTypes" description="A list of all the concrete types defined in this version of the FHIR specification - Abstract Types, Data Types and Resource Types." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -985,7 +985,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="DataRequirement.CodeFilter" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="DataRequirement.CodeFilter" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value" description="A code-valued attribute to filter on" definition="The code-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type code, Coding, or CodeableConcept." comment="The path attribute contains a [Simple FHIRPath Subset](fhirpath.html#simple) that allows path traversal, but not calculation.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1008,7 +1008,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="DataRequirement.DateFilter" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="DataRequirement.DateFilter" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value" description="A date-valued attribute to filter on" definition="The date-valued attribute of the filter. The specified path SHALL be a FHIRPath resolveable on the specified type of the DataRequirement, and SHALL consist only of identifiers, constant indexers, and .resolve(). The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements (see the [Simple FHIRPath Profile](fhirpath.html#simple) for full details). Note that the index must be an integer constant. The path must resolve to an element of type date, dateTime, Period, Schedule, or Timing." comment="The path attribute contains a [Simple FHIR Subset](fhirpath.html#simple) that allows path traversal, but not calculation.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1032,7 +1032,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="DataRequirement.Sort" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="DataRequirement.Sort" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value" description="The name of the attribute to perform the sort" definition="The attribute of the sort. The specified path must be resolvable from the type of the required data. The path is allowed to contain qualifiers (.) to traverse sub-elements, as well as indexers ([x]) to traverse multiple-cardinality sub-elements. Note that the index must be an integer constant.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1047,7 +1047,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="DayOfWeek" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="DaysOfWeek" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.DeviceName" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.DeviceName" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value" description="The name of the device" definition="The name of the device.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1060,7 +1060,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.Property" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.Property" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Code that specifies the property DeviceDefinitionPropetyCode (Extensible)" definition="Code that specifies the property DeviceDefinitionPropetyCode (Extensible).">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1079,7 +1079,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.Specialization" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.Specialization" retrievable="false">
       <element name="systemType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="The standard that is used to operate and communicate" definition="The standard that is used to operate and communicate.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1091,7 +1091,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.UdiCarrier" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.UdiCarrier" retrievable="false">
       <element name="deviceIdentifier" elementType="System.String" target="%value.value" description="Mandatory fixed portion of UDI" definition="The device identifier (DI) is a mandatory, fixed portion of a UDI that identifies the labeler and the specific version or model of a device." mustSupport="true">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1124,7 +1124,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.Version" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.Version" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="The type of the device version" definition="The type of the device version.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1142,7 +1142,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="DeviceNameType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="DiagnosticReport.Media" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="DiagnosticReport.Media" retrievable="false">
       <element name="comment" elementType="System.String" target="%value.value" description="Comment about the image (e.g. explanation)" definition="A comment about the image. Typically, this is used to provide an explanation for why the image is included, or to draw the viewer's attention to important features." comment="The comment should be displayed with the image. It would be common for the report to include additional discussion of the image contents in other sections such as the conclusion.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1154,7 +1154,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileLaboratoryReporting" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab" label="US Core DiagnosticReport Profile for Laboratory Results Reporting" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileLaboratoryReporting" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab" label="US Core DiagnosticReport Profile for Laboratory Results Reporting" target="DiagnosticReport" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business identifier for report" definition="Identifiers assigned to this report by the performer or other systems." comment="Usually assigned by the Information System of the diagnostic service provider (filler id).">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -1273,7 +1273,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileNoteExchange" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note" label="US Core DiagnosticReport Profile for Report and Note exchange" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileNoteExchange" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note" label="US Core DiagnosticReport Profile for Report and Note exchange" target="DiagnosticReport" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business identifier for report" definition="Identifiers assigned to this report by the performer or other systems." comment="Usually assigned by the Information System of the diagnostic service provider (filler id).">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -1386,7 +1386,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.Content" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.Content" retrievable="false">
       <element name="attachment" elementType="USCore.Attachment" description="Where to access the document" definition="The document or URL of the document along with critical metadata to prove content has integrity." mustSupport="true">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1402,7 +1402,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.Context" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.Context" retrievable="false">
       <element name="encounter" elementType="USCore.Reference" description="Context of the document  content" definition="Describes the clinical encounter or type of care that the document content is associated with." mustSupport="true">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1447,7 +1447,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.RelatesTo" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.RelatesTo" retrievable="false">
       <element name="code" elementType="USCore.DocumentRelationshipType" description="replaces | transforms | signs | appends" definition="The type of relationship that this document has with anther document." comment="If this document appends another document, then the document cannot be fully understood without also accessing the referenced document.">
          <binding name="DocumentRelationshipType" description="The type of relationship between documents." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -1460,7 +1460,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DocumentReferenceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference" label="US Core DocumentReference Profile" target="DocumentReference" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="DocumentReferenceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference" label="US Core DocumentReference Profile" target="DocumentReference" retrievable="true">
       <element name="masterIdentifier" elementType="USCore.Identifier" description="Master Version Specific Identifier" definition="Document identifier as assigned by the source of the document. This identifier is specific to this version of the document. This unique identifier may be used elsewhere to identify this version of the document." comment="CDA Document Id extension and root.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1554,7 +1554,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="DocumentRelationshipType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Resource" namespace="USCore" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Resource" namespace="USCore" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="true">
       <element name="text" elementType="USCore.Narrative" description="Text summary of the resource, for human interpretation" definition="A human-readable narrative that contains a summary of the resource and can be used to represent the content of the resource to a human. The narrative need not encode all the structured data, but is required to contain sufficient detail to make it &quot;clinically safe&quot; for a human to just read the narrative. Resource definitions may define what content should be represented in the narrative to ensure clinical safety." comment="Contained resources do not have narrative. Resources that are not contained SHOULD have a narrative. In some cases, a resource may only have text with little or no additional discrete data (as long as all minOccurs=1 elements are satisfied).  This may be necessary for data from legacy systems where information is captured as a &quot;text blob&quot; or where text is additionally entered raw or narrated and encoded information is added later.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1582,7 +1582,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Dosage" identifier="http://hl7.org/fhir/StructureDefinition/Dosage" label="Dosage" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Dosage" identifier="http://hl7.org/fhir/StructureDefinition/Dosage" label="Dosage" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value" description="The order of the dosage instructions" definition="Indicates the order in which the dosage instructions should be applied or interpreted.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1660,7 +1660,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Dosage.DoseAndRate" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Dosage.DoseAndRate" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="The kind of dose or rate specified" definition="The kind of dose or rate specified, for example, ordered or calculated.">
          <binding name="DoseAndRateType" description="The kind of dose or rate specified." strength="Example"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -1691,7 +1691,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.Any" namespace="USCore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.Any" namespace="USCore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false">
       <element name="id" elementType="System.String" target="%value.value" description="Unique id for inter-element referencing" definition="Unique id for the element within a resource (for internal references). This may be any string value that does not contain spaces."/>
       <element name="extension" description="Additional content defined by implementations" definition="May be used to represent additional information that is not part of the basic definition of the element. To make the use of extensions safe and manageable, there is a strict set of governance  applied to the definition and use of extensions. Though any implementer can define an extension, there is a set of requirements that SHALL be met as part of the definition of the extension." comment="There can be no stigma associated with the use of extensions by any application, project, or standard - regardless of the institution or jurisdiction that uses or defines the extensions.  The use of extensions is what allows the FHIR specification to retain a core level of simplicity for everyone.">
          <elementTypeSpecifier elementType="USCore.Extension" xsi:type="ListTypeSpecifier"/>
@@ -1703,7 +1703,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.ClassHistory" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.ClassHistory" retrievable="false">
       <element name="class" elementType="System.Code" target="FHIRHelpers.ToCode(%value)" description="inpatient | outpatient | ambulatory | emergency +" definition="inpatient | outpatient | ambulatory | emergency +.">
          <binding name="EncounterClass" description="Classification of the encounter." strength="Extensible"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -1719,7 +1719,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Diagnosis" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Diagnosis" retrievable="false">
       <element name="condition" elementType="USCore.Reference" description="The diagnosis or procedure relevant to the encounter" definition="Reason the encounter takes place, as specified using information from another resource. For admissions, this is the admission diagnosis. The indication will typically be a Condition (with other resources referenced in the evidence.detail), or a Procedure." comment="For systems that need to know which was the primary diagnosis, these will be marked with the standard extension primaryDiagnosis (which is a sequence value rather than a flag, 1 = primary diagnosis).">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1737,7 +1737,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Hospitalization" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Hospitalization" retrievable="false">
       <element name="preAdmissionIdentifier" elementType="USCore.Identifier" description="Pre-admission identifier" definition="Pre-admission identifier.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1793,7 +1793,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Location" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Location" retrievable="false">
       <element name="location" elementType="USCore.Reference" description="Location the encounter takes place" definition="The location where the encounter takes place." mustSupport="true">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -1820,7 +1820,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Participant" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Participant" retrievable="false">
       <element name="type" target="FHIRHelpers.ToConcept(%value)" description="Role of participant in encounter" definition="Role of participant in encounter." comment="The participant type indicates how an individual participates in an encounter. It includes non-practitioner participants, and for practitioners this is to describe the action type in the context of this encounter (e.g. Admitting Dr, Attending Dr, Translator, Consulting Dr). This is different to the practitioner roles which are functional roles, derived from terms of employment, education, licensing, etc." mustSupport="true">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
          <binding name="ParticipantType" description="Role of participant in encounter." strength="Extensible"/>
@@ -1842,7 +1842,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.StatusHistory" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.StatusHistory" retrievable="false">
       <element name="status" elementType="USCore.EncounterStatus" description="planned | arrived | triaged | in-progress | onleave | finished | cancelled +" definition="planned | arrived | triaged | in-progress | onleave | finished | cancelled +.">
          <binding name="EncounterStatus" description="Current state of the encounter." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -1859,7 +1859,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="EncounterLocationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="EncounterProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter" label="US Core Encounter Profile" target="Encounter" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="EncounterProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter" label="US Core Encounter Profile" target="Encounter" retrievable="true">
       <element name="identifier" description="Identifier(s) by which this encounter is known" definition="Identifier(s) by which this encounter is known." mustSupport="true">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -1999,7 +1999,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="EncounterStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Extension" namespace="USCore" name="EthnicityExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity" label="US Core Ethnicity Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Extension" namespace="USCore" name="EthnicityExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity" label="US Core Ethnicity Extension" retrievable="false">
       <element name="ombCategory" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.extension[url='ombCategory'].value)" description="Hispanic or Latino|Not Hispanic or Latino" definition="The 2 ethnicity category codes according to the [OMB Standards for Maintaining, Collecting, and Presenting Federal Data on Race and Ethnicity, Statistical Policy Directive No. 15, as revised, October 30, 1997](https://www.govinfo.gov/content/pkg/FR-1997-10-30/pdf/97-28653.pdf)." mustSupport="true">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2028,7 +2028,7 @@
       <element name="url" elementType="System.String" target="%value.value" description="identifies the meaning of the extension" definition="Source of the definition for the extension code - a logical name or a URL." comment="The definition may point directly to a computable or human-readable definition of the extensibility codes, or it may be a logical URI as declared in some other specification. The definition SHALL be a URI for the Structure Definition defining the extension."/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="EventTiming" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Expression" identifier="http://hl7.org/fhir/StructureDefinition/Expression" label="Expression" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Expression" identifier="http://hl7.org/fhir/StructureDefinition/Expression" label="Expression" retrievable="false">
       <element name="description" elementType="System.String" target="%value.value" description="Natural language description of the condition" definition="A brief, natural language description of the condition that effectively communicates the intended semantics.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2056,7 +2056,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false">
       <element name="url" elementType="System.String" target="%value.value" description="identifies the meaning of the extension" definition="Source of the definition for the extension code - a logical name or a URL." comment="The definition may point directly to a computable or human-readable definition of the extensibility codes, or it may be a logical URI as declared in some other specification. The definition SHALL be a URI for the Structure Definition defining the extension."/>
       <element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;USCore.Address:null;System.Quantity:FHIRHelpers.ToQuantity(%value);USCore.Annotation:null;USCore.Attachment:null;System.Concept:FHIRHelpers.ToConcept(%value);System.Code:FHIRHelpers.ToCode(%value);USCore.ContactPoint:null;System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);USCore.HumanName:null;USCore.Identifier:null;System.Decimal:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Ratio:FHIRHelpers.ToRatio(%value);USCore.Reference:null;USCore.SampledData:null;USCore.Signature:null;USCore.Timing:null;USCore.ContactDetail:null;USCore.Contributor:null;USCore.DataRequirement:null;USCore.Expression:null;USCore.ParameterDefinition:null;USCore.RelatedArtifact:null;USCore.TriggerDefinition:null;USCore.UsageContext:null;USCore.Dosage:null;USCore.Meta:null" description="Value of extension" definition="Value of extension - must be one of a constrained set of the data types (see [Extensibility](extensibility.html) for a list).">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -2122,7 +2122,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="FHIRAllTypes" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="FHIRDeviceStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Goal.Target" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Goal.Target" retrievable="false">
       <element name="measure" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="The parameter whose value is being tracked" definition="The parameter whose value is being tracked, e.g. body weight, blood pressure, or hemoglobin A1c level.">
          <binding name="GoalTargetMeasure" description="Codes to identify the value being tracked, e.g. body weight, blood pressure, or hemoglobin A1c level." strength="Example"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -2152,7 +2152,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="GoalProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal" label="US Core Goal Profile" target="Goal" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="GoalProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal" label="US Core Goal Profile" target="Goal" retrievable="true">
       <element name="identifier" description="External Ids for this goal" definition="Business identifiers assigned to this goal by the performer or other systems which remain constant as the resource is updated and propagates from server to server." comment="This is a business identifier, not a resource identifier (see [discussion](http://hl7.org/fhir/R4/resource.html#identifiers)).  It is best practice for the identifier to only appear on a single resource instance, however business practices may occasionally dictate that multiple resource instances with the same identifier can exist - possibly even with different resource types.  For example, multiple Patient and a Person resource instance might share the same social insurance number.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -2255,7 +2255,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false">
       <element name="use" elementType="USCore.NameUse" description="usual | official | temp | nickname | anonymous | old | maiden" definition="Identifies the purpose for this name." comment="Applications can assume that a name is current unless it explicitly says that it is temporary or old.">
          <binding name="NameUse" description="The use of a human name." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -2299,7 +2299,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false">
       <element name="use" elementType="USCore.IdentifierUse" description="usual | official | temp | secondary | old (If known)" definition="The purpose of this identifier." comment="Applications can assume that an identifier is permanent unless it explicitly says that it is temporary.">
          <binding name="IdentifierUse" description="Identifies the purpose for this identifier, if known ." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -2337,7 +2337,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="IdentifierUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Education" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Education" retrievable="false">
       <element name="documentType" elementType="System.String" target="%value.value" description="Educational material document identifier" definition="Identifier of the material presented to the patient.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2359,7 +2359,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="What type of performance was done" definition="Describes the type of performance (e.g. ordering provider, administering provider, etc.).">
          <binding name="ImmunizationFunction" description="The role a practitioner or organization plays in the immunization event." strength="Extensible"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -2372,7 +2372,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.ProtocolApplied" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.ProtocolApplied" retrievable="false">
       <element name="series" elementType="System.String" target="%value.value" description="Name of vaccine series" definition="One possible path to achieve presumed immunity against a disease - within the context of an authority.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2409,7 +2409,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Reaction" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Reaction" retrievable="false">
       <element name="date" elementType="System.DateTime" target="%value.value" description="When reaction started" definition="Date of reaction to the immunization.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -2426,7 +2426,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ImmunizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization" label="US Core Immunization Profile" target="Immunization" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="ImmunizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization" label="US Core Immunization Profile" target="Immunization" retrievable="true">
       <element name="identifier" description="Business identifier" definition="A unique identifier assigned to this immunization record.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -2598,7 +2598,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="ImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true">
       <element name="identifier" description="Instance identifier" definition="Unique instance identifiers assigned to a device by manufacturers other organizations or owners." comment="The barcode string from a barcode present on a device label or package may identify the instance, include names given to the device in local usage, or may identify the type of device. If the identifier identifies the type of device, Device.type element should be used.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -2742,7 +2742,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="LaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="LaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -2925,7 +2925,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="LinkType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="Location" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" label="US Core Location Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="Location" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" label="US Core Location Profile" retrievable="true">
       <element name="identifier" description="Unique code or number identifying the location to its users" definition="Unique code or number identifying the location to its users.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -3023,7 +3023,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Location.HoursOfOperation" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Location.HoursOfOperation" retrievable="false">
       <element name="daysOfWeek" description="mon | tue | wed | thu | fri | sat | sun" definition="Indicates which days of the week are available between the start and end Times.">
          <elementTypeSpecifier elementType="USCore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
          <binding name="DaysOfWeek" description="The days of the week." strength="Required"/>
@@ -3047,7 +3047,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Location.Position" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Location.Position" retrievable="false">
       <element name="longitude" elementType="System.Decimal" target="%value.value" description="Longitude with WGS84 datum" definition="Longitude. The value domain and the interpretation are the same as for the text of the longitude element in KML (see notes below).">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3066,7 +3066,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="LocationMode" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="LocationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Medication.Batch" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Medication.Batch" retrievable="false">
       <element name="lotNumber" elementType="System.String" target="%value.value" description="Identifier assigned to batch" definition="The assigned lot number of a batch of the specified product.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3078,7 +3078,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Medication.Ingredient" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Medication.Ingredient" retrievable="false">
       <element name="item" target="System.Concept:FHIRHelpers.ToConcept(%value);USCore.Reference:null" description="The actual ingredient or content" definition="The actual ingredient - either a substance (simple ingredient) or another medication of a medication.">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -3099,7 +3099,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="MedicationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" target="Medication" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="MedicationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" target="Medication" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business identifier for this medication" definition="Business identifier for this medication." comment="The serial number could be included as an identifier.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -3146,7 +3146,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.DispenseRequest" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.DispenseRequest" retrievable="false">
       <element name="initialFill" elementType="USCore.MedicationRequest.DispenseRequest.InitialFill" description="First fill details" definition="Indicates the quantity or duration for the first dispense of the medication." comment="If populating this element, either the quantity or the duration must be included.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3186,7 +3186,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.DispenseRequest.InitialFill" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.DispenseRequest.InitialFill" retrievable="false">
       <element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)" description="First fill quantity" definition="The amount or quantity to provide as part of the first dispense.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3198,7 +3198,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.Substitution" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.Substitution" retrievable="false">
       <element name="allowed" target="System.Boolean:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)" description="Whether substitution is allowed or not" definition="True if the prescriber allows a different drug to be dispensed from what was prescribed." comment="This element is labeled as a modifier because whether substitution is allow or not, it cannot be ignored.">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
@@ -3217,7 +3217,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="MedicationRequestPriority" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="MedicationRequestProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" target="MedicationRequest" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="MedicationRequestProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" target="MedicationRequest" retrievable="true">
       <element name="identifier" description="External ids for this request" definition="Identifiers associated with this medication request that are defined by business processes and/or used to refer to it when a direct URL reference to the resource itself is not appropriate. They are business identifiers assigned to this resource by the performer or other systems and remain constant as the resource is updated and propagates from server to server." comment="This is a business identifier, not a resource identifier.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -3410,7 +3410,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="MedicationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Meta" identifier="http://hl7.org/fhir/StructureDefinition/Meta" label="Meta" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Meta" identifier="http://hl7.org/fhir/StructureDefinition/Meta" label="Meta" retrievable="false">
       <element name="versionId" elementType="System.String" target="%value.value" description="Version specific identifier" definition="The version specific identifier, as it appears in the version portion of the URL. This value changes when the resource is created, updated, or deleted." comment="The server assigns this value, and ignores what the client specifies, except in the case that the server is imposing version integrity on updates/deletes.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3449,7 +3449,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="MimeType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="NameUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false">
       <element name="status" elementType="USCore.NarrativeStatus" description="generated | extensions | additional | empty" definition="The status of the narrative - whether it's entirely generated (from just the defined data or the extensions too), or whether a human authored it and it may contain additional data.">
          <binding name="NarrativeStatus" description="The status of a resource narrative." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -3469,7 +3469,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="NarrativeStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Observation.Component" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Observation.Component" retrievable="false">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Type of component observation (code / type)" definition="Describes what was observed. Sometimes this is called the observation &quot;code&quot;." comment="*All* code-value and  component.code-component.value pairs need to be taken into account to correctly understand the meaning of the observation." mustSupport="true">
          <binding name="VitalSigns" description="This identifies the vital sign result type." strength="Extensible"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -3525,7 +3525,7 @@
    <typeInfo baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.DiastolicBP" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.FlowRate" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.SystolicBP" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Observation.ReferenceRange" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Observation.ReferenceRange" retrievable="false">
       <element name="low" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)" description="Low Range, if relevant" definition="The value of the low bound of the reference range.  The low bound of the reference range endpoint is inclusive of the value (e.g.  reference range is >=5 - &lt;=9). If the low bound is omitted,  it is assumed to be meaningless (e.g. reference range is &lt;=2.3).">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3563,7 +3563,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Organization.Contact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Organization.Contact" retrievable="false">
       <element name="purpose" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="The type of contact" definition="Indicates a purpose for which the contact can be reached.">
          <binding name="ContactPartyType" description="The purpose for which you would contact a contact party." strength="Extensible"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -3587,7 +3587,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="OrganizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" label="US Core Organization Profile" target="Organization" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="OrganizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" label="US Core Organization Profile" target="Organization" retrievable="true">
       <element name="identifier" description="Identifies this organization  across multiple systems" definition="Identifier for the organization that is used to identify the organization across multiple disparate systems." comment="NPI preferred." mustSupport="true">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -3663,7 +3663,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="ParameterDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ParameterDefinition" label="ParameterDefinition" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="ParameterDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ParameterDefinition" label="ParameterDefinition" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value" description="Name used to access the parameter value" definition="The name of the parameter used to allow access to the value of the parameter in evaluation contexts.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3703,7 +3703,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="ParameterUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Communication" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Communication" retrievable="false">
       <element name="language" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="The language which can be used to communicate with the patient about his or her health" definition="The ISO-639-1 alpha 2 code in lower case for the language, optionally followed by a hyphen and the ISO-3166-1 alpha 2 code for the region in upper case; e.g. &quot;en&quot; for English, or &quot;en-US&quot; for American English versus &quot;en-EN&quot; for England English." comment="The structure aa-BB with this exact casing is one the most widely used notations for locale. However not all systems actually code this but instead have it as free text. Hence CodeableConcept instead of code as the data type." mustSupport="true">
          <binding strength="Extensible"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -3716,7 +3716,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Contact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Contact" retrievable="false">
       <element name="relationship" target="FHIRHelpers.ToConcept(%value)" description="The kind of relationship" definition="The nature of the relationship between the patient and the contact person.">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
          <binding name="ContactRelationship" description="The nature of the relationship between a patient and a contact person for that patient." strength="Extensible"/>
@@ -3760,7 +3760,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Link" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Link" retrievable="false">
       <element name="other" elementType="USCore.Reference" description="The other patient or related person resource that the link refers to" definition="The other patient resource that the link refers to." comment="Referencing a RelatedPerson here removes the need to use a Person record to associate a Patient and RelatedPerson as the same individual.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3773,7 +3773,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PatientProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" target="Patient" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PatientProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" target="Patient" retrievable="true">
       <element name="race" elementType="USCore.RaceExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-race']" description="US Core Race Extension" definition="Concepts classifying the person into a named category of humans sharing common history, traits, geographical origin or nationality.  The race codes used to represent these concepts are based upon the [CDC Race and Ethnicity Code Set Version 1.0](http://www.cdc.gov/phin/resources/vocabulary/index.html) which includes over 900 concepts for representing race and ethnicity of which 921 reference race.  The race concepts are grouped by and pre-mapped to the 5 OMB race categories:&#xa;&#xa;   - American Indian or Alaska Native&#xa;   - Asian&#xa;   - Black or African American&#xa;   - Native Hawaiian or Other Pacific Islander&#xa;   - White." mustSupport="true">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -3904,7 +3904,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4066,7 +4066,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4228,7 +4228,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Practitioner.Qualification" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Practitioner.Qualification" retrievable="false">
       <element name="identifier" description="An identifier for this qualification for the practitioner" definition="An identifier that applies to this person's qualification in this role.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4255,7 +4255,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PractitionerProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" label="US Core Practitioner Profile" target="Practitioner" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PractitionerProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" label="US Core Practitioner Profile" target="Practitioner" retrievable="true">
       <element name="identifier" description="An identifier for the person as this agent" definition="An identifier that applies to this person in this role." comment="NPI must be supported as the identifier system in the US, Tax id is allowed, Local id is allowed in addition to an another identifier supplied by a jurisdictional authority such as a practitioner's *Drug Enforcement Administration (DEA)* number." mustSupport="true">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4321,7 +4321,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="PractitionerRole.AvailableTime" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="PractitionerRole.AvailableTime" retrievable="false">
       <element name="daysOfWeek" description="mon | tue | wed | thu | fri | sat | sun" definition="Indicates which days of the week are available between the start and end Times.">
          <elementTypeSpecifier elementType="USCore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
          <binding name="DaysOfWeek" description="The days of the week." strength="Required"/>
@@ -4345,7 +4345,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="PractitionerRole.NotAvailable" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="PractitionerRole.NotAvailable" retrievable="false">
       <element name="description" elementType="System.String" target="%value.value" description="Reason presented to the user explaining why time not available" definition="The reason that can be presented to the user as to why this time is not available.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -4360,7 +4360,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PractitionerRoleProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" label="US Core PractitionerRole Profile" target="PractitionerRole" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PractitionerRoleProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" label="US Core PractitionerRole Profile" target="PractitionerRole" retrievable="true">
       <element name="identifier" description="Business Identifiers that are specific to a role/location" definition="Business Identifiers that are specific to a role/location.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4446,7 +4446,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Procedure.FocalDevice" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Procedure.FocalDevice" retrievable="false">
       <element name="action" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Kind of change to device" definition="The kind of change that happened to the device during the procedure.">
          <binding name="DeviceActionKind" description="A kind of change that happened to the device during the procedure." strength="Preferred"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4459,7 +4459,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Procedure.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Procedure.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="Type of performance" definition="Distinguishes the type of involvement of the performer in the procedure. For example, surgeon, anaesthetist, endoscopist.">
          <binding name="ProcedurePerformerRole" description="A code that identifies the role of a performer of the procedure." strength="Example"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4477,7 +4477,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ProcedureProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure" label="US Core Procedure Profile" target="Procedure" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="ProcedureProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure" label="US Core Procedure Profile" target="Procedure" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="External Identifiers for this procedure" definition="Business identifiers assigned to this procedure by the performer or other systems which remain constant as the resource is updated and is propagated from server to server." comment="This is a business identifier, not a resource identifier (see [discussion](http://hl7.org/fhir/R4/resource.html#identifiers)).  It is best practice for the identifier to only appear on a single resource instance, however business practices may occasionally dictate that multiple resource instances with the same identifier can exist - possibly even with different resource types.  For example, multiple Patient and Person resource instances might share the same social insurance number.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4652,7 +4652,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="Provenance" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-provenance" label="US Core Provenance Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="Provenance" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-provenance" label="US Core Provenance Profile" retrievable="true">
       <element name="target" description="The Resource this Provenance record supports" definition="The Reference(s) that were generated or updated by  the activity described in this resource. A provenance can point to more than one target if multiple resources were created/updated by the same activity." comment="Target references are usually version specific, but might not be, if a version has not been assigned or if the provenance information is part of the set of resources being maintained (i.e. a document). When using the RESTful API, the identity of the resource might not be known (especially not the version specific one); the client may either submit the resource first, and then the provenance, or it may submit both using a single transaction. See the notes on transaction for further discussion." mustSupport="true">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4730,7 +4730,7 @@
       </element>
       <contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Provenance.Agent" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Provenance.Agent" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)" description="How the agent participated" definition="The participation the agent had with respect to the activity." comment="For example: author, performer, enterer, attester, etc." mustSupport="true">
          <binding strength="Extensible"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4760,7 +4760,7 @@
    </typeInfo>
    <typeInfo baseType="USCore.Provenance.Agent" namespace="USCore" name="Provenance.Agent.ProvenanceAuthor" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="USCore.Provenance.Agent" namespace="USCore" name="Provenance.Agent.ProvenanceTransmitter" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Provenance.Entity" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Provenance.Entity" retrievable="false">
       <element name="role" elementType="USCore.ProvenanceEntityRole" description="derivation | revision | quotation | source | removal" definition="How the entity was used during the activity.">
          <binding name="ProvenanceEntityRole" description="How an entity was used in an activity." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4782,7 +4782,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="ProvenanceEntityRole" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -4971,7 +4971,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="QuantityComparator" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Extension" namespace="USCore" name="RaceExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-race" label="US Core Race Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Extension" namespace="USCore" name="RaceExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-race" label="US Core Race Extension" retrievable="false">
       <element name="ombCategory" target="FHIRHelpers.ToCode(%parent.extension[url='ombCategory'].value)" description="American Indian or Alaska Native|Asian|Black or African American|Native Hawaiian or Other Pacific Islander|White" definition="The 5 race category codes according to the [OMB Standards for Maintaining, Collecting, and Presenting Federal Data on Race and Ethnicity, Statistical Policy Directive No. 15, as revised, October 30, 1997](https://www.govinfo.gov/content/pkg/FR-1997-10-30/pdf/97-28653.pdf)." mustSupport="true">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5000,7 +5000,7 @@
       </element>
       <element name="url" elementType="System.String" target="%value.value" description="identifies the meaning of the extension" definition="Source of the definition for the extension code - a logical name or a URL." comment="The definition may point directly to a computable or human-readable definition of the extensibility codes, or it may be a logical URI as declared in some other specification. The definition SHALL be a URI for the Structure Definition defining the extension."/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Reference" identifier="http://hl7.org/fhir/StructureDefinition/Reference" label="Reference" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Reference" identifier="http://hl7.org/fhir/StructureDefinition/Reference" label="Reference" retrievable="false">
       <element name="reference" elementType="System.String" target="%value.value" description="Literal reference, Relative, internal or absolute URL" definition="A reference to a location at which the other resource is found. The reference may be a relative reference, in which case it is relative to the service base URL, or an absolute URL that resolves to the location where the resource is found. The reference may be version specific or not. If the reference is not to a FHIR RESTful server, then it should be assumed to be version specific. Internal fragment references (start with '#') refer to contained resources." comment="Using absolute URLs provides a stable scalable approach suitable for a cloud/web context, while using relative/logical references provides a flexible approach suitable for use when trading across closed eco-system boundaries.   Absolute URLs do not need to point to a FHIR RESTful server, though this is the preferred approach. If the URL conforms to the structure &quot;/[type]/[id]&quot; then it should be assumed that the reference is to a FHIR RESTful server.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -5024,7 +5024,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="ReferredDocumentStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false">
       <element name="type" elementType="USCore.RelatedArtifactType" description="documentation | justification | citation | predecessor | successor | derived-from | depends-on | composed-of" definition="The type of relationship to the related artifact.">
          <binding name="RelatedArtifactType" description="The type of relationship to the related artifact." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5063,7 +5063,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="RelatedArtifactType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.Any" namespace="USCore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.Any" namespace="USCore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true">
       <element name="id" elementType="System.String" target="%value.value" description="Logical id of this artifact" definition="The logical id of the resource, as used in the URL for the resource. Once assigned, this value never changes." comment="The only time that a resource does not have an id is when it is being submitted to the server using a create operation."/>
       <element name="meta" elementType="USCore.Meta" description="Metadata about the resource" definition="The metadata about the resource. This is content that is maintained by the infrastructure. Changes to the content might not always be associated with version changes to the resource.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5082,7 +5082,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="SampledData" identifier="http://hl7.org/fhir/StructureDefinition/SampledData" label="SampledData" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="SampledData" identifier="http://hl7.org/fhir/StructureDefinition/SampledData" label="SampledData" retrievable="false">
       <element name="origin" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)" description="Zero value and units" definition="The base quantity that a measured value of zero represents. In addition, this provides the units of the entire measurement series.">
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
             <expression language="text/fhirpath" expression="hasValue() or (children().count() > id.count())"/>
@@ -5119,7 +5119,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Signature" identifier="http://hl7.org/fhir/StructureDefinition/Signature" label="Signature" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Signature" identifier="http://hl7.org/fhir/StructureDefinition/Signature" label="Signature" retrievable="false">
       <element name="type" target="FHIRHelpers.ToCode(%value)" description="Indication of the reason the entity signed the object(s)" definition="An indication of the reason that the entity signed this document. This may be explicitly included as part of the signature information and can be used when determining accountability for various actions concerning the document." comment="Examples include attesting to: authorship, correct transcription, and witness of specific event. Also known as a &amp;quot;Commitment Type Indication&amp;quot;.">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
          <binding name="SignatureType" description="An indication of the reason that an entity signed the object." strength="Preferred"/>
@@ -5160,7 +5160,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="SmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="SmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5314,7 +5314,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="USCore" name="SortDirection" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="Status" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Timing" identifier="http://hl7.org/fhir/StructureDefinition/Timing" label="Timing" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Timing" identifier="http://hl7.org/fhir/StructureDefinition/Timing" label="Timing" retrievable="false" primaryCodePath="code">
       <element name="event" target="%value.value" description="When the event occurs" definition="Identifies specific times when the event occurs.">
          <elementTypeSpecifier elementType="System.DateTime" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5360,7 +5360,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Timing.Repeat" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Timing.Repeat" retrievable="false">
       <element name="bounds" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;" description="Length/Range of lengths, or (Start and/or end) limits" definition="Either a duration for the length of the timing schedule, a range of possible length, or outer bounds for start and/or end limits of the timing schedule.">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -5453,7 +5453,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false">
       <element name="type" elementType="USCore.TriggerType" description="named-event | periodic | data-changed | data-added | data-modified | data-removed | data-accessed | data-access-ended" definition="The type of triggering event.">
          <binding name="TriggerType" description="The type of trigger." strength="Required"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5491,7 +5491,7 @@
    <typeInfo baseType="System.String" namespace="USCore" name="TriggerType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="UDIEntryType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="USCore" name="UnitsOfTime" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code">
       <element name="code" elementType="System.Code" target="FHIRHelpers.ToCode(%value)" description="Type of context being specified" definition="A code that identifies the type of context being specified by this usage context.">
          <binding name="UsageContextType" description="A code that specifies a type of context being specified by a usage context." strength="Extensible"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5513,7 +5513,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5680,7 +5680,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -5847,7 +5847,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -6014,7 +6014,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -6181,7 +6181,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -6364,7 +6364,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -6531,7 +6531,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -6698,7 +6698,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -6865,7 +6865,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">
@@ -7032,7 +7032,7 @@
          </constraint>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier" description="Business Identifier for observation" definition="A unique identifier assigned to this observation.">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
          <constraint name="ele-1" severity="ERROR" message="All FHIR elements must have a @value or children">

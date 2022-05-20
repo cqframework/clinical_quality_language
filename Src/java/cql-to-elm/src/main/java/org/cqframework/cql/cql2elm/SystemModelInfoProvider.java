@@ -3,7 +3,7 @@ package org.cqframework.cql.cql2elm;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
-import javax.xml.bind.JAXB;
+import java.io.IOException;
 
 public class SystemModelInfoProvider implements ModelInfoProvider {
     private NamespaceManager namespaceManager;
@@ -23,8 +23,14 @@ public class SystemModelInfoProvider implements ModelInfoProvider {
 
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
         if (isSystemModelIdentifier(modelIdentifier)) {
-            return JAXB.unmarshal(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"),
-                    ModelInfo.class);
+            try {
+                return JacksonXML.readValue(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"),
+                ModelInfo.class);
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Do not throw, allow other providers to resolve
+                //    throw new IllegalArgumentException(String.format("Unknown version %s of the System model.", localVersion));
+            }
         }
 
         return null;
