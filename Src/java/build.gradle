@@ -247,8 +247,8 @@ configure(subprojects.findAll {it.name in ['cql', 'model', 'elm', 'elm-fhir', 'q
                 */
 
                 // change URLs to point to your repos, e.g. http://my.org/repo
-                def releasesRepoUrl = "file://${buildDir}/repo" //"https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-                def snapshotsRepoUrl = "file://${buildDir}/ssRepo" //"https://oss.sonatype.org/content/repositories/snapshots/"
+                def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
                 url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             }
         }
