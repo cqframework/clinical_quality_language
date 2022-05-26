@@ -2,8 +2,11 @@ package org.cqframework.cql.cql2elm;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -19,13 +22,13 @@ import org.cqframework.cql.gen.cqlParser;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
-import org.hl7.cql_annotations.r1.Annotation;
+import org.hl7.cql_annotations.r1.CqlToElmBase;
 import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import org.hl7.elm_modelinfo.r1.TypeInfo;
+import org.hl7.elm_modelinfo.r1.TypeSpecifier;
 
 import javax.xml.bind.*;
 import java.io.*;
@@ -406,7 +409,7 @@ public class CqlTranslator {
         try {
             return convertToXml(library);
         }
-        catch (JAXBException e) {
+        catch (IOException e) {
             throw new IllegalArgumentException("Could not convert library to XML.", e);
         }
     }
@@ -419,7 +422,7 @@ public class CqlTranslator {
         try {
             return convertToJson(library);
         }
-        catch (JAXBException e) {
+        catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Could not convert library to JSON using JAXB serializer.", e);
         }
     }
@@ -501,28 +504,19 @@ public class CqlTranslator {
 
     public List<CqlTranslatorException> getMessages() { return messages; }
 
-    public static JAXBContext getJaxbContext() {
-        if (jaxbContext == null) {
-            try {
-                jaxbContext = JAXBContext.newInstance(Library.class, Annotation.class);
-            } catch (JAXBException e) {
-                e.printStackTrace();
-                throw new RuntimeException("Error creating JAXBContext - " + e.getMessage());
-            }
-        }
-        return jaxbContext;
-    }
-
     public static ObjectMapper getJxsonMapper() {
         if (jxsonMapper == null) {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_DEFAULT);
-            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-            JaxbAnnotationModule annotationModule = new JaxbAnnotationModule();
-            mapper.registerModule(annotationModule);
-            // Ensure that empty strings are included in output
-            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-            jxsonMapper = mapper;
+            jxsonMapper = new JsonMapper().builder()
+                    .defaultMergeable(true)
+                    .enable(SerializationFeature.INDENT_OUTPUT)
+                    .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                    .enable(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL)
+                    .defaultPropertyInclusion(JsonInclude.Value.construct(JsonInclude.Include.NON_NULL, JsonInclude.Include.NON_NULL))
+                    .addModule(new JaxbAnnotationModule())
+                    .addMixIn(TypeInfo.class, TypeInfoMixIn.class)
+                    .addMixIn(TypeSpecifier.class, TypeSpecifierMixIn.class)
+                    .addMixIn(CqlToElmBase.class, CqlToElmBaseMixIn.class)
+                    .build();
         }
 
         return jxsonMapper;
@@ -624,43 +618,14 @@ public class CqlTranslator {
         messages.addAll(builder.getMessages());
     }
 
-    public static String convertToXml(Library library) throws JAXBException {
-        Marshaller marshaller = getJaxbContext().createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
+    public static String convertToXml(Library library) throws IOException {
         StringWriter writer = new StringWriter();
-        marshaller.marshal(new ObjectFactory().createLibrary(library), writer);
-        // The marshaller is not encoding the form feed character (presumably because it's not valid in XML 1.0 at all (even encoded)).
-        // Tried to get it to write 1.1 XML, but JAXB can't apparently? ()
-        // So hacking it after the fact...
-        // NOTE: Even after doing this and getting a valid XML 1.1 document with the form feed as a character reference, the JAXB unmarshaller still complains
-        // So... basically, form feeds are not supported in ELM XML
-        return writer.getBuffer().toString().replace("<xml version=\"1.0\"", "<xml version=\"1.1\"").replace("\f", "&#xc;");
-
-        /*
-        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
-        XMLOutputFactory xof = XMLOutputFactory.newFactory();
-        try {
-            XMLStreamWriter xsr = xof.createXMLStreamWriter(writer);
-            xsr.writeStartDocument("1.1");
-            marshaller.marshal(new ObjectFactory().createLibrary(library), xsr);
-            xsr.writeEndDocument();
-            return writer.getBuffer().toString();
-        }
-        catch (XMLStreamException e) {
-            throw new RuntimeException(String.format("Errors occurred attempting to serialize library: %s", e.getMessage()));
-        }
-        */
+        ModelInfoXmlReader.writeValue(library, writer);
+        return writer.getBuffer().toString();
     }
 
-    public static String convertToJson(Library library) throws JAXBException {
-        Marshaller marshaller = getJaxbContext().createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty("eclipselink.media-type", "application/json");
-
-        StringWriter writer = new StringWriter();
-        marshaller.marshal(new ObjectFactory().createLibrary(library), writer);
-        return writer.getBuffer().toString();
+    public static String convertToJson(Library library) throws JsonProcessingException {
+        return convertToJxson(library);
     }
 
     public static String convertToJxson(Library library) throws JsonProcessingException {
@@ -671,7 +636,7 @@ public class CqlTranslator {
 
     public static void loadModelInfo(File modelInfoXML)  {
         try {
-            final ModelInfo modelInfo = JacksonXML.readValue(modelInfoXML, ModelInfo.class);
+            final ModelInfo modelInfo = ModelInfoXmlReader.readValue(modelInfoXML, ModelInfo.class);
             final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
             final ModelInfoProvider modelProvider = (VersionedIdentifier modelIdentifier) -> modelInfo;
             final ModelInfoLoader modelInfoLoader = new ModelInfoLoader();

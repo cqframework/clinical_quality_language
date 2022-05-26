@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.hl7.cql_annotations.r1.CqlToElmBase;
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.Library;
 
@@ -33,29 +34,11 @@ public class TranslatorOptionsUtil {
         return parseTranslatorOptions(translatorOptions);
     }
 
-    private static String getTranslatorOptions(List<Object> annotations){
-        for (Object o : annotations) {
-            if (o instanceof LinkedHashMap<?,?>) {
-                try {
-                    @SuppressWarnings("unchecked")
-                    LinkedHashMap<String, String> lhm = (LinkedHashMap<String, String>)o;
-                    String options = lhm.get("translatorOptions");
-                    if (options != null) {
-                        return options;
-                    }
-                }
-                catch(Exception e) {
-                    continue;
-                }
-
-            } else if (o instanceof CqlToElmInfo) {
-                try {
-                    CqlToElmInfo info = (CqlToElmInfo) o;
-                    if (info.getTranslatorOptions() != null) {
-                        return info.getTranslatorOptions();
-                    }
-                } catch (Exception e) {
-                    continue;
+    private static String getTranslatorOptions(List<CqlToElmBase> annotations){
+        for (CqlToElmBase base : annotations) {
+            if (base instanceof CqlToElmInfo) {
+                if (((CqlToElmInfo)base).getTranslatorOptions() != null) {
+                    return ((CqlToElmInfo)base).getTranslatorOptions();
                 }
             }
         }

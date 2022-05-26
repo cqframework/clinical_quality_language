@@ -279,7 +279,7 @@ public class LibraryManager {
             } else if (type.equals(LibraryContentType.XML)) {
                 library = ElmXmlLibraryReader.read(new InputStreamReader(librarySource));
             }
-        } catch (IOException | JAXBException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
