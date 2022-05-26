@@ -18,7 +18,7 @@ public class TestFhirModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
         if (modelIdentifier.getId().equals("FHIR")) {
             try {
-                return JacksonXML.readValue(clazz.getResourceAsStream("fhir-modelinfo-1.8.xml"),
+                return ModelInfoXmlReader.readValue(clazz.getResourceAsStream("fhir-modelinfo-1.8.xml"),
                 ModelInfo.class);
             } catch (IOException e) {
                 e.printStackTrace();

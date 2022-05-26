@@ -30,35 +30,35 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
             try {
                 switch (localVersion) {
                     case "4.1.2":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo.xml"),
                                 ModelInfo.class);
                     case "4.2":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.2.xml"),
                                 ModelInfo.class);
                     case "4.3":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.3.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-4.3.xml"),
                                 ModelInfo.class);
                     case "5.0":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.xml"),
                                 ModelInfo.class);
                     case "5.0.1":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.1.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.1.xml"),
                                 ModelInfo.class);
                     case "5.0.2":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.2.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.0.2.xml"),
                                 ModelInfo.class);
                     case "5.3":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.3.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.3.xml"),
                                 ModelInfo.class);
                     case "5.4":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.4.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.4.xml"),
                                 ModelInfo.class);
                     case "5.5":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.5.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.5.xml"),
                                 ModelInfo.class);
                     case "5.6":
                     case "":
-                        return JacksonXML.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.6.xml"),
+                        return ModelInfoXmlReader.readValue(QdmModelInfoProvider.class.getResourceAsStream("/gov/healthit/qdm/qdm-modelinfo-5.6.xml"),
                                 ModelInfo.class);
                 }
             } catch (IOException e) {

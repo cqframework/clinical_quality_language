@@ -24,7 +24,7 @@ public class SystemModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
         if (isSystemModelIdentifier(modelIdentifier)) {
             try {
-                return JacksonXML.readValue(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"),
+                return ModelInfoXmlReader.readValue(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"),
                 ModelInfo.class);
             } catch (IOException e) {
                 e.printStackTrace();

@@ -27,14 +27,14 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
             try {
                 switch (localVersion) {
                     case "4.0.0":
-                        return JacksonXML.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.0.0.xml"),
+                        return ModelInfoXmlReader.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.0.0.xml"),
                                 ModelInfo.class);
                     case "4.1.0":
-                        return JacksonXML.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.0.xml"),
+                        return ModelInfoXmlReader.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.0.xml"),
                                 ModelInfo.class);
                     case "4.1.1":
                     default:
-                        return JacksonXML.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.1.xml"),
+                        return ModelInfoXmlReader.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.1.xml"),
                                 ModelInfo.class);
                 }
             } catch (IOException e) {

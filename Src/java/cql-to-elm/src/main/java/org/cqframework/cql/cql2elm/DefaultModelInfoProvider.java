@@ -81,7 +81,7 @@ public class DefaultModelInfoProvider implements ModelInfoProvider {
             if (modelFile != null) {
                 InputStream is = new FileInputStream(modelFile);
 
-                return JacksonXML.readValue(is, ModelInfo.class);
+                return ModelInfoXmlReader.readValue(is, ModelInfo.class);
             }
         } catch (IOException e) {
             e.printStackTrace();
