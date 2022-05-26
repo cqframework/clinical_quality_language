@@ -20,6 +20,7 @@
       }, {
         "type" : "UsingDef",
         "annotation" : [ {
+          "type": "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -80,6 +81,7 @@
           "locator" : "11:32-11:49"
         },
         "annotation" : [ {
+          "type": "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -146,6 +148,7 @@
       "def" : [ {
         "type" : "ValueSetDef",
         "annotation" : [ {
+          "type": "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -167,6 +170,7 @@
       }, {
         "type" : "ValueSetDef",
         "annotation" : [ {
+          "type": "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -188,6 +192,7 @@
       }, {
         "type" : "ValueSetDef",
         "annotation" : [ {
+          "type": "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -209,6 +214,7 @@
       }, {
         "type" : "ValueSetDef",
         "annotation" : [ {
+          "type": "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -230,6 +236,7 @@
       }, {
         "type" : "ValueSetDef",
         "annotation" : [ {
+          "type": "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -389,6 +396,7 @@
           "locator" : "16:3-21:66"
         },
         "annotation" : [ {
+          "type": "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -853,8 +861,10 @@
       } ]
     },
     "annotation" : [ {
+      "type": "CqlToElmInfo",
       "translatorOptions" : "EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation"
     }, {
+      "type": "Annotation",
       "s" : {
         "s" : [ {
           "name" : "{urn:hl7-org:cql-annotations:r1}s",

@@ -518,6 +518,7 @@
           "locator" : "33:2-41:43"
         },
         "annotation" : [ {
+          "type":  "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -1091,6 +1092,7 @@
       } ]
     },
     "annotation" : [ {
+      "type": "CqlToElmInfo",
       "translatorOptions" : "EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation"
     } ]
   }
