@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 
 import javax.xml.bind.JAXBException;
@@ -16,13 +17,12 @@ import org.testng.annotations.Test;
 
 public class ElmDeserializeTests {
 
-    private Library library;
-
-    @BeforeMethod
-    public void setup() {
+    @Test
+    public void TestElmTests() {
         try {
-            this.library = ElmXmlLibraryReader.read(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ElmTests.xml"));
-        } catch (IOException | JAXBException e) {
+            ElmXmlLibraryReader.read(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ElmTests.xml"));
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
     }
@@ -33,9 +33,19 @@ public class ElmDeserializeTests {
         try {
             Library library = ElmJxsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRDummy.json")));
             Assert.assertTrue(library != null);
-            String translatorOptions = "EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation";
-            LinkedHashMap<?,?> linkedHashMap = ((LinkedHashMap)library.getAnnotation().get(0));
-            Assert.assertEquals(((Collection)linkedHashMap.values()).iterator().next().toString(), translatorOptions);
+
+            EnumSet<CqlTranslator.Options> translatorOptions = EnumSet.of(
+                    CqlTranslator.Options.EnableDateRangeOptimization,
+                    CqlTranslator.Options.EnableAnnotations,
+                    CqlTranslator.Options.EnableLocators,
+                    CqlTranslator.Options.EnableResultTypes,
+                    CqlTranslator.Options.DisableListDemotion,
+                    CqlTranslator.Options.DisableListPromotion,
+                    CqlTranslator.Options.DisableMethodInvocation
+            );
+
+            Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
+
             Assert.assertTrue(library.getStatements() != null);
             Assert.assertTrue(library.getStatements().getDef() != null);
             Assert.assertTrue(library.getStatements().getDef().size() >= 2);
@@ -54,8 +64,11 @@ public class ElmDeserializeTests {
         try {
             Library library = ElmJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/json/AdultOutpatientEncounters_FHIR4-2.0.000.json")));
             Assert.assertTrue(library != null);
-            String translatorOptions = "EnableAnnotations";
-            Assert.assertEquals(((CqlToElmInfo) library.getAnnotation().get(0)).getTranslatorOptions(), translatorOptions);
+
+            EnumSet<CqlTranslator.Options> translatorOptions = EnumSet.of(
+                    CqlTranslator.Options.EnableAnnotations
+            );
+            Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
             Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
             Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
             Assert.assertTrue(library.getUsings() != null);
@@ -69,7 +82,7 @@ public class ElmDeserializeTests {
             Assert.assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
             Assert.assertTrue(library.getStatements().getDef().get(1) instanceof ExpressionDef);
             Assert.assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
-        } catch (IOException | JAXBException e) {
+        } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
     }
@@ -81,8 +94,18 @@ public class ElmDeserializeTests {
             Assert.assertTrue(library != null);
             Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
             Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
-            String translatorOptions = "EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation";
-            Assert.assertEquals(((CqlToElmInfo) library.getAnnotation().get(0)).getTranslatorOptions(), translatorOptions);
+
+            EnumSet<CqlTranslator.Options> translatorOptions = EnumSet.of(
+                    CqlTranslator.Options.EnableDateRangeOptimization,
+                    CqlTranslator.Options.EnableAnnotations,
+                    CqlTranslator.Options.EnableLocators,
+                    CqlTranslator.Options.EnableResultTypes,
+                    CqlTranslator.Options.DisableListDemotion,
+                    CqlTranslator.Options.DisableListPromotion,
+                    CqlTranslator.Options.DisableMethodInvocation
+            );
+            Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
+
             Assert.assertTrue(library.getUsings() != null);
             Assert.assertTrue(library.getUsings().getDef() != null);
             Assert.assertTrue(library.getUsings().getDef().size() >= 2);
@@ -94,7 +117,8 @@ public class ElmDeserializeTests {
             Assert.assertEquals(library.getStatements().getDef().get(1).getName(), "Qualifying Encounters");
             Assert.assertTrue(library.getStatements().getDef().get(1) instanceof ExpressionDef);
             Assert.assertTrue(library.getStatements().getDef().get(1).getExpression() instanceof Query);
-        } catch (IOException | JAXBException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
         }
     }
@@ -135,6 +159,9 @@ public class ElmDeserializeTests {
         }
 
         if (xmlLibrary != null && jxsonLibrary != null) {
+            if (!equivalent(xmlLibrary, jxsonLibrary, jsonLibrary)) {
+                System.out.println(xmlFileName);
+            }
             Assert.assertTrue(equivalent(xmlLibrary, jxsonLibrary, jsonLibrary));
         }
     }
@@ -148,6 +175,7 @@ public class ElmDeserializeTests {
                     testElmDeserialization(file.getAbsolutePath(), fileName, fileName.substring(0, fileName.length() - 4) + ".json");
                 }
                 catch (Exception e) {
+                    e.printStackTrace();
                     throw new IllegalArgumentException(String.format("Errors occurred testing: %s", fileName));
                 }
             }
@@ -262,14 +290,14 @@ public class ElmDeserializeTests {
         try {
             Library xmlLibrary = ElmXmlLibraryReader.read(new StringReader(xml));
             validateEmptyStringsTest(xmlLibrary);
-        } catch (JAXBException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         try {
             Library jsonLibrary = ElmJsonLibraryReader.read(new StringReader(json));
             validateEmptyStringsTest(jsonLibrary);
-        } catch (JAXBException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
