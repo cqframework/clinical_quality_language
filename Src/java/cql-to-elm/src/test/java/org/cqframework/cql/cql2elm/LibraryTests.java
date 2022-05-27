@@ -64,7 +64,7 @@ public class LibraryTests {
         try {
             compiler = new CqlCompiler(modelManager, libraryManager);
             compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All);
 
             assertThat(compiler.getErrors().size(), is(0));
@@ -102,7 +102,7 @@ public class LibraryTests {
         try {
             CqlCompiler compiler = new CqlCompiler(modelManager, libraryManager);
             compiler.run(translationTestFile,
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All);
 
             System.out.println(compiler.getErrors());
@@ -177,7 +177,7 @@ public class LibraryTests {
         try {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingInvalidBaseLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(1));
-            assertThat(translator.getErrors().get(0), instanceOf(CqlTranslatorException.class));
+            assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
             assertThat(translator.getErrors().get(0).getLocator(), notNullValue());
             assertThat(translator.getErrors().get(0).getLocator().getLibrary(), notNullValue());
             assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), is("InvalidBaseLibrary"));
@@ -208,7 +208,7 @@ public class LibraryTests {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/TestMeasure.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(3));
 
-            for (CqlTranslatorException error : translator.getErrors()) {
+            for (CqlCompilerException error : translator.getErrors()) {
                 assertThat(error.getLocator(), notNullValue());
             }
         }
@@ -226,7 +226,7 @@ public class LibraryTests {
             libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
             compiler = new CqlCompiler(modelManager, libraryManager);
             compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All,
                     CqlTranslatorOptions.Options.EnableAnnotations);
 
@@ -251,7 +251,7 @@ public class LibraryTests {
 
             compiler = new CqlCompiler(modelManager, libraryManager);
             compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All);
 
             assertThat(compiler.getErrors().size(), is(0));

@@ -5,7 +5,7 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 /**
  * Created by Bryn on 5/20/2017.
  */
-public class CqlInternalException extends CqlTranslatorException {
+public class CqlInternalException extends CqlCompilerException {
     public CqlInternalException(String message) {
         super(message, ErrorSeverity.Error);
     }

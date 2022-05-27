@@ -129,7 +129,7 @@ public class TestUtils {
 
     private static void ensureValid(CqlTranslator translator) {
         StringBuilder builder = new StringBuilder();
-        for (CqlTranslatorException error : translator.getErrors()) {
+        for (CqlCompilerException error : translator.getErrors()) {
             builder.append(String.format("%s%n", error.getMessage()));
         }
         if (builder.length() > 0) {
@@ -174,7 +174,7 @@ public class TestUtils {
 
     public static CqlTranslator runSemanticTest(NamespaceInfo namespaceInfo, String testFileName, int expectedErrors, CqlTranslatorOptions options) throws IOException {
         CqlTranslator translator = TestUtils.createTranslator(namespaceInfo, testFileName, options);
-        for (CqlTranslatorException error : translator.getErrors()) {
+        for (CqlCompilerException error : translator.getErrors()) {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
         }

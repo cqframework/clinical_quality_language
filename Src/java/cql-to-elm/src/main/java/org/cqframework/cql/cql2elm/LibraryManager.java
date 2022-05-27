@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-import static org.cqframework.cql.cql2elm.CqlTranslatorException.HasErrors;
+import static org.cqframework.cql.cql2elm.CqlCompilerException.HasErrors;
 
 /**
  * Manages a set of CQL libraries. As new library references are encountered
@@ -155,7 +155,7 @@ public class LibraryManager {
         return source != null;
     }
 
-    public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
+    public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlCompilerException> errors) {
         if (libraryIdentifier == null) {
             throw new IllegalArgumentException("libraryIdentifier is null.");
         }
@@ -191,7 +191,7 @@ public class LibraryManager {
         return library;
     }
 
-    private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlTranslatorException> errors) {
+    private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlCompilerException> errors) {
 
         CompiledLibrary result = null;
         result = tryCompiledLibraryElm(libraryIdentifier, options);

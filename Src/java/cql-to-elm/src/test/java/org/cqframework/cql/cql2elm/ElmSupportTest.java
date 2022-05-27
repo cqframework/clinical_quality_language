@@ -37,7 +37,7 @@ public class ElmSupportTest {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJxsonElm.cql"),
                     modelManager,
                     libraryManager,
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All,
                     options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
@@ -60,7 +60,7 @@ public class ElmSupportTest {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"),
                     modelManager,
                     libraryManager,
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All,
                     options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
@@ -82,7 +82,7 @@ public class ElmSupportTest {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryXmlElm.cql"),
                     modelManager,
                     libraryManager,
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All, options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
@@ -102,7 +102,7 @@ public class ElmSupportTest {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryWithNullTypeSpecifierJsonElm.cql"),
                     modelManager,
                     libraryManager,
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All,
                     options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 

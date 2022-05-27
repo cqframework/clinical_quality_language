@@ -536,12 +536,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             try {
                 o = super.visit(tree);
             } catch (CqlTranslatorIncludeException e) {
-                CqlTranslatorException translatorException = new CqlTranslatorException(e.getMessage(), getTrackBack(tree), e);
+                CqlCompilerException translatorException = new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
                 if (translatorException.getLocator() == null) {
                     throw translatorException;
                 }
                 libraryBuilder.recordParsingException(translatorException);
-            } catch (CqlTranslatorException e) {
+            } catch (CqlCompilerException e) {
                 if (e.getLocator() == null) {
                     if (tree == null) {
                         throw e;
@@ -550,7 +550,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 libraryBuilder.recordParsingException(e);
             } catch (Exception e) {
-                CqlTranslatorException ex = null;
+                CqlCompilerException ex = null;
                 if (e.getMessage() == null) {
                     ex = new CqlInternalException("Internal translator error.", getTrackBack(tree), e);
                     if (tree == null) {
@@ -3328,12 +3328,12 @@ DATETIME
             }
 
             Property property = null;
-            CqlTranslatorException propertyException = null;
+            CqlCompilerException propertyException = null;
             if (retrieve.getCodeProperty() == null) {
                 // ERROR:
                 // WARNING:
                 propertyException = new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
-                        useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                        useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                         getTrackBack(ctx));
                 libraryBuilder.recordParsingException(propertyException);
             }
@@ -3347,7 +3347,7 @@ DATETIME
                     // ERROR:
                     // WARNING:
                     propertyException = new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                            retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                             getTrackBack(ctx), e);
                     libraryBuilder.recordParsingException(propertyException);
                 }
@@ -3395,7 +3395,7 @@ DATETIME
                             // ERROR:
                             // WARNING:
                             libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
-                                    useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                    useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                                     getTrackBack(ctx)));
                         }
                     }
@@ -3435,7 +3435,7 @@ DATETIME
                         // ERROR:
                         // WARNING:
                         libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unknown code comparator % in retrieve", codeComparator),
-                                useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                                 getTrackBack(ctx.codeComparator())));
                 }
 
@@ -3462,7 +3462,7 @@ DATETIME
                     else {
                         // WARNING:
                         libraryBuilder.recordParsingException(new CqlSemanticException("Terminology target is a list of concepts, but expects a list of codes",
-                                CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                                CqlCompilerException.ErrorSeverity.Warning, getTrackBack(ctx)));
                     }
                 }
             }
@@ -3480,7 +3480,7 @@ DATETIME
                 // ERROR:
                 // WARNING:
                 libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
-                        useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                        useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                         getTrackBack(ctx), e));
             }
         }
