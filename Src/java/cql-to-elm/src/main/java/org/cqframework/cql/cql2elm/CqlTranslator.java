@@ -702,7 +702,7 @@ public class CqlTranslator {
                 loadModelInfo(modelFile);
             }
 
-            writeELM(in, out, outputFormat, new CqlTranslatorOptions(options.has(optimization),
+            writeELM(in, out, outputFormat, new CqlTranslatorOptions(outputFormat, options.has(optimization),
                     options.has(debug) || options.has(annotations),
                     options.has(debug) || options.has(locators),
                     options.has(debug) || options.has(resultTypes),

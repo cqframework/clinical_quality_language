@@ -39,6 +39,7 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsProcessor() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
         cqlTranslatorOptions.getOptions().add(CqlTranslatorOptions.Options.EnableAnnotations);
         try {
             /*
@@ -104,6 +105,7 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsProcessorOpioidIssueExpression() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         try {
@@ -186,6 +188,7 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsProcessorOpioidIssueLibrary() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         cqlTranslatorOptions.setAnalyzeDataRequirements(true);
         try {
@@ -346,6 +349,7 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsProcessorWithExpressions() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
         try {
             Set<String> expressions = new HashSet<>();
             // TODO - add expressions to expressions
@@ -415,6 +419,7 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestLibraryDataRequirements() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
         try {
 //            CqlTranslator translator = createTranslator("/ecqm/resources/library-EXM506-2.2.000.json", cqlTranslatorOptions);
             CqlTranslator translator = createTranslator("CompositeMeasures/cql/BCSComponent.cql", cqlTranslatorOptions);
@@ -481,6 +486,7 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestLibraryDataRequirementsRecursive() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
         cqlTranslatorOptions.setCollapseDataRequirements(true);
         try {
             CqlTranslator translator = createTranslator("DataRequirements/DataRequirementsLibraryTest.cql", cqlTranslatorOptions);
@@ -512,6 +518,7 @@ public class DataRequirementsProcessorTest {
     @Test
     public void TestDataRequirementsFHIRReferences() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
         try {
             CqlTranslator translator = createTranslator("FHIRReferencesRevisited.cql", cqlTranslatorOptions);
             translator.toELM();
@@ -532,6 +539,7 @@ public class DataRequirementsProcessorTest {
 
     private CqlTranslatorOptions getTranslatorOptions() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
         return cqlTranslatorOptions;
     }
 

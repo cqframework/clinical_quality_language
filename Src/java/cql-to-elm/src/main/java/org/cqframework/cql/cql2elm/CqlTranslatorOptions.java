@@ -1,7 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 /**
  * translation options for Cql source files
@@ -23,6 +25,7 @@ public class CqlTranslatorOptions {
         DisableDefaultModelInfoLoad
     }
 
+    private List<CqlTranslator.Format> formats = new ArrayList<>();
     private EnumSet<Options> options = EnumSet.noneOf(Options.class);
     private boolean validateUnits = true;
     private boolean verifyOnly = false;
@@ -85,8 +88,9 @@ public class CqlTranslatorOptions {
     }
 
     /**
-     * Constructor using defined SignatureLevel, and Compatibility Level, boolean set to true denotes addition of predefined option
+     * Constructor using defined Format, SignatureLevel, and Compatibility Level, boolean set to true denotes addition of predefined option
      *
+     * @param format CqlTranslator.Format
      * @param dateRangeOptimizations boolean
      * @param annotations boolean
      * @param locators boolean
@@ -105,7 +109,7 @@ public class CqlTranslatorOptions {
      * @param signatureLevel LibraryBuilder.SignatureLevel
      * @param compatibilityLevel String
      */
-    public CqlTranslatorOptions(boolean dateRangeOptimizations,
+    public CqlTranslatorOptions(CqlTranslator.Format format, boolean dateRangeOptimizations,
                                 boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
                                 boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
                                 boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
@@ -113,6 +117,7 @@ public class CqlTranslatorOptions {
                                 boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
                                 boolean disableDefaultModelInfoLoad,
                                 LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel) {
+        formats.add(format);
         this.verifyOnly = verifyOnly;
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
@@ -188,6 +193,25 @@ public class CqlTranslatorOptions {
      */
     public CqlTranslatorOptions withOptions(Options... options) {
         setOptions(options);
+        return this;
+    }
+
+    /**
+     * Returns instance of CqlTranslatorOptions formats
+     *
+     * @return
+     */
+    public List<CqlTranslator.Format> getFormats() {
+        return this.formats;
+    }
+
+    /**
+     * Return this instance of CqlTranslatorOptions with addition of newly assigned format
+     * @param format
+     * @return
+     */
+    public CqlTranslatorOptions withFormat(CqlTranslator.Format format) {
+        formats.add(format);
         return this;
     }
 
