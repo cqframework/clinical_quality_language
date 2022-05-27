@@ -43,6 +43,7 @@ public class CqlTranslatorOptions {
      * DisableListPromotion
      * ErrorSeverity.Info
      * SignatureLevel.None
+     * Format.XML
      * @return
      */
     public static CqlTranslatorOptions defaultOptions() {
@@ -90,6 +91,7 @@ public class CqlTranslatorOptions {
     /**
      * Constructor using defined Format, SignatureLevel, and Compatibility Level, boolean set to true denotes addition of predefined option
      *
+     * 
      * @param format CqlTranslator.Format
      * @param dateRangeOptimizations boolean
      * @param annotations boolean
