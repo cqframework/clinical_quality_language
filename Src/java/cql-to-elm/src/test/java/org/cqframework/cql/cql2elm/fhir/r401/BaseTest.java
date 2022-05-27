@@ -4,7 +4,7 @@ import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql.model.ChoiceType;
 import org.hl7.cql.model.ClassType;
 import org.hl7.cql.model.DataType;
@@ -96,7 +96,7 @@ public class BaseTest {
 
     @Test
     public void testEqualityWithConversions() throws IOException {
-        TranslatedLibrary library = visitFileLibrary("fhir/r401/EqualityWithConversions.cql");
+        CompiledLibrary library = visitFileLibrary("fhir/r401/EqualityWithConversions.cql");
         ExpressionDef getGender = library.resolveExpressionRef("GetGender");
         assertThat(getGender.getExpression(), instanceOf(Equal.class));
         Equal equal = (Equal)getGender.getExpression();
@@ -207,7 +207,7 @@ public class BaseTest {
         TestUtils.runSemanticTest("fhir/r401/TestIntervalImplicitConversion.cql", 0);
     }
 
-    private void assertResultType(TranslatedLibrary translatedLibrary, String expressionName, String namespace, String name) {
+    private void assertResultType(CompiledLibrary translatedLibrary, String expressionName, String namespace, String name) {
         ExpressionDef ed = translatedLibrary.resolveExpressionRef(expressionName);
         DataType resultType = ed.getExpression().getResultType();
         assertThat(resultType, instanceOf(ClassType.class));
@@ -219,7 +219,7 @@ public class BaseTest {
     @Test
     public void testFHIRHelpers() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRHelpers.cql", 0);
-        TranslatedLibrary translatedLibrary = translator.getTranslatedLibrary();
+        CompiledLibrary translatedLibrary = translator.getTranslatedLibrary();
         assertResultType(translatedLibrary, "TestExtensions", "FHIR", "Extension");
         assertResultType(translatedLibrary, "TestElementExtensions", "FHIR", "Extension");
         assertResultType(translatedLibrary, "TestModifierExtensions", "FHIR", "Extension");
@@ -371,7 +371,7 @@ public class BaseTest {
     @Test
     public void testRetrieveWithConcept() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestRetrieveWithConcept.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         ExpressionDef expressionDef = library.resolveExpressionRef("Test Tobacco Smoking Status");
 
         assertThat(expressionDef.getExpression(), instanceOf(Retrieve.class));
@@ -384,7 +384,7 @@ public class BaseTest {
     @Test
     public void testFHIRNamespaces() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest(new NamespaceInfo("Public", "http://cql.hl7.org/public"), "fhir/r401/TestFHIRNamespaces.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         UsingDef usingDef = library.resolveUsingRef("FHIR");
         assertThat(usingDef, notNullValue());
         assertThat(usingDef.getLocalIdentifier(), is("FHIR"));
@@ -399,7 +399,7 @@ public class BaseTest {
     @Test
     public void testFHIRWithoutNamespaces() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRNamespaces.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         UsingDef usingDef = library.resolveUsingRef("FHIR");
         assertThat(usingDef, notNullValue());
         assertThat(usingDef.getLocalIdentifier(), is("FHIR"));
@@ -414,7 +414,7 @@ public class BaseTest {
     @Test
     public void testFHIRPathLiteralStringEscapes() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRPathLiteralStringEscapes.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         ExpressionDef expressionDef = library.resolveExpressionRef("Test");
         assertThat(expressionDef, notNullValue());
         String xml = translator.toXml();
@@ -452,7 +452,7 @@ public class BaseTest {
     @Test
     public void testSearchPath() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestInclude.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         ExpressionDef expressionDef = library.resolveExpressionRef("TestPractitionerSearch1");
         assertThat(expressionDef, notNullValue());
         Expression expression = expressionDef.getExpression();
@@ -476,7 +476,7 @@ public class BaseTest {
     @Test
     public void testInclude() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestInclude.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
 
         /*
         define TestMedicationRequest1:

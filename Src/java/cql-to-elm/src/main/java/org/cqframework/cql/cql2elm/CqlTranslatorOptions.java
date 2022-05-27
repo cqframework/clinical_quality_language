@@ -91,7 +91,7 @@ public class CqlTranslatorOptions {
     /**
      * Constructor using defined Format, SignatureLevel, and Compatibility Level, boolean set to true denotes addition of predefined option
      *
-     * 
+     *
      * @param format CqlTranslator.Format
      * @param dateRangeOptimizations boolean
      * @param annotations boolean

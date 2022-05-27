@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Tag;
 import org.hl7.elm.r1.ExpressionDef;
@@ -23,14 +23,14 @@ public class CommentTests {
     @Test
     public void testComments() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, CqlTranslatorOptions.Options.EnableAnnotations);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
     }
 
     @Test
     public void testTags() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
         Annotation a = null;
         for (Object o : library.getLibrary().getAnnotation()) {

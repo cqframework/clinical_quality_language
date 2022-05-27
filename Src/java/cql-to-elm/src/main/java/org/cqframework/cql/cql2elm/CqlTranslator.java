@@ -9,7 +9,7 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
 import org.antlr.v4.runtime.*;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.model.serialization.LibraryWrapper;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumEssenceService;
@@ -21,7 +21,6 @@ import org.hl7.elm.r1.ObjectFactory;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import javax.xml.bind.*;
 import java.io.*;
@@ -394,8 +393,8 @@ public class CqlTranslator {
         return compiler.getLibrary();
     }
 
-    public TranslatedLibrary getTranslatedLibrary() {
-        return compiler.getTranslatedLibrary();
+    public CompiledLibrary getTranslatedLibrary() {
+        return compiler.getCompiledLibrary();
     }
 
     public Object toObject() {
@@ -410,13 +409,13 @@ public class CqlTranslator {
         return compiler.getLibraries();
     }
 
-    public Map<String, TranslatedLibrary> getTranslatedLibraries() {
-        return compiler.getTranslatedLibraries();
+    public Map<String, CompiledLibrary> getTranslatedLibraries() {
+        return compiler.getCompiledLibraries();
     }
 
     public Map<String, String> getLibrariesAsXML() {
         Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, TranslatedLibrary> entry : getTranslatedLibraries().entrySet()) {
+        for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
             result.put(entry.getKey(), toXml(entry.getValue().getLibrary()));
         }
         return result;
@@ -424,7 +423,7 @@ public class CqlTranslator {
 
     public Map<String, String> getLibrariesAsJSON() {
         Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, TranslatedLibrary> entry : getTranslatedLibraries().entrySet()) {
+        for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
             result.put(entry.getKey(), toJson(entry.getValue().getLibrary()));
         }
         return result;
@@ -432,7 +431,7 @@ public class CqlTranslator {
 
     public Map<String, String> getLibrariesAsJXSON() {
         Map<String, String> result = new HashMap<>();
-        for (Map.Entry<String, TranslatedLibrary> entry : getTranslatedLibraries().entrySet()) {
+        for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
             result.put(entry.getKey(), toJxson(entry.getValue().getLibrary()));
         }
         return result;

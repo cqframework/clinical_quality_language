@@ -4372,7 +4372,7 @@ DATETIME
             resultType = parseTypeSpecifier(ctx.typeSpecifier());
         }
 
-        if (!libraryBuilder.getTranslatedLibrary().contains(fun)) {
+        if (!libraryBuilder.getCompiledLibrary().contains(fun)) {
             if (ctx.functionBody() != null) {
                 libraryBuilder.beginFunctionDef(fun);
                 try {

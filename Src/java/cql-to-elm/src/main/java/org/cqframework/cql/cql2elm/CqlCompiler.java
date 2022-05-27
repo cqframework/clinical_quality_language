@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class CqlCompiler {
     private Library library = null;
-    private TranslatedLibrary translatedLibrary = null;
+    private CompiledLibrary compiledLibrary = null;
     private Object visitResult = null;
     private List<Retrieve> retrieves = null;
     private List<CqlTranslatorException> exceptions = null;
@@ -76,8 +76,8 @@ public class CqlCompiler {
     public Library getLibrary() {
         return library;
     }
-    public TranslatedLibrary getTranslatedLibrary() {
-        return translatedLibrary;
+    public CompiledLibrary getCompiledLibrary() {
+        return compiledLibrary;
     }
     public Object toObject() {
         return visitResult;
@@ -85,14 +85,14 @@ public class CqlCompiler {
     public List<Retrieve> toRetrieves() {
         return retrieves;
     }
-    public Map<String, TranslatedLibrary> getTranslatedLibraries() {
-        return libraryManager.getTranslatedLibraries();
+    public Map<String, CompiledLibrary> getCompiledLibraries() {
+        return libraryManager.getCompiledLibraries();
     }
 
     public Map<String, Library> getLibraries() {
         Map<String, Library> result = new HashMap<String, Library>();
-        for (String libraryName : libraryManager.getTranslatedLibraries().keySet()) {
-            result.put(libraryName, libraryManager.getTranslatedLibraries().get(libraryName).getLibrary());
+        for (String libraryName : libraryManager.getCompiledLibraries().keySet()) {
+            result.put(libraryName, libraryManager.getCompiledLibraries().get(libraryName).getLibrary());
         }
         return result;
     }
@@ -210,6 +210,11 @@ public class CqlCompiler {
                        CqlTranslatorOptions.Options... options) {
         return run(is, new CqlTranslatorOptions(errorLevel, signatureLevel, options));
     }
+
+    public Library run(InputStream is, CqlTranslatorOptions options) throws IOException {
+        return run(CharStreams.fromStream(is), options);
+    }
+
     public Library run(CharStream is, CqlTranslatorOptions options) {
         exceptions = new ArrayList<>();
         errors = new ArrayList<>();
@@ -243,7 +248,7 @@ public class CqlCompiler {
 
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
-        translatedLibrary = builder.getTranslatedLibrary();
+        compiledLibrary = builder.getCompiledLibrary();
         retrieves = visitor.getRetrieves();
         exceptions.addAll(builder.getExceptions());
         errors.addAll(builder.getErrors());
