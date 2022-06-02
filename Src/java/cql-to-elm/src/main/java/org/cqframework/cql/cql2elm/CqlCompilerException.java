@@ -4,15 +4,15 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 
 import java.util.List;
 
-public class CqlTranslatorException extends RuntimeException {
+public class CqlCompilerException extends RuntimeException {
     public enum ErrorSeverity {
         Info,
         Warning,
         Error
     }
 
-    public static boolean HasErrors(List<CqlTranslatorException> exceptions) {
-        for (CqlTranslatorException exception : exceptions) {
+    public static boolean HasErrors(List<CqlCompilerException> exceptions) {
+        for (CqlCompilerException exception : exceptions) {
             if (exception.getSeverity() == ErrorSeverity.Error) {
                 return true;
             }
@@ -21,45 +21,45 @@ public class CqlTranslatorException extends RuntimeException {
         return false;
     }
 
-    public CqlTranslatorException(String message) {
+    public CqlCompilerException(String message) {
         super(message);
         this.severity = ErrorSeverity.Error;
     }
 
-    public CqlTranslatorException(String message, ErrorSeverity severity) {
+    public CqlCompilerException(String message, ErrorSeverity severity) {
         super(message);
         this.severity = severity;
     }
 
-    public CqlTranslatorException(String message, Throwable cause) {
+    public CqlCompilerException(String message, Throwable cause) {
         super(message, cause);
         this.severity = ErrorSeverity.Error;
     }
 
-    public CqlTranslatorException(String message, ErrorSeverity severity, Throwable cause) {
+    public CqlCompilerException(String message, ErrorSeverity severity, Throwable cause) {
         super(message, cause);
         this.severity = severity;
     }
 
-    public CqlTranslatorException(String message, TrackBack locator) {
+    public CqlCompilerException(String message, TrackBack locator) {
         super(message);
         this.severity = ErrorSeverity.Error;
         this.locator = locator;
     }
 
-    public CqlTranslatorException(String message, ErrorSeverity severity, TrackBack locator) {
+    public CqlCompilerException(String message, ErrorSeverity severity, TrackBack locator) {
         super(message);
         this.severity = severity;
         this.locator = locator;
     }
 
-    public CqlTranslatorException(String message, TrackBack locator, Throwable cause) {
+    public CqlCompilerException(String message, TrackBack locator, Throwable cause) {
         super(message, cause);
         this.severity = ErrorSeverity.Error;
         this.locator = locator;
     }
 
-    public CqlTranslatorException(String message, ErrorSeverity severity, TrackBack locator, Throwable cause) {
+    public CqlCompilerException(String message, ErrorSeverity severity, TrackBack locator, Throwable cause) {
         super(message, cause);
         this.severity = severity;
         this.locator = locator;

@@ -36,14 +36,14 @@ public class TranslationTests {
         File propertyTestFile = new File(TranslationTests.class.getResource("LibraryTests/SupplementalDataElements_FHIR4-2.0.0.cql").getFile());
         ModelManager modelManager = new ModelManager();
         CqlTranslator translator = CqlTranslator.fromFile(propertyTestFile, modelManager, new LibraryManager(modelManager),
-                CqlTranslatorException.ErrorSeverity.Info,
-                LibraryBuilder.SignatureLevel.All, CqlTranslator.Options.EnableDateRangeOptimization,
-                CqlTranslator.Options.EnableAnnotations,
-                CqlTranslator.Options.EnableLocators,
-                CqlTranslator.Options.EnableResultTypes,
-                CqlTranslator.Options.DisableListDemotion,
-                CqlTranslator.Options.DisableListPromotion,
-                CqlTranslator.Options.DisableMethodInvocation);
+                CqlCompilerException.ErrorSeverity.Info,
+                LibraryBuilder.SignatureLevel.All, CqlTranslatorOptions.Options.EnableDateRangeOptimization,
+                CqlTranslatorOptions.Options.EnableAnnotations,
+                CqlTranslatorOptions.Options.EnableLocators,
+                CqlTranslatorOptions.Options.EnableResultTypes,
+                CqlTranslatorOptions.Options.DisableListDemotion,
+                CqlTranslatorOptions.Options.DisableListPromotion,
+                CqlTranslatorOptions.Options.DisableMethodInvocation);
         System.out.println(translator.toJson());
     }
 
@@ -61,7 +61,7 @@ public class TranslationTests {
         CqlTranslator translator = TestUtils.createTranslator("TranslatorTests/UnknownIdentifier.cql");
         assertEquals(1, translator.getErrors().size());
 
-        CqlTranslatorException e = translator.getErrors().get(0);
+        CqlCompilerException e = translator.getErrors().get(0);
         TrackBack tb = e.getLocator();
 
         assertEquals(6, tb.getStartLine());
@@ -73,7 +73,7 @@ public class TranslationTests {
 
     @Test
     public void testAnnotationsPresent() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslator.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslatorOptions.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
         List<ExpressionDef> defs = translator.getTranslatedLibrary().getLibrary().getStatements().getDef();
         assertNotNull(defs.get(1).getAnnotation());
@@ -90,7 +90,7 @@ public class TranslationTests {
 
     @Test
     public void testTranslatorOptionsPresent() throws IOException {
-        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslator.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.createTranslator("CMS146v2_Test_CQM.cql", CqlTranslatorOptions.Options.EnableAnnotations);
         assertEquals(0, translator.getErrors().size());
         Library library = translator.getTranslatedLibrary().getLibrary();
         assertNotNull(library.getAnnotation());

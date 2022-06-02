@@ -69,38 +69,38 @@ public class LibraryBuilder implements ModelResolver {
         this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getSpecificationVersion());
         this.library.getAnnotation().add(this.cqlToElmInfo);
 
-        translatedLibrary = new TranslatedLibrary();
-        translatedLibrary.setLibrary(library);
+        compiledLibrary = new CompiledLibrary();
+        compiledLibrary.setLibrary(library);
 
         this.ucumService = ucumService;
     }
 
     // Only exceptions of severity Error
-    private final java.util.List<CqlTranslatorException> errors = new ArrayList<>();
-    public List<CqlTranslatorException> getErrors() {
+    private final java.util.List<CqlCompilerException> errors = new ArrayList<>();
+    public List<CqlCompilerException> getErrors() {
         return errors;
     }
 
     // Only exceptions of severity Warning
-    private final java.util.List<CqlTranslatorException> warnings = new ArrayList<>();
-    public List<CqlTranslatorException> getWarnings() {
+    private final java.util.List<CqlCompilerException> warnings = new ArrayList<>();
+    public List<CqlCompilerException> getWarnings() {
         return warnings;
     }
 
     // Only exceptions of severity Info
-    private final java.util.List<CqlTranslatorException> messages = new ArrayList<>();
-    public List<CqlTranslatorException> getMessages() {
+    private final java.util.List<CqlCompilerException> messages = new ArrayList<>();
+    public List<CqlCompilerException> getMessages() {
         return messages;
     }
 
     // All exceptions
-    private final java.util.List<CqlTranslatorException> exceptions = new ArrayList<>();
-    public List<CqlTranslatorException> getExceptions() {
+    private final java.util.List<CqlCompilerException> exceptions = new ArrayList<>();
+    public List<CqlCompilerException> getExceptions() {
         return exceptions;
     }
 
     private final Map<String, Model> models = new LinkedHashMap<>();
-    private final Map<String, TranslatedLibrary> libraries = new LinkedHashMap<>();
+    private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
@@ -115,9 +115,9 @@ public class LibraryBuilder implements ModelResolver {
     public Library getLibrary() {
         return library;
     }
-    private TranslatedLibrary translatedLibrary = null;
-    public TranslatedLibrary getTranslatedLibrary() {
-        return translatedLibrary;
+    private CompiledLibrary compiledLibrary = null;
+    public CompiledLibrary getCompiledLibrary() {
+        return compiledLibrary;
     }
     private final ConversionMap conversionMap = new ConversionMap();
     public ConversionMap getConversionMap() {
@@ -142,19 +142,19 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         this.options = options;
-        if (options.getOptions().contains(CqlTranslator.Options.DisableListTraversal)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListTraversal)) {
             this.listTraversal = false;
         }
-        if (options.getOptions().contains(CqlTranslator.Options.DisableListDemotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListDemotion)) {
             this.getConversionMap().disableListDemotion();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.DisableListPromotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListPromotion)) {
             this.getConversionMap().disableListPromotion();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalDemotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalDemotion)) {
             this.getConversionMap().enableIntervalDemotion();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalPromotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
@@ -303,7 +303,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         library.getUsings().getDef().add(usingDef);
 
-        translatedLibrary.add(usingDef);
+        compiledLibrary.add(usingDef);
     }
 
     public ClassType resolveLabel(String modelName, String label) {
@@ -440,7 +440,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public UsingDef resolveUsingRef(String modelName) {
-        return translatedLibrary.resolveUsingRef(modelName);
+        return compiledLibrary.resolveUsingRef(modelName);
     }
 
     public SystemModel getSystemModel() {
@@ -470,28 +470,28 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private void loadSystemLibrary() {
-        TranslatedLibrary systemLibrary = SystemLibraryHelper.load(getSystemModel(), typeBuilder);
+        CompiledLibrary systemLibrary = SystemLibraryHelper.load(getSystemModel(), typeBuilder);
         libraries.put(systemLibrary.getIdentifier().getId(), systemLibrary);
         loadConversionMap(systemLibrary);
     }
 
-    private void loadConversionMap(TranslatedLibrary library) {
+    private void loadConversionMap(CompiledLibrary library) {
         for (Conversion conversion : library.getConversions()) {
             conversionMap.add(conversion);
         }
     }
 
-    public TranslatedLibrary getSystemLibrary() {
+    public CompiledLibrary getSystemLibrary() {
         return resolveLibrary("System");
     }
 
-    public TranslatedLibrary resolveLibrary(String identifier) {
+    public CompiledLibrary resolveLibrary(String identifier) {
 
         if (!identifier.equals("System")) {
             checkLiteralContext();
         }
 
-        TranslatedLibrary result = libraries.get(identifier);
+        CompiledLibrary result = libraries.get(identifier);
         if (result == null) {
             throw new IllegalArgumentException(String.format("Could not resolve library name %s.", identifier));
         }
@@ -508,14 +508,14 @@ public class LibraryBuilder implements ModelResolver {
         return namespaceUri;
     }
 
-    private ErrorSeverity toErrorSeverity(CqlTranslatorException.ErrorSeverity severity) {
-        if (severity == CqlTranslatorException.ErrorSeverity.Info) {
+    private ErrorSeverity toErrorSeverity(CqlCompilerException.ErrorSeverity severity) {
+        if (severity == CqlCompilerException.ErrorSeverity.Info) {
             return ErrorSeverity.INFO;
         }
-        else if (severity == CqlTranslatorException.ErrorSeverity.Warning) {
+        else if (severity == CqlCompilerException.ErrorSeverity.Warning) {
             return ErrorSeverity.WARNING;
         }
-        else if (severity == CqlTranslatorException.ErrorSeverity.Error) {
+        else if (severity == CqlCompilerException.ErrorSeverity.Error) {
             return ErrorSeverity.ERROR;
         }
         else {
@@ -523,34 +523,34 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
-    private void addException(CqlTranslatorException e) {
+    private void addException(CqlCompilerException e) {
         // Always add to the list of all exceptions
         exceptions.add(e);
 
-        if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Error) {
+        if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Error) {
             errors.add(e);
         }
-        else if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Warning) {
+        else if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Warning) {
             warnings.add(e);
         }
-        else if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Info) {
+        else if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Info) {
             messages.add(e);
         }
     }
 
-    private boolean shouldReport(CqlTranslatorException.ErrorSeverity errorSeverity) {
+    private boolean shouldReport(CqlCompilerException.ErrorSeverity errorSeverity) {
         switch (options.getErrorLevel()) {
             case Info:
                 return
-                        errorSeverity == CqlTranslatorException.ErrorSeverity.Info
-                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
-                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+                        errorSeverity == CqlCompilerException.ErrorSeverity.Info
+                                || errorSeverity == CqlCompilerException.ErrorSeverity.Warning
+                                || errorSeverity == CqlCompilerException.ErrorSeverity.Error;
             case Warning:
                 return
-                        errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
-                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+                        errorSeverity == CqlCompilerException.ErrorSeverity.Warning
+                                || errorSeverity == CqlCompilerException.ErrorSeverity.Error;
             case Error:
-                return errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+                return errorSeverity == CqlCompilerException.ErrorSeverity.Error;
             default:
                 throw new IllegalArgumentException(String.format("Unknown error severity %s", errorSeverity.toString()));
         }
@@ -561,7 +561,7 @@ public class LibraryBuilder implements ModelResolver {
      * itself so they can be processed easily by a remote client
      * @param e the exception to record
      */
-    public void recordParsingException(CqlTranslatorException e) {
+    public void recordParsingException(CqlCompilerException e) {
         addException(e);
         if (shouldReport(e.getSeverity())) {
             CqlToElmError err = af.createCqlToElmError();
@@ -608,7 +608,7 @@ public class LibraryBuilder implements ModelResolver {
     public void beginTranslation() {
         loadSystemLibrary();
 
-        libraryManager.beginTranslation(getLibraryName());
+        libraryManager.beginCompilation(getLibraryName());
     }
 
     public VersionedIdentifier getLibraryIdentifier() {
@@ -617,12 +617,12 @@ public class LibraryBuilder implements ModelResolver {
 
     public void setLibraryIdentifier(VersionedIdentifier vid) {
         library.setIdentifier(vid);
-        translatedLibrary.setIdentifier(vid);
+        compiledLibrary.setIdentifier(vid);
     }
 
     public void endTranslation() {
         applyTargetModelMaps();
-        libraryManager.endTranslation(getLibraryName());
+        libraryManager.endCompilation(getLibraryName());
     }
 
     public boolean canResolveLibrary(IncludeDef includeDef) {
@@ -643,16 +643,16 @@ public class LibraryBuilder implements ModelResolver {
         }
         library.getIncludes().getDef().add(includeDef);
 
-        translatedLibrary.add(includeDef);
+        compiledLibrary.add(includeDef);
 
         VersionedIdentifier libraryIdentifier = new VersionedIdentifier()
                 .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
                 .withId(NamespaceManager.getNamePart(includeDef.getPath()))
                 .withVersion(includeDef.getVersion());
 
-        ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
-        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
-        for (CqlTranslatorException error : errors) {
+        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
+        CompiledLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
+        for (CqlCompilerException error : errors) {
             this.recordParsingException(error);
         }
 
@@ -675,7 +675,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         library.getParameters().getDef().add(paramDef);
 
-        translatedLibrary.add(paramDef);
+        compiledLibrary.add(paramDef);
     }
 
     public void addCodeSystem(CodeSystemDef cs) {
@@ -684,7 +684,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         library.getCodeSystems().getDef().add(cs);
 
-        translatedLibrary.add(cs);
+        compiledLibrary.add(cs);
     }
 
     public void addValueSet(ValueSetDef vs) {
@@ -693,7 +693,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         library.getValueSets().getDef().add(vs);
 
-        translatedLibrary.add(vs);
+        compiledLibrary.add(vs);
     }
 
     public void addCode(CodeDef cd) {
@@ -702,7 +702,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         library.getCodes().getDef().add(cd);
 
-        translatedLibrary.add(cd);
+        compiledLibrary.add(cd);
     }
 
     public void addConcept(ConceptDef cd) {
@@ -711,7 +711,7 @@ public class LibraryBuilder implements ModelResolver {
         }
         library.getConcepts().getDef().add(cd);
 
-        translatedLibrary.add(cd);
+        compiledLibrary.add(cd);
     }
 
     public void addContext(ContextDef cd) {
@@ -727,56 +727,56 @@ public class LibraryBuilder implements ModelResolver {
         }
         library.getStatements().getDef().add(expDef);
 
-        translatedLibrary.add(expDef);
+        compiledLibrary.add(expDef);
     }
 
     public void removeExpression(ExpressionDef expDef) {
         if (library.getStatements() != null) {
             library.getStatements().getDef().remove(expDef);
-            translatedLibrary.remove(expDef);
+            compiledLibrary.remove(expDef);
         }
     }
 
     public Element resolve(String identifier) {
-        return translatedLibrary.resolve(identifier);
+        return compiledLibrary.resolve(identifier);
     }
 
     public IncludeDef resolveIncludeRef(String identifier) {
-        return translatedLibrary.resolveIncludeRef(identifier);
+        return compiledLibrary.resolveIncludeRef(identifier);
     }
 
     public String resolveIncludeAlias(VersionedIdentifier libraryIdentifier) {
-        return translatedLibrary.resolveIncludeAlias(libraryIdentifier);
+        return compiledLibrary.resolveIncludeAlias(libraryIdentifier);
     }
 
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
-        return translatedLibrary.resolveCodeSystemRef(identifier);
+        return compiledLibrary.resolveCodeSystemRef(identifier);
     }
 
     public ValueSetDef resolveValueSetRef(String identifier) {
-        return translatedLibrary.resolveValueSetRef(identifier);
+        return compiledLibrary.resolveValueSetRef(identifier);
     }
 
     public CodeDef resolveCodeRef(String identifier) {
-        return translatedLibrary.resolveCodeRef(identifier);
+        return compiledLibrary.resolveCodeRef(identifier);
     }
 
     public ConceptDef resolveConceptRef(String identifier) {
-        return translatedLibrary.resolveConceptRef(identifier);
+        return compiledLibrary.resolveConceptRef(identifier);
     }
 
     public ParameterDef resolveParameterRef(String identifier) {
         checkLiteralContext();
-        return translatedLibrary.resolveParameterRef(identifier);
+        return compiledLibrary.resolveParameterRef(identifier);
     }
 
     public ExpressionDef resolveExpressionRef(String identifier) {
         checkLiteralContext();
-        return translatedLibrary.resolveExpressionRef(identifier);
+        return compiledLibrary.resolveExpressionRef(identifier);
     }
 
     public Conversion findConversion(DataType fromType, DataType toType, boolean implicit, boolean allowPromotionAndDemotion) {
-        return conversionMap.findConversion(fromType, toType, implicit, allowPromotionAndDemotion, translatedLibrary.getOperatorMap());
+        return conversionMap.findConversion(fromType, toType, implicit, allowPromotionAndDemotion, compiledLibrary.getOperatorMap());
     }
 
     public Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
@@ -1165,12 +1165,12 @@ public class LibraryBuilder implements ModelResolver {
     public OperatorResolution resolveCall(CallContext callContext) {
         OperatorResolution result = null;
         if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
-            result = translatedLibrary.resolveCall(callContext, conversionMap);
+            result = compiledLibrary.resolveCall(callContext, conversionMap);
             if (result == null) {
                 result = getSystemLibrary().resolveCall(callContext, conversionMap);
                 if (result == null && callContext.getAllowFluent()) {
                     // attempt to resolve in each non-system included library, in order of inclusion, first resolution wins
-                    for (TranslatedLibrary library : libraries.values()) {
+                    for (CompiledLibrary library : libraries.values()) {
                         if (!library.equals(getSystemLibrary())) {
                             result = library.resolveCall(callContext, conversionMap);
                             if (result != null) {
@@ -1181,7 +1181,7 @@ public class LibraryBuilder implements ModelResolver {
                 }
                 /*
                 // Implicit resolution is only allowed for the system library functions.
-                for (TranslatedLibrary library : libraries.values()) {
+                for (CompiledLibrary library : libraries.values()) {
                     OperatorResolution libraryResult = library.resolveCall(callContext, libraryBuilder.getConversionMap());
                     if (libraryResult != null) {
                         if (result != null) {
@@ -1335,7 +1335,7 @@ public class LibraryBuilder implements ModelResolver {
 
     private void reportWarning(String message, Expression expression) {
         TrackBack trackback = expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
-        CqlSemanticException warning = new CqlSemanticException(message, CqlTranslatorException.ErrorSeverity.Warning, trackback);
+        CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
     }
 
@@ -2287,7 +2287,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private void ensureLibraryIncluded(String libraryName, Expression sourceContext) {
-        IncludeDef includeDef = translatedLibrary.resolveIncludeRef(libraryName);
+        IncludeDef includeDef = compiledLibrary.resolveIncludeRef(libraryName);
         if (includeDef == null) {
             VersionedIdentifier modelMapping = getModelMapping(sourceContext);
             String path = libraryName;
@@ -2298,7 +2298,7 @@ public class LibraryBuilder implements ModelResolver {
             if (modelMapping != null) {
                 includeDef.setVersion(modelMapping.getVersion());
             }
-            translatedLibrary.add(includeDef);
+            compiledLibrary.add(includeDef);
         }
     }
 
@@ -2530,7 +2530,7 @@ public class LibraryBuilder implements ModelResolver {
 
         if (left instanceof LibraryRef) {
             String libraryName = ((LibraryRef)left).getLibraryName();
-            TranslatedLibrary referencedLibrary = resolveLibrary(libraryName);
+            CompiledLibrary referencedLibrary = resolveLibrary(libraryName);
 
             Element element = referencedLibrary.resolve(memberIdentifier);
 
