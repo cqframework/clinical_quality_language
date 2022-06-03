@@ -37,9 +37,9 @@ public class ElmSupportTest {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJxsonElm.cql"),
                     modelManager,
                     libraryManager,
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All,
-                    options.getOptions().toArray(new CqlTranslator.Options[0]));
+                    options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
 
@@ -60,9 +60,9 @@ public class ElmSupportTest {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"),
                     modelManager,
                     libraryManager,
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All,
-                    options.getOptions().toArray(new CqlTranslator.Options[0]));
+                    options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
 
@@ -82,8 +82,8 @@ public class ElmSupportTest {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryXmlElm.cql"),
                     modelManager,
                     libraryManager,
-                    CqlTranslatorException.ErrorSeverity.Info,
-                    SignatureLevel.All, options.getOptions().toArray(new CqlTranslator.Options[0]));
+                    CqlCompilerException.ErrorSeverity.Info,
+                    SignatureLevel.All, options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
 
@@ -102,9 +102,9 @@ public class ElmSupportTest {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryWithNullTypeSpecifierJsonElm.cql"),
                     modelManager,
                     libraryManager,
-                    CqlTranslatorException.ErrorSeverity.Info,
+                    CqlCompilerException.ErrorSeverity.Info,
                     SignatureLevel.All,
-                    options.getOptions().toArray(new CqlTranslator.Options[0]));
+                    options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
 
             assertTrue(translator.getErrors().size() > 0);
 
@@ -115,13 +115,13 @@ public class ElmSupportTest {
 
     private CqlTranslatorOptions createOptions() {
         CqlTranslatorOptions result = new CqlTranslatorOptions();
-        result.setOptions(CqlTranslator.Options.EnableDateRangeOptimization,
-                CqlTranslator.Options.EnableAnnotations,
-                CqlTranslator.Options.EnableLocators,
-                CqlTranslator.Options.EnableResultTypes,
-                CqlTranslator.Options.DisableListDemotion,
-                CqlTranslator.Options.DisableListPromotion,
-                CqlTranslator.Options.DisableMethodInvocation);
+        result.setOptions(CqlTranslatorOptions.Options.EnableDateRangeOptimization,
+                CqlTranslatorOptions.Options.EnableAnnotations,
+                CqlTranslatorOptions.Options.EnableLocators,
+                CqlTranslatorOptions.Options.EnableResultTypes,
+                CqlTranslatorOptions.Options.DisableListDemotion,
+                CqlTranslatorOptions.Options.DisableListPromotion,
+                CqlTranslatorOptions.Options.DisableMethodInvocation);
 
         return result;
     }
