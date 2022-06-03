@@ -2,17 +2,13 @@ package org.cqframework.cql.elm.requirements.fhir;
 
 import ca.uhn.fhir.context.FhirContext;
 import org.cqframework.cql.cql2elm.*;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
 import org.hl7.elm.r1.*;
 import ca.uhn.fhir.parser.IParser;
-import org.hl7.elm.r1.Library;
-import org.hl7.fhir.DataRequirementCodeFilter;
 import org.hl7.fhir.r5.model.*;
 import org.testng.annotations.Test;
-import org.cqframework.cql.elm.requirements.fhir.DataRequirementsProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +40,7 @@ public class DataRequirementsProcessorTest {
     public void TestDataRequirementsProcessor() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
         cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
-        cqlTranslatorOptions.getOptions().add(CqlTranslator.Options.EnableAnnotations);
+        cqlTranslatorOptions.getOptions().add(CqlTranslatorOptions.Options.EnableAnnotations);
         try {
             /*
                 OpioidCDSCommon.cql
@@ -1487,7 +1483,7 @@ public class DataRequirementsProcessorTest {
         return ucumService;
     }
 
-    public static CqlTranslator createTranslator(String testFileName, CqlTranslator.Options... options) throws IOException {
+    public static CqlTranslator createTranslator(String testFileName, CqlTranslatorOptions.Options... options) throws IOException {
         return createTranslator(null, testFileName, new CqlTranslatorOptions(options));
     }
 
@@ -1495,7 +1491,7 @@ public class DataRequirementsProcessorTest {
         return createTranslator(null, testFileName, options);
     }
 
-    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslator.Options... options) throws IOException {
+    public static CqlTranslator createTranslator(NamespaceInfo namespaceInfo, String testFileName, CqlTranslatorOptions.Options... options) throws IOException {
         return createTranslator(namespaceInfo, testFileName, new CqlTranslatorOptions(options));
     }
 

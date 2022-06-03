@@ -5,7 +5,7 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 /**
  * Created by Bryn on 3/27/2017.
  */
-public class CqlSemanticException extends CqlTranslatorException {
+public class CqlSemanticException extends CqlCompilerException {
     public CqlSemanticException(String message) {
         super(message);
     }

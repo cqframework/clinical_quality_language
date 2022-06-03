@@ -3,7 +3,7 @@ package org.cqframework.cql.elm.requirements.fhir;
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.NamespaceManager;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.cql.model.IntervalType;
@@ -27,7 +27,6 @@ import javax.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -38,13 +37,13 @@ public class DataRequirementsProcessor {
         return this.validationMessages;
     }
 
-    public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
+    public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
                                           CqlTranslatorOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions) {
         return gatherDataRequirements(libraryManager, translatedLibrary, options, expressions, includeLogicDefinitions, true);
     }
 
-    public Library gatherDataRequirements(LibraryManager libraryManager, TranslatedLibrary translatedLibrary,
+    public Library gatherDataRequirements(LibraryManager libraryManager, CompiledLibrary translatedLibrary,
                                           CqlTranslatorOptions options, Set<String> expressions,
                                           boolean includeLogicDefinitions, boolean recursive) {
         if (libraryManager == null) {
