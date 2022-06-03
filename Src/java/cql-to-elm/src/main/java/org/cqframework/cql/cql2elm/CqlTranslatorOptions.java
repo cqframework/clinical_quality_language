@@ -9,12 +9,28 @@ import java.util.List;
  * translation options for Cql source files
  */
 public class CqlTranslatorOptions {
-    private EnumSet<CqlTranslator.Options> options = EnumSet.noneOf(CqlTranslator.Options.class);
+    public static enum Options {
+        EnableDateRangeOptimization,
+        EnableAnnotations,
+        EnableLocators,
+        EnableResultTypes,
+        EnableDetailedErrors,
+        DisableListTraversal,
+        DisableListDemotion,
+        DisableListPromotion,
+        EnableIntervalDemotion,
+        EnableIntervalPromotion,
+        DisableMethodInvocation,
+        RequireFromKeyword,
+        DisableDefaultModelInfoLoad
+    }
+
     private List<CqlTranslator.Format> formats = new ArrayList<>();
+    private EnumSet<Options> options = EnumSet.noneOf(Options.class);
     private boolean validateUnits = true;
     private boolean verifyOnly = false;
     private String compatibilityLevel = "1.5";
-    private CqlTranslatorException.ErrorSeverity errorLevel = CqlTranslatorException.ErrorSeverity.Info;
+    private CqlCompilerException.ErrorSeverity errorLevel = CqlCompilerException.ErrorSeverity.Info;
     private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
     private boolean analyzeDataRequirements = false;
     private boolean collapseDataRequirements = false;
@@ -33,10 +49,10 @@ public class CqlTranslatorOptions {
     public static CqlTranslatorOptions defaultOptions() {
         // Default options based on recommended settings: http://build.fhir.org/ig/HL7/cqf-measures/using-cql.html#translation-to-elm
         CqlTranslatorOptions result = new CqlTranslatorOptions();
-        result.options.add(CqlTranslator.Options.EnableAnnotations);
-        result.options.add(CqlTranslator.Options.EnableLocators);
-        result.options.add(CqlTranslator.Options.DisableListDemotion);
-        result.options.add(CqlTranslator.Options.DisableListPromotion);
+        result.options.add(Options.EnableAnnotations);
+        result.options.add(Options.EnableLocators);
+        result.options.add(Options.DisableListDemotion);
+        result.options.add(Options.DisableListPromotion);
         return result;
 //    private CqlTranslator.Options[] getDefaultOptions() {
 //      ArrayList<CqlTranslator.Options> options = new ArrayList<>();
@@ -51,8 +67,12 @@ public class CqlTranslatorOptions {
      * Constructor with arbitrary number of options utilizing default ErrorSeverity (Info) and SignatureLevel (None)
      * @param options
      */
-    public CqlTranslatorOptions(CqlTranslator.Options... options) {
-        this(CqlTranslatorException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+    public CqlTranslatorOptions(Options... options) {
+        this(CqlCompilerException.ErrorSeverity.Info, LibraryBuilder.SignatureLevel.None, options);
+    }
+
+    public CqlTranslatorOptions(CqlCompilerException.ErrorSeverity errorLevel, Options... options) {
+        this(errorLevel, LibraryBuilder.SignatureLevel.None, options);
     }
 
     /**
@@ -62,7 +82,7 @@ public class CqlTranslatorOptions {
      * @param signatureLevel
      * @param options
      */
-    public CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options) {
+    public CqlTranslatorOptions(CqlCompilerException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, Options... options) {
         this.setOptions(options);
         this.errorLevel = errorLevel;
         this.signatureLevel = signatureLevel;
@@ -93,13 +113,12 @@ public class CqlTranslatorOptions {
      */
     public CqlTranslatorOptions(CqlTranslator.Format format, boolean dateRangeOptimizations,
                                 boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                                boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
+                                boolean detailedErrors, CqlCompilerException.ErrorSeverity errorLevel,
                                 boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
                                 boolean enableIntervalDemotion, boolean enableIntervalPromotion,
                                 boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
                                 boolean disableDefaultModelInfoLoad,
                                 LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel) {
-
         formats.add(format);
         this.verifyOnly = verifyOnly;
         this.errorLevel = errorLevel;
@@ -108,43 +127,43 @@ public class CqlTranslatorOptions {
         this.compatibilityLevel = compatibilityLevel;
 
         if (dateRangeOptimizations) {
-            options.add(CqlTranslator.Options.EnableDateRangeOptimization);
+            options.add(Options.EnableDateRangeOptimization);
         }
         if (annotations) {
-            options.add(CqlTranslator.Options.EnableAnnotations);
+            options.add(Options.EnableAnnotations);
         }
         if (locators) {
-            options.add(CqlTranslator.Options.EnableLocators);
+            options.add(Options.EnableLocators);
         }
         if (resultTypes) {
-            options.add(CqlTranslator.Options.EnableResultTypes);
+            options.add(Options.EnableResultTypes);
         }
         if (detailedErrors) {
-            options.add(CqlTranslator.Options.EnableDetailedErrors);
+            options.add(Options.EnableDetailedErrors);
         }
         if (disableListTraversal) {
-            options.add(CqlTranslator.Options.DisableListTraversal);
+            options.add(Options.DisableListTraversal);
         }
         if (disableListDemotion) {
-            options.add(CqlTranslator.Options.DisableListDemotion);
+            options.add(Options.DisableListDemotion);
         }
         if (disableListPromotion) {
-            options.add(CqlTranslator.Options.DisableListPromotion);
+            options.add(Options.DisableListPromotion);
         }
         if (enableIntervalDemotion) {
-            options.add(CqlTranslator.Options.EnableIntervalDemotion);
+            options.add(Options.EnableIntervalDemotion);
         }
         if (enableIntervalPromotion) {
-            options.add(CqlTranslator.Options.EnableIntervalPromotion);
+            options.add(Options.EnableIntervalPromotion);
         }
         if (disableMethodInvocation) {
-            options.add(CqlTranslator.Options.DisableMethodInvocation);
+            options.add(Options.DisableMethodInvocation);
         }
         if (requireFromKeyword) {
-            options.add(CqlTranslator.Options.RequireFromKeyword);
+            options.add(Options.RequireFromKeyword);
         }
         if (disableDefaultModelInfoLoad) {
-            options.add(CqlTranslator.Options.DisableDefaultModelInfoLoad);
+            options.add(Options.DisableDefaultModelInfoLoad);
         }
     }
 
@@ -153,7 +172,7 @@ public class CqlTranslatorOptions {
      * @return
      */
 
-    public EnumSet<CqlTranslator.Options> getOptions() {
+    public EnumSet<Options> getOptions() {
         return this.options;
     }
 
@@ -161,9 +180,9 @@ public class CqlTranslatorOptions {
      * Set arbitrary number of options
      * @param options
      */
-    public void setOptions(CqlTranslator.Options... options) {
+    public void setOptions(Options... options) {
         if (options != null) {
-            for (CqlTranslator.Options option : options) {
+            for (Options option : options) {
                 this.options.add(option);
             }
         }
@@ -174,7 +193,7 @@ public class CqlTranslatorOptions {
      * @param options
      * @return
      */
-    public CqlTranslatorOptions withOptions(CqlTranslator.Options... options) {
+    public CqlTranslatorOptions withOptions(Options... options) {
         setOptions(options);
         return this;
     }
@@ -280,7 +299,7 @@ public class CqlTranslatorOptions {
      * Return instance of CqlTranslatorOptions errorLevel (CqlTranslatorException.ErrorSeverity)
      * @return
      */
-    public CqlTranslatorException.ErrorSeverity getErrorLevel() {
+    public CqlCompilerException.ErrorSeverity getErrorLevel() {
         return this.errorLevel;
     }
 
@@ -288,7 +307,7 @@ public class CqlTranslatorOptions {
      * Set new errorLevel (CqlTranslatorException.ErrorSeverity)
      * @param errorLevel
      */
-    public void setErrorLevel(CqlTranslatorException.ErrorSeverity errorLevel) {
+    public void setErrorLevel(CqlCompilerException.ErrorSeverity errorLevel) {
         this.errorLevel = errorLevel;
     }
 
@@ -297,7 +316,7 @@ public class CqlTranslatorOptions {
      * @param errorLevel
      * @return
      */
-    public CqlTranslatorOptions withErrorLevel(CqlTranslatorException.ErrorSeverity errorLevel) {
+    public CqlTranslatorOptions withErrorLevel(CqlCompilerException.ErrorSeverity errorLevel) {
         setErrorLevel(errorLevel);
         return this;
     }
@@ -384,7 +403,7 @@ public class CqlTranslatorOptions {
     public String toString() {
         if (this.getOptions() != null) {
             StringBuilder translatorOptions = new StringBuilder();
-            for (CqlTranslator.Options option : this.getOptions()) {
+            for (Options option : this.getOptions()) {
                 if (translatorOptions.length() > 0) {
                     translatorOptions.append(",");
                 }

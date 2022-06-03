@@ -9,7 +9,7 @@ import org.hl7.elm.r1.*;
 import java.util.*;
 import java.util.List;
 
-public class TranslatedLibrary {
+public class CompiledLibrary {
     private VersionedIdentifier identifier;
     private Library library;
     private final Map<String, Element> namespace = new HashMap<>();

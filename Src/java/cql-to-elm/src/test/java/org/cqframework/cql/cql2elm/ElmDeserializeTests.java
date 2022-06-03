@@ -34,14 +34,14 @@ public class ElmDeserializeTests {
             Library library = ElmJxsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRDummy.json")));
             Assert.assertTrue(library != null);
 
-            EnumSet<CqlTranslator.Options> translatorOptions = EnumSet.of(
-                    CqlTranslator.Options.EnableDateRangeOptimization,
-                    CqlTranslator.Options.EnableAnnotations,
-                    CqlTranslator.Options.EnableLocators,
-                    CqlTranslator.Options.EnableResultTypes,
-                    CqlTranslator.Options.DisableListDemotion,
-                    CqlTranslator.Options.DisableListPromotion,
-                    CqlTranslator.Options.DisableMethodInvocation
+            EnumSet<CqlTranslatorOptions.Options> translatorOptions = EnumSet.of(
+                    CqlTranslatorOptions.Options.EnableDateRangeOptimization,
+                    CqlTranslatorOptions.Options.EnableAnnotations,
+                    CqlTranslatorOptions.Options.EnableLocators,
+                    CqlTranslatorOptions.Options.EnableResultTypes,
+                    CqlTranslatorOptions.Options.DisableListDemotion,
+                    CqlTranslatorOptions.Options.DisableListPromotion,
+                    CqlTranslatorOptions.Options.DisableMethodInvocation
             );
 
             Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
@@ -65,8 +65,8 @@ public class ElmDeserializeTests {
             Library library = ElmJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/json/AdultOutpatientEncounters_FHIR4-2.0.000.json")));
             Assert.assertTrue(library != null);
 
-            EnumSet<CqlTranslator.Options> translatorOptions = EnumSet.of(
-                    CqlTranslator.Options.EnableAnnotations
+            EnumSet<CqlTranslatorOptions.Options> translatorOptions = EnumSet.of(
+                    CqlTranslatorOptions.Options.EnableAnnotations
             );
             Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
             Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
@@ -95,14 +95,14 @@ public class ElmDeserializeTests {
             Assert.assertEquals(library.getIdentifier().getId(), "AdultOutpatientEncounters_FHIR4");
             Assert.assertEquals(library.getIdentifier().getVersion(), "2.0.000");
 
-            EnumSet<CqlTranslator.Options> translatorOptions = EnumSet.of(
-                    CqlTranslator.Options.EnableDateRangeOptimization,
-                    CqlTranslator.Options.EnableAnnotations,
-                    CqlTranslator.Options.EnableLocators,
-                    CqlTranslator.Options.EnableResultTypes,
-                    CqlTranslator.Options.DisableListDemotion,
-                    CqlTranslator.Options.DisableListPromotion,
-                    CqlTranslator.Options.DisableMethodInvocation
+            EnumSet<CqlTranslatorOptions.Options> translatorOptions = EnumSet.of(
+                    CqlTranslatorOptions.Options.EnableDateRangeOptimization,
+                    CqlTranslatorOptions.Options.EnableAnnotations,
+                    CqlTranslatorOptions.Options.EnableLocators,
+                    CqlTranslatorOptions.Options.EnableResultTypes,
+                    CqlTranslatorOptions.Options.DisableListDemotion,
+                    CqlTranslatorOptions.Options.DisableListPromotion,
+                    CqlTranslatorOptions.Options.DisableMethodInvocation
             );
             Assert.assertEquals(TranslatorOptionsUtil.getTranslatorOptions(library), translatorOptions);
 

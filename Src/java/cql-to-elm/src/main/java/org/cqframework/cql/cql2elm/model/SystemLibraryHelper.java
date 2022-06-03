@@ -4,12 +4,11 @@ import org.cqframework.cql.cql2elm.TypeBuilder;
 import org.hl7.cql.model.*;
 import org.hl7.elm.r1.FunctionDef;
 import org.hl7.elm.r1.OperandDef;
-import org.hl7.elm.r1.TypeSpecifier;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 public class SystemLibraryHelper {
-    public static TranslatedLibrary load(SystemModel systemModel, TypeBuilder tb) {
-        TranslatedLibrary system = new TranslatedLibrary();
+    public static CompiledLibrary load(SystemModel systemModel, TypeBuilder tb) {
+        CompiledLibrary system = new CompiledLibrary();
         system.setIdentifier(new VersionedIdentifier().withId("System").withVersion("1.0"));
 
         // Logical Operators
@@ -763,7 +762,7 @@ public class SystemLibraryHelper {
         return system;
     }
 
-    private static void add(TranslatedLibrary systemLibrary, TypeBuilder tb, Operator operator) {
+    private static void add(CompiledLibrary systemLibrary, TypeBuilder tb, Operator operator) {
         // In the case that an operator is added directly, manufacture a FunctionDef so it can be referred to in ELM Analysis
         FunctionDef fd = new FunctionDef();
         fd.setName(operator.getName());
@@ -785,7 +784,7 @@ public class SystemLibraryHelper {
         systemLibrary.add(fd, operator);
     }
 
-    private static void add (TranslatedLibrary systemLibrary, TypeBuilder tb, Conversion conversion) {
+    private static void add (CompiledLibrary systemLibrary, TypeBuilder tb, Conversion conversion) {
         systemLibrary.add(conversion);
     }
 }

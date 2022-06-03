@@ -2,7 +2,6 @@ package org.cqframework.cql.cql2elm.uscore.v310;
 
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.TestUtils;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -12,12 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.cqframework.cql.cql2elm.TestUtils.visitFile;
-import static org.cqframework.cql.cql2elm.TestUtils.visitFileLibrary;
 import static org.cqframework.cql.cql2elm.matchers.Quick2DataType.quick2DataType;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 
 public class BaseTest {
     @BeforeClass
