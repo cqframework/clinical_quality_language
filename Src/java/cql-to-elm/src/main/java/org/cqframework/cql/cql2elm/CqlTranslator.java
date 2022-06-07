@@ -35,9 +35,9 @@ import java.util.*;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class CqlTranslator {
-    public static enum Format { XML, JSON, JXSON, COFFEE }
+    public static enum Format { XML, JSON, COFFEE }
     private static JAXBContext jaxbContext;
-    private static ObjectMapper jxsonMapper;
+    private static ObjectMapper jsonMapper;
 
     private CqlCompiler compiler;
 
@@ -372,21 +372,8 @@ public class CqlTranslator {
         }
     }
 
-    private String toJxson(Library library) {
-        try {
-            return convertToJxson(library);
-        }
-        catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Could not convert library to JSON using Jackson serializer.", e);
-        }
-    }
-
     public String toXml() {
         return toXml(compiler.getLibrary());
-    }
-
-    public String toJxson() {
-        return toJxson(compiler.getLibrary());
     }
 
     public String toJson() {
@@ -433,14 +420,6 @@ public class CqlTranslator {
         return result;
     }
 
-    public Map<String, String> getLibrariesAsJXSON() {
-        Map<String, String> result = new HashMap<>();
-        for (Map.Entry<String, CompiledLibrary> entry : getTranslatedLibraries().entrySet()) {
-            result.put(entry.getKey(), toJxson(entry.getValue().getLibrary()));
-        }
-        return result;
-    }
-
     public List<CqlCompilerException> getExceptions() { return compiler.getExceptions(); }
 
     public List<CqlCompilerException> getErrors() { return compiler.getErrors(); }
@@ -449,9 +428,9 @@ public class CqlTranslator {
 
     public List<CqlCompilerException> getMessages() { return compiler.getMessages(); }
 
-    public static ObjectMapper getJxsonMapper() {
-        if (jxsonMapper == null) {
-            jxsonMapper = new JsonMapper().builder()
+    public static ObjectMapper getJsonMapper() {
+        if (jsonMapper == null) {
+            jsonMapper = new JsonMapper().builder()
                     .defaultMergeable(true)
                     .enable(SerializationFeature.INDENT_OUTPUT)
                     .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
@@ -464,7 +443,7 @@ public class CqlTranslator {
                     .build();
         }
 
-        return jxsonMapper;
+        return jsonMapper;
     }
 
     public static String convertToXml(Library library) throws IOException {
@@ -474,13 +453,9 @@ public class CqlTranslator {
     }
 
     public static String convertToJson(Library library) throws JsonProcessingException {
-        return convertToJxson(library);
-    }
-
-    public static String convertToJxson(Library library) throws JsonProcessingException {
         LibraryWrapper wrapper = new LibraryWrapper();
         wrapper.setLibrary(library);
-        return getJxsonMapper().writeValueAsString(wrapper);
+        return getJsonMapper().writeValueAsString(wrapper);
     }
 
     public static void loadModelInfo(File modelInfoXML)  {
@@ -549,9 +524,6 @@ public class CqlTranslator {
                     case COFFEE:
                         pw.print("module.exports = ");
                         pw.println(translator.toJson());
-                        break;
-                    case JXSON:
-                        pw.println(translator.toJxson());
                         break;
                     case JSON:
                         pw.println(translator.toJson());
@@ -640,7 +612,6 @@ public class CqlTranslator {
                 }
                 switch (outputFormat) {
                     case JSON:
-                    case JXSON:
                         name += ".json";
                         break;
                     case COFFEE:

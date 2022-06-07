@@ -3,22 +3,19 @@ package org.cqframework.cql.cql2elm;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.LinkedHashMap;
 
 import javax.xml.bind.JAXBException;
 
 import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 public class ElmDeserializeTests {
 
     @Test
-    public void TestElmTests() {
+    public void testElmTests() {
         try {
             ElmXmlLibraryReader.read(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ElmTests.xml"));
         } catch (IOException e) {
@@ -29,9 +26,9 @@ public class ElmDeserializeTests {
 
 
     @Test
-    public void TestJxsonLibraryLoad() {
+    public void testJsonANCFHIRDummyLibraryLoad() {
         try {
-            Library library = ElmJxsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRDummy.json")));
+            Library library = ElmJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRDummy.json")));
             Assert.assertTrue(library != null);
 
             EnumSet<CqlTranslatorOptions.Options> translatorOptions = EnumSet.of(
@@ -60,9 +57,9 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void TestJsonLibraryLoad() {
+    public void testJsonAdultOutpatientEncounters_FHIR4LibraryLoad() {
         try {
-            Library library = ElmJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/json/AdultOutpatientEncounters_FHIR4-2.0.000.json")));
+            Library library = ElmJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.json")));
             Assert.assertTrue(library != null);
 
             EnumSet<CqlTranslatorOptions.Options> translatorOptions = EnumSet.of(
@@ -88,7 +85,7 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void TestXmlLibraryLoad() {
+    public void testXmlLibraryLoad() {
         try {
             Library library = ElmXmlLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/fhir/AdultOutpatientEncounters_FHIR4-2.0.000.xml")));
             Assert.assertTrue(library != null);
@@ -124,9 +121,9 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void TestJxsonTerminologyLibraryLoad() {
+    public void testJsonTerminologyLibraryLoad() {
         try {
-            Library library = ElmJxsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRTerminologyDummy.json")));
+            Library library = ElmJsonLibraryReader.read(new InputStreamReader(ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/ANCFHIRTerminologyDummy.json")));
             Assert.assertTrue(library != null);
         } catch (IOException e) {
             throw new IllegalArgumentException("Error reading ELM: " + e.getMessage());
@@ -142,27 +139,19 @@ public class ElmDeserializeTests {
             throw new IllegalArgumentException(String.format("Errors occurred reading ELM from xml %s: %s", xmlFileName, e.getMessage()));
         }
 
-        Library jxsonLibrary = null;
+        Library jsonLibrary;
         try {
-            jxsonLibrary = ElmJxsonLibraryReader.read(new FileReader(path + "/jxson/" + jsonFileName));
+            jsonLibrary = ElmJsonLibraryReader.read(new FileReader(path + "/" + jsonFileName));
         }
         catch (Exception e) {
             throw new IllegalArgumentException(String.format("Errors occurred reading ELM from json %s: %s", jsonFileName, e.getMessage()));
         }
 
-        Library jsonLibrary = null;
-        try {
-            jsonLibrary = ElmJsonLibraryReader.read(new FileReader(path + "/json/" + jsonFileName));
-        }
-        catch (Exception e) {
-            throw new IllegalArgumentException(String.format("Errors occurred reading ELM from json %s: %s", jsonFileName, e.getMessage()));
-        }
-
-        if (xmlLibrary != null && jxsonLibrary != null) {
-            if (!equivalent(xmlLibrary, jxsonLibrary, jsonLibrary)) {
+        if (xmlLibrary != null) {
+            if (!equivalent(xmlLibrary, jsonLibrary)) {
                 System.out.println(xmlFileName);
             }
-            Assert.assertTrue(equivalent(xmlLibrary, jxsonLibrary, jsonLibrary));
+            Assert.assertTrue(equivalent(xmlLibrary, jsonLibrary));
         }
     }
 
@@ -183,7 +172,7 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void RegressionTestJsonSerializer() throws URISyntaxException, IOException, JAXBException {
+    public void regressionTestJsonSerializer() throws URISyntaxException, IOException, JAXBException {
         // This test validates that the ELM library deserialized from the Json matches the ELM library deserialized from Xml
         // Regression inputs are annual update measure Xml for QDM and FHIR
         testElmDeserialization("qdm");
@@ -191,60 +180,50 @@ public class ElmDeserializeTests {
         testElmDeserialization("qdm2020");
     }
 
-    private static boolean equivalent(Library xmlLibrary, Library jxsonLibrary, Library jsonLibrary) {
-        if (xmlLibrary == null && jxsonLibrary == null && jsonLibrary == null) {
+    private static boolean equivalent(Library xmlLibrary, Library jsonLibrary) {
+        if (xmlLibrary == null && jsonLibrary == null) {
             return true;
         }
 
         boolean result = true;
 
         if (xmlLibrary != null) {
-            result = result && xmlLibrary.getIdentifier().equals(jxsonLibrary.getIdentifier());
             result = result && xmlLibrary.getIdentifier().equals(jsonLibrary.getIdentifier());
         }
 
         if(xmlLibrary.getIncludes() != null && xmlLibrary.getIncludes().getDef() != null) {
-            result = result && xmlLibrary.getIncludes().getDef().size() == jxsonLibrary.getIncludes().getDef().size();
             result = result && xmlLibrary.getIncludes().getDef().size() == jsonLibrary.getIncludes().getDef().size();
         }
 
         if(xmlLibrary.getUsings() != null && xmlLibrary.getUsings().getDef() != null) {
-            result = result && xmlLibrary.getUsings().getDef().size() == jxsonLibrary.getUsings().getDef().size();
             result = result && xmlLibrary.getUsings().getDef().size() == jsonLibrary.getUsings().getDef().size();
         }
 
         if(xmlLibrary.getValueSets() != null && xmlLibrary.getValueSets().getDef() != null) {
-            result = result && xmlLibrary.getValueSets().getDef().size() == jxsonLibrary.getValueSets().getDef().size();
             result = result && xmlLibrary.getValueSets().getDef().size() == jsonLibrary.getValueSets().getDef().size();
         }
 
         if(xmlLibrary.getCodeSystems() != null && xmlLibrary.getCodeSystems().getDef() != null) {
-            result = result && xmlLibrary.getCodeSystems().getDef().size() == jxsonLibrary.getCodeSystems().getDef().size();
             result = result && xmlLibrary.getCodeSystems().getDef().size() == jsonLibrary.getCodeSystems().getDef().size();
         }
 
         if(xmlLibrary.getCodes() != null && xmlLibrary.getCodes().getDef() != null) {
-            result = result && xmlLibrary.getCodes().getDef().size() == jxsonLibrary.getCodes().getDef().size();
             result = result && xmlLibrary.getCodes().getDef().size() == jsonLibrary.getCodes().getDef().size();
         }
 
         if(xmlLibrary.getConcepts() != null && xmlLibrary.getConcepts().getDef() != null) {
-            result = result && xmlLibrary.getConcepts().getDef().size() == jxsonLibrary.getConcepts().getDef().size();
             result = result && xmlLibrary.getConcepts().getDef().size() == jsonLibrary.getConcepts().getDef().size();
         }
 
         if(xmlLibrary.getParameters() != null && xmlLibrary.getParameters().getDef() != null) {
-            result = result && xmlLibrary.getParameters().getDef().size() == jxsonLibrary.getParameters().getDef().size();
             result = result && xmlLibrary.getParameters().getDef().size() == jsonLibrary.getParameters().getDef().size();
         }
 
         if(xmlLibrary.getStatements() != null && xmlLibrary.getStatements().getDef() != null) {
-            result = result && xmlLibrary.getStatements().getDef().size() == jxsonLibrary.getStatements().getDef().size();
             result = result && xmlLibrary.getStatements().getDef().size() == jsonLibrary.getStatements().getDef().size();
         }
 
         if(xmlLibrary.getContexts() != null && xmlLibrary.getContexts().getDef() != null) {
-            result = result && xmlLibrary.getContexts().getDef().size() == jxsonLibrary.getContexts().getDef().size();
             result = result && xmlLibrary.getContexts().getDef().size() == jsonLibrary.getContexts().getDef().size();
         }
 
@@ -278,14 +257,13 @@ public class ElmDeserializeTests {
     }
 
     @Test
-    public void EmptyStringsTest() throws IOException {
+    public void emptyStringsTest() throws IOException {
         InputStream inputStream = ElmDeserializeTests.class.getResourceAsStream("ElmDeserialize/EmptyStringsTest.cql");
         CqlTranslator translator = TestUtils.createTranslatorFromStream(inputStream);
         Assert.assertTrue(translator.getErrors().size() == 0);
 
         String xml = translator.toXml();
         String json = translator.toJson();
-        String jxson = translator.toJxson();
 
         try {
             Library xmlLibrary = ElmXmlLibraryReader.read(new StringReader(xml));
@@ -300,9 +278,6 @@ public class ElmDeserializeTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Library jxsonLibrary = ElmJxsonLibraryReader.read(new StringReader(jxson));
-        validateEmptyStringsTest(jxsonLibrary);
     }
 
 }

@@ -274,9 +274,7 @@ public class LibraryManager {
         Library library = null;
         CompiledLibrary compiledLibrary = null;
         try {
-            if (type.equals(LibraryContentType.JXSON)) {
-                library = ElmJxsonLibraryReader.read(new InputStreamReader(librarySource));
-            } else if (type.equals(LibraryContentType.JSON)) {
+            if (type.equals(LibraryContentType.JSON)) {
                 library = ElmJsonLibraryReader.read(new InputStreamReader(librarySource));
             } else if (type.equals(LibraryContentType.XML)) {
                 library = ElmXmlLibraryReader.read(new InputStreamReader(librarySource));
