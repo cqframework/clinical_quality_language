@@ -31,7 +31,7 @@ public class QuickFhirModelInfoProvider implements ModelInfoProvider {
                 switch (localVersion) {
                     case "3.0.1":
                     case "":
-                        return JacksonXML.readValue(QuickFhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quickfhir-modelinfo-3.0.1.xml"),
+                        return ModelInfoXmlReader.readValue(QuickFhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quickfhir-modelinfo-3.0.1.xml"),
                                 ModelInfo.class);
                 }
             } catch (IOException e) {

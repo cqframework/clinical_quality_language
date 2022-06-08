@@ -28,13 +28,13 @@ public class QuickModelInfoProvider implements ModelInfoProvider {
             try {
                 switch (localVersion) {
                     case "3.3.0":
-                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.3.0.xml"),
+                        return ModelInfoXmlReader.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.3.0.xml"),
                                 ModelInfo.class);
                     case "3.0.0":
-                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.0.0.xml"),
+                        return ModelInfoXmlReader.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo-3.0.0.xml"),
                                 ModelInfo.class);
                     default:
-                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo.xml"),
+                        return ModelInfoXmlReader.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/quick-modelinfo.xml"),
                                 ModelInfo.class);
                 }
             } catch (IOException e) {

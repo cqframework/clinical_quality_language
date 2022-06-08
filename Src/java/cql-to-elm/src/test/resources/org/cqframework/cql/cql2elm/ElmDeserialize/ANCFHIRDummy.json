@@ -57,6 +57,7 @@
           "dataType" : "{http://hl7.org/fhir}Observation"
         },
         "annotation" : [ {
+          "type" : "Annotation",
           "s" : {
             "s" : [ {
               "name" : "{urn:hl7-org:cql-annotations:r1}s",
@@ -102,6 +103,7 @@
       } ]
     },
     "annotation" : [ {
+      "type" : "CqlToElmInfo",
       "translatorOptions" : "EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation"
     } ]
   }
