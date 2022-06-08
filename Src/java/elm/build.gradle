@@ -1,8 +1,8 @@
 // Most build configuration comes from the cql-all parent build!
 
 dependencies {
-    compile project(':model')
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.2'
+    implementation project(':model')
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.2'
 }
 
 generateSources {
