@@ -5,14 +5,14 @@ mainClassName = 'org.cqframework.cql.Main'
 run.args = ["${projectDir}/../../../Examples/ChlamydiaScreening_CQM.cql"]
 
 configurations {
-    compile {
+    implementation {
         extendsFrom = extendsFrom.findAll { it != configurations.antlr }
     }
 }
 
 dependencies {
     antlr  group: "org.antlr", name: "antlr4", version: "4.9.1"
-    compile (group: "org.antlr", name: "antlr4-runtime", version: "4.9.1") {
+    implementation (group: "org.antlr", name: "antlr4-runtime", version: "4.9.1") {
         // antlr 4.5 includes these classes directly
         exclude(group: "org.abego.treelayout", module: "org.abego.treelayout.core")
     }

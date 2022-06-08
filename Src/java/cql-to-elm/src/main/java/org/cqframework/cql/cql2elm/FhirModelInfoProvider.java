@@ -30,40 +30,40 @@ public class FhirModelInfoProvider implements ModelInfoProvider, NamespaceAware 
             try { 
                 switch (localVersion) {
                     case "1.0.2":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.0.2.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.0.2.xml"),
                                 ModelInfo.class);
 
                     case "1.4":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.4.xml"),
                                 ModelInfo.class);
 
                     case "1.6":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.6.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.6.xml"),
                                 ModelInfo.class);
 
                     case "1.8":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.8.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-1.8.xml"),
                                 ModelInfo.class);
 
                     case "3.0.0":
                     case "":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.0.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.0.xml"),
                                 ModelInfo.class);
 
                     case "3.0.1":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.1.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.0.1.xml"),
                                 ModelInfo.class);
 
                     case "3.2.0":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.2.0.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-3.2.0.xml"),
                                 ModelInfo.class);
 
                     case "4.0.0":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.0.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.0.xml"),
                                 ModelInfo.class);
 
                     case "4.0.1":
-                        return JacksonXML.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.1.xml"),
+                        return ModelInfoXmlReader.readValue(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.1.xml"),
                                 ModelInfo.class);
 
                     // Do not throw, allow other providers to return the model if known

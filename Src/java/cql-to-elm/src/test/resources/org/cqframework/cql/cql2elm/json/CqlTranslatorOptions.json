@@ -17,7 +17,7 @@
     "formats" : {
       "type" : "array",
       "items" : {
-        "enum" : [ "XML", "JSON", "JXSON", "COFFEE" ],
+        "enum" : [ "XML", "JSON", "COFFEE" ],
         "type" : "string"
       }
     },

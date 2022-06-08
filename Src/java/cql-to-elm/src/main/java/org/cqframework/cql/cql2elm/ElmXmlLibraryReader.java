@@ -1,8 +1,17 @@
 package org.cqframework.cql.cql2elm;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationModule;
+import org.cqframework.cql.cql2elm.model.serialization.LibraryWrapper;
 import org.hl7.elm.r1.Library;
 import org.hl7.cql_annotations.r1.*;
 import org.hl7.elm.r1.ObjectFactory;
+import org.hl7.elm_modelinfo.r1.TypeInfo;
+import org.hl7.elm_modelinfo.r1.TypeSpecifier;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -20,83 +29,45 @@ import java.net.URL;
 
 public class ElmXmlLibraryReader {
 
-    private static JAXBContext context;
-    private static Unmarshaller unmarshaller;
+    static XmlMapper mapper = new XmlMapper().builder()
+            .defaultUseWrapper(true)
+            .defaultMergeable(true)
+            .enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
+            .enable(ToXmlGenerator.Feature.WRITE_XML_1_1)
+            .enable(SerializationFeature.INDENT_OUTPUT)
+            .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+            .enable(MapperFeature.USE_BASE_TYPE_AS_DEFAULT_IMPL)
+            .addModule(new JaxbAnnotationModule())
+            .addMixIn(TypeInfo.class, TypeInfoMixIn.class)
+            .addMixIn(TypeSpecifier.class, TypeSpecifierMixIn.class)
+            .addMixIn(CqlToElmBase.class, CqlToElmBaseMixIn.class)
+            .build();
 
     private ElmXmlLibraryReader() {
     }
 
-    // Performance enhancement additions ~ start
-    public static synchronized Unmarshaller getUnmarshaller() throws JAXBException {
-        if (context == null)
-        {
-            context = JAXBContext.newInstance(ObjectFactory.class, Annotation.class);
-        }
-
-        if (unmarshaller == null) {
-            unmarshaller = context.createUnmarshaller();
-        }
-
-        return unmarshaller;
+    public static Library read(File file) throws IOException {
+        return mapper.readValue(file, Library.class);
     }
 
-    public static Library read(Unmarshaller u, File file) throws IOException, JAXBException {
-        return read(u, LibraryReaderUtil.toSource(file));
+    public static Library read(URL url) throws IOException {
+        return mapper.readValue(url, Library.class);
     }
 
-    public static Library read(Unmarshaller u, URL url) throws IOException, JAXBException {
-        return read(u, LibraryReaderUtil.toSource(url));
+    public static Library read(URI uri) throws IOException {
+        return mapper.readValue(uri.toURL(), Library.class);
     }
 
-    public static Library read(Unmarshaller u, URI uri) throws IOException, JAXBException {
-        return read(u, LibraryReaderUtil.toSource(uri));
+    public static Library read(String string) throws IOException {
+        return mapper.readValue(string, Library.class);
     }
 
-    public static Library read(Unmarshaller u, String string) throws IOException, JAXBException {
-        return read(u, LibraryReaderUtil.toSource(string));
+    public static Library read(InputStream inputStream) throws IOException {
+        return mapper.readValue(inputStream, Library.class);
     }
 
-    public static Library read(Unmarshaller u, InputStream inputStream) throws IOException, JAXBException {
-        return read(u, LibraryReaderUtil.toSource(inputStream));
-    }
-
-    public static Library read(Unmarshaller u, Reader reader) throws IOException, JAXBException {
-        return read(u, LibraryReaderUtil.toSource(reader));
-    }
-
-    @SuppressWarnings("unchecked")
-    public static synchronized Library read(Unmarshaller u, Source source) throws JAXBException {
-        Object result = u.unmarshal(source);
-        return ((JAXBElement<Library>)result).getValue();
-    }
-    // Performance enhancement additions ~ end
-
-    public static Library read(File file) throws IOException, JAXBException {
-        return read(LibraryReaderUtil.toSource(file));
-    }
-
-    public static Library read(URL url) throws IOException, JAXBException {
-        return read(LibraryReaderUtil.toSource(url));
-    }
-
-    public static Library read(URI uri) throws IOException, JAXBException {
-        return read(LibraryReaderUtil.toSource(uri));
-    }
-
-    public static Library read(String string) throws IOException, JAXBException {
-        return read(LibraryReaderUtil.toSource(string));
-    }
-
-    public static Library read(InputStream inputStream) throws IOException, JAXBException {
-        return read(LibraryReaderUtil.toSource(inputStream));
-    }
-
-    public static Library read(Reader reader) throws IOException, JAXBException {
-        return read(LibraryReaderUtil.toSource(reader));
-    }
-
-    public static synchronized Library read(Source source) throws JAXBException {
-        return read(getUnmarshaller(), source);
+    public static Library read(Reader reader) throws IOException {
+        return mapper.readValue(reader, Library.class);
     }
 
 }

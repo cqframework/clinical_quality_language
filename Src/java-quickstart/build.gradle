@@ -5,7 +5,8 @@ apply plugin: 'eclipse'
 
 group = 'org.cqframework.example'
 version = '0.1'
-sourceCompatibility = '1.8'
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
 mainClassName = 'org.cqframework.cql.quickstart.QuickstartCqlVisitor'
 run.args = ["${projectDir}/src/test/resources/ChlamydiaScreening_CQM.cql"]
@@ -57,7 +58,7 @@ clean {
 
 idea {
   project {
-    languageLevel = '1.8'
+    languageLevel = JavaVersion.VERSION_11
   }
   workspace {
     iws {
