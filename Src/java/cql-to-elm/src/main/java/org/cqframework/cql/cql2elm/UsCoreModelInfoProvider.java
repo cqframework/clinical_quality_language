@@ -28,11 +28,11 @@ public class UsCoreModelInfoProvider implements ModelInfoProvider {
             try {
                 switch (localVersion) {
                     case "3.1.0":
-                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"),
+                        return ModelInfoXmlReader.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.0.xml"),
                                 ModelInfo.class);
                     case "3.1.1":
                     default:
-                        return JacksonXML.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"),
+                        return ModelInfoXmlReader.readValue(QuickModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/uscore-modelinfo-3.1.1.xml"),
                                 ModelInfo.class);
                 }
             } catch (IOException e) {

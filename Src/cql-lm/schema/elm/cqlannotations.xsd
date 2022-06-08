@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:cql-annotations:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:cql-annotations:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="CqlToElmBase" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The CqlToElmBase type defines the abstract base type for all annotation elements in the CQL Translator.</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
 	<xs:complexType name="Annotation">
-		<xs:sequence>
-			<xs:element name="t" type="Tag" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="s" type="Narrative" minOccurs="0" maxOccurs="1"/>
-			<xs:element name="locator" type="Locator" minOccurs="0" maxOccurs="1"/>
-		</xs:sequence>
+		<xs:complexContent>
+			<xs:extension base="CqlToElmBase">
+				<xs:sequence>
+					<xs:element name="t" type="Tag" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="s" type="Narrative" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="locator" type="Locator" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Tag">
 		<xs:attribute name="name" type="xs:string"/>
 		<xs:attribute name="value" type="xs:string"/>
 	</xs:complexType>
 	<xs:complexType name="Locator">
-		<xs:attribute name="librarySystem" type="xs:string" use="optional"/>
-		<xs:attribute name="libraryId" type="xs:string" use="optional"/>
-		<xs:attribute name="libraryVersion" type="xs:string" use="optional"/>
-		<xs:attribute name="startLine" type="xs:int" use="optional"/>
-		<xs:attribute name="startChar" type="xs:int" use="optional"/>
-		<xs:attribute name="endLine" type="xs:int" use="optional"/>
-		<xs:attribute name="endChar" type="xs:int" use="optional"/>
+		<xs:complexContent>
+			<xs:extension base="CqlToElmBase">
+				<xs:attribute name="librarySystem" type="xs:string" use="optional"/>
+				<xs:attribute name="libraryId" type="xs:string" use="optional"/>
+				<xs:attribute name="libraryVersion" type="xs:string" use="optional"/>
+				<xs:attribute name="startLine" type="xs:int" use="optional"/>
+				<xs:attribute name="startChar" type="xs:int" use="optional"/>
+				<xs:attribute name="endLine" type="xs:int" use="optional"/>
+				<xs:attribute name="endChar" type="xs:int" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Narrative" mixed="true">
 		<xs:complexContent>
@@ -121,7 +134,11 @@
 		</xs:complexContent>
 	</xs:complexType>
   <xs:complexType name="CqlToElmInfo">
-    <xs:attribute name="translatorVersion" type="xs:string"/>
-    <xs:attribute name="translatorOptions" type="xs:string"/>
+	<xs:complexContent>
+		<xs:extension base="CqlToElmBase">
+		    <xs:attribute name="translatorVersion" type="xs:string"/>
+		    <xs:attribute name="translatorOptions" type="xs:string"/>
+		</xs:extension>
+	</xs:complexContent>
   </xs:complexType>
 </xs:schema>

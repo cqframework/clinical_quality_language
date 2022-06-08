@@ -25,31 +25,6 @@ public class ElmSupportTest {
         libraryManager.getLibrarySourceLoader().clearProviders();
     }
 
-
-    @Test
-    public void testIncludedLibraryWithJxsonElm() {
-        CqlTranslator translator = null;
-        libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().registerProvider(new ElmJxsonLibrarySourceProvider());
-
-        CqlTranslatorOptions options = createOptions();
-        try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJxsonElm.cql"),
-                    modelManager,
-                    libraryManager,
-                    CqlCompilerException.ErrorSeverity.Info,
-                    SignatureLevel.All,
-                    options.getOptions().toArray(new CqlTranslatorOptions.Options[0]));
-
-            assertTrue(translator.getErrors().size() > 0);
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Test
     public void testIncludedLibraryWithJsonElm() {
         CqlTranslator translator = null;

@@ -7,11 +7,11 @@ dependencies {
     implementation project(':cql')
     implementation project(':model')
     implementation project(':elm')
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     implementation group: 'net.sf.jopt-simple', name: 'jopt-simple', version: '4.7'
     implementation group: 'org.fhir', name: 'ucum', version: '1.0.3'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.1'
-    implementation group: 'org.glassfish', name: 'javax.json', version: '1.1.4'
     testImplementation group: 'com.github.reinert', name: 'jjschema', version: '1.16'
 
     runtimeOnly project(':quick')
