@@ -55,5 +55,5 @@ public interface FhirDal extends org.cqframework.fhir.api.FhirDal {
      * @param resourceType the type of resources to return.
      * @return the resources
      */
-    Bundle search(String resourceType, Map<String, List<IQueryParameterType>> searchParameters);
+    Bundle search(String resourceType, Map<String, List<List<IQueryParameterType>>> searchParameters);
 }
