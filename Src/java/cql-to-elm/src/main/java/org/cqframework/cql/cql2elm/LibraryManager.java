@@ -118,7 +118,7 @@ public class LibraryManager {
     }
 
     public void cacheLibrary(CompiledLibrary library) {
-        String libraryPath = NamespaceManager.getPath(library.getIdentifier().getSystem(), library.getIdentifier().getId());
+        String libraryPath = NamespaceManager.getPath(library.getIdentifier().getSystem(), library.getIdentifier().getId(), library.getIdentifier().getVersion());
         libraries.put(libraryPath, library);
     }
 
@@ -131,7 +131,7 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
-        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         if (enableCache) {
             CompiledLibrary library = libraries.get(libraryPath);
             if (library != null) {
@@ -164,7 +164,7 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryIdentifier Id is null");
         }
 
-        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
         CompiledLibrary library = null;
         if (enableCache) {
             library = libraries.get(libraryPath);
@@ -187,7 +187,6 @@ public class LibraryManager {
             }
         }
 
-
         return library;
     }
 
@@ -199,7 +198,7 @@ public class LibraryManager {
             return result;
         }
 
-        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
+        String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId() , libraryIdentifier.getVersion());
 
         try {
             InputStream cqlSource;

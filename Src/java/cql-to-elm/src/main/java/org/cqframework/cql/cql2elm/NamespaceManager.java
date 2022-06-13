@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,12 +73,21 @@ public class NamespaceManager {
     }
 
     public static String getPath(String namespaceUri, String name) {
-        if (namespaceUri != null) {
-            return String.format("%s/%s", namespaceUri, name);
-        }
-
-        return name;
+        return NamespaceManager.getPath(namespaceUri, name, null);
     }
+
+    public static String getPath(String namespaceUri, String name, String version) {
+        ArrayList<String> pathItems = new ArrayList<>();
+        if (namespaceUri != null) {
+            pathItems.add(namespaceUri);
+        }
+        pathItems.add(name);
+        if (version != null) {
+            pathItems.add(version);
+        }
+        return String.join("/", pathItems);
+    }
+
 
     public static String getUriPart(String namespaceQualifiedName) {
         if (namespaceQualifiedName == null) {
