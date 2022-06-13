@@ -55,5 +55,5 @@ public interface FhirDal {
      * @param resourceType the type of resources to return.
      * @return the resources
      */
-    IBaseBundle search(String resourceType, Map<String, List<IQueryParameterType>> searchParameters);
+    IBaseBundle search(String resourceType, Map<String, List<List<IQueryParameterType>>> searchParameters);
 }
