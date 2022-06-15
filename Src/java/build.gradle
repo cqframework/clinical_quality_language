@@ -111,7 +111,12 @@ subprojects {
     }
 }
 
-configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-to-elm']}) {
+/*
+JAXB dependencies:
+https://mkyong.com/java/jaxbexception-implementation-of-jaxb-api-has-not-been-found-on-module-path-or-classpath/
+ */
+
+configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'quick', 'qdm', 'cql-to-elm', 'cql-to-elm-cli']}) {
     configurations {
         xjc
     }
@@ -129,6 +134,7 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'cql-
         xjc group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
         implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '1.11.1'
         implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+        implementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
     }
 
     ext.xjc = [

@@ -1,6 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory;
 import org.fhir.ucum.UcumService;
 import org.hl7.elm.r1.CodeDef;
 import org.hl7.elm.r1.CodeSystemDef;
@@ -13,7 +14,6 @@ import org.hl7.elm.r1.UsingDef;
 import org.hl7.elm.r1.ValueSetDef;
 import org.hl7.elm.r1.VersionedIdentifier;
 
-import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -275,9 +275,9 @@ public class LibraryManager {
         CompiledLibrary compiledLibrary = null;
         try {
             if (type.equals(LibraryContentType.JSON)) {
-                library = ElmJsonLibraryReader.read(new InputStreamReader(librarySource));
+                library = ElmLibraryReaderFactory.getReader("application/elm+json").read(new InputStreamReader(librarySource));
             } else if (type.equals(LibraryContentType.XML)) {
-                library = ElmXmlLibraryReader.read(new InputStreamReader(librarySource));
+                library = ElmLibraryReaderFactory.getReader("application/elm+xml").read(new InputStreamReader(librarySource));
             }
         } catch (IOException e) {
             e.printStackTrace();

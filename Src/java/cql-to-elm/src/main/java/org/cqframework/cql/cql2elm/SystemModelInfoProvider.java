@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
 import java.io.IOException;
 
@@ -24,8 +25,7 @@ public class SystemModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
         if (isSystemModelIdentifier(modelIdentifier)) {
             try {
-                return ModelInfoXmlReader.readValue(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"),
-                ModelInfo.class);
+                return ModelInfoReaderFactory.getReader("application/xml").read(SystemModelInfoProvider.class.getResourceAsStream("/org/hl7/elm/r1/system-modelinfo.xml"));
             } catch (IOException e) {
                 e.printStackTrace();
                 // Do not throw, allow other providers to resolve
