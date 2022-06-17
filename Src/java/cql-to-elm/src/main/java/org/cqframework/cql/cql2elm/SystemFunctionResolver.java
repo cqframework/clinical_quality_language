@@ -176,15 +176,18 @@ public class SystemFunctionResolver {
                     return resolveTime(fun);
                 }
 
-                case "Now": {
+                case "Now":
+                case "now": {
                     return resolveNow(fun);
                 }
 
-                case "Today": {
+                case "Today":
+                case "today": {
                     return resolveToday(fun);
                 }
 
-                case "TimeOfDay": {
+                case "TimeOfDay":
+                case "timeOfDay": {
                     return resolveTimeOfDay(fun);
                 }
 

@@ -451,7 +451,8 @@ public class SystemMethodResolver {
             case "matches": return builder.resolveFunction(null, "Matches", getParams(target, ctx));
             case "memberOf": return builder.resolveFunction(null, "InValueSet", getParams(target, ctx));
             case "not": return builder.resolveFunction(null, "Not", getParams(target, ctx));
-            case "now": return builder.resolveFunction(null, "Now", getParams(target, ctx));
+            //now could never resolve as a method because it has no arguments
+            //case "now": return builder.resolveFunction(null, "Now", getParams(target, ctx));
             case "ofType": return createOfType(target, functionName, ctx);
             case "power": return builder.resolveFunction(null, "Power", getParams(target, ctx));
             case "repeat": return createRepeat(target, functionName, ctx);
@@ -478,12 +479,14 @@ public class SystemMethodResolver {
             case "supersetOf": return builder.resolveFunction(null, "Includes", getParams(target, ctx));
             case "tail": return builder.resolveFunction(null, "Tail", getParams(target, ctx));
             case "take": return builder.resolveFunction(null, "Take", getParams(target, ctx));
-            case "timeOfDay": return builder.resolveFunction(null, "TimeOfDay", getParams(target, ctx));
+            //timeOfDay could never resolve as a method because it has no arguments
+            //case "timeOfDay": return builder.resolveFunction(null, "TimeOfDay", getParams(target, ctx));
             case "toBoolean": return builder.resolveFunction(null, "ToBoolean", getParams(target, ctx));
             case "toChars": return builder.resolveFunction(null, "ToChars", getParams(target, ctx));
             case "toDate": return builder.resolveFunction(null, "ToDate", getParams(target, ctx));
             case "toDateTime": return builder.resolveFunction(null, "ToDateTime", getParams(target, ctx));
-            case "today": return builder.resolveFunction(null, "Today", getParams(target, ctx));
+            //today could never resolve as a method because it has no arguments
+            //case "today": return builder.resolveFunction(null, "Today", getParams(target, ctx));
             case "toDecimal": return builder.resolveFunction(null, "ToDecimal", getParams(target, ctx));
             case "toInteger": return builder.resolveFunction(null, "ToInteger", getParams(target, ctx));
             case "toQuantity": return builder.resolveFunction(null, "ToQuantity", getParams(target, ctx));
