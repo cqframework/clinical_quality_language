@@ -18,3 +18,4 @@ define TestTodayInWhere: Encounters.where(status = 'in-progress' and period.end 
 
 define TestNowInWhere: Encounters.where(status = 'in-progress' and period.end <= now() - 72 hours)
 
+define TestNow2: Patient.birthDate < now()
