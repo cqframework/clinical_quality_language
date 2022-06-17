@@ -412,6 +412,114 @@ public class BaseTest {
     }
 
     @Test
+    public void testFHIRPath() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRPath.cql", 0);
+        TranslatedLibrary library = translator.getTranslatedLibrary();
+        ExpressionDef expressionDef = library.resolveExpressionRef("TestNow");
+        assertThat(expressionDef, notNullValue());
+        assertThat(expressionDef.getExpression(), instanceOf(Now.class));
+        expressionDef = library.resolveExpressionRef("TestToday");
+        assertThat(expressionDef, notNullValue());
+        assertThat(expressionDef.getExpression(), instanceOf(Today.class));
+        expressionDef = library.resolveExpressionRef("TestTimeOfDay");
+        assertThat(expressionDef.getExpression(), instanceOf(TimeOfDay.class));
+        String xml = translator.toXml();
+        assertThat(xml, notNullValue());
+        /*
+        // Doesn't work because this literal adds carriage returns
+        assertThat(xml, is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<library xmlns=\"urn:hl7-org:elm:r1\" xmlns:t=\"urn:hl7-org:elm-types:r1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:fhir=\"http://hl7.org/fhir\" xmlns:qdm43=\"urn:healthit-gov:qdm:v4_3\" xmlns:qdm53=\"urn:healthit-gov:qdm:v5_3\" xmlns:a=\"urn:hl7-org:cql-annotations:r1\">\n" +
+                "   <annotation translatorOptions=\"\" xsi:type=\"a:CqlToElmInfo\"/>\n" +
+                "   <identifier id=\"TestFHIRPath\"/>\n" +
+                "   <schemaIdentifier id=\"urn:hl7-org:elm\" version=\"r1\"/>\n" +
+                "   <usings>\n" +
+                "      <def localIdentifier=\"System\" uri=\"urn:hl7-org:elm-types:r1\"/>\n" +
+                "      <def localIdentifier=\"FHIR\" uri=\"http://hl7.org/fhir\" version=\"4.0.1\"/>\n" +
+                "   </usings>\n" +
+                "   <includes>\n" +
+                "      <def localIdentifier=\"FHIRHelpers\" path=\"FHIRHelpers\" version=\"4.0.1\"/>\n" +
+                "   </includes>\n" +
+                "   <contexts>\n" +
+                "      <def name=\"Patient\"/>\n" +
+                "   </contexts>\n" +
+                "   <statements>\n" +
+                "      <def name=\"Patient\" context=\"Patient\">\n" +
+                "         <expression xsi:type=\"SingletonFrom\">\n" +
+                "            <operand dataType=\"fhir:Patient\" templateId=\"http://hl7.org/fhir/StructureDefinition/Patient\" xsi:type=\"Retrieve\"/>\n" +
+                "         </expression>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestToday\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"Today\"/>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestNow\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"Now\"/>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestTimeOfDay\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"TimeOfDay\"/>\n" +
+                "      </def>\n" +
+                "      <def name=\"Encounters\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression dataType=\"fhir:Encounter\" templateId=\"http://hl7.org/fhir/StructureDefinition/Encounter\" xsi:type=\"Retrieve\"/>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestTodayInWhere\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"Query\">\n" +
+                "            <source alias=\"$this\">\n" +
+                "               <expression name=\"Encounters\" xsi:type=\"ExpressionRef\"/>\n" +
+                "            </source>\n" +
+                "            <where xsi:type=\"And\">\n" +
+                "               <operand xsi:type=\"Equal\">\n" +
+                "                  <operand name=\"ToString\" libraryName=\"FHIRHelpers\" xsi:type=\"FunctionRef\">\n" +
+                "                     <operand path=\"status\" scope=\"$this\" xsi:type=\"Property\"/>\n" +
+                "                  </operand>\n" +
+                "                  <operand valueType=\"t:String\" value=\"in-progress\" xsi:type=\"Literal\"/>\n" +
+                "               </operand>\n" +
+                "               <operand xsi:type=\"LessOrEqual\">\n" +
+                "                  <operand name=\"ToDateTime\" libraryName=\"FHIRHelpers\" xsi:type=\"FunctionRef\">\n" +
+                "                     <operand path=\"end\" xsi:type=\"Property\">\n" +
+                "                        <source path=\"period\" scope=\"$this\" xsi:type=\"Property\"/>\n" +
+                "                     </operand>\n" +
+                "                  </operand>\n" +
+                "                  <operand xsi:type=\"ToDateTime\">\n" +
+                "                     <operand xsi:type=\"Subtract\">\n" +
+                "                        <operand xsi:type=\"Today\"/>\n" +
+                "                        <operand value=\"72\" unit=\"hours\" xsi:type=\"Quantity\"/>\n" +
+                "                     </operand>\n" +
+                "                  </operand>\n" +
+                "               </operand>\n" +
+                "            </where>\n" +
+                "         </expression>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestNowInWhere\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"Query\">\n" +
+                "            <source alias=\"$this\">\n" +
+                "               <expression name=\"Encounters\" xsi:type=\"ExpressionRef\"/>\n" +
+                "            </source>\n" +
+                "            <where xsi:type=\"And\">\n" +
+                "               <operand xsi:type=\"Equal\">\n" +
+                "                  <operand name=\"ToString\" libraryName=\"FHIRHelpers\" xsi:type=\"FunctionRef\">\n" +
+                "                     <operand path=\"status\" scope=\"$this\" xsi:type=\"Property\"/>\n" +
+                "                  </operand>\n" +
+                "                  <operand valueType=\"t:String\" value=\"in-progress\" xsi:type=\"Literal\"/>\n" +
+                "               </operand>\n" +
+                "               <operand xsi:type=\"LessOrEqual\">\n" +
+                "                  <operand name=\"ToDateTime\" libraryName=\"FHIRHelpers\" xsi:type=\"FunctionRef\">\n" +
+                "                     <operand path=\"end\" xsi:type=\"Property\">\n" +
+                "                        <source path=\"period\" scope=\"$this\" xsi:type=\"Property\"/>\n" +
+                "                     </operand>\n" +
+                "                  </operand>\n" +
+                "                  <operand xsi:type=\"Subtract\">\n" +
+                "                     <operand xsi:type=\"Now\"/>\n" +
+                "                     <operand value=\"72\" unit=\"hours\" xsi:type=\"Quantity\"/>\n" +
+                "                  </operand>\n" +
+                "               </operand>\n" +
+                "            </where>\n" +
+                "         </expression>\n" +
+                "      </def>\n" +
+                "   </statements>\n" +
+                "</library>\n"));
+         */
+    }
+
+    @Test
     public void testFHIRPathLiteralStringEscapes() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRPathLiteralStringEscapes.cql", 0);
         CompiledLibrary library = translator.getTranslatedLibrary();
