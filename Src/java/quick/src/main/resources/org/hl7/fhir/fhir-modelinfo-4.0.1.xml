@@ -28798,7 +28798,6 @@
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.StructureMapTransform" toType="System.String"/>
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.ResponseType" toType="System.String"/>
    <conversionInfo functionName="FHIRHelpers.ToDecimal" fromType="FHIR.decimal" toType="System.Decimal"/>
-   <conversionInfo functionName="FHIRHelpers.ToDecimal" fromType="FHIR.integer" toType="System.Decimal"/>
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.AggregationMode" toType="System.String"/>
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.SystemRestfulInteraction" toType="System.String"/>
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.Messageheader_Response_Request" toType="System.String"/>
@@ -28898,7 +28897,6 @@
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.MedicationRequestStatus" toType="System.String"/>
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.ResourceVersionPolicy" toType="System.String"/>
    <conversionInfo functionName="FHIRHelpers.ToDateTime" fromType="FHIR.dateTime" toType="System.DateTime"/>
-   <conversionInfo functionName="FHIRHelpers.ToDateTime" fromType="FHIR.date" toType="System.DateTime"/>
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.MedicationAdministrationStatus" toType="System.String"/>
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.ActionCardinalityBehavior" toType="System.String"/>
    <conversionInfo functionName="FHIRHelpers.ToString" fromType="FHIR.MedicationRequestIntent" toType="System.String"/>
