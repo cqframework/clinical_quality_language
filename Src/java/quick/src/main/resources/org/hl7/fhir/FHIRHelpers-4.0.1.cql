@@ -503,9 +503,7 @@ define function ToString(value base64Binary): value.value
 define function ToBoolean(value boolean): value.value
 define function ToDate(value date): value.value
 define function ToDateTime(value dateTime): value.value
-define function ToDateTime(value date): ToDateTime(value.value)
 define function ToDecimal(value decimal): value.value
-define function ToDecimal(value integer): ToDecimal(value.value)
 define function ToDateTime(value instant): value.value
 define function ToInteger(value integer): value.value
 define function ToString(value string): value.value
