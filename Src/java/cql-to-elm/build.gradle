@@ -9,8 +9,10 @@ dependencies {
     implementation project(':elm')
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     implementation group: 'org.fhir', name: 'ucum', version: '1.0.3'
-    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
+
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
+
+    testImplementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
     testImplementation project(':elm-jackson')
     testImplementation project(':elm-jaxb')
     testImplementation project(':model-jackson')

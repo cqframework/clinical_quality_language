@@ -32,8 +32,8 @@ subprojects {
     }
 
     jar {
-    manifest {
-        attributes('Implementation-Title': project.name,
+        manifest {
+            attributes('Implementation-Title': project.name,
                    'Implementation-Version': project.version)
         }
     }
@@ -94,7 +94,7 @@ subprojects {
     tasks.withType(JavaCompile) {
         options.compilerArgs << '-Xlint:unchecked'
         options.deprecation = true
-}
+    }
 
     task javadocJar(type: Jar) {
         classifier = 'javadoc'
@@ -134,7 +134,6 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
         xjc group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
         implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '1.11.1'
         implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
-        implementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
     }
 
     ext.xjc = [
