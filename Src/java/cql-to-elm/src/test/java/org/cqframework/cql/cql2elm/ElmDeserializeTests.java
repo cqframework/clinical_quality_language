@@ -7,8 +7,6 @@ import java.util.EnumSet;
 
 import javax.xml.bind.JAXBException;
 
-import org.cqframework.cql.elm.serializing.ElmLibraryWriterFactory;
-import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.elm.r1.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -258,19 +256,19 @@ public class ElmDeserializeTests {
     }
 
     private String toJaxbXml(Library library) {
-        return new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryWriter().writeValueAsString(library);
+        return new org.cqframework.cql.elm.serializing.jaxb.ElmXmlLibraryWriter().writeAsString(library);
     }
 
     private String toJaxbJson(Library library) {
-        return new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryWriter().writeValueAsString(library);
+        return new org.cqframework.cql.elm.serializing.jaxb.ElmJsonLibraryWriter().writeAsString(library);
     }
 
     private String toJacksonXml(Library library) {
-        return new org.cqframework.cql.elm.serializing.jackson.ElmXmlLibraryWriter().writeValueAsString(library);
+        return new org.cqframework.cql.elm.serializing.jackson.ElmXmlLibraryWriter().writeAsString(library);
     }
 
     private String toJacksonJson(Library library) {
-        return new org.cqframework.cql.elm.serializing.jackson.ElmJsonLibraryWriter().writeValueAsString(library);
+        return new org.cqframework.cql.elm.serializing.jackson.ElmJsonLibraryWriter().writeAsString(library);
     }
 
     @Test

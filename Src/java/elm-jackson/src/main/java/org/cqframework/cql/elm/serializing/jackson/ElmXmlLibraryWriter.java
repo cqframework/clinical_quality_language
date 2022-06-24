@@ -19,12 +19,12 @@ import java.net.URL;
  */
 public class ElmXmlLibraryWriter implements ElmLibraryWriter {
     @Override
-    public void writeValue(Library library, Writer writer) throws IOException {
+    public void write(Library library, Writer writer) throws IOException {
         ElmXmlMapper.getMapper().writeValue(writer, library);
     }
 
     @Override
-    public String writeValueAsString(Library library) {
+    public String writeAsString(Library library) {
         try {
             LibraryWrapper wrapper = new LibraryWrapper();
             wrapper.setLibrary(library);

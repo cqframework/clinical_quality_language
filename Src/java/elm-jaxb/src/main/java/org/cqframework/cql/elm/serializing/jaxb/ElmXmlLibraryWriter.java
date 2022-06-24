@@ -11,12 +11,12 @@ import java.io.*;
 
 public class ElmXmlLibraryWriter implements ElmLibraryWriter {
     @Override
-    public void writeValue(Library library, Writer writer) throws IOException {
-        throw new RuntimeException("JAXB writer must use write to string");
+    public void write(Library library, Writer writer) throws IOException {
+        writer.write(writeAsString(library));
     }
 
     @Override
-    public String writeValueAsString(Library library) {
+    public String writeAsString(Library library) {
         Marshaller marshaller = null;
         try {
             marshaller = ElmXmlMapper.getJaxbContext().createMarshaller();

@@ -10,14 +10,14 @@ import java.io.Writer;
 
 public class ElmJsonLibraryWriter implements ElmLibraryWriter {
     @Override
-    public void writeValue(Library library, Writer writer) throws IOException {
+    public void write(Library library, Writer writer) throws IOException {
         LibraryWrapper wrapper = new LibraryWrapper();
         wrapper.setLibrary(library);
         ElmJsonMapper.getMapper().writeValue(writer, wrapper);
     }
 
     @Override
-    public String writeValueAsString(Library library) {
+    public String writeAsString(Library library) {
         try {
             LibraryWrapper wrapper = new LibraryWrapper();
             wrapper.setLibrary(library);

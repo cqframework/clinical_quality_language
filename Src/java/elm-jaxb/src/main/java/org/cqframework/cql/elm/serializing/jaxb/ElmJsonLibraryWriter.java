@@ -13,7 +13,7 @@ import java.io.Writer;
 
 public class ElmJsonLibraryWriter implements ElmLibraryWriter {
     @Override
-    public void writeValue(Library library, Writer writer) throws IOException {
+    public void write(Library library, Writer writer) throws IOException {
         Marshaller marshaller = null;
         try {
             marshaller = ElmJsonMapper.getJaxbContext().createMarshaller();
@@ -35,11 +35,11 @@ public class ElmJsonLibraryWriter implements ElmLibraryWriter {
     }
 
     @Override
-    public String writeValueAsString(Library library) {
+    public String writeAsString(Library library) {
 
         StringWriter writer = new StringWriter();
         try {
-            writeValue(library, writer);
+            write(library, writer);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
