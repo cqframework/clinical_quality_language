@@ -122,8 +122,8 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
     }
 
     dependencies {
-        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-ant', version: '1.11.1'
-        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '1.11.1'
+        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-ant', version: '0.13.1'
+        xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.13.1'
         xjc group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-fluent-api', version: '3.0'
         // Eclipse has taken over all Java EE reference components
         // https://www.infoworld.com/article/3310042/eclipse-takes-over-all-java-ee-reference-components.html
@@ -132,7 +132,7 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
         xjc group: 'org.glassfish.jaxb', name: 'jaxb-xjc', version: '2.4.0-b180830.0438'
         xjc group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
         xjc group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-        implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '1.11.1'
+        implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '0.13.1'
         implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
     }
 
