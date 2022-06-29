@@ -44,6 +44,9 @@ public class LibraryManager {
         if (elmFactory == null) {
             throw new IllegalArgumentException("elmFactory is null");
         }
+        if (annotationsFactory == null) {
+            throw new IllegalArgumentException("annotationsFactory is null");
+        }
         this.modelManager = modelManager;
         this.elmFactory = elmFactory;
         this.annotationsFactory = annotationsFactory;
