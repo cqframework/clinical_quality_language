@@ -55,6 +55,8 @@ public class LibraryBuilder implements ModelResolver {
             throw new IllegalArgumentException("libraryManager is null");
         }
 
+        this.of = libraryManager.getElmFactory();
+        this.af = libraryManager.getAnnotationsFactory();
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
@@ -69,10 +71,12 @@ public class LibraryBuilder implements ModelResolver {
         this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getSpecificationVersion());
         this.library.getAnnotation().add(this.cqlToElmInfo);
 
-        compiledLibrary = new CompiledLibrary();
-        compiledLibrary.setLibrary(library);
+        this.compiledLibrary = new CompiledLibrary();
+        this.compiledLibrary.setLibrary(library);
 
         this.ucumService = ucumService;
+
+        this.systemFunctionResolver = new SystemFunctionResolver(this);
     }
 
     // Only exceptions of severity Error
@@ -101,7 +105,7 @@ public class LibraryBuilder implements ModelResolver {
 
     private final Map<String, Model> models = new LinkedHashMap<>();
     private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
-    private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
+    private final SystemFunctionResolver systemFunctionResolver;
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
     private final Stack<FunctionDef> functionDefs = new Stack<>();
@@ -123,8 +127,8 @@ public class LibraryBuilder implements ModelResolver {
     public ConversionMap getConversionMap() {
         return conversionMap;
     }
-    private final ObjectFactory of = new ObjectFactory();
-    private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
+    private final ObjectFactory of;
+    private final org.hl7.cql_annotations.r1.ObjectFactory af;
     private boolean listTraversal = true;
     private UcumService ucumService = null;
     private CqlTranslatorOptions options;
@@ -234,6 +238,8 @@ public class LibraryBuilder implements ModelResolver {
     public NamespaceInfo getNamespaceInfo() {
         return this.namespaceInfo;
     }
+    public ObjectFactory getElmFactory() { return this.of; }
+    public org.hl7.cql_annotations.r1.ObjectFactory getAnnotationsFactory() { return this.af; }
 
     private Model loadModel(VersionedIdentifier modelIdentifier) {
         Model model = modelManager.resolveModel(modelIdentifier);

@@ -1,0 +1,1 @@
+define IntegerAdd: 1 + 1

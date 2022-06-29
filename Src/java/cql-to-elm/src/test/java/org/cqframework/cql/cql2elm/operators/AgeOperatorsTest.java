@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm.operators;
 
+import org.cqframework.cql.cql2elm.CqlCompilerException;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;

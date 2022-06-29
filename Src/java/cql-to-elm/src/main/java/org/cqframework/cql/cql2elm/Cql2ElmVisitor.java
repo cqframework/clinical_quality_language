@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
 
 
 public class Cql2ElmVisitor extends cqlBaseVisitor {
-    private final ObjectFactory of = new ObjectFactory();
-    private final org.hl7.cql_annotations.r1.ObjectFactory af = new org.hl7.cql_annotations.r1.ObjectFactory();
+    private final ObjectFactory of;
+    private final org.hl7.cql_annotations.r1.ObjectFactory af;
     private boolean annotate = false;
     private boolean locate = false;
     private boolean resultTypes = false;
@@ -74,6 +74,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         if (libraryBuilder == null) {
             throw new IllegalArgumentException("libraryBuilder is null");
         }
+
+        this.of = libraryBuilder.getElmFactory();
+        this.af = libraryBuilder.getAnnotationsFactory();
 
         this.libraryBuilder = libraryBuilder;
         this.systemMethodResolver = new SystemMethodResolver(this, libraryBuilder);

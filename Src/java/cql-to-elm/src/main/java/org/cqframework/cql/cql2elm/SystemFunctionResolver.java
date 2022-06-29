@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SystemFunctionResolver {
-    private final ObjectFactory of = new ObjectFactory();
+    private final ObjectFactory of;
     private final LibraryBuilder builder;
 
     public SystemFunctionResolver(LibraryBuilder builder) {
         this.builder = builder;
+        this.of = builder.getElmFactory();
     }
 
     public Expression resolveSystemFunction(FunctionRef fun) {

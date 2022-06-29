@@ -14,8 +14,8 @@ import java.util.List;
 
 public class TypeBuilder {
 
-    private ObjectFactory of;
-    private ModelResolver mr;
+    private final ObjectFactory of;
+    private final ModelResolver mr;
 
     public class InternalModelResolver implements ModelResolver {
         private ModelManager modelManager;
@@ -34,8 +34,8 @@ public class TypeBuilder {
         this.mr = mr;
     }
 
-    public TypeBuilder(ModelManager modelManager) {
-        this.of = new ObjectFactory();
+    public TypeBuilder(ObjectFactory of, ModelManager modelManager) {
+        this.of = of;
         this.mr = new InternalModelResolver(modelManager);
     }
 

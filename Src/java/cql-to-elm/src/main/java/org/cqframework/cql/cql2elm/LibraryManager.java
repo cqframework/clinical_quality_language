@@ -3,16 +3,7 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory;
 import org.fhir.ucum.UcumService;
-import org.hl7.elm.r1.CodeDef;
-import org.hl7.elm.r1.CodeSystemDef;
-import org.hl7.elm.r1.ConceptDef;
-import org.hl7.elm.r1.ExpressionDef;
-import org.hl7.elm.r1.IncludeDef;
-import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.ParameterDef;
-import org.hl7.elm.r1.UsingDef;
-import org.hl7.elm.r1.ValueSetDef;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.elm.r1.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,13 +29,24 @@ public class LibraryManager {
     private final Map<String, CompiledLibrary> libraries;
     private final Stack<String> compilatonStack;
     private LibrarySourceLoader librarySourceLoader;
+    private final ObjectFactory elmFactory;
+    private final org.hl7.cql_annotations.r1.ObjectFactory annotationsFactory;
     private boolean enableCache;
 
     public LibraryManager(ModelManager modelManager) {
+        this(modelManager, new ObjectFactory(), new org.hl7.cql_annotations.r1.ObjectFactory());
+    }
+
+    public LibraryManager(ModelManager modelManager, ObjectFactory elmFactory, org.hl7.cql_annotations.r1.ObjectFactory annotationsFactory) {
         if (modelManager == null) {
             throw new IllegalArgumentException("modelManager is null");
         }
+        if (elmFactory == null) {
+            throw new IllegalArgumentException("elmFactory is null");
+        }
         this.modelManager = modelManager;
+        this.elmFactory = elmFactory;
+        this.annotationsFactory = annotationsFactory;
         if (this.modelManager.getNamespaceManager() != null) {
             this.namespaceManager = modelManager.getNamespaceManager();
         }
@@ -72,6 +74,10 @@ public class LibraryManager {
     public void setUcumService(UcumService ucumService) {
         this.ucumService = ucumService;
     }
+
+    public ObjectFactory getElmFactory() { return this.elmFactory; }
+
+    public org.hl7.cql_annotations.r1.ObjectFactory getAnnotationsFactory() { return this.annotationsFactory; }
 
     public LibrarySourceLoader getLibrarySourceLoader() {
         return librarySourceLoader;

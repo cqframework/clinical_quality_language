@@ -19,7 +19,7 @@ public class ElmRequirementsContext {
         this.libraryManager = libraryManager;
         this.options = options;
         this.typeResolver = new TypeResolver(libraryManager);
-        this.typeBuilder = new TypeBuilder(this.libraryManager.getModelManager());
+        this.typeBuilder = new TypeBuilder(libraryManager.getElmFactory(), this.libraryManager.getModelManager());
 
         if (visitor == null) {
             throw new IllegalArgumentException("visitor required");
