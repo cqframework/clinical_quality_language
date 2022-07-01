@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
 import java.io.IOException;
 
@@ -27,15 +28,12 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
             try {
                 switch (localVersion) {
                     case "4.0.0":
-                        return ModelInfoXmlReader.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.0.0.xml"),
-                                ModelInfo.class);
+                        return ModelInfoReaderFactory.getReader("application/xml").read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.0.0.xml"));
                     case "4.1.0":
-                        return ModelInfoXmlReader.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.0.xml"),
-                                ModelInfo.class);
+                        return ModelInfoReaderFactory.getReader("application/xml").read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.0.xml"));
                     case "4.1.1":
                     default:
-                        return ModelInfoXmlReader.readValue(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.1.xml"),
-                                ModelInfo.class);
+                        return ModelInfoReaderFactory.getReader("application/xml").read(QICoreModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/qicore-modelinfo-4.1.1.xml"));
                 }
             } catch (IOException e) {
                 e.printStackTrace();

@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
+import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
 import java.io.IOException;
 
@@ -18,8 +19,7 @@ public class TestFhirModelInfoProvider implements ModelInfoProvider {
     public ModelInfo load(VersionedIdentifier modelIdentifier) {
         if (modelIdentifier.getId().equals("FHIR")) {
             try {
-                return ModelInfoXmlReader.readValue(clazz.getResourceAsStream("fhir-modelinfo-1.8.xml"),
-                ModelInfo.class);
+                return ModelInfoReaderFactory.getReader("application/xml").read(clazz.getResourceAsStream("fhir-modelinfo-1.8.xml"));
             } catch (IOException e) {
                 e.printStackTrace();
                 // Do not throw, allow other providers to resolve
