@@ -18,7 +18,7 @@ import java.net.URI;
 import java.net.URL;
 
 public class XmlModelInfoReader implements ModelInfoReader {
-    static XmlMapper mapper = new XmlMapper().builder()
+    static XmlMapper mapper = XmlMapper.builder()
             .defaultUseWrapper(false)
             .defaultMergeable(true)
             .enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)

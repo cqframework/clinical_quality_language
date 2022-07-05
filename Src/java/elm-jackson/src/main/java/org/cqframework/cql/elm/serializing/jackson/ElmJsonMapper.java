@@ -12,7 +12,7 @@ import org.hl7.cql_annotations.r1.CqlToElmBase;
 import org.hl7.elm.r1.TypeSpecifier;
 
 public class ElmJsonMapper {
-    private static JsonMapper mapper = new JsonMapper().builder()
+    private static JsonMapper mapper = JsonMapper.builder()
             .defaultMergeable(true)
             .enable(SerializationFeature.INDENT_OUTPUT)
             .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
