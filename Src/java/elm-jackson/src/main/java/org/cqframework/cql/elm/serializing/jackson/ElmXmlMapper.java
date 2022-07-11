@@ -13,7 +13,7 @@ import org.hl7.cql_annotations.r1.CqlToElmBase;
 import org.hl7.elm.r1.TypeSpecifier;
 
 public class ElmXmlMapper {
-    private static XmlMapper mapper = new XmlMapper().builder()
+    private static XmlMapper mapper = XmlMapper.builder()
             .defaultUseWrapper(true)
             .defaultMergeable(true)
             .enable(ToXmlGenerator.Feature.WRITE_XML_DECLARATION)
