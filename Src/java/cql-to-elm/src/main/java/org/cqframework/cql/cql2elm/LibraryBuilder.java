@@ -66,7 +66,7 @@ public class LibraryBuilder implements ModelResolver {
                         .withVersion("r1"));
 
         this.cqlToElmInfo = af.createCqlToElmInfo();
-        this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getSpecificationVersion());
+        this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getImplementationVersion());
         this.library.getAnnotation().add(this.cqlToElmInfo);
 
         compiledLibrary = new CompiledLibrary();
