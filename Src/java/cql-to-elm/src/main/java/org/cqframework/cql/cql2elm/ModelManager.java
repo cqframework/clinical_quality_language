@@ -5,6 +5,7 @@ import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Set;
  */
 public class ModelManager {
     private NamespaceManager namespaceManager;
+    private Path path;
     private ModelInfoLoader modelInfoLoader;
     private final Map<String, Model> models = new HashMap<>();
     private final Set<String> loadingModels = new HashSet<>();
@@ -26,8 +28,21 @@ public class ModelManager {
         initialize();
     }
 
+    public ModelManager(Path path) {
+        namespaceManager = new NamespaceManager();
+        path = path;
+        initialize();
+    }
+
     public ModelManager(boolean enableDefaultModelInfoLoading) {
         namespaceManager = new NamespaceManager();
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
+    public ModelManager(boolean enableDefaultModelInfoLoading, Path path) {
+        namespaceManager = new NamespaceManager();
+        this.path = path;
         this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
     }
@@ -37,14 +52,31 @@ public class ModelManager {
         initialize();
     }
 
+    public ModelManager(NamespaceManager namespaceManager, Path path) {
+        this.namespaceManager = namespaceManager;
+        this.path = path;
+        initialize();
+    }
+
     public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading) {
         this.namespaceManager = namespaceManager;
         this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
     }
 
+    public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Path path) {
+        this.namespaceManager = namespaceManager;
+        this.path = path;
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
     private void initialize() {
-        modelInfoLoader = new ModelInfoLoader(enableDefaultModelInfoLoading);
+        modelInfoLoader = new ModelInfoLoader();
+        modelInfoLoader.setNamespaceManager(namespaceManager);
+        if (path != null) {
+            modelInfoLoader.setPath(path);
+        }
     }
 
     public NamespaceManager getNamespaceManager() {

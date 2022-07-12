@@ -18,7 +18,7 @@ public class ModelWithoutDefaultLoadersTests {
     public void setup() {
         modelManager = new ModelManager(false);
         modelInfoProvider = new TestModelInfoProvider();
-        modelManager.getModelInfoLoader().registerSystemModelInfoProvider();
+        //modelManager.getModelInfoLoader().registerSystemModelInfoProvider();
         modelManager.getModelInfoLoader().registerModelInfoProvider(modelInfoProvider);
     }
 

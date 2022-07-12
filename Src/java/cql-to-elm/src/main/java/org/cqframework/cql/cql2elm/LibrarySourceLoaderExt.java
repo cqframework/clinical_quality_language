@@ -20,5 +20,4 @@ public interface LibrarySourceLoaderExt extends LibrarySourceLoader {
     default InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
         return getLibrarySource(libraryIdentifier, LibraryContentType.CQL);
     }
-
 }

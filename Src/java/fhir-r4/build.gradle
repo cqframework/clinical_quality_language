@@ -1,0 +1,7 @@
+// Most build configuration comes from the cql-all parent build!
+
+dependencies {
+    implementation project(':elm')
+    implementation project(':model')
+    implementation project(':cql-to-elm')
+}

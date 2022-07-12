@@ -4,7 +4,6 @@ import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.LibraryManager;
 import org.cqframework.cql.cql2elm.ModelManager;
 import org.hl7.elm.r1.*;
-import org.junit.Ignore;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
