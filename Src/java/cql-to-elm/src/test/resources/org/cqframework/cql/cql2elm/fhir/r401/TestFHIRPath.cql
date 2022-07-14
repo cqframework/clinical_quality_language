@@ -6,6 +6,7 @@ include FHIRHelpers version '4.0.1'
 
 parameter Patient Patient
 parameter normalReportingDuration System.Quantity default 2 weeks
+parameter Encounter Encounter
 
 context Patient
 
@@ -28,3 +29,7 @@ define TestNow2: Patient.birthDate < date from now()
 define TestNow3: Patient.birthDate.value < now()
 
 define TestToday2: @1974-12-25 < today()
+
+define TestExists: Encounter.where(status = 'in-progress').exists()
+
+define TestNotEmpty: Encounter.where(status = 'in-progress').empty().not()
