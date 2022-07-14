@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
 
     TODO: Update this so that it can download and cache packages by itself
      */
-    //@Ignore("Currently requires running the IG Publisher first to cache npm packages.")
+    @Ignore("Currently requires running the IG Publisher first to cache npm packages.")
     @Test
     public void TestSampleIG() throws IOException {
         NpmPackageManager pm = NpmPackageManager.fromStream(NpmPackageManagerTests.class.getResourceAsStream("myig.xml"), "4.0.1");
@@ -48,7 +49,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
 
     NOTE: Also disabled due to causing the CI build to fail.
      */
-    //@Ignore
+    @Ignore
     @Test
     public void TestOpioidMMEIG() throws IOException {
         NpmPackageManager pm = NpmPackageManager.fromStream(NpmPackageManagerTests.class.getResourceAsStream("opioid-mme-r4.xml"), "4.0.1");
@@ -61,7 +62,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
 
     NOTE: Temporarily @Ignore because it's causing the CI build to fail.
      */
-    //@Ignore
+    @Ignore
     @Test
     public void TestLibrarySourceProvider() throws IOException {
         NpmPackageManager pm = NpmPackageManager.fromStream(NpmPackageManagerTests.class.getResourceAsStream("mycontentig.xml"), "4.0.1");
@@ -75,6 +76,17 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
         assertTrue(is != null);
     }
 
+    @Test
+    public void TestModelInfoProvider() throws IOException {
+        NpmPackageManager pm = NpmPackageManager.fromStream(NpmPackageManagerTests.class.getResourceAsStream("testig.xml"), "4.0.1");
+        assertTrue(pm.getNpmList().size() >= 1);
+
+        LibraryLoader reader = new LibraryLoader("4.0.1");
+        NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, this);
+        ModelInfo mi = mp.load(new VersionedIdentifier().withSystem("http://hl7.org/fhir/us/qicore").withId("QICore"));
+        assertTrue(mi.getName().equals("QICore"));
+    }
+
     @Override
     public void logMessage(String msg) {
         logger.info(msg);
@@ -84,4 +96,5 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
     public void logDebugMessage(IWorkerContext.ILoggingService.LogCategory category, String msg) {
         logMessage(msg);
     }
+
 }
