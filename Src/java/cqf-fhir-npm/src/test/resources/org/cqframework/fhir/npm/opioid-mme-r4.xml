@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ImplementationGuide xmlns="http://hl7.org/fhir" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://hl7.org/fhir ../input-cache/schemas/R5/fhir-single.xsd">
+  <id value="fhir.cdc.opioid-mme-r4"/>
+  <url value="http://fhir.org/guides/cdc/opioid-mme-r4/ImplementationGuide/fhir.cdc.opioid-mme-r4"/>
+  <version value="3.0.0"/>
+  <name value="OpioidMME"/>
+  <title value="Opioid MME"/>
+  <status value="draft"/>
+  <experimental value="false"/>
+  <publisher value="Centers for Disease Control and Prevention (CDC)"/>
+  <contact>
+    <telecom>
+      <system value="url"/>
+      <value value="https://www.cdc.gov"/>
+    </telecom>
+  </contact>
+  <description value="Opioid Milligram Morphine Equivalent (MME) calculation logic"/>
+  <jurisdiction>
+    <coding>
+      <system value="http://unstats.un.org/unsd/methods/m49/m49.htm"/>
+      <code value="840"/>
+    </coding>
+  </jurisdiction>
+  <packageId value="fhir.cdc.opioid-mme-r4"/>
+  <license value="CC0-1.0"/>
+  <fhirVersion value="4.0.1"/>
+  <dependsOn id="cpg">
+    <packageId value="hl7.fhir.uv.cpg"/>
+    <version value="dev"/>
+  </dependsOn>
+  <definition>
+    <page>
+      <nameUrl value="toc.html"/>
+      <title value="Table of Contents"/>
+      <generation value="html"/>
+      <page>
+        <nameUrl value="index.html"/>
+        <title value="Home Page"/>
+        <generation value="html"/>
+      </page>
+      <page>
+        <nameUrl value="mme-calculator.html"/>
+        <title value="MME Calculator"/>
+        <generation value="markdown"/>
+      </page>
+    </page>
+    <!--  -->
+    <!-- copyright year is a mandatory parameter -->
+    <parameter>
+      <code value="copyrightyear"/>
+      <value value="2019+"/>
+    </parameter>
+    <!-- releaselabel should be the ballot status for HL7-published IGs. -->
+    <parameter>
+      <code value="releaselabel"/>
+      <value value="CI Build"/>
+    </parameter>
+    <parameter>
+      <code value="find-other-resources"/>
+      <value value="true"/>
+    </parameter>
+    <parameter>
+      <code value="path-binary"/>
+      <value value="input\cql"/>
+    </parameter>
+    <parameter>
+      <code value="path-liquid"/>
+      <value value="templates/liquid"/>
+    </parameter>
+    <parameter>
+      <code value="path-pages" />
+      <value value="input/pagecontent"/>
+    </parameter>
+    <parameter>
+      <code value="path-resource" />
+      <value value="input/resources/activitydefinition"/>
+    </parameter>
+    <parameter>
+      <code value="path-resource" />
+      <value value="input/resources/capabilitystatement"/>
+    </parameter>
+    <parameter>
+      <code value="path-resource" />
+      <value value="input/resources/library"/>
+    </parameter>
+    <parameter>
+      <code value="path-resource" />
+      <value value="input/resources/measure"/>
+    </parameter>
+    <parameter>
+      <code value="path-resource" />
+      <value value="input/resources/plandefinition"/>
+    </parameter>
+    <parameter>
+      <code value="path-resource" />
+      <value value="input/resources/questionnaire"/>
+    </parameter>
+    <parameter>
+      <code value="path-resource" />
+      <value value="input/vocabulary/codesystem"/>
+    </parameter>
+    <parameter>
+      <code value="path-resource" />
+      <value value="input/vocabulary/valueset"/>
+    </parameter>
+<!-- Uncomment one or more of these if you want to limit which syntaxes are supported or want to disable the display of mappings
+    <parameter>
+      <code value="excludexml"/>
+      <value value="true"/>
+    </parameter>
+    <parameter>
+      <code value="excludejson"/>
+      <value value="true"/>
+    </parameter>
+    <parameter>
+      <code value="excludettl"/>
+      <value value="true"/>
+    </parameter>
+    <parameter>
+      <code value="excludemap"/>
+      <value value="true"/>
+    </parameter>-->
+  </definition>
+</ImplementationGuide>

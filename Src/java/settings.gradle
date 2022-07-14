@@ -1,3 +1,3 @@
-include 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'qdm', 'quick', 'quick-all', 'fhir-all', 'uscore-all', 'qicore-all', 'fhir-r4', 'cql-to-elm', 'cql-to-elm-cli', 'cqf-fhir', 'elm-fhir', 'tools:cql-formatter', 'tools:cql-parsetree', 'tools:xsd-to-modelinfo'
+include 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'qdm', 'quick', 'quick-all', 'fhir-all', 'uscore-all', 'qicore-all', 'fhir-r4', 'cql-to-elm', 'cql-to-elm-cli', 'cqf-fhir', 'cqf-fhir-npm', 'elm-fhir', 'tools:cql-formatter', 'tools:cql-parsetree', 'tools:xsd-to-modelinfo'
 
 rootProject.name = 'cql-all'

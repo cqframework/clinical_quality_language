@@ -1,0 +1,24 @@
+// Most build configuration comes from the cql-all parent build!
+
+dependencies {
+    implementation project(':model')
+    implementation project(':cql-to-elm')
+    // fhir core dependencies
+    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.6.36'
+    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.6.36'
+    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation', version: '5.6.36'
+    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.6.36'
+
+    // HAPI base
+    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '6.0.1'
+    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '6.0.1'
+
+    // FHIR STU3
+    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '6.0.1'
+
+    // FHIR r4
+    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '6.0.1'
+
+    // FHIR r5
+    implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '6.0.1'
+}
