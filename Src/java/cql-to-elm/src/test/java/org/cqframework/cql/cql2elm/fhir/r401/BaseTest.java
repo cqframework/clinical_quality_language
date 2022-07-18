@@ -414,7 +414,7 @@ public class BaseTest {
     @Test
     public void testFHIRPath() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRPath.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         ExpressionDef expressionDef = library.resolveExpressionRef("TestNow");
         assertThat(expressionDef, notNullValue());
         assertThat(expressionDef.getExpression(), instanceOf(Now.class));

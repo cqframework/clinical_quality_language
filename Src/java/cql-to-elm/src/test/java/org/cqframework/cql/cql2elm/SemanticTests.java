@@ -501,9 +501,9 @@ public class SemanticTests {
 
     @Test
     public void testIssueEmptySourceInterval() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("IssueEmptySourceInterval.cql", 1, CqlTranslator.Options.EnableAnnotations);
+        CqlTranslator translator = TestUtils.runSemanticTest("IssueEmptySourceInterval.cql", 1, CqlTranslatorOptions.Options.EnableAnnotations);
 
-        java.util.List<CqlTranslatorException> exceptions = translator.getExceptions();
+        java.util.List<CqlCompilerException> exceptions = translator.getExceptions();
 
         assertEquals(1, exceptions.size());
     }
