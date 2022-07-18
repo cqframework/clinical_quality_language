@@ -196,13 +196,28 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return annotate;
     }
 
-    private void pushChunk(ParseTree tree) {
+    private boolean pushChunk(ParseTree tree) {
+        if (!isAnnotationEnabled()) {
+            return false;
+        }
+
         org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
+
+        // An interval of i..i-1 indicates an empty interval at position i in the input stream,
+        if (sourceInterval.b < sourceInterval.a) {
+            return false;
+        }
+
         Chunk chunk = new Chunk().withInterval(sourceInterval);
         chunks.push(chunk);
+        return true;
     }
 
-    private void popChunk(ParseTree tree, Object o) {
+    private void popChunk(ParseTree tree, Object o, boolean pushedChunk) {
+        if (!pushedChunk) {
+            return;
+        }
+
         Chunk chunk = chunks.pop();
         if (o instanceof Element) {
             Element element = (Element)o;
@@ -527,9 +542,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visit(ParseTree tree) {
-        if (annotate) {
-            pushChunk(tree);
-        }
+        boolean pushedChunk = pushChunk(tree);
         Object o = null;
         try {
             // ERROR:
@@ -584,9 +597,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         return o;
         } finally {
-            if (annotate) {
-                popChunk(tree, o);
-            }
+            popChunk(tree, o, pushedChunk);
             processTags(tree, o);
         }
     }
@@ -2181,7 +2192,7 @@ DATETIME
 
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
 
-            if (annotate) {
+            if (isAnnotationEnabled()) {
                 equivalent.setLocalId(Integer.toString(getNextLocalId()));
             }
 
