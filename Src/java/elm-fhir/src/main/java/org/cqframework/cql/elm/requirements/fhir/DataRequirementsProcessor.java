@@ -977,7 +977,8 @@ public class DataRequirementsProcessor {
             dr.addMustSupport(s);
         }
 
-        if (pertinenceContext != null && pertinenceContext.getPertinenceValue() != null) {
+        if (pertinenceContext != null && pertinenceContext.getPertinenceValue() != null
+                && !(pertinenceContext.getPertinenceValue().trim().isEmpty())) {
             Extension extension = new Extension();
             extension.setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
 

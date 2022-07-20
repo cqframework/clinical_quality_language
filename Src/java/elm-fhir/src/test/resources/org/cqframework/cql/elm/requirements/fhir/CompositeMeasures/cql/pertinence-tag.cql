@@ -10,6 +10,6 @@ define "Observations":
 define "Conditions":
         [Condition]
 
-// @pertinence: weakly-negative
+// @pertinence:
 define "Medication Requests":
         [MedicationRequest]
