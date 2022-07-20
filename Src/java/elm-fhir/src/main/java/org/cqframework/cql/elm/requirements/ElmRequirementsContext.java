@@ -86,25 +86,25 @@ public class ElmRequirementsContext {
         return !expressionDefStack.empty();
     }
 
-    private List<ElmPertinenceContext> pertinenceContextStack = new Stack<ElmPertinenceContext>();
+    private List<ElmPertinenceContext> pertinenceContextStack = new ArrayList<ElmPertinenceContext>();
 
     public void enterPertinenceContext(ExpressionDef expressionDef, String value) {
         ElmPertinenceContext pertinenceContext = new ElmPertinenceContext(expressionDef, value);
-        pertinenceContextStack.push(pertinenceContext);
+        pertinenceContextStack.add(0, pertinenceContext);
     }
 
     public ElmPertinenceContext peekPertinenceContext() {
-        if (pertinenceContextStack.empty()) {
-            throw new IllegalArgumentException("Expression for pertinence is not in progress");
+        ElmPertinenceContext context = null;
+        for (ElmPertinenceContext c : pertinenceContextStack) {
+            context = c;
         }
-        return pertinenceContextStack.peek();
+        return context;
     }
 
     public void exitPertinenceContext() {
-        if (pertinenceContextStack.empty()) {
-            throw new IllegalArgumentException("Not in a pertinence expression context");
+        if (pertinenceContextStack.size() > 0) {
+            pertinenceContextStack.remove(0);
         }
-        pertinenceContextStack.pop();
     }
 
 
