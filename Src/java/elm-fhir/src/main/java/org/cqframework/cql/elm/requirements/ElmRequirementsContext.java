@@ -88,9 +88,13 @@ public class ElmRequirementsContext {
 
     private List<ElmPertinenceContext> pertinenceContextStack = new ArrayList<ElmPertinenceContext>();
 
-    public void enterPertinenceContext(ExpressionDef expressionDef, String value) {
-        ElmPertinenceContext pertinenceContext = new ElmPertinenceContext(expressionDef, value);
-        pertinenceContextStack.add(0, pertinenceContext);
+    public boolean enterPertinenceContext(ExpressionDef expressionDef) {
+        ElmPertinenceContext pertinenceContext = new ElmPertinenceContext(expressionDef);
+        if (pertinenceContext.checkPertinenceTag()) {
+            pertinenceContextStack.add(0, pertinenceContext);
+            return true;
+        }
+        return false;
     }
 
     public ElmPertinenceContext peekPertinenceContext() {
