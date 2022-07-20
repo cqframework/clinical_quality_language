@@ -1466,6 +1466,45 @@ public class DataRequirementsProcessorTest {
         }
     }
 
+    @Test
+    public void TestDataRequirementsProcessorWithPertinenceAgain() {
+        CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
+        cqlTranslatorOptions.getOptions().add(CqlTranslatorOptions.Options.EnableAnnotations);
+        try {
+            CqlTranslator translator = createTranslator("CompositeMeasures/cql/pertinence-tag-AdvancedIllnessandFrailtyExclusion_FHIR4-5.0.000.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
+            translator.toELM();
+            System.out.println(translator.getErrors());
+            assertTrue(translator.getErrors().isEmpty());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
+
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
+
+            DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
+            assertEquals(dr.getType(), Enumerations.FHIRAllTypes.CONDITION);
+            assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
+            assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "Advanced Illness");
+
+            DataRequirement dr2 = moduleDefinitionLibrary.getDataRequirement().get(2);
+            assertEquals(dr2.getType(), Enumerations.FHIRAllTypes.ENCOUNTER);
+            assertEquals(dr2.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
+            assertEquals(((Coding) dr2.getExtension().get(0).getValue()).getCode(), "outpatient");
+
+            DataRequirement dr5 = moduleDefinitionLibrary.getDataRequirement().get(5);
+            assertEquals(dr5.getType(), Enumerations.FHIRAllTypes.DEVICEREQUEST);
+            assertEquals(dr5.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
+            assertEquals(((Coding) dr5.getExtension().get(0).getValue()).getCode(), "Allexists");
+
+            FhirContext context = getFhirContext();
+            IParser parser = context.newJsonParser();
+            String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
+            logger.debug(moduleDefString);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
     private static void setup(String relativePath) {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);
