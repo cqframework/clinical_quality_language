@@ -1436,6 +1436,36 @@ public class DataRequirementsProcessorTest {
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
+    @Test
+    public void TestDataRequirementsProcessorWithPertinence() {
+        CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
+        cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
+        cqlTranslatorOptions.getOptions().add(CqlTranslatorOptions.Options.EnableAnnotations);
+        try {
+            CqlTranslator translator = createTranslator("CompositeMeasures/cql/pertinence-tag.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
+            translator.toELM();
+            assertTrue(translator.getErrors().isEmpty());
+            libraryManager.cacheLibrary(translator.getTranslatedLibrary());
+
+            DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+            org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
+
+            assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 3);
+            DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
+            assertEquals(dr.getType(), Enumerations.FHIRAllTypes.CONDITION);
+            assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
+            assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "pathognomonic");
+
+
+            FhirContext context = getFhirContext();
+            IParser parser = context.newJsonParser();
+            String moduleDefString = parser.setPrettyPrint(true).encodeResourceToString(moduleDefinitionLibrary);
+            logger.debug(moduleDefString);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
     private static void setup(String relativePath) {
         modelManager = new ModelManager();
         libraryManager = new LibraryManager(modelManager);

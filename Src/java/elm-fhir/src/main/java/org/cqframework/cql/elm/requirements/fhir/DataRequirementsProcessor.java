@@ -978,7 +978,6 @@ public class DataRequirementsProcessor {
         }
 
         if (pertinenceContext != null && pertinenceContext.getPertinenceValue() != null) {
-            System.out.println("Extracted:" + pertinenceContext.getPertinenceValue());
             Extension extension = new Extension();
             extension.setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
 
