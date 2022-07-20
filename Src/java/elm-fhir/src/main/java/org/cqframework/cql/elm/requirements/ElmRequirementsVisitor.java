@@ -3,6 +3,8 @@ package org.cqframework.cql.elm.requirements;
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
 import org.hl7.cql.model.ListType;
 import org.hl7.elm.r1.*;
+import org.hl7.cql_annotations.r1.Annotation;
+import org.hl7.cql_annotations.r1.Tag;
 
 import javax.xml.namespace.QName;
 
@@ -79,13 +81,36 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     public ElmRequirement visitExpressionDef(ExpressionDef elm, ElmRequirementsContext context) {
         ElmRequirement result = null;
         context.enterExpressionDef(elm);
+        boolean pertinenceTagFound = checkPertinenceTag(elm, context);
+
         try {
             result = super.visitExpressionDef(elm, context);
         }
         finally {
             context.exitExpressionDef(result);
+            if(pertinenceTagFound) {
+                context.exitPertinenceContext();
+            }
         }
         return result;
+    }
+
+    private boolean checkPertinenceTag(ExpressionDef elm, ElmRequirementsContext context) {
+        boolean pertinenceFound = false;
+        Annotation a = null;
+        for (Object o : elm.getAnnotation()) {
+            if (o instanceof Annotation) {
+                a = (Annotation) o;
+            }
+            for (int i = 0; i < a.getT().size(); i++) {
+                Tag t = a.getT().get(i);
+                if (t.getName() != null && t.getName().equals("pertinence")) {
+                    pertinenceFound = true;
+                    context.enterPertinenceContext(elm, t.getValue());
+                }
+            }
+        }
+        return pertinenceFound;
     }
 
     @Override
@@ -159,8 +184,13 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     @Override
     public ElmRequirement visitRetrieve(Retrieve elm, ElmRequirementsContext context) {
         // TODO: childResult reporting?
+        ElmPertinenceContext elmPertinenceContext = context.peekPertinenceContext();
         super.visitRetrieve(elm, context);
+
         ElmDataRequirement result = new ElmDataRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if(elmPertinenceContext != null) {
+            result.setPertinenceContext(elmPertinenceContext);
+        }
         // If not analyzing requirements, or in a query context, report the data requirement
         // If in a query context, the requirement will be reported as an inferred requirement at the query boundary
         if (!context.getOptions().getAnalyzeDataRequirements() || !context.inQueryContext()) {

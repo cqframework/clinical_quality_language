@@ -86,6 +86,28 @@ public class ElmRequirementsContext {
         return !expressionDefStack.empty();
     }
 
+    private List<ElmPertinenceContext> pertinenceContextStack = new ArrayList<ElmPertinenceContext>();
+
+    public void enterPertinenceContext(ExpressionDef expressionDef, String value) {
+        ElmPertinenceContext pertinenceContext = new ElmPertinenceContext(expressionDef, value);
+        pertinenceContextStack.add(0, pertinenceContext);
+    }
+
+    public ElmPertinenceContext peekPertinenceContext() {
+        ElmPertinenceContext context = null;
+        for (ElmPertinenceContext c : pertinenceContextStack) {
+            context = c;
+        }
+        return context;
+    }
+
+    public void exitPertinenceContext() {
+        if (pertinenceContextStack.size() > 0) {
+            pertinenceContextStack.remove(0);
+        }
+    }
+
+
     /*
     Reported requirements are collected during the traversal, reported at query boundaries, or at retrieves
     that are outside of a query scope.
