@@ -44,6 +44,14 @@ public class ElmDataRequirement extends ElmExpressionRequirement {
         this.querySource = querySource;
     }
 
+    private ElmPertinenceContext pertinenceContext;
+    public ElmPertinenceContext getPertinenceContext() {
+        return pertinenceContext;
+    }
+    public void setPertinenceContext(ElmPertinenceContext pertinenceContext) {
+        this.pertinenceContext = pertinenceContext;
+    }
+
     public String getAlias() {
         if (querySource instanceof AliasedQuerySource) {
             return ((AliasedQuerySource)querySource).getAlias();

@@ -79,11 +79,16 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     public ElmRequirement visitExpressionDef(ExpressionDef elm, ElmRequirementsContext context) {
         ElmRequirement result = null;
         context.enterExpressionDef(elm);
+        boolean pertinenceTagFound = context.enterPertinenceContext(elm);
+
         try {
             result = super.visitExpressionDef(elm, context);
         }
         finally {
             context.exitExpressionDef(result);
+            if(pertinenceTagFound) {
+                context.exitPertinenceContext();
+            }
         }
         return result;
     }
@@ -159,8 +164,13 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     @Override
     public ElmRequirement visitRetrieve(Retrieve elm, ElmRequirementsContext context) {
         // TODO: childResult reporting?
+        ElmPertinenceContext elmPertinenceContext = context.peekPertinenceContext();
         super.visitRetrieve(elm, context);
+
         ElmDataRequirement result = new ElmDataRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if(elmPertinenceContext != null) {
+            result.setPertinenceContext(elmPertinenceContext);
+        }
         // If not analyzing requirements, or in a query context, report the data requirement
         // If in a query context, the requirement will be reported as an inferred requirement at the query boundary
         if (!context.getOptions().getAnalyzeDataRequirements() || !context.inQueryContext()) {
