@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 
 public class SemanticTests {
 
@@ -495,6 +496,16 @@ public class SemanticTests {
         assertThat(ivs.getCode(), instanceOf(FunctionRef.class));
         assertThat(ivs.getValueset(), nullValue());
         assertThat(ivs.getValuesetExpression(), instanceOf(OperandRef.class));
+    }
+
+
+    @Test
+    public void testIssueEmptySourceInterval() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("IssueEmptySourceInterval.cql", 1, CqlTranslator.Options.EnableAnnotations);
+
+        java.util.List<CqlTranslatorException> exceptions = translator.getExceptions();
+
+        assertEquals(1, exceptions.size());
     }
 
     @Test
