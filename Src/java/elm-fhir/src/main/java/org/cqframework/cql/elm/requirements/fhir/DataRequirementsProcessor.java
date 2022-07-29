@@ -981,7 +981,7 @@ public class DataRequirementsProcessor {
         if (pertinenceContext != null && pertinenceContext.getPertinenceValue() != null
                 && !(pertinenceContext.getPertinenceValue().trim().isEmpty())) {
             Extension extension = new Extension();
-            extension.setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
+            extension.setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
 
             Coding coding = new Coding();
             coding.setSystem("http://hl7.org/fhir/uv/cpg/CodeSystem/cpg-casefeature-pertinence");
