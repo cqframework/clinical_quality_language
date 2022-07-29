@@ -1444,7 +1444,7 @@ public class DataRequirementsProcessorTest {
     public void TestDataRequirementsProcessorWithPertinence() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
         cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
-        cqlTranslatorOptions.getOptions().add(CqlTranslatorOptions.Options.EnableAnnotations);
+        cqlTranslatorOptions.getOptions().add(CqlTranslator.Options.EnableAnnotations);
         try {
             CqlTranslator translator = createTranslator("CompositeMeasures/cql/pertinence-tag.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
             translator.toELM();
@@ -1474,7 +1474,7 @@ public class DataRequirementsProcessorTest {
     public void TestDataRequirementsProcessorWithPertinenceAgain() {
         CqlTranslatorOptions cqlTranslatorOptions = new CqlTranslatorOptions();
         cqlTranslatorOptions.getFormats().add(CqlTranslator.Format.JSON);
-        cqlTranslatorOptions.getOptions().add(CqlTranslatorOptions.Options.EnableAnnotations);
+        cqlTranslatorOptions.getOptions().add(CqlTranslator.Options.EnableAnnotations);
         try {
             CqlTranslator translator = createTranslator("CompositeMeasures/cql/pertinence-tag-AdvancedIllnessandFrailtyExclusion_FHIR4-5.0.000.cql", cqlTranslatorOptions);//"OpioidCDS/cql/OpioidCDSCommon.cql", cqlTranslatorOptions);
             translator.toELM();
