@@ -1457,7 +1457,7 @@ public class DataRequirementsProcessorTest {
             assertTrue(moduleDefinitionLibrary.getDataRequirement().size() == 3);
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
             assertEquals(dr.getType(), Enumerations.FHIRAllTypes.CONDITION);
-            assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
+            assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
             assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "pathognomonic");
 
 
@@ -1487,18 +1487,18 @@ public class DataRequirementsProcessorTest {
 
             DataRequirement dr = moduleDefinitionLibrary.getDataRequirement().get(1);
             assertEquals(dr.getType(), Enumerations.FHIRAllTypes.CONDITION);
-            assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
-            assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "Advanced Illness");
+            assertEquals(dr.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+            assertEquals(((Coding) dr.getExtension().get(0).getValue()).getCode(), "weakly-negative");
 
             DataRequirement dr2 = moduleDefinitionLibrary.getDataRequirement().get(2);
             assertEquals(dr2.getType(), Enumerations.FHIRAllTypes.ENCOUNTER);
-            assertEquals(dr2.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
-            assertEquals(((Coding) dr2.getExtension().get(0).getValue()).getCode(), "outpatient");
+            assertEquals(dr2.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+            assertEquals(((Coding) dr2.getExtension().get(0).getValue()).getCode(), "pathognomonic");
 
             DataRequirement dr5 = moduleDefinitionLibrary.getDataRequirement().get(5);
             assertEquals(dr5.getType(), Enumerations.FHIRAllTypes.DEVICEREQUEST);
-            assertEquals(dr5.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinentResource");
-            assertEquals(((Coding) dr5.getExtension().get(0).getValue()).getCode(), "Allexists");
+            assertEquals(dr5.getExtension().get(0).getUrl(), "http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+            assertEquals(((Coding) dr5.getExtension().get(0).getValue()).getCode(), "strongly-positive");
 
             FhirContext context = getFhirContext();
             IParser parser = context.newJsonParser();
