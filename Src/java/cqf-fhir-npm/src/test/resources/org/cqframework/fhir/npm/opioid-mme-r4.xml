@@ -26,7 +26,7 @@
   <fhirVersion value="4.0.1"/>
   <dependsOn id="cpg">
     <packageId value="hl7.fhir.uv.cpg"/>
-    <version value="dev"/>
+    <version value="1.0.0"/>
   </dependsOn>
   <definition>
     <page>
