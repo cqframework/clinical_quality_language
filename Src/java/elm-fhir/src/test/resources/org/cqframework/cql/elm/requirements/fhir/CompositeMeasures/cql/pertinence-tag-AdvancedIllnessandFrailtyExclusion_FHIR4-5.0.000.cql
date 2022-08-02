@@ -36,11 +36,11 @@ parameter "Measurement Period" Interval<DateTime>
 
 context Patient
 
-//@pertinence: Advanced Illness
+//@pertinence: weakly-negative
 define "Advanced Illness Diagnoses":
     [Condition: "Advanced Illness"] AdvancedIllnessDiagnosis
 
-//@pertinence: outpatient
+//@pertinence: pathognomonic
 define "Outpatient Encounters with Advanced Illness":
 	( [Encounter: "Outpatient"]
 		union [Encounter: "Nonacute Inpatient"] ) OutpatientEncounter
@@ -53,7 +53,7 @@ define "Outpatient Encounters with Advanced Illness":
 			end of "Measurement Period"
 
 
-//@pertinence: Allexists
+//@pertinence: strongly-positive
 define "Has Criteria Indicating Frailty":
 	exists ( [DeviceRequest: "Frailty Device"] FrailtyDeviceOrder
 			where FrailtyDeviceOrder.authoredOn during "Measurement Period"
