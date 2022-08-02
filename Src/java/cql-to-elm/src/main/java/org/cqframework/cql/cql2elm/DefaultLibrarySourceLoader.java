@@ -3,7 +3,9 @@ package org.cqframework.cql.cql2elm;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -11,8 +13,9 @@ import java.util.List;
  * resolve library includes within CQL. Package private since its not intended
  * to be used outside the context of the instantiating LibraryManager instance.
  */
-class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware {
+class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware, PathAware {
     private final List<LibrarySourceProvider> PROVIDERS = new ArrayList<>();
+    boolean initialized = false;
 
     @Override
     public void registerProvider(LibrarySourceProvider provider) {
@@ -24,12 +27,44 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware 
             ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
         }
 
+        if (provider instanceof PathAware) {
+            ((PathAware)provider).setPath(path);
+        }
+
         PROVIDERS.add(provider);
+    }
+
+    private Path path;
+    public void setPath(Path path) {
+        if (path == null || ! path.toFile().isDirectory()) {
+            throw new IllegalArgumentException(String.format("path '%s' is not a valid directory", path));
+        }
+
+        this.path = path;
+
+        for (LibrarySourceProvider provider : getProviders()) {
+            if (provider instanceof PathAware) {
+                ((PathAware)provider).setPath(path);
+            }
+        }
     }
 
     @Override
     public void clearProviders() {
         PROVIDERS.clear();
+        initialized = false;
+    }
+
+    private List<LibrarySourceProvider> getProviders() {
+        if (!initialized) {
+            initialized = true;
+            for (Iterator<LibrarySourceProvider> it = LibrarySourceProviderFactory.providers(false); it.hasNext(); ) {
+                LibrarySourceProvider provider = it.next();
+                registerProvider(provider);
+            }
+        }
+
+        return PROVIDERS;
     }
 
     @Override
@@ -43,7 +78,7 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware 
         }
 
         InputStream source = null;
-        for (LibrarySourceProvider provider : PROVIDERS) {
+        for (LibrarySourceProvider provider : getProviders()) {
             InputStream localSource = provider.getLibrarySource(libraryIdentifier);
             if (localSource != null) {
                 if (source != null) {
@@ -69,7 +104,7 @@ class DefaultLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware 
     public void setNamespaceManager(NamespaceManager namespaceManager) {
         this.namespaceManager = namespaceManager;
 
-        for (LibrarySourceProvider provider : PROVIDERS) {
+        for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof NamespaceAware) {
                 ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
             }

@@ -1,5 +1,7 @@
-package org.cqframework.cql.cql2elm;
+package org.cqframework.cql.cql2elm.quick;
 
+import org.cqframework.cql.cql2elm.ModelInfoProvider;
+import org.cqframework.cql.cql2elm.NamespaceManager;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;

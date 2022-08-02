@@ -24,7 +24,7 @@ public class Cql2ElmVisitorTest {
     @BeforeClass
     public void Setup() {
         // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
+        reset();
     }
 
     @Test

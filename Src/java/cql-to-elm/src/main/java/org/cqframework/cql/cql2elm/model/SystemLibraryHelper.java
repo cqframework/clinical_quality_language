@@ -495,6 +495,7 @@ public class SystemLibraryHelper {
         add(system, tb, new Operator("DurationBetween", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getInteger()));
         add(system, tb, new Operator("DurationBetween", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getInteger()));
         add(system, tb, new Operator("Now", new Signature(), systemModel.getDateTime()));
+        add(system, tb, new Operator("now", new Signature(), systemModel.getDateTime()));
         add(system, tb, new Operator("SameAs", new Signature(systemModel.getDateTime(), systemModel.getDateTime()), systemModel.getBoolean()));
         add(system, tb, new Operator("SameAs", new Signature(systemModel.getDate(), systemModel.getDate()), systemModel.getBoolean()));
         add(system, tb, new Operator("SameAs", new Signature(systemModel.getTime(), systemModel.getTime()), systemModel.getBoolean()));
@@ -508,11 +509,13 @@ public class SystemLibraryHelper {
         add(system, tb, new Operator("Subtract", new Signature(systemModel.getDate(), systemModel.getQuantity()), systemModel.getDate()));
         add(system, tb, new Operator("Subtract", new Signature(systemModel.getTime(), systemModel.getQuantity()), systemModel.getTime()));
         add(system, tb, new Operator("Today", new Signature(), systemModel.getDate()));
+        add(system, tb, new Operator("today", new Signature(), systemModel.getDate()));
         add(system, tb, new Operator("Time", new Signature(systemModel.getInteger()), systemModel.getTime()));
         add(system, tb, new Operator("Time", new Signature(systemModel.getInteger(), systemModel.getInteger()), systemModel.getTime()));
         add(system, tb, new Operator("Time", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getTime()));
         add(system, tb, new Operator("Time", new Signature(systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger(), systemModel.getInteger()), systemModel.getTime()));
         add(system, tb, new Operator("TimeOfDay", new Signature(), systemModel.getTime()));
+        add(system, tb, new Operator("timeOfDay", new Signature(), systemModel.getTime()));
 
         // Interval Operators
         // After<T>(interval<T>, interval<T>) : Boolean

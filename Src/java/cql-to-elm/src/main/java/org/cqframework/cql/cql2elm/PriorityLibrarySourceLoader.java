@@ -3,20 +3,19 @@ package org.cqframework.cql.cql2elm;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.nio.file.Path;
+import java.util.*;
 
 /**
  * Used by LibraryManager to manage a set of library source providers that
  * resolve library includes within CQL. Package private since its not intended
  * to be used outside the context of the instantiating LibraryManager instance.
  */
-public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, NamespaceAware {
+public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, NamespaceAware, PathAware {
     private final List<LibrarySourceProvider> PROVIDERS = new ArrayList<>();
     private Set<LibraryContentType> supportedTypes = new HashSet<>();
+
+    private boolean initialized = false;
 
     @Override
     public void registerProvider(LibrarySourceProvider provider) {
@@ -28,7 +27,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, Name
             supportedTypes = new HashSet<>();
         }
 
-        if(provider instanceof LibrarySourceProviderExt) {
+        if (provider instanceof LibrarySourceProviderExt) {
             LibrarySourceProviderExt providerExt = (LibrarySourceProviderExt) provider;
             supportedTypes.add(providerExt.getLibrarySourceType());
         }
@@ -37,12 +36,46 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, Name
             ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
         }
 
+        if (path != null) {
+            if (provider instanceof PathAware) {
+                ((PathAware)provider).setPath(path);
+            }
+        }
+
         PROVIDERS.add(provider);
+    }
+
+    private Path path;
+    public void setPath(Path path) {
+        if (path == null || ! path.toFile().isDirectory()) {
+            throw new IllegalArgumentException(String.format("path '%s' is not a valid directory", path));
+        }
+
+        this.path = path;
+
+        for (LibrarySourceProvider provider : getProviders()) {
+            if (provider instanceof PathAware) {
+                ((PathAware)provider).setPath(path);
+            }
+        }
     }
 
     @Override
     public void clearProviders() {
         PROVIDERS.clear();
+        initialized = false;
+    }
+
+    private List<LibrarySourceProvider> getProviders() {
+        if (!initialized) {
+            initialized = true;
+            for (Iterator<LibrarySourceProvider> it = LibrarySourceProviderFactory.providers(false); it.hasNext(); ) {
+                LibrarySourceProvider provider = it.next();
+                registerProvider(provider);
+            }
+        }
+
+        return PROVIDERS;
     }
 
     @Override
@@ -55,7 +88,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, Name
 
         validateInput(libraryIdentifier, type);
         InputStream source = null;
-        for (LibrarySourceProvider provider : PROVIDERS) {
+        for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof LibrarySourceProviderExt) {
                 LibrarySourceProviderExt providerExt = (LibrarySourceProviderExt) provider;
                 if (providerExt.isLibrarySourceAvailable(libraryIdentifier, type)) {
@@ -79,7 +112,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, Name
         validateInput(libraryIdentifier, type);
 
         InputStream source;
-        for (LibrarySourceProvider provider : PROVIDERS) {
+        for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof LibrarySourceProviderExt) {
                 LibrarySourceProviderExt providerExt = (LibrarySourceProviderExt) provider;
                 if (providerExt.isLibrarySourceAvailable(libraryIdentifier, type)) {
@@ -106,7 +139,7 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, Name
     public void setNamespaceManager(NamespaceManager namespaceManager) {
         this.namespaceManager = namespaceManager;
 
-        for (LibrarySourceProvider provider : PROVIDERS) {
+        for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof NamespaceAware) {
                 ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
             }

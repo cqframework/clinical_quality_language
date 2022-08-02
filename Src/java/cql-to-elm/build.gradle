@@ -17,8 +17,7 @@ dependencies {
     testImplementation project(':elm-jaxb')
     testImplementation project(':model-jackson')
     testImplementation project(':model-jaxb')
+    testImplementation project(':quick')
+    testImplementation project(':qdm')
     testImplementation group: 'com.github.reinert', name: 'jjschema', version: '1.16'
-
-    runtimeOnly project(':quick')
-    runtimeOnly project(':qdm')
 }

@@ -25,4 +25,5 @@ dependencies {
     implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '6.0.1'
 
     testImplementation project(':model-jackson')
+    testImplementation project(':quick')
 }

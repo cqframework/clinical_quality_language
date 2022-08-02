@@ -2,6 +2,7 @@ package org.cqframework.cql.elm.requirements.fhir;
 
 import ca.uhn.fhir.context.FhirContext;
 import org.cqframework.cql.cql2elm.*;
+import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
