@@ -18,6 +18,7 @@ import org.hl7.fhir.r5.model.Library;
 import org.hl7.fhir.r5.model.Quantity;
 import org.hl7.fhir.utilities.validation.ValidationMessage;
 import org.cqframework.cql.elm.requirements.ElmDataRequirement;
+import org.cqframework.cql.elm.requirements.ElmPertinenceContext;
 import org.cqframework.cql.elm.requirements.ElmRequirement;
 import org.cqframework.cql.elm.requirements.ElmRequirements;
 import org.cqframework.cql.elm.requirements.ElmRequirementsContext;
@@ -343,7 +344,8 @@ public class DataRequirementsProcessor {
         for (ElmRequirement retrieve : requirements.getRetrieves()) {
             if (((Retrieve)retrieve.getElement()).getDataType() != null) {
                 result.add(toDataRequirement(context, retrieve.getLibraryIdentifier(), (Retrieve) retrieve.getElement(),
-                        retrieveMap, retrieve instanceof ElmDataRequirement ? ((ElmDataRequirement)retrieve).getProperties() : null));
+                        retrieveMap, retrieve instanceof ElmDataRequirement ? ((ElmDataRequirement) retrieve).getProperties() : null,
+                        retrieve instanceof ElmDataRequirement ? ((ElmDataRequirement) retrieve).getPertinenceContext() : null));
             }
         }
 
@@ -890,7 +892,8 @@ public class DataRequirementsProcessor {
     }
 
     private org.hl7.fhir.r5.model.DataRequirement toDataRequirement(ElmRequirementsContext context,
-            VersionedIdentifier libraryIdentifier, Retrieve retrieve, Map<String, Retrieve> retrieveMap, Iterable<Property> properties) {
+            VersionedIdentifier libraryIdentifier, Retrieve retrieve, Map<String, Retrieve> retrieveMap, Iterable<Property> properties,
+            ElmPertinenceContext pertinenceContext) {
         org.hl7.fhir.r5.model.DataRequirement dr = new org.hl7.fhir.r5.model.DataRequirement();
         try {
             dr.setType(org.hl7.fhir.r5.model.Enumerations.FHIRAllTypes.fromCode(retrieve.getDataType().getLocalPart()));
@@ -973,6 +976,19 @@ public class DataRequirementsProcessor {
         }
         for (String s : ps) {
             dr.addMustSupport(s);
+        }
+
+        if (pertinenceContext != null && pertinenceContext.getPertinenceValue() != null
+                && !(pertinenceContext.getPertinenceValue().trim().isEmpty())) {
+            Extension extension = new Extension();
+            extension.setUrl("http://hl7.org/fhir/us/cqfmeasures/StructureDefinition/cqfm-pertinence");
+
+            Coding coding = new Coding();
+            coding.setSystem("http://hl7.org/fhir/uv/cpg/CodeSystem/cpg-casefeature-pertinence");
+            coding.setCode(pertinenceContext.getPertinenceValue());
+            extension.setValue(coding);
+
+            dr.getExtension().add(extension);
         }
 
         return dr;
