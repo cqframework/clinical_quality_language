@@ -150,6 +150,7 @@ public class NpmPackageManager implements IWorkerContext.ILoggingService {
                 else
                     throw new IllegalArgumentException("Unknown Package "+packageId+"#"+igver);
             }
+            npmList.add(pi);
         }
         logDebugMessage(IWorkerContext.ILoggingService.LogCategory.INIT, "Load "+name+" ("+canonical+") from "+packageId+"#"+igver);
 

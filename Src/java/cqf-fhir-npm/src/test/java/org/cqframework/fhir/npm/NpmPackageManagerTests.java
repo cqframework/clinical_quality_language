@@ -1,5 +1,6 @@
 package org.cqframework.fhir.npm;
 
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
@@ -71,12 +72,15 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
 
     @Test
     public void TestModelInfoProvider() throws IOException {
-        NpmPackageManager pm = NpmPackageManager.fromStream(NpmPackageManagerTests.class.getResourceAsStream("testig.xml"), "4.0.1");
+        InputStream is = NpmPackageManagerTests.class.getResourceAsStream("testig.xml");
+        assertNotNull(is);
+        NpmPackageManager pm = NpmPackageManager.fromStream(is, "4.0.1");
         assertTrue(pm.getNpmList().size() >= 1);
 
         LibraryLoader reader = new LibraryLoader("4.0.1");
         NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, this);
         ModelInfo mi = mp.load(new VersionedIdentifier().withSystem("http://hl7.org/fhir/us/qicore").withId("QICore"));
+        assertNotNull(mi);
         assertTrue(mi.getName().equals("QICore"));
     }
 
