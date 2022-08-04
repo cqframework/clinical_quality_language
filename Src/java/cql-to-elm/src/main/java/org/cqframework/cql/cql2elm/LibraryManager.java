@@ -21,7 +21,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 import static org.cqframework.cql.cql2elm.CqlCompilerException.HasErrors;
@@ -39,6 +38,8 @@ public class LibraryManager {
     private final Stack<String> compilationStack;
     private LibrarySourceLoader librarySourceLoader;
     private boolean enableCache;
+
+    private static final LibraryContentType[] supportedContentTypes = {LibraryContentType.JSON, LibraryContentType.XML, LibraryContentType.CQL};
 
     public LibraryManager(ModelManager modelManager) {
         if (modelManager == null) {
@@ -139,7 +140,7 @@ public class LibraryManager {
             }
         }
 
-        for (LibraryContentType type : LibraryContentType.values()) {
+        for (LibraryContentType type : supportedContentTypes) {
             if (librarySourceLoader.isLibraryContentAvailable(libraryIdentifier, type)) {
                 return true;
             }
@@ -226,14 +227,18 @@ public class LibraryManager {
     }
 
     private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options) {
-        InputStream elm = librarySourceLoader.getLibraryContent(libraryIdentifier, LibraryContentType.JSON);
-        if (elm != null) {
-            return generateCompiledLibraryFromElm(libraryIdentifier, elm, LibraryContentType.JSON, options);
-        }
+        InputStream elm = null;
+        for (LibraryContentType type : supportedContentTypes) {
+            if (LibraryContentType.CQL == type) {
+                continue;
+            }
 
-        elm = librarySourceLoader.getLibraryContent(libraryIdentifier, LibraryContentType.XML);
-        if (elm != null) {
-            return generateCompiledLibraryFromElm(libraryIdentifier, elm, LibraryContentType.JSON, options);
+            elm = librarySourceLoader.getLibraryContent(libraryIdentifier, type);
+            if (elm == null) {
+                continue;
+            }
+
+            return generateCompiledLibraryFromElm(libraryIdentifier, elm, type, options);
         }
 
         return null;
@@ -245,11 +250,7 @@ public class LibraryManager {
         Library library = null;
         CompiledLibrary compiledLibrary = null;
         try {
-            if (type.equals(LibraryContentType.JSON)) {
-                library = ElmLibraryReaderFactory.getReader("application/elm+json").read(new InputStreamReader(librarySource));
-            } else if (type.equals(LibraryContentType.XML)) {
-                library = ElmLibraryReaderFactory.getReader("application/elm+xml").read(new InputStreamReader(librarySource));
-            }
+            library = ElmLibraryReaderFactory.getReader(type.mimeType()).read(new InputStreamReader(librarySource));
         } catch (IOException e) {
             e.printStackTrace();
         }
