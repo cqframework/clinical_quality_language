@@ -74,17 +74,16 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
     public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
 
         validateInput(libraryIdentifier, type);
-        InputStream source = null;
+        InputStream content = null;
         for (LibrarySourceProvider provider : getProviders()) {
-            source = provider.getLibraryContent(libraryIdentifier, type);
+            content = provider.getLibraryContent(libraryIdentifier, type);
 
-            if (source != null) {
-                return source;
+            if (content != null) {
+                return content;
             }
         }
 
-        throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
-                libraryIdentifier.getId(), libraryIdentifier.getVersion()));
+        return null;
     }
 
     @Override

@@ -48,8 +48,7 @@ public class LibraryManager {
         this.modelManager = modelManager;
         if (this.modelManager.getNamespaceManager() != null) {
             this.namespaceManager = modelManager.getNamespaceManager();
-        }
-        else {
+        } else {
             this.namespaceManager = new NamespaceManager();
         }
         libraries = new HashMap<>();
@@ -58,7 +57,7 @@ public class LibraryManager {
         this.librarySourceLoader = new PriorityLibrarySourceLoader();
     }
 
-    public ModelManager getModelManager(){
+    public ModelManager getModelManager() {
         return this.modelManager;
     }
 
@@ -82,21 +81,27 @@ public class LibraryManager {
         this.librarySourceLoader = librarySourceLoader;
     }
 
-    public void enableCache() { this.enableCache = true; }
+    public void enableCache() {
+        this.enableCache = true;
+    }
 
     public LibraryManager withEnableCache() {
         enableCache();
         return this;
     }
 
-    public void disableCache() { this.enableCache = false; }
+    public void disableCache() {
+        this.enableCache = false;
+    }
 
     public LibraryManager withDisableCache() {
         disableCache();
         return this;
     }
 
-    public boolean isCacheEnabled() { return enableCache; }
+    public boolean isCacheEnabled() {
+        return enableCache;
+    }
 
     public Map<String, CompiledLibrary> getCompiledLibraries() {
         return libraries;
@@ -197,6 +202,10 @@ public class LibraryManager {
 
         try {
             InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+            if (cqlSource == null) {
+                throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
+                        libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
+            }
 
             CqlCompiler compiler = new CqlCompiler(
                     namespaceManager.getNamespaceInfoFromUri(libraryIdentifier.getSystem()),

@@ -4,6 +4,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
