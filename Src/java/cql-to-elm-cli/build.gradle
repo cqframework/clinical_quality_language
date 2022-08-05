@@ -17,6 +17,7 @@ dependencies {
     implementation group: 'org.fhir', name: 'ucum', version: '1.0.3'
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
+    implementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
     testImplementation project(':model-jaxb')
     testImplementation project(':model-jackson')
     testImplementation project(':elm-jaxb')

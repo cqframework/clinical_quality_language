@@ -43,6 +43,21 @@ public class VersionTest {
         Assert.assertFalse(version.compatibleWith(versionThat));
         Assert.assertFalse(versionThat.compatibleWith(version));
         Assert.assertTrue(versionThat.compatibleWith(versionThatSame));
+    }
 
+    @Test
+    public void testMATVersions() {
+        Version version = new Version("v1-0-0-QDM-5-6");
+        Assert.assertTrue(version.getMajorVersion() == 1);
+        Assert.assertTrue(version.getMinorVersion() == 0);
+        Assert.assertTrue(version.getPatchVersion() == 0);
+        Assert.assertTrue(version.getBuildVersion().equals("QDM-5-6"));
+    }
+
+    @Test
+    public void testMATVersionsCompatible() {
+        Version version = new Version("7.0.0");
+        Version matVersion = new Version("v7-0-0-QDM-5-6");
+        Assert.assertTrue(matVersion.compatibleWith(version));
     }
 }
