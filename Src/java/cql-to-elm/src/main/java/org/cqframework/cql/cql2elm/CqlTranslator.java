@@ -405,13 +405,13 @@ public class CqlTranslator {
 
     public static String convertToXml(Library library) throws IOException {
         StringWriter writer = new StringWriter();
-        ElmLibraryWriterFactory.getWriter("application/elm+xml").write(library, writer);
+        ElmLibraryWriterFactory.getWriter(LibraryContentType.XML.mimeType()).write(library, writer);
         return writer.getBuffer().toString();
     }
 
     public static String convertToJson(Library library) throws IOException {
         StringWriter writer = new StringWriter();
-        ElmLibraryWriterFactory.getWriter("application/elm+json").write(library, writer);
+        ElmLibraryWriterFactory.getWriter(LibraryContentType.JSON.mimeType()).write(library, writer);
         return writer.getBuffer().toString();
     }
 }

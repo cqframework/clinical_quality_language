@@ -11,10 +11,8 @@ import java.util.*;
  * resolve library includes within CQL. Package private since its not intended
  * to be used outside the context of the instantiating LibraryManager instance.
  */
-public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, NamespaceAware, PathAware {
+public class PriorityLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware, PathAware {
     private final List<LibrarySourceProvider> PROVIDERS = new ArrayList<>();
-    private Set<LibraryContentType> supportedTypes = new HashSet<>();
-
     private boolean initialized = false;
 
     @Override
@@ -23,23 +21,12 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, Name
             throw new IllegalArgumentException("provider is null.");
         }
 
-        if(supportedTypes == null) {
-            supportedTypes = new HashSet<>();
-        }
-
-        if (provider instanceof LibrarySourceProviderExt) {
-            LibrarySourceProviderExt providerExt = (LibrarySourceProviderExt) provider;
-            supportedTypes.add(providerExt.getLibrarySourceType());
-        }
-
         if (provider instanceof NamespaceAware) {
             ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
         }
 
-        if (path != null) {
-            if (provider instanceof PathAware) {
-                ((PathAware)provider).setPath(path);
-            }
+        if (path != null && provider instanceof PathAware) {
+            ((PathAware)provider).setPath(path);
         }
 
         PROVIDERS.add(provider);
@@ -79,58 +66,37 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoaderExt, Name
     }
 
     @Override
-    public Set<LibraryContentType> getSupportedContentTypes() {
-        return supportedTypes;
-    }
-
-    @Override
-    public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-
-        validateInput(libraryIdentifier, type);
-        InputStream source = null;
-        for (LibrarySourceProvider provider : getProviders()) {
-            if (provider instanceof LibrarySourceProviderExt) {
-                LibrarySourceProviderExt providerExt = (LibrarySourceProviderExt) provider;
-                if (providerExt.isLibrarySourceAvailable(libraryIdentifier, type)) {
-                    source = providerExt.getLibrarySource(libraryIdentifier, type);
-                }
-            } else {
-                source = provider.getLibrarySource(libraryIdentifier);
-            }
-            if (source != null) {
-                return source;
-            }
-        }
-
-        throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
-                libraryIdentifier.getId(), libraryIdentifier.getVersion()));
-
-    }
-
-    @Override
-    public boolean isLibrarySourceAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
-        validateInput(libraryIdentifier, type);
-
-        InputStream source;
-        for (LibrarySourceProvider provider : getProviders()) {
-            if (provider instanceof LibrarySourceProviderExt) {
-                LibrarySourceProviderExt providerExt = (LibrarySourceProviderExt) provider;
-                if (providerExt.isLibrarySourceAvailable(libraryIdentifier, type)) {
-                    return true;
-                }
-            } else {
-                source = provider.getLibrarySource(libraryIdentifier);
-                if (source != null) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
-        return getLibrarySource(libraryIdentifier, LibraryContentType.CQL);
+        return getLibraryContent(libraryIdentifier, LibraryContentType.CQL);
+    }
+
+    @Override
+    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+
+        validateInput(libraryIdentifier, type);
+        InputStream content = null;
+        for (LibrarySourceProvider provider : getProviders()) {
+            content = provider.getLibraryContent(libraryIdentifier, type);
+
+            if (content != null) {
+                return content;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean isLibraryContentAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        validateInput(libraryIdentifier, type);
+
+        for (LibrarySourceProvider provider : getProviders()) {
+            if (provider.isLibraryContentAvailable(libraryIdentifier, type)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private NamespaceManager namespaceManager;

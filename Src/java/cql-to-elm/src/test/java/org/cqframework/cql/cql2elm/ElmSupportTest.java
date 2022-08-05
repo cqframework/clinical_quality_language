@@ -4,6 +4,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
+import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,7 +30,7 @@ public class ElmSupportTest {
     public void testIncludedLibraryWithJsonElm() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
             CqlTranslatorOptions options = createOptions();
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryJsonElm.cql"),
@@ -50,7 +51,7 @@ public class ElmSupportTest {
     public void testIncludedLibraryWithXmlElm() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().registerProvider(new ElmXmlLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
 
         CqlTranslatorOptions options = createOptions();
         try {
@@ -71,7 +72,7 @@ public class ElmSupportTest {
     public void testIncludedLibraryWithJsonWithNullTypeSpecifierElm() {
         CqlTranslator translator = null;
         libraryManager = new LibraryManager(modelManager);
-        libraryManager.getLibrarySourceLoader().registerProvider(new ElmJsonLibrarySourceProvider());
+        libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
             CqlTranslatorOptions options = createOptions();
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibraryWithNullTypeSpecifierJsonElm.cql"),

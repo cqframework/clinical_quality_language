@@ -21,7 +21,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 import static org.cqframework.cql.cql2elm.CqlCompilerException.HasErrors;
@@ -36,9 +35,11 @@ public class LibraryManager {
     private NamespaceManager namespaceManager;
     private UcumService ucumService;
     private final Map<String, CompiledLibrary> libraries;
-    private final Stack<String> compilatonStack;
+    private final Stack<String> compilationStack;
     private LibrarySourceLoader librarySourceLoader;
     private boolean enableCache;
+
+    private static final LibraryContentType[] supportedContentTypes = {LibraryContentType.JSON, LibraryContentType.XML, LibraryContentType.CQL};
 
     public LibraryManager(ModelManager modelManager) {
         if (modelManager == null) {
@@ -47,17 +48,16 @@ public class LibraryManager {
         this.modelManager = modelManager;
         if (this.modelManager.getNamespaceManager() != null) {
             this.namespaceManager = modelManager.getNamespaceManager();
-        }
-        else {
+        } else {
             this.namespaceManager = new NamespaceManager();
         }
         libraries = new HashMap<>();
-        compilatonStack = new Stack<>();
+        compilationStack = new Stack<>();
         this.enableCache = true;
         this.librarySourceLoader = new PriorityLibrarySourceLoader();
     }
 
-    public ModelManager getModelManager(){
+    public ModelManager getModelManager() {
         return this.modelManager;
     }
 
@@ -81,21 +81,27 @@ public class LibraryManager {
         this.librarySourceLoader = librarySourceLoader;
     }
 
-    public void enableCache() { this.enableCache = true; }
+    public void enableCache() {
+        this.enableCache = true;
+    }
 
     public LibraryManager withEnableCache() {
         enableCache();
         return this;
     }
 
-    public void disableCache() { this.enableCache = false; }
+    public void disableCache() {
+        this.enableCache = false;
+    }
 
     public LibraryManager withDisableCache() {
         disableCache();
         return this;
     }
 
-    public boolean isCacheEnabled() { return enableCache; }
+    public boolean isCacheEnabled() {
+        return enableCache;
+    }
 
     public Map<String, CompiledLibrary> getCompiledLibraries() {
         return libraries;
@@ -139,20 +145,13 @@ public class LibraryManager {
             }
         }
 
-        InputStream source = null;
-        try {
-            if (librarySourceLoader instanceof LibrarySourceLoaderExt) {
-                return ((LibrarySourceLoaderExt) librarySourceLoader).isLibrarySourceAvailable(libraryIdentifier,
-                        LibraryContentType.ANY);
-            } else {
-                source = librarySourceLoader.getLibrarySource(libraryIdentifier);
+        for (LibraryContentType type : supportedContentTypes) {
+            if (librarySourceLoader.isLibraryContentAvailable(libraryIdentifier, type)) {
+                return true;
             }
-
-        } catch (Exception e) {
-            throw new CqlTranslatorIncludeException(e.getMessage(), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion(), e);
         }
 
-        return source != null;
+        return false;
     }
 
     public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlCompilerException> errors) {
@@ -202,12 +201,10 @@ public class LibraryManager {
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());
 
         try {
-            InputStream cqlSource;
-            if (librarySourceLoader instanceof LibrarySourceLoaderExt) {
-                cqlSource = ((LibrarySourceLoaderExt) librarySourceLoader)
-                        .getLibrarySource(libraryIdentifier, LibraryContentType.CQL);
-            } else {
-                cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+            InputStream cqlSource = librarySourceLoader.getLibrarySource(libraryIdentifier);
+            if (cqlSource == null) {
+                throw new CqlTranslatorIncludeException(String.format("Could not load source for library %s, version %s.",
+                        libraryIdentifier.getId(), libraryIdentifier.getVersion()), libraryIdentifier.getSystem(), libraryIdentifier.getId(), libraryIdentifier.getVersion());
             }
 
             CqlCompiler compiler = new CqlCompiler(
@@ -239,33 +236,21 @@ public class LibraryManager {
     }
 
     private CompiledLibrary tryCompiledLibraryElm(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options) {
-        CompiledLibrary result = null;
-        InputStream librarySource = null;
-
-        if (librarySourceLoader instanceof LibrarySourceLoaderExt) {
-
-            LibrarySourceLoaderExt sourceLoaderExt = (LibrarySourceLoaderExt) librarySourceLoader;
-            Set<LibraryContentType> supportedTypes = sourceLoaderExt.getSupportedContentTypes();
-            for (LibraryContentType type : supportedTypes) {
-                if (type != LibraryContentType.CQL) {
-                    try {
-                        librarySource = sourceLoaderExt.getLibrarySource(libraryIdentifier, type);
-                        if (librarySource == null) {
-                            continue;
-                        }
-
-                        result = generateCompiledLibraryFromElm(libraryIdentifier, librarySource, type, options);
-
-                        if (result != null) {
-                            break;
-                        }
-                    } catch (Exception e) {
-                        continue;
-                    }
-                }
+        InputStream elm = null;
+        for (LibraryContentType type : supportedContentTypes) {
+            if (LibraryContentType.CQL == type) {
+                continue;
             }
+
+            elm = librarySourceLoader.getLibraryContent(libraryIdentifier, type);
+            if (elm == null) {
+                continue;
+            }
+
+            return generateCompiledLibraryFromElm(libraryIdentifier, elm, type, options);
         }
-        return result;
+
+        return null;
     }
 
 
@@ -274,11 +259,7 @@ public class LibraryManager {
         Library library = null;
         CompiledLibrary compiledLibrary = null;
         try {
-            if (type.equals(LibraryContentType.JSON)) {
-                library = ElmLibraryReaderFactory.getReader("application/elm+json").read(new InputStreamReader(librarySource));
-            } else if (type.equals(LibraryContentType.XML)) {
-                library = ElmLibraryReaderFactory.getReader("application/elm+xml").read(new InputStreamReader(librarySource));
-            }
+            library = ElmLibraryReaderFactory.getReader(type.mimeType()).read(new InputStreamReader(librarySource));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -379,11 +360,11 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryName is null.");
         }
 
-        if (compilatonStack.contains(libraryName)) {
+        if (compilationStack.contains(libraryName)) {
             throw new IllegalArgumentException(String.format("Circular library reference %s.", libraryName));
         }
 
-        compilatonStack.push(libraryName);
+        compilationStack.push(libraryName);
     }
 
     public void endCompilation(String libraryName) {
@@ -391,7 +372,7 @@ public class LibraryManager {
             throw new IllegalArgumentException("libraryName is null.");
         }
 
-        String currentLibraryName = compilatonStack.pop();
+        String currentLibraryName = compilationStack.pop();
         if (!libraryName.equals(currentLibraryName)) {
             throw new IllegalArgumentException(String.format("Compilation stack imbalance for library %s.", libraryName));
         }

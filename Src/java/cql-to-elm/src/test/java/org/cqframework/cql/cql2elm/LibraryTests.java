@@ -164,8 +164,8 @@ public class LibraryTests {
         try {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/MissingLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(1));
-            assertThat(translator.getErrors().get(0), instanceOf(CqlSemanticException.class));
-            assertThat(translator.getErrors().get(0).getCause(), instanceOf(IllegalArgumentException.class));
+            assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
+            assertThat(translator.getErrors().get(0).getCause(), instanceOf(CqlTranslatorIncludeException.class));
         } catch (IOException e) {
             e.printStackTrace();
         }

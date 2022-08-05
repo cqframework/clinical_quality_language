@@ -18,8 +18,22 @@ public class TestLibrarySourceProvider implements LibrarySourceProvider {
 
     @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
-        String libraryFileName = String.format("%s/%s%s.cql",
-                path, libraryIdentifier.getId(), libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "");
-        return TestLibrarySourceProvider.class.getResourceAsStream(libraryFileName);
+        return getLibraryContent(libraryIdentifier, LibraryContentType.CQL);
+    }
+
+    @Override
+    public boolean isLibraryContentAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        return TestLibrarySourceProvider.class.getResource(getFileName(libraryIdentifier, type)) != null;
+    }
+
+
+    @Override
+    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        return TestLibrarySourceProvider.class.getResourceAsStream(getFileName(libraryIdentifier, type));
+    }
+
+    private String getFileName(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        return String.format("%s/%s%s.%s",
+                path, libraryIdentifier.getId(), libraryIdentifier.getVersion() != null ? ("-" + libraryIdentifier.getVersion()) : "", type.toString().toLowerCase());
     }
 }
