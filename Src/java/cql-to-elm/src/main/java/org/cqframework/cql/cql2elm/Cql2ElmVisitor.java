@@ -435,9 +435,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         List<Tag> tags = new ArrayList<>();
 
         int startFrom = 0;
-        int count = 0;
-        while (startFrom < header.length() && count < 10) {
-            count++;
+        while (startFrom < header.length()) {
             Pair<String, Integer> tagNamePair = looKForTagName(header, startFrom);
             if (tagNamePair != null) {
                 if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
