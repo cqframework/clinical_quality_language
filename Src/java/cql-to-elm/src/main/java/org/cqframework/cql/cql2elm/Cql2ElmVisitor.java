@@ -368,13 +368,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (interimText.length() > 0) {  // interim text has value, regards interim text
                     return Pair.of(interimText, tagStart);
                 } else {
-                    int nextDelimeterIndex = header.indexOf(' ', tagStart);
-                    if (nextDelimeterIndex == -1) {
-                        nextDelimeterIndex = header.indexOf("\n", tagStart);
-                        if (nextDelimeterIndex == -1) {
-                            nextDelimeterIndex = header.length();
-                        }
+                    int nextSpace = header.indexOf(' ', tagStart);
+                    int nextLine = header.indexOf("\n", tagStart);
+                    int mul = nextSpace * nextLine;
+                    int nextDelimeterIndex = header.length();
+
+                    if (mul < 0) {
+                        nextDelimeterIndex = Math.max(nextLine, nextSpace);
+                    } else if(mul > 0) {
+                        nextDelimeterIndex = Math.min(nextLine, nextSpace);
                     }
+
                     return Pair.of(header.substring(tagStart, nextDelimeterIndex), nextDelimeterIndex );
                 }
             } else {   //next `@` is not date
@@ -435,7 +439,9 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         List<Tag> tags = new ArrayList<>();
 
         int startFrom = 0;
-        while (startFrom < header.length()) {
+        int count = 0;
+        while (startFrom < header.length() && count < 10) {
+            count++;
             Pair<String, Integer> tagNamePair = looKForTagName(header, startFrom);
             if (tagNamePair != null) {
                 if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {

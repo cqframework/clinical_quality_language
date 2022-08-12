@@ -37,6 +37,7 @@ define TestNewFormat:
 /*
 @test @1980-12-01 @val val1
 @asof: @2020-10-01
+@parameter: abcd
  */
 define TestDate:
    3 + 3
