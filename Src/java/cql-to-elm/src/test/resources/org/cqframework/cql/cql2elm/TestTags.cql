@@ -28,7 +28,15 @@ define function TestFunction():
 define TestMultiline:
   1 + 1
 
-/*@:@*/
-define TestInvalid:
-  1 + 1
+/*
+@test  @pertinence: val2
+ */
+define TestNewFormat:
+   3 + 3
 
+/*
+@test @1980-12-01 @val val1
+@asof: @2020-10-01
+ */
+define TestDate:
+   3 + 3

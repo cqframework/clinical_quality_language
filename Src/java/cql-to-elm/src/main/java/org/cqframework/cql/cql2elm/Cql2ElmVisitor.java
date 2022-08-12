@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
 import org.cqframework.cql.elm.tracking.*;
@@ -350,30 +351,109 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return true;
     }
 
-    private List<Tag> parseTags(String header) {
-        List<Tag> tags = new ArrayList<>();
-        int tagStartIndex = header.indexOf("@");
-        while (tagStartIndex >= 0) {
-            int tagNameEndIndex = header.indexOf(":", tagStartIndex);
-            if (tagNameEndIndex >= 0) {
-                String tagName = header.substring(tagStartIndex + 1, tagNameEndIndex);
-                if (isValidIdentifier(tagName)) {
-                    tagStartIndex = header.indexOf("@", tagNameEndIndex);
-                    String tagValue = null;
-                    if (tagStartIndex >= 0) {
-                        tagValue = header.substring(tagNameEndIndex + 1, tagStartIndex);
+    // this method returns Pair<tag value, next tag name lookup index> starting from formIndex
+    // can return null in cases.
+    // for @1980-12-01, it will potentially check to be treated as value date
+    private Pair<String, Integer> looKForTagValue(String header, int fromIndex) {
+
+        if(fromIndex>= header.length()) {
+            return null;
+        }
+        int tagStart = header.indexOf('@', fromIndex);
+        if(tagStart == fromIndex && !isStartingWithDigit(header, tagStart +1)) {  //starts with `@` and not potential date value
+            return Pair.of("",fromIndex);
+        } else if (tagStart > 0) {   // has some text before tag
+            String interimText = header.substring(fromIndex, tagStart).trim();
+            if (isStartingWithDigit(header, tagStart + 1)) {  // next `@` is a date value
+                if (interimText.length() > 0) {  // interim text has value, regards interim text
+                    return Pair.of(interimText, tagStart);
+                } else {
+                    int nextDelimeterIndex = header.indexOf(' ', tagStart);
+                    if (nextDelimeterIndex == -1) {
+                        nextDelimeterIndex = header.indexOf("\n", tagStart);
+                        if (nextDelimeterIndex == -1) {
+                            nextDelimeterIndex = header.length();
+                        }
                     }
-                    else {
-                        tagValue = header.substring(tagNameEndIndex + 1);
-                    }
-                    tags.add(af.createTag().withName(tagName.trim()).withValue(tagValue.trim()));
+                    return Pair.of(header.substring(tagStart, nextDelimeterIndex), nextDelimeterIndex );
                 }
-                else {
-                    tagStartIndex = header.indexOf("@", tagStartIndex + 1);
-                }
+            } else {   //next `@` is not date
+                return Pair.of(interimText, tagStart);
             }
-            else {
-                tagStartIndex = header.indexOf("@", tagStartIndex + 1);
+        }
+
+        return Pair.of(header.substring(fromIndex).trim(), header.length());
+    }
+
+    private boolean isStartingWithDigit(String header, int index) {
+        return (index < header.length()) &&
+                (header.charAt(index) >= '0') &&
+                (header.charAt(index) <= '9');
+    }
+
+    // this method returns Pair<tag name, next value lookup index> starting from formIndex
+    // can return null in cases.
+    // supports both `:` and ` ` for delimeter
+    private Pair<String, Integer> looKForTagName(String header, int fromIndex) {
+
+        if(fromIndex>= header.length()){
+            return null;
+        }
+        int start = header.indexOf("@", fromIndex);
+        if (start < 0) {
+            return null;
+        }
+        int nextTagStart = header.indexOf("@", start + 1);
+        int nextColon = header.indexOf(":", start + 1);
+        int nextSpace = header.indexOf(" ", start + 1);
+
+        int mul = nextColon * nextSpace;
+        int min = Math.min(nextColon, nextSpace);
+        int max = Math.max(nextColon, nextSpace);
+
+        if (nextTagStart < 0) {  //no 2nd `@`
+            if (mul > 1) {       // both `:` and ` ` are present and has positive index, pick the lesser one
+                return Pair.of(header.substring(start + 1, min).trim(), min + 1);
+            } else if (mul < 0) {  // either `:` `or ` ` is present, absent one has index == -1
+                return Pair.of(header.substring(start + 1, max).trim(), max + 1);
+            }
+            return Pair.of(header.substring(start + 1).trim(), header.length());  // both `:` and ` ` is absent
+        } else if(nextTagStart > 0) {  //there is a `@` next
+            if (mul > 1 && min < nextTagStart) {
+                return Pair.of(header.substring(start + 1, min).trim(), min + 1);
+            } else if (mul < 0 &&  max < nextTagStart) {
+                return Pair.of(header.substring(start + 1, max).trim(), max + 1);
+            }
+            return Pair.of(header.substring(start + 1, nextTagStart).trim(), nextTagStart);
+        }
+
+        return null;
+    }
+
+    private List<Tag> parseTags(String header) {
+        header = header.trim();
+        List<Tag> tags = new ArrayList<>();
+
+        int startFrom = 0;
+        int count = 0;
+        while (startFrom < header.length() && count < 10) {
+            count++;
+            Pair<String, Integer> tagNamePair = looKForTagName(header, startFrom);
+            if (tagNamePair != null) {
+                if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
+                    Tag t = af.createTag().withName(tagNamePair.getLeft());
+                    startFrom = tagNamePair.getRight().intValue();
+                    Pair<String, Integer> tagValuePair = looKForTagValue(header, startFrom);
+                    if (tagValuePair != null) {
+                        if (tagValuePair.getLeft().length() > 0) {
+                            t = t.withValue(tagValuePair.getLeft());
+                            startFrom = tagValuePair.getRight().intValue();
+                        }
+                    }
+                    tags.add(t);
+                } else {
+                    startFrom = tagNamePair.getRight().intValue();
+                }
             }
         }
         return tags;
