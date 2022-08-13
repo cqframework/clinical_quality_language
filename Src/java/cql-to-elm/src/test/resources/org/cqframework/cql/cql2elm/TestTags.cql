@@ -41,3 +41,11 @@ define TestNewFormat:
  */
 define TestDate:
    3 + 3
+
+
+/*
+@test @1980-12-01 @val val1
+@asof: @2020-10-01
+*/
+define TestDate2:
+   3 + 3

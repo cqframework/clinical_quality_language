@@ -375,7 +375,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
                     if (mul < 0) {
                         nextDelimeterIndex = Math.max(nextLine, nextSpace);
-                    } else if(mul > 0) {
+                    } else if(mul > 1) {
                         nextDelimeterIndex = Math.min(nextLine, nextSpace);
                     }
 
@@ -446,17 +446,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             if (tagNamePair != null) {
                 if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
                     Tag t = af.createTag().withName(tagNamePair.getLeft());
-                    startFrom = tagNamePair.getRight().intValue();
+                    startFrom = tagNamePair.getRight();
                     Pair<String, Integer> tagValuePair = looKForTagValue(header, startFrom);
                     if (tagValuePair != null) {
                         if (tagValuePair.getLeft().length() > 0) {
                             t = t.withValue(tagValuePair.getLeft());
-                            startFrom = tagValuePair.getRight().intValue();
+                            startFrom = tagValuePair.getRight();
                         }
                     }
                     tags.add(t);
                 } else {
-                    startFrom = tagNamePair.getRight().intValue();
+                    startFrom = tagNamePair.getRight();
                 }
             }
         }
