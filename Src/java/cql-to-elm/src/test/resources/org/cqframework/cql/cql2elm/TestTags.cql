@@ -29,9 +29,9 @@ define TestMultiline:
   1 + 1
 
 /*
-@test  @pertinence: val2
+@test  @pertinence: strongly-positive
  */
-define TestNewFormat:
+define TestMultiTagInline:
    3 + 3
 
 /*
@@ -39,13 +39,14 @@ define TestNewFormat:
 @asof: @2020-10-01
 @parameter: abcd
  */
-define TestDate:
+define TestDateMultiTag:
    3 + 3
 
 
 /*
 @test @1980-12-01 @val val1
 @asof: @2020-10-01
+@parameter: "Measurement Interval" [@2019,@2020]
 */
-define TestDate2:
+define TestDateIntervalParameter:
    3 + 3
