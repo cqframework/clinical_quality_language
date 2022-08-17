@@ -68,6 +68,14 @@ define TestParameterAtFirstLine:
    3 + 1
 
 
+/*
+@tagname: tag value
+@tagname2: tag value2 this is
+a long tag value
+*/
+define AnotherTestCase:
+   3 + 1
+
 
 /*@:@*/
 define TestInvalid:

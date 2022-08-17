@@ -280,6 +280,31 @@ public class CommentTests {
             }
         }
 
+        d = library.resolveExpressionRef("AnotherTestCase");
+        assertThat(d.getAnnotation(), notNullValue());
+        for (Object o : d.getAnnotation()) {
+            if (o instanceof Annotation) {
+                a = (Annotation)o;
+            }
+        }
+        assertThat(a, notNullValue());
+        assertThat(a.getT(), notNullValue());
+        assertThat(a.getT().size(), equalTo(2));
+        for (int i = 0; i < a.getT().size(); i++) {
+            Tag t = a.getT().get(i);
+            switch (i) {
+                case 0:
+                    assertThat(t.getName(), equalTo("tagname"));
+                    assertThat(t.getValue(), equalTo("tag value"));
+                    break;
+                case 1:
+                    assertThat(t.getName(), equalTo("tagname2"));
+                    assertThat(t.getValue(), equalTo("tag value2 this is\n" +
+                            "a long tag value"));
+                    break;
+            }
+        }
+
 
         ExpressionDef dInvalid = library.resolveExpressionRef("TestInvalid");
         assertThat(dInvalid.getAnnotation(), notNullValue());
