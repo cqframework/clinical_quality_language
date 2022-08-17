@@ -178,8 +178,7 @@ public class TestUtils {
             System.err.println(String.format("(%d,%d): %s",
                     error.getLocator().getStartLine(), error.getLocator().getStartChar(), error.getMessage()));
         }
-        //assertThat(translator.getErrors().size(), is(expectedErrors));
-        System.out.println(translator.getErrors());
+        assertThat(translator.getErrors().size(), is(expectedErrors));
         return translator;
     }
 

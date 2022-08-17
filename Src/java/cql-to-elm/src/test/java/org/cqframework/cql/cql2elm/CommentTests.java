@@ -27,7 +27,6 @@ public class CommentTests {
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
     }
 
-    /*
     @Test
     public void testTags() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("TestTags.cql", 0);
@@ -232,8 +231,18 @@ public class CommentTests {
         }
 
 
+        ExpressionDef dInvalid = library.resolveExpressionRef("TestInvalid");
+        assertThat(dInvalid.getAnnotation(), notNullValue());
+        Annotation aInvalid = null;
+        for (Object o : dInvalid.getAnnotation()) {
+            if (o instanceof Annotation) {
+                aInvalid = (Annotation)o;
+            }
+        }
+        assertThat(aInvalid, nullValue());
+
 
     }
 
-    */
+
 }

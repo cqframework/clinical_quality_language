@@ -50,3 +50,8 @@ define TestDateMultiTag:
 */
 define TestDateIntervalParameter:
    3 + 3
+
+
+/*@:@*/
+define TestInvalid:
+  1 + 1

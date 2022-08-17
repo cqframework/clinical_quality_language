@@ -405,9 +405,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private boolean isStartingWithDigit(String header, int index) {
-        return (index < header.length()) &&
-                (header.charAt(index) >= '0') &&
-                (header.charAt(index) <= '9');
+        return (index < header.length()) && Character.isDigit(header.charAt(index));
     }
 
     // this method returns Pair<tag name, next value lookup index> starting from formIndex
@@ -451,21 +449,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private List<Tag> parseTags(String header) {
         header = header.trim();
-        //System.out.println("header:"+ header);
         List<Tag> tags = new ArrayList<>();
 
         int startFrom = 0;
-        int count = 0;
-        while (startFrom < header.length() && count < 10) {
-            count++;
+        while (startFrom < header.length()) {
             Pair<String, Integer> tagNamePair = looKForTagName(header, startFrom);
-            //System.out.println("name:"+ tagNamePair);
             if (tagNamePair != null) {
                 if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
                     Tag t = af.createTag().withName(tagNamePair.getLeft());
                     startFrom = tagNamePair.getRight();
                     Pair<String, Integer> tagValuePair = looKForTagValue(header, startFrom);
-                    //System.out.println("value:"+ tagValuePair);
                     if (tagValuePair != null) {
                         if (tagValuePair.getLeft().length() > 0) {
                             t = t.withValue(tagValuePair.getLeft());
@@ -480,7 +473,6 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 break;
             }
         }
-        //System.out.println("Count:" + count);
         return tags;
     }
 
