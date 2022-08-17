@@ -230,6 +230,52 @@ public class CommentTests {
             }
         }
 
+        d = library.resolveExpressionRef("TestMultilineValue");
+        assertThat(d.getAnnotation(), notNullValue());
+        for (Object o : d.getAnnotation()) {
+            if (o instanceof Annotation) {
+                a = (Annotation)o;
+            }
+        }
+        assertThat(a, notNullValue());
+        assertThat(a.getT(), notNullValue());
+        assertThat(a.getT().size(), equalTo(1));
+        for (int i = 0; i < a.getT().size(); i++) {
+            Tag t = a.getT().get(i);
+            switch (i) {
+                case 0:
+                    assertThat(t.getName(), equalTo("test"));
+                    assertThat(t.getValue(), equalTo("this is a\n" +
+                            "multi-line tag value"));
+                    break;
+            }
+        }
+
+        d = library.resolveExpressionRef("TestParameterAtFirstLine");
+        assertThat(d.getAnnotation(), notNullValue());
+        for (Object o : d.getAnnotation()) {
+            if (o instanceof Annotation) {
+                a = (Annotation)o;
+            }
+        }
+        assertThat(a, notNullValue());
+        assertThat(a.getT(), notNullValue());
+        assertThat(a.getT().size(), equalTo(2));
+        for (int i = 0; i < a.getT().size(); i++) {
+            Tag t = a.getT().get(i);
+            switch (i) {
+                case 0:
+                    assertThat(t.getName(), equalTo("parameter"));
+                    assertThat(t.getValue(), equalTo("\"abcd\" [1,10]"));
+                    break;
+                case 1:
+                    assertThat(t.getName(), equalTo("test"));
+                    assertThat(t.getValue(), equalTo("this is a\n" +
+                            "multi-line tag value"));
+                    break;
+            }
+        }
+
 
         ExpressionDef dInvalid = library.resolveExpressionRef("TestInvalid");
         assertThat(dInvalid.getAnnotation(), notNullValue());

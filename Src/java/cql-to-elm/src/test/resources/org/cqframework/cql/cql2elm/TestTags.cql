@@ -51,6 +51,22 @@ define TestDateMultiTag:
 define TestDateIntervalParameter:
    3 + 3
 
+/*
+@test: this is a
+multi-line tag value
+*/
+define TestMultilineValue:
+   3 + 1
+
+/*
+@parameter: "abcd" [1,10]
+@test: this is a
+multi-line tag value
+*/
+define TestParameterAtFirstLine:
+   3 + 1
+
+
 
 /*@:@*/
 define TestInvalid:

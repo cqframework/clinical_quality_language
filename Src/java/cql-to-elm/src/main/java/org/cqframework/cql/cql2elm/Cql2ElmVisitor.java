@@ -354,7 +354,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     // this method returns Pair<tag value, next tag name lookup index> starting from startFrom
     // can return null in cases.
     // for @1980-12-01, it will potentially check to be treated as value date
-    private Pair<String, Integer> looKForTagValue(String header, int startFrom) {
+    // it looks for parameter in double quotes, e.g. @parameter: "Measurement Interval" [@2019,@2020]
+    private Pair<String, Integer> lookForTagValue(String header, int startFrom) {
 
         if(startFrom>= header.length()) {
             return null;
@@ -410,8 +411,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     // this method returns Pair<tag name, next value lookup index> starting from startFrom
     // can return null in cases.
-    // supports both `:` and ` ` for delimeter
-    private Pair<String, Integer> looKForTagName(String header, int startFrom) {
+    // supports both `:` and ` ` for delimiter
+    private Pair<String, Integer> lookForTagName(String header, int startFrom) {
 
         if(startFrom>= header.length()){
             return null;
@@ -453,12 +454,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         int startFrom = 0;
         while (startFrom < header.length()) {
-            Pair<String, Integer> tagNamePair = looKForTagName(header, startFrom);
+            Pair<String, Integer> tagNamePair = lookForTagName(header, startFrom);
             if (tagNamePair != null) {
                 if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
                     Tag t = af.createTag().withName(tagNamePair.getLeft());
                     startFrom = tagNamePair.getRight();
-                    Pair<String, Integer> tagValuePair = looKForTagValue(header, startFrom);
+                    Pair<String, Integer> tagValuePair = lookForTagValue(header, startFrom);
                     if (tagValuePair != null) {
                         if (tagValuePair.getLeft().length() > 0) {
                             t = t.withValue(tagValuePair.getLeft());
