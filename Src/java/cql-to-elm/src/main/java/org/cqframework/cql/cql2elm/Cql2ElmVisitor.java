@@ -411,7 +411,8 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     // this method returns Pair<tag name, next value lookup index> starting from startFrom
     // can return null in cases.
-    // supports both `:` and ` ` for delimiter
+    // if a tag has a value, it needs the colon to separate it
+    // supports `:` for delimiter
     private Pair<String, Integer> lookForTagName(String header, int startFrom) {
 
         if(startFrom>= header.length()){
@@ -423,29 +424,17 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         }
         int nextTagStart = header.indexOf("@", start + 1);
         int nextColon = header.indexOf(":", start + 1);
-        int nextSpace = header.indexOf(" ", start + 1);
 
-        int mul = nextColon * nextSpace;
-        int min = Math.min(nextColon, nextSpace);
-        int max = Math.max(nextColon, nextSpace);
-
-        if (nextTagStart < 0) {  //no 2nd `@`
-            if (mul > 1) {       // both `:` and ` ` are present and has positive index, pick the lesser one
-                return Pair.of(header.substring(start + 1, min).trim(), min + 1);
-            } else if (mul < 0) {  // either `:` `or ` ` is present, absent one has index == -1
-                return Pair.of(header.substring(start + 1, max).trim(), max + 1);
+        if (nextTagStart < 0) {  // no next tag , no next colon
+            if (nextColon < 0) {
+                return Pair.of(header.substring(start + 1, header.length()).trim(), header.length());
             }
-            return Pair.of(header.substring(start + 1).trim(), header.length());  // both `:` and ` ` is absent
-        } else if(nextTagStart > 0) {  //there is a `@` next
-            if (mul > 1 && min < nextTagStart) {
-                return Pair.of(header.substring(start + 1, min).trim(), min + 1);
-            } else if (mul < 0 &&  max < nextTagStart) {
-                return Pair.of(header.substring(start + 1, max).trim(), max + 1);
+        } else {
+            if (nextColon < 0 || nextColon > nextTagStart) {  //(has next tag and no colon) or (has next tag and next colon belongs to next tag)
+                return Pair.of(header.substring(start + 1, nextTagStart).trim(), nextTagStart);
             }
-            return Pair.of(header.substring(start + 1, nextTagStart).trim(), nextTagStart);
         }
-
-        return null;
+        return Pair.of(header.substring(start + 1, nextColon).trim(), nextColon + 1);
     }
 
     private List<Tag> parseTags(String header) {

@@ -35,7 +35,7 @@ define TestMultiTagInline:
    3 + 3
 
 /*
-@test @1980-12-01 @val val1
+@test: @1980-12-01 @val: val1
 @asof: @2020-10-01
 @parameter: abcd
  */
@@ -44,7 +44,7 @@ define TestDateMultiTag:
 
 
 /*
-@test @1980-12-01 @val val1
+@test: @1980-12-01 @val: val1
 @asof: @2020-10-01
 @parameter: "Measurement Interval" [@2019,@2020]
 */
@@ -62,6 +62,7 @@ define TestMultilineValue:
 @parameter: "abcd" [1,10]
 @test: this is a
 multi-line tag value
+@pertinence : weakly-negative
 */
 define TestParameterAtFirstLine:
    3 + 1

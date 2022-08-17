@@ -260,7 +260,7 @@ public class CommentTests {
         }
         assertThat(a, notNullValue());
         assertThat(a.getT(), notNullValue());
-        assertThat(a.getT().size(), equalTo(2));
+        assertThat(a.getT().size(), equalTo(3));
         for (int i = 0; i < a.getT().size(); i++) {
             Tag t = a.getT().get(i);
             switch (i) {
@@ -272,6 +272,10 @@ public class CommentTests {
                     assertThat(t.getName(), equalTo("test"));
                     assertThat(t.getValue(), equalTo("this is a\n" +
                             "multi-line tag value"));
+                    break;
+                case 2:
+                    assertThat(t.getName(), equalTo("pertinence"));
+                    assertThat(t.getValue(), equalTo("weakly-negative"));
                     break;
             }
         }
