@@ -351,16 +351,16 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return true;
     }
 
-    // this method returns Pair<tag value, next tag name lookup index> starting from formIndex
+    // this method returns Pair<tag value, next tag name lookup index> starting from startFrom
     // can return null in cases.
     // for @1980-12-01, it will potentially check to be treated as value date
-    private Pair<String, Integer> looKForTagValue(String header, int fromIndex) {
+    private Pair<String, Integer> looKForTagValue(String header, int startFrom) {
 
-        if(fromIndex>= header.length()) {
+        if(startFrom>= header.length()) {
             return null;
         }
-        int nextTag = header.indexOf('@', fromIndex);
-        int nextStartDoubleQuote = header.indexOf("\"", fromIndex);
+        int nextTag = header.indexOf('@', startFrom);
+        int nextStartDoubleQuote = header.indexOf("\"", startFrom);
         if ((nextTag < 0 || nextTag > nextStartDoubleQuote) && nextStartDoubleQuote > 0 &&
                 (header.length() > (nextStartDoubleQuote + 1))) {
             int nextEndDoubleQuote = header.indexOf("\"", nextStartDoubleQuote + 1);
@@ -375,10 +375,10 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 return Pair.of(header.substring(nextStartDoubleQuote), header.length());
             }
         }
-        if(nextTag == fromIndex && !isStartingWithDigit(header, nextTag +1)) {  //starts with `@` and not potential date value
-            return Pair.of("",fromIndex);
+        if(nextTag == startFrom && !isStartingWithDigit(header, nextTag +1)) {  //starts with `@` and not potential date value
+            return Pair.of("",startFrom);
         } else if (nextTag > 0) {   // has some text before tag
-            String interimText = header.substring(fromIndex, nextTag).trim();
+            String interimText = header.substring(startFrom, nextTag).trim();
             if (isStartingWithDigit(header, nextTag + 1)) {  // next `@` is a date value
                 if (interimText.length() > 0 && !interimText.equals(":")) {  // interim text has value, regards interim text
                     return Pair.of(interimText, nextTag);
@@ -401,22 +401,22 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
             }
         }
 
-        return Pair.of(header.substring(fromIndex).trim(), header.length());
+        return Pair.of(header.substring(startFrom).trim(), header.length());
     }
 
     private boolean isStartingWithDigit(String header, int index) {
         return (index < header.length()) && Character.isDigit(header.charAt(index));
     }
 
-    // this method returns Pair<tag name, next value lookup index> starting from formIndex
+    // this method returns Pair<tag name, next value lookup index> starting from startFrom
     // can return null in cases.
     // supports both `:` and ` ` for delimeter
-    private Pair<String, Integer> looKForTagName(String header, int fromIndex) {
+    private Pair<String, Integer> looKForTagName(String header, int startFrom) {
 
-        if(fromIndex>= header.length()){
+        if(startFrom>= header.length()){
             return null;
         }
-        int start = header.indexOf("@", fromIndex);
+        int start = header.indexOf("@", startFrom);
         if (start < 0) {
             return null;
         }
