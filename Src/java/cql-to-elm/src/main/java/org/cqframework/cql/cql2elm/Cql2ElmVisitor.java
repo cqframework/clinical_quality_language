@@ -451,7 +451,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private List<Tag> parseTags(String header) {
         header = header.trim();
-        System.out.println("header:"+ header);
+        //System.out.println("header:"+ header);
         List<Tag> tags = new ArrayList<>();
 
         int startFrom = 0;
@@ -459,13 +459,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         while (startFrom < header.length() && count < 10) {
             count++;
             Pair<String, Integer> tagNamePair = looKForTagName(header, startFrom);
-            System.out.println("name:"+ tagNamePair);
+            //System.out.println("name:"+ tagNamePair);
             if (tagNamePair != null) {
                 if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
                     Tag t = af.createTag().withName(tagNamePair.getLeft());
                     startFrom = tagNamePair.getRight();
                     Pair<String, Integer> tagValuePair = looKForTagValue(header, startFrom);
-                    System.out.println("value:"+ tagValuePair);
+                    //System.out.println("value:"+ tagValuePair);
                     if (tagValuePair != null) {
                         if (tagValuePair.getLeft().length() > 0) {
                             t = t.withValue(tagValuePair.getLeft());
@@ -480,7 +480,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 break;
             }
         }
-        System.out.println("Count:" + count);
+        //System.out.println("Count:" + count);
         return tags;
     }
 
@@ -494,11 +494,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (!inMultiline) {
                     int start = line.indexOf("/*");
                     if (start >= 0) {
-                        result.add(line.substring(start + 2));
+                        if (line.endsWith("*/")) {
+                            result.add(line.substring(start + 2, line.length() - 2));
+                        } else {
+                            result.add(line.substring(start + 2));
+                        }
                         inMultiline = true;
                     }
                     else start = line.indexOf("//");
-                    if (start >= 0) {
+                    if (start >= 0 && !inMultiline ) {
                         result.add(line.substring(start + 2));
                     }
                 }
