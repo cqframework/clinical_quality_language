@@ -438,7 +438,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     private List<Tag> parseTags(String header) {
-        header = header.trim();
+        header = String.join("\n ", Arrays.asList(header.split("\n[ \t*]+")));
         List<Tag> tags = new ArrayList<>();
 
         int startFrom = 0;
