@@ -300,7 +300,7 @@ public class CommentTests {
                 case 1:
                     assertThat(t.getName(), equalTo("tagname2"));
                     assertThat(t.getValue(), equalTo("tag value2 this is\n" +
-                            " a long tag value"));
+                            "a long tag value"));
                     break;
             }
         }
