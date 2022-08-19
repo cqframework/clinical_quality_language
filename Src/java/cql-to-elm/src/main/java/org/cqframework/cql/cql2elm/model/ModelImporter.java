@@ -1,9 +1,8 @@
 package org.cqframework.cql.cql2elm.model;
 
 import org.cqframework.cql.cql2elm.ModelManager;
-import org.cqframework.cql.cql2elm.NamespaceManager;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql.model.*;
-import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.*;
 
 import java.util.*;
@@ -37,7 +36,7 @@ public class ModelImporter {
         if (modelManager != null) {
             // Import required models
             for (ModelSpecifier requiredModel : modelInfo.getRequiredModelInfo()) {
-                Model model = modelManager.resolveModel(new VersionedIdentifier()
+                Model model = modelManager.resolveModel(new ModelIdentifier()
                         .withSystem(NamespaceManager.getUriPart(requiredModel.getUrl()))
                         .withId(requiredModel.getName())
                         .withVersion(requiredModel.getVersion()));
@@ -48,7 +47,7 @@ public class ModelImporter {
 
             // Ensure System model is registered
             if (!modelIndex.containsKey("System")) {
-                Model systemModel = modelManager.resolveModel(new VersionedIdentifier().withId("System"));
+                Model systemModel = modelManager.resolveModel(new ModelIdentifier().withId("System"));
                 if (systemModel != null) {
                     modelIndex.put("System", systemModel);
                 }

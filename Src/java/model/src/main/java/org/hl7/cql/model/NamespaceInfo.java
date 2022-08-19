@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm;
+package org.hl7.cql.model;
 
 public class NamespaceInfo {
     public NamespaceInfo(String name, String uri) {

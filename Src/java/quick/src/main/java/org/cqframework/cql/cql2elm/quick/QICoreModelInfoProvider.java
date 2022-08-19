@@ -1,8 +1,8 @@
 package org.cqframework.cql.cql2elm.quick;
 
-import org.cqframework.cql.cql2elm.ModelInfoProvider;
-import org.cqframework.cql.cql2elm.NamespaceManager;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.cql.model.NamespaceManager;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
@@ -15,7 +15,7 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
         this.namespaceManager = namespaceManager;
     }
 
-    private boolean isQICoreModelIdentifier(VersionedIdentifier modelIdentifier) {
+    private boolean isQICoreModelIdentifier(ModelIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
             return modelIdentifier.getId().equals("QICore") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("http://hl7.org/fhir/us/qicore"));
@@ -24,7 +24,7 @@ public class QICoreModelInfoProvider implements ModelInfoProvider {
         return modelIdentifier.getId().equals("QICore");
     }
 
-    public ModelInfo load(VersionedIdentifier modelIdentifier) {
+    public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isQICoreModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
             try {

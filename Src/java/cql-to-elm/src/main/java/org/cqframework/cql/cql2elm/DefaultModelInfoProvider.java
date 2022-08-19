@@ -1,6 +1,8 @@
 package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.Version;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
@@ -38,7 +40,7 @@ public class DefaultModelInfoProvider implements ModelInfoProvider, PathAware {
         }
     }
 
-    public ModelInfo load(VersionedIdentifier modelIdentifier) {
+    public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (path != null) {
             String modelName = modelIdentifier.getId();
             String modelVersion = modelIdentifier.getVersion();

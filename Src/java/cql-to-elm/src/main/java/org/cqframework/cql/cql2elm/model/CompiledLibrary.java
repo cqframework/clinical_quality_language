@@ -1,6 +1,6 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.cqframework.cql.cql2elm.NamespaceManager;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.Tag;

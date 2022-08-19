@@ -1,9 +1,9 @@
 package org.cqframework.cql.cql2elm.qdm;
 
-import org.cqframework.cql.cql2elm.ModelInfoProvider;
-import org.cqframework.cql.cql2elm.NamespaceAware;
-import org.cqframework.cql.cql2elm.NamespaceManager;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.cql.model.NamespaceAware;
+import org.hl7.cql.model.NamespaceManager;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
@@ -19,7 +19,7 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
         this.namespaceManager = namespaceManager;
     }
 
-    private boolean isQDMModelIdentifier(VersionedIdentifier modelIdentifier) {
+    private boolean isQDMModelIdentifier(ModelIdentifier modelIdentifier) {
         if (namespaceManager != null && namespaceManager.hasNamespaces()) {
             return modelIdentifier.getId().equals("QDM") &&
                     (modelIdentifier.getSystem() == null || modelIdentifier.getSystem().equals("urn:healthit-gov"));
@@ -28,7 +28,7 @@ public class QdmModelInfoProvider implements ModelInfoProvider, NamespaceAware {
         return modelIdentifier.getId().equals("QDM");
     }
 
-    public ModelInfo load(VersionedIdentifier modelIdentifier) {
+    public ModelInfo load(ModelIdentifier modelIdentifier) {
         if (isQDMModelIdentifier(modelIdentifier)) {
             String localVersion = modelIdentifier.getVersion() == null ? "" : modelIdentifier.getVersion();
             try {
