@@ -31,6 +31,8 @@ generateGrammarSource {
     outputDirectory = file("${antlr.destination}/${antlr.package.replaceAll("\\.", "/")}")
 }
 
+sourcesJar.dependsOn generateGrammarSource
+
 clean {
     delete antlr.destination
 }
