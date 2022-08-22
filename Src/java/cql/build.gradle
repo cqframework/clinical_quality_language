@@ -13,7 +13,8 @@ configurations {
 }
 dependencies {
     antlr  group: "org.antlr", name: "antlr4", version: "4.10.1"
-    implementation group: "org.antlr", name: "antlr4-runtime", version: "4.10.1"
+    // Exports Antlr runtime packages to cql-to-elm
+    api group: "org.antlr", name: "antlr4-runtime", version: "4.10.1"
 }
 
 ext.antlr = [
