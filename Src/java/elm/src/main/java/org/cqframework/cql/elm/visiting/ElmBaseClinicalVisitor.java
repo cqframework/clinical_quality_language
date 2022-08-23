@@ -102,7 +102,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCodeFilterElement(CodeFilterElement elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getValue() != null) {
             T childResult = visitElement(elm.getValue(), context);
             result = aggregateResult(result, childResult);
@@ -119,7 +119,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitDateFilterElement(DateFilterElement elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getValue() != null) {
             T childResult = visitElement(elm.getValue(), context);
             result = aggregateResult(result, childResult);
@@ -136,7 +136,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitOtherFilterElement(OtherFilterElement elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getValue() != null) {
             T childResult = visitElement(elm.getValue(), context);
             result = aggregateResult(result, childResult);
@@ -153,7 +153,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitIncludeElement(IncludeElement elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 
     /**
@@ -165,7 +165,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitRetrieve(Retrieve elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getCodes() != null) {
             T childResult = visitElement(elm.getCodes(), context);
             result = aggregateResult(result, childResult);
@@ -234,7 +234,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCodeSystemDef(CodeSystemDef elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getAccessLevel() != null) {
             T childResult = visitAccessModifier(elm.getAccessLevel(), context);
             result = aggregateResult(result, childResult);
@@ -251,7 +251,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitValueSetDef(ValueSetDef elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getAccessLevel() != null) {
             T childResult = visitAccessModifier(elm.getAccessLevel(), context);
             result = aggregateResult(result, childResult);
@@ -272,7 +272,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCodeDef(CodeDef elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getAccessLevel() != null) {
             T childResult = visitAccessModifier(elm.getAccessLevel(), context);
             result = aggregateResult(result, childResult);
@@ -293,7 +293,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitConceptDef(ConceptDef elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getAccessLevel() != null) {
             T childResult = visitAccessModifier(elm.getAccessLevel(), context);
             result = aggregateResult(result, childResult);
@@ -314,7 +314,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCodeSystemRef(CodeSystemRef elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 
     /**
@@ -326,7 +326,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitValueSetRef(ValueSetRef elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 
     /**
@@ -338,7 +338,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCodeRef(CodeRef elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 
     /**
@@ -350,7 +350,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitConceptRef(ConceptRef elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 
     /**
@@ -362,7 +362,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitCode(Code elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getSystem() != null) {
             T childResult = visitElement(elm.getSystem(), context);
             result = aggregateResult(result, childResult);
@@ -379,7 +379,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitConcept(Concept elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         for (Code c : elm.getCode()) {
             T childResult = visitElement(c, context);
             result = aggregateResult(result, childResult);
@@ -396,7 +396,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitInCodeSystem(InCodeSystem elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getCode() != null) {
             T childResult = visitElement(elm.getCode(), context);
             result = aggregateResult(result, childResult);
@@ -421,7 +421,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitAnyInCodeSystem(AnyInCodeSystem elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getCodes() != null) {
             T childResult = visitElement(elm.getCodes(), context);
             result = aggregateResult(result, childResult);
@@ -446,7 +446,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitInValueSet(InValueSet elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getCode() != null) {
             T childResult = visitElement(elm.getCode(), context);
             result = aggregateResult(result, childResult);
@@ -471,7 +471,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitAnyInValueSet(AnyInValueSet elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getCodes() != null) {
             T childResult = visitElement(elm.getCodes(), context);
             result = aggregateResult(result, childResult);
@@ -520,7 +520,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitQuantity(Quantity elm, C context) {
-        return defaultResult();
+        return defaultResult(elm, context);
     }
 
     /**
@@ -532,7 +532,7 @@ public class ElmBaseClinicalVisitor<T, C> extends ElmBaseVisitor<T, C> implement
      * @return the visitor result
      */
     public T visitRatio(Ratio elm, C context) {
-        T result = defaultResult();
+        T result = defaultResult(elm, context);
         if (elm.getDenominator() != null) {
             T childResult = visitElement(elm.getDenominator(), context);
             result = aggregateResult(result, childResult);

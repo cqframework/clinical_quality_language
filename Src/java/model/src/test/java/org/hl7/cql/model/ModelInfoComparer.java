@@ -1,7 +1,6 @@
 package org.hl7.cql.model;
 
 import org.hl7.elm_modelinfo.r1.*;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import javax.xml.bind.JAXB;

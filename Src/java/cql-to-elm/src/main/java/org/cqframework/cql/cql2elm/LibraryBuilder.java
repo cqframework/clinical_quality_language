@@ -1,6 +1,5 @@
 package org.cqframework.cql.cql2elm;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.*;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -11,17 +10,20 @@ import org.hl7.cql_annotations.r1.CqlToElmInfo;
 import org.hl7.cql_annotations.r1.ErrorSeverity;
 import org.hl7.cql_annotations.r1.ErrorType;
 import org.hl7.elm.r1.*;
-import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import javax.xml.namespace.QName;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.*;
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 
 /**
  * Created by Bryn on 12/29/2016.
  */
-public class LibraryBuilder {
+public class LibraryBuilder implements ModelResolver {
+
     public static final String SYSTEM = "System";
     public static final String INTEGER = "Integer";
     public static final String DECIMAL = "Decimal";
@@ -49,6 +51,7 @@ public class LibraryBuilder {
     public static final String S_RESOLVED_AS_A_POTENTIAL_TYPE_NAME = "%s resolved as a potential type name";
     public static final String COULD_NOT_VALIDATE_REFERENCE_TO_PARAMETER_S_BECAUSE_ITS_DEFINITION_CONTAINS_ERRORS = "Could not validate reference to parameter %s because its definition contains errors.";
     public static final String COULD_NOT_RESOLVE_IDENTIFIER_S_IN_THE_CURRENT_LIBRARY = "Could not resolve identifier %s in the current library.";
+
 
     public static enum SignatureLevel {
         /*
@@ -88,6 +91,7 @@ public class LibraryBuilder {
         this.namespaceInfo = namespaceInfo; // Note: allowed to be null, implies global namespace
         this.modelManager = modelManager;
         this.libraryManager = libraryManager;
+        this.typeBuilder = new TypeBuilder(of, this);
 
         this.library = of.createLibrary()
                 .withSchemaIdentifier(of.createVersionedIdentifier()
@@ -95,41 +99,41 @@ public class LibraryBuilder {
                         .withVersion("r1"));
 
         this.cqlToElmInfo = af.createCqlToElmInfo();
-        this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getSpecificationVersion());
+        this.cqlToElmInfo.setTranslatorVersion(LibraryBuilder.class.getPackage().getImplementationVersion());
         this.library.getAnnotation().add(this.cqlToElmInfo);
 
-        translatedLibrary = new TranslatedLibrary();
-        translatedLibrary.setLibrary(library);
+        compiledLibrary = new CompiledLibrary();
+        compiledLibrary.setLibrary(library);
 
         this.ucumService = ucumService;
     }
 
     // Only exceptions of severity Error
-    private final java.util.List<CqlTranslatorException> errors = new ArrayList<>();
-    public List<CqlTranslatorException> getErrors() {
+    private final java.util.List<CqlCompilerException> errors = new ArrayList<>();
+    public List<CqlCompilerException> getErrors() {
         return errors;
     }
 
     // Only exceptions of severity Warning
-    private final java.util.List<CqlTranslatorException> warnings = new ArrayList<>();
-    public List<CqlTranslatorException> getWarnings() {
+    private final java.util.List<CqlCompilerException> warnings = new ArrayList<>();
+    public List<CqlCompilerException> getWarnings() {
         return warnings;
     }
 
     // Only exceptions of severity Info
-    private final java.util.List<CqlTranslatorException> messages = new ArrayList<>();
-    public List<CqlTranslatorException> getMessages() {
+    private final java.util.List<CqlCompilerException> messages = new ArrayList<>();
+    public List<CqlCompilerException> getMessages() {
         return messages;
     }
 
     // All exceptions
-    private final java.util.List<CqlTranslatorException> exceptions = new ArrayList<>();
-    public List<CqlTranslatorException> getExceptions() {
+    private final java.util.List<CqlCompilerException> exceptions = new ArrayList<>();
+    public List<CqlCompilerException> getExceptions() {
         return exceptions;
     }
 
     private final Map<String, Model> models = new LinkedHashMap<>();
-    private final Map<String, TranslatedLibrary> libraries = new LinkedHashMap<>();
+    private final Map<String, CompiledLibrary> libraries = new LinkedHashMap<>();
     private final SystemFunctionResolver systemFunctionResolver = new SystemFunctionResolver(this);
     private final Stack<String> expressionContext = new Stack<>();
     private final ExpressionDefinitionContextStack expressionDefinitions = new ExpressionDefinitionContextStack();
@@ -144,9 +148,9 @@ public class LibraryBuilder {
     public Library getLibrary() {
         return library;
     }
-    private TranslatedLibrary translatedLibrary = null;
-    public TranslatedLibrary getTranslatedLibrary() {
-        return translatedLibrary;
+    private CompiledLibrary compiledLibrary = null;
+    public CompiledLibrary getCompiledLibrary() {
+        return compiledLibrary;
     }
     private final ConversionMap conversionMap = new ConversionMap();
     public ConversionMap getConversionMap() {
@@ -158,6 +162,8 @@ public class LibraryBuilder {
     private UcumService ucumService = null;
     private CqlTranslatorOptions options;
     private CqlToElmInfo cqlToElmInfo = null;
+    private TypeBuilder typeBuilder = null;
+    private Cql2ElmVisitor visitor = null;
 
     public void enableListTraversal() {
         listTraversal = true;
@@ -169,23 +175,27 @@ public class LibraryBuilder {
         }
 
         this.options = options;
-        if (options.getOptions().contains(CqlTranslator.Options.DisableListTraversal)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListTraversal)) {
             this.listTraversal = false;
         }
-        if (options.getOptions().contains(CqlTranslator.Options.DisableListDemotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListDemotion)) {
             this.getConversionMap().disableListDemotion();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.DisableListPromotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableListPromotion)) {
             this.getConversionMap().disableListPromotion();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalDemotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalDemotion)) {
             this.getConversionMap().enableIntervalDemotion();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.EnableIntervalPromotion)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableIntervalPromotion)) {
             this.getConversionMap().enableIntervalPromotion();
         }
         setCompatibilityLevel(options.getCompatibilityLevel());
         this.cqlToElmInfo.setTranslatorOptions(options.toString());
+    }
+
+    public void setVisitor(Cql2ElmVisitor visitor) {
+        this.visitor = visitor;
     }
 
     private String compatibilityLevel = null;
@@ -215,7 +225,7 @@ public class LibraryBuilder {
         }
 
         if (sinceCompatibilityLevel == null || sinceCompatibilityLevel.isEmpty()) {
-            throw new IllegalArgumentException("Internal Translator Error: compatbility level is required to determine a compatibility check");
+            throw new IllegalArgumentException("Internal Translator Error: compatibility level is required to perform a compatibility check");
         }
 
         Version sinceVersion = new Version(sinceCompatibilityLevel);
@@ -326,7 +336,7 @@ public class LibraryBuilder {
         }
         library.getUsings().getDef().add(usingDef);
 
-        translatedLibrary.add(usingDef);
+        compiledLibrary.add(usingDef);
     }
 
     public ClassType resolveLabel(String modelName, String label) {
@@ -418,6 +428,20 @@ public class LibraryBuilder {
             }
         }
 
+        // Types introduced in 1.5: Long, Vocabulary, ValueSet, CodeSystem
+        if (result != null && result instanceof NamedType) {
+            switch (((NamedType)result).getName()) {
+                case "System.Long":
+                case "System.Vocabulary":
+                case "System.CodeSystem":
+                case "System.ValueSet":
+                    if (!isCompatibleWith("1.5")) {
+                        throw new IllegalArgumentException(String.format("The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
+                                ((NamedType)result).getName(), getCompatibilityLevel()));
+                    }
+            }
+        }
+
         return result;
     }
 
@@ -449,7 +473,7 @@ public class LibraryBuilder {
     }
 
     public UsingDef resolveUsingRef(String modelName) {
-        return translatedLibrary.resolveUsingRef(modelName);
+        return compiledLibrary.resolveUsingRef(modelName);
     }
 
     public SystemModel getSystemModel() {
@@ -479,28 +503,28 @@ public class LibraryBuilder {
     }
 
     private void loadSystemLibrary() {
-        TranslatedLibrary systemLibrary = SystemLibraryHelper.load(getSystemModel());
+        CompiledLibrary systemLibrary = SystemLibraryHelper.load(getSystemModel(), typeBuilder);
         libraries.put(systemLibrary.getIdentifier().getId(), systemLibrary);
         loadConversionMap(systemLibrary);
     }
 
-    private void loadConversionMap(TranslatedLibrary library) {
+    private void loadConversionMap(CompiledLibrary library) {
         for (Conversion conversion : library.getConversions()) {
             conversionMap.add(conversion);
         }
     }
 
-    public TranslatedLibrary getSystemLibrary() {
+    public CompiledLibrary getSystemLibrary() {
         return resolveLibrary("System");
     }
 
-    public TranslatedLibrary resolveLibrary(String identifier) {
+    public CompiledLibrary resolveLibrary(String identifier) {
 
         if (!identifier.equals("System")) {
             checkLiteralContext();
         }
 
-        TranslatedLibrary result = libraries.get(identifier);
+        CompiledLibrary result = libraries.get(identifier);
         if (result == null) {
             throw new IllegalArgumentException(String.format("Could not resolve library name %s.", identifier));
         }
@@ -517,14 +541,14 @@ public class LibraryBuilder {
         return namespaceUri;
     }
 
-    private ErrorSeverity toErrorSeverity(CqlTranslatorException.ErrorSeverity severity) {
-        if (severity == CqlTranslatorException.ErrorSeverity.Info) {
+    private ErrorSeverity toErrorSeverity(CqlCompilerException.ErrorSeverity severity) {
+        if (severity == CqlCompilerException.ErrorSeverity.Info) {
             return ErrorSeverity.INFO;
         }
-        else if (severity == CqlTranslatorException.ErrorSeverity.Warning) {
+        else if (severity == CqlCompilerException.ErrorSeverity.Warning) {
             return ErrorSeverity.WARNING;
         }
-        else if (severity == CqlTranslatorException.ErrorSeverity.Error) {
+        else if (severity == CqlCompilerException.ErrorSeverity.Error) {
             return ErrorSeverity.ERROR;
         }
         else {
@@ -532,34 +556,34 @@ public class LibraryBuilder {
         }
     }
 
-    private void addException(CqlTranslatorException e) {
+    private void addException(CqlCompilerException e) {
         // Always add to the list of all exceptions
         exceptions.add(e);
 
-        if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Error) {
+        if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Error) {
             errors.add(e);
         }
-        else if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Warning) {
+        else if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Warning) {
             warnings.add(e);
         }
-        else if (e.getSeverity() == CqlTranslatorException.ErrorSeverity.Info) {
+        else if (e.getSeverity() == CqlCompilerException.ErrorSeverity.Info) {
             messages.add(e);
         }
     }
 
-    private boolean shouldReport(CqlTranslatorException.ErrorSeverity errorSeverity) {
+    private boolean shouldReport(CqlCompilerException.ErrorSeverity errorSeverity) {
         switch (options.getErrorLevel()) {
             case Info:
                 return
-                        errorSeverity == CqlTranslatorException.ErrorSeverity.Info
-                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
-                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+                        errorSeverity == CqlCompilerException.ErrorSeverity.Info
+                                || errorSeverity == CqlCompilerException.ErrorSeverity.Warning
+                                || errorSeverity == CqlCompilerException.ErrorSeverity.Error;
             case Warning:
                 return
-                        errorSeverity == CqlTranslatorException.ErrorSeverity.Warning
-                                || errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+                        errorSeverity == CqlCompilerException.ErrorSeverity.Warning
+                                || errorSeverity == CqlCompilerException.ErrorSeverity.Error;
             case Error:
-                return errorSeverity == CqlTranslatorException.ErrorSeverity.Error;
+                return errorSeverity == CqlCompilerException.ErrorSeverity.Error;
             default:
                 throw new IllegalArgumentException(String.format("Unknown error severity %s", errorSeverity.toString()));
         }
@@ -570,7 +594,7 @@ public class LibraryBuilder {
      * itself so they can be processed easily by a remote client
      * @param e the exception to record
      */
-    public void recordParsingException(CqlTranslatorException e) {
+    public void recordParsingException(CqlCompilerException e) {
         addException(e);
         if (shouldReport(e.getSeverity())) {
             CqlToElmError err = af.createCqlToElmError();
@@ -617,7 +641,7 @@ public class LibraryBuilder {
     public void beginTranslation() {
         loadSystemLibrary();
 
-        libraryManager.beginTranslation(getLibraryName());
+        libraryManager.beginCompilation(getLibraryName());
     }
 
     public VersionedIdentifier getLibraryIdentifier() {
@@ -626,12 +650,12 @@ public class LibraryBuilder {
 
     public void setLibraryIdentifier(VersionedIdentifier vid) {
         library.setIdentifier(vid);
-        translatedLibrary.setIdentifier(vid);
+        compiledLibrary.setIdentifier(vid);
     }
 
     public void endTranslation() {
         applyTargetModelMaps();
-        libraryManager.endTranslation(getLibraryName());
+        libraryManager.endCompilation(getLibraryName());
     }
 
     public boolean canResolveLibrary(IncludeDef includeDef) {
@@ -641,6 +665,7 @@ public class LibraryBuilder {
                 .withVersion(includeDef.getVersion());
         return libraryManager.canResolveLibrary(libraryIdentifier);
     }
+
     public void addInclude(IncludeDef includeDef) {
         if (library.getIdentifier() == null || library.getIdentifier().getId() == null) {
             throw new IllegalArgumentException("Unnamed libraries cannot reference other libraries.");
@@ -651,16 +676,16 @@ public class LibraryBuilder {
         }
         library.getIncludes().getDef().add(includeDef);
 
-        translatedLibrary.add(includeDef);
+        compiledLibrary.add(includeDef);
 
         VersionedIdentifier libraryIdentifier = new VersionedIdentifier()
                 .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
                 .withId(NamespaceManager.getNamePart(includeDef.getPath()))
                 .withVersion(includeDef.getVersion());
 
-        ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
-        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
-        for (CqlTranslatorException error : errors) {
+        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
+        CompiledLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, this.options, errors);
+        for (CqlCompilerException error : errors) {
             this.recordParsingException(error);
         }
 
@@ -683,7 +708,7 @@ public class LibraryBuilder {
         }
         library.getParameters().getDef().add(paramDef);
 
-        translatedLibrary.add(paramDef);
+        compiledLibrary.add(paramDef);
     }
 
     public void addCodeSystem(CodeSystemDef cs) {
@@ -692,7 +717,7 @@ public class LibraryBuilder {
         }
         library.getCodeSystems().getDef().add(cs);
 
-        translatedLibrary.add(cs);
+        compiledLibrary.add(cs);
     }
 
     public void addValueSet(ValueSetDef vs) {
@@ -701,7 +726,7 @@ public class LibraryBuilder {
         }
         library.getValueSets().getDef().add(vs);
 
-        translatedLibrary.add(vs);
+        compiledLibrary.add(vs);
     }
 
     public void addCode(CodeDef cd) {
@@ -710,7 +735,7 @@ public class LibraryBuilder {
         }
         library.getCodes().getDef().add(cd);
 
-        translatedLibrary.add(cd);
+        compiledLibrary.add(cd);
     }
 
     public void addConcept(ConceptDef cd) {
@@ -719,7 +744,7 @@ public class LibraryBuilder {
         }
         library.getConcepts().getDef().add(cd);
 
-        translatedLibrary.add(cd);
+        compiledLibrary.add(cd);
     }
 
     public void addContext(ContextDef cd) {
@@ -729,66 +754,66 @@ public class LibraryBuilder {
         library.getContexts().getDef().add(cd);
     }
 
+    public List<Pair<String, Object>> resolveCaseIgnored(String identifier) {
+        return compiledLibrary.resolveCaseIgnored(identifier);
+    }
+
     public void addExpression(ExpressionDef expDef) {
         if (library.getStatements() == null) {
             library.setStatements(of.createLibraryStatements());
         }
         library.getStatements().getDef().add(expDef);
 
-        translatedLibrary.add(expDef);
+        compiledLibrary.add(expDef);
     }
 
     public void removeExpression(ExpressionDef expDef) {
         if (library.getStatements() != null) {
             library.getStatements().getDef().remove(expDef);
-            translatedLibrary.remove(expDef);
+            compiledLibrary.remove(expDef);
         }
     }
 
     public Element resolve(String identifier) {
-        return translatedLibrary.resolve(identifier);
-    }
-
-    public List<Pair<String, Object>> resolveCaseIgnored(String identifier) {
-        return translatedLibrary.resolveCaseIgnored(identifier);
+        return compiledLibrary.resolve(identifier);
     }
 
     public IncludeDef resolveIncludeRef(String identifier) {
-        return translatedLibrary.resolveIncludeRef(identifier);
+        return compiledLibrary.resolveIncludeRef(identifier);
     }
 
     public String resolveIncludeAlias(VersionedIdentifier libraryIdentifier) {
-        return translatedLibrary.resolveIncludeAlias(libraryIdentifier);
+        return compiledLibrary.resolveIncludeAlias(libraryIdentifier);
     }
 
     public CodeSystemDef resolveCodeSystemRef(String identifier) {
-        return translatedLibrary.resolveCodeSystemRef(identifier);
+        return compiledLibrary.resolveCodeSystemRef(identifier);
     }
 
     public ValueSetDef resolveValueSetRef(String identifier) {
-        return translatedLibrary.resolveValueSetRef(identifier);
+        return compiledLibrary.resolveValueSetRef(identifier);
     }
 
     public CodeDef resolveCodeRef(String identifier) {
-        return translatedLibrary.resolveCodeRef(identifier);
+        return compiledLibrary.resolveCodeRef(identifier);
     }
 
     public ConceptDef resolveConceptRef(String identifier) {
-        return translatedLibrary.resolveConceptRef(identifier);
+        return compiledLibrary.resolveConceptRef(identifier);
     }
 
     public ParameterDef resolveParameterRef(String identifier) {
         checkLiteralContext();
-        return translatedLibrary.resolveParameterRef(identifier);
+        return compiledLibrary.resolveParameterRef(identifier);
     }
 
     public ExpressionDef resolveExpressionRef(String identifier) {
         checkLiteralContext();
-        return translatedLibrary.resolveExpressionRef(identifier);
+        return compiledLibrary.resolveExpressionRef(identifier);
     }
 
     public Conversion findConversion(DataType fromType, DataType toType, boolean implicit, boolean allowPromotionAndDemotion) {
-        return conversionMap.findConversion(fromType, toType, implicit, allowPromotionAndDemotion, translatedLibrary.getOperatorMap());
+        return conversionMap.findConversion(fromType, toType, implicit, allowPromotionAndDemotion, compiledLibrary.getOperatorMap());
     }
 
     public Expression resolveUnaryCall(String libraryName, String operatorName, UnaryExpression expression) {
@@ -904,6 +929,11 @@ public class LibraryBuilder {
         // TODO: Take advantage of nary unions
         BinaryWrapper wrapper = normalizeListTypes(left, right);
         Union union = of.createUnion().withOperand(wrapper.left, wrapper.right);
+
+        if (visitor != null && visitor.isAnnotationEnabled()) {
+            union.setLocalId(Integer.toString(visitor.getNextLocalId()));
+        }
+
         resolveNaryCall("System", "Union", union);
         return union;
     }
@@ -935,14 +965,12 @@ public class LibraryBuilder {
     }
 
     public Expression resolveIn(Expression left, Expression right) {
-        if (right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet"))) {
-            //if (right instanceof ValueSetRef) {
+        if (right instanceof ValueSetRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
                         .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
                         .withValuesetExpression(right instanceof ValueSetRef ? null : right);
-
 
                 resolveCall("System", "AnyInValueSet", new AnyInValueSetInvocation(anyIn));
                 return anyIn;
@@ -952,19 +980,16 @@ public class LibraryBuilder {
                     .withCode(left)
                     .withValueset(right instanceof ValueSetRef ? (ValueSetRef)right : null)
                     .withValuesetExpression(right instanceof ValueSetRef ? null : right);
-
             resolveCall("System", "InValueSet", new InValueSetInvocation(in));
             return in;
         }
 
-        if (right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem"))) {
-
+        if (right instanceof CodeSystemRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
                         .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
                         .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
-
                 resolveCall("System", "AnyInCodeSystem", new AnyInCodeSystemInvocation(anyIn));
                 return anyIn;
             }
@@ -973,7 +998,6 @@ public class LibraryBuilder {
                     .withCode(left)
                     .withCodesystem(right instanceof CodeSystemRef ? (CodeSystemRef)right : null)
                     .withCodesystemExpression(right instanceof CodeSystemRef ? null : right);
-
             resolveCall("System", "InCodeSystem", new InCodeSystemInvocation(in));
             return in;
         }
@@ -1134,22 +1158,24 @@ public class LibraryBuilder {
         if (resolution != null || mustResolve) {
             checkOperator(callContext, resolution);
 
-            if (resolution.hasConversions()) {
-                List<Expression> convertedOperands = new ArrayList<>();
-                Iterator<Expression> operandIterator = operands.iterator();
-                Iterator<Conversion> conversionIterator = resolution.getConversions().iterator();
-                while (operandIterator.hasNext()) {
-                    Expression operand = operandIterator.next();
-                    Conversion conversion = conversionIterator.next();
-                    if (conversion != null) {
-                        convertedOperands.add(convertExpression(operand, conversion));
-                    } else {
-                        convertedOperands.add(operand);
-                    }
+            List<Expression> convertedOperands = new ArrayList<>();
+            Iterator<Expression> operandIterator = operands.iterator();
+            Iterator<DataType> signatureTypes = resolution.getOperator().getSignature().getOperandTypes().iterator();
+            Iterator<Conversion> conversionIterator = resolution.hasConversions() ? resolution.getConversions().iterator() : null;
+            while (operandIterator.hasNext()) {
+                Expression operand = operandIterator.next();
+                Conversion conversion = conversionIterator != null ? conversionIterator.next() : null;
+                if (conversion != null) {
+                    operand = convertExpression(operand, conversion);
                 }
 
-                invocation.setOperands(convertedOperands);
+                DataType signatureType = signatureTypes.next();
+                operand = pruneChoices(operand, signatureType);
+
+                convertedOperands.add(operand);
             }
+
+            invocation.setOperands(convertedOperands);
 
             if (options.getSignatureLevel() == SignatureLevel.All || (options.getSignatureLevel() == SignatureLevel.Differing
                     && !resolution.getOperator().getSignature().equals(callContext.getSignature()))
@@ -1167,15 +1193,21 @@ public class LibraryBuilder {
         return null;
     }
 
+    private Expression pruneChoices(Expression expression, DataType targetType) {
+        // TODO: In theory, we could collapse expressions that are unnecessarily broad, given the targetType (type leading)
+        // This is a placeholder for where this functionality would be added in the future.
+        return expression;
+    }
+
     public OperatorResolution resolveCall(CallContext callContext) {
         OperatorResolution result = null;
         if (callContext.getLibraryName() == null || callContext.getLibraryName().equals("")) {
-            result = translatedLibrary.resolveCall(callContext, conversionMap);
+            result = compiledLibrary.resolveCall(callContext, conversionMap);
             if (result == null) {
                 result = getSystemLibrary().resolveCall(callContext, conversionMap);
                 if (result == null && callContext.getAllowFluent()) {
                     // attempt to resolve in each non-system included library, in order of inclusion, first resolution wins
-                    for (TranslatedLibrary library : libraries.values()) {
+                    for (CompiledLibrary library : libraries.values()) {
                         if (!library.equals(getSystemLibrary())) {
                             result = library.resolveCall(callContext, conversionMap);
                             if (result != null) {
@@ -1186,13 +1218,14 @@ public class LibraryBuilder {
                 }
                 /*
                 // Implicit resolution is only allowed for the system library functions.
-                for (TranslatedLibrary library : libraries.values()) {
+                for (CompiledLibrary library : libraries.values()) {
                     OperatorResolution libraryResult = library.resolveCall(callContext, libraryBuilder.getConversionMap());
                     if (libraryResult != null) {
                         if (result != null) {
                             throw new IllegalArgumentException(String.format("Operator name %s is ambiguous between %s and %s.",
                                     callContext.getOperatorName(), result.getOperator().getName(), libraryResult.getOperator().getName()));
                         }
+
                         result = libraryResult;
                     }
                 }
@@ -1279,12 +1312,14 @@ public class LibraryBuilder {
         // 2. It is an error condition that needs to be reported
         if (fun == null) {
             fun = buildFunctionRef(libraryName, functionName, paramList);
-            Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
-            if (systemFunction != null) {
-                return systemFunction;
-            }
 
-            if (mustResolve) {
+            if (!allowFluent) {
+                // Only attempt to resolve as a system function if this is not a fluent call or it is a required resolution
+                Expression systemFunction = systemFunctionResolver.resolveSystemFunction(fun);
+                if (systemFunction != null) {
+                    return systemFunction;
+                }
+
                 checkLiteralContext();
             }
 
@@ -1337,7 +1372,7 @@ public class LibraryBuilder {
 
     private void reportWarning(String message, Expression expression) {
         TrackBack trackback = expression.getTrackbacks() != null && expression.getTrackbacks().size() > 0 ? expression.getTrackbacks().get(0) : null;
-        CqlSemanticException warning = new CqlSemanticException(message, CqlTranslatorException.ErrorSeverity.Warning, trackback);
+        CqlSemanticException warning = new CqlSemanticException(message, CqlCompilerException.ErrorSeverity.Warning, trackback);
         recordParsingException(warning);
     }
 
@@ -1680,14 +1715,17 @@ public class LibraryBuilder {
             return second;
         }
 
-        Conversion conversion = findConversion(second, first, true, false);
-        if (conversion != null) {
-            return first;
-        }
+        // If either side is a choice type, don't allow conversions because they will incorrectly eliminate choices based on convertibility
+        if (!(first instanceof ChoiceType || second instanceof ChoiceType)) {
+            Conversion conversion = findConversion(second, first, true, false);
+            if (conversion != null) {
+                return first;
+            }
 
-        conversion = findConversion(first, second, true, false);
-        if (conversion != null) {
-            return second;
+            conversion = findConversion(first, second, true, false);
+            if (conversion != null) {
+                return second;
+            }
         }
 
         return null;
@@ -1699,6 +1737,11 @@ public class LibraryBuilder {
             return compatibleType;
         }
 
+        if (!second.isSubTypeOf(first)) {
+            return new ChoiceType(Arrays.asList(first, second));
+        }
+
+        // The above construction of a choice type guarantees this will never be hit
         DataTypes.verifyType(second, first);
         return first;
     }
@@ -1790,13 +1833,7 @@ public class LibraryBuilder {
                 break;
 
             default:
-                if (ucumService != null) {
-                    String message = ucumService.validate(unit);
-                    if (message != null) {
-                        // ERROR:
-                        throw new IllegalArgumentException(message);
-                    }
-                }
+                validateUcumUnit(unit);
                 break;
         }
     }
@@ -1829,17 +1866,21 @@ public class LibraryBuilder {
                 return "ms";
 
             default:
-                if (ucumService != null) {
-                    String message = ucumService.validate(unit);
-                    if (message != null) {
-                        // ERROR:
-                        throw new IllegalArgumentException(message);
-                    }
-                }
+                validateUcumUnit(unit);
                 break;
         }
 
         return unit;
+    }
+
+    private void validateUcumUnit(String unit) {
+        if (ucumService != null) {
+            String message = ucumService.validate(unit);
+            if (message != null) {
+                // ERROR:
+                throw new IllegalArgumentException(message);
+            }
+        }
     }
 
     public Quantity createQuantity(BigDecimal value, String unit) {
@@ -1874,91 +1915,15 @@ public class LibraryBuilder {
     }
 
     public QName dataTypeToQName(DataType type) {
-        if (type instanceof NamedType) {
-            NamedType namedType = (NamedType)type;
-            ModelInfo modelInfo = getModel(namedType.getNamespace()).getModelInfo();
-            return new QName(modelInfo.getTargetUrl() != null ? modelInfo.getTargetUrl() : modelInfo.getUrl(),
-                    namedType.getTarget() != null ? namedType.getTarget() : namedType.getSimpleName());
-        }
-
-        // ERROR:
-        throw new IllegalArgumentException("A named type is required in this context.");
+        return typeBuilder.dataTypeToQName(type);
     }
 
     public Iterable<TypeSpecifier> dataTypesToTypeSpecifiers(Iterable<DataType> types) {
-        ArrayList<TypeSpecifier> result = new ArrayList<TypeSpecifier>();
-        for (DataType type : types) {
-            result.add(dataTypeToTypeSpecifier(type));
-        }
-        return result;
+        return typeBuilder.dataTypesToTypeSpecifiers(types);
     }
 
     public TypeSpecifier dataTypeToTypeSpecifier(DataType type) {
-        // Convert the given type into an ELM TypeSpecifier representation.
-        if (type instanceof NamedType) {
-            return (TypeSpecifier)of.createNamedTypeSpecifier().withName(dataTypeToQName(type)).withResultType(type);
-        }
-        else if (type instanceof ListType) {
-            return listTypeToTypeSpecifier((ListType)type);
-        }
-        else if (type instanceof IntervalType) {
-            return intervalTypeToTypeSpecifier((IntervalType)type);
-        }
-        else if (type instanceof TupleType) {
-            return tupleTypeToTypeSpecifier((TupleType)type);
-        }
-        else if (type instanceof ChoiceType) {
-            return choiceTypeToTypeSpecifier((ChoiceType)type);
-        }
-        else {
-            throw new IllegalArgumentException(String.format("Could not convert type %s to a type specifier.", type));
-        }
-    }
-
-    private TypeSpecifier listTypeToTypeSpecifier(ListType type) {
-        return (TypeSpecifier)of.createListTypeSpecifier()
-                .withElementType(dataTypeToTypeSpecifier(type.getElementType()))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier intervalTypeToTypeSpecifier(IntervalType type) {
-        return (TypeSpecifier)of.createIntervalTypeSpecifier()
-                .withPointType(dataTypeToTypeSpecifier(type.getPointType()))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier tupleTypeToTypeSpecifier(TupleType type) {
-        return (TypeSpecifier)of.createTupleTypeSpecifier()
-                .withElement(tupleTypeElementsToTupleElementDefinitions(type.getElements()))
-                .withResultType(type);
-    }
-
-    private TupleElementDefinition[] tupleTypeElementsToTupleElementDefinitions(Iterable<TupleTypeElement> elements) {
-        List<TupleElementDefinition> definitions = new ArrayList<>();
-
-        for (TupleTypeElement element : elements) {
-            definitions.add(of.createTupleElementDefinition()
-                    .withName(element.getName())
-                    .withElementType(dataTypeToTypeSpecifier(element.getType())));
-        }
-
-        return definitions.toArray(new TupleElementDefinition[definitions.size()]);
-    }
-
-    private TypeSpecifier choiceTypeToTypeSpecifier(ChoiceType type) {
-        return (TypeSpecifier)of.createChoiceTypeSpecifier()
-                .withChoice(choiceTypeTypesToTypeSpecifiers(type))
-                .withResultType(type);
-    }
-
-    private TypeSpecifier[] choiceTypeTypesToTypeSpecifiers(ChoiceType choiceType) {
-        List<TypeSpecifier> specifiers = new ArrayList<>();
-
-        for (DataType type : choiceType.getTypes()) {
-            specifiers.add(dataTypeToTypeSpecifier(type));
-        }
-
-        return specifiers.toArray(new TypeSpecifier[specifiers.size()]);
+        return typeBuilder.dataTypeToTypeSpecifier(type);
     }
 
     public DataType resolvePath(DataType sourceType, String path) {
@@ -2104,6 +2069,7 @@ public class LibraryBuilder {
 
         return null;
     }
+
 
     // TODO: Support case-insensitive models
     public List<IdentifierResolution> resolveProperties(DataType sourceType, String identifier, boolean mustResolve) {
@@ -2252,16 +2218,14 @@ public class LibraryBuilder {
         // 10: The name of a property on a specific context
         // 11: An unresolved identifier error is thrown
 
-//        IdentifierResolution resolvedIdentifierResultHolder = new IdentifierResolution();
+        // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
 
         List<IdentifierResolution> matchList = new ArrayList<>();
 
-        // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
         if (inTypeSpecifierContext()) {
             matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, this.createLiteral(identifier)));
         }
 
-        //In the sort clause of a plural query, names may be resolved based on the result type of the query
         matchList.addAll(resolveQueryResultElements(identifier));
 
         // In the case of a $this alias, names may be resolved as implicit property references
@@ -2278,7 +2242,6 @@ public class LibraryBuilder {
             result.setResultType(resolveTypeName(SYSTEM, DECIMAL)); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
             matchList.add(IdentifierResolution.getMatchType(identifier, identifier, $_TOTAL, result));
         }
-
 
         List<IdentifierResolution> aliasMatches = resolveAliases(identifier);
         IdentifierResolution aliasFirstCaseMatch = IdentifierResolution.getFirstCaseMatch(aliasMatches);
@@ -2428,8 +2391,8 @@ public class LibraryBuilder {
 
         List<IdentifierResolution> matchList = new ArrayList<>();
 
-        Element element = resolve(identifier);
 
+        Element element = resolve(identifier);
         List<Pair<String, Object>> caseIgnoredElements = resolveCaseIgnored(identifier);
 
         if (element instanceof ExpressionDef) {
@@ -2441,7 +2404,6 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
                         expressionRef.getName()));
             }
-
             matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, expressionRef));
 
             matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
@@ -2456,7 +2418,6 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
-
             matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, parameterRef));
 
             matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
@@ -2472,10 +2433,13 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to valueset %s because its definition contains errors.",
                         valuesetRef.getName()));
             }
-
+            if (isCompatibleWith("1.5")) {
+                valuesetRef.setPreserve(true);
+            }
             matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, valuesetRef));
 
             matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
+
         }
 
         if (element instanceof CodeSystemDef) {
@@ -2487,10 +2451,11 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
-
             matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, codesystemRef));
 
             matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
+
+
         }
 
         if (element instanceof CodeDef) {
@@ -2502,10 +2467,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
-
             matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, codeRef));
 
             matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
+
         }
 
         if (element instanceof ConceptDef) {
@@ -2517,10 +2482,10 @@ public class LibraryBuilder {
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
-
             matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, conceptRef));
 
             matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
+
         }
 
         if (element instanceof IncludeDef) {
@@ -2529,7 +2494,6 @@ public class LibraryBuilder {
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
 
             matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, libraryRef));
-
             matchList.addAll(IdentifierResolution.miListFromPairList(caseIgnoredElements, MatchType.CASE_IGNORED));
 
         }
@@ -2552,6 +2516,34 @@ public class LibraryBuilder {
             sb.append(String.format(lookupElementWarning(p.getResolvedElement()), p.getIdentifier()) + "\n");
         }
         return sb.toString();
+    }
+
+    /**
+     * An implicit context is one where the context has the same name as a parameter. Implicit contexts are used to
+     * allow FHIRPath expressions to resolve on the implicit context of the expression
+     *
+     * For example, in a Patient context, with a parameter of type Patient, the expression `birthDate` resolves to a property reference.
+     * @return A reference to the parameter providing the implicit context value
+     */
+    public ParameterRef resolveImplicitContext() {
+        if (!inLiteralContext() && inSpecificContext()) {
+            Element contextElement = resolve(currentExpressionContext());
+            if (contextElement instanceof ParameterDef) {
+                ParameterDef contextParameter = (ParameterDef)contextElement;
+
+                checkLiteralContext();
+                ParameterRef parameterRef = of.createParameterRef().withName(contextParameter.getName());
+                parameterRef.setResultType(contextParameter.getResultType());
+                if (parameterRef.getResultType() == null) {
+                    // ERROR:
+                    throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
+                            parameterRef.getName()));
+                }
+                return parameterRef;
+            }
+        }
+
+        return null;
     }
 
     public Property buildProperty(String scope, String path, boolean isSearch, DataType resultType) {
@@ -2608,7 +2600,7 @@ public class LibraryBuilder {
     }
 
     private void ensureLibraryIncluded(String libraryName, Expression sourceContext) {
-        IncludeDef includeDef = translatedLibrary.resolveIncludeRef(libraryName);
+        IncludeDef includeDef = compiledLibrary.resolveIncludeRef(libraryName);
         if (includeDef == null) {
             VersionedIdentifier modelMapping = getModelMapping(sourceContext);
             String path = libraryName;
@@ -2619,7 +2611,7 @@ public class LibraryBuilder {
             if (modelMapping != null) {
                 includeDef.setVersion(modelMapping.getVersion());
             }
-            translatedLibrary.add(includeDef);
+            compiledLibrary.add(includeDef);
         }
     }
 
@@ -2670,9 +2662,17 @@ public class LibraryBuilder {
                     c.getCaseItem().add(ci);
                 }
             }
-            c.setElse(this.buildNull(source.getResultType()));
-            c.setResultType(source.getResultType());
-            return c;
+            if (c.getCaseItem().size() == 0) {
+                return this.buildNull(source.getResultType());
+            }
+            else if (c.getCaseItem().size() == 1) {
+                return c.getCaseItem().get(0).getThen();
+            }
+            else {
+                c.setElse(this.buildNull(source.getResultType()));
+                c.setResultType(source.getResultType());
+                return c;
+            }
         }
         else if (targetMap.contains("(")) {
             int invocationStart = targetMap.indexOf("(");
@@ -2843,7 +2843,7 @@ public class LibraryBuilder {
 
         if (left instanceof LibraryRef) {
             String libraryName = ((LibraryRef)left).getLibraryName();
-            TranslatedLibrary referencedLibrary = resolveLibrary(libraryName);
+            CompiledLibrary referencedLibrary = resolveLibrary(libraryName);
 
             Element element = referencedLibrary.resolve(memberIdentifier);
 
@@ -2948,7 +2948,7 @@ public class LibraryBuilder {
         }
     }
 
-    private IdentifierRef resolveQueryResultElement(String identifier) {
+    private Expression resolveQueryResultElement(String identifier) {
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.inSortClause() && !query.isSingular()) {
@@ -2962,17 +2962,13 @@ public class LibraryBuilder {
                 if (resolution != null) {
                     IdentifierRef result = new IdentifierRef().withName(resolution.getName());
                     result.setResultType(resolution.getType());
-                    if (resolution.getTargetMap() != null) {
-                        throw new IllegalArgumentException("Target mapping not supported in this context");
-                    }
-                    return result;
+                    return applyTargetMap(result, resolution.getTargetMap());
                 }
             }
         }
 
         return null;
     }
-
 
     private List<IdentifierResolution> resolveQueryResultElements(String identifier) {
 
@@ -3003,7 +2999,6 @@ public class LibraryBuilder {
 
         return matchList;
     }
-
 
     private AliasedQuerySource resolveAlias(String identifier) {
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up

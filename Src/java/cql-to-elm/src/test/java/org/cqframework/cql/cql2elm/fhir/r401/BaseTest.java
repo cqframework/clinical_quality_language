@@ -1,9 +1,13 @@
 package org.cqframework.cql.cql2elm.fhir.r401;
 
+import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
 import org.cqframework.cql.cql2elm.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.hl7.cql.model.ChoiceType;
+import org.hl7.cql.model.ClassType;
+import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -92,7 +96,7 @@ public class BaseTest {
 
     @Test
     public void testEqualityWithConversions() throws IOException {
-        TranslatedLibrary library = visitFileLibrary("fhir/r401/EqualityWithConversions.cql");
+        CompiledLibrary library = visitFileLibrary("fhir/r401/EqualityWithConversions.cql");
         ExpressionDef getGender = library.resolveExpressionRef("GetGender");
         assertThat(getGender.getExpression(), instanceOf(Equal.class));
         Equal equal = (Equal)getGender.getExpression();
@@ -123,7 +127,7 @@ public class BaseTest {
 
     @Test
     public void testChoiceDateRangeOptimization() throws IOException {
-        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestChoiceDateRangeOptimization.cql", 0, CqlTranslator.Options.EnableDateRangeOptimization);
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestChoiceDateRangeOptimization.cql", 0, CqlTranslatorOptions.Options.EnableDateRangeOptimization);
         Library library = translator.toELM();
         Map<String, ExpressionDef> defs = new HashMap<>();
 
@@ -203,9 +207,28 @@ public class BaseTest {
         TestUtils.runSemanticTest("fhir/r401/TestIntervalImplicitConversion.cql", 0);
     }
 
+    private void assertResultType(CompiledLibrary translatedLibrary, String expressionName, String namespace, String name) {
+        ExpressionDef ed = translatedLibrary.resolveExpressionRef(expressionName);
+        DataType resultType = ed.getExpression().getResultType();
+        assertThat(resultType, instanceOf(ClassType.class));
+        ClassType resultClassType = (ClassType)resultType;
+        assertThat(resultClassType.getNamespace(), equalTo(namespace));
+        assertThat(resultClassType.getSimpleName(), equalTo(name));
+    }
+
     @Test
     public void testFHIRHelpers() throws IOException {
-        TestUtils.runSemanticTest("fhir/r401/TestFHIRHelpers.cql", 0);
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRHelpers.cql", 0);
+        CompiledLibrary translatedLibrary = translator.getTranslatedLibrary();
+        assertResultType(translatedLibrary, "TestExtensions", "FHIR", "Extension");
+        assertResultType(translatedLibrary, "TestElementExtensions", "FHIR", "Extension");
+        assertResultType(translatedLibrary, "TestModifierExtensions", "FHIR", "Extension");
+        assertResultType(translatedLibrary, "TestElementModifierExtensions", "FHIR", "Extension");
+
+        ExpressionDef ed = translatedLibrary.resolveExpressionRef("TestChoiceConverts");
+        DataType resultType = ed.getExpression().getResultType();
+        assertThat(resultType, instanceOf(ChoiceType.class));
+        assertThat(resultType.toString(), equalTo("choice<System.String,System.Boolean,System.Date,System.DateTime,System.Decimal,System.Integer,System.Time,System.Quantity,System.Concept,System.Code,interval<System.Quantity>,interval<System.DateTime>,System.Ratio,FHIR.Address,FHIR.Annotation,FHIR.Attachment,FHIR.ContactPoint,FHIR.HumanName,FHIR.Identifier,FHIR.Money,FHIR.Reference,FHIR.SampledData,FHIR.Signature,FHIR.Timing,FHIR.ContactDetail,FHIR.Contributor,FHIR.DataRequirement,FHIR.Expression,FHIR.ParameterDefinition,FHIR.RelatedArtifact,FHIR.TriggerDefinition,FHIR.UsageContext,FHIR.Dosage,FHIR.Meta>"));
     }
 
     @Test
@@ -226,6 +249,21 @@ public class BaseTest {
     @Test
     public void testParameterContext() throws IOException {
         TestUtils.runSemanticTest("fhir/r401/TestParameterContext.cql", 0);
+    }
+
+    @Test
+    public void testEncounterParameterContext() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestEncounterParameterContext.cql", 0);
+    }
+
+    @Test
+    public void testMeasureParameterContext() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestMeasureParameterContext.cql", 0);
+    }
+
+    @Test
+    public void testTrace() throws IOException {
+        TestUtils.runSemanticTest("fhir/r401/TestTrace.cql", 0);
     }
 
     @Test
@@ -333,7 +371,7 @@ public class BaseTest {
     @Test
     public void testRetrieveWithConcept() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestRetrieveWithConcept.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         ExpressionDef expressionDef = library.resolveExpressionRef("Test Tobacco Smoking Status");
 
         assertThat(expressionDef.getExpression(), instanceOf(Retrieve.class));
@@ -346,7 +384,7 @@ public class BaseTest {
     @Test
     public void testFHIRNamespaces() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest(new NamespaceInfo("Public", "http://cql.hl7.org/public"), "fhir/r401/TestFHIRNamespaces.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         UsingDef usingDef = library.resolveUsingRef("FHIR");
         assertThat(usingDef, notNullValue());
         assertThat(usingDef.getLocalIdentifier(), is("FHIR"));
@@ -361,7 +399,7 @@ public class BaseTest {
     @Test
     public void testFHIRWithoutNamespaces() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRNamespaces.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         UsingDef usingDef = library.resolveUsingRef("FHIR");
         assertThat(usingDef, notNullValue());
         assertThat(usingDef.getLocalIdentifier(), is("FHIR"));
@@ -374,9 +412,117 @@ public class BaseTest {
     }
 
     @Test
+    public void testFHIRPath() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRPath.cql", 0);
+        CompiledLibrary library = translator.getTranslatedLibrary();
+        ExpressionDef expressionDef = library.resolveExpressionRef("TestNow");
+        assertThat(expressionDef, notNullValue());
+        assertThat(expressionDef.getExpression(), instanceOf(Now.class));
+        expressionDef = library.resolveExpressionRef("TestToday");
+        assertThat(expressionDef, notNullValue());
+        assertThat(expressionDef.getExpression(), instanceOf(Today.class));
+        expressionDef = library.resolveExpressionRef("TestTimeOfDay");
+        assertThat(expressionDef.getExpression(), instanceOf(TimeOfDay.class));
+        String xml = translator.toXml();
+        assertThat(xml, notNullValue());
+        /*
+        // Doesn't work because this literal adds carriage returns
+        assertThat(xml, is("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<library xmlns=\"urn:hl7-org:elm:r1\" xmlns:t=\"urn:hl7-org:elm-types:r1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:fhir=\"http://hl7.org/fhir\" xmlns:qdm43=\"urn:healthit-gov:qdm:v4_3\" xmlns:qdm53=\"urn:healthit-gov:qdm:v5_3\" xmlns:a=\"urn:hl7-org:cql-annotations:r1\">\n" +
+                "   <annotation translatorOptions=\"\" xsi:type=\"a:CqlToElmInfo\"/>\n" +
+                "   <identifier id=\"TestFHIRPath\"/>\n" +
+                "   <schemaIdentifier id=\"urn:hl7-org:elm\" version=\"r1\"/>\n" +
+                "   <usings>\n" +
+                "      <def localIdentifier=\"System\" uri=\"urn:hl7-org:elm-types:r1\"/>\n" +
+                "      <def localIdentifier=\"FHIR\" uri=\"http://hl7.org/fhir\" version=\"4.0.1\"/>\n" +
+                "   </usings>\n" +
+                "   <includes>\n" +
+                "      <def localIdentifier=\"FHIRHelpers\" path=\"FHIRHelpers\" version=\"4.0.1\"/>\n" +
+                "   </includes>\n" +
+                "   <contexts>\n" +
+                "      <def name=\"Patient\"/>\n" +
+                "   </contexts>\n" +
+                "   <statements>\n" +
+                "      <def name=\"Patient\" context=\"Patient\">\n" +
+                "         <expression xsi:type=\"SingletonFrom\">\n" +
+                "            <operand dataType=\"fhir:Patient\" templateId=\"http://hl7.org/fhir/StructureDefinition/Patient\" xsi:type=\"Retrieve\"/>\n" +
+                "         </expression>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestToday\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"Today\"/>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestNow\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"Now\"/>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestTimeOfDay\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"TimeOfDay\"/>\n" +
+                "      </def>\n" +
+                "      <def name=\"Encounters\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression dataType=\"fhir:Encounter\" templateId=\"http://hl7.org/fhir/StructureDefinition/Encounter\" xsi:type=\"Retrieve\"/>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestTodayInWhere\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"Query\">\n" +
+                "            <source alias=\"$this\">\n" +
+                "               <expression name=\"Encounters\" xsi:type=\"ExpressionRef\"/>\n" +
+                "            </source>\n" +
+                "            <where xsi:type=\"And\">\n" +
+                "               <operand xsi:type=\"Equal\">\n" +
+                "                  <operand name=\"ToString\" libraryName=\"FHIRHelpers\" xsi:type=\"FunctionRef\">\n" +
+                "                     <operand path=\"status\" scope=\"$this\" xsi:type=\"Property\"/>\n" +
+                "                  </operand>\n" +
+                "                  <operand valueType=\"t:String\" value=\"in-progress\" xsi:type=\"Literal\"/>\n" +
+                "               </operand>\n" +
+                "               <operand xsi:type=\"LessOrEqual\">\n" +
+                "                  <operand name=\"ToDateTime\" libraryName=\"FHIRHelpers\" xsi:type=\"FunctionRef\">\n" +
+                "                     <operand path=\"end\" xsi:type=\"Property\">\n" +
+                "                        <source path=\"period\" scope=\"$this\" xsi:type=\"Property\"/>\n" +
+                "                     </operand>\n" +
+                "                  </operand>\n" +
+                "                  <operand xsi:type=\"ToDateTime\">\n" +
+                "                     <operand xsi:type=\"Subtract\">\n" +
+                "                        <operand xsi:type=\"Today\"/>\n" +
+                "                        <operand value=\"72\" unit=\"hours\" xsi:type=\"Quantity\"/>\n" +
+                "                     </operand>\n" +
+                "                  </operand>\n" +
+                "               </operand>\n" +
+                "            </where>\n" +
+                "         </expression>\n" +
+                "      </def>\n" +
+                "      <def name=\"TestNowInWhere\" context=\"Patient\" accessLevel=\"Public\">\n" +
+                "         <expression xsi:type=\"Query\">\n" +
+                "            <source alias=\"$this\">\n" +
+                "               <expression name=\"Encounters\" xsi:type=\"ExpressionRef\"/>\n" +
+                "            </source>\n" +
+                "            <where xsi:type=\"And\">\n" +
+                "               <operand xsi:type=\"Equal\">\n" +
+                "                  <operand name=\"ToString\" libraryName=\"FHIRHelpers\" xsi:type=\"FunctionRef\">\n" +
+                "                     <operand path=\"status\" scope=\"$this\" xsi:type=\"Property\"/>\n" +
+                "                  </operand>\n" +
+                "                  <operand valueType=\"t:String\" value=\"in-progress\" xsi:type=\"Literal\"/>\n" +
+                "               </operand>\n" +
+                "               <operand xsi:type=\"LessOrEqual\">\n" +
+                "                  <operand name=\"ToDateTime\" libraryName=\"FHIRHelpers\" xsi:type=\"FunctionRef\">\n" +
+                "                     <operand path=\"end\" xsi:type=\"Property\">\n" +
+                "                        <source path=\"period\" scope=\"$this\" xsi:type=\"Property\"/>\n" +
+                "                     </operand>\n" +
+                "                  </operand>\n" +
+                "                  <operand xsi:type=\"Subtract\">\n" +
+                "                     <operand xsi:type=\"Now\"/>\n" +
+                "                     <operand value=\"72\" unit=\"hours\" xsi:type=\"Quantity\"/>\n" +
+                "                  </operand>\n" +
+                "               </operand>\n" +
+                "            </where>\n" +
+                "         </expression>\n" +
+                "      </def>\n" +
+                "   </statements>\n" +
+                "</library>\n"));
+         */
+    }
+
+    @Test
     public void testFHIRPathLiteralStringEscapes() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestFHIRPathLiteralStringEscapes.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         ExpressionDef expressionDef = library.resolveExpressionRef("Test");
         assertThat(expressionDef, notNullValue());
         String xml = translator.toXml();
@@ -414,7 +560,7 @@ public class BaseTest {
     @Test
     public void testSearchPath() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestInclude.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
         ExpressionDef expressionDef = library.resolveExpressionRef("TestPractitionerSearch1");
         assertThat(expressionDef, notNullValue());
         Expression expression = expressionDef.getExpression();
@@ -438,7 +584,7 @@ public class BaseTest {
     @Test
     public void testInclude() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("fhir/r401/TestInclude.cql", 0);
-        TranslatedLibrary library = translator.getTranslatedLibrary();
+        CompiledLibrary library = translator.getTranslatedLibrary();
 
         /*
         define TestMedicationRequest1:

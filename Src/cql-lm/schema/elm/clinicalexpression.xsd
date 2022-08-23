@@ -476,6 +476,7 @@ Note that the recommended approach to statically binding to an expansion set is 
 			<xs:extension base="Expression">
 				<xs:attribute name="name" type="xs:string"/>
 				<xs:attribute name="libraryName" type="xs:string" use="optional"/>
+				<xs:attribute name="preserve" type="xs:boolean" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -598,6 +599,18 @@ The second argument is expected to be of type ValueSet. When this argument is st
 					<xs:element name="valuesetExpression" type="Expression" minOccurs="0"/>
 				</xs:sequence>
 			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ExpandValueSet">
+		<xs:annotation>
+			<xs:documentation>The ExpandValueSet operator returns the current expansion for the given value set.
+
+The operation exoects a single argument of type ValueSet. This may be a static reference to a value set (i.e. a ValueSetRef), or a ValueSet value to support dynamic value set usage. The operation is used as the implicit conversion from a ValueSet reference to a list of codes.
+
+If the argument is null, the result is null.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="UnaryExpression"/>
 		</xs:complexContent>
 	</xs:complexType>
 	<xs:complexType name="Subsumes">

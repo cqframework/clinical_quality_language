@@ -4,7 +4,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.testng.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import org.cqframework.cql.cql2elm.LibraryBuilder.SignatureLevel;
@@ -43,21 +46,31 @@ public class LibraryTests {
     }
 
     @Test
-    public void testIncludedLibraryWithSignatures() {
+    public void testLibraryReferencesWithCacheDisabled() {
         CqlTranslator translator = null;
+        try {
+            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"), modelManager, libraryManager.withDisableCache());
+            assertThat(translator.getErrors().size(), is(0));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testIncludedLibraryWithSignatures() {
+        CqlCompiler compiler = null;
         libraryManager = new LibraryManager(modelManager);
         libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
         try {
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
-                modelManager,
-                libraryManager,
-                CqlTranslatorException.ErrorSeverity.Info,
-                SignatureLevel.All);
+            compiler = new CqlCompiler(modelManager, libraryManager);
+            compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
+                    CqlCompilerException.ErrorSeverity.Info,
+                    SignatureLevel.All);
 
-            assertThat(translator.getErrors().size(), is(0));
+            assertThat(compiler.getErrors().size(), is(0));
 
             Map<String, ExpressionDef> includedLibDefs = new HashMap<>();
-            Map<String, Library> includedLibraries = translator.getLibraries();
+            Map<String, Library> includedLibraries = compiler.getLibraries();
             includedLibraries.values().stream().forEach(includedLibrary -> {
                 if (includedLibrary.getStatements() != null) {
                     for (ExpressionDef def : includedLibrary.getStatements().getDef()) {
@@ -72,6 +85,44 @@ public class LibraryTests {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testAlphanumericVersionIssue641() {
+        // the issue identified with using DefaultLibrarySourceLoader only; thus creating a fresh set below
+        ModelManager modelManager = new ModelManager();
+        LibraryManager libraryManager = new LibraryManager(modelManager);
+
+        InputStream translationTestFile = LibraryTests.class.getResourceAsStream("LibraryTests/Issue641.cql");
+        libraryManager.getLibrarySourceLoader().registerProvider(
+                new DefaultLibrarySourceProvider(Paths.get(
+                        new File(LibraryTests.class.getResource("LibraryTests/Issue641.cql").getFile()).getParent()
+                )));
+
+        try {
+            CqlCompiler compiler = new CqlCompiler(modelManager, libraryManager);
+            compiler.run(translationTestFile,
+                    CqlCompilerException.ErrorSeverity.Info,
+                    SignatureLevel.All);
+
+            System.out.println(compiler.getErrors());
+
+            Map<String, ExpressionDef> includedLibDefs = new HashMap<>();
+            Map<String, Library> includedLibraries = compiler.getLibraries();
+            includedLibraries.values().stream().forEach(includedLibrary -> {
+                if (includedLibrary.getStatements() != null) {
+                    for (ExpressionDef def : includedLibrary.getStatements().getDef()) {
+                        includedLibDefs.put(def.getName(), def);
+                    }
+                }
+            });
+
+            ExpressionDef baseLibDef = includedLibDefs.get("BaseLibSum");
+            assertThat(((AggregateExpression) baseLibDef.getExpression()).getSignature().size(), is(1));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test
@@ -113,7 +164,7 @@ public class LibraryTests {
         try {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/MissingLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(1));
-            assertThat(translator.getErrors().get(0), instanceOf(CqlTranslatorException.class));
+            assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
             assertThat(translator.getErrors().get(0).getCause(), instanceOf(CqlTranslatorIncludeException.class));
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,7 +177,7 @@ public class LibraryTests {
         try {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingInvalidBaseLibrary.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(1));
-            assertThat(translator.getErrors().get(0), instanceOf(CqlTranslatorException.class));
+            assertThat(translator.getErrors().get(0), instanceOf(CqlCompilerException.class));
             assertThat(translator.getErrors().get(0).getLocator(), notNullValue());
             assertThat(translator.getErrors().get(0).getLocator().getLibrary(), notNullValue());
             assertThat(translator.getErrors().get(0).getLocator().getLibrary().getId(), is("InvalidBaseLibrary"));
@@ -157,7 +208,7 @@ public class LibraryTests {
             translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/TestMeasure.cql"), modelManager, libraryManager);
             assertThat(translator.getErrors().size(), is(3));
 
-            for (CqlTranslatorException error : translator.getErrors()) {
+            for (CqlCompilerException error : translator.getErrors()) {
                 assertThat(error.getLocator(), notNullValue());
             }
         }
@@ -184,44 +235,41 @@ public class LibraryTests {
     public void testTranslatorOptionsFlowDownWithAnnotations() {
         try {
             // Test Annotations are created for both libraries
-            CqlTranslator translator = null;
+            CqlCompiler compiler = null;
             libraryManager = new LibraryManager(modelManager);
             libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
-                modelManager,
-                libraryManager,
-                CqlTranslatorException.ErrorSeverity.Info,
-                SignatureLevel.All,
-                CqlTranslator.Options.EnableAnnotations);
+            compiler = new CqlCompiler(modelManager, libraryManager);
+            compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
+                    CqlCompilerException.ErrorSeverity.Info,
+                    SignatureLevel.All,
+                    CqlTranslatorOptions.Options.EnableAnnotations);
 
-            assertThat(translator.getErrors().size(), is(0));
-            Map<String, Library> includedLibraries = translator.getLibraries();
+            assertThat(compiler.getErrors().size(), is(0));
+            Map<String, Library> includedLibraries = compiler.getLibraries();
             includedLibraries.values().stream().forEach(includedLibrary -> {
                 // Ensure that some annotations are present.
                 assertTrue(includedLibrary.getStatements().getDef().stream().filter(x -> x.getAnnotation().size() > 0).count() > 0);
             });
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Test
     public void testTranslatorOptionsFlowDownWithoutAnnotations() {
-
         try {
             // Test Annotations are created for both libraries
-            CqlTranslator translator = null;
+            CqlCompiler compiler = null;
             libraryManager = new LibraryManager(modelManager);
             libraryManager.getLibrarySourceLoader().registerProvider(new TestLibrarySourceProvider());
-            translator = CqlTranslator.fromStream(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
-                modelManager,
-                libraryManager,
-                CqlTranslatorException.ErrorSeverity.Info,
-                SignatureLevel.All);
 
-            assertThat(translator.getErrors().size(), is(0));
-            Map<String, Library> includedLibraries = translator.getLibraries();
+            compiler = new CqlCompiler(modelManager, libraryManager);
+            compiler.run(LibraryTests.class.getResourceAsStream("LibraryTests/ReferencingLibrary.cql"),
+                    CqlCompilerException.ErrorSeverity.Info,
+                    SignatureLevel.All);
+
+            assertThat(compiler.getErrors().size(), is(0));
+            Map<String, Library> includedLibraries = compiler.getLibraries();
             includedLibraries.values().stream().forEach(includedLibrary -> {
                 // Ensure that no annotations are present.
                 assertTrue(includedLibrary.getStatements().getDef().stream().filter(x -> x.getAnnotation().size() > 0).count() == 0);

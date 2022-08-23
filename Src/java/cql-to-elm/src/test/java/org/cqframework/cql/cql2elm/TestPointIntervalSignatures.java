@@ -1,12 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.cql.model.IntervalType;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.Test;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 

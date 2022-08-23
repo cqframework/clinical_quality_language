@@ -3,16 +3,17 @@ package org.cqframework.cql.cql2elm;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Path;
+import java.util.*;
 
 /**
  * Used by LibraryManager to manage a set of library source providers that
  * resolve library includes within CQL. Package private since its not intended
  * to be used outside the context of the instantiating LibraryManager instance.
  */
-public class PriorityLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware {
+public class PriorityLibrarySourceLoader implements LibrarySourceLoader, NamespaceAware, PathAware {
     private final List<LibrarySourceProvider> PROVIDERS = new ArrayList<>();
+    private boolean initialized = false;
 
     @Override
     public void registerProvider(LibrarySourceProvider provider) {
@@ -24,34 +25,78 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
             ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
         }
 
+        if (path != null && provider instanceof PathAware) {
+            ((PathAware)provider).setPath(path);
+        }
+
         PROVIDERS.add(provider);
+    }
+
+    private Path path;
+    public void setPath(Path path) {
+        if (path == null || ! path.toFile().isDirectory()) {
+            throw new IllegalArgumentException(String.format("path '%s' is not a valid directory", path));
+        }
+
+        this.path = path;
+
+        for (LibrarySourceProvider provider : getProviders()) {
+            if (provider instanceof PathAware) {
+                ((PathAware)provider).setPath(path);
+            }
+        }
     }
 
     @Override
     public void clearProviders() {
         PROVIDERS.clear();
+        initialized = false;
+    }
+
+    private List<LibrarySourceProvider> getProviders() {
+        if (!initialized) {
+            initialized = true;
+            for (Iterator<LibrarySourceProvider> it = LibrarySourceProviderFactory.providers(false); it.hasNext(); ) {
+                LibrarySourceProvider provider = it.next();
+                registerProvider(provider);
+            }
+        }
+
+        return PROVIDERS;
     }
 
     @Override
     public InputStream getLibrarySource(VersionedIdentifier libraryIdentifier) {
-        if (libraryIdentifier == null) {
-            throw new IllegalArgumentException("libraryIdentifier is null.");
-        }
+        return getLibraryContent(libraryIdentifier, LibraryContentType.CQL);
+    }
 
-        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().equals("")) {
-            throw new IllegalArgumentException("libraryIdentifier Id is null.");
-        }
+    @Override
+    public InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
 
-        InputStream source = null;
-        for (LibrarySourceProvider provider : PROVIDERS) {
-            InputStream localSource = provider.getLibrarySource(libraryIdentifier);
-            if (localSource != null) {
-                return localSource;
+        validateInput(libraryIdentifier, type);
+        InputStream content = null;
+        for (LibrarySourceProvider provider : getProviders()) {
+            content = provider.getLibraryContent(libraryIdentifier, type);
+
+            if (content != null) {
+                return content;
             }
         }
 
-        throw new IllegalArgumentException(String.format("Could not load source for library %s, version %s.",
-                libraryIdentifier.getId(), libraryIdentifier.getVersion()));
+        return null;
+    }
+
+    @Override
+    public boolean isLibraryContentAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        validateInput(libraryIdentifier, type);
+
+        for (LibrarySourceProvider provider : getProviders()) {
+            if (provider.isLibraryContentAvailable(libraryIdentifier, type)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private NamespaceManager namespaceManager;
@@ -60,10 +105,24 @@ public class PriorityLibrarySourceLoader implements LibrarySourceLoader, Namespa
     public void setNamespaceManager(NamespaceManager namespaceManager) {
         this.namespaceManager = namespaceManager;
 
-        for (LibrarySourceProvider provider : PROVIDERS) {
+        for (LibrarySourceProvider provider : getProviders()) {
             if (provider instanceof NamespaceAware) {
                 ((NamespaceAware)provider).setNamespaceManager(namespaceManager);
             }
+        }
+    }
+
+    private void validateInput(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("libraryContentType is null.");
+        }
+
+        if (libraryIdentifier == null) {
+            throw new IllegalArgumentException("libraryIdentifier is null.");
+        }
+
+        if (libraryIdentifier.getId() == null || libraryIdentifier.getId().equals("")) {
+            throw new IllegalArgumentException("libraryIdentifier Id is null.");
         }
     }
 }

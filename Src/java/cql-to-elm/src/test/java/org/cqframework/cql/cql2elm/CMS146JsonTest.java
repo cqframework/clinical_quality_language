@@ -19,7 +19,8 @@ public class CMS146JsonTest {
 
         File cms146 = new File(URLDecoder.decode(CMS146JsonTest.class.getResource("CMS146v2_Test_CQM.cql").getFile(), "UTF-8"));
         ModelManager modelManager = new ModelManager();
-        String actualJson = CqlTranslator.fromFile(cms146, modelManager, new LibraryManager(modelManager)).toJson();
+        CqlTranslator translator = CqlTranslator.fromFile(cms146, modelManager, new LibraryManager(modelManager));
+        String actualJson = translator.toJson();
         assertThat(actualJson, sameJSONAs(expectedJson));
     }
 }

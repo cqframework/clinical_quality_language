@@ -1,0 +1,291 @@
+{
+  "library": {
+    "annotation": [
+      {
+        "translatorOptions": "EnableAnnotations",
+        "type": "CqlToElmInfo"
+      }
+    ],
+    "identifier": {
+      "id": "AdultOutpatientEncounters_FHIR4",
+      "version": "2.0.000"
+    },
+    "schemaIdentifier": {
+      "id": "urn:hl7-org:elm",
+      "version": "r1"
+    },
+    "usings": {
+      "def": [
+        {
+          "localIdentifier": "System",
+          "uri": "urn:hl7-org:elm-types:r1"
+        },
+        {
+          "localIdentifier": "FHIR",
+          "uri": "http://hl7.org/fhir",
+          "version": "4.0.1",
+          "annotation": [
+            {
+              "type": "Annotation",
+              "t": [
+                {
+                  "name": "update",
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "includes": {
+      "def": [
+        {
+          "localIdentifier": "FHIRHelpers",
+          "path": "FHIRHelpers",
+          "version": "4.0.1"
+        }
+      ]
+    },
+    "parameters": {
+      "def": [
+        {
+          "name": "Measurement Period",
+          "accessLevel": "Public",
+          "default": {
+            "lowClosed": true,
+            "highClosed": false,
+            "type": "Interval",
+            "low": {
+              "type": "DateTime",
+              "year": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "2019",
+                "type": "Literal"
+              },
+              "month": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "1",
+                "type": "Literal"
+              },
+              "day": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "1",
+                "type": "Literal"
+              },
+              "hour": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "0",
+                "type": "Literal"
+              },
+              "minute": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "0",
+                "type": "Literal"
+              },
+              "second": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "0",
+                "type": "Literal"
+              },
+              "millisecond": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "0",
+                "type": "Literal"
+              }
+            },
+            "high": {
+              "type": "DateTime",
+              "year": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "2020",
+                "type": "Literal"
+              },
+              "month": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "1",
+                "type": "Literal"
+              },
+              "day": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "1",
+                "type": "Literal"
+              },
+              "hour": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "0",
+                "type": "Literal"
+              },
+              "minute": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "0",
+                "type": "Literal"
+              },
+              "second": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "0",
+                "type": "Literal"
+              },
+              "millisecond": {
+                "valueType": "{urn:hl7-org:elm-types:r1}Integer",
+                "value": "0",
+                "type": "Literal"
+              }
+            }
+          },
+          "parameterTypeSpecifier": {
+            "type": "IntervalTypeSpecifier",
+            "pointType": {
+              "name": "{urn:hl7-org:elm-types:r1}DateTime",
+              "type": "NamedTypeSpecifier"
+            }
+          }
+        }
+      ]
+    },
+    "valueSets": {
+      "def": [
+        {
+          "name": "Office Visit",
+          "id": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1001",
+          "accessLevel": "Public"
+        },
+        {
+          "name": "Annual Wellness Visit",
+          "id": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.526.3.1240",
+          "accessLevel": "Public"
+        },
+        {
+          "name": "Preventive Care Services - Established Office Visit, 18 and Up",
+          "id": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1025",
+          "accessLevel": "Public"
+        },
+        {
+          "name": "Preventive Care Services-Initial Office Visit, 18 and Up",
+          "id": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1023",
+          "accessLevel": "Public"
+        },
+        {
+          "name": "Home Healthcare Services",
+          "id": "http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1016",
+          "accessLevel": "Public"
+        }
+      ]
+    },
+    "contexts": {
+      "def": [
+        {
+          "name": "Patient"
+        }
+      ]
+    },
+    "statements": {
+      "def": [
+        {
+          "name": "Patient",
+          "context": "Patient",
+          "expression": {
+            "type": "SingletonFrom",
+            "operand": {
+              "dataType": "{http://hl7.org/fhir}Patient",
+              "templateId": "http://hl7.org/fhir/StructureDefinition/Patient",
+              "type": "Retrieve"
+            }
+          }
+        },
+        {
+          "name": "Qualifying Encounters",
+          "context": "Patient",
+          "accessLevel": "Public",
+          "expression": {
+            "type": "Query",
+            "source": [
+              {
+                "alias": "ValidEncounter",
+                "expression": {
+                  "type": "Union",
+                  "operand": [
+                    {
+                      "type": "Union",
+                      "operand": [
+                        {
+                          "type": "Union",
+                          "operand": [
+                            {
+                              "dataType": "{http://hl7.org/fhir}Encounter",
+                              "templateId": "http://hl7.org/fhir/StructureDefinition/Encounter",
+                              "codeProperty": "type",
+                              "codeComparator": "in",
+                              "type": "Retrieve",
+                              "codes": {
+                                "name": "Office Visit",
+                                "type": "ValueSetRef"
+                              }
+                            },
+                            {
+                              "dataType": "{http://hl7.org/fhir}Encounter",
+                              "templateId": "http://hl7.org/fhir/StructureDefinition/Encounter",
+                              "codeProperty": "type",
+                              "codeComparator": "in",
+                              "type": "Retrieve",
+                              "codes": {
+                                "name": "Annual Wellness Visit",
+                                "type": "ValueSetRef"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "Union",
+                          "operand": [
+                            {
+                              "dataType": "{http://hl7.org/fhir}Encounter",
+                              "templateId": "http://hl7.org/fhir/StructureDefinition/Encounter",
+                              "codeProperty": "type",
+                              "codeComparator": "in",
+                              "type": "Retrieve",
+                              "codes": {
+                                "name": "Preventive Care Services - Established Office Visit, 18 and Up",
+                                "type": "ValueSetRef"
+                              }
+                            },
+                            {
+                              "dataType": "{http://hl7.org/fhir}Encounter",
+                              "templateId": "http://hl7.org/fhir/StructureDefinition/Encounter",
+                              "codeProperty": "type",
+                              "codeComparator": "in",
+                              "type": "Retrieve",
+                              "codes": {
+                                "name": "Preventive Care Services-Initial Office Visit, 18 and Up",
+                                "type": "ValueSetRef"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "dataType": "{http://hl7.org/fhir}Encounter",
+                      "templateId": "http://hl7.org/fhir/StructureDefinition/Encounter",
+                      "codeProperty": "type",
+                      "codeComparator": "in",
+                      "type": "Retrieve",
+                      "codes": {
+                        "name": "Home Healthcare Services",
+                        "type": "ValueSetRef"
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "relationship": [],
+            "where": {
+              "type": "Null"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

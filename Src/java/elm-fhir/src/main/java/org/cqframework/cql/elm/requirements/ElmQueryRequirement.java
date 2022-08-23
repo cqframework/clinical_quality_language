@@ -3,6 +3,7 @@ package org.cqframework.cql.elm.requirements;
 import org.hl7.elm.r1.*;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ElmQueryRequirement extends ElmExpressionRequirement {
@@ -18,7 +19,7 @@ public class ElmQueryRequirement extends ElmExpressionRequirement {
         return getQuery();
     }
 
-    private Set<ElmDataRequirement> dataRequirements = new HashSet<ElmDataRequirement>();
+    private Set<ElmDataRequirement> dataRequirements = new LinkedHashSet<ElmDataRequirement>();
     public Iterable<ElmDataRequirement> getDataRequirements() {
         return dataRequirements;
     }

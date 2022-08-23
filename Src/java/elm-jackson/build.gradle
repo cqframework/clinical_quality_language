@@ -1,0 +1,9 @@
+// Most build configuration comes from the cql-all parent build!
+
+dependencies {
+    implementation project(':elm')
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.2'
+    implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
+}

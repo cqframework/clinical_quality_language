@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="QICore" version="4.0.0" url="http://hl7.org/fhir/us/qicore" targetUrl="http://hl7.org/fhir" targetQualifier="qicore" patientClassName="Patient" patientBirthDatePropertyName="birthDate">
    <requiredModelInfo name="System" version="1.0.0"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false">
       <element name="use" elementType="QICore.AddressUse"/>
       <element name="type" elementType="QICore.AddressType"/>
       <element name="text" elementType="System.String" target="%value.value"/>
@@ -22,7 +22,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="AddressType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="AddressUse" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="AdministrativeGender" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="AdverseEvent" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent" label="AdverseEvent" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="AdverseEvent" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent" label="AdverseEvent" retrievable="true" primaryCodePath="type">
       <element name="identifier" elementType="QICore.Identifier"/>
       <element name="actuality" elementType="QICore.AdverseEventActuality"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
@@ -61,18 +61,18 @@
       <contextRelationship context="Patient" relatedKeyElement="subject"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="recorder"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="AdverseEvent.SuspectEntity" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="AdverseEvent.SuspectEntity" retrievable="false">
       <element name="instance" elementType="QICore.Reference"/>
       <element name="causality" elementType="QICore.AdverseEvent.SuspectEntity.Causality"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="AdverseEvent.SuspectEntity.Causality" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="AdverseEvent.SuspectEntity.Causality" retrievable="false">
       <element name="assessment" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="productRelatedness" elementType="System.String" target="%value.value"/>
       <element name="author" elementType="QICore.Reference"/>
       <element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="AdverseEventActuality" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="AllergyIntolerance" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-allergyintolerance" label="AllergyIntolerance" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="AllergyIntolerance" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-allergyintolerance" label="AllergyIntolerance" retrievable="true" primaryCodePath="code">
       <element name="resolutionAge" elementType="QICore.resolutionAge" target="FHIRHelpers.ToQuantity(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/allergyintolerance-resolutionAge'].value)"/>
       <element name="reasonRefuted" elementType="QICore.reasonRefuted" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/allergyintolerance-reasonRefuted'].value)"/>
       <element name="identifier">
@@ -115,7 +115,7 @@
       <contextRelationship context="Patient" relatedKeyElement="asserter"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="asserter"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="AllergyIntolerance.Reaction" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="AllergyIntolerance.Reaction" retrievable="false">
       <element name="substance" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="manifestation" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
@@ -133,7 +133,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="AllergyIntoleranceCriticality" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="AllergyIntoleranceSeverity" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="AllergyIntoleranceType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Annotation" identifier="http://hl7.org/fhir/StructureDefinition/Annotation" label="Annotation" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Annotation" identifier="http://hl7.org/fhir/StructureDefinition/Annotation" label="Annotation" retrievable="false">
       <element name="author" target="QICore.Reference:null;System.String:%value.value">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -143,7 +143,7 @@
       <element name="time" elementType="System.DateTime" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false">
       <element name="contentType" elementType="QICore.MimeType"/>
       <element name="language" elementType="System.String" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
@@ -153,13 +153,13 @@
       <element name="title" elementType="System.String" target="%value.value"/>
       <element name="creation" elementType="System.DateTime" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="BackboneElement" identifier="http://hl7.org/fhir/StructureDefinition/BackboneElement" label="BackboneElement" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="BackboneElement" identifier="http://hl7.org/fhir/StructureDefinition/BackboneElement" label="BackboneElement" retrievable="false">
       <element name="modifierExtension">
          <elementTypeSpecifier elementType="QICore.Extension" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="BodyLengthUnits" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="BodyStructure" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-bodystructure" label="BodyStructure" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="BodyStructure" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-bodystructure" label="BodyStructure" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -178,7 +178,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="BodyTempUnits" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="BodyWeightUnits" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="CarePlan" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-careplan" label="CarePlan" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="CarePlan" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-careplan" label="CarePlan" retrievable="true" primaryCodePath="category">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -241,7 +241,7 @@
       <contextRelationship context="Encounter" relatedKeyElement="encounter"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="performer"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="CarePlan.Activity" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="CarePlan.Activity" retrievable="false">
       <element name="outcomeCodeableConcept" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -254,7 +254,7 @@
       <element name="reference" elementType="QICore.Reference"/>
       <element name="detail" elementType="QICore.CarePlan.Activity.Detail"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="CarePlan.Activity.Detail" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="CarePlan.Activity.Detail" retrievable="false">
       <element name="kind" elementType="QICore.CarePlanActivityKind"/>
       <element name="instantiatesCanonical" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
@@ -300,7 +300,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="CarePlanActivityKind" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="CarePlanActivityStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="CareTeam" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-careteam" label="CareTeam" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="CareTeam" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-careteam" label="CareTeam" retrievable="true" primaryCodePath="category">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -340,7 +340,7 @@
       <contextRelationship context="Encounter" relatedKeyElement="encounter"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="member"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="CareTeam.Participant" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="CareTeam.Participant" retrievable="false">
       <element name="role" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="member" elementType="QICore.Reference"/>
       <element name="onBehalfOf" elementType="QICore.Reference"/>
@@ -350,7 +350,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Claim" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-claim" label="Claim" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Claim" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-claim" label="Claim" retrievable="true" primaryCodePath="type">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -411,7 +411,7 @@
       <contextRelationship context="Device" relatedKeyElement="udi"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="party"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Accident" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Accident" retrievable="false">
       <element name="date" elementType="System.Date" target="%value.value"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="location" target="QICore.Address:null;QICore.Reference:null">
@@ -421,14 +421,14 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.CareTeam" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.CareTeam" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="provider" elementType="QICore.Reference"/>
       <element name="responsible" elementType="System.Boolean" target="%value.value"/>
       <element name="role" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="qualification" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Diagnosis" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Diagnosis" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="diagnosis" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -442,7 +442,7 @@
       <element name="onAdmission" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="packageCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Insurance" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Insurance" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="focal" elementType="System.Boolean" target="%value.value"/>
       <element name="identifier" elementType="QICore.Identifier"/>
@@ -453,7 +453,7 @@
       </element>
       <element name="claimResponse" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Item" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Item" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="careTeamSequence" target="%value.value">
          <elementTypeSpecifier elementType="System.Integer" xsi:type="ListTypeSpecifier"/>
@@ -509,7 +509,7 @@
          <elementTypeSpecifier elementType="QICore.Claim.Item.Detail" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Item.Detail" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Item.Detail" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="revenue" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -531,7 +531,7 @@
          <elementTypeSpecifier elementType="QICore.Claim.Item.Detail.SubDetail" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Item.Detail.SubDetail" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Item.Detail.SubDetail" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="revenue" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -550,11 +550,11 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Payee" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Payee" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="party" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Procedure" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Procedure" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="type" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
@@ -570,12 +570,12 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Related" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Related" retrievable="false">
       <element name="claim" elementType="QICore.Reference"/>
       <element name="relationship" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="reference" elementType="QICore.Identifier"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.SupportingInfo" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Claim.SupportingInfo" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -599,7 +599,7 @@
       <element name="reason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ClaimStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Communication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communication" label="Communication" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Communication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communication" label="Communication" retrievable="true" primaryCodePath="reasonCode">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -662,7 +662,7 @@
       <contextRelationship context="RelatedPerson" relatedKeyElement="sender"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="recipient"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Communication.Payload" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Communication.Payload" retrievable="false">
       <element name="content" target="System.String:%value.value;QICore.Attachment:null;QICore.Reference:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -671,7 +671,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="CommunicationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone" label="CommunicationNotDone" target="Communication" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="CommunicationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone" label="CommunicationNotDone" target="Communication" retrievable="true">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value"/>
       <element name="identifier">
@@ -728,7 +728,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="CommunicationPriority" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="CommunicationRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationrequest" label="CommunicationRequest" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="CommunicationRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationrequest" label="CommunicationRequest" retrievable="true" primaryCodePath="category">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -794,7 +794,7 @@
       <contextRelationship context="RelatedPerson" relatedKeyElement="recipient"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="requester"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="CommunicationRequest.Payload" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="CommunicationRequest.Payload" retrievable="false">
       <element name="content" target="System.String:%value.value;QICore.Attachment:null;QICore.Reference:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -805,7 +805,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="CommunicationRequestStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="CommunicationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Condition" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition" label="Condition" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Condition" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition" label="Condition" retrievable="true" primaryCodePath="code">
       <element name="dueTo" target="System.Concept:FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/condition-dueTo'].value);QICore.Reference:null">
          <elementTypeSpecifier elementType="QICore.dueTo" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -869,7 +869,7 @@
       <contextRelationship context="Encounter" relatedKeyElement="encounter"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="asserter"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Condition.Evidence" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Condition.Evidence" retrievable="false">
       <element name="code" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -877,20 +877,20 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Condition.Stage" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Condition.Stage" retrievable="false">
       <element name="summary" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="assessment">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="ContactDetail" identifier="http://hl7.org/fhir/StructureDefinition/ContactDetail" label="ContactDetail" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="ContactDetail" identifier="http://hl7.org/fhir/StructureDefinition/ContactDetail" label="ContactDetail" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="telecom">
          <elementTypeSpecifier elementType="QICore.ContactPoint" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false">
       <element name="system" elementType="QICore.ContactPointSystem"/>
       <element name="value" elementType="System.String" target="%value.value"/>
       <element name="use" elementType="QICore.ContactPointUse"/>
@@ -903,7 +903,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ContactPointSystem" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="ContactPointUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false">
       <element name="type" elementType="QICore.ContributorType"/>
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="contact">
@@ -911,7 +911,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ContributorType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Coverage" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-coverage" label="Coverage" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Coverage" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-coverage" label="Coverage" retrievable="true" primaryCodePath="type">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -951,12 +951,12 @@
       <contextRelationship context="RelatedPerson" relatedKeyElement="subscriber"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="payor"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Coverage.Class" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Coverage.Class" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="value" elementType="System.String" target="%value.value"/>
       <element name="name" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Coverage.CostToBeneficiary" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Coverage.CostToBeneficiary" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Decimal:%value.value">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -968,7 +968,7 @@
          <elementTypeSpecifier elementType="QICore.Coverage.CostToBeneficiary.Exception" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Coverage.CostToBeneficiary.Exception" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Coverage.CostToBeneficiary.Exception" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="period">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -977,7 +977,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="CoverageStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false">
       <element name="type" elementType="QICore.FHIRAllTypes"/>
       <element name="profile" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
@@ -1002,7 +1002,7 @@
          <elementTypeSpecifier elementType="QICore.DataRequirement.Sort" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="DataRequirement.CodeFilter" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="DataRequirement.CodeFilter" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value"/>
       <element name="searchParam" elementType="System.String" target="%value.value"/>
       <element name="valueSet" elementType="System.String" target="%value.value"/>
@@ -1010,7 +1010,7 @@
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="DataRequirement.DateFilter" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="DataRequirement.DateFilter" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value"/>
       <element name="searchParam" elementType="System.String" target="%value.value"/>
       <element name="value" target="System.DateTime:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value)">
@@ -1023,13 +1023,13 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="DataRequirement.Sort" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="DataRequirement.Sort" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value"/>
       <element name="direction" elementType="QICore.SortDirection"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="DayOfWeek" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="DaysOfWeek" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Device" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-device" label="Device" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Device" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-device" label="Device" retrievable="true" primaryCodePath="type">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1077,11 +1077,11 @@
       </element>
       <element name="parent" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Device.DeviceName" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Device.DeviceName" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="type" elementType="QICore.DeviceNameType"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Device.Property" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Device.Property" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="valueQuantity" target="FHIRHelpers.ToQuantity(%value)">
          <elementTypeSpecifier elementType="System.Quantity" xsi:type="ListTypeSpecifier"/>
@@ -1090,11 +1090,11 @@
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Device.Specialization" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Device.Specialization" retrievable="false">
       <element name="systemType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="version" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Device.UdiCarrier" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Device.UdiCarrier" retrievable="false">
       <element name="deviceIdentifier" elementType="System.String" target="%value.value"/>
       <element name="issuer" elementType="System.String" target="%value.value"/>
       <element name="jurisdiction" elementType="System.String" target="%value.value"/>
@@ -1102,13 +1102,13 @@
       <element name="carrierHRF" elementType="System.String" target="%value.value"/>
       <element name="entryType" elementType="QICore.UDIEntryType"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Device.Version" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Device.Version" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="component" elementType="QICore.Identifier"/>
       <element name="value" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="DeviceNameType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DeviceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested" label="DeviceNotRequested" target="DeviceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DeviceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested" label="DeviceNotRequested" target="DeviceRequest" retrievable="true" primaryCodePath="code">
       <element name="doNotPerformReason" elementType="QICore.DoNotPerformReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-doNotPerformReason'].value)"/>
       <element name="doNotPerform" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/StructureDefinition/request-doNotPerform'].value"/>
       <element name="identifier">
@@ -1169,7 +1169,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DeviceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicerequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DeviceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicerequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1241,7 +1241,7 @@
       <contextRelationship context="Device" relatedKeyElement="requester"/>
       <contextRelationship context="Device" relatedKeyElement="performer"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="DeviceRequest.Parameter" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="DeviceRequest.Parameter" retrievable="false">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="value" target="System.Concept:FHIRHelpers.ToConcept(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Boolean:%value.value">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -1255,7 +1255,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="DeviceRequestStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DeviceUseStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-deviceusestatement" label="DeviceUseStatement" retrievable="true" primaryCodePath="device.code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DeviceUseStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-deviceusestatement" label="DeviceUseStatement" retrievable="true" primaryCodePath="device.code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1294,11 +1294,11 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="DeviceUseStatementStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.Concept" namespace="QICore" name="Diagnosis_Present_On_Admission_Extension" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-diagnosisPresentOnAdmission" label="Diagnosis_Present_On_Admission_Extension" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="DiagnosticReport.Media" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="DiagnosticReport.Media" retrievable="false">
       <element name="comment" elementType="System.String" target="%value.value"/>
       <element name="link" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DiagnosticReportLab" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-lab" label="DiagnosticReportLab" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DiagnosticReportLab" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-lab" label="DiagnosticReportLab" target="DiagnosticReport" retrievable="true" primaryCodePath="code">
       <element name="locationPerformed" elementType="QICore.Reference" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/diagnosticReport-locationPerformed']"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -1349,7 +1349,7 @@
          <elementTypeSpecifier elementType="QICore.Attachment" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DiagnosticReportNote" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-note" label="DiagnosticReportNote" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="DiagnosticReportNote" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-diagnosticreport-note" label="DiagnosticReportNote" target="DiagnosticReport" retrievable="true" primaryCodePath="code">
       <element name="locationPerformed" elementType="QICore.Reference" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/diagnosticReport-locationPerformed']"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -1400,7 +1400,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.Concept" namespace="QICore" name="DoNotPerformReason" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-doNotPerformReason" label="DoNotPerformReason" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Resource" namespace="QICore" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Resource" namespace="QICore" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="true">
       <element name="text" elementType="QICore.Narrative"/>
       <element name="contained">
          <elementTypeSpecifier elementType="QICore.Resource" xsi:type="ListTypeSpecifier"/>
@@ -1412,7 +1412,7 @@
          <elementTypeSpecifier elementType="QICore.Extension" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Dosage" identifier="http://hl7.org/fhir/StructureDefinition/Dosage" label="Dosage" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Dosage" identifier="http://hl7.org/fhir/StructureDefinition/Dosage" label="Dosage" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
       <element name="additionalInstruction" target="FHIRHelpers.ToConcept(%value)">
@@ -1436,7 +1436,7 @@
       <element name="maxDosePerAdministration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="maxDosePerLifetime" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Dosage.DoseAndRate" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Dosage.DoseAndRate" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="dose" target="System.Quantity:FHIRHelpers.ToQuantity(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -1456,14 +1456,14 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.Any" namespace="QICore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.Any" namespace="QICore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false">
       <element name="id" elementType="System.String" target="%value.value"/>
       <element name="extension">
          <elementTypeSpecifier elementType="QICore.Extension" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="EnableWhenBehavior" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Encounter" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" label="Encounter" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Encounter" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter" label="Encounter" retrievable="true" primaryCodePath="type">
       <element name="statusReason" elementType="QICore.statusReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/request-statusReason'].value)"/>
       <element name="procedure" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-procedure']">
          <elementTypeSpecifier elementType="QICore.EncounterProcedureExtension" xsi:type="ListTypeSpecifier"/>
@@ -1524,7 +1524,7 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="individual"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.ClassHistory" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.ClassHistory" retrievable="false">
       <element name="class" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
       <element name="period">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -1532,13 +1532,13 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Diagnosis" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Diagnosis" retrievable="false">
       <element name="condition" elementType="QICore.Reference"/>
       <element name="use" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="rank" elementType="System.Integer" target="%value.value"/>
       <element name="diagnosisPresentOnAdmission" elementType="QICore.Diagnosis_Present_On_Admission_Extension" target="FHIRHelpers.ToConcept(%parent.diagnosis.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-diagnosisPresentOnAdmission'].value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Hospitalization" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Hospitalization" retrievable="false">
       <element name="preAdmissionIdentifier" elementType="QICore.Identifier"/>
       <element name="origin" elementType="QICore.Reference"/>
       <element name="admitSource" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -1555,7 +1555,7 @@
       <element name="destination" elementType="QICore.Reference"/>
       <element name="dischargeDisposition" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Location" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Location" retrievable="false">
       <element name="location" elementType="QICore.Reference"/>
       <element name="status" elementType="QICore.EncounterLocationStatus"/>
       <element name="physicalType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -1565,7 +1565,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Participant" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Participant" retrievable="false">
       <element name="type" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1576,7 +1576,7 @@
       </element>
       <element name="individual" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.StatusHistory" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.StatusHistory" retrievable="false">
       <element name="status" elementType="QICore.EncounterStatus"/>
       <element name="period">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -1585,7 +1585,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="EncounterLocationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Extension" namespace="QICore" name="EncounterProcedureExtension" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-procedure" label="EncounterProcedureExtension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Extension" namespace="QICore" name="EncounterProcedureExtension" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-encounter-procedure" label="EncounterProcedureExtension" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.extension[url='type'].value)"/>
       <element name="rank" elementType="System.Integer" target="%parent.extension[url='rank'].value.value"/>
       <element name="procedure" elementType="QICore.Reference" target="%parent.extension[url='procedure']"/>
@@ -1593,14 +1593,14 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="EncounterStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="EventTiming" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Expression" identifier="http://hl7.org/fhir/StructureDefinition/Expression" label="Expression" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Expression" identifier="http://hl7.org/fhir/StructureDefinition/Expression" label="Expression" retrievable="false">
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="language" elementType="System.String" target="%value.value"/>
       <element name="expression" elementType="System.String" target="%value.value"/>
       <element name="reference" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false">
       <element name="url" elementType="System.String" target="%value.value"/>
       <element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;QICore.Address:null;System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Annotation:null;QICore.Attachment:null;System.Concept:FHIRHelpers.ToConcept(%value);System.Code:FHIRHelpers.ToCode(%value);QICore.ContactPoint:null;System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.HumanName:null;QICore.Identifier:null;System.Decimal:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.Reference:null;QICore.SampledData:null;QICore.Signature:null;QICore.Timing:null;QICore.ContactDetail:null;QICore.Contributor:null;QICore.DataRequirement:null;QICore.Expression:null;QICore.ParameterDefinition:null;QICore.RelatedArtifact:null;QICore.TriggerDefinition:null;QICore.UsageContext:null;QICore.Dosage:null;QICore.Meta:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -1665,7 +1665,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="FHIRDeviceStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="FHIRSubstanceStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="FamilyHistoryStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="FamilyMemberHistory" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-familymemberhistory" label="FamilyMemberHistory" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="FamilyMemberHistory" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-familymemberhistory" label="FamilyMemberHistory" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1724,7 +1724,7 @@
       <element name="condition" elementType="QICore.FamilyMemberHistory.Condition"/>
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="FamilyMemberHistory.Condition" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="FamilyMemberHistory.Condition" retrievable="false">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="outcome" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="contributedToDeath" elementType="System.Boolean" target="%value.value"/>
@@ -1746,7 +1746,7 @@
       <element name="condition-abatement" elementType="QICore.abatement" target="System.Date:%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement'].value.value;System.Quantity:FHIRHelpers.ToQuantity(%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement'].value);System.Boolean:%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement'].value.value"/>
       <element name="condition-severity" elementType="QICore.severity" target="FHIRHelpers.ToConcept(%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-severity'].value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Flag" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-flag" label="Flag" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Flag" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-flag" label="Flag" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1768,7 +1768,7 @@
       <contextRelationship context="Device" relatedKeyElement="author"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="FlagStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Goal" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-goal" label="Goal" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Goal" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-goal" label="Goal" retrievable="true" primaryCodePath="category">
       <element name="reasonRejected" elementType="QICore.reasonRejected" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/goal-reasonRejected'].value)"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -1802,7 +1802,7 @@
       </element>
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Goal.Target" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Goal.Target" retrievable="false">
       <element name="measure" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="detail" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;System.Ratio:FHIRHelpers.ToRatio(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -1819,7 +1819,7 @@
       </element>
       <element name="due" elementType="System.Date" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false">
       <element name="use" elementType="QICore.NameUse"/>
       <element name="text" elementType="System.String" target="%value.value"/>
       <element name="family" elementType="System.String" target="%value.value"/>
@@ -1838,7 +1838,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false">
       <element name="use" elementType="QICore.IdentifierUse"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="system" elementType="System.String" target="%value.value"/>
@@ -1851,7 +1851,7 @@
       <element name="assigner" elementType="QICore.Reference"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="IdentifierUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImagingStudy" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-imagingstudy" label="ImagingStudy" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ImagingStudy" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-imagingstudy" label="ImagingStudy" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1894,7 +1894,7 @@
       </element>
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="ImagingStudy.Series" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="ImagingStudy.Series" retrievable="false">
       <element name="uid" elementType="System.String" target="%value.value"/>
       <element name="number" elementType="System.Integer" target="%value.value"/>
       <element name="modality" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
@@ -1916,18 +1916,18 @@
          <elementTypeSpecifier elementType="QICore.ImagingStudy.Series.Instance" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="ImagingStudy.Series.Instance" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="ImagingStudy.Series.Instance" retrievable="false">
       <element name="uid" elementType="System.String" target="%value.value"/>
       <element name="sopClass" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
       <element name="number" elementType="System.Integer" target="%value.value"/>
       <element name="title" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="ImagingStudy.Series.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="ImagingStudy.Series.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="QICore.Reference"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ImagingStudyStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Immunization" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunization" label="Immunization" retrievable="true" primaryCodePath="vaccineCode" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Immunization" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunization" label="Immunization" retrievable="true" primaryCodePath="vaccineCode">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1984,17 +1984,17 @@
       <contextRelationship context="Practitioner" relatedKeyElement="actor"/>
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Immunization.Education" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Immunization.Education" retrievable="false">
       <element name="documentType" elementType="System.String" target="%value.value"/>
       <element name="reference" elementType="System.String" target="%value.value"/>
       <element name="publicationDate" elementType="System.DateTime" target="%value.value"/>
       <element name="presentationDate" elementType="System.DateTime" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Immunization.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Immunization.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Immunization.ProtocolApplied" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Immunization.ProtocolApplied" retrievable="false">
       <element name="series" elementType="System.String" target="%value.value"/>
       <element name="authority" elementType="QICore.Reference"/>
       <element name="targetDisease" target="FHIRHelpers.ToConcept(%value)">
@@ -2013,12 +2013,12 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Immunization.Reaction" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Immunization.Reaction" retrievable="false">
       <element name="date" elementType="System.DateTime" target="%value.value"/>
       <element name="detail" elementType="QICore.Reference"/>
       <element name="reported" elementType="System.Boolean" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationEvaluation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationevaluation" label="ImmunizationEvaluation" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationEvaluation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationevaluation" label="ImmunizationEvaluation" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2049,7 +2049,7 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ImmunizationEvaluationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationnotdone" label="ImmunizationNotDone" target="Immunization" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationnotdone" label="ImmunizationNotDone" target="Immunization" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2105,7 +2105,7 @@
          <elementTypeSpecifier elementType="QICore.Immunization.ProtocolApplied" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationRecommendation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationrec" label="ImmunizationRecommendation" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationRecommendation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationrec" label="ImmunizationRecommendation" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2117,7 +2117,7 @@
       </element>
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="ImmunizationRecommendation.Recommendation" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="ImmunizationRecommendation.Recommendation" retrievable="false">
       <element name="vaccineCode" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2153,14 +2153,14 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="ImmunizationRecommendation.Recommendation.DateCriterion" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="ImmunizationRecommendation.Recommendation.DateCriterion" retrievable="false">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="value" elementType="System.DateTime" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ImmunizationStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.Boolean" namespace="QICore" name="IsElective" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-isElective" label="IsElective" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="LinkType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Location" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-location" label="Location" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Location" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-location" label="Location" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2191,7 +2191,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Location.HoursOfOperation" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Location.HoursOfOperation" retrievable="false">
       <element name="daysOfWeek">
          <elementTypeSpecifier elementType="QICore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2199,13 +2199,13 @@
       <element name="openingTime" elementType="System.Time" target="%value.value"/>
       <element name="closingTime" elementType="System.Time" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Location.Position" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Location.Position" retrievable="false">
       <element name="longitude" elementType="System.Decimal" target="%value.value"/>
       <element name="latitude" elementType="System.Decimal" target="%value.value"/>
       <element name="altitude" elementType="System.Decimal" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="LocationMode" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Medication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medication" label="Medication" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Medication" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medication" label="Medication" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2219,11 +2219,11 @@
       </element>
       <element name="batch" elementType="QICore.Medication.Batch"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Medication.Batch" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Medication.Batch" retrievable="false">
       <element name="lotNumber" elementType="System.String" target="%value.value"/>
       <element name="expirationDate" elementType="System.DateTime" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Medication.Ingredient" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Medication.Ingredient" retrievable="false">
       <element name="item" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -2233,7 +2233,7 @@
       <element name="isActive" elementType="System.Boolean" target="%value.value"/>
       <element name="strength" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationAdministration" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationadministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medication" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="MedicationAdministration" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationadministration" label="MedicationAdministration" retrievable="true" primaryCodePath="medication">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2295,7 +2295,7 @@
       <contextRelationship context="Device" relatedKeyElement="device"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="actor"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationAdministration.Dosage" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="MedicationAdministration.Dosage" retrievable="false">
       <element name="text" elementType="System.String" target="%value.value"/>
       <element name="site" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="route" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -2308,11 +2308,11 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationAdministration.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="MedicationAdministration.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationAdministrationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotadministered" label="MedicationAdministrationNotDone" target="MedicationAdministration" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="MedicationAdministrationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotadministered" label="MedicationAdministrationNotDone" target="MedicationAdministration" retrievable="true">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -2365,7 +2365,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationAdministrationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationDispense" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationdispense" label="MedicationDispense" retrievable="true" primaryCodePath="medication" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="MedicationDispense" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationdispense" label="MedicationDispense" retrievable="true" primaryCodePath="medication">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2426,11 +2426,11 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
       <contextRelationship context="Patient" relatedKeyElement="receiver"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationDispense.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="MedicationDispense.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationDispense.Substitution" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="MedicationDispense.Substitution" retrievable="false">
       <element name="wasSubstituted" elementType="System.Boolean" target="%value.value"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="reason" target="FHIRHelpers.ToConcept(%value)">
@@ -2440,7 +2440,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationDispenseNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotdispensed" label="MedicationDispenseNotDone" target="MedicationDispense" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="MedicationDispenseNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotdispensed" label="MedicationDispenseNotDone" target="MedicationDispense" retrievable="true">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -2489,7 +2489,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationDispenseStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested" label="MedicationNotRequested" target="MedicationRequest" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="MedicationNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested" label="MedicationNotRequested" target="MedicationRequest" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2553,7 +2553,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest" label="MedicationRequest" retrievable="true" primaryCodePath="medication" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="MedicationRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest" label="MedicationRequest" retrievable="true" primaryCodePath="medication">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2626,7 +2626,7 @@
       <contextRelationship context="Patient" relatedKeyElement="subject"/>
       <contextRelationship context="Encounter" relatedKeyElement="encounter"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationRequest.DispenseRequest" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="MedicationRequest.DispenseRequest" retrievable="false">
       <element name="initialFill" elementType="QICore.MedicationRequest.DispenseRequest.InitialFill"/>
       <element name="dispenseInterval" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="validityPeriod">
@@ -2639,11 +2639,11 @@
       <element name="expectedSupplyDuration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="performer" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationRequest.DispenseRequest.InitialFill" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="MedicationRequest.DispenseRequest.InitialFill" retrievable="false">
       <element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="duration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationRequest.Substitution" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="MedicationRequest.Substitution" retrievable="false">
       <element name="allowed" target="System.Boolean:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
@@ -2655,7 +2655,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationRequestIntent" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationRequestPriority" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationRequestStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationstatement" label="MedicationStatement" retrievable="true" primaryCodePath="medication" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="MedicationStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationstatement" label="MedicationStatement" retrievable="true" primaryCodePath="medication">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2709,7 +2709,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationStatementStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Meta" identifier="http://hl7.org/fhir/StructureDefinition/Meta" label="Meta" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Meta" identifier="http://hl7.org/fhir/StructureDefinition/Meta" label="Meta" retrievable="false">
       <element name="versionId" elementType="System.String" target="%value.value"/>
       <element name="lastUpdated" elementType="System.DateTime" target="%value.value"/>
       <element name="source" elementType="System.String" target="%value.value"/>
@@ -2725,7 +2725,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="MimeType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="NameUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false">
       <element name="status" elementType="QICore.NarrativeStatus"/>
       <element name="div" elementType="System.String" target="%value.value"/>
    </typeInfo>
@@ -2733,7 +2733,7 @@
    <typeInfo baseType="System.Boolean" namespace="QICore" name="NotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone" label="NotDone" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.Concept" namespace="QICore" name="NotDoneReason" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDoneReason" label="NotDoneReason" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.DateTime" namespace="QICore" name="NotDoneRecorded" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded" label="NotDoneRecorded" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Observation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation" label="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Observation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observation" label="Observation" retrievable="true" primaryCodePath="code">
       <element name="bodyPosition" elementType="QICore.bodyPosition" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/observation-bodyPosition'].value)"/>
       <element name="delta" elementType="QICore.delta" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/observation-delta'].value)"/>
       <element name="identifier">
@@ -2819,7 +2819,7 @@
       <contextRelationship context="Device" relatedKeyElement="device"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="performer"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Observation.Component" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Observation.Component" retrievable="false">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -2854,7 +2854,7 @@
    <typeInfo baseType="QICore.Observation.Component" namespace="QICore" name="Observation.Component.DiastolicBP" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Observation.Component" namespace="QICore" name="Observation.Component.FlowRate" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Observation.Component" namespace="QICore" name="Observation.Component.SystolicBP" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Observation.ReferenceRange" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Observation.ReferenceRange" retrievable="false">
       <element name="low" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="high" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -2868,7 +2868,7 @@
       </element>
       <element name="text" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ObservationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observationnotdone" label="ObservationNotDone" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ObservationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-observationnotdone" label="ObservationNotDone" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="notDoneReason" elementType="QICore.NotDoneReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDoneReason'].value)"/>
       <element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value"/>
       <element name="identifier">
@@ -2949,7 +2949,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ObservationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Organization" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-organization" label="Organization" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Organization" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-organization" label="Organization" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2977,7 +2977,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Organization.Contact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Organization.Contact" retrievable="false">
       <element name="purpose" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="name" elementType="QICore.HumanName"/>
       <element name="telecom">
@@ -2985,7 +2985,7 @@
       </element>
       <element name="address" elementType="QICore.Address"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="ParameterDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ParameterDefinition" label="ParameterDefinition" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="ParameterDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ParameterDefinition" label="ParameterDefinition" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="use" elementType="QICore.ParameterUse"/>
       <element name="min" elementType="System.Integer" target="%value.value"/>
@@ -2995,7 +2995,7 @@
       <element name="profile" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ParameterUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Patient" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient" label="Patient" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Patient" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-patient" label="Patient" retrievable="true">
       <element name="race" elementType="QICore.USCoreRaceExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-race']"/>
       <element name="ethnicity" elementType="QICore.USCoreEthnicityExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity']"/>
       <element name="birthsex" elementType="QICore.USCoreBirthSexExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'].value.value"/>
@@ -3053,15 +3053,15 @@
       <contextRelationship context="Patient" relatedKeyElement="other"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="other"/>
    </typeInfo>
-   <typeInfo namespace="QICore" name="Patient.Address" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" namespace="QICore" name="Patient.Address" retrievable="false">
       <baseTypeSpecifier namespace="QICore" name="Address" xsi:type="NamedTypeSpecifier"/>
       <element name="address-preferred" elementType="QICore.preferred" target="%parent.address.extension[url='http://hl7.org/fhir/StructureDefinition/iso21090-preferred'].value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Patient.Communication" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Patient.Communication" retrievable="false">
       <element name="language" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="preferred" elementType="System.Boolean" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Patient.Contact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Patient.Contact" retrievable="false">
       <element name="relationship" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3078,15 +3078,15 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Patient.Link" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Patient.Link" retrievable="false">
       <element name="other" elementType="QICore.Reference"/>
       <element name="type" elementType="QICore.LinkType"/>
    </typeInfo>
-   <typeInfo namespace="QICore" name="Patient.Telecom" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" namespace="QICore" name="Patient.Telecom" retrievable="false">
       <baseTypeSpecifier namespace="QICore" name="ContactPoint" xsi:type="NamedTypeSpecifier"/>
       <element name="telecom-preferred" elementType="QICore.preferred" target="%parent.telecom.extension[url='http://hl7.org/fhir/StructureDefinition/iso21090-preferred'].value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Practitioner" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-practitioner" label="Practitioner" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Practitioner" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-practitioner" label="Practitioner" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3111,7 +3111,7 @@
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Practitioner.Qualification" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Practitioner.Qualification" retrievable="false">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3123,7 +3123,7 @@
       </element>
       <element name="issuer" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="PractitionerRole" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-practitionerrole" label="PractitionerRole" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="PractitionerRole" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-practitionerrole" label="PractitionerRole" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3158,7 +3158,7 @@
       </element>
       <contextRelationship context="Practitioner" relatedKeyElement="practitioner"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="PractitionerRole.AvailableTime" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="PractitionerRole.AvailableTime" retrievable="false">
       <element name="daysOfWeek">
          <elementTypeSpecifier elementType="QICore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3166,7 +3166,7 @@
       <element name="availableStartTime" elementType="System.Time" target="%value.value"/>
       <element name="availableEndTime" elementType="System.Time" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="PractitionerRole.NotAvailable" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="PractitionerRole.NotAvailable" retrievable="false">
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="during">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -3174,7 +3174,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Procedure" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedure" label="Procedure" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Procedure" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedure" label="Procedure" retrievable="true" primaryCodePath="code">
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3254,16 +3254,16 @@
       <contextRelationship context="Encounter" relatedKeyElement="encounter"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="actor"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Procedure.FocalDevice" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Procedure.FocalDevice" retrievable="false">
       <element name="action" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="manipulated" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Procedure.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Procedure.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="QICore.Reference"/>
       <element name="onBehalfOf" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ProcedureNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedurenotdone" label="ProcedureNotDone" target="Procedure" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ProcedureNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-procedurenotdone" label="ProcedureNotDone" target="Procedure" retrievable="true" primaryCodePath="code">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -3344,7 +3344,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="ProcedureStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="PublicationStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="QuantityComparator" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Questionnaire" identifier="http://hl7.org/fhir/StructureDefinition/Questionnaire" label="Questionnaire" retrievable="true" primaryCodePath="name" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Questionnaire" identifier="http://hl7.org/fhir/StructureDefinition/Questionnaire" label="Questionnaire" retrievable="true" primaryCodePath="name">
       <element name="url" elementType="System.String" target="%value.value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -3388,7 +3388,7 @@
          <elementTypeSpecifier elementType="QICore.Questionnaire.Item" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item" retrievable="false">
       <element name="linkId" elementType="System.String" target="%value.value"/>
       <element name="definition" elementType="System.String" target="%value.value"/>
       <element name="code" target="FHIRHelpers.ToCode(%value)">
@@ -3418,7 +3418,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.AnswerOption" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.AnswerOption" retrievable="false">
       <element name="value" target="System.Integer:%value.value;System.Date:%value.value;System.Time:%value.value;System.String:%value.value;System.Code:FHIRHelpers.ToCode(%value);QICore.Reference:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
@@ -3431,7 +3431,7 @@
       </element>
       <element name="initialSelected" elementType="System.Boolean" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.EnableWhen" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.EnableWhen" retrievable="false">
       <element name="question" elementType="System.String" target="%value.value"/>
       <element name="operator" elementType="QICore.QuestionnaireItemOperator"/>
       <element name="answer" target="System.Boolean:%value.value;System.Decimal:%value.value;System.Integer:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Time:%value.value;System.String:%value.value;System.Code:FHIRHelpers.ToCode(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Reference:null">
@@ -3449,7 +3449,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.Initial" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.Initial" retrievable="false">
       <element name="value" target="System.Boolean:%value.value;System.Decimal:%value.value;System.Integer:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Time:%value.value;System.String:%value.value;System.String:%value.value;QICore.Attachment:null;System.Code:FHIRHelpers.ToCode(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Reference:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
@@ -3469,7 +3469,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="QuestionnaireItemOperator" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="QuestionnaireItemType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="QuestionnaireResponse" identifier="http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" label="QuestionnaireResponse" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="QuestionnaireResponse" identifier="http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" label="QuestionnaireResponse" retrievable="true">
       <element name="identifier" elementType="QICore.Identifier"/>
       <element name="basedOn">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
@@ -3496,7 +3496,7 @@
       <contextRelationship context="RelatedPerson" relatedKeyElement="author"/>
       <contextRelationship context="RelatedPerson" relatedKeyElement="source"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="QuestionnaireResponse.Item" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="QuestionnaireResponse.Item" retrievable="false">
       <element name="linkId" elementType="System.String" target="%value.value"/>
       <element name="definition" elementType="System.String" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
@@ -3509,7 +3509,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="QuestionnaireResponse.Item.Answer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="QuestionnaireResponse.Item.Answer" retrievable="false">
       <element name="value" target="System.Boolean:%value.value;System.Decimal:%value.value;System.Integer:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Time:%value.value;System.String:%value.value;System.String:%value.value;QICore.Attachment:null;System.Code:FHIRHelpers.ToCode(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Reference:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
@@ -3533,13 +3533,13 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="QuestionnaireResponseStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Reference" identifier="http://hl7.org/fhir/StructureDefinition/Reference" label="Reference" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Reference" identifier="http://hl7.org/fhir/StructureDefinition/Reference" label="Reference" retrievable="false">
       <element name="reference" elementType="System.String" target="%value.value"/>
       <element name="type" elementType="System.String" target="%value.value"/>
       <element name="identifier" elementType="QICore.Identifier"/>
       <element name="display" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false">
       <element name="type" elementType="QICore.RelatedArtifactType"/>
       <element name="label" elementType="System.String" target="%value.value"/>
       <element name="display" elementType="System.String" target="%value.value"/>
@@ -3549,7 +3549,7 @@
       <element name="resource" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="RelatedArtifactType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="RelatedPerson" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-relatedperson" label="RelatedPerson" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="RelatedPerson" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-relatedperson" label="RelatedPerson" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3582,20 +3582,20 @@
       </element>
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="RelatedPerson.Communication" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="RelatedPerson.Communication" retrievable="false">
       <element name="language" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="preferred" elementType="System.Boolean" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="RequestIntent" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="RequestPriority" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.Any" namespace="QICore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.Any" namespace="QICore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true">
       <element name="id" elementType="System.String" target="%value.value"/>
       <element name="meta" elementType="QICore.Meta"/>
       <element name="implicitRules" elementType="System.String" target="%value.value"/>
       <element name="language" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ResourceType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="SampledData" identifier="http://hl7.org/fhir/StructureDefinition/SampledData" label="SampledData" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="SampledData" identifier="http://hl7.org/fhir/StructureDefinition/SampledData" label="SampledData" retrievable="false">
       <element name="origin" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="period" elementType="System.Decimal" target="%value.value"/>
       <element name="factor" elementType="System.Decimal" target="%value.value"/>
@@ -3604,7 +3604,7 @@
       <element name="dimensions" elementType="System.Integer" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" target="ServiceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" target="ServiceRequest" retrievable="true" primaryCodePath="code">
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3703,7 +3703,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" label="ServiceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" label="ServiceRequest" retrievable="true" primaryCodePath="code">
       <element name="statusReason" elementType="QICore.statusReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/request-statusReason'].value)"/>
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>
@@ -3813,7 +3813,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="ServiceRequestIntent" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="ServiceRequestPriority" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="ServiceRequestStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Signature" identifier="http://hl7.org/fhir/StructureDefinition/Signature" label="Signature" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Signature" identifier="http://hl7.org/fhir/StructureDefinition/Signature" label="Signature" retrievable="false">
       <element name="type" target="FHIRHelpers.ToCode(%value)">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3825,7 +3825,7 @@
       <element name="data" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="SortDirection" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Specimen" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-specimen" label="Specimen" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Specimen" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-specimen" label="Specimen" retrievable="true" primaryCodePath="type">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3855,7 +3855,7 @@
       <contextRelationship context="Patient" relatedKeyElement="subject"/>
       <contextRelationship context="Device" relatedKeyElement="subject"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Specimen.Collection" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Specimen.Collection" retrievable="false">
       <element name="collector" elementType="QICore.Reference"/>
       <element name="collected" target="System.DateTime:%value.value;">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -3876,7 +3876,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Specimen.Container" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Specimen.Container" retrievable="false">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3892,7 +3892,7 @@
       </element>
       <element name="container-sequenceNumber" elementType="QICore.sequenceNumber" target="%parent.container.extension[url='http://hl7.org/fhir/StructureDefinition/specimen-sequenceNumber'].value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Specimen.Processing" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Specimen.Processing" retrievable="false">
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="procedure" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="additive">
@@ -3909,7 +3909,7 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="SpecimenStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="Status" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Substance" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-substance" label="Substance" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Substance" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-substance" label="Substance" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3926,16 +3926,16 @@
          <elementTypeSpecifier elementType="QICore.Substance.Ingredient" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Substance.Ingredient" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Substance.Ingredient" retrievable="false">
       <element name="quantity" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
       <element name="substance" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Substance.Instance" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Substance.Instance" retrievable="false">
       <element name="identifier" elementType="QICore.Identifier"/>
       <element name="expiry" elementType="System.DateTime" target="%value.value"/>
       <element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Task" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-task" label="Task" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="Task" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-task" label="Task" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3990,7 +3990,7 @@
          <elementTypeSpecifier elementType="QICore.Task.Output" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Task.Input" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Task.Input" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;QICore.Address:null;System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Annotation:null;QICore.Attachment:null;System.Concept:FHIRHelpers.ToConcept(%value);System.Code:FHIRHelpers.ToCode(%value);QICore.ContactPoint:null;System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.HumanName:null;QICore.Identifier:null;System.Decimal:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.Reference:null;QICore.SampledData:null;QICore.Signature:null;QICore.Timing:null;QICore.ContactDetail:null;QICore.Contributor:null;QICore.DataRequirement:null;QICore.Expression:null;QICore.ParameterDefinition:null;QICore.RelatedArtifact:null;QICore.TriggerDefinition:null;QICore.UsageContext:null;QICore.Dosage:null;QICore.Meta:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -4051,7 +4051,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Task.Output" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Task.Output" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;QICore.Address:null;System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Annotation:null;QICore.Attachment:null;System.Concept:FHIRHelpers.ToConcept(%value);System.Code:FHIRHelpers.ToCode(%value);QICore.ContactPoint:null;System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.HumanName:null;QICore.Identifier:null;System.Decimal:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.Reference:null;QICore.SampledData:null;QICore.Signature:null;QICore.Timing:null;QICore.ContactDetail:null;QICore.Contributor:null;QICore.DataRequirement:null;QICore.Expression:null;QICore.ParameterDefinition:null;QICore.RelatedArtifact:null;QICore.TriggerDefinition:null;QICore.UsageContext:null;QICore.Dosage:null;QICore.Meta:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -4112,7 +4112,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Task.Restriction" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Task.Restriction" retrievable="false">
       <element name="repetitions" elementType="System.Integer" target="%value.value"/>
       <element name="period">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -4126,14 +4126,14 @@
    <typeInfo baseType="System.String" namespace="QICore" name="TaskIntent" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="TaskPriority" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="TaskStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Timing" identifier="http://hl7.org/fhir/StructureDefinition/Timing" label="Timing" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.BackboneElement" namespace="QICore" name="Timing" identifier="http://hl7.org/fhir/StructureDefinition/Timing" label="Timing" retrievable="false" primaryCodePath="code">
       <element name="event" target="%value.value">
          <elementTypeSpecifier elementType="System.DateTime" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="repeat" elementType="QICore.Timing.Repeat"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="Timing.Repeat" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="Timing.Repeat" retrievable="false">
       <element name="bounds" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -4166,7 +4166,7 @@
       </element>
       <element name="offset" elementType="System.Integer" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false">
       <element name="type" elementType="QICore.TriggerType"/>
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="timing" target="QICore.Timing:null;QICore.Reference:null;System.Date:%value.value;System.DateTime:%value.value">
@@ -4185,7 +4185,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="TriggerType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="UDIEntryType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="USCoreBirthSexExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex" label="US Core Birth Sex Extension" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Extension" namespace="QICore" name="USCoreEthnicityExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity" label="US Core Ethnicity Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Extension" namespace="QICore" name="USCoreEthnicityExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity" label="US Core Ethnicity Extension" retrievable="false">
       <element name="ombCategory" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.extension[url='ombCategory'].value)"/>
       <element name="detailed" target="FHIRHelpers.ToCode(%parent.extension[url='detailed'].value)">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
@@ -4193,7 +4193,7 @@
       <element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="USCoreImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4239,7 +4239,7 @@
       </element>
       <element name="parent" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreLaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="USCoreLaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4315,7 +4315,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="USCorePediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4373,7 +4373,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="USCorePediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4431,7 +4431,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCorePulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="USCorePulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4493,7 +4493,7 @@
       <element name="FlowRate" elementType="QICore.Observation.Component"/>
       <element name="Concentration" elementType="QICore.Observation.Component"/>
    </typeInfo>
-   <typeInfo baseType="QICore.Extension" namespace="QICore" name="USCoreRaceExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-race" label="US Core Race Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Extension" namespace="QICore" name="USCoreRaceExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-race" label="US Core Race Extension" retrievable="false">
       <element name="ombCategory" target="FHIRHelpers.ToCode(%parent.extension[url='ombCategory'].value)">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4503,7 +4503,7 @@
       <element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreSmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="USCoreSmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4563,7 +4563,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="UnitsOfTime" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Element" namespace="QICore" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Element" namespace="QICore" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code">
       <element name="code" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
       <element name="value" target="System.Concept:FHIRHelpers.ToConcept(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);;QICore.Reference:null">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -4577,7 +4577,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="Use" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo namespace="QICore" name="abatement" identifier="http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement" label="abatement" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" namespace="QICore" name="abatement" identifier="http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement" label="abatement" retrievable="false">
       <baseTypeSpecifier xsi:type="ChoiceTypeSpecifier">
          <choice namespace="System" name="Date" xsi:type="NamedTypeSpecifier"/>
          <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -4592,7 +4592,7 @@
    <typeInfo baseType="System.Concept" namespace="QICore" name="delta" identifier="http://hl7.org/fhir/StructureDefinition/observation-delta" label="delta" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.Concept" namespace="QICore" name="disability" identifier="http://hl7.org/fhir/StructureDefinition/patient-disability" label="disability" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.Boolean" namespace="QICore" name="doNotPerform" identifier="http://hl7.org/fhir/StructureDefinition/request-doNotPerform" label="Do Not Perfom" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo namespace="QICore" name="dueTo" identifier="http://hl7.org/fhir/StructureDefinition/condition-dueTo" label="dueTo" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" namespace="QICore" name="dueTo" identifier="http://hl7.org/fhir/StructureDefinition/condition-dueTo" label="dueTo" retrievable="false">
       <baseTypeSpecifier xsi:type="ChoiceTypeSpecifier">
          <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
          <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -4601,7 +4601,7 @@
    <typeInfo baseType="System.Quantity" namespace="QICore" name="duration" identifier="http://hl7.org/fhir/StructureDefinition/allergyintolerance-duration" label="duration" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.DateTime" namespace="QICore" name="incisionDateTime" identifier="http://hl7.org/fhir/StructureDefinition/procedure-incisionDateTime" label="incisionDateTime" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Reference" namespace="QICore" name="locationPerformed" identifier="http://hl7.org/fhir/StructureDefinition/diagnosticReport-locationPerformed" label="locationPerformed" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.Extension" namespace="QICore" name="nationality" identifier="http://hl7.org/fhir/StructureDefinition/patient-nationality" label="nationality" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.Extension" namespace="QICore" name="nationality" identifier="http://hl7.org/fhir/StructureDefinition/patient-nationality" label="nationality" retrievable="false" primaryCodePath="code">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.extension[url='code'].value)"/>
       <element name="period" target="%parent.extension[url='period']">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -4610,7 +4610,7 @@
       </element>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4669,7 +4669,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4728,7 +4728,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4787,7 +4787,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4846,7 +4846,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4907,7 +4907,7 @@
       <element name="SystolicBP" elementType="QICore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8480-6']"/>
       <element name="DiastolicBP" elementType="QICore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8462-4']"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4966,7 +4966,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5025,7 +5025,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5084,7 +5084,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5143,7 +5143,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5203,7 +5203,7 @@
          <elementTypeSpecifier elementType="QICore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo namespace="QICore" name="occurredFollowing" identifier="http://hl7.org/fhir/StructureDefinition/condition-occurredFollowing" label="occurredFollowing" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" namespace="QICore" name="occurredFollowing" identifier="http://hl7.org/fhir/StructureDefinition/condition-occurredFollowing" label="occurredFollowing" retrievable="false">
       <baseTypeSpecifier xsi:type="ChoiceTypeSpecifier">
          <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
          <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>

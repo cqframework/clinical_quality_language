@@ -2,9 +2,9 @@ package org.cqframework.cql.cql2elm;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
-import org.antlr.v4.runtime.misc.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.StringUtils;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
 import org.cqframework.cql.elm.tracking.*;
@@ -148,25 +148,25 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
     }
 
     public void setTranslatorOptions(CqlTranslatorOptions options) {
-        if (options.getOptions().contains(CqlTranslator.Options.EnableDateRangeOptimization)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableDateRangeOptimization)) {
             this.enableDateRangeOptimization();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.EnableAnnotations)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableAnnotations)) {
             this.enableAnnotations();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.EnableLocators)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableLocators)) {
             this.enableLocators();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.EnableResultTypes)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableResultTypes)) {
             this.enableResultTypes();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.EnableDetailedErrors)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.EnableDetailedErrors)) {
             this.enableDetailedErrors();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.DisableMethodInvocation)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.DisableMethodInvocation)) {
             this.disableMethodInvocation();
         }
-        if (options.getOptions().contains(CqlTranslator.Options.RequireFromKeyword)) {
+        if (options.getOptions().contains(CqlTranslatorOptions.Options.RequireFromKeyword)) {
             this.enableFromKeywordRequired();
         }
         libraryBuilder.setCompatibilityLevel(options.getCompatibilityLevel());
@@ -188,17 +188,36 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return expressions;
     }
 
-    private int getNextLocalId() {
+    public int getNextLocalId() {
         return nextLocalId++;
     }
 
-    private void pushChunk(ParseTree tree) {
-        org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
-        Chunk chunk = new Chunk().withInterval(sourceInterval);
-        chunks.push(chunk);
+    public boolean isAnnotationEnabled(){
+        return annotate;
     }
 
-    private void popChunk(ParseTree tree, Object o) {
+    private boolean pushChunk(ParseTree tree) {
+        if (!isAnnotationEnabled()) {
+            return false;
+        }
+
+        org.antlr.v4.runtime.misc.Interval sourceInterval = tree.getSourceInterval();
+
+        // An interval of i..i-1 indicates an empty interval at position i in the input stream,
+        if (sourceInterval.b < sourceInterval.a) {
+            return false;
+        }
+
+        Chunk chunk = new Chunk().withInterval(sourceInterval);
+        chunks.push(chunk);
+        return true;
+    }
+
+    private void popChunk(ParseTree tree, Object o, boolean pushedChunk) {
+        if (!pushedChunk) {
+            return;
+        }
+
         Chunk chunk = chunks.pop();
         if (o instanceof Element) {
             Element element = (Element)o;
@@ -468,6 +487,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 chunkContent = chunkContent.trim();
             }
             chunkContent = normalizeWhitespace(chunkContent);
+            chunkContent = makeSeparationBetweenCommentAndDefinition(chunkContent);
             narrative.getContent().add(chunkContent);
         }
 
@@ -476,6 +496,13 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     private String normalizeWhitespace(String input) {
         return input.replace("\r\n", "\n");
+    }
+
+    private String makeSeparationBetweenCommentAndDefinition(String input) {
+        if(StringUtils.startsWith(input, "//") || StringUtils.endsWith(input, "*/")) {
+            return input + "\n";
+        }
+        return input;
     }
 
     private boolean hasChunks(Narrative narrative) {
@@ -515,21 +542,19 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     @Override
     public Object visit(ParseTree tree) {
-        if (annotate) {
-            pushChunk(tree);
-        }
+        boolean pushedChunk = pushChunk(tree);
         Object o = null;
         try {
             // ERROR:
             try {
                 o = super.visit(tree);
             } catch (CqlTranslatorIncludeException e) {
-                CqlTranslatorException translatorException = new CqlTranslatorException(e.getMessage(), getTrackBack(tree), e);
+                CqlCompilerException translatorException = new CqlCompilerException(e.getMessage(), getTrackBack(tree), e);
                 if (translatorException.getLocator() == null) {
                     throw translatorException;
                 }
                 libraryBuilder.recordParsingException(translatorException);
-            } catch (CqlTranslatorException e) {
+            } catch (CqlCompilerException e) {
                 if (e.getLocator() == null) {
                     if (tree == null) {
                         throw e;
@@ -538,7 +563,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 }
                 libraryBuilder.recordParsingException(e);
             } catch (Exception e) {
-                CqlTranslatorException ex = null;
+                CqlCompilerException ex = null;
                 if (e.getMessage() == null) {
                     ex = new CqlInternalException("Internal translator error.", getTrackBack(tree), e);
                     if (tree == null) {
@@ -572,9 +597,7 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
         return o;
         } finally {
-            if (annotate) {
-                popChunk(tree, o);
-            }
+            popChunk(tree, o, pushedChunk);
             processTags(tree, o);
         }
     }
@@ -885,9 +908,14 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 .withAccessLevel(parseAccessModifier(ctx.accessModifier()))
                 .withName(parseString(ctx.identifier()))
                 .withId(parseString(ctx.codesystemId()))
-                .withVersion(parseString(ctx.versionSpecifier()))
-                .withResultType(libraryBuilder.resolveTypeName("System", "CodeSystem"));
-                //.withResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+                .withVersion(parseString(ctx.versionSpecifier()));
+
+        if (libraryBuilder.isCompatibleWith("1.5")) {
+            cs.setResultType(libraryBuilder.resolveTypeName("System", "CodeSystem"));
+        }
+        else {
+            cs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+        }
 
         libraryBuilder.addCodeSystem(cs);
         return cs;
@@ -954,8 +982,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 vs.getCodeSystem().add((CodeSystemRef)visit(codesystem));
             }
         }
-        vs.setResultType(libraryBuilder.resolveTypeName("System", "ValueSet"));
-        //vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+        if (libraryBuilder.isCompatibleWith("1.5")) {
+            vs.setResultType(libraryBuilder.resolveTypeName("System", "ValueSet"));
+        }
+        else {
+            vs.setResultType(new ListType(libraryBuilder.resolveTypeName("System", "Code")));
+        }
         libraryBuilder.addValueSet(vs);
 
         return vs;
@@ -2159,6 +2191,11 @@ DATETIME
                     parseExpression(ctx.expression(1)));
 
             libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
+
+            if (isAnnotationEnabled()) {
+                equivalent.setLocalId(Integer.toString(getNextLocalId()));
+            }
+
             if (!"~".equals(parseString(ctx.getChild(1)))) {
                 track(equivalent, ctx);
                 Not not = of.createNot().withOperand(equivalent);
@@ -3302,12 +3339,12 @@ DATETIME
             }
 
             Property property = null;
-            CqlTranslatorException propertyException = null;
+            CqlCompilerException propertyException = null;
             if (retrieve.getCodeProperty() == null) {
                 // ERROR:
                 // WARNING:
                 propertyException = new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
-                        useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                        useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                         getTrackBack(ctx));
                 libraryBuilder.recordParsingException(propertyException);
             }
@@ -3321,7 +3358,7 @@ DATETIME
                     // ERROR:
                     // WARNING:
                     propertyException = new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                            retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                             getTrackBack(ctx), e);
                     libraryBuilder.recordParsingException(propertyException);
                 }
@@ -3342,7 +3379,10 @@ DATETIME
             // Resolve the terminology target using an in or ~ operator
             try {
                 if (codeComparator == null) {
-                    codeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                    codeComparator = (terminology.getResultType() instanceof ListType
+                            || (libraryBuilder.isCompatibleWith("1.5")
+                                    && terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))
+                            ? "in" : "~";
                 }
 
                 if (property == null) {
@@ -3366,7 +3406,7 @@ DATETIME
                             // ERROR:
                             // WARNING:
                             libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unexpected membership operator %s in retrieve", in.getClass().getSimpleName()),
-                                    useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                    useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                                     getTrackBack(ctx)));
                         }
                     }
@@ -3406,7 +3446,7 @@ DATETIME
                         // ERROR:
                         // WARNING:
                         libraryBuilder.recordParsingException(new CqlSemanticException(String.format("Unknown code comparator % in retrieve", codeComparator),
-                                useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                                 getTrackBack(ctx.codeComparator())));
                 }
 
@@ -3433,14 +3473,15 @@ DATETIME
                     else {
                         // WARNING:
                         libraryBuilder.recordParsingException(new CqlSemanticException("Terminology target is a list of concepts, but expects a list of codes",
-                                CqlTranslatorException.ErrorSeverity.Warning, getTrackBack(ctx)));
+                                CqlCompilerException.ErrorSeverity.Warning, getTrackBack(ctx)));
                     }
                 }
             }
             catch (Exception e) {
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
                 // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
-                if (!(terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")))) {
+                if ((libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))
+                    || (!libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType() instanceof ListType))) {
                     retrieve.setCodes(libraryBuilder.resolveToList(terminology));
                 }
                 else {
@@ -3450,7 +3491,7 @@ DATETIME
                 // ERROR:
                 // WARNING:
                 libraryBuilder.recordParsingException(new CqlSemanticException("Could not resolve membership operator for terminology target of the retrieve.",
-                        useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                        useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                         getTrackBack(ctx), e));
             }
         }
@@ -4287,6 +4328,15 @@ DATETIME
             }
         }
 
+        // If we are in an implicit context (i.e. a context named the same as a parameter), the function may be resolved as a method invocation
+        ParameterRef parameterRef = libraryBuilder.resolveImplicitContext();
+        if (parameterRef != null) {
+            Expression result = systemMethodResolver.resolveMethod(parameterRef, identifier, paramListCtx, false);
+            if (result != null) {
+                return result;
+            }
+        }
+
         // If there is no target, resolve as a system function
         return resolveFunction(null, identifier, paramListCtx);
     }
@@ -4333,7 +4383,7 @@ DATETIME
             resultType = parseTypeSpecifier(ctx.typeSpecifier());
         }
 
-        if (!libraryBuilder.getTranslatedLibrary().contains(fun)) {
+        if (!libraryBuilder.getCompiledLibrary().contains(fun)) {
             if (ctx.functionBody() != null) {
                 libraryBuilder.beginFunctionDef(fun);
                 try {

@@ -79,11 +79,16 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     public ElmRequirement visitExpressionDef(ExpressionDef elm, ElmRequirementsContext context) {
         ElmRequirement result = null;
         context.enterExpressionDef(elm);
+        boolean pertinenceTagFound = context.enterPertinenceContext(elm);
+
         try {
             result = super.visitExpressionDef(elm, context);
         }
         finally {
             context.exitExpressionDef(result);
+            if(pertinenceTagFound) {
+                context.exitPertinenceContext();
+            }
         }
         return result;
     }
@@ -159,8 +164,13 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     @Override
     public ElmRequirement visitRetrieve(Retrieve elm, ElmRequirementsContext context) {
         // TODO: childResult reporting?
+        ElmPertinenceContext elmPertinenceContext = context.peekPertinenceContext();
         super.visitRetrieve(elm, context);
+
         ElmDataRequirement result = new ElmDataRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if(elmPertinenceContext != null) {
+            result.setPertinenceContext(elmPertinenceContext);
+        }
         // If not analyzing requirements, or in a query context, report the data requirement
         // If in a query context, the requirement will be reported as an inferred requirement at the query boundary
         if (!context.getOptions().getAnalyzeDataRequirements() || !context.inQueryContext()) {
@@ -323,10 +333,15 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
              */
             case "Equal":
             case "Equivalent":
+            case "SameAs":
             case "Greater":
             case "GreaterOrEqual":
+            case "SameOrAfter":
+            case "After":
             case "Less":
             case "LessOrEqual":
+            case "SameOrBefore":
+            case "Before":
             case "In":
             case "Contains": {
                 ElmRequirement left = visitElement(elm.getOperand().get(0), context);
@@ -356,7 +371,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
                     return right;
                 }
 
-                throw new IllegalArgumentException("Expected ElmExpressionRequirement");
+                return aggregateResult(left, right);
             }
 
             case "Or": {
@@ -375,7 +390,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
                     return right;
                 }
 
-                throw new IllegalArgumentException("Expected ElmExpressionRequirement");
+                return aggregateResult(left, right);
             }
 
             // TODO: Rewrite
@@ -383,11 +398,6 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
             case "Implies":
             //case "Not":
             //case "NotEqual":
-            case "SameAs":
-            case "SameOrBefore":
-            case "SameOrAfter":
-            case "Before":
-            case "After":
             case "Starts":
             case "Ends":
             case "Includes":
@@ -845,12 +855,110 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitDateTime(DateTime elm, ElmRequirementsContext context) {
-        return super.visitDateTime(elm, context);
+        ElmOperatorRequirement result = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if (elm.getYear() != null) {
+            ElmRequirement childResult = visitExpression(elm.getYear(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMonth() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMonth(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getDay() != null) {
+            ElmRequirement childResult = visitExpression(elm.getDay(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getHour() != null) {
+            ElmRequirement childResult = visitExpression(elm.getHour(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMinute() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMinute(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getSecond() != null) {
+            ElmRequirement childResult = visitExpression(elm.getSecond(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMillisecond() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMillisecond(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getTimezoneOffset() != null) {
+            ElmRequirement childResult = visitExpression(elm.getTimezoneOffset(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public ElmRequirement visitDate(Date elm, ElmRequirementsContext context) {
+        ElmOperatorRequirement result = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if (elm.getYear() != null) {
+            ElmRequirement childResult = visitExpression(elm.getYear(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMonth() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMonth(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getDay() != null) {
+            ElmRequirement childResult = visitExpression(elm.getDay(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        return result;
     }
 
     @Override
     public ElmRequirement visitTime(Time elm, ElmRequirementsContext context) {
-        return super.visitTime(elm, context);
+        ElmOperatorRequirement result = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        if (elm.getHour() != null) {
+            ElmRequirement childResult = visitExpression(elm.getHour(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMinute() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMinute(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getSecond() != null) {
+            ElmRequirement childResult = visitExpression(elm.getSecond(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        if (elm.getMillisecond() != null) {
+            ElmRequirement childResult = visitExpression(elm.getMillisecond(), context);
+            if (childResult instanceof ElmExpressionRequirement) {
+                result.combine((ElmExpressionRequirement)childResult);
+            }
+        }
+        return result;
     }
 
     @Override
@@ -1153,7 +1261,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     public ElmRequirement visitChildren(AliasedQuerySource elm, ElmRequirementsContext context) {
         // Override visit behavior because we need to exit the definition context prior to traversing the such that condition
         // Such that traversal happens in the visitChildren relationship
-        ElmRequirement result = defaultResult();
+        ElmRequirement result = defaultResult(elm, context);
         ElmQueryAliasContext aliasContext = null;
         context.getCurrentQueryContext().enterAliasDefinitionContext(elm);
         try {
@@ -1175,7 +1283,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitLetClause(LetClause elm, ElmRequirementsContext context) {
-        ElmRequirement result = defaultResult();
+        ElmRequirement result = defaultResult(elm, context);
         ElmQueryLetContext letContext = null;
         context.getCurrentQueryContext().enterLetDefinitionContext(elm);
         try {

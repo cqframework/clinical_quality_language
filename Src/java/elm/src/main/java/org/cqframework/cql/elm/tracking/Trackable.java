@@ -1,7 +1,6 @@
 package org.cqframework.cql.elm.tracking;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.hl7.cql.model.DataType;
 

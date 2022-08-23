@@ -27,4 +27,9 @@ public class ElmConditionRequirement extends ElmExpressionRequirement {
     public ElmExpressionRequirement getComparand() {
         return this.comparand;
     }
+
+    public boolean isTargetable() {
+        return comparand != null &&
+                (comparand.isLiteral() || comparand.isTerminologyReference() || comparand.isParameterReference());
+    }
 }

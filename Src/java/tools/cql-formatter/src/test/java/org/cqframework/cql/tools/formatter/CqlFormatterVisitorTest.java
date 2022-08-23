@@ -62,6 +62,12 @@ public class CqlFormatterVisitorTest {
         Assert.assertFalse(inError);
         runTest("git-issue-349.cql");
         Assert.assertFalse(inError);
+        runTest("git-issue-613.cql");
+        Assert.assertFalse(inError);
+        runTest("git-issue-437.cql");
+        Assert.assertFalse(inError);
+        runTest("git-issue-377.cql");
+        Assert.assertFalse(inError);
         try {
             runTest("invalid-syntax.cql");
         } catch (AssertionError ae) {

@@ -9,7 +9,6 @@ import org.hl7.elm.r1.Literal;
 import org.hl7.elm.r1.ObjectFactory;
 
 import javax.xml.namespace.QName;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

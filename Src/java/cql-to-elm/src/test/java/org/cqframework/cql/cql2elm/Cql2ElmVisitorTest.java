@@ -1,10 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.tracking.Trackable;
 import org.hl7.elm.r1.*;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class Cql2ElmVisitorTest {
     @BeforeClass
     public void Setup() {
         // Reset test utils to clear any models loaded by other tests
-        TestUtils.reset();
+        reset();
     }
 
     @Test
@@ -1271,7 +1270,7 @@ public class Cql2ElmVisitorTest {
 
     @Test
     public void testPatientContext() throws IOException {
-        TranslatedLibrary library = visitFileLibrary("TestPatientContext.cql");
+        CompiledLibrary library = visitFileLibrary("TestPatientContext.cql");
         ExpressionDef patient = library.resolveExpressionRef("Patient");
         assertThat(patient.getExpression(), instanceOf(Literal.class));
     }

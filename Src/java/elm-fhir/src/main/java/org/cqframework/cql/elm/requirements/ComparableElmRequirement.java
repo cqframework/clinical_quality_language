@@ -44,6 +44,16 @@ public class ComparableElmRequirement {
                 && codesEqual(left.getValue(), right.getValue());
     }
 
+    public static boolean hasCodeFilter(Iterable<CodeFilterElement> left, CodeFilterElement right) {
+        for (CodeFilterElement cfe : left) {
+            if (codeFilterElementsEqual(cfe, right)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static boolean codeFiltersEqual(Iterable<CodeFilterElement> left, Iterable<CodeFilterElement> right) {
         // TODO: Don't rely on order dependence here...
         Iterator<CodeFilterElement> leftIterator = left.iterator();
@@ -78,6 +88,16 @@ public class ComparableElmRequirement {
                 && dateRangesEqual(left.getValue(), right.getValue());
     }
 
+    public static boolean hasDateFilter(Iterable<DateFilterElement> left, DateFilterElement right) {
+        for (DateFilterElement dfe : left) {
+            if (dateFilterElementsEqual(dfe, right)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static boolean dateFiltersEqual(Iterable<DateFilterElement> left, Iterable<DateFilterElement> right) {
         // TODO: Don't rely on order dependence here...
         Iterator<DateFilterElement> leftIterator = left.iterator();
@@ -110,6 +130,16 @@ public class ComparableElmRequirement {
                 && stringsEqual(left.getSearch(), right.getSearch())
                 && stringsEqual(left.getComparator(), right.getComparator())
                 && stringsEqual(left.getValue(), right.getValue());
+    }
+
+    public static boolean hasOtherFilter(Iterable<OtherFilterElement> left, OtherFilterElement right) {
+        for (OtherFilterElement ofe : left) {
+            if (otherFilterElementsEqual(ofe, right)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static boolean otherFiltersEqual(Iterable<OtherFilterElement> left, Iterable<OtherFilterElement> right) {

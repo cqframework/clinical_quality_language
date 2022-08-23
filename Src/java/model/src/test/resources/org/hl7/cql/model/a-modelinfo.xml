@@ -1840,7 +1840,7 @@
         <ns4:element name="display" elementType="FHIR.string"/>
         <ns4:element name="userSelected" elementType="FHIR.boolean"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Communication" identifier="http://hl7.org/fhir/StructureDefinition/Communication" label="Communication" retrievable="true" primaryCodePath="category" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="Communication" identifier="http://hl7.org/fhir/StructureDefinition/Communication" label="Communication" retrievable="true" primaryCodePath="reasonCode" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>
@@ -6389,7 +6389,7 @@
         <ns4:element name="description" elementType="FHIR.string"/>
         <ns4:element name="criteria" elementType="FHIR.Expression"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MeasureReport" identifier="http://hl7.org/fhir/StructureDefinition/MeasureReport" label="MeasureReport" retrievable="true" primaryCodePath="measure.topic" baseType="FHIR.DomainResource">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" namespace="FHIR" name="MeasureReport" identifier="http://hl7.org/fhir/StructureDefinition/MeasureReport" label="MeasureReport" retrievable="true" primaryCodePath="type" baseType="FHIR.DomainResource">
         <ns4:element name="identifier">
             <ns4:elementTypeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>

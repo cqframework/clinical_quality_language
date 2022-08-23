@@ -1,15 +1,14 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.cqframework.cql.cql2elm.CqlTranslatorException;
-import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
-import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.NamespaceManager;
+import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
-import org.cqframework.cql.cql2elm.model.TranslatedLibrary;
+import org.cqframework.cql.cql2elm.model.CompiledLibrary;
+import org.hl7.cql.model.DataType;
 import org.hl7.elm.r1.*;
 
 import javax.xml.namespace.QName;
 import java.util.*;
+import java.util.List;
 
 public class ElmRequirementsContext {
 
@@ -20,6 +19,7 @@ public class ElmRequirementsContext {
         this.libraryManager = libraryManager;
         this.options = options;
         this.typeResolver = new TypeResolver(libraryManager);
+        this.typeBuilder = new TypeBuilder(this.libraryManager.getModelManager());
 
         if (visitor == null) {
             throw new IllegalArgumentException("visitor required");
@@ -45,6 +45,8 @@ public class ElmRequirementsContext {
     public TypeResolver getTypeResolver() {
         return this.typeResolver;
     }
+
+    private TypeBuilder typeBuilder;
 
     // Arbitrary starting point for generated local Ids.
     // If the input ELM does not have local Ids, some of the optimization
@@ -84,13 +86,42 @@ public class ElmRequirementsContext {
         return !expressionDefStack.empty();
     }
 
+    private List<ElmPertinenceContext> pertinenceContextStack = new ArrayList<ElmPertinenceContext>();
+
+    public boolean enterPertinenceContext(ExpressionDef expressionDef) {
+        ElmPertinenceContext pertinenceContext = new ElmPertinenceContext(expressionDef);
+        if (pertinenceContext.checkPertinenceTag()) {
+            pertinenceContextStack.add(0, pertinenceContext);
+            return true;
+        }
+        return false;
+    }
+
+    public ElmPertinenceContext peekPertinenceContext() {
+        ElmPertinenceContext context = null;
+        for (ElmPertinenceContext c : pertinenceContextStack) {
+            context = c;
+        }
+        return context;
+    }
+
+    public void exitPertinenceContext() {
+        if (pertinenceContextStack.size() > 0) {
+            pertinenceContextStack.remove(0);
+        }
+    }
+
+
     /*
     Reported requirements are collected during the traversal, reported at query boundaries, or at retrieves
     that are outside of a query scope.
     These are collected by the ElmExpressionDefContext as expression defs are visited, and reported to the context after
     the visit is complete
      */
-    private Map<ExpressionDef, ElmRequirements> reportedRequirements = new HashMap<ExpressionDef, ElmRequirements>();
+    private Map<ExpressionDef, ElmRequirements> reportedRequirements = new LinkedHashMap<ExpressionDef, ElmRequirements>();
+    public Iterable<ElmRequirements> getReportedRequirements() {
+        return reportedRequirements.values();
+    }
     public ElmRequirements getReportedRequirements(ExpressionDef ed) {
         return reportedRequirements.get(ed);
     }
@@ -99,7 +130,10 @@ public class ElmRequirementsContext {
     Inferred requirements are the result of the traversal, the computed/inferred data requirements for an expression.
     These are calculated by the visit and reported to the context here after the visit is complete
      */
-    private Map<ExpressionDef, ElmRequirement> inferredRequirements = new HashMap<ExpressionDef, ElmRequirement>();
+    private Map<ExpressionDef, ElmRequirement> inferredRequirements = new LinkedHashMap<ExpressionDef, ElmRequirement>();
+    public Iterable<ElmRequirement> getInferredRequirements() {
+        return inferredRequirements.values();
+    }
     public ElmRequirement getInferredRequirements(ExpressionDef ed) {
         return inferredRequirements.get(ed);
     }
@@ -126,8 +160,8 @@ public class ElmRequirementsContext {
     Prepares a library visit if necessary (i.e. localLibraryName is not null) and returns the associated translated
     library. If there is no localLibraryName, returns the current library.
      */
-    private TranslatedLibrary prepareLibraryVisit(VersionedIdentifier libraryIdentifier, String localLibraryName) {
-        TranslatedLibrary targetLibrary = resolveLibrary(libraryIdentifier);
+    private CompiledLibrary prepareLibraryVisit(VersionedIdentifier libraryIdentifier, String localLibraryName) {
+        CompiledLibrary targetLibrary = resolveLibrary(libraryIdentifier);
         if (localLibraryName != null) {
             IncludeDef includeDef = targetLibrary.resolveIncludeRef(localLibraryName);
             if (!visited.contains(includeDef)) {
@@ -166,7 +200,7 @@ public class ElmRequirementsContext {
         return getCurrentExpressionDefContext().resolveLet(letName);
     }
 
-    private Set<Element> visited = new HashSet<Element>();
+    private Set<Element> visited = new LinkedHashSet<Element>();
 
     private ElmRequirements requirements;
     public ElmRequirements getRequirements() {
@@ -253,7 +287,7 @@ public class ElmRequirementsContext {
     }
 
     public void reportCodeRef(CodeRef codeRef) {
-        TranslatedLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), codeRef.getLibraryName());
+        CompiledLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), codeRef.getLibraryName());
         try {
             CodeDef cd = targetLibrary.resolveCodeRef(codeRef.getName());
             if (!visited.contains(cd)) {
@@ -266,7 +300,7 @@ public class ElmRequirementsContext {
     }
 
     public void reportCodeSystemRef(CodeSystemRef codeSystemRef) {
-        TranslatedLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), codeSystemRef.getLibraryName());
+        CompiledLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), codeSystemRef.getLibraryName());
         try {
             CodeSystemDef csd = targetLibrary.resolveCodeSystemRef(codeSystemRef.getName());
             if (!visited.contains(csd)) {
@@ -279,7 +313,7 @@ public class ElmRequirementsContext {
     }
 
     public void reportConceptRef(ConceptRef conceptRef) {
-        TranslatedLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), conceptRef.getLibraryName());
+        CompiledLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), conceptRef.getLibraryName());
         try {
             ConceptDef cd = targetLibrary.resolveConceptRef(conceptRef.getName());
             if (!visited.contains(cd)) {
@@ -292,7 +326,7 @@ public class ElmRequirementsContext {
     }
 
     public void reportParameterRef(ParameterRef parameterRef) {
-        TranslatedLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), parameterRef.getLibraryName());
+        CompiledLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), parameterRef.getLibraryName());
         try {
             ParameterDef pd = targetLibrary.resolveParameterRef(parameterRef.getName());
             if (!visited.contains(pd)) {
@@ -305,7 +339,7 @@ public class ElmRequirementsContext {
     }
 
     public void reportValueSetRef(ValueSetRef valueSetRef) {
-        TranslatedLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), valueSetRef.getLibraryName());
+        CompiledLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), valueSetRef.getLibraryName());
         try {
             ValueSetDef vsd = targetLibrary.resolveValueSetRef(valueSetRef.getName());
             if (!visited.contains(vsd)) {
@@ -318,7 +352,7 @@ public class ElmRequirementsContext {
     }
 
     public ElmRequirement reportExpressionRef(ExpressionRef expressionRef) {
-        TranslatedLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), expressionRef.getLibraryName());
+        CompiledLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), expressionRef.getLibraryName());
         try {
             ExpressionDef ed = targetLibrary.resolveExpressionRef(expressionRef.getName());
             if (!visited.contains(ed)) {
@@ -340,15 +374,38 @@ public class ElmRequirementsContext {
     }
 
     public void reportFunctionRef(FunctionRef functionRef) {
-        TranslatedLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), functionRef.getLibraryName());
+        CompiledLibrary targetLibrary = prepareLibraryVisit(getCurrentLibraryIdentifier(), functionRef.getLibraryName());
         try {
-            // TODO: Needs full operator resolution to be able to distinguish overloads.
-            // For now, reports all overloads
-            for (ExpressionDef def : targetLibrary.getLibrary().getStatements().getDef()) {
-                if (def instanceof FunctionDef && def.getName().equals(functionRef.getName())) {
-                    if (!visited.contains(def)) {
-                        visitor.visitElement(def, this);
+
+            List<DataType> signature;
+            signature = new ArrayList<DataType>();
+            for (TypeSpecifier ts : functionRef.getSignature()) {
+                signature.add(typeResolver.resolveTypeSpecifier(ts));
+            }
+            // Signature sizes will only be different in the case that the signature is not present in the ELM, so needs to be constructed
+            if (signature.size() != functionRef.getOperand().size()) {
+                for (Expression e : functionRef.getOperand()) {
+                    if (e.getResultType() != null) {
+                        signature.add(e.getResultType());
                     }
+                    else if (e.getResultTypeName() != null) {
+                        signature.add(typeResolver.resolveTypeName(e.getResultTypeName()));
+                    }
+                    else if (e.getResultTypeSpecifier() != null) {
+                        signature.add(typeResolver.resolveTypeSpecifier(e.getResultTypeSpecifier()));
+                    }
+                    else {
+                        // Signature could not be constructed, fall back to reporting all function defs
+                        signature = null;
+                        break;
+                    }
+                }
+            }
+
+            Iterable<FunctionDef> fds = targetLibrary.resolveFunctionRef(functionRef.getName(), signature);
+            for (FunctionDef fd : fds) {
+                if (!visited.contains(fd)) {
+                    visitor.visitElement(fd, this);
                 }
             }
         }
@@ -414,7 +471,7 @@ public class ElmRequirementsContext {
         return null;
     }
 
-    private Map<QName, ElmDataRequirement> unboundDataRequirements = new HashMap<QName, ElmDataRequirement>();
+    private Map<QName, ElmDataRequirement> unboundDataRequirements = new LinkedHashMap<QName, ElmDataRequirement>();
 
     private ElmDataRequirement getDataRequirementForTypeName(QName typeName) {
         ElmDataRequirement requirement = unboundDataRequirements.get(typeName);
@@ -562,21 +619,21 @@ public class ElmRequirementsContext {
         return resolveLibrary(libraryIdentifier).resolveValueSetRef(valueSetRef.getName());
     }
 
-    public TranslatedLibrary resolveLibrary(ElmRequirement libraryRef) {
+    public CompiledLibrary resolveLibrary(ElmRequirement libraryRef) {
         return resolveLibrary(libraryRef.getLibraryIdentifier(), ((LibraryRef)libraryRef.getElement()).getLibraryName());
     }
 
     public IncludeDef resolveIncludeRef(VersionedIdentifier libraryIdentifier, String localLibraryName) {
-        TranslatedLibrary targetLibrary = resolveLibrary(libraryIdentifier);
+        CompiledLibrary targetLibrary = resolveLibrary(libraryIdentifier);
         return targetLibrary.resolveIncludeRef(localLibraryName);
     }
 
-    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, String localLibraryName) {
+    public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier, String localLibraryName) {
         IncludeDef includeDef = resolveIncludeRef(libraryIdentifier, localLibraryName);
         return resolveLibraryFromIncludeDef(includeDef);
     }
 
-    public TranslatedLibrary resolveLibraryFromIncludeDef(IncludeDef includeDef) {
+    public CompiledLibrary resolveLibraryFromIncludeDef(IncludeDef includeDef) {
         VersionedIdentifier targetLibraryIdentifier = new VersionedIdentifier()
                 .withSystem(NamespaceManager.getUriPart(includeDef.getPath()))
                 .withId(NamespaceManager.getNamePart(includeDef.getPath()))
@@ -585,10 +642,10 @@ public class ElmRequirementsContext {
         return resolveLibrary(targetLibraryIdentifier);
     }
 
-    public TranslatedLibrary resolveLibrary(VersionedIdentifier libraryIdentifier) {
+    public CompiledLibrary resolveLibrary(VersionedIdentifier libraryIdentifier) {
         // TODO: Need to support loading from ELM so we don't need options.
-        ArrayList<CqlTranslatorException> errors = new ArrayList<CqlTranslatorException>();
-        TranslatedLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, options, errors);
+        ArrayList<CqlCompilerException> errors = new ArrayList<CqlCompilerException>();
+        CompiledLibrary referencedLibrary = libraryManager.resolveLibrary(libraryIdentifier, options, errors);
         // TODO: Report translation errors here...
         //for (CqlTranslatorException error : errors) {
         //    this.recordParsingException(error);

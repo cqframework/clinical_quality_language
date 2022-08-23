@@ -2532,7 +2532,7 @@
     <ns4:typeInfo xsi:type="ns4:ClassInfo" name="NamingSystemIdentifierType" retrievable="false" baseType="FHIR.Element">
         <ns4:element name="value" type="System.String"/>
     </ns4:typeInfo>
-    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="List" retrievable="true" baseType="FHIR.DomainResource" primaryCocdePath="code">
+    <ns4:typeInfo xsi:type="ns4:ClassInfo" name="List" retrievable="true" baseType="FHIR.DomainResource" primaryCodePath="code">
         <ns4:element name="identifier">
             <ns4:typeSpecifier xsi:type="ns4:ListTypeSpecifier" elementType="FHIR.Identifier"/>
         </ns4:element>

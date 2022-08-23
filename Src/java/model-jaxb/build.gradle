@@ -1,0 +1,5 @@
+// Most build configuration comes from the cql-all parent build!
+
+dependencies {
+    implementation project(':model')
+}

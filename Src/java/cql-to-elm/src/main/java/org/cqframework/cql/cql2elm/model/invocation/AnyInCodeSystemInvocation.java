@@ -21,10 +21,7 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation {
     public Iterable<Expression> getOperands() {
         List<Expression> result = new ArrayList<>();
         result.add(((AnyInCodeSystem)expression).getCodes());
-        if (((AnyInCodeSystem)expression).getCodesystem() != null) {
-            result.add(((AnyInCodeSystem)expression).getCodesystem());
-        }
-        else {
+        if (((AnyInCodeSystem)expression).getCodesystemExpression() != null) {
             result.add(((AnyInCodeSystem)expression).getCodesystemExpression());
         }
         return result;
@@ -36,20 +33,13 @@ public class AnyInCodeSystemInvocation extends OperatorExpressionInvocation {
         for (Expression operand : operands) {
             switch (i) {
                 case 0: ((AnyInCodeSystem)expression).setCodes(operand); break;
-                case 1:
-                    if (operand instanceof CodeSystemRef) {
-                        ((AnyInCodeSystem)expression).setCodesystem((CodeSystemRef)operand);
-                    }
-                    else {
-                        ((AnyInCodeSystem)expression).setCodesystemExpression(operand);
-                    }
-                break;
+                case 1: ((AnyInCodeSystem)expression).setCodesystemExpression(operand); break;
             }
             i++;
         }
 
-        if (i != 2) {
-            throw new IllegalArgumentException("Binary operator expected");
+        if (i > 2) {
+            throw new IllegalArgumentException("Unary or binary operator expected");
         }
     }
 }

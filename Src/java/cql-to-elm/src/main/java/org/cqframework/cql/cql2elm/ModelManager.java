@@ -5,6 +5,7 @@ import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,12 +16,34 @@ import java.util.Set;
  */
 public class ModelManager {
     private NamespaceManager namespaceManager;
+    private Path path;
     private ModelInfoLoader modelInfoLoader;
     private final Map<String, Model> models = new HashMap<>();
     private final Set<String> loadingModels = new HashSet<>();
+    private final Map<String, Model> modelsByUri = new HashMap<>();
+    private boolean enableDefaultModelInfoLoading = true;
 
     public ModelManager() {
         namespaceManager = new NamespaceManager();
+        initialize();
+    }
+
+    public ModelManager(Path path) {
+        namespaceManager = new NamespaceManager();
+        path = path;
+        initialize();
+    }
+
+    public ModelManager(boolean enableDefaultModelInfoLoading) {
+        namespaceManager = new NamespaceManager();
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
+    public ModelManager(boolean enableDefaultModelInfoLoading, Path path) {
+        namespaceManager = new NamespaceManager();
+        this.path = path;
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
     }
 
@@ -29,8 +52,31 @@ public class ModelManager {
         initialize();
     }
 
+    public ModelManager(NamespaceManager namespaceManager, Path path) {
+        this.namespaceManager = namespaceManager;
+        this.path = path;
+        initialize();
+    }
+
+    public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading) {
+        this.namespaceManager = namespaceManager;
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
+    public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Path path) {
+        this.namespaceManager = namespaceManager;
+        this.path = path;
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
     private void initialize() {
         modelInfoLoader = new ModelInfoLoader();
+        modelInfoLoader.setNamespaceManager(namespaceManager);
+        if (path != null) {
+            modelInfoLoader.setPath(path);
+        }
     }
 
     public NamespaceManager getNamespaceManager() {
@@ -39,6 +85,10 @@ public class ModelManager {
 
     public ModelInfoLoader getModelInfoLoader() {
         return this.modelInfoLoader;
+    }
+
+    public boolean isDefaultModelInfoLoadingEnabled() {
+        return enableDefaultModelInfoLoading;
     }
 
     /*
@@ -116,11 +166,21 @@ public class ModelManager {
         if (model == null) {
             model = buildModel(modelIdentifier);
             models.put(modelPath, model);
+            modelsByUri.put(model.getModelInfo().getUrl(), model);
         }
 
         if (modelIdentifier.getVersion() != null && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {
             throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s because version %s is already loaded.",
                     modelIdentifier.getId(), modelIdentifier.getVersion(), model.getModelInfo().getVersion()));
+        }
+
+        return model;
+    }
+
+    public Model resolveModelByUri(String namespaceUri) {
+        Model model = modelsByUri.get(namespaceUri);
+        if (model == null) {
+            throw new IllegalArgumentException(String.format("Could not resolve model with namespace %s", namespaceUri));
         }
 
         return model;

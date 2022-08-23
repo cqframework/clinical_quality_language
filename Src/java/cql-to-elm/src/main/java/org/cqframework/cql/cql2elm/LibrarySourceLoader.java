@@ -14,5 +14,20 @@ public interface LibrarySourceLoader {
   InputStream getLibrarySource(VersionedIdentifier libraryIdentifier);
 
   void registerProvider(LibrarySourceProvider provider);
-  
+
+  default InputStream getLibraryContent(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+    if (LibraryContentType.CQL == type) {
+      return getLibrarySource(libraryIdentifier);
+    }
+
+    return null;
+  }
+
+  default boolean isLibraryContentAvailable(VersionedIdentifier libraryIdentifier, LibraryContentType type) {
+    if (LibraryContentType.CQL == type) {
+      return getLibrarySource(libraryIdentifier) != null;
+    }
+
+    return false;
+  }
 }

@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:elm:r1" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns="urn:hl7-org:elm:r1" 
+	xmlns:a="urn:hl7-org:cql-annotations:r1" 
+	xmlns:sch="http://purl.oclc.org/dsdl/schematron" 
+	targetNamespace="urn:hl7-org:elm:r1" 
+	elementFormDefault="qualified">
 	<xs:annotation>
 		<xs:documentation>This file defines the core expression components used throughout artifacts based on the Expression Logical Model. The core expression components defined here are intended to be general purpose, and do not reference anything specific to the clinical quality domain. This layering is intended to isolate the conceptual elements of a general purpose expression language from the clinically-focused operations relevant to the clinical quality domain.</xs:documentation>
 	</xs:annotation>
+	<xs:import namespace="urn:hl7-org:cql-annotations:r1" schemaLocation="cqlannotations.xsd"/>
 	<xs:complexType name="Element" abstract="true">
 		<xs:annotation>
 			<xs:documentation>The Element type defines the abstract base type for all library elements in ELM.</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
-			<xs:element name="annotation" type="xs:anyType" minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="annotation" type="a:CqlToElmBase" minOccurs="0" maxOccurs="unbounded">
 				<xs:annotation>
 					<xs:documentation>The annotation element provides a mechanism for decorating expressions with application-specific information such as translation hints, visual designer information, or debug symbols.</xs:documentation>
 				</xs:annotation>
@@ -119,6 +125,16 @@
 					</xs:element>
 					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
 				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ParameterTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>A type which is generic class parameter such as T in MyGeneric&lt;T extends SomeType&gt;.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:attribute name="parameterName" type="xs:string" use="required"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
