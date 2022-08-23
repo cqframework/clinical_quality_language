@@ -2,8 +2,8 @@ package org.cqframework.cql.cql2elm.fhir.v18;
 
 import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
+import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm.r1.Library;
-import org.hl7.elm.r1.VersionedIdentifier;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;

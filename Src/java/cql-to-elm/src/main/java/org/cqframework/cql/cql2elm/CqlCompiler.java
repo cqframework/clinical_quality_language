@@ -8,6 +8,8 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
 import org.fhir.ucum.UcumService;
+import org.hl7.cql.model.NamespaceAware;
+import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;
@@ -130,7 +132,7 @@ public class CqlCompiler {
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-            VersionedIdentifier libraryIdentifier = builder.getLibraryIdentifier();
+            var libraryIdentifier = builder.getLibraryIdentifier();
             if (libraryIdentifier == null) {
                 // Attempt to extract a libraryIdentifier from the currently parsed content
                 if (recognizer instanceof cqlParser) {

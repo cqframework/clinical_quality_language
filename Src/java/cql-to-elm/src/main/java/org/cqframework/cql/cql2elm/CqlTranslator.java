@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.*;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.serializing.ElmLibraryWriterFactory;
 import org.fhir.ucum.UcumService;
+import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.Library;
 import org.hl7.elm.r1.Retrieve;
 import org.hl7.elm.r1.VersionedIdentifier;

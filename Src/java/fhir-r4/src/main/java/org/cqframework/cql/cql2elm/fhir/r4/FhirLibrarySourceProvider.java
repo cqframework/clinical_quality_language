@@ -1,13 +1,12 @@
 package org.cqframework.cql.cql2elm.fhir.r4;
 
 import org.cqframework.cql.cql2elm.LibrarySourceProvider;
-import org.cqframework.cql.cql2elm.NamespaceAware;
-import org.cqframework.cql.cql2elm.NamespaceInfo;
-import org.cqframework.cql.cql2elm.NamespaceManager;
+import org.hl7.cql.model.NamespaceAware;
+import org.hl7.cql.model.NamespaceInfo;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.VersionedIdentifier;
 
 import java.io.InputStream;
-import java.util.Collections;
 
 /**
  * Created by Bryn on 3/28/2017.

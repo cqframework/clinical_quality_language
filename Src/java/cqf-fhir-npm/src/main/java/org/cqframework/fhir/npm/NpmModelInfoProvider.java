@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.cqframework.cql.cql2elm.ModelInfoProvider;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.fhir.r5.context.IWorkerContext;
 import org.hl7.fhir.r5.model.Library;
@@ -29,13 +29,13 @@ public class NpmModelInfoProvider implements ModelInfoProvider {
     private ILibraryReader reader;
     private IWorkerContext.ILoggingService logger;
 
-    public ModelInfo load(VersionedIdentifier modelIdentifier) {
+    public ModelInfo load(ModelIdentifier modelIdentifier) {
         // VersionedIdentifier.id: Name of the model
         // VersionedIdentifier.system: Namespace for the model, as a URL
         // VersionedIdentifier.version: Version of the model
         for (NpmPackage p : packages) {
             try {
-                VersionedIdentifier identifier = new VersionedIdentifier()
+                var identifier = new ModelIdentifier()
                         .withId(modelIdentifier.getId())
                         .withVersion(modelIdentifier.getVersion())
                         .withSystem(modelIdentifier.getSystem());

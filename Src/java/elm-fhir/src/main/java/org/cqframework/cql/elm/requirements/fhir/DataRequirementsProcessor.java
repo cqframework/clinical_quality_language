@@ -2,7 +2,7 @@ package org.cqframework.cql.elm.requirements.fhir;
 
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
-import org.cqframework.cql.cql2elm.NamespaceManager;
+import org.hl7.cql.model.NamespaceManager;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.elm.tracking.Trackable;

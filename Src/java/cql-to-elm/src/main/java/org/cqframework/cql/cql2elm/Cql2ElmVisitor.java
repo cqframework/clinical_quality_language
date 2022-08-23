@@ -8,7 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
-import org.cqframework.cql.elm.tracking.*;
+import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -790,12 +791,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public Model getModel(NamespaceInfo modelNamespace, String modelName, String version, String localIdentifier) {
         if (modelName == null) {
-            UsingDefinitionInfo defaultUsing = libraryInfo.getDefaultUsingDefinition();
+            var defaultUsing = libraryInfo.getDefaultUsingDefinition();
             modelName = defaultUsing.getName();
             version = defaultUsing.getVersion();
         }
 
-        VersionedIdentifier modelIdentifier = new VersionedIdentifier().withId(modelName).withVersion(version);
+        var modelIdentifier = new ModelIdentifier().withId(modelName).withVersion(version);
         if (modelNamespace != null) {
             modelIdentifier.setSystem(modelNamespace.getUri());
         }

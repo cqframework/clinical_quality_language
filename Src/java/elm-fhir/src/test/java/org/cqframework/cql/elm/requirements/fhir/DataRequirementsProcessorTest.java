@@ -6,6 +6,7 @@ import org.cqframework.cql.cql2elm.quick.FhirLibrarySourceProvider;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
+import org.hl7.cql.model.NamespaceInfo;
 import org.hl7.elm.r1.*;
 import ca.uhn.fhir.parser.IParser;
 import org.hl7.fhir.r5.model.*;

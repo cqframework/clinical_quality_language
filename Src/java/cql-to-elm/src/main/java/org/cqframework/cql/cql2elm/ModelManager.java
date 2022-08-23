@@ -2,7 +2,8 @@ package org.cqframework.cql.cql2elm;
 
 import org.cqframework.cql.cql2elm.model.Model;
 import org.cqframework.cql.cql2elm.model.SystemModel;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.nio.file.Path;
@@ -111,7 +112,7 @@ public class ModelManager {
         }
     }
 
-    private Model buildModel(VersionedIdentifier identifier) {
+    private Model buildModel(ModelIdentifier identifier) {
         Model model = null;
         if (identifier == null) {
             throw new IllegalArgumentException("Model identifier is required");
@@ -157,10 +158,10 @@ public class ModelManager {
     }
 
     public Model resolveModel(String modelName, String version) {
-        return resolveModel(new VersionedIdentifier().withId(modelName).withVersion(version));
+        return resolveModel(new ModelIdentifier().withId(modelName).withVersion(version));
     }
 
-    public Model resolveModel(VersionedIdentifier modelIdentifier) {
+    public Model resolveModel(ModelIdentifier modelIdentifier) {
         String modelPath = NamespaceManager.getPath(modelIdentifier.getSystem(), modelIdentifier.getId());
         Model model = models.get(modelPath);
         if (model == null) {
