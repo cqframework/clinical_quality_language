@@ -5,8 +5,7 @@ import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider;
 import org.cqframework.cql.cql2elm.quick.QICoreModelInfoProvider;
 import org.cqframework.cql.cql2elm.quick.QuickFhirModelInfoProvider;
 import org.cqframework.cql.cql2elm.quick.QuickModelInfoProvider;
-import org.hl7.elm_modelinfo.r1.*;
-import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
+import org.hl7.cql.model.SystemModelInfoProvider;
 import org.testng.annotations.Test;
 import java.io.IOException;
 

@@ -1,5 +1,6 @@
 package org.cqframework.cql.cql2elm;
 
+import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm.r1.Library;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;

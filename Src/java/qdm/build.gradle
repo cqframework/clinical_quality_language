@@ -3,7 +3,6 @@
 dependencies {
     implementation project(':elm')
     implementation project(':model')
-    implementation project(':cql-to-elm')
 }
 
 generateSources{

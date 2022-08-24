@@ -1,5 +1,7 @@
 package org.cqframework.cql.cql2elm;
 
+import org.hl7.cql.model.NamespaceInfo;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql_annotations.r1.CqlToElmError;
 import org.hl7.elm.r1.IncludeDef;
 import org.hl7.elm.r1.VersionedIdentifier;

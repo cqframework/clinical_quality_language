@@ -6,6 +6,7 @@ import static org.testng.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.hl7.cql.model.ModelIdentifier;
 import org.hl7.elm.r1.VersionedIdentifier;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.fhir.r5.context.IWorkerContext;
@@ -89,7 +90,7 @@ public class NpmPackageManagerTests implements IWorkerContext.ILoggingService {
 
         LibraryLoader reader = new LibraryLoader("4.0.1");
         NpmModelInfoProvider mp = new NpmModelInfoProvider(pm.getNpmList(), reader, this);
-        ModelInfo mi = mp.load(new VersionedIdentifier().withSystem("http://hl7.org/fhir/us/qicore").withId("QICore"));
+        ModelInfo mi = mp.load(new ModelIdentifier().withSystem("http://hl7.org/fhir/us/qicore").withId("QICore"));
         assertNotNull(mi);
         assertTrue(mi.getName().equals("QICore"));
     }

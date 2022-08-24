@@ -144,6 +144,7 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
     ]
 
     task generateSources {
+
         outputs.dir xjc.destDir
 
         doLast {
@@ -163,6 +164,7 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
     }
 
     compileJava.dependsOn generateSources
+    sourcesJar.dependsOn generateSources
     sourceSets.main.java.srcDirs += xjc.destDir
 
     clean {

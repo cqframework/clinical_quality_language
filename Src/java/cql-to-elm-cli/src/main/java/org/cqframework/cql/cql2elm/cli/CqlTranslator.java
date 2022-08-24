@@ -9,7 +9,8 @@ import org.cqframework.cql.elm.tracking.TrackBack;
 import org.fhir.ucum.UcumEssenceService;
 import org.fhir.ucum.UcumException;
 import org.fhir.ucum.UcumService;
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.ModelInfoProvider;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 import org.hl7.elm_modelinfo.r1.serializing.ModelInfoReaderFactory;
 
@@ -31,8 +32,8 @@ public class CqlTranslator {
     public static void loadModelInfo(File modelInfoXML)  {
         try {
             final ModelInfo modelInfo = ModelInfoReaderFactory.getReader("application/xml").read(modelInfoXML);
-            final VersionedIdentifier modelId = new VersionedIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
-            final ModelInfoProvider modelProvider = (VersionedIdentifier modelIdentifier) -> modelInfo;
+            final ModelIdentifier modelId = new ModelIdentifier().withId(modelInfo.getName()).withVersion(modelInfo.getVersion());
+            final ModelInfoProvider modelProvider = (ModelIdentifier modelIdentifier) -> modelInfo;
             final ModelInfoLoader modelInfoLoader = new ModelInfoLoader();
             modelInfoLoader.registerModelInfoProvider(modelProvider);
         } catch (IOException e) {

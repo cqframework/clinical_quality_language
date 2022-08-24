@@ -268,7 +268,7 @@ public class LibraryBuilder implements ModelResolver {
         return this.namespaceInfo;
     }
 
-    private Model loadModel(VersionedIdentifier modelIdentifier) {
+    private Model loadModel(ModelIdentifier modelIdentifier) {
         Model model = modelManager.resolveModel(modelIdentifier);
         loadConversionMap(model);
         return model;
@@ -285,7 +285,7 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
-    public Model getModel(VersionedIdentifier modelIdentifier, String localIdentifier) {
+    public Model getModel(ModelIdentifier modelIdentifier, String localIdentifier) {
         Model model = models.get(localIdentifier);
         if (model == null) {
             model = loadModel(modelIdentifier);
@@ -309,7 +309,7 @@ public class LibraryBuilder implements ModelResolver {
         }
     }
 
-    private UsingDef buildUsingDef(VersionedIdentifier modelIdentifier, Model model, String localIdentifier) {
+    private UsingDef buildUsingDef(ModelIdentifier modelIdentifier, Model model, String localIdentifier) {
         UsingDef usingDef = of.createUsingDef()
                 .withLocalIdentifier(localIdentifier)
                 .withVersion(modelIdentifier.getVersion())
@@ -478,7 +478,7 @@ public class LibraryBuilder implements ModelResolver {
 
     public SystemModel getSystemModel() {
         // TODO: Support loading different versions of the system library
-        return (SystemModel)getModel(new VersionedIdentifier().withId("System"), "System");
+        return (SystemModel)getModel(new ModelIdentifier().withId("System"), "System");
     }
 
     public Model getModel(String modelName) {
@@ -495,10 +495,10 @@ public class LibraryBuilder implements ModelResolver {
             throw new IllegalArgumentException("usingDef required");
         }
 
-        return getModel(new VersionedIdentifier()
-                        .withSystem(NamespaceManager.getUriPart(usingDef.getUri()))
-                        .withId(NamespaceManager.getNamePart(usingDef.getUri()))
-                        .withVersion(usingDef.getVersion()),
+        return getModel(new ModelIdentifier()
+                .withSystem(NamespaceManager.getUriPart(usingDef.getUri()))
+                .withId(NamespaceManager.getNamePart(usingDef.getUri()))
+                .withVersion(usingDef.getVersion()),
                 usingDef.getLocalIdentifier());
     }
 

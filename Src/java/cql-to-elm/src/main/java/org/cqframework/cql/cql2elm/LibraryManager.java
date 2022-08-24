@@ -3,6 +3,7 @@ package org.cqframework.cql.cql2elm;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.serializing.ElmLibraryReaderFactory;
 import org.fhir.ucum.UcumService;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.CodeDef;
 import org.hl7.elm.r1.CodeSystemDef;
 import org.hl7.elm.r1.ConceptDef;

@@ -1,6 +1,9 @@
 package org.cqframework.cql.cql2elm;
 
-import org.hl7.elm.r1.VersionedIdentifier;
+import org.hl7.cql.model.ModelIdentifier;
+import org.hl7.cql.model.ModelInfoProvider;
+import org.hl7.cql.model.NamespaceAware;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm_modelinfo.r1.ModelInfo;
 
 import java.nio.file.Path;
@@ -32,7 +35,7 @@ public class ModelInfoLoader implements NamespaceAware, PathAware {
         return providers;
     }
 
-    public ModelInfo getModelInfo(VersionedIdentifier modelIdentifier) {
+    public ModelInfo getModelInfo(ModelIdentifier modelIdentifier) {
         checkModelIdentifier(modelIdentifier);
 
         ModelInfo modelInfo = null;
@@ -91,7 +94,7 @@ public class ModelInfoLoader implements NamespaceAware, PathAware {
         initialized = false;
     }
 
-    private void checkModelIdentifier(VersionedIdentifier modelIdentifier) {
+    private void checkModelIdentifier(ModelIdentifier modelIdentifier) {
         if (modelIdentifier == null) {
             throw new IllegalArgumentException("modelIdentifier is null.");
         }

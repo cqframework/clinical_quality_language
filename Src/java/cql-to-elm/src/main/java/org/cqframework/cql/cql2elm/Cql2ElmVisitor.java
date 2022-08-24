@@ -5,9 +5,11 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.cqframework.cql.cql2elm.preprocessor.*;
-import org.cqframework.cql.elm.tracking.*;
+import org.cqframework.cql.elm.tracking.TrackBack;
+import org.cqframework.cql.elm.tracking.Trackable;
 import org.cqframework.cql.gen.cqlBaseVisitor;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -350,30 +352,116 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
         return true;
     }
 
-    private List<Tag> parseTags(String header) {
-        List<Tag> tags = new ArrayList<>();
-        int tagStartIndex = header.indexOf("@");
-        while (tagStartIndex >= 0) {
-            int tagNameEndIndex = header.indexOf(":", tagStartIndex);
-            if (tagNameEndIndex >= 0) {
-                String tagName = header.substring(tagStartIndex + 1, tagNameEndIndex);
-                if (isValidIdentifier(tagName)) {
-                    tagStartIndex = header.indexOf("@", tagNameEndIndex);
-                    String tagValue = null;
-                    if (tagStartIndex >= 0) {
-                        tagValue = header.substring(tagNameEndIndex + 1, tagStartIndex);
-                    }
-                    else {
-                        tagValue = header.substring(tagNameEndIndex + 1);
-                    }
-                    tags.add(af.createTag().withName(tagName.trim()).withValue(tagValue.trim()));
+    // this method returns Pair<tag value, next tag name lookup index> starting from startFrom
+    // can return null in cases.
+    // for @1980-12-01, it will potentially check to be treated as value date
+    // it looks for parameter in double quotes, e.g. @parameter: "Measurement Interval" [@2019,@2020]
+    private Pair<String, Integer> lookForTagValue(String header, int startFrom) {
+
+        if(startFrom>= header.length()) {
+            return null;
+        }
+        int nextTag = header.indexOf('@', startFrom);
+        int nextStartDoubleQuote = header.indexOf("\"", startFrom);
+        if ((nextTag < 0 || nextTag > nextStartDoubleQuote) && nextStartDoubleQuote > 0 &&
+                (header.length() > (nextStartDoubleQuote + 1))) {
+            int nextEndDoubleQuote = header.indexOf("\"", nextStartDoubleQuote + 1);
+            if (nextEndDoubleQuote > 0) {
+                int parameterEnd = header.indexOf("\n", (nextStartDoubleQuote + 1));
+                if (parameterEnd < 0) {
+                    return Pair.of(header.substring(nextStartDoubleQuote), header.length());
+                } else {
+                    return Pair.of(header.substring(nextStartDoubleQuote, parameterEnd), parameterEnd);
                 }
-                else {
-                    tagStartIndex = header.indexOf("@", tagStartIndex + 1);
-                }
+            } else {  //branch where the 2nd double quote is missing
+                return Pair.of(header.substring(nextStartDoubleQuote), header.length());
             }
-            else {
-                tagStartIndex = header.indexOf("@", tagStartIndex + 1);
+        }
+        if(nextTag == startFrom && !isStartingWithDigit(header, nextTag +1)) {  //starts with `@` and not potential date value
+            return Pair.of("",startFrom);
+        } else if (nextTag > 0) {   // has some text before tag
+            String interimText = header.substring(startFrom, nextTag).trim();
+            if (isStartingWithDigit(header, nextTag + 1)) {  // next `@` is a date value
+                if (interimText.length() > 0 && !interimText.equals(":")) {  // interim text has value, regards interim text
+                    return Pair.of(interimText, nextTag);
+                } else {
+                    int nextSpace = header.indexOf(' ', nextTag);
+                    int nextLine = header.indexOf("\n", nextTag);
+                    int mul = nextSpace * nextLine;
+                    int nextDelimeterIndex = header.length();
+
+                    if (mul < 0) {
+                        nextDelimeterIndex = Math.max(nextLine, nextSpace);
+                    } else if(mul > 1) {
+                        nextDelimeterIndex = Math.min(nextLine, nextSpace);
+                    }
+
+                    return Pair.of(header.substring(nextTag, nextDelimeterIndex), nextDelimeterIndex );
+                }
+            } else {   //next `@` is not date
+                return Pair.of(interimText, nextTag);
+            }
+        }
+
+        return Pair.of(header.substring(startFrom).trim(), header.length());
+    }
+
+    private boolean isStartingWithDigit(String header, int index) {
+        return (index < header.length()) && Character.isDigit(header.charAt(index));
+    }
+
+    // this method returns Pair<tag name, next value lookup index> starting from startFrom
+    // can return null in cases.
+    // if a tag has a value, it needs the colon to separate it
+    // supports `:` for delimiter
+    private Pair<String, Integer> lookForTagName(String header, int startFrom) {
+
+        if(startFrom>= header.length()){
+            return null;
+        }
+        int start = header.indexOf("@", startFrom);
+        if (start < 0) {
+            return null;
+        }
+        int nextTagStart = header.indexOf("@", start + 1);
+        int nextColon = header.indexOf(":", start + 1);
+
+        if (nextTagStart < 0) {  // no next tag , no next colon
+            if (nextColon < 0) {
+                return Pair.of(header.substring(start + 1, header.length()).trim(), header.length());
+            }
+        } else {
+            if (nextColon < 0 || nextColon > nextTagStart) {  //(has next tag and no colon) or (has next tag and next colon belongs to next tag)
+                return Pair.of(header.substring(start + 1, nextTagStart).trim(), nextTagStart);
+            }
+        }
+        return Pair.of(header.substring(start + 1, nextColon).trim(), nextColon + 1);
+    }
+
+    private List<Tag> parseTags(String header) {
+        header = String.join("\n", Arrays.asList(header.trim().split("\n[ \t]*\\*[ \t\\*]*")));
+        List<Tag> tags = new ArrayList<>();
+
+        int startFrom = 0;
+        while (startFrom < header.length()) {
+            Pair<String, Integer> tagNamePair = lookForTagName(header, startFrom);
+            if (tagNamePair != null) {
+                if (tagNamePair.getLeft().length() > 0 && isValidIdentifier(tagNamePair.getLeft())) {
+                    Tag t = af.createTag().withName(tagNamePair.getLeft());
+                    startFrom = tagNamePair.getRight();
+                    Pair<String, Integer> tagValuePair = lookForTagValue(header, startFrom);
+                    if (tagValuePair != null) {
+                        if (tagValuePair.getLeft().length() > 0) {
+                            t = t.withValue(tagValuePair.getLeft());
+                            startFrom = tagValuePair.getRight();
+                        }
+                    }
+                    tags.add(t);
+                } else {
+                    startFrom = tagNamePair.getRight();
+                }
+            } else {  // no name tag found, no need to traverse more
+                break;
             }
         }
         return tags;
@@ -389,11 +477,15 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
                 if (!inMultiline) {
                     int start = line.indexOf("/*");
                     if (start >= 0) {
-                        result.add(line.substring(start + 2));
+                        if (line.endsWith("*/")) {
+                            result.add(line.substring(start + 2, line.length() - 2));
+                        } else {
+                            result.add(line.substring(start + 2));
+                        }
                         inMultiline = true;
                     }
                     else start = line.indexOf("//");
-                    if (start >= 0) {
+                    if (start >= 0 && !inMultiline ) {
                         result.add(line.substring(start + 2));
                     }
                 }
@@ -699,12 +791,12 @@ public class Cql2ElmVisitor extends cqlBaseVisitor {
 
     public Model getModel(NamespaceInfo modelNamespace, String modelName, String version, String localIdentifier) {
         if (modelName == null) {
-            UsingDefinitionInfo defaultUsing = libraryInfo.getDefaultUsingDefinition();
+            var defaultUsing = libraryInfo.getDefaultUsingDefinition();
             modelName = defaultUsing.getName();
             version = defaultUsing.getVersion();
         }
 
-        VersionedIdentifier modelIdentifier = new VersionedIdentifier().withId(modelName).withVersion(version);
+        var modelIdentifier = new ModelIdentifier().withId(modelName).withVersion(version);
         if (modelNamespace != null) {
             modelIdentifier.setSystem(modelNamespace.getUri());
         }

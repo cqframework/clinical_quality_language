@@ -24,10 +24,10 @@ public class AgeOperatorsTest {
 
     @BeforeTest
     public void setup() throws IOException {
-        ModelManager modelManager = new ModelManager();
-        CqlTranslator translator = CqlTranslator.fromStream(AgeOperatorsTest.class.getResourceAsStream("../OperatorTests/AgeOperators.cql"), modelManager, new LibraryManager(modelManager));
+        var modelManager = new ModelManager();
+        var translator = CqlTranslator.fromStream(AgeOperatorsTest.class.getResourceAsStream("../OperatorTests/AgeOperators.cql"), modelManager, new LibraryManager(modelManager));
         assertThat(translator.getErrors().size(), is(0));
-        Library library = translator.toELM();
+        var library = translator.toELM();
         defs = new HashMap<>();
         if (library.getStatements() != null) {
             for (ExpressionDef def : library.getStatements().getDef()) {

@@ -2,7 +2,7 @@ package org.cqframework.cql.cql2elm.fhir.stu301;
 
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.CqlTranslator;
-import org.cqframework.cql.cql2elm.NamespaceInfo;
+import org.hl7.cql.model.NamespaceInfo;
 import org.cqframework.cql.cql2elm.TestUtils;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.elm.r1.*;

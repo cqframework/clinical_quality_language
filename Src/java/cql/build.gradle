@@ -5,17 +5,16 @@ mainClassName = 'org.cqframework.cql.Main'
 run.args = ["${projectDir}/../../../Examples/ChlamydiaScreening_CQM.cql"]
 
 configurations {
-    implementation {
+    api {
+        // Undo extendsFrom relationship between the 'antlr' configuration and the 'api' configuration
+        // See https://github.com/gradle/gradle/blob/master/subprojects/antlr/src/main/java/org/gradle/api/plugins/antlr/AntlrPlugin.java#L60
         extendsFrom = extendsFrom.findAll { it != configurations.antlr }
     }
 }
-
 dependencies {
-    antlr  group: "org.antlr", name: "antlr4", version: "4.9.1"
-    implementation (group: "org.antlr", name: "antlr4-runtime", version: "4.9.1") {
-        // antlr 4.5 includes these classes directly
-        exclude(group: "org.abego.treelayout", module: "org.abego.treelayout.core")
-    }
+    antlr  group: "org.antlr", name: "antlr4", version: "4.10.1"
+    // Exports Antlr runtime packages to cql-to-elm
+    api group: "org.antlr", name: "antlr4-runtime", version: "4.10.1"
 }
 
 ext.antlr = [
@@ -30,6 +29,8 @@ generateGrammarSource {
     arguments = ['-visitor', '-package', antlr.package]
     outputDirectory = file("${antlr.destination}/${antlr.package.replaceAll("\\.", "/")}")
 }
+
+sourcesJar.dependsOn generateGrammarSource
 
 clean {
     delete antlr.destination

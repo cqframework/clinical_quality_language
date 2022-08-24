@@ -4,6 +4,7 @@ import org.cqframework.cql.cql2elm.*;
 import org.cqframework.cql.cql2elm.model.LibraryRef;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.hl7.cql.model.DataType;
+import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 
 import javax.xml.namespace.QName;
