@@ -33,25 +33,6 @@ public class LibraryBuilder implements ModelResolver {
     public static final String COMPATIBILITY_LEVEL_1_5 = "1.5";
     public static final String $_INDEX = "$index";
     public static final String $_TOTAL = "$total";
-    public static final String S_RESOLVED_AS_AN_EXPRESSION_DEFINITION = "%s resolved as an expression definition";
-    public static final String S_RESOLVED_AS_A_PARAMETER = "%s resolved as a parameter";
-    public static final String S_RESOLVED_AS_A_VALUE_SET = "%s resolved as a value set";
-    public static final String S_RESOLVED_AS_A_CODE_SYSTEM = "%s resolved as a code system";
-    public static final String S_RESOLVED_AS_A_CODE = "%s resolved as a code";
-    public static final String S_RESOLVED_AS_A_CONCEPT = "%s resolved as a concept";
-    public static final String S_RESOLVED_AS_A_LIBRARY = "%s resolved as a library";
-    public static final String S_RESOLVED_MORE_THAN_ONCE = "%s resolved more than once: ";
-    public static final String S_RESOLVED_AS_AN_ELEMENT_OF_THE_RESULT_OF_A_QUERY = "%s resolved as an element of the result of a query";
-    public static final String S_RESOLVED_AS_THE_INDEX_ITERATION_ACCESSOR = "%s resolved as the index iteration accessor";
-    public static final String S_RESOLVED_AS_THE_TOTAL_AGGREGATION_ACCESSOR = "%s resolved as the total aggregation accessor";
-    public static final String S_RESOLVED_AS_AN_ALIAS_OF_A_QUERY = "%s resolved as an alias of a query";
-    public static final String S_RESOLVED_AS_A_LET_OF_A_QUERY = "%s resolved as a let of a query";
-    public static final String S_RESOLVED_AS_AN_OPERAND_TO_A_FUNCTION = "%s resolved as an operand to a function";
-    public static final String S_RESOLVED_AS_A_CONTEXT_ACCESSOR = "%s resolved as a context accessor";
-    public static final String S_RESOLVED_AS_A_POTENTIAL_TYPE_NAME = "%s resolved as a potential type name";
-    public static final String COULD_NOT_VALIDATE_REFERENCE_TO_PARAMETER_S_BECAUSE_ITS_DEFINITION_CONTAINS_ERRORS = "Could not validate reference to parameter %s because its definition contains errors.";
-    public static final String COULD_NOT_RESOLVE_IDENTIFIER_S_IN_THE_CURRENT_LIBRARY = "Could not resolve identifier %s in the current library.";
-
 
     public static enum SignatureLevel {
         /*
@@ -2296,7 +2277,7 @@ public class LibraryBuilder implements ModelResolver {
                 parameterRef.setResultType(contextParameter.getResultType());
                 if (parameterRef.getResultType() == null) {
                     // ERROR:
-                    throw new IllegalArgumentException(String.format(COULD_NOT_VALIDATE_REFERENCE_TO_PARAMETER_S_BECAUSE_ITS_DEFINITION_CONTAINS_ERRORS,
+                    throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                             parameterRef.getName()));
                 }
 
@@ -2330,7 +2311,7 @@ public class LibraryBuilder implements ModelResolver {
             return (Expression) firstCaseMatch.getResolvedElement();
         } else if (mustResolve) {
             // ERROR:
-            throw new IllegalArgumentException(String.format(COULD_NOT_RESOLVE_IDENTIFIER_S_IN_THE_CURRENT_LIBRARY, identifier));
+            throw new IllegalArgumentException(String.format("Could not resolve identifier %s in the current library.", identifier));
         }
 
         return null;
@@ -2339,52 +2320,52 @@ public class LibraryBuilder implements ModelResolver {
 
     private String lookupElementWarning(Object element) {
         if (element instanceof ExpressionDef) {
-            return S_RESOLVED_AS_AN_EXPRESSION_DEFINITION;
+            return "%s resolved as an expression definition";
         }
         else if (element instanceof ParameterDef) {
-            return S_RESOLVED_AS_A_PARAMETER;
+            return "%s resolved as a parameter";
         }
         else if (element instanceof ValueSetDef) {
-            return S_RESOLVED_AS_A_VALUE_SET;
+            return "%s resolved as a value set";
         }
         else if (element instanceof CodeSystemDef) {
-            return S_RESOLVED_AS_A_CODE_SYSTEM;
+            return "%s resolved as a code system";
         }
         else if (element instanceof CodeDef) {
-            return S_RESOLVED_AS_A_CODE;
+            return "%s resolved as a code";
         }
         else if (element instanceof ConceptDef) {
-            return S_RESOLVED_AS_A_CONCEPT;
+            return "%s resolved as a concept";
         }
         else if (element instanceof IncludeDef) {
-            return S_RESOLVED_AS_A_LIBRARY;
+            return "%s resolved as a library";
         }
         else if (element instanceof IdentifierRef) {
-            return S_RESOLVED_AS_AN_ELEMENT_OF_THE_RESULT_OF_A_QUERY;
+            return "%s resolved as an element of the result of a query";
         }
         else if (element instanceof Iteration) {
-            return S_RESOLVED_AS_THE_INDEX_ITERATION_ACCESSOR;
+            return "%s resolved as the index iteration accessor";
         }
         else if (element instanceof Total) {
-            return S_RESOLVED_AS_THE_TOTAL_AGGREGATION_ACCESSOR;
+            return "%s resolved as the total aggregation accessor";
         }
         else if (element instanceof AliasRef) {
-            return S_RESOLVED_AS_AN_ALIAS_OF_A_QUERY;
+            return "%s resolved as an alias of a query";
         }
         else if (element instanceof QueryLetRef ) {
-            return S_RESOLVED_AS_A_LET_OF_A_QUERY;
+            return "%s resolved as a let of a query";
         }
         else if (element instanceof OperandRef ) {
-            return S_RESOLVED_AS_AN_OPERAND_TO_A_FUNCTION;
+            return "%s resolved as an operand to a function";
         }
         else if (element instanceof Literal) {
-            return S_RESOLVED_AS_A_POTENTIAL_TYPE_NAME;
+            return "%s resolved as a potential type name";
         }
         else if (element instanceof Expression ) {
-            return S_RESOLVED_AS_A_CONTEXT_ACCESSOR;
+            return "%s resolved as a context accessor";
         }
         //default message if no match is made:
-        return S_RESOLVED_MORE_THAN_ONCE + element.getClass();
+        return "%s resolved more than once: " + element.getClass();
     }
 
     private List<ResolvedIdentifier> resolveElements(String identifier) {
