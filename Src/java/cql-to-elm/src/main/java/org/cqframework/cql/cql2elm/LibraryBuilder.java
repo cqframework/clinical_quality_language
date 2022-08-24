@@ -2316,8 +2316,8 @@ public class LibraryBuilder implements ModelResolver {
             //remove first element to filter out our "first come first serve" rule in deciding a match:
             allHiddenCaseMatches.remove(0);
 
-            List<IdentifierResolution> allCaseIgnoredMatches = IdentifierResolution.getAllMatches(matchList, MatchType.EXACT);
-            //List<MatchIdentifier> allSoundsLikeMatches = MatchIdentifier.getAllMatches(matchList, Match.SOUNDS_LIKE);
+//            List<IdentifierResolution> allCaseIgnoredMatches = IdentifierResolution.getAllMatches(matchList, MatchType.CASE_IGNORED);
+//            List<MatchIdentifier> allSoundsLikeMatches = MatchIdentifier.getAllMatches(matchList, Match.SOUNDS_LIKE);
 
             //issue warning that multiple matches occurred:
             if (allHiddenCaseMatches.size() >= 1) {
@@ -2989,7 +2989,10 @@ public class LibraryBuilder implements ModelResolver {
                     PropertyResolution pr = (PropertyResolution) propertyMatch.getResolvedElement();
                     IdentifierRef result = new IdentifierRef().withName(pr.getName());
                     result.setResultType(pr.getType());
-                    if (pr.getTargetMap() != null) {
+                    if (pr.getTargetMap() != null &&
+                            //matches have occurred, it's ok that this fails
+                            (matchList.size() == 0)
+                    ) {
                         throw new IllegalArgumentException("Target mapping not supported in this context");
                     }
                     matchList.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, result));
