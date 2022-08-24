@@ -2,7 +2,6 @@
 
 dependencies {
     implementation project(':model')
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.2'
 }
 
 generateSources {
