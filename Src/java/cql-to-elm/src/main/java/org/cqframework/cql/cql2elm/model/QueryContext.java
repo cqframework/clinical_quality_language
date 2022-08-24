@@ -69,15 +69,15 @@ public class QueryContext {
         return sources.get(identifier);
     }
 
-    public List<IdentifierResolution> resolveCaseIgnoredAliases(String identifier) {
-        List<IdentifierResolution> ret = new ArrayList<>();
+    public List<ResolvedIdentifier> resolveCaseIgnoredAliases(String identifier) {
+        List<ResolvedIdentifier> ret = new ArrayList<>();
 
         List<String> caseIgnoredKeyMatches = sources.keySet().stream()
                 .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
                 .collect(Collectors.toList());
 
         for (String key : caseIgnoredKeyMatches){
-            ret.add(IdentifierResolution.createMatch(identifier, MatchType.CASE_IGNORED, sources.get(key)));
+            ret.add(IdentifierResolutionUtil.createMatch(identifier, MatchType.CASE_IGNORED, sources.get(key)));
         }
         return ret;
     }
@@ -86,14 +86,14 @@ public class QueryContext {
         return lets.get(identifier);
     }
 
-    public List<IdentifierResolution> resolveCaseIgnoredLets(String identifier) {
-        List<IdentifierResolution> ret = new ArrayList<>();
+    public List<ResolvedIdentifier> resolveCaseIgnoredLets(String identifier) {
+        List<ResolvedIdentifier> ret = new ArrayList<>();
         List<String> caseIgnoredKeyMatches = lets.keySet().stream()
                 .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
                 .collect(Collectors.toList());
 
         for (String key : caseIgnoredKeyMatches){
-            ret.add(IdentifierResolution.createMatch(identifier, MatchType.EXACT, lets.get(key)));
+            ret.add(IdentifierResolutionUtil.createMatch(identifier, MatchType.EXACT, lets.get(key)));
         }
         return ret;
     }
