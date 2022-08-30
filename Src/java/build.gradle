@@ -31,6 +31,14 @@ subprojects {
         testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
     }
 
+    // The xpp3.xpp3 dependency includes the javax.xml packagename, which is invalid in
+    // Java 9+. The FHIR ucum service and the HAPI validation framework both depend on this
+    // so the codelibs.xpp3 package is substituted instead. It's a fork of xpp3, but excludes
+    // the javax.xml packagename
+    configurations.implementation {
+        exclude group: 'xpp3', module: 'xpp3'
+    }
+
     jar {
         manifest {
             attributes('Implementation-Title': project.name,
