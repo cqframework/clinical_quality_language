@@ -54,7 +54,7 @@ public class TranslatorOptionsUtil {
      * @return the set of options
      */
     public static EnumSet<CqlTranslatorOptions.Options> parseTranslatorOptions(String translatorOptions) {
-        if (translatorOptions == null) {
+        if (translatorOptions == null || translatorOptions.isEmpty()) {
             return null;
         }
 
