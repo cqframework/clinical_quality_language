@@ -2161,7 +2161,7 @@ public class LibraryBuilder implements ModelResolver {
             }
         }
 
-        if (mustResolve && matchList.firstInstanceOfExactMatch() == null) {
+        if (mustResolve && matchList.firstInstanceOfExactMatchExpression() == null) {
             // ERROR:
             throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
         }
@@ -2288,7 +2288,7 @@ public class LibraryBuilder implements ModelResolver {
         ResolvedIdentifier firstCaseMatch = matchList.firstInstanceOfExactMatchExpression();
         if (firstCaseMatch != null) {
 
-            List<ResolvedIdentifier> allHiddenCaseMatches = matchList.findAllMatchesByType(MatchType.EXACT);
+            List<ResolvedIdentifier> allHiddenCaseMatches = matchList.findAllMatchedIdentifiers();
             //remove first element to filter out our "first come first serve" rule in deciding a match:
             allHiddenCaseMatches.remove(0);
 

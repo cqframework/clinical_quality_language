@@ -81,13 +81,12 @@ public class ResolvedIdentifierList {
     }
 
     /**
-     * Returns list of ResolvedIdentifiers based on MatchType
-     * @param matchType MatchType passed in
+     * Returns list of ResolvedIdentifiers where MatchType isn't NONE
      * @return List of ResolvedIdentifier
      */
-    public List<ResolvedIdentifier> findAllMatchesByType(MatchType matchType) {
+    public List<ResolvedIdentifier> findAllMatchedIdentifiers() {
         return this.list.stream()
-                .filter(s -> s.getMatchType().equals(matchType))
+                .filter(s -> !s.getMatchType().equals(MatchType.NONE))
                 .collect(Collectors.toList());
     }
 
