@@ -8,17 +8,20 @@ public class ElmLibraryWriterFactory {
     static ServiceLoader<ElmLibraryWriterProvider> loader = ServiceLoader
             .load(ElmLibraryWriterProvider.class);
 
-    public static Iterator<ElmLibraryWriterProvider> providers(boolean refresh) {
+    public static synchronized Iterator<ElmLibraryWriterProvider> providers(boolean refresh) {
         if (refresh) {
             loader.reload();
         }
+
         return loader.iterator();
     }
 
     public static ElmLibraryWriter getWriter(String contentType) {
-        if (providers(false).hasNext()) {
-            return providers(false).next().create(contentType);
+        var providers = providers(false);
+        if (providers.hasNext()) {
+            return providers.next().create(contentType);
         }
+
         throw new RuntimeException("No ElmLibraryWriterProviders found");
     }
 }

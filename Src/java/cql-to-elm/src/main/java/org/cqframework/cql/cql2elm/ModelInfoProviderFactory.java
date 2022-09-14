@@ -10,10 +10,11 @@ public class ModelInfoProviderFactory {
     static ServiceLoader<ModelInfoProvider> loader = ServiceLoader
             .load(ModelInfoProvider.class);
 
-    public static Iterator<ModelInfoProvider> providers(boolean refresh) {
+    public static synchronized Iterator<ModelInfoProvider> providers(boolean refresh) {
         if (refresh) {
             loader.reload();
         }
+
         return loader.iterator();
     }
 }
