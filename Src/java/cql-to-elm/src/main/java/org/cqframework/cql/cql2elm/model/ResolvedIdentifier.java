@@ -6,7 +6,7 @@ public class ResolvedIdentifier {
     private Object resolvedElement;
     private String identifier;
 
-    //class should only be initialized via MatchList
+    //class should only be initialized via ResolvedIdentifierList
     private ResolvedIdentifier() {}
 
     protected ResolvedIdentifier(String identifier,

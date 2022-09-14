@@ -2051,7 +2051,7 @@ public class LibraryBuilder implements ModelResolver {
 
     // TODO: Support case-insensitive models
     public ResolvedIdentifierList resolveProperties(DataType sourceType, String identifier, boolean mustResolve) {
-        ResolvedIdentifierList matchList = new ResolvedIdentifierList();
+        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         DataType currentType = sourceType;
         while (currentType != null) {
@@ -2060,7 +2060,7 @@ public class LibraryBuilder implements ModelResolver {
                 if (identifier.startsWith("?") && isCompatibleWith(COMPATIBILITY_LEVEL_1_5)) {
                     String searchPath = identifier.substring(1);
                     for (SearchType s : classType.getSearches()) {
-                        matchList.addResolvedIdentifier(identifier, s.getName(), searchPath, new PropertyResolution(s));
+                        resolvedIdentifierList.addResolvedIdentifier(identifier, s.getName(), searchPath, new PropertyResolution(s));
                     }
                 }
                 else {
@@ -2069,7 +2069,7 @@ public class LibraryBuilder implements ModelResolver {
                             if (e.isProhibited()) {
                                 throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
                             }
-                            matchList.addResolvedIdentifier(identifier, e.getName(), identifier, new PropertyResolution(e));
+                            resolvedIdentifierList.addResolvedIdentifier(identifier, e.getName(), identifier, new PropertyResolution(e));
                         }
                     }
                 }
@@ -2077,7 +2077,7 @@ public class LibraryBuilder implements ModelResolver {
             else if (currentType instanceof TupleType) {
                 TupleType tupleType = (TupleType)currentType;
                 for (TupleTypeElement e : tupleType.getElements()) {
-                    matchList.addResolvedIdentifier(identifier, e.getName(), identifier, new PropertyResolution(e));
+                    resolvedIdentifierList.addResolvedIdentifier(identifier, e.getName(), identifier, new PropertyResolution(e));
                 }
             }
             else if (currentType instanceof IntervalType) {
@@ -2086,8 +2086,8 @@ public class LibraryBuilder implements ModelResolver {
                 if (!identifier.equalsIgnoreCase(HIGH) && !identifier.equalsIgnoreCase(HIGH_CLOSED)){
                     throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
                 }
-                matchList.addResolvedIdentifier(identifier, identifier, HIGH, new PropertyResolution(intervalType.getPointType(), identifier));
-                matchList.addResolvedIdentifier(identifier, identifier, HIGH_CLOSED, new PropertyResolution(resolveTypeName("System", "Boolean"), identifier));
+                resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, HIGH, new PropertyResolution(intervalType.getPointType(), identifier));
+                resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, HIGH_CLOSED, new PropertyResolution(resolveTypeName("System", "Boolean"), identifier));
 
             }
             else if (currentType instanceof ChoiceType) {
@@ -2134,13 +2134,13 @@ public class LibraryBuilder implements ModelResolver {
 
                 // The result type is a choice of all the resolved types
                 if (resultTypes.size() > 1) {
-                    matchList.addExactMatchIdentifier(identifier, new PropertyResolution(new ChoiceType(resultTypes), name, resultTargetMaps));
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, new PropertyResolution(new ChoiceType(resultTypes), name, resultTargetMaps));
 
                 }
 
                 if (resultTypes.size() == 1) {
                     for (DataType resultType : resultTypes) {
-                        matchList.addExactMatchIdentifier(identifier,new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name));
+                        resolvedIdentifierList.addExactMatchIdentifier(identifier,new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name));
                     }
                 }
             }
@@ -2150,7 +2150,7 @@ public class LibraryBuilder implements ModelResolver {
                 ListType listType = (ListType)currentType;
                 PropertyResolution resolution = resolveProperty(listType.getElementType(), identifier);
 
-                matchList.addExactMatchIdentifier(identifier, new PropertyResolution(new ListType(resolution.getType()), resolution.getTargetMap()));
+                resolvedIdentifierList.addExactMatchIdentifier(identifier, new PropertyResolution(new ListType(resolution.getType()), resolution.getTargetMap()));
             }
 
             if (currentType.getBaseType() != null) {
@@ -2161,12 +2161,12 @@ public class LibraryBuilder implements ModelResolver {
             }
         }
 
-        if (mustResolve && matchList.firstInstanceOfExactMatchExpression() == null) {
+        if (mustResolve && resolvedIdentifierList.firstInstanceOfExactMatchExpression() == null) {
             // ERROR:
             throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
         }
 
-        return matchList;
+        return resolvedIdentifierList;
     }
 
     /**
@@ -2194,27 +2194,27 @@ public class LibraryBuilder implements ModelResolver {
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
 
-        ResolvedIdentifierList matchList = new ResolvedIdentifierList();
+        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         if (inTypeSpecifierContext()) {
-            matchList.addExactMatchIdentifier(identifier, this.createLiteral(identifier));
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, this.createLiteral(identifier));
         }
 
-        matchList.addAllResolvedIdentifiers(resolveQueryResultElements(identifier));
+        resolvedIdentifierList.addAllResolvedIdentifiers(resolveQueryResultElements(identifier));
 
         // In the case of a $this alias, names may be resolved as implicit property references
-        matchList.addAllResolvedIdentifiers(resolveQueryThisElements(identifier));
+        resolvedIdentifierList.addAllResolvedIdentifiers(resolveQueryThisElements(identifier));
 
         if (MatchType.resolveMatchType(identifier, $_INDEX) != MatchType.NONE) {
             Iteration result = of.createIteration();
             result.setResultType(resolveTypeName(SYSTEM, INTEGER));
-            matchList.addResolvedIdentifier(identifier, identifier, $_INDEX, result);
+            resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_INDEX, result);
         }
 
         if (MatchType.resolveMatchType(identifier, $_TOTAL) != MatchType.NONE) {
             Total result = of.createTotal();
             result.setResultType(resolveTypeName(SYSTEM, DECIMAL)); // TODO: This isn't right, but we don't set up a query for the Aggregate operator right now...
-            matchList.addResolvedIdentifier(identifier, identifier, $_TOTAL, result);
+            resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_TOTAL, result);
         }
 
 
@@ -2229,10 +2229,10 @@ public class LibraryBuilder implements ModelResolver {
                 result.setResultType(aqs.getResultType());
             }
             //add any exact matches first (first match is what's used)
-            matchList.addExactMatchIdentifier(identifier, result);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, result);
         }
         //add all subsequent
-        matchList.addAllResolvedIdentifiers(aliasMatches);
+        resolvedIdentifierList.addAllResolvedIdentifiers(aliasMatches);
 
 
         ResolvedIdentifierList letsMatches = resolveQueryLets(identifier);
@@ -2241,24 +2241,24 @@ public class LibraryBuilder implements ModelResolver {
             QueryLetRef result = of.createQueryLetRef().withName(identifier);
             LetClause let = (LetClause) letsFirstCaseMatch.getResolvedElement();
             result.setResultType(let.getResultType());
-            matchList.addExactMatchIdentifier(identifier, result);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, result);
         }
-        matchList.addAllResolvedIdentifiers(letsMatches);
+        resolvedIdentifierList.addAllResolvedIdentifiers(letsMatches);
 
         ResolvedIdentifierList operandRefMatches = resolveOperandRefs(identifier);
         ResolvedIdentifier operandFirstCaseMatch = operandRefMatches.firstInstanceOfExactMatch();
         if (operandFirstCaseMatch != null) {
             OperandRef operandRef = (OperandRef) operandFirstCaseMatch.getResolvedElement();
-            matchList.addExactMatchIdentifier(identifier, operandRef);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, operandRef);
         }
-        matchList.addAllResolvedIdentifiers(operandRefMatches);
+        resolvedIdentifierList.addAllResolvedIdentifiers(operandRefMatches);
 
         ResolvedIdentifierList resolvedElementsMatches = resolveElements(identifier);
         ResolvedIdentifier resolvedElementsFirstCaseMatch = resolvedElementsMatches.firstInstanceOfExactMatch();
         if (resolvedElementsFirstCaseMatch != null) {
-            matchList.addExactMatchIdentifier(identifier, resolvedElementsFirstCaseMatch.getResolvedElement());
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, resolvedElementsFirstCaseMatch.getResolvedElement());
         }
-        matchList.addAllResolvedIdentifiers(resolvedElementsMatches);
+        resolvedIdentifierList.addAllResolvedIdentifiers(resolvedElementsMatches);
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
         // the identifier may be resolved as an implicit property reference on that context.
@@ -2280,20 +2280,20 @@ public class LibraryBuilder implements ModelResolver {
                 if (resolution != null) {
                     Expression contextAccessor = buildProperty(parameterRef, resolution.getName(), resolution.isSearch(), resolution.getType());
                     contextAccessor = applyTargetMap(contextAccessor, resolution.getTargetMap());
-                    matchList.addExactMatchIdentifier(identifier, contextAccessor);
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, contextAccessor);
                 }
             }
         }
 
-        ResolvedIdentifier firstCaseMatch = matchList.firstInstanceOfExactMatchExpression();
+        ResolvedIdentifier firstCaseMatch = resolvedIdentifierList.firstInstanceOfExactMatchExpression();
         if (firstCaseMatch != null) {
 
-            List<ResolvedIdentifier> allHiddenCaseMatches = matchList.findAllMatchedIdentifiers();
+            List<ResolvedIdentifier> allHiddenCaseMatches = resolvedIdentifierList.findAllMatchedIdentifiers();
             //remove first element to filter out our "first come first serve" rule in deciding a match:
             allHiddenCaseMatches.remove(0);
 
-//            List<IdentifierResolution> allCaseIgnoredMatches = IdentifierResolutionUtil.getAllMatches(matchList, MatchType.CASE_IGNORED);
-//            List<MatchIdentifier> allSoundsLikeMatches = MatchIdentifier.getAllMatches(matchList, Match.SOUNDS_LIKE);
+//            List<IdentifierResolution> allCaseIgnoredMatches = IdentifierResolutionUtil.getAllMatches(resolvedIdentifierList, MatchType.CASE_IGNORED);
+//            List<MatchIdentifier> allSoundsLikeMatches = MatchIdentifier.getAllMatches(resolvedIdentifierList, Match.SOUNDS_LIKE);
 
             //issue warning that multiple matches occurred:
             if (allHiddenCaseMatches.size() >= 1) {
@@ -2365,7 +2365,7 @@ public class LibraryBuilder implements ModelResolver {
 
     private ResolvedIdentifierList resolveElements(String identifier) {
 
-        ResolvedIdentifierList matchList = new ResolvedIdentifierList();
+        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         Element element = resolve(identifier);
 
@@ -2380,9 +2380,9 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to expression %s because its definition contains errors.",
                         expressionRef.getName()));
             }
-            matchList.addExactMatchIdentifier(identifier, expressionRef);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, expressionRef);
 
-            matchList.addAllResolvedIdentifiers(caseIgnoredElements);
+            resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
         }
 
         if (element instanceof ParameterDef) {
@@ -2394,9 +2394,9 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to parameter %s because its definition contains errors.",
                         parameterRef.getName()));
             }
-            matchList.addExactMatchIdentifier(identifier, parameterRef);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, parameterRef);
 
-            matchList.addAllResolvedIdentifiers(caseIgnoredElements);
+            resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
 
         }
 
@@ -2412,9 +2412,9 @@ public class LibraryBuilder implements ModelResolver {
             if (isCompatibleWith("1.5")) {
                 valuesetRef.setPreserve(true);
             }
-            matchList.addExactMatchIdentifier(identifier, valuesetRef);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, valuesetRef);
 
-            matchList.addAllResolvedIdentifiers(caseIgnoredElements);
+            resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
 
         }
 
@@ -2427,7 +2427,7 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to codesystem %s because its definition contains errors.",
                         codesystemRef.getName()));
             }
-            matchList.addExactMatchIdentifier(identifier, codesystemRef);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, codesystemRef);
         }
 
         if (element instanceof CodeDef) {
@@ -2439,7 +2439,7 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to code %s because its definition contains errors.",
                         codeRef.getName()));
             }
-            matchList.addExactMatchIdentifier(identifier, codeRef);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, codeRef);
         }
 
         if (element instanceof ConceptDef) {
@@ -2451,7 +2451,7 @@ public class LibraryBuilder implements ModelResolver {
                 throw new IllegalArgumentException(String.format("Could not validate reference to concept %s because its definition contains error.",
                         conceptRef.getName()));
             }
-            matchList.addExactMatchIdentifier(identifier, conceptRef);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, conceptRef);
 
         }
 
@@ -2460,12 +2460,12 @@ public class LibraryBuilder implements ModelResolver {
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
 
-            matchList.addExactMatchIdentifier(identifier, libraryRef);
+            resolvedIdentifierList.addExactMatchIdentifier(identifier, libraryRef);
         }
 
-        matchList.addAllResolvedIdentifiers(caseIgnoredElements);
+        resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
 
-        return matchList;
+        return resolvedIdentifierList;
     }
 
     private String formatMatchedMessage(List<ResolvedIdentifier> list) {
@@ -2931,7 +2931,7 @@ public class LibraryBuilder implements ModelResolver {
 
     private ResolvedIdentifierList resolveQueryResultElements(String identifier) {
 
-        ResolvedIdentifierList matchList = new ResolvedIdentifierList();
+        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
@@ -2939,7 +2939,7 @@ public class LibraryBuilder implements ModelResolver {
                 {
                     IdentifierRef result = new IdentifierRef().withName(identifier);
                     result.setResultType(query.getResultElementType());
-                    matchList.addResolvedIdentifier(identifier, identifier, $_THIS, result);
+                    resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_THIS, result);
                 }
 
                 ResolvedIdentifier propertyMatch = resolveProperties(query.getResultElementType(), identifier, false).firstInstanceOfExactMatch();
@@ -2950,16 +2950,16 @@ public class LibraryBuilder implements ModelResolver {
                     result.setResultType(pr.getType());
                     if (pr.getTargetMap() != null &&
                             //matches have occurred, it's ok that this fails
-                            (matchList.size() == 0)
+                            (resolvedIdentifierList.size() == 0)
                     ) {
                         throw new IllegalArgumentException("Target mapping not supported in this context");
                     }
-                    matchList.addExactMatchIdentifier(identifier, result);
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, result);
                 }
             }
         }
 
-        return matchList;
+        return resolvedIdentifierList;
     }
 
     private AliasedQuerySource resolveAlias(String identifier) {
@@ -2977,19 +2977,19 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveAliases(String identifier) {
-        ResolvedIdentifierList matchList = new ResolvedIdentifierList();
+        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
                 AliasedQuerySource source = getScope().getQueries().get(i).resolveAlias(identifier);
                 if (source != null) {
-                    matchList.addExactMatchIdentifier(identifier, source);
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, source);
                 }
-                matchList.addAllResolvedIdentifiers(getScope().getQueries().get(i).resolveCaseIgnoredAliases(identifier));
+                resolvedIdentifierList.addAllResolvedIdentifiers(getScope().getQueries().get(i).resolveCaseIgnoredAliases(identifier));
             }
         }
 
-        return matchList;
+        return resolvedIdentifierList;
     }
 
     private Expression resolveQueryThisElement(String identifier) {
@@ -3019,7 +3019,7 @@ public class LibraryBuilder implements ModelResolver {
 
     private ResolvedIdentifierList resolveQueryThisElements(String identifier) {
 
-        ResolvedIdentifierList matchList = new ResolvedIdentifierList();
+        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
@@ -3043,16 +3043,16 @@ public class LibraryBuilder implements ModelResolver {
 
                     PropertyResolution result = resolveProperty(aliasRef.getResultType(), identifier, false);
                     if (result != null) {
-                        matchList.addExactMatchIdentifier(identifier, resolveAccessor(aliasRef, identifier));
+                        resolvedIdentifierList.addExactMatchIdentifier(identifier, resolveAccessor(aliasRef, identifier));
                     }
 
                 }
 
-                matchList.addAllResolvedIdentifiers(aliasMatches);
+                resolvedIdentifierList.addAllResolvedIdentifiers(aliasMatches);
             }
         }
 
-        return matchList;
+        return resolvedIdentifierList;
     }
 
     private LetClause resolveQueryLet(String identifier) {
@@ -3070,19 +3070,19 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     private ResolvedIdentifierList resolveQueryLets(String identifier) {
-        ResolvedIdentifierList matchList = new ResolvedIdentifierList();
+        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
         // Need to use a for loop to go through backwards, iteration on a Stack is bottom up
         if (inQueryContext()) {
             for (int i = getScope().getQueries().size() - 1; i >= 0; i--) {
                 LetClause source = getScope().getQueries().get(i).resolveLet(identifier);
                 if (source != null) {
-                    matchList.addExactMatchIdentifier(identifier, source);
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, source);
                 }
-                matchList.addAllResolvedIdentifiers(getScope().getQueries().get(i).resolveCaseIgnoredLets(identifier));
+                resolvedIdentifierList.addAllResolvedIdentifiers(getScope().getQueries().get(i).resolveCaseIgnoredLets(identifier));
             }
         }
 
-        return matchList;
+        return resolvedIdentifierList;
     }
 
     private OperandRef resolveOperandRef(String identifier) {
