@@ -8,10 +8,11 @@ public class LibrarySourceProviderFactory {
     static ServiceLoader<LibrarySourceProvider> loader = ServiceLoader
             .load(LibrarySourceProvider.class);
 
-    public static Iterator<LibrarySourceProvider> providers(boolean refresh) {
+    public static synchronized Iterator<LibrarySourceProvider> providers(boolean refresh) {
         if (refresh) {
             loader.reload();
         }
+
         return loader.iterator();
     }
 }
