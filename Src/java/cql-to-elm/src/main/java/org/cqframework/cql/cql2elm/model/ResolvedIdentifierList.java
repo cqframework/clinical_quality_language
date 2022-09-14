@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  */
 public class ResolvedIdentifierList {
 
-    private List<ResolvedIdentifier> list;
+    private final List<ResolvedIdentifier> list;
 
     public ResolvedIdentifierList() {
         this.list = new ArrayList<>();
@@ -21,79 +21,76 @@ public class ResolvedIdentifierList {
         return this.list;
     }
 
-    public void add(ResolvedIdentifier ri) {
+    public void addResolvedIdentifier(ResolvedIdentifier ri) {
         this.list.add(ri);
     }
 
     /**
-     * Establish match type and add new instance of ResolvedIdentifier
+     * Establish match type and add new instance of ResolvedIdentifier, regardless of case matching
      *
      * @param identifier         Visible identifier name to use
      * @param val                Value of identifier used in case matching
      * @param checkVal           Value to be compared against
      * @param resolvedIdentifier Object to record to the list
      */
-    public void add(String identifier, String val, String checkVal, Object resolvedIdentifier) {
-        this.list.add(new ResolvedIdentifier(identifier, MatchType.checkMatch(val, checkVal), resolvedIdentifier));
+    public void addResolvedIdentifier(String identifier, String val, String checkVal, Object resolvedIdentifier) {
+        this.list.add(new ResolvedIdentifier(identifier, MatchType.resolveMatchType(val, checkVal), resolvedIdentifier));
     }
 
     /**
      * Match type set to EXACT and new instance of ResolvedIdentifier added to list
      *
-     * @param identifier
-     * @param resolvedElement
+     * @param identifier identifier of resolved element
+     * @param resolvedElement resolved element
      */
-    public void addExactMatch(String identifier, Object resolvedElement) {
+    public void addExactMatchIdentifier(String identifier, Object resolvedElement) {
         this.list.add(new ResolvedIdentifier(identifier, MatchType.EXACT, resolvedElement));
     }
 
     /**
      * Combine list from another instance of ResolvedIdentifierList
      *
-     * @param m
+     * @param m instance of ResolvedIdentifierList
      */
-    public void addAll(ResolvedIdentifierList m) {
+    public void addAllResolvedIdentifiers(ResolvedIdentifierList m) {
         this.list.addAll(m.getList());
     }
 
     /**
      * Returns first instance in the list where MatchType is EXACT.  List is ordered in first come first serve basis where first EXACT match is what is ultimately used.
      *
-     * @return
+     * @return ResolvedIdentifier
      */
-    public ResolvedIdentifier getFirstCaseMatch() {
+    public ResolvedIdentifier firstInstanceOfExactMatch() {
         return this.list.stream()
                 .filter(s -> s.getMatchType().equals(MatchType.EXACT))
                 .findFirst()
-                .get();
+                .orElse(null);
     }
 
     /**
      * Returns first instance in list where MatchType is EXACT and the object can resolve to an Expression.
      *
-     * @return
+     * @return ResolvedIdentifier
      */
-    public ResolvedIdentifier getFirstCaseMatchExpression() {
+    public ResolvedIdentifier firstInstanceOfExactMatchExpression() {
         return this.list.stream()
                 .filter(s -> s.getMatchType().equals(MatchType.EXACT) && canResolveToExpression(s.getResolvedElement()))
                 .findFirst()
-                .get();
+                .orElse(null);
     }
 
     /**
-     * @param matchType
-     * @return
+     * Returns list of ResolvedIdentifiers based on MatchType
+     * @param matchType MatchType passed in
+     * @return List of ResolvedIdentifier
      */
-    public List<ResolvedIdentifier> getAllMatchesByType(MatchType matchType) {
+    public List<ResolvedIdentifier> findAllMatchesByType(MatchType matchType) {
         return this.list.stream()
                 .filter(s -> s.getMatchType().equals(matchType))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * @param in
-     * @return
-     */
     private boolean canResolveToExpression(Object in) {
         try {
             Expression e = (Expression) in;
@@ -104,7 +101,7 @@ public class ResolvedIdentifierList {
     }
 
     /**
-     * @return
+     * @return Number of ResolvedIdentifiers
      */
     public int size() {
         return this.list.size();

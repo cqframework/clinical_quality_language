@@ -3,7 +3,7 @@ package org.cqframework.cql.cql2elm.model;
 public enum MatchType {
     EXACT, CASE_IGNORED, SOUNDS_LIKE, NONE;
 
-    public static MatchType checkMatch(String val, String checkVal) {
+    public static MatchType resolveMatchType(String val, String checkVal) {
         if (val.equals(checkVal)) {
             return EXACT;
         }

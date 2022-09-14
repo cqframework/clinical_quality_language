@@ -146,7 +146,7 @@ public class CompiledLibrary {
         namespace.entrySet()
                 .stream()
                 .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
-                .forEach(entry -> ret.add(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
+                .forEach(entry -> ret.addResolvedIdentifier(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
 
         return ret;
     }
