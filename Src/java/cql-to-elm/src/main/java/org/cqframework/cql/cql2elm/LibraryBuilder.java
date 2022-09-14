@@ -2381,8 +2381,6 @@ public class LibraryBuilder implements ModelResolver {
                         expressionRef.getName()));
             }
             resolvedIdentifierList.addExactMatchIdentifier(identifier, expressionRef);
-
-            resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
         }
 
         if (element instanceof ParameterDef) {
@@ -2395,9 +2393,6 @@ public class LibraryBuilder implements ModelResolver {
                         parameterRef.getName()));
             }
             resolvedIdentifierList.addExactMatchIdentifier(identifier, parameterRef);
-
-            resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
-
         }
 
         if (element instanceof ValueSetDef) {
@@ -2413,9 +2408,6 @@ public class LibraryBuilder implements ModelResolver {
                 valuesetRef.setPreserve(true);
             }
             resolvedIdentifierList.addExactMatchIdentifier(identifier, valuesetRef);
-
-            resolvedIdentifierList.addAllResolvedIdentifiers(caseIgnoredElements);
-
         }
 
         if (element instanceof CodeSystemDef) {
@@ -2459,7 +2451,6 @@ public class LibraryBuilder implements ModelResolver {
             checkLiteralContext();
             LibraryRef libraryRef = new LibraryRef();
             libraryRef.setLibraryName(((IncludeDef) element).getLocalIdentifier());
-
             resolvedIdentifierList.addExactMatchIdentifier(identifier, libraryRef);
         }
 
