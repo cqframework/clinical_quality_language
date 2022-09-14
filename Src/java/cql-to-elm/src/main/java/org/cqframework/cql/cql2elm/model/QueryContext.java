@@ -6,7 +6,6 @@ import org.hl7.elm.r1.AliasedQuerySource;
 import org.hl7.elm.r1.LetClause;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class QueryContext {
     private final HashMap<String, AliasedQuerySource> sources = new HashMap<>();
@@ -69,16 +68,14 @@ public class QueryContext {
         return sources.get(identifier);
     }
 
-    public List<ResolvedIdentifier> resolveCaseIgnoredAliases(String identifier) {
-        List<ResolvedIdentifier> ret = new ArrayList<>();
+    public ResolvedIdentifierList resolveCaseIgnoredAliases(String identifier) {
+        ResolvedIdentifierList ret = new ResolvedIdentifierList();
 
-        List<String> caseIgnoredKeyMatches = sources.keySet().stream()
-                .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
-                .collect(Collectors.toList());
+        sources.entrySet()
+                .stream()
+                .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
+                .forEach(entry -> ret.add(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
 
-        for (String key : caseIgnoredKeyMatches){
-            ret.add(IdentifierResolutionUtil.createMatch(identifier, MatchType.CASE_IGNORED, sources.get(key)));
-        }
         return ret;
     }
 
@@ -86,15 +83,14 @@ public class QueryContext {
         return lets.get(identifier);
     }
 
-    public List<ResolvedIdentifier> resolveCaseIgnoredLets(String identifier) {
-        List<ResolvedIdentifier> ret = new ArrayList<>();
-        List<String> caseIgnoredKeyMatches = lets.keySet().stream()
-                .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
-                .collect(Collectors.toList());
+    public ResolvedIdentifierList resolveCaseIgnoredLets(String identifier) {
+        ResolvedIdentifierList ret = new ResolvedIdentifierList();
 
-        for (String key : caseIgnoredKeyMatches){
-            ret.add(IdentifierResolutionUtil.createMatch(identifier, MatchType.EXACT, lets.get(key)));
-        }
+        lets.entrySet()
+                .stream()
+                .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
+                .forEach(entry -> ret.add(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
+
         return ret;
     }
 

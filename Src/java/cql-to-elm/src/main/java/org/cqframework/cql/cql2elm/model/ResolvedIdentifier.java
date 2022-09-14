@@ -6,9 +6,7 @@ public class ResolvedIdentifier {
     private Object resolvedElement;
     private String identifier;
 
-    /**
-     * class should only be initialized via org.cqframework.cql.cql2elm.model.IdentiferResolutionUtil.checkMatch
-     */
+    //class should only be initialized via MatchList
     private ResolvedIdentifier() {}
 
     protected ResolvedIdentifier(String identifier,

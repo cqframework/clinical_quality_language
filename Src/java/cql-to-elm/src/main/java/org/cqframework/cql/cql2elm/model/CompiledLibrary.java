@@ -1,7 +1,5 @@
 package org.cqframework.cql.cql2elm.model;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.hl7.cql.model.NamespaceManager;
 import org.hl7.cql.model.DataType;
 import org.hl7.cql_annotations.r1.Annotation;
@@ -10,7 +8,6 @@ import org.hl7.elm.r1.*;
 
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CompiledLibrary {
     private VersionedIdentifier identifier;
@@ -143,15 +140,14 @@ public class CompiledLibrary {
         return namespace.get(identifier);
     }
 
-    public List<Pair<String, Object>> resolveCaseIgnored(String identifier) {
-        List<Pair<String, Object>> ret = new ArrayList<>();
-        List<String> caseIgnoredKeyMatches = namespace.keySet().stream()
-                .filter(s -> s.equalsIgnoreCase(identifier) && !s.equals(identifier))
-                .collect(Collectors.toList());
+    public ResolvedIdentifierList resolveCaseIgnored(String identifier) {
+        ResolvedIdentifierList ret = new ResolvedIdentifierList();
 
-        for (String key : caseIgnoredKeyMatches){
-            ret.add(new ImmutablePair<>(key, namespace.get(key)));
-        }
+        namespace.entrySet()
+                .stream()
+                .filter(k -> k.getKey().equalsIgnoreCase(identifier) && !k.getKey().equals(identifier))
+                .forEach(entry -> ret.add(new ResolvedIdentifier(entry.getKey(), MatchType.CASE_IGNORED, entry.getValue())));
+
         return ret;
     }
 
