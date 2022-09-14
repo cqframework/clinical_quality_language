@@ -16,9 +16,6 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
-
-
 /**
  * Created by Bryn on 12/29/2016.
  */
@@ -2469,14 +2466,6 @@ public class LibraryBuilder implements ModelResolver {
         matchList.addAll(caseIgnoredElements);
 
         return matchList;
-    }
-
-    private String formatPairedMessage(List<Pair<String, Object>> list) {
-        StringBuilder sb = new StringBuilder();
-        for (Pair<String, Object> p : list){
-            sb.append(String.format(lookupElementWarning(p.getRight()), p.getLeft()) + "\n");
-        }
-        return sb.toString();
     }
 
     private String formatMatchedMessage(List<ResolvedIdentifier> list) {
