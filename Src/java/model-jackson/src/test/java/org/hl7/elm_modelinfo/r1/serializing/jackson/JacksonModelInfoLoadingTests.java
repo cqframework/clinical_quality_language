@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm;
+package org.hl7.elm_modelinfo.r1.serializing.jackson;
 
 import org.cqframework.cql.cql2elm.qdm.QdmModelInfoProvider;
 import org.cqframework.cql.cql2elm.quick.FhirModelInfoProvider;
@@ -149,7 +149,7 @@ public class JacksonModelInfoLoadingTests {
     public void testFhirModelInfo400() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader().read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.0.xml"));
     }
-    
+
     @Test
     public void testFhirModelInfo401() throws IOException {
         new org.hl7.elm_modelinfo.r1.serializing.jackson.XmlModelInfoReader().read(FhirModelInfoProvider.class.getResourceAsStream("/org/hl7/fhir/fhir-modelinfo-4.0.1.xml"));

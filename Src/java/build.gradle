@@ -126,7 +126,7 @@ JAXB dependencies:
 https://mkyong.com/java/jaxbexception-implementation-of-jaxb-api-has-not-been-found-on-module-path-or-classpath/
  */
 
-configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'quick', 'fhir-r4', 'qdm', 'cql-to-elm', 'cql-to-elm-cli']}) {
+configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-fhir', 'elm-jaxb', 'quick', 'qdm', 'cql-to-elm', 'cql-to-elm-cli']}) {
     configurations {
         xjc
     }
@@ -196,7 +196,7 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
    - Repo for snapshots and releases: https://oss.sonatype.org/content/groups/public/info/cqframework/
    - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
  */
-configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'fhir-r4', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter']}) {
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter']}) {
     java {
         withJavadocJar()
         withSourcesJar()

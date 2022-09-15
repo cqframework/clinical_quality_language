@@ -1,4 +1,4 @@
-package org.cqframework.cql.cql2elm;
+package org.cqframework.cql.elm;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -7,6 +7,9 @@ import java.util.EnumSet;
 
 import javax.xml.bind.JAXBException;
 
+import org.cqframework.cql.cql2elm.CqlTranslator;
+import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
+import org.cqframework.cql.cql2elm.TranslatorOptionsUtil;
 import org.hl7.elm.r1.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;

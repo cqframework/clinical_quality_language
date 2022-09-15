@@ -4,4 +4,7 @@ dependencies {
     implementation project(':model')
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
+
+    testImplementation project(":quick")
+    testImplementation project(":qdm")
 }
