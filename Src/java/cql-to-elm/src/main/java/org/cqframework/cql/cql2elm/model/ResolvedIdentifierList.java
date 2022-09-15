@@ -32,9 +32,12 @@ public class ResolvedIdentifierList {
      * @param val                Value of identifier used in case matching
      * @param checkVal           Value to be compared against
      * @param resolvedIdentifier Object to record to the list
+     * @return resulting MatchType
      */
-    public void addResolvedIdentifier(String identifier, String val, String checkVal, Object resolvedIdentifier) {
-        this.list.add(new ResolvedIdentifier(identifier, MatchType.resolveMatchType(val, checkVal), resolvedIdentifier));
+    public MatchType addResolvedIdentifier(String identifier, String val, String checkVal, Object resolvedIdentifier) {
+        MatchType matchType = MatchType.resolveMatchType(val, checkVal);
+        this.list.add(new ResolvedIdentifier(identifier, matchType, resolvedIdentifier));
+        return matchType;
     }
 
     /**

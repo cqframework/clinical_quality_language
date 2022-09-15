@@ -2048,127 +2048,6 @@ public class LibraryBuilder implements ModelResolver {
         return null;
     }
 
-
-    // TODO: Support case-insensitive models
-    public ResolvedIdentifierList resolveProperties(DataType sourceType, String identifier, boolean mustResolve) {
-        ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
-
-        DataType currentType = sourceType;
-        while (currentType != null) {
-            if (currentType instanceof ClassType) {
-                ClassType classType = (ClassType)currentType;
-                if (identifier.startsWith("?") && isCompatibleWith(COMPATIBILITY_LEVEL_1_5)) {
-                    String searchPath = identifier.substring(1);
-                    for (SearchType s : classType.getSearches()) {
-                        resolvedIdentifierList.addResolvedIdentifier(identifier, s.getName(), searchPath, new PropertyResolution(s));
-                    }
-                }
-                else {
-                    for (ClassTypeElement e : classType.getElements()) {
-                        if (identifier.equalsIgnoreCase(e.getName())){
-                            if (e.isProhibited()) {
-                                throw new IllegalArgumentException(String.format("Element %s cannot be referenced because it is marked prohibited in type %s.", e.getName(), ((ClassType) currentType).getName()));
-                            }
-                            resolvedIdentifierList.addResolvedIdentifier(identifier, e.getName(), identifier, new PropertyResolution(e));
-                        }
-                    }
-                }
-            }
-            else if (currentType instanceof TupleType) {
-                TupleType tupleType = (TupleType)currentType;
-                for (TupleTypeElement e : tupleType.getElements()) {
-                    resolvedIdentifierList.addResolvedIdentifier(identifier, e.getName(), identifier, new PropertyResolution(e));
-                }
-            }
-            else if (currentType instanceof IntervalType) {
-                IntervalType intervalType = (IntervalType)currentType;
-
-                if (!identifier.equalsIgnoreCase(HIGH) && !identifier.equalsIgnoreCase(HIGH_CLOSED)){
-                    throw new IllegalArgumentException(String.format("Invalid interval property name %s.", identifier));
-                }
-                resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, HIGH, new PropertyResolution(intervalType.getPointType(), identifier));
-                resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, HIGH_CLOSED, new PropertyResolution(resolveTypeName("System", "Boolean"), identifier));
-
-            }
-            else if (currentType instanceof ChoiceType) {
-                ChoiceType choiceType = (ChoiceType)currentType;
-                // TODO: Issue a warning if the property does not resolve against every type in the choice
-
-                // Resolve the property against each type in the choice
-                Set<DataType> resultTypes = new HashSet<>();
-                Map<DataType, String> resultTargetMaps = new HashMap<DataType, String>();
-                String name = null;
-                for (DataType choice : choiceType.getTypes()) {
-                    PropertyResolution resolution = resolveProperty(choice, identifier, false);
-                    if (resolution != null) {
-                        resultTypes.add(resolution.getType());
-                        if (resolution.getTargetMap() != null) {
-                            if (resultTargetMaps.containsKey(resolution.getType())) {
-                                if (!resultTargetMaps.get(resolution.getType()).equals(resolution.getTargetMap())) {
-                                    throw new IllegalArgumentException(String.format("Inconsistent target maps %s and %s for choice type %s",
-                                            resultTargetMaps.get(resolution.getType()), resolution.getTargetMap(), resolution.getType().toString()));
-                                }
-                            }
-                            else {
-                                resultTargetMaps.put(resolution.getType(), resolution.getTargetMap());
-                            }
-                        }
-
-                        if (name == null) {
-                            name = resolution.getName();
-                        }
-                        else if (!name.equals(resolution.getName())) {
-                            throw new IllegalArgumentException(String.format("Inconsistent property resolution for choice type %s (was %s, is %s)",
-                                    choice.toString(), name, resolution.getName()));
-                        }
-
-                        if (name == null) {
-                            name = resolution.getName();
-                        }
-                        else if (!name.equals(resolution.getName())) {
-                            throw new IllegalArgumentException(String.format("Inconsistent property resolution for choice type %s (was %s, is %s)",
-                                    choice.toString(), name, resolution.getName()));
-                        }
-                    }
-                }
-
-                // The result type is a choice of all the resolved types
-                if (resultTypes.size() > 1) {
-                    resolvedIdentifierList.addExactMatchIdentifier(identifier, new PropertyResolution(new ChoiceType(resultTypes), name, resultTargetMaps));
-
-                }
-
-                if (resultTypes.size() == 1) {
-                    for (DataType resultType : resultTypes) {
-                        resolvedIdentifierList.addExactMatchIdentifier(identifier,new PropertyResolution(resultType, resultTargetMaps.containsKey(resultType) ? resultTargetMaps.get(resultType) : name));
-                    }
-                }
-            }
-            else if (currentType instanceof ListType && listTraversal) {
-                // NOTE: FHIRPath path traversal support
-                // Resolve property as a list of items of property of the element type
-                ListType listType = (ListType)currentType;
-                PropertyResolution resolution = resolveProperty(listType.getElementType(), identifier);
-
-                resolvedIdentifierList.addExactMatchIdentifier(identifier, new PropertyResolution(new ListType(resolution.getType()), resolution.getTargetMap()));
-            }
-
-            if (currentType.getBaseType() != null) {
-                currentType = currentType.getBaseType();
-            }
-            else {
-                break;
-            }
-        }
-
-        if (mustResolve && resolvedIdentifierList.firstInstanceOfExactMatchExpression() == null) {
-            // ERROR:
-            throw new IllegalArgumentException(String.format("Member %s not found for type %s.", identifier, sourceType != null ? sourceType.toLabel() : null));
-        }
-
-        return resolvedIdentifierList;
-    }
-
     /**
      * resolveIdentifier serves the function of both attempting to resolve an identifier as well as
      * inform the user when various scenarios occur such as no resolution, multiple resolutions, or a
@@ -2262,7 +2141,7 @@ public class LibraryBuilder implements ModelResolver {
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
         // the identifier may be resolved as an implicit property reference on that context.
-        if (!inLiteralContext() && inSpecificContext()) {
+        if (!inLiteralContext() && inSpecificContext() && resolvedIdentifierList.firstInstanceOfExactMatch() == null) {
             Element contextElement = resolve(currentExpressionContext());
             if (contextElement instanceof ParameterDef) {
                 ParameterDef contextParameter = (ParameterDef) contextElement;
@@ -2933,20 +2812,13 @@ public class LibraryBuilder implements ModelResolver {
                     resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_THIS, result);
                 }
 
-                ResolvedIdentifier propertyMatch = resolveProperties(query.getResultElementType(), identifier, false).firstInstanceOfExactMatch();
-
-                if (propertyMatch != null) {
-                    PropertyResolution pr = (PropertyResolution) propertyMatch.getResolvedElement();
-                    IdentifierRef result = new IdentifierRef().withName(pr.getName());
-                    result.setResultType(pr.getType());
-                    if (pr.getTargetMap() != null &&
-                            //matches have occurred, it's ok that this fails
-                            (resolvedIdentifierList.size() == 0)
-                    ) {
-                        throw new IllegalArgumentException("Target mapping not supported in this context");
-                    }
-                    resolvedIdentifierList.addExactMatchIdentifier(identifier, result);
+                PropertyResolution resolution = resolveProperty(query.getResultElementType(), identifier, false);
+                if (resolution != null) {
+                    IdentifierRef result = new IdentifierRef().withName(resolution.getName());
+                    result.setResultType(resolution.getType());
+                    resolvedIdentifierList.addExactMatchIdentifier(identifier, applyTargetMap(result, resolution.getTargetMap()));
                 }
+
             }
         }
 
