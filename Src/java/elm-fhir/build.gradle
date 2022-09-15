@@ -8,7 +8,7 @@ dependencies {
     // fhir core dependencies
     implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.6.36'
     implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.6.36'
-    implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation', version: '5.6.36'
+    // implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.validation', version: '5.6.36'
     implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.6.36'
 
     // HAPI base
@@ -26,6 +26,11 @@ dependencies {
 
     implementation group: 'org.codelibs', name: 'xpp3', version: '1.1.4c.0'
 
-    testImplementation project(':model-jackson')
     testImplementation project(':quick')
+    testImplementation group: 'org.fhir', name: 'ucum', version: '1.0.3'
+    testImplementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '0.13.1'
+    testImplementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+
+    testRuntimeOnly project(':model-jackson')
+
 }

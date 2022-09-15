@@ -1,0 +1,14 @@
+// Most build configuration comes from the cql-all parent build!
+
+dependencies {
+    implementation project(':model')
+    implementation project(':model-jaxb')
+    implementation project(':elm')
+    implementation project(':cql-to-elm')
+    implementation project(':elm-jackson')
+    implementation project(':elm-jaxb')
+    implementation group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
+    implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+    implementation group: 'org.fhir', name: 'ucum', version: '1.0.3'
+    implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics', version: '0.13.1'
+}

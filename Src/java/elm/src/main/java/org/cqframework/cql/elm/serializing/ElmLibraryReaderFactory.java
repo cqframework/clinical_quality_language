@@ -19,9 +19,19 @@ public class ElmLibraryReaderFactory {
     public static ElmLibraryReader getReader(String contentType) {
         var providers = providers(false);
         if (providers.hasNext()) {
-            return providers.next().create(contentType);
+            ElmLibraryReaderProvider p = providers.next();
+            if (providers.hasNext()) {
+                throw new RuntimeException(String.join(" ",
+                "Multiple ElmLibraryReaderProviders found on the classpath.",
+                "You need to remove a reference to either the 'elm-jackson' or the 'elm-jaxb' package"));
+            }
+
+            return p.create(contentType);
         }
 
-        throw new RuntimeException("No ElmLibraryReaderProviders found");
+        throw new RuntimeException(String.join(" ",
+                "No ElmLibraryReaderProviders found on the classpath.",
+                "You need to add a reference to one of the 'elm-jackson' or 'elm-jaxb' packages,",
+                "or provide your own implementation."));
     }
 }

@@ -6,4 +6,6 @@ dependencies {
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.2'
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
+        // needs javax.json.JsonException when using SAXUnmarshaller.getNewXMLReader
+    implementation group: 'org.glassfish', 'name': 'javax.json', 'version': '1.0.4'
 }
