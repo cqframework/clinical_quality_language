@@ -4,11 +4,10 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public class LibrarySourceProviderFactory {
+    private LibrarySourceProviderFactory() {}
 
-    static ServiceLoader<LibrarySourceProvider> loader = ServiceLoader
-            .load(LibrarySourceProvider.class);
-
-    public static synchronized Iterator<LibrarySourceProvider> providers(boolean refresh) {
+    public static Iterator<LibrarySourceProvider> providers(boolean refresh) {
+        var loader = ServiceLoader.load(LibrarySourceProvider.class);
         if (refresh) {
             loader.reload();
         }

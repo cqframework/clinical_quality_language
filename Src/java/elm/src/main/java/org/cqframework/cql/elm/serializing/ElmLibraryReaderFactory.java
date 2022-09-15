@@ -4,11 +4,12 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public class ElmLibraryReaderFactory {
+    private ElmLibraryReaderFactory() {
+    }
 
-    static ServiceLoader<ElmLibraryReaderProvider> loader = ServiceLoader
-            .load(ElmLibraryReaderProvider.class);
-
-    public static synchronized Iterator<ElmLibraryReaderProvider> providers(boolean refresh) {
+    public static Iterator<ElmLibraryReaderProvider> providers(boolean refresh) {
+        var loader = ServiceLoader
+                .load(ElmLibraryReaderProvider.class);
         if (refresh) {
             loader.reload();
         }
@@ -22,8 +23,8 @@ public class ElmLibraryReaderFactory {
             ElmLibraryReaderProvider p = providers.next();
             if (providers.hasNext()) {
                 throw new RuntimeException(String.join(" ",
-                "Multiple ElmLibraryReaderProviders found on the classpath.",
-                "You need to remove a reference to either the 'elm-jackson' or the 'elm-jaxb' package"));
+                        "Multiple ElmLibraryReaderProviders found on the classpath.",
+                        "You need to remove a reference to either the 'elm-jackson' or the 'elm-jaxb' package"));
             }
 
             return p.create(contentType);
