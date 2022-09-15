@@ -6,11 +6,10 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public class ModelInfoProviderFactory {
+    private ModelInfoProviderFactory() {}
 
-    static ServiceLoader<ModelInfoProvider> loader = ServiceLoader
-            .load(ModelInfoProvider.class);
-
-    public static synchronized Iterator<ModelInfoProvider> providers(boolean refresh) {
+    public static Iterator<ModelInfoProvider> providers(boolean refresh) {
+        var loader = ServiceLoader.load(ModelInfoProvider.class);
         if (refresh) {
             loader.reload();
         }

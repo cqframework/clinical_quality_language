@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public class ModelInfoReaderFactory {
-    static ServiceLoader<ModelInfoReaderProvider> loader = ServiceLoader
+    private ModelInfoReaderFactory() {}
+    public static Iterator<ModelInfoReaderProvider> providers(boolean refresh) {
+        var loader = ServiceLoader
             .load(ModelInfoReaderProvider.class);
-
-    public static synchronized Iterator<ModelInfoReaderProvider> providers(boolean refresh) {
         if (refresh) {
             loader.reload();
         }

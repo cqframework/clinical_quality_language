@@ -4,11 +4,11 @@ import java.util.Iterator;
 import java.util.ServiceLoader;
 
 public class ElmLibraryWriterFactory {
+    private ElmLibraryWriterFactory() {}
 
-    static ServiceLoader<ElmLibraryWriterProvider> loader = ServiceLoader
+    public static Iterator<ElmLibraryWriterProvider> providers(boolean refresh) {
+        var loader = ServiceLoader
             .load(ElmLibraryWriterProvider.class);
-
-    public static synchronized Iterator<ElmLibraryWriterProvider> providers(boolean refresh) {
         if (refresh) {
             loader.reload();
         }
