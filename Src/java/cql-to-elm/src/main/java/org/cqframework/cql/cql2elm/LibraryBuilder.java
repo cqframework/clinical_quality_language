@@ -2072,7 +2072,6 @@ public class LibraryBuilder implements ModelResolver {
         // 11: An unresolved identifier error is thrown
 
         // In a type specifier context, return the identifier as a Literal for resolution as a type by the caller
-
         ResolvedIdentifierList resolvedIdentifierList = new ResolvedIdentifierList();
 
         if (inTypeSpecifierContext()) {
@@ -2098,21 +2097,24 @@ public class LibraryBuilder implements ModelResolver {
 
 
         ResolvedIdentifierList aliasMatches = resolveAliases(identifier);
-        ResolvedIdentifier aliasFirstCaseMatch = aliasMatches.firstInstanceOfExactMatch();
-        if (aliasFirstCaseMatch != null) {
-            AliasRef result = of.createAliasRef().withName(identifier);
-            AliasedQuerySource aqs = (AliasedQuerySource) aliasFirstCaseMatch.getResolvedElement();
-            if (aqs.getResultType() instanceof ListType) {
-                result.setResultType(((ListType) aqs.getResultType()).getElementType());
-            } else {
-                result.setResultType(aqs.getResultType());
-            }
-            //add any exact matches first (first match is what's used)
-            resolvedIdentifierList.addExactMatchIdentifier(identifier, result);
-        }
-        //add all subsequent
-        resolvedIdentifierList.addAllResolvedIdentifiers(aliasMatches);
+        if (aliasMatches.size() > 0) {
+            //each match in resolveAliases returns AliasedQuerySource as the resolved element.  These
+            //need to be converted to AliasRef
+            for (ResolvedIdentifier aliasRI : aliasMatches.getList()) {
 
+                AliasRef result = of.createAliasRef().withName(identifier);
+
+                AliasedQuerySource aqs = (AliasedQuerySource) aliasRI.getResolvedElement();
+
+                if (aqs.getResultType() instanceof ListType) {
+                    result.setResultType(((ListType) aqs.getResultType()).getElementType());
+                } else {
+                    result.setResultType(aqs.getResultType());
+                }
+                //add any exact matches first (first match is what's used)
+                resolvedIdentifierList.addDefinedMatchIdentifier(identifier, aliasRI.getMatchType(), result);
+            }
+        }
 
         ResolvedIdentifierList letsMatches = resolveQueryLets(identifier);
         ResolvedIdentifier letsFirstCaseMatch = letsMatches.firstInstanceOfExactMatch();
@@ -2164,15 +2166,14 @@ public class LibraryBuilder implements ModelResolver {
             }
         }
 
-        ResolvedIdentifier firstCaseMatch = resolvedIdentifierList.firstInstanceOfExactMatchExpression();
+        ResolvedIdentifier firstCaseMatch = resolvedIdentifierList.firstInstanceOfExactMatch();
+
         if (firstCaseMatch != null) {
 
             List<ResolvedIdentifier> allHiddenCaseMatches = resolvedIdentifierList.findAllMatchedIdentifiers();
-            //remove first element to filter out our "first come first serve" rule in deciding a match:
-            allHiddenCaseMatches.remove(0);
 
-//            List<IdentifierResolution> allCaseIgnoredMatches = IdentifierResolutionUtil.getAllMatches(resolvedIdentifierList, MatchType.CASE_IGNORED);
-//            List<MatchIdentifier> allSoundsLikeMatches = MatchIdentifier.getAllMatches(resolvedIdentifierList, Match.SOUNDS_LIKE);
+            //remove first exact match element to filter out our "first exact match come first serve" rule in deciding a match:
+            allHiddenCaseMatches.remove(firstCaseMatch);
 
             //issue warning that multiple matches occurred:
             if (allHiddenCaseMatches.size() >= 1) {
@@ -2887,15 +2888,10 @@ public class LibraryBuilder implements ModelResolver {
         if (inQueryContext()) {
             QueryContext query = peekQueryContext();
             if (query.isImplicit()) {
-
-                ResolvedIdentifierList aliasMatches =  resolveAliases($_THIS);
-
-                ResolvedIdentifier aliasCaseMatch = aliasMatches.firstInstanceOfExactMatch();
-
+                ResolvedIdentifier aliasCaseMatch = resolveAliases($_THIS).firstInstanceOfExactMatch();
                 if (aliasCaseMatch != null) {
 
                     AliasedQuerySource src = (AliasedQuerySource) aliasCaseMatch.getResolvedElement();
-
                     AliasRef aliasRef = of.createAliasRef().withName($_THIS);
                     if (src.getResultType() instanceof ListType) {
                         aliasRef.setResultType(((ListType)src.getResultType()).getElementType());
@@ -2910,8 +2906,6 @@ public class LibraryBuilder implements ModelResolver {
                     }
 
                 }
-
-                resolvedIdentifierList.addAllResolvedIdentifiers(aliasMatches);
             }
         }
 

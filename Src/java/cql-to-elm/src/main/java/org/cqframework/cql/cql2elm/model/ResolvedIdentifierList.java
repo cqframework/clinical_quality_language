@@ -51,6 +51,17 @@ public class ResolvedIdentifierList {
     }
 
     /**
+     * Match type set to EXACT and new instance of ResolvedIdentifier added to list
+     *
+     * @param identifier identifier of resolved element
+     * @param resolvedElement resolved element
+     */
+    public void addDefinedMatchIdentifier(String identifier, MatchType mt, Object resolvedElement) {
+        this.list.add(new ResolvedIdentifier(identifier, mt, resolvedElement));
+    }
+
+
+    /**
      * Combine list from another instance of ResolvedIdentifierList
      *
      * @param m instance of ResolvedIdentifierList
@@ -71,17 +82,17 @@ public class ResolvedIdentifierList {
                 .orElse(null);
     }
 
-    /**
-     * Returns first instance in list where MatchType is EXACT and the object can resolve to an Expression.
-     *
-     * @return ResolvedIdentifier
-     */
-    public ResolvedIdentifier firstInstanceOfExactMatchExpression() {
-        return this.list.stream()
-                .filter(s -> s.getMatchType().equals(MatchType.EXACT) && canResolveToExpression(s.getResolvedElement()))
-                .findFirst()
-                .orElse(null);
-    }
+//    /**
+//     * Returns first instance in list where MatchType is EXACT and the object can resolve to an Expression.
+//     *
+//     * @return ResolvedIdentifier
+//     */
+//    public ResolvedIdentifier firstInstanceOfExactMatchExpression() {
+//        return this.list.stream()
+//                .filter(s -> s.getMatchType().equals(MatchType.EXACT) && canResolveToExpression(s.getResolvedElement()))
+//                .findFirst()
+//                .orElse(null);
+//    }
 
     /**
      * Returns list of ResolvedIdentifiers where MatchType isn't NONE

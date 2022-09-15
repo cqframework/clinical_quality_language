@@ -677,37 +677,7 @@
       "errorSeverity" : "warning"
     }, {
       "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: P resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: P resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: E resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
       "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Antibiotics resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: A resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: E resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: E resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
       "errorType" : "semantic",
       "errorSeverity" : "warning"
     }, {
@@ -727,37 +697,12 @@
       "errorSeverity" : "warning"
     }, {
       "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: P resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: P resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: E resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
       "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Antibiotics resolved as a context accessor\n",
       "errorType" : "semantic",
       "errorSeverity" : "warning"
     }, {
       "type" : "CqlToElmError",
       "message" : "Identifier hiding detected: Identifier in a broader scope hidden: TargetDiagnoses resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: A resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: D resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
       "errorType" : "semantic",
       "errorSeverity" : "warning"
     }, {
@@ -787,17 +732,7 @@
       "errorSeverity" : "warning"
     }, {
       "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: R resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
       "message" : "Identifier hiding detected: Identifier in a broader scope hidden: MeasurementPeriod resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: R resolved more than once: class org.hl7.elm.r1.AliasedQuerySource\n",
       "errorType" : "semantic",
       "errorSeverity" : "warning"
     } ]
