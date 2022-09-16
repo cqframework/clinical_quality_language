@@ -48,3 +48,4 @@ define TestCalculateAgeInDaysAtDate: CalculateAgeInDaysAt(TestDate, TestDate)
 define TestCalculateAgeInHoursAtDateTime: CalculateAgeInHoursAt(TestDateTime, TestDateTime)
 define TestCalculateAgeInMinutesAtDateTime: CalculateAgeInMinutesAt(TestDateTime, TestDateTime)
 define TestCalculateAgeInSecondsAtDateTime: CalculateAgeInSecondsAt(TestDateTime, TestDateTime)
+
