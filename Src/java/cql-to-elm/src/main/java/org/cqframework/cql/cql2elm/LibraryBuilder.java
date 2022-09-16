@@ -2082,7 +2082,6 @@ public class LibraryBuilder implements ModelResolver {
 
         // In the case of a $this alias, names may be resolved as implicit property references
         resolvedIdentifierList.addAllResolvedIdentifiers(resolveQueryThisElements(identifier));
-
         if (MatchType.resolveMatchType(identifier, $_INDEX) != MatchType.NONE) {
             Iteration result = of.createIteration();
             result.setResultType(resolveTypeName(SYSTEM, INTEGER));
@@ -2095,51 +2094,31 @@ public class LibraryBuilder implements ModelResolver {
             resolvedIdentifierList.addResolvedIdentifier(identifier, identifier, $_TOTAL, result);
         }
 
-
+        //each match in resolveAliases returns AliasedQuerySource as the resolved element.  These
+        //need to be converted to AliasRef
         ResolvedIdentifierList aliasMatches = resolveAliases(identifier);
-        if (aliasMatches.size() > 0) {
-            //each match in resolveAliases returns AliasedQuerySource as the resolved element.  These
-            //need to be converted to AliasRef
-            for (ResolvedIdentifier aliasRI : aliasMatches.getList()) {
-
-                AliasRef result = of.createAliasRef().withName(identifier);
-
-                AliasedQuerySource aqs = (AliasedQuerySource) aliasRI.getResolvedElement();
-
-                if (aqs.getResultType() instanceof ListType) {
-                    result.setResultType(((ListType) aqs.getResultType()).getElementType());
-                } else {
-                    result.setResultType(aqs.getResultType());
-                }
-                //add any exact matches first (first match is what's used)
-                resolvedIdentifierList.addDefinedMatchIdentifier(identifier, aliasRI.getMatchType(), result);
-            }
+        //add any EXACT matches first to our list
+        for (ResolvedIdentifier aliasRI : aliasMatches.getResolvedIdentifierList()) {
+            AliasRef result = getAliasRef(identifier, aliasRI);
+            resolvedIdentifierList.addResolvedIdentifier(identifier, aliasRI.getMatchType(), result);
         }
 
+        //process each to be QueryLetRef
         ResolvedIdentifierList letsMatches = resolveQueryLets(identifier);
-        ResolvedIdentifier letsFirstCaseMatch = letsMatches.shiftFirstInstanceOfExactMatch();
-        if (letsFirstCaseMatch != null) {
-            QueryLetRef result = of.createQueryLetRef().withName(identifier);
-            LetClause let = (LetClause) letsFirstCaseMatch.getResolvedElement();
-            result.setResultType(let.getResultType());
-            resolvedIdentifierList.addExactMatchIdentifier(identifier, result);
+        for (ResolvedIdentifier letsRI : letsMatches.getResolvedIdentifierList()){
+            QueryLetRef result = getQueryLetRef(identifier, letsRI);
+            resolvedIdentifierList.addResolvedIdentifier(identifier, letsRI.getMatchType(), result);
         }
-        resolvedIdentifierList.addAllResolvedIdentifiers(letsMatches);
 
         ResolvedIdentifierList operandRefMatches = resolveOperandRefs(identifier);
-        ResolvedIdentifier operandFirstCaseMatch = operandRefMatches.shiftFirstInstanceOfExactMatch();
-        if (operandFirstCaseMatch != null) {
-            OperandRef operandRef = (OperandRef) operandFirstCaseMatch.getResolvedElement();
-            resolvedIdentifierList.addExactMatchIdentifier(identifier, operandRef);
+        for (ResolvedIdentifier operandRI : operandRefMatches.getResolvedIdentifierList()) {
+            OperandRef result = (OperandRef) operandRI.getResolvedElement();
+            resolvedIdentifierList.addResolvedIdentifier(identifier, operandRI.getMatchType(), result);
         }
         resolvedIdentifierList.addAllResolvedIdentifiers(operandRefMatches);
 
-        ResolvedIdentifierList resolvedElementsMatches = resolveElements(identifier);
-        ResolvedIdentifier resolvedElementsFirstCaseMatch = resolvedElementsMatches.shiftFirstInstanceOfExactMatch();
-        if (resolvedElementsFirstCaseMatch != null) {
-            resolvedIdentifierList.addExactMatchIdentifier(identifier, resolvedElementsFirstCaseMatch.getResolvedElement());
-        }
-        resolvedIdentifierList.addAllResolvedIdentifiers(resolvedElementsMatches);
+        //no processing required of resolvedElements
+        resolvedIdentifierList.addAllResolvedIdentifiers(resolveElements(identifier));
 
         // If no other resolution occurs, and we are in a specific context, and there is a parameter with the same name as the context,
         // the identifier may be resolved as an implicit property reference on that context.
@@ -2166,10 +2145,13 @@ public class LibraryBuilder implements ModelResolver {
             }
         }
 
+        //shift the first instance of MatchType.EXACT, which will be what is returned.  The remainder of the list
+        //is looked at to determine if hidden identifiers were found.
         ResolvedIdentifier firstCaseMatch = resolvedIdentifierList.shiftFirstInstanceOfExactMatch();
 
         if (firstCaseMatch != null) {
 
+            //getAllMatchedIdentifiers returns any recorded identifier where MatchType is not NONE
             List<ResolvedIdentifier> allHiddenCaseMatches = resolvedIdentifierList.getAllMatchedIdentifiers();
 
             //issue warning that multiple matches occurred:
@@ -2188,6 +2170,24 @@ public class LibraryBuilder implements ModelResolver {
 
         return null;
 
+    }
+
+    private QueryLetRef getQueryLetRef(String identifier, ResolvedIdentifier s) {
+        QueryLetRef result = of.createQueryLetRef().withName(identifier);
+        LetClause let = (LetClause) s.getResolvedElement();
+        result.setResultType(let.getResultType());
+        return result;
+    }
+
+    private AliasRef getAliasRef(String identifier, ResolvedIdentifier aliasRI) {
+        AliasRef result = of.createAliasRef().withName(identifier);
+        AliasedQuerySource aqs = (AliasedQuerySource) aliasRI.getResolvedElement();
+        if (aqs.getResultType() instanceof ListType) {
+            result.setResultType(((ListType) aqs.getResultType()).getElementType());
+        } else {
+            result.setResultType(aqs.getResultType());
+        }
+        return result;
     }
 
     private String lookupElementWarning(Object element) {
@@ -2483,7 +2483,6 @@ public class LibraryBuilder implements ModelResolver {
         // Replaces the path of the property on which it appears with the given qualified path, which then becomes the
         // source of a query with a where clause with criteria built for each comparison in the indexer
         // If there is a trailing qualified path, the query is wrapped in a singletonFrom and a property access
-        // Any other target map results in an exception
 
         if (targetMap.contains(";")) {
             String[] typeCases = targetMap.split(";");

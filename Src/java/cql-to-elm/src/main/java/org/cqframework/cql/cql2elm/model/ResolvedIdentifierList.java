@@ -17,7 +17,7 @@ public class ResolvedIdentifierList {
         this.list = new ArrayList<>();
     }
 
-    public List<ResolvedIdentifier> getList() {
+    public List<ResolvedIdentifier> getResolvedIdentifierList() {
         return this.list;
     }
 
@@ -46,8 +46,8 @@ public class ResolvedIdentifierList {
      * @param identifier identifier of resolved element
      * @param resolvedElement resolved element
      */
-    public void addExactMatchIdentifier(String identifier, Object resolvedElement) {
-        this.list.add(new ResolvedIdentifier(identifier, MatchType.EXACT, resolvedElement));
+    public void addResolvedIdentifier(String identifier, MatchType mt, Object resolvedElement) {
+        this.list.add(new ResolvedIdentifier(identifier, mt, resolvedElement));
     }
 
     /**
@@ -56,18 +56,8 @@ public class ResolvedIdentifierList {
      * @param identifier identifier of resolved element
      * @param resolvedElement resolved element
      */
-    public void addDefinedMatchIdentifier(String identifier, MatchType mt, Object resolvedElement) {
-        this.list.add(new ResolvedIdentifier(identifier, mt, resolvedElement));
-    }
-
-
-    /**
-     * Combine list from another instance of ResolvedIdentifierList
-     *
-     * @param m instance of ResolvedIdentifierList
-     */
-    public void addAllResolvedIdentifiers(ResolvedIdentifierList m) {
-        this.list.addAll(m.getList());
+    public void addExactMatchIdentifier(String identifier, Object resolvedElement) {
+        this.list.add(new ResolvedIdentifier(identifier, MatchType.EXACT, resolvedElement));
     }
 
     /**
@@ -90,6 +80,14 @@ public class ResolvedIdentifierList {
         return null;
     }
 
+    /**
+     * Combine list from another instance of ResolvedIdentifierList
+     *
+     * @param m instance of ResolvedIdentifierList
+     */
+    public void addAllResolvedIdentifiers(ResolvedIdentifierList m) {
+        this.list.addAll(m.getResolvedIdentifierList());
+    }
 
     /**
      * Returns first instance in the list where MatchType is EXACT.  List is ordered in first come first serve basis where first EXACT match is what is ultimately used.
