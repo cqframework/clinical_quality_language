@@ -71,34 +71,44 @@ public class ResolvedIdentifierList {
     }
 
     /**
+     * Returns first instance in the list where MatchType is EXACT, and removes it from the list
+     *
+     * @return ResolvedIdentifier
+     */
+    public ResolvedIdentifier shiftFirstInstanceOfExactMatch() {
+        ResolvedIdentifier first = this.list.stream()
+                .filter(s -> s.getMatchType().equals(MatchType.EXACT))
+                .findFirst()
+                .orElse(null);
+
+        if (first != null){
+            ResolvedIdentifier copy = new ResolvedIdentifier(first.getIdentifier(), first.getMatchType(), first.getResolvedElement());
+            this.list.remove(first);
+            return copy;
+        }
+
+        return null;
+    }
+
+
+    /**
      * Returns first instance in the list where MatchType is EXACT.  List is ordered in first come first serve basis where first EXACT match is what is ultimately used.
      *
      * @return ResolvedIdentifier
      */
-    public ResolvedIdentifier firstInstanceOfExactMatch() {
+    public ResolvedIdentifier getFirstInstanceOfExactMatch() {
         return this.list.stream()
                 .filter(s -> s.getMatchType().equals(MatchType.EXACT))
                 .findFirst()
                 .orElse(null);
-    }
 
-//    /**
-//     * Returns first instance in list where MatchType is EXACT and the object can resolve to an Expression.
-//     *
-//     * @return ResolvedIdentifier
-//     */
-//    public ResolvedIdentifier firstInstanceOfExactMatchExpression() {
-//        return this.list.stream()
-//                .filter(s -> s.getMatchType().equals(MatchType.EXACT) && canResolveToExpression(s.getResolvedElement()))
-//                .findFirst()
-//                .orElse(null);
-//    }
+    }
 
     /**
      * Returns list of ResolvedIdentifiers where MatchType isn't NONE
      * @return List of ResolvedIdentifier
      */
-    public List<ResolvedIdentifier> findAllMatchedIdentifiers() {
+    public List<ResolvedIdentifier> getAllMatchedIdentifiers() {
         return this.list.stream()
                 .filter(s -> !s.getMatchType().equals(MatchType.NONE))
                 .collect(Collectors.toList());

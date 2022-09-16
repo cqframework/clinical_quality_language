@@ -26,6 +26,7 @@ public class AgeOperatorsTest {
     public void setup() throws IOException {
         var modelManager = new ModelManager();
         var translator = CqlTranslator.fromStream(AgeOperatorsTest.class.getResourceAsStream("../OperatorTests/AgeOperators.cql"), modelManager, new LibraryManager(modelManager));
+        System.out.println(translator.getErrors());
         assertThat(translator.getErrors().size(), is(0));
         var library = translator.toELM();
         defs = new HashMap<>();

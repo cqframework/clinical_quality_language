@@ -610,36 +610,6 @@
       "translatorOptions" : ""
     }, {
       "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: MeasurementPeriod resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Patient resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: MeasurementPeriod resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Patient resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Acute Pharyngitis resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Acute Tonsillitis resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
       "libraryId" : "CMS146",
       "libraryVersion" : "2",
       "startLine" : 22,
@@ -651,11 +621,6 @@
       "errorSeverity" : "warning"
     }, {
       "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Antibiotic Medications resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
       "libraryId" : "CMS146",
       "libraryVersion" : "2",
       "startLine" : 22,
@@ -663,76 +628,6 @@
       "endLine" : 22,
       "endChar" : 54,
       "message" : "Could not resolve membership operator for terminology target of the retrieve.",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Ambulatory/ED Visit resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Pharyngitis resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Antibiotics resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: MeasurementPeriod resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Pharyngitis resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: TargetEncounters resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Antibiotics resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: TargetDiagnoses resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: TargetEncounters resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: InDemographic resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: HasTargetEncounter resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: HasPriorAntibiotics resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: Group A Streptococcus Test resolved as a context accessor\n",
-      "errorType" : "semantic",
-      "errorSeverity" : "warning"
-    }, {
-      "type" : "CqlToElmError",
-      "message" : "Identifier hiding detected: Identifier in a broader scope hidden: MeasurementPeriod resolved as a context accessor\n",
       "errorType" : "semantic",
       "errorSeverity" : "warning"
     } ]
