@@ -7,6 +7,15 @@ dependencies {
     api project(':cql')
     api project(':model')
     api project(':elm')
+
+    // The FHIR ucum service depends on an
+    // XML pull-parser being present on the classpath, and have a compile-time reference to xpp3.
+    // However, some platfoms such as Android provide their own pull-parser implementations.
+    // Additionally, The xpp3.xpp3 dependency includes the javax.xml packagename, which is invalid in
+    // Java 9+ because split packages (i.e. the same packagename being available in multipe jar) are
+    // disallowed. For those reasons xpp3 is excluded here, and included as a runtime dependency for
+    // tests. Users of the CQL translator will need to supply their own implementation or add xpp3
+    // at runtime.
     api ('org.fhir:ucum:1.0.3') {
         exclude group: 'xpp3', module: 'xpp3'
     }
