@@ -4,13 +4,14 @@ mainClassName = 'org.cqframework.cql.cql2elm.CqlTranslator'
 run.args = ["--input", "${projectDir}/../../../Examples/CMS146v2_CQM.cql"]
 
 dependencies {
-    implementation project(':cql')
-    implementation project(':model')
-    implementation project(':elm')
-    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
-    implementation group: 'org.fhir', name: 'ucum', version: '1.0.3'
-    implementation group: 'org.codelibs', name: 'xpp3', version: '1.1.4c.0'
+    api project(':cql')
+    api project(':model')
+    api project(':elm')
+    api ('org.fhir:ucum:1.0.3') {
+        exclude group: 'xpp3', module: 'xpp3'
+    }
 
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     implementation group: 'com.fasterxml.jackson.module', name: 'jackson-module-jaxb-annotations', version: '2.13.2'
 
     testImplementation project(':elm-jackson')
@@ -18,4 +19,5 @@ dependencies {
     testImplementation project(':quick')
     testImplementation project(':qdm')
     testImplementation group: 'com.github.reinert', name: 'jjschema', version: '1.16'
+    testRuntimeOnly group: 'xpp3', name: 'xpp3', version: '1.1.4c'
 }
