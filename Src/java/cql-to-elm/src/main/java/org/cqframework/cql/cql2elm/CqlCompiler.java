@@ -251,6 +251,25 @@ public class CqlCompiler {
         visitResult = visitor.visit(tree);
         library = builder.getLibrary();
         compiledLibrary = builder.getCompiledLibrary();
+
+        // Run ELM Analyzers
+        // visit the ELM tree, and issue warnings or errors based on the tree structure
+        // @deprecated
+        // @no-warning
+        // ELM analysis phase
+        // If "elmAnalyzersEnabled" <- New CQL compiler flag
+        //  visit ELM and generate the set of tags <- new visitor, partially done on JP' branch
+        //  load all analyzers from the classpath <- new ServiceLoader for runtime analyzers
+        //  set up error listener <- New / extended error listener that understands "@no-warning", this is the same as the JDKs support for @SuppressWarnings
+        //      supporting "@no-warning" means if a warning is issued by an analyzer for an element that is tagged with "@no-warning",
+        //      don't report the warning
+        //  run all the ELM analyzers <- visit the ELM graph and run analyzers on each node. We need a Visitor that can do this
+        //  report all the warnings/errors the analyzers produce.
+
+        // ELM analyzer use cases:
+        // * Find deprecations
+        // * Suggest fixes for sorting on FHIR resources - sort by Observation.status -> sort by Observation.status.value
+        // * Warning for unoptimized retrieves <- Some codepath uses a model attribute that doesn't have a search parameter
         retrieves = visitor.getRetrieves();
         exceptions.addAll(builder.getExceptions());
         errors.addAll(builder.getErrors());
