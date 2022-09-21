@@ -270,6 +270,42 @@ public class CqlCompiler {
         // * Find deprecations
         // * Suggest fixes for sorting on FHIR resources - sort by Observation.status -> sort by Observation.status.value
         // * Warning for unoptimized retrieves <- Some codepath uses a model attribute that doesn't have a search parameter
+
+        // definitionMatcher(ExpressionDef expressionDef, VisitorContext context)
+        //    if (expressionDef.name is greater than 50 charcters long) {
+        //        context.warn(expressionDef, "ExpressionName is too long");
+        //    }
+
+        //    if (context.parents.contains(Retrieve)) {
+        //       context.warn(expressionDef, "ExpressionDef is inside of a retreive. What the heck?")
+        //    }
+        // }
+        // }
+
+        // referenceMatcher(ExpressionRef expressionRef, VisitorContext context)
+        //    if (context.tags.forElement(ExpressionRef).contains("deprecated"))
+        //      context.warn(ExpressionRef, "expressionRef.name is depracated")
+        //
+        // }
+
+        /// VistorContext
+        ///  {
+        ///    stack<ParentNodes> parents
+        //     ErrorListener errorListener <- this knows how to suppress warnings for ELM elements
+        //     tagSet tags <- this is the list of tags for the whole ELM graph
+        //}
+
+        // AnalysisVisitor {
+        //    ELMAnalyzers analyzers
+        //    VisitorContext context
+        //     beforeVisit (context.parents.add(this))
+        //     afterVisit (context.parents.pop())
+        //     visit(ExpressionDef e ) {
+                  // foreach Analyzer : analyzers
+                ///   analyzer.definitionMatcher(e, context);
+        // }
+        //}
+        // }
         retrieves = visitor.getRetrieves();
         exceptions.addAll(builder.getExceptions());
         errors.addAll(builder.getErrors());
