@@ -1,3 +1,7 @@
+plugins {
+    id 'ru.vyarus.animalsniffer' version '1.6.0'
+}
+
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
@@ -118,6 +122,16 @@ subprojects {
 
     artifacts {
         archives javadocJar, sourcesJar
+    }
+}
+
+// Modules that can be used on Android
+configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'elm', 'cql', 'elm-jackson', 'elm-fhir', 'quick', 'qdm', 'cql-to-elm', 'fhir-all', 'fhir-r4']}) {
+    apply plugin: 'ru.vyarus.animalsniffer'
+
+    dependencies {
+        // Checks compliance with Android API 26
+        signature 'net.sf.androidscents.signature:android-api-level-26:8.0.0_r2@signature'
     }
 }
 
