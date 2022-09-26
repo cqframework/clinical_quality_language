@@ -405,7 +405,7 @@ public class LibraryBuilder implements ModelResolver {
                     // NOTE: This is a hack to allow the new ToValueSet operator in FHIRHelpers for backwards-compatibility
                     // The operator still cannot be used in 1.4, but the definition will compile. This really should be being done with preprocessor directives,
                     // but that's a whole other project in and of itself.
-                    if (!isCompatibleWith("1.5") && !isFHIRHelpers(translatedLibrary)) {
+                    if (!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary)) {
                         throw new IllegalArgumentException(String.format("The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
                                 ((NamedType)result).getName(), getCompatibilityLevel()));
                     }
@@ -415,7 +415,7 @@ public class LibraryBuilder implements ModelResolver {
         return result;
     }
 
-    private boolean isFHIRHelpers(TranslatedLibrary library) {
+    private boolean isFHIRHelpers(CompiledLibrary library) {
         if (library != null && library.getIdentifier() != null && library.getIdentifier().getId() != null && library.getIdentifier().getId().equals("FHIRHelpers")) {
             return true;
         }

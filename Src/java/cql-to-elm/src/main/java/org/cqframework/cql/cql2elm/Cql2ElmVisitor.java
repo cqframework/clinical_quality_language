@@ -3413,7 +3413,7 @@ DATETIME
 
         String codePath = null;
         Property property = null;
-        CqlTranslatorException propertyException = null;
+        CqlCompilerException propertyException = null;
         Expression terminology = null;
         String codeComparator = null;
         if (ctx.terminology() != null) {
@@ -3443,7 +3443,7 @@ DATETIME
                     // ERROR:
                     // WARNING:
                     propertyException = new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            codePath, namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                            codePath, namedType.getName()), useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                             getTrackBack(ctx), e);
                     libraryBuilder.recordParsingException(propertyException);
                 }
@@ -3565,7 +3565,7 @@ DATETIME
                         // TODO: Introduce support for the contains operator to make this possible to support with a retrieve (direct-reference code negation)
                         // ERROR:
                         libraryBuilder.recordParsingException(new CqlSemanticException("Terminology resolution using contains is not supported at this time. Use a where clause with an in operator instead.",
-                                useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                useStrictRetrieveTyping ? CqlCompilerException.ErrorSeverity.Error : CqlCompilerException.ErrorSeverity.Warning,
                                 getTrackBack(ctx)));
                     }
                     break;
