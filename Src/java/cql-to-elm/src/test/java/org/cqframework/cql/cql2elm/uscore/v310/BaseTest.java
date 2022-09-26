@@ -242,20 +242,11 @@ public class BaseTest {
         IsFalse isFalse = (IsFalse)or.getOperand().get(0);
         assertThat(isFalse.getOperand(), instanceOf(As.class));
         As as = (As)isFalse.getOperand();
-        assertThat(as.getOperand(), instanceOf(Case.class));
-        Case _case = (Case)as.getOperand();
-        assertThat(_case.getCaseItem().size(), is(2));
-        CaseItem caseItem = _case.getCaseItem().get(0);
-        assertThat(caseItem.getWhen(), instanceOf(Is.class));
-        Is is = (Is)caseItem.getWhen();
-        assertThat(is.getOperand(), instanceOf(Property.class));
-        property = (Property)is.getOperand();
-        assertThat(property.getPath(), is("value"));
-        assertThat(property.getSource(), instanceOf(Property.class));
-        property = (Property)property.getSource();
-        assertThat(property.getPath(), is("deceased"));
-        assertThat(caseItem.getThen(), instanceOf(Property.class));
-        
+
+        FunctionRef fr = (FunctionRef)as.getOperand();
+        assertThat(fr.getLibraryName(), is("FHIRHelpers"));
+        assertThat(fr.getName(), is("ToValue"));
+
  /*
         Handling a target with a complex argument to a function call.
         target="FHIRHelpers.ToConcept(%parent.category[coding.system='http://terminology.hl7.org/CodeSystem/observation-category',coding.code='vital-signs'])"

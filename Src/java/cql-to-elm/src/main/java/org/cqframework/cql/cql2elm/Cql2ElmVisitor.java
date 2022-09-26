@@ -3290,7 +3290,7 @@ DATETIME
 
     @Override
     @SuppressWarnings("unchecked")
-    public Retrieve visitRetrieve(cqlParser.RetrieveContext ctx) {
+    public Expression visitRetrieve(cqlParser.RetrieveContext ctx) {
         libraryBuilder.checkLiteralContext();
         List<String> qualifiers = parseQualifiers(ctx.namedTypeSpecifier());
         String model = getModelIdentifier(qualifiers);
@@ -3319,28 +3319,21 @@ DATETIME
         ModelInfo modelInfo = libraryBuilder.getModel(namedType.getNamespace()).getModelInfo();
         boolean useStrictRetrieveTyping = modelInfo.isStrictRetrieveTyping() != null && modelInfo.isStrictRetrieveTyping();
 
-        Retrieve retrieve = of.createRetrieve()
-                .withDataType(libraryBuilder.dataTypeToQName((DataType)namedType))
-                .withTemplateId(classType.getIdentifier());
-
-        if (ctx.contextIdentifier() != null) {
-            List<String> identifiers = (List<String>)visit(ctx.contextIdentifier());
-            Expression contextExpression = resolveQualifiedIdentifier(identifiers);
-            retrieve.setContext(contextExpression);
-        }
-
+        String codePath = null;
+        Property property = null;
+        CqlTranslatorException propertyException = null;
+        Expression terminology = null;
+        String codeComparator = null;
         if (ctx.terminology() != null) {
             if (ctx.codePath() != null) {
                 String identifiers = (String)visit(ctx.codePath());
-                retrieve.setCodeProperty(identifiers);
+                codePath = identifiers;
             }
             else if (classType.getPrimaryCodePath() != null) {
-                retrieve.setCodeProperty(classType.getPrimaryCodePath());
+                codePath = classType.getPrimaryCodePath();
             }
 
-            Property property = null;
-            CqlTranslatorException propertyException = null;
-            if (retrieve.getCodeProperty() == null) {
+            if (codePath == null) {
                 // ERROR:
                 // WARNING:
                 propertyException = new CqlSemanticException("Retrieve has a terminology target but does not specify a code path and the type of the retrieve does not have a primary code path defined.",
@@ -3350,21 +3343,20 @@ DATETIME
             }
             else {
                 try {
-                    DataType codeType = libraryBuilder.resolvePath((DataType) namedType, retrieve.getCodeProperty());
-                    property = of.createProperty().withPath(retrieve.getCodeProperty());
+                    DataType codeType = libraryBuilder.resolvePath((DataType) namedType, codePath);
+                    property = of.createProperty().withPath(codePath);
                     property.setResultType(codeType);
                 }
                 catch (Exception e) {
                     // ERROR:
                     // WARNING:
                     propertyException = new CqlSemanticException(String.format("Could not resolve code path %s for the type of the retrieve %s.",
-                            retrieve.getCodeProperty(), namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                            codePath, namedType.getName()), useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
                             getTrackBack(ctx), e);
                     libraryBuilder.recordParsingException(propertyException);
                 }
             }
 
-            Expression terminology = null;
             if (ctx.terminology().qualifiedIdentifierExpression() != null) {
                 List<String> identifiers = (List<String>) visit(ctx.terminology());
                 terminology = resolveQualifiedIdentifier(identifiers);
@@ -3374,15 +3366,76 @@ DATETIME
                 terminology = parseExpression(ctx.terminology().expression());
             }
 
-            String codeComparator = ctx.codeComparator() != null ? (String)visit(ctx.codeComparator()) : null;
+            codeComparator = ctx.codeComparator() != null ? (String)visit(ctx.codeComparator()) : null;
+        }
 
+        Expression result = null;
+
+        // Only expand a choice-valued code path if no comparator is specified
+        // Otherwise, a code comparator will always choose a specific representation
+        if (property != null && property.getResultType() instanceof ChoiceType && codeComparator == null) {
+            for (DataType propertyType : ((ChoiceType)property.getResultType()).getTypes()) {
+                Retrieve retrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, codePath,
+                        codeComparator, property, propertyType, propertyException, terminology);
+                retrieves.add(retrieve);
+                retrieve.setResultType(new ListType((DataType) namedType));
+
+                if (result == null) {
+                    result = retrieve;
+                }
+                else {
+                    // Should only include the result if it resolved appropriately with the codeComparator
+                    // Allowing it to go through for now
+                    //if (retrieve.getCodeProperty() != null && retrieve.getCodeComparator() != null && retrieve.getCodes() != null) {
+                        track(retrieve, ctx);
+                        result = libraryBuilder.resolveUnion(result, retrieve);
+                    //}
+                }
+            }
+        }
+        else {
+            Retrieve retrieve = buildRetrieve(ctx, useStrictRetrieveTyping, namedType, classType, codePath,
+                    codeComparator, property, property != null ? property.getResultType() : null, propertyException,
+                    terminology);
+            retrieves.add(retrieve);
+            retrieve.setResultType(new ListType((DataType) namedType));
+            result = retrieve;
+        }
+
+        return result;
+    }
+
+    private Retrieve buildRetrieve(cqlParser.RetrieveContext ctx, boolean useStrictRetrieveTyping, NamedType namedType,
+                                   ClassType classType, String codePath, String codeComparator, Property property,
+                                   DataType propertyType, Exception propertyException, Expression terminology) {
+
+        Retrieve retrieve = of.createRetrieve()
+                .withDataType(libraryBuilder.dataTypeToQName((DataType)namedType))
+                .withTemplateId(classType.getIdentifier())
+                .withCodeProperty(codePath);
+
+        if (ctx.contextIdentifier() != null) {
+            List<String> identifiers = (List<String>)visit(ctx.contextIdentifier());
+            Expression contextExpression = resolveQualifiedIdentifier(identifiers);
+            retrieve.setContext(contextExpression);
+        }
+
+        if (ctx.terminology() != null) {
             // Resolve the terminology target using an in or ~ operator
             try {
                 if (codeComparator == null) {
-                    codeComparator = (terminology.getResultType() instanceof ListType
-                            || (libraryBuilder.isCompatibleWith("1.5")
-                                    && terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))
-                            ? "in" : "~";
+                    codeComparator = "~";
+                    if (terminology.getResultType() instanceof ListType) {
+                        codeComparator = "in";
+                    }
+                    else if (libraryBuilder.isCompatibleWith("1.5")) {
+                        if (propertyType != null && propertyType.isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))) {
+                            codeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "~" : "contains";
+                        }
+                        else {
+                            codeComparator = terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary")) ? "in" : "~";
+                        }
+                    }
                 }
 
                 if (property == null) {
@@ -3412,13 +3465,28 @@ DATETIME
                     }
                     break;
 
+                    case "contains": {
+                        Expression contains = libraryBuilder.resolveContains(property, terminology);
+                        if (contains instanceof Contains) {
+                            retrieve.setCodes(((Contains)contains).getOperand().get(1));
+                        }
+                        // TODO: Introduce support for the contains operator to make this possible to support with a retrieve (direct-reference code negation)
+                        // ERROR:
+                        libraryBuilder.recordParsingException(new CqlSemanticException("Terminology resolution using contains is not supported at this time. Use a where clause with an in operator instead.",
+                                useStrictRetrieveTyping ? CqlTranslatorException.ErrorSeverity.Error : CqlTranslatorException.ErrorSeverity.Warning,
+                                getTrackBack(ctx)));
+                    }
+                    break;
+
                     case "~": {
                         // Resolve with equivalent to verify the type of the target
                         BinaryExpression equivalent = of.createEquivalent().withOperand(property, terminology);
                         libraryBuilder.resolveBinaryCall("System", "Equivalent", equivalent);
 
                         // Automatically promote to a list for use in the retrieve target
-                        if (!(equivalent.getOperand().get(1).getResultType() instanceof ListType)) {
+                        if (!(equivalent.getOperand().get(1).getResultType() instanceof ListType
+                                || (libraryBuilder.isCompatibleWith("1.5")
+                                && equivalent.getOperand().get(1).getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))) {
                             retrieve.setCodes(libraryBuilder.resolveToList(equivalent.getOperand().get(1)));
                         }
                         else {
@@ -3433,7 +3501,9 @@ DATETIME
                         libraryBuilder.resolveBinaryCall("System", "Equal", equal);
 
                         // Automatically promote to a list for use in the retrieve target
-                        if (!(equal.getOperand().get(1).getResultType() instanceof ListType)) {
+                        if (!(equal.getOperand().get(1).getResultType() instanceof ListType
+                                || (libraryBuilder.isCompatibleWith("1.5")
+                                && equal.getOperand().get(1).getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))) {
                             retrieve.setCodes(libraryBuilder.resolveToList(equal.getOperand().get(1)));
                         }
                         else {
@@ -3456,7 +3526,7 @@ DATETIME
                 // Due to implicit conversion defined by specific models, the resolution path above may result in a List<Concept>
                 // In that case, convert to a list of code (Union the Code elements of the Concepts in the list)
                 if (retrieve.getCodes() != null && retrieve.getCodes().getResultType() != null && retrieve.getCodes().getResultType() instanceof ListType
-                    && ((ListType)retrieve.getCodes().getResultType()).getElementType().equals(libraryBuilder.resolveTypeName("System", "Concept"))) {
+                        && ((ListType)retrieve.getCodes().getResultType()).getElementType().equals(libraryBuilder.resolveTypeName("System", "Concept"))) {
                     if (retrieve.getCodes() instanceof ToList) {
                         // ToList will always have a single argument
                         ToList toList = (ToList)retrieve.getCodes();
@@ -3481,7 +3551,7 @@ DATETIME
                 // If something goes wrong attempting to resolve, just set to the expression and report it as a warning,
                 // it shouldn't prevent translation unless the modelinfo indicates strict retrieve typing
                 if ((libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType().isSubTypeOf(libraryBuilder.resolveTypeName("System", "Vocabulary"))))
-                    || (!libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType() instanceof ListType))) {
+                        || (!libraryBuilder.isCompatibleWith("1.5") && !(terminology.getResultType() instanceof ListType))) {
                     retrieve.setCodes(libraryBuilder.resolveToList(terminology));
                 }
                 else {
@@ -3495,10 +3565,6 @@ DATETIME
                         getTrackBack(ctx), e));
             }
         }
-
-        retrieves.add(retrieve);
-
-        retrieve.setResultType(new ListType((DataType) namedType));
 
         return retrieve;
     }
