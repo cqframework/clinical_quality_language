@@ -25,12 +25,12 @@ public class TagSetVisitor extends ElmBaseLibraryVisitor<Void, TagSet>  {
 
         for (CqlToElmBase a : annotations) {
             if (a instanceof Annotation) {
-                retportTags(a);
+                reportTags((Annotation) a);
             }
         }
     }
 
     private void reportTags(Annotation annotation) {
-
+        System.out.println("Report annotation tags :" + annotation.getT());
     }
 }
