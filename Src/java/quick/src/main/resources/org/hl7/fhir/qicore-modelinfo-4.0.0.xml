@@ -2,8 +2,8 @@
 <modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="QICore" version="4.0.0" url="http://hl7.org/fhir/us/qicore" targetUrl="http://hl7.org/fhir" targetQualifier="qicore" patientClassName="Patient" patientBirthDatePropertyName="birthDate">
    <requiredModelInfo name="System" version="1.0.0"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" xsi:type="ClassInfo">
-      <element name="use" elementType="QICore.AddressUse"/>
-      <element name="type" elementType="QICore.AddressType"/>
+      <element name="use" elementType="QICore.AddressUse" target="%value.value"/>
+      <element name="type" elementType="QICore.AddressType" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
       <element name="line" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
@@ -13,7 +13,7 @@
       <element name="state" elementType="System.String" target="%value.value"/>
       <element name="postalCode" elementType="System.String" target="%value.value"/>
       <element name="country" elementType="System.String" target="%value.value"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -24,7 +24,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="AdministrativeGender" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="AdverseEvent" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent" label="AdverseEvent" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
       <element name="identifier" elementType="QICore.Identifier"/>
-      <element name="actuality" elementType="QICore.AdverseEventActuality"/>
+      <element name="actuality" elementType="QICore.AdverseEventActuality" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -80,15 +80,15 @@
       </element>
       <element name="clinicalStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="verificationStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="type" elementType="QICore.AllergyIntoleranceType"/>
-      <element name="category">
+      <element name="type" elementType="QICore.AllergyIntoleranceType" target="%value.value"/>
+      <element name="category" target="%value.value">
          <elementTypeSpecifier elementType="QICore.AllergyIntoleranceCategory" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="criticality" elementType="QICore.AllergyIntoleranceCriticality"/>
+      <element name="criticality" elementType="QICore.AllergyIntoleranceCriticality" target="%value.value"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="patient" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="onset" target="System.DateTime:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);;">
+      <element name="onset" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -107,7 +107,9 @@
       <element name="note">
          <elementTypeSpecifier elementType="QICore.Annotation" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="reaction" elementType="QICore.AllergyIntolerance.Reaction"/>
+      <element name="reaction">
+         <elementTypeSpecifier elementType="QICore.AllergyIntolerance.Reaction" xsi:type="ListTypeSpecifier"/>
+      </element>
       <contextRelationship context="Practitioner" relatedKeyElement="recorder"/>
       <contextRelationship context="Practitioner" relatedKeyElement="asserter"/>
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
@@ -122,7 +124,7 @@
       </element>
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="onset" elementType="System.DateTime" target="%value.value"/>
-      <element name="severity" elementType="QICore.AllergyIntoleranceSeverity"/>
+      <element name="severity" elementType="QICore.AllergyIntoleranceSeverity" target="%value.value"/>
       <element name="exposureRoute" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="note">
          <elementTypeSpecifier elementType="QICore.Annotation" xsi:type="ListTypeSpecifier"/>
@@ -134,7 +136,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="AllergyIntoleranceSeverity" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="AllergyIntoleranceType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Annotation" identifier="http://hl7.org/fhir/StructureDefinition/Annotation" label="Annotation" retrievable="false" xsi:type="ClassInfo">
-      <element name="author" target="QICore.Reference:null;System.String:%value.value">
+      <element name="author" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -144,7 +146,7 @@
       <element name="text" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false" xsi:type="ClassInfo">
-      <element name="contentType" elementType="QICore.MimeType"/>
+      <element name="contentType" elementType="QICore.MimeType" target="%value.value"/>
       <element name="language" elementType="System.String" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
       <element name="url" elementType="System.String" target="%value.value"/>
@@ -159,7 +161,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="BodyLengthUnits" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="BodyStructure" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-bodystructure" label="BodyStructure" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="BodyStructure" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-bodystructure" label="BodyStructure" retrievable="true" primaryCodePath="location" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -207,7 +209,7 @@
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -255,7 +257,7 @@
       <element name="detail" elementType="QICore.CarePlan.Activity.Detail"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="CarePlan.Activity.Detail" retrievable="false" xsi:type="ClassInfo">
-      <element name="kind" elementType="QICore.CarePlanActivityKind"/>
+      <element name="kind" elementType="QICore.CarePlanActivityKind" target="%value.value"/>
       <element name="instantiatesCanonical" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -272,10 +274,10 @@
       <element name="goal">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.CarePlanActivityStatus"/>
+      <element name="status" elementType="QICore.CarePlanActivityStatus" target="%value.value"/>
       <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="doNotPerform" elementType="System.Boolean" target="%value.value"/>
-      <element name="scheduled" target="QICore.Timing:null;;System.String:%value.value">
+      <element name="scheduled" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="QICore" name="Timing" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -288,7 +290,7 @@
       <element name="performer">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="product" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="product" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -311,7 +313,7 @@
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -344,7 +346,7 @@
       <element name="role" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="member" elementType="QICore.Reference"/>
       <element name="onBehalfOf" elementType="QICore.Reference"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -354,12 +356,12 @@
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.ClaimStatus"/>
+      <element name="status" elementType="QICore.ClaimStatus" target="%value.value"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="use" elementType="QICore.Use"/>
+      <element name="use" elementType="QICore.Use" target="%value.value"/>
       <element name="patient" elementType="QICore.Reference"/>
-      <element name="billablePeriod">
+      <element name="billablePeriod" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -414,7 +416,7 @@
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Accident" retrievable="false" xsi:type="ClassInfo">
       <element name="date" elementType="System.Date" target="%value.value"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="location" target="QICore.Address:null;QICore.Reference:null">
+      <element name="location" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="QICore" name="Address" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -430,7 +432,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Claim.Diagnosis" retrievable="false" xsi:type="ClassInfo">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
-      <element name="diagnosis" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="diagnosis" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -476,7 +478,7 @@
       <element name="programCode" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="serviced" target="System.Date:%value.value;">
+      <element name="serviced" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Date" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -484,7 +486,7 @@
             </choice>
          </elementTypeSpecifier>
       </element>
-      <element name="location" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Address:null;QICore.Reference:null">
+      <element name="location" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Address" xsi:type="NamedTypeSpecifier"/>
@@ -560,7 +562,7 @@
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="date" elementType="System.DateTime" target="%value.value"/>
-      <element name="procedure" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="procedure" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -579,7 +581,7 @@
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="timing" target="System.Date:%value.value;">
+      <element name="timing" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Date" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -587,7 +589,7 @@
             </choice>
          </elementTypeSpecifier>
       </element>
-      <element name="value" target="System.Boolean:%value.value;System.String:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Attachment:null;QICore.Reference:null">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -618,12 +620,12 @@
       <element name="inResponseTo">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.CommunicationStatus"/>
+      <element name="status" elementType="QICore.CommunicationStatus" target="%value.value"/>
       <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="priority" elementType="QICore.CommunicationPriority"/>
+      <element name="priority" elementType="QICore.CommunicationPriority" target="%value.value"/>
       <element name="medium" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -663,7 +665,7 @@
       <contextRelationship context="RelatedPerson" relatedKeyElement="recipient"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Communication.Payload" retrievable="false" xsi:type="ClassInfo">
-      <element name="content" target="System.String:%value.value;QICore.Attachment:null;QICore.Reference:null">
+      <element name="content" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Attachment" xsi:type="NamedTypeSpecifier"/>
@@ -671,7 +673,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="CommunicationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone" label="CommunicationNotDone" target="Communication" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="CommunicationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone" label="CommunicationNotDone" target="Communication" retrievable="true" primaryCodePath="reasonCode" xsi:type="ClassInfo">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="notDone" elementType="System.Boolean" target="%parent.modifierExtension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-notDone'].value"/>
       <element name="identifier">
@@ -692,12 +694,12 @@
       <element name="inResponseTo">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.CommunicationStatus"/>
+      <element name="status" elementType="QICore.CommunicationStatus" target="%value.value"/>
       <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="priority" elementType="QICore.CommunicationPriority"/>
+      <element name="priority" elementType="QICore.CommunicationPriority" target="%value.value"/>
       <element name="medium" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -739,12 +741,12 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="groupIdentifier" elementType="QICore.Identifier"/>
-      <element name="status" elementType="QICore.CommunicationRequestStatus"/>
+      <element name="status" elementType="QICore.CommunicationRequestStatus" target="%value.value"/>
       <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="priority" elementType="QICore.CommunicationPriority"/>
+      <element name="priority" elementType="QICore.CommunicationPriority" target="%value.value"/>
       <element name="doNotPerform" elementType="System.Boolean" target="%value.value"/>
       <element name="medium" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
@@ -757,7 +759,7 @@
       <element name="payload">
          <elementTypeSpecifier elementType="QICore.CommunicationRequest.Payload" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="occurrence" target="System.DateTime:%value.value;">
+      <element name="occurrence" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -795,7 +797,7 @@
       <contextRelationship context="RelatedPerson" relatedKeyElement="requester"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="CommunicationRequest.Payload" retrievable="false" xsi:type="ClassInfo">
-      <element name="content" target="System.String:%value.value;QICore.Attachment:null;QICore.Reference:null">
+      <element name="content" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Attachment" xsi:type="NamedTypeSpecifier"/>
@@ -806,10 +808,10 @@
    <typeInfo baseType="System.String" namespace="QICore" name="CommunicationRequestStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="CommunicationStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Condition" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-condition" label="Condition" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
-      <element name="dueTo" target="System.Concept:FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/condition-dueTo'].value);QICore.Reference:null">
+      <element name="dueTo" target="FHIRHelpers.ToValue(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/condition-dueTo'].value)">
          <elementTypeSpecifier elementType="QICore.dueTo" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="occurredFollowing" target="System.Concept:FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/condition-occurredFollowing'].value);QICore.Reference:null">
+      <element name="occurredFollowing" target="FHIRHelpers.ToValue(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/condition-occurredFollowing'].value)">
          <elementTypeSpecifier elementType="QICore.occurredFollowing" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="identifier">
@@ -827,7 +829,7 @@
       </element>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="onset" target="System.DateTime:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);;">
+      <element name="onset" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -839,7 +841,7 @@
             </choice>
          </elementTypeSpecifier>
       </element>
-      <element name="abatement" target="System.DateTime:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);;">
+      <element name="abatement" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -891,11 +893,11 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false" xsi:type="ClassInfo">
-      <element name="system" elementType="QICore.ContactPointSystem"/>
+      <element name="system" elementType="QICore.ContactPointSystem" target="%value.value"/>
       <element name="value" elementType="System.String" target="%value.value"/>
-      <element name="use" elementType="QICore.ContactPointUse"/>
+      <element name="use" elementType="QICore.ContactPointUse" target="%value.value"/>
       <element name="rank" elementType="System.Integer" target="%value.value"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -904,7 +906,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="ContactPointSystem" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="ContactPointUse" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false" xsi:type="ClassInfo">
-      <element name="type" elementType="QICore.ContributorType"/>
+      <element name="type" elementType="QICore.ContributorType" target="%value.value"/>
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="contact">
          <elementTypeSpecifier elementType="QICore.ContactDetail" xsi:type="ListTypeSpecifier"/>
@@ -915,7 +917,7 @@
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.CoverageStatus"/>
+      <element name="status" elementType="QICore.CoverageStatus" target="%value.value"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="policyHolder" elementType="QICore.Reference"/>
       <element name="subscriber" elementType="QICore.Reference"/>
@@ -923,7 +925,7 @@
       <element name="beneficiary" elementType="QICore.Reference"/>
       <element name="dependent" elementType="System.String" target="%value.value"/>
       <element name="relationship" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -958,7 +960,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Coverage.CostToBeneficiary" retrievable="false" xsi:type="ClassInfo">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Decimal:%value.value">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Decimal" xsi:type="NamedTypeSpecifier"/>
@@ -970,7 +972,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Coverage.CostToBeneficiary.Exception" retrievable="false" xsi:type="ClassInfo">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -978,11 +980,11 @@
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="CoverageStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false" xsi:type="ClassInfo">
-      <element name="type" elementType="QICore.FHIRAllTypes"/>
+      <element name="type" elementType="QICore.FHIRAllTypes" target="%value.value"/>
       <element name="profile" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="subject" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="subject" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -1013,7 +1015,7 @@
    <typeInfo baseType="QICore.Element" namespace="QICore" name="DataRequirement.DateFilter" retrievable="false" xsi:type="ClassInfo">
       <element name="path" elementType="System.String" target="%value.value"/>
       <element name="searchParam" elementType="System.String" target="%value.value"/>
-      <element name="value" target="System.DateTime:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value)">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1025,7 +1027,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="DataRequirement.Sort" retrievable="false" xsi:type="ClassInfo">
       <element name="path" elementType="System.String" target="%value.value"/>
-      <element name="direction" elementType="QICore.SortDirection"/>
+      <element name="direction" elementType="QICore.SortDirection" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="DayOfWeek" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="DaysOfWeek" retrievable="false" xsi:type="ClassInfo"/>
@@ -1037,7 +1039,7 @@
       <element name="udiCarrier">
          <elementTypeSpecifier elementType="QICore.Device.UdiCarrier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.FHIRDeviceStatus"/>
+      <element name="status" elementType="QICore.FHIRDeviceStatus" target="%value.value"/>
       <element name="statusReason" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1079,7 +1081,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Device.DeviceName" retrievable="false" xsi:type="ClassInfo">
       <element name="name" elementType="System.String" target="%value.value"/>
-      <element name="type" elementType="QICore.DeviceNameType"/>
+      <element name="type" elementType="QICore.DeviceNameType" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Device.Property" retrievable="false" xsi:type="ClassInfo">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -1100,7 +1102,7 @@
       <element name="jurisdiction" elementType="System.String" target="%value.value"/>
       <element name="carrierAIDC" elementType="System.String" target="%value.value"/>
       <element name="carrierHRF" elementType="System.String" target="%value.value"/>
-      <element name="entryType" elementType="QICore.UDIEntryType"/>
+      <element name="entryType" elementType="QICore.UDIEntryType" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Device.Version" retrievable="false" xsi:type="ClassInfo">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -1127,9 +1129,9 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="groupIdentifier" elementType="QICore.Identifier"/>
-      <element name="status" elementType="QICore.DeviceRequestStatus"/>
-      <element name="intent" elementType="QICore.RequestIntent"/>
-      <element name="priority" elementType="QICore.RequestPriority"/>
+      <element name="status" elementType="QICore.DeviceRequestStatus" target="%value.value"/>
+      <element name="intent" elementType="QICore.RequestIntent" target="%value.value"/>
+      <element name="priority" elementType="QICore.RequestPriority" target="%value.value"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="doNotPerformValueSet" elementType="QICore.reference" target="%parent.coding.extension[url='http://hl7.org/fhir/StructureDefinition/valueset-reference'].value.value"/>
       <element name="parameter">
@@ -1137,7 +1139,7 @@
       </element>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="occurrence" target="System.DateTime:%value.value;;QICore.Timing:null">
+      <element name="occurrence" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1169,7 +1171,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DeviceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicerequest" label="DeviceRequest" retrievable="true" primaryCodePath="codeCodeableConcept" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="DeviceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicerequest" label="DeviceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1186,10 +1188,10 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="groupIdentifier" elementType="QICore.Identifier"/>
-      <element name="status" elementType="QICore.DeviceRequestStatus"/>
-      <element name="intent" elementType="QICore.RequestIntent"/>
-      <element name="priority" elementType="QICore.RequestPriority"/>
-      <element name="code" target="QICore.Reference:null;System.Concept:FHIRHelpers.ToConcept(%value)">
+      <element name="status" elementType="QICore.DeviceRequestStatus" target="%value.value"/>
+      <element name="intent" elementType="QICore.RequestIntent" target="%value.value"/>
+      <element name="priority" elementType="QICore.RequestPriority" target="%value.value"/>
+      <element name="code" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -1200,7 +1202,7 @@
       </element>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="occurrence" target="System.DateTime:%value.value;;QICore.Timing:null">
+      <element name="occurrence" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1243,7 +1245,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="DeviceRequest.Parameter" retrievable="false" xsi:type="ClassInfo">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="value" target="System.Concept:FHIRHelpers.ToConcept(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Boolean:%value.value">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -1262,12 +1264,12 @@
       <element name="basedOn">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.DeviceUseStatementStatus"/>
+      <element name="status" elementType="QICore.DeviceUseStatementStatus" target="%value.value"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="derivedFrom">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="timing" target="QICore.Timing:null;;System.DateTime:%value.value">
+      <element name="timing" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="QICore" name="Timing" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1314,7 +1316,7 @@
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1364,7 +1366,7 @@
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1420,7 +1422,7 @@
       </element>
       <element name="patientInstruction" elementType="System.String" target="%value.value"/>
       <element name="timing" elementType="QICore.Timing"/>
-      <element name="asNeeded" target="System.Boolean:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)">
+      <element name="asNeeded" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -1438,7 +1440,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Dosage.DoseAndRate" retrievable="false" xsi:type="ClassInfo">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="dose" target="System.Quantity:FHIRHelpers.ToQuantity(%value)">
+      <element name="dose" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice xsi:type="IntervalTypeSpecifier">
                <pointTypeSpecifier namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -1446,7 +1448,7 @@
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="rate" target="System.Ratio:FHIRHelpers.ToRatio(%value);;System.Quantity:FHIRHelpers.ToQuantity(%value)">
+      <element name="rate" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Ratio" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1471,7 +1473,7 @@
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.EncounterStatus"/>
+      <element name="status" elementType="QICore.EncounterStatus" target="%value.value"/>
       <element name="statusHistory">
          <elementTypeSpecifier elementType="QICore.Encounter.StatusHistory" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1497,7 +1499,7 @@
       <element name="appointment">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -1509,7 +1511,9 @@
       <element name="reasonReference">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="diagnosis" elementType="QICore.Encounter.Diagnosis"/>
+      <element name="diagnosis">
+         <elementTypeSpecifier elementType="QICore.Encounter.Diagnosis" xsi:type="ListTypeSpecifier"/>
+      </element>
       <element name="account">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1526,7 +1530,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.ClassHistory" retrievable="false" xsi:type="ClassInfo">
       <element name="class" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -1557,9 +1561,9 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.Location" retrievable="false" xsi:type="ClassInfo">
       <element name="location" elementType="QICore.Reference"/>
-      <element name="status" elementType="QICore.EncounterLocationStatus"/>
+      <element name="status" elementType="QICore.EncounterLocationStatus" target="%value.value"/>
       <element name="physicalType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -1569,7 +1573,7 @@
       <element name="type" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -1577,8 +1581,8 @@
       <element name="individual" elementType="QICore.Reference"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Encounter.StatusHistory" retrievable="false" xsi:type="ClassInfo">
-      <element name="status" elementType="QICore.EncounterStatus"/>
-      <element name="period">
+      <element name="status" elementType="QICore.EncounterStatus" target="%value.value"/>
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -1602,7 +1606,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false" xsi:type="ClassInfo">
       <element name="url" elementType="System.String" target="%value.value"/>
-      <element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;QICore.Address:null;System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Annotation:null;QICore.Attachment:null;System.Concept:FHIRHelpers.ToConcept(%value);System.Code:FHIRHelpers.ToCode(%value);QICore.ContactPoint:null;System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.HumanName:null;QICore.Identifier:null;System.Decimal:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.Reference:null;QICore.SampledData:null;QICore.Signature:null;QICore.Timing:null;QICore.ContactDetail:null;QICore.Contributor:null;QICore.DataRequirement:null;QICore.Expression:null;QICore.ParameterDefinition:null;QICore.RelatedArtifact:null;QICore.TriggerDefinition:null;QICore.UsageContext:null;QICore.Dosage:null;QICore.Meta:null">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
@@ -1665,7 +1669,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="FHIRDeviceStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="FHIRSubstanceStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="FamilyHistoryStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="FamilyMemberHistory" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-familymemberhistory" label="FamilyMemberHistory" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="FamilyMemberHistory" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-familymemberhistory" label="FamilyMemberHistory" retrievable="true" primaryCodePath="relationship" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1675,14 +1679,14 @@
       <element name="instantiatesUri" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.FamilyHistoryStatus"/>
+      <element name="status" elementType="QICore.FamilyHistoryStatus" target="%value.value"/>
       <element name="dataAbsentReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="patient" elementType="QICore.Reference"/>
       <element name="date" elementType="System.DateTime" target="%value.value"/>
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="relationship" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="sex" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="born" target="System.Date:%value.value;System.String:%value.value">
+      <element name="born" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice xsi:type="IntervalTypeSpecifier">
                <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
@@ -1691,7 +1695,7 @@
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="age" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;System.String:%value.value">
+      <element name="age" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1701,7 +1705,7 @@
          </elementTypeSpecifier>
       </element>
       <element name="estimatedAge" elementType="System.Boolean" target="%value.value"/>
-      <element name="deceased" target="System.Boolean:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Date:%value.value;System.String:%value.value">
+      <element name="deceased" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -1721,14 +1725,16 @@
       <element name="note">
          <elementTypeSpecifier elementType="QICore.Annotation" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="condition" elementType="QICore.FamilyMemberHistory.Condition"/>
+      <element name="condition">
+         <elementTypeSpecifier elementType="QICore.FamilyMemberHistory.Condition" xsi:type="ListTypeSpecifier"/>
+      </element>
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="FamilyMemberHistory.Condition" retrievable="false" xsi:type="ClassInfo">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="outcome" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="contributedToDeath" elementType="System.Boolean" target="%value.value"/>
-      <element name="onset" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;;System.String:%value.value">
+      <element name="onset" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1743,20 +1749,20 @@
       <element name="note">
          <elementTypeSpecifier elementType="QICore.Annotation" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="condition-abatement" elementType="QICore.abatement" target="System.Date:%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement'].value.value;System.Quantity:FHIRHelpers.ToQuantity(%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement'].value);System.Boolean:%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement'].value.value"/>
+      <element name="condition-abatement" elementType="QICore.abatement" target="FHIRHelpers.ToValue(%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-abatement'].value)"/>
       <element name="condition-severity" elementType="QICore.severity" target="FHIRHelpers.ToConcept(%parent.condition.extension[url='http://hl7.org/fhir/StructureDefinition/familymemberhistory-severity'].value)"/>
    </typeInfo>
    <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Flag" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-flag" label="Flag" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.FlagStatus"/>
+      <element name="status" elementType="QICore.FlagStatus" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="QICore.Reference"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -1804,7 +1810,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Goal.Target" retrievable="false" xsi:type="ClassInfo">
       <element name="measure" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="detail" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;System.Ratio:FHIRHelpers.ToRatio(%value)">
+      <element name="detail" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -1820,7 +1826,7 @@
       <element name="due" elementType="System.Date" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false" xsi:type="ClassInfo">
-      <element name="use" elementType="QICore.NameUse"/>
+      <element name="use" elementType="QICore.NameUse" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
       <element name="family" elementType="System.String" target="%value.value"/>
       <element name="given" target="%value.value">
@@ -1832,18 +1838,18 @@
       <element name="suffix" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false" xsi:type="ClassInfo">
-      <element name="use" elementType="QICore.IdentifierUse"/>
+      <element name="use" elementType="QICore.IdentifierUse" target="%value.value"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="system" elementType="System.String" target="%value.value"/>
       <element name="value" elementType="System.String" target="%value.value"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -1851,11 +1857,11 @@
       <element name="assigner" elementType="QICore.Reference"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="IdentifierUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImagingStudy" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-imagingstudy" label="ImagingStudy" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImagingStudy" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-imagingstudy" label="ImagingStudy" retrievable="true" primaryCodePath="procedureCode" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.ImagingStudyStatus"/>
+      <element name="status" elementType="QICore.ImagingStudyStatus" target="%value.value"/>
       <element name="modality" target="FHIRHelpers.ToCode(%value)">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1936,7 +1942,7 @@
       <element name="vaccineCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="patient" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="occurrence" target="System.DateTime:%value.value;System.String:%value.value">
+      <element name="occurrence" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -2000,13 +2006,13 @@
       <element name="targetDisease" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="doseNumber" target="System.Integer:%value.value;System.String:%value.value">
+      <element name="doseNumber" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="seriesDoses" target="System.Integer:%value.value;System.String:%value.value">
+      <element name="seriesDoses" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -2018,11 +2024,11 @@
       <element name="detail" elementType="QICore.Reference"/>
       <element name="reported" elementType="System.Boolean" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationEvaluation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationevaluation" label="ImmunizationEvaluation" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationEvaluation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationevaluation" label="ImmunizationEvaluation" retrievable="true" primaryCodePath="targetDisease" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.ImmunizationEvaluationStatus"/>
+      <element name="status" elementType="QICore.ImmunizationEvaluationStatus" target="%value.value"/>
       <element name="patient" elementType="QICore.Reference"/>
       <element name="date" elementType="System.DateTime" target="%value.value"/>
       <element name="authority" elementType="QICore.Reference"/>
@@ -2034,13 +2040,13 @@
       </element>
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="series" elementType="System.String" target="%value.value"/>
-      <element name="doseNumber" target="System.Integer:%value.value;System.String:%value.value">
+      <element name="doseNumber" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="seriesDoses" target="System.Integer:%value.value;System.String:%value.value">
+      <element name="seriesDoses" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -2049,17 +2055,17 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ImmunizationEvaluationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationnotdone" label="ImmunizationNotDone" target="Immunization" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationnotdone" label="ImmunizationNotDone" target="Immunization" retrievable="true" primaryCodePath="vaccineCode" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.ImmunizationStatus"/>
+      <element name="status" elementType="QICore.ImmunizationStatus" target="%value.value"/>
       <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="vaccineCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="notDoneValueSet" elementType="QICore.reference" target="%parent.coding.extension[url='http://hl7.org/fhir/StructureDefinition/valueset-reference'].value.value"/>
       <element name="patient" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="occurrence" target="System.DateTime:%value.value;System.String:%value.value">
+      <element name="occurrence" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -2105,7 +2111,7 @@
          <elementTypeSpecifier elementType="QICore.Immunization.ProtocolApplied" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationRecommendation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationrec" label="ImmunizationRecommendation" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ImmunizationRecommendation" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-immunizationrec" label="ImmunizationRecommendation" retrievable="true" primaryCodePath="recommendation.vaccineCode" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2134,13 +2140,13 @@
       </element>
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="series" elementType="System.String" target="%value.value"/>
-      <element name="doseNumber" target="System.Integer:%value.value;System.String:%value.value">
+      <element name="doseNumber" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="seriesDoses" target="System.Integer:%value.value;System.String:%value.value">
+      <element name="seriesDoses" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
@@ -2160,7 +2166,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="ImmunizationStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.Boolean" namespace="QICore" name="IsElective" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-isElective" label="IsElective" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="LinkType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Location" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-location" label="Location" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Location" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-location" label="Location" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2171,7 +2177,7 @@
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="description" elementType="System.String" target="%value.value"/>
-      <element name="mode" elementType="QICore.LocationMode"/>
+      <element name="mode" elementType="QICore.LocationMode" target="%value.value"/>
       <element name="type" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2192,7 +2198,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Location.HoursOfOperation" retrievable="false" xsi:type="ClassInfo">
-      <element name="daysOfWeek">
+      <element name="daysOfWeek" target="%value.value">
          <elementTypeSpecifier elementType="QICore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="allDay" elementType="System.Boolean" target="%value.value"/>
@@ -2210,7 +2216,7 @@
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="status" elementType="QICore.MedicationStatus"/>
+      <element name="status" elementType="QICore.MedicationStatus" target="%value.value"/>
       <element name="manufacturer" elementType="QICore.Reference"/>
       <element name="form" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="amount" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
@@ -2224,7 +2230,7 @@
       <element name="expirationDate" elementType="System.DateTime" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Medication.Ingredient" retrievable="false" xsi:type="ClassInfo">
-      <element name="item" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="item" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -2243,12 +2249,12 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.MedicationAdministrationStatus"/>
+      <element name="status" elementType="QICore.MedicationAdministrationStatus" target="%value.value"/>
       <element name="statusReason" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="medication" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="medication" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -2259,7 +2265,7 @@
       <element name="supportingInformation">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -2301,7 +2307,7 @@
       <element name="route" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="dose" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
-      <element name="rate" target="System.Ratio:FHIRHelpers.ToRatio(%value);System.Quantity:FHIRHelpers.ToQuantity(%value)">
+      <element name="rate" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Ratio" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -2312,7 +2318,7 @@
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="QICore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationAdministrationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotadministered" label="MedicationAdministrationNotDone" target="MedicationAdministration" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationAdministrationNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-mednotadministered" label="MedicationAdministrationNotDone" target="MedicationAdministration" retrievable="true" primaryCodePath="medication" xsi:type="ClassInfo">
       <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -2323,7 +2329,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.MedicationAdministrationStatus"/>
+      <element name="status" elementType="QICore.MedicationAdministrationStatus" target="%value.value"/>
       <element name="statusReason" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2335,7 +2341,7 @@
       <element name="supportingInformation">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -2372,15 +2378,15 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.MedicationDispenseStatus"/>
-      <element name="statusReason" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="status" elementType="QICore.MedicationDispenseStatus" target="%value.value"/>
+      <element name="statusReason" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
       <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="medication" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="medication" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -2440,119 +2446,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationDispenseNotDone" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotdispensed" label="MedicationDispenseNotDone" target="MedicationDispense" retrievable="true" xsi:type="ClassInfo">
-      <element name="recorded" elementType="QICore.NotDoneRecorded" target="%parent.extension[url='http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-recorded'].value.value"/>
-      <element name="identifier">
-         <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="partOf">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="status" elementType="QICore.MedicationDispenseStatus"/>
-      <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="medication" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="notDoneValueSet" elementType="QICore.reference" target="%parent.coding.extension[url='http://hl7.org/fhir/StructureDefinition/valueset-reference'].value.value"/>
-      <element name="subject" elementType="QICore.Reference"/>
-      <element name="context" elementType="QICore.Reference"/>
-      <element name="supportingInformation">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="performer">
-         <elementTypeSpecifier elementType="QICore.MedicationDispense.Performer" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="location" elementType="QICore.Reference"/>
-      <element name="authorizingPrescription">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
-      <element name="daysSupply" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
-      <element name="whenPrepared" elementType="System.DateTime" target="%value.value"/>
-      <element name="whenHandedOver" elementType="System.DateTime" target="%value.value"/>
-      <element name="destination" elementType="QICore.Reference"/>
-      <element name="receiver">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="note">
-         <elementTypeSpecifier elementType="QICore.Annotation" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="dosageInstruction">
-         <elementTypeSpecifier elementType="QICore.Dosage" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="substitution" elementType="QICore.MedicationDispense.Substitution"/>
-      <element name="detectedIssue">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="eventHistory">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-   </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationDispenseStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationnotrequested" label="MedicationNotRequested" target="MedicationRequest" retrievable="true" xsi:type="ClassInfo">
-      <element name="identifier">
-         <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="status" elementType="QICore.MedicationRequestStatus"/>
-      <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="intent" elementType="QICore.MedicationRequestIntent"/>
-      <element name="category" target="FHIRHelpers.ToConcept(%value)">
-         <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="priority" elementType="QICore.MedicationRequestPriority"/>
-      <element name="doNotPerform" elementType="System.Boolean" target="%value.value"/>
-      <element name="reported" target="System.Boolean:%value.value;QICore.Reference:null">
-         <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
-            <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
-            <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
-         </elementTypeSpecifier>
-      </element>
-      <element name="medication" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="notDoneValueSet" elementType="QICore.reference" target="%parent.coding.extension[url='http://hl7.org/fhir/StructureDefinition/valueset-reference'].value.value"/>
-      <element name="subject" elementType="QICore.Reference"/>
-      <element name="encounter" elementType="QICore.Reference"/>
-      <element name="supportingInformation">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="authoredOn" elementType="System.DateTime" target="%value.value"/>
-      <element name="requester" elementType="QICore.Reference"/>
-      <element name="performer" elementType="QICore.Reference"/>
-      <element name="performerType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="recorder" elementType="QICore.Reference"/>
-      <element name="reasonCode" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="reasonReference">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="instantiatesCanonical" target="%value.value">
-         <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="instantiatesUri" target="%value.value">
-         <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="basedOn">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="groupIdentifier" elementType="QICore.Identifier"/>
-      <element name="courseOfTherapyType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="insurance">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="note">
-         <elementTypeSpecifier elementType="QICore.Annotation" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="dosageInstruction">
-         <elementTypeSpecifier elementType="QICore.Dosage" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="dispenseRequest" elementType="QICore.MedicationRequest.DispenseRequest"/>
-      <element name="substitution" elementType="QICore.MedicationRequest.Substitution"/>
-      <element name="priorPrescription" elementType="QICore.Reference"/>
-      <element name="detectedIssue">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-      <element name="eventHistory">
-         <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
-      </element>
-   </typeInfo>
    <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationrequest" label="MedicationRequest" retrievable="true" primaryCodePath="medication" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -2563,15 +2457,15 @@
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="priority" elementType="QICore.MedicationRequestPriority"/>
+      <element name="priority" elementType="QICore.MedicationRequestPriority" target="%value.value"/>
       <element name="doNotPerform" elementType="System.Boolean" target="%value.value"/>
-      <element name="reported" target="System.Boolean:%value.value;QICore.Reference:null">
+      <element name="reported" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="medication" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="medication" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -2629,7 +2523,7 @@
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationRequest.DispenseRequest" retrievable="false" xsi:type="ClassInfo">
       <element name="initialFill" elementType="QICore.MedicationRequest.DispenseRequest.InitialFill"/>
       <element name="dispenseInterval" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
-      <element name="validityPeriod">
+      <element name="validityPeriod" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -2644,7 +2538,7 @@
       <element name="duration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="MedicationRequest.Substitution" retrievable="false" xsi:type="ClassInfo">
-      <element name="allowed" target="System.Boolean:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)">
+      <element name="allowed" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -2652,9 +2546,7 @@
       </element>
       <element name="reason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="QICore" name="MedicationRequestIntent" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="MedicationRequestPriority" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="QICore" name="MedicationRequestStatus" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="MedicationStatement" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-medicationstatement" label="MedicationStatement" retrievable="true" primaryCodePath="medication" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -2665,12 +2557,12 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.MedicationStatementStatus"/>
+      <element name="status" elementType="QICore.MedicationStatementStatus" target="%value.value"/>
       <element name="statusReason" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="medication" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="medication" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -2678,7 +2570,7 @@
       </element>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="context" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -2726,7 +2618,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="MimeType" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="System.String" namespace="QICore" name="NameUse" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false" xsi:type="ClassInfo">
-      <element name="status" elementType="QICore.NarrativeStatus"/>
+      <element name="status" elementType="QICore.NarrativeStatus" target="%value.value"/>
       <element name="div" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="NarrativeStatus" retrievable="false" xsi:type="ClassInfo"/>
@@ -2745,7 +2637,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.ObservationStatus"/>
+      <element name="status" elementType="QICore.ObservationStatus" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2755,7 +2647,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;;QICore.Timing:null;System.DateTime:%value.value">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -2769,7 +2661,7 @@
       <element name="performer">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -2821,7 +2713,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Observation.Component" retrievable="false" xsi:type="ClassInfo">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -2861,7 +2753,7 @@
       <element name="appliesTo" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="age">
+      <element name="age" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -2880,7 +2772,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.ObservationStatus"/>
+      <element name="status" elementType="QICore.ObservationStatus" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2891,7 +2783,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;;QICore.Timing:null;System.DateTime:%value.value">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -2905,7 +2797,7 @@
       <element name="performer">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -2949,7 +2841,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ObservationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Organization" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-organization" label="Organization" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="Organization" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-organization" label="Organization" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2987,11 +2879,11 @@
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="ParameterDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ParameterDefinition" label="ParameterDefinition" retrievable="false" xsi:type="ClassInfo">
       <element name="name" elementType="System.String" target="%value.value"/>
-      <element name="use" elementType="QICore.ParameterUse"/>
+      <element name="use" elementType="QICore.ParameterUse" target="%value.value"/>
       <element name="min" elementType="System.Integer" target="%value.value"/>
       <element name="max" elementType="System.String" target="%value.value"/>
       <element name="documentation" elementType="System.String" target="%value.value"/>
-      <element name="type" elementType="QICore.FHIRAllTypes"/>
+      <element name="type" elementType="QICore.FHIRAllTypes" target="%value.value"/>
       <element name="profile" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="ParameterUse" retrievable="false" xsi:type="ClassInfo"/>
@@ -3016,18 +2908,22 @@
       <element name="name">
          <elementTypeSpecifier elementType="QICore.HumanName" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="telecom" elementType="QICore.Patient.Telecom"/>
+      <element name="telecom">
+         <elementTypeSpecifier elementType="QICore.Patient.Telecom" xsi:type="ListTypeSpecifier"/>
+      </element>
       <element name="gender" elementType="System.String" target="%value.value"/>
       <element name="birthDate" elementType="System.Date" target="%value.value"/>
-      <element name="deceased" target="System.Boolean:%value.value;System.DateTime:%value.value">
+      <element name="deceased" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="address" elementType="QICore.Patient.Address"/>
+      <element name="address">
+         <elementTypeSpecifier elementType="QICore.Patient.Address" xsi:type="ListTypeSpecifier"/>
+      </element>
       <element name="maritalStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="multipleBirth" target="System.Boolean:%value.value;System.Integer:%value.value">
+      <element name="multipleBirth" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
@@ -3070,9 +2966,9 @@
          <elementTypeSpecifier elementType="QICore.ContactPoint" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="address" elementType="QICore.Address"/>
-      <element name="gender" elementType="QICore.AdministrativeGender"/>
+      <element name="gender" elementType="QICore.AdministrativeGender" target="%value.value"/>
       <element name="organization" elementType="QICore.Reference"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3080,7 +2976,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Patient.Link" retrievable="false" xsi:type="ClassInfo">
       <element name="other" elementType="QICore.Reference"/>
-      <element name="type" elementType="QICore.LinkType"/>
+      <element name="type" elementType="QICore.LinkType" target="%value.value"/>
    </typeInfo>
    <typeInfo namespace="QICore" name="Patient.Telecom" retrievable="false" xsi:type="ClassInfo">
       <baseTypeSpecifier namespace="QICore" name="ContactPoint" xsi:type="NamedTypeSpecifier"/>
@@ -3099,7 +2995,7 @@
       <element name="address">
          <elementTypeSpecifier elementType="QICore.Address" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="gender" elementType="QICore.AdministrativeGender"/>
+      <element name="gender" elementType="QICore.AdministrativeGender" target="%value.value"/>
       <element name="birthDate" elementType="System.Date" target="%value.value"/>
       <element name="photo">
          <elementTypeSpecifier elementType="QICore.Attachment" xsi:type="ListTypeSpecifier"/>
@@ -3116,7 +3012,7 @@
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3128,7 +3024,7 @@
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="active" elementType="System.Boolean" target="%value.value"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3159,7 +3055,7 @@
       <contextRelationship context="Practitioner" relatedKeyElement="practitioner"/>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="PractitionerRole.AvailableTime" retrievable="false" xsi:type="ClassInfo">
-      <element name="daysOfWeek">
+      <element name="daysOfWeek" target="%value.value">
          <elementTypeSpecifier elementType="QICore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="allDay" elementType="System.Boolean" target="%value.value"/>
@@ -3168,7 +3064,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="PractitionerRole.NotAvailable" retrievable="false" xsi:type="ClassInfo">
       <element name="description" elementType="System.String" target="%value.value"/>
-      <element name="during">
+      <element name="during" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3200,7 +3096,7 @@
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="performed" target="System.DateTime:%value.value;">
+      <element name="performed" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -3280,14 +3176,14 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.ProcedureStatus"/>
+      <element name="status" elementType="QICore.ProcedureStatus" target="%value.value"/>
       <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="category" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="notDoneValueSet" elementType="QICore.reference" target="%parent.coding.extension[url='http://hl7.org/fhir/StructureDefinition/valueset-reference'].value.value"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="performed" target="System.DateTime:%value.value;;System.String:%value.value;System.Quantity:FHIRHelpers.ToQuantity(%value);">
+      <element name="performed" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -3355,9 +3251,9 @@
       <element name="derivedFrom" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.PublicationStatus"/>
+      <element name="status" elementType="QICore.PublicationStatus" target="%value.value"/>
       <element name="experimental" elementType="System.Boolean" target="%value.value"/>
-      <element name="subjectType">
+      <element name="subjectType" target="%value.value">
          <elementTypeSpecifier elementType="QICore.ResourceType" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="date" elementType="System.DateTime" target="%value.value"/>
@@ -3376,7 +3272,7 @@
       <element name="copyright" elementType="System.String" target="%value.value"/>
       <element name="approvalDate" elementType="System.Date" target="%value.value"/>
       <element name="lastReviewDate" elementType="System.Date" target="%value.value"/>
-      <element name="effectivePeriod">
+      <element name="effectivePeriod" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3396,11 +3292,11 @@
       </element>
       <element name="prefix" elementType="System.String" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
-      <element name="type" elementType="QICore.QuestionnaireItemType"/>
+      <element name="type" elementType="QICore.QuestionnaireItemType" target="%value.value"/>
       <element name="enableWhen">
          <elementTypeSpecifier elementType="QICore.Questionnaire.Item.EnableWhen" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="enableBehavior" elementType="QICore.EnableWhenBehavior"/>
+      <element name="enableBehavior" elementType="QICore.EnableWhenBehavior" target="%value.value"/>
       <element name="required" elementType="System.Boolean" target="%value.value"/>
       <element name="repeats" elementType="System.Boolean" target="%value.value"/>
       <element name="readOnly" elementType="System.Boolean" target="%value.value"/>
@@ -3419,7 +3315,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.AnswerOption" retrievable="false" xsi:type="ClassInfo">
-      <element name="value" target="System.Integer:%value.value;System.Date:%value.value;System.Time:%value.value;System.String:%value.value;System.Code:FHIRHelpers.ToCode(%value);QICore.Reference:null">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Integer" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Date" xsi:type="NamedTypeSpecifier"/>
@@ -3433,8 +3329,8 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.EnableWhen" retrievable="false" xsi:type="ClassInfo">
       <element name="question" elementType="System.String" target="%value.value"/>
-      <element name="operator" elementType="QICore.QuestionnaireItemOperator"/>
-      <element name="answer" target="System.Boolean:%value.value;System.Decimal:%value.value;System.Integer:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Time:%value.value;System.String:%value.value;System.Code:FHIRHelpers.ToCode(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Reference:null">
+      <element name="operator" elementType="QICore.QuestionnaireItemOperator" target="%value.value"/>
+      <element name="answer" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Decimal" xsi:type="NamedTypeSpecifier"/>
@@ -3450,7 +3346,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Questionnaire.Item.Initial" retrievable="false" xsi:type="ClassInfo">
-      <element name="value" target="System.Boolean:%value.value;System.Decimal:%value.value;System.Integer:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Time:%value.value;System.String:%value.value;System.String:%value.value;QICore.Attachment:null;System.Code:FHIRHelpers.ToCode(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Reference:null">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Decimal" xsi:type="NamedTypeSpecifier"/>
@@ -3478,7 +3374,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="questionnaire" elementType="System.String" target="%value.value"/>
-      <element name="status" elementType="QICore.QuestionnaireResponseStatus"/>
+      <element name="status" elementType="QICore.QuestionnaireResponseStatus" target="%value.value"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
       <element name="authored" elementType="System.DateTime" target="%value.value"/>
@@ -3510,7 +3406,7 @@
       </element>
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="QuestionnaireResponse.Item.Answer" retrievable="false" xsi:type="ClassInfo">
-      <element name="value" target="System.Boolean:%value.value;System.Decimal:%value.value;System.Integer:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Time:%value.value;System.String:%value.value;System.String:%value.value;QICore.Attachment:null;System.Code:FHIRHelpers.ToCode(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Reference:null">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Decimal" xsi:type="NamedTypeSpecifier"/>
@@ -3540,7 +3436,7 @@
       <element name="display" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false" xsi:type="ClassInfo">
-      <element name="type" elementType="QICore.RelatedArtifactType"/>
+      <element name="type" elementType="QICore.RelatedArtifactType" target="%value.value"/>
       <element name="label" elementType="System.String" target="%value.value"/>
       <element name="display" elementType="System.String" target="%value.value"/>
       <element name="citation" elementType="System.String" target="%value.value"/>
@@ -3549,7 +3445,7 @@
       <element name="resource" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="RelatedArtifactType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="RelatedPerson" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-relatedperson" label="RelatedPerson" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="RelatedPerson" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-relatedperson" label="RelatedPerson" retrievable="true" primaryCodePath="relationship" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3564,7 +3460,7 @@
       <element name="telecom">
          <elementTypeSpecifier elementType="QICore.ContactPoint" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="gender" elementType="QICore.AdministrativeGender"/>
+      <element name="gender" elementType="QICore.AdministrativeGender" target="%value.value"/>
       <element name="birthDate" elementType="System.Date" target="%value.value"/>
       <element name="address">
          <elementTypeSpecifier elementType="QICore.Address" xsi:type="ListTypeSpecifier"/>
@@ -3572,7 +3468,7 @@
       <element name="photo">
          <elementTypeSpecifier elementType="QICore.Attachment" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3604,7 +3500,7 @@
       <element name="dimensions" elementType="System.Integer" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" target="ServiceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ServiceNotRequested" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicenotrequested" label="ServiceNotRequested" target="ServiceRequest" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3627,19 +3523,19 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="requisition" elementType="QICore.Identifier"/>
-      <element name="status" elementType="QICore.ServiceRequestStatus"/>
-      <element name="intent" elementType="QICore.ServiceRequestIntent"/>
+      <element name="status" elementType="QICore.ServiceRequestStatus" target="%value.value"/>
+      <element name="intent" elementType="QICore.ServiceRequestIntent" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="priority" elementType="QICore.ServiceRequestPriority"/>
+      <element name="priority" elementType="QICore.ServiceRequestPriority" target="%value.value"/>
       <element name="doNotPerform" elementType="System.Boolean" target="%value.value"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="notDoneValueSet" elementType="QICore.reference" target="%parent.coding.extension[url='http://hl7.org/fhir/StructureDefinition/valueset-reference'].value.value"/>
       <element name="orderDetail" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="quantity" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Ratio:FHIRHelpers.ToRatio(%value);">
+      <element name="quantity" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Ratio" xsi:type="NamedTypeSpecifier"/>
@@ -3650,7 +3546,7 @@
       </element>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="occurrence" target="System.DateTime:%value.value;;QICore.Timing:null">
+      <element name="occurrence" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -3659,7 +3555,7 @@
             <choice namespace="QICore" name="Timing" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="asNeeded" target="System.Boolean:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)">
+      <element name="asNeeded" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -3703,7 +3599,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" label="ServiceRequest" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" label="ServiceRequest" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
       <element name="statusReason" elementType="QICore.statusReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/request-statusReason'].value)"/>
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>
@@ -3726,18 +3622,18 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="requisition" elementType="QICore.Identifier"/>
-      <element name="status" elementType="QICore.ServiceRequestStatus"/>
-      <element name="intent" elementType="QICore.ServiceRequestIntent"/>
+      <element name="status" elementType="QICore.ServiceRequestStatus" target="%value.value"/>
+      <element name="intent" elementType="QICore.ServiceRequestIntent" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="priority" elementType="QICore.ServiceRequestPriority"/>
+      <element name="priority" elementType="QICore.ServiceRequestPriority" target="%value.value"/>
       <element name="doNotPerform" elementType="System.Boolean" target="%value.value"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="orderDetail" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="quantity" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Ratio:FHIRHelpers.ToRatio(%value);">
+      <element name="quantity" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Ratio" xsi:type="NamedTypeSpecifier"/>
@@ -3748,7 +3644,7 @@
       </element>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="occurrence" target="System.DateTime:%value.value;;QICore.Timing:null">
+      <element name="occurrence" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -3757,7 +3653,7 @@
             <choice namespace="QICore" name="Timing" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
       </element>
-      <element name="asNeeded" target="System.Boolean:%value.value;System.Concept:FHIRHelpers.ToConcept(%value)">
+      <element name="asNeeded" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -3820,8 +3716,8 @@
       <element name="when" elementType="System.DateTime" target="%value.value"/>
       <element name="who" elementType="QICore.Reference"/>
       <element name="onBehalfOf" elementType="QICore.Reference"/>
-      <element name="targetFormat" elementType="QICore.MimeType"/>
-      <element name="sigFormat" elementType="QICore.MimeType"/>
+      <element name="targetFormat" elementType="QICore.MimeType" target="%value.value"/>
+      <element name="sigFormat" elementType="QICore.MimeType" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="System.String" namespace="QICore" name="SortDirection" retrievable="false" xsi:type="ClassInfo"/>
@@ -3830,7 +3726,7 @@
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="accessionIdentifier" elementType="QICore.Identifier"/>
-      <element name="status" elementType="QICore.SpecimenStatus"/>
+      <element name="status" elementType="QICore.SpecimenStatus" target="%value.value"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="subject" elementType="QICore.Reference"/>
       <element name="receivedTime" elementType="System.DateTime" target="%value.value"/>
@@ -3844,7 +3740,9 @@
       <element name="processing">
          <elementTypeSpecifier elementType="QICore.Specimen.Processing" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="container" elementType="QICore.Specimen.Container"/>
+      <element name="container">
+         <elementTypeSpecifier elementType="QICore.Specimen.Container" xsi:type="ListTypeSpecifier"/>
+      </element>
       <element name="condition" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3857,7 +3755,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Specimen.Collection" retrievable="false" xsi:type="ClassInfo">
       <element name="collector" elementType="QICore.Reference"/>
-      <element name="collected" target="System.DateTime:%value.value;">
+      <element name="collected" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -3869,7 +3767,7 @@
       <element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="method" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="bodySite" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="fastingStatus" target="System.Concept:FHIRHelpers.ToConcept(%value);System.Quantity:FHIRHelpers.ToQuantity(%value)">
+      <element name="fastingStatus" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -3884,7 +3782,7 @@
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="capacity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="specimenQuantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
-      <element name="additive" target="System.Concept:FHIRHelpers.ToConcept(%value);QICore.Reference:null">
+      <element name="additive" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -3898,7 +3796,7 @@
       <element name="additive">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="time" target="System.DateTime:%value.value;">
+      <element name="time" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -3913,7 +3811,7 @@
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.FHIRSubstanceStatus"/>
+      <element name="status" elementType="QICore.FHIRSubstanceStatus" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -3948,17 +3846,17 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.TaskStatus"/>
+      <element name="status" elementType="QICore.TaskStatus" target="%value.value"/>
       <element name="statusReason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="businessStatus" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="intent" elementType="QICore.TaskIntent"/>
-      <element name="priority" elementType="QICore.TaskPriority"/>
+      <element name="intent" elementType="QICore.TaskIntent" target="%value.value"/>
+      <element name="priority" elementType="QICore.TaskPriority" target="%value.value"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="focus" elementType="QICore.Reference"/>
       <element name="for" elementType="QICore.Reference"/>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="executionPeriod">
+      <element name="executionPeriod" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -3992,7 +3890,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Task.Input" retrievable="false" xsi:type="ClassInfo">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;QICore.Address:null;System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Annotation:null;QICore.Attachment:null;System.Concept:FHIRHelpers.ToConcept(%value);System.Code:FHIRHelpers.ToCode(%value);QICore.ContactPoint:null;System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.HumanName:null;QICore.Identifier:null;System.Decimal:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.Reference:null;QICore.SampledData:null;QICore.Signature:null;QICore.Timing:null;QICore.ContactDetail:null;QICore.Contributor:null;QICore.DataRequirement:null;QICore.Expression:null;QICore.ParameterDefinition:null;QICore.RelatedArtifact:null;QICore.TriggerDefinition:null;QICore.UsageContext:null;QICore.Dosage:null;QICore.Meta:null">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
@@ -4053,7 +3951,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Task.Output" retrievable="false" xsi:type="ClassInfo">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
-      <element name="value" target="System.String:%value.value;System.Boolean:%value.value;System.String:%value.value;System.String:%value.value;System.Date:%value.value;System.DateTime:%value.value;System.Decimal:%value.value;System.String:%value.value;System.DateTime:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.Integer:%value.value;System.String:%value.value;System.Time:%value.value;System.Integer:%value.value;System.String:%value.value;System.String:%value.value;System.String:%value.value;QICore.Address:null;System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.Annotation:null;QICore.Attachment:null;System.Concept:FHIRHelpers.ToConcept(%value);System.Code:FHIRHelpers.ToCode(%value);QICore.ContactPoint:null;System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);QICore.HumanName:null;QICore.Identifier:null;System.Decimal:%value.value;;System.Quantity:FHIRHelpers.ToQuantity(%value);;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.Reference:null;QICore.SampledData:null;QICore.Signature:null;QICore.Timing:null;QICore.ContactDetail:null;QICore.Contributor:null;QICore.DataRequirement:null;QICore.Expression:null;QICore.ParameterDefinition:null;QICore.RelatedArtifact:null;QICore.TriggerDefinition:null;QICore.UsageContext:null;QICore.Dosage:null;QICore.Meta:null">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="String" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
@@ -4114,7 +4012,7 @@
    </typeInfo>
    <typeInfo baseType="QICore.BackboneElement" namespace="QICore" name="Task.Restriction" retrievable="false" xsi:type="ClassInfo">
       <element name="repetitions" elementType="System.Integer" target="%value.value"/>
-      <element name="period">
+      <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -4134,7 +4032,7 @@
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="Timing.Repeat" retrievable="false" xsi:type="ClassInfo">
-      <element name="bounds" target="System.Quantity:FHIRHelpers.ToQuantity(%value);;">
+      <element name="bounds" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4149,27 +4047,27 @@
       <element name="countMax" elementType="System.Integer" target="%value.value"/>
       <element name="duration" elementType="System.Decimal" target="%value.value"/>
       <element name="durationMax" elementType="System.Decimal" target="%value.value"/>
-      <element name="durationUnit" elementType="QICore.UnitsOfTime"/>
+      <element name="durationUnit" elementType="QICore.UnitsOfTime" target="%value.value"/>
       <element name="frequency" elementType="System.Integer" target="%value.value"/>
       <element name="frequencyMax" elementType="System.Integer" target="%value.value"/>
       <element name="period" elementType="System.Decimal" target="%value.value"/>
       <element name="periodMax" elementType="System.Decimal" target="%value.value"/>
-      <element name="periodUnit" elementType="QICore.UnitsOfTime"/>
-      <element name="dayOfWeek">
+      <element name="periodUnit" elementType="QICore.UnitsOfTime" target="%value.value"/>
+      <element name="dayOfWeek" target="%value.value">
          <elementTypeSpecifier elementType="QICore.DayOfWeek" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="timeOfDay" target="%value.value">
          <elementTypeSpecifier elementType="System.Time" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="when">
+      <element name="when" target="%value.value">
          <elementTypeSpecifier elementType="QICore.EventTiming" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="offset" elementType="System.Integer" target="%value.value"/>
    </typeInfo>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false" xsi:type="ClassInfo">
-      <element name="type" elementType="QICore.TriggerType"/>
+      <element name="type" elementType="QICore.TriggerType" target="%value.value"/>
       <element name="name" elementType="System.String" target="%value.value"/>
-      <element name="timing" target="QICore.Timing:null;QICore.Reference:null;System.Date:%value.value;System.DateTime:%value.value">
+      <element name="timing" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="QICore" name="Timing" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="QICore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -4193,13 +4091,13 @@
       <element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo baseType="QICore.DomainResource" namespace="QICore" name="USCoreImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true" primaryCodePath="type" xsi:type="ClassInfo">
       <element name="identifier">
          <elementTypeSpecifier elementType="QICore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="definition" elementType="QICore.Reference"/>
       <element name="udiCarrier" elementType="QICore.Device.UdiCarrier"/>
-      <element name="status" elementType="QICore.FHIRDeviceStatus"/>
+      <element name="status" elementType="QICore.FHIRDeviceStatus" target="%value.value"/>
       <element name="statusReason" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4260,7 +4158,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4272,7 +4170,7 @@
       <element name="performer">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="value" target="System.Quantity:FHIRHelpers.ToQuantity(%value);System.Concept:FHIRHelpers.ToConcept(%value);System.String:%value.value;System.Boolean:%value.value;System.Integer:%value.value;;System.Ratio:FHIRHelpers.ToRatio(%value);QICore.SampledData:null;System.Time:%value.value;System.DateTime:%value.value;">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -4325,7 +4223,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4336,7 +4234,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4383,7 +4281,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4394,7 +4292,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4441,7 +4339,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4454,7 +4352,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4523,7 +4421,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;;QICore.Timing:null;System.DateTime:%value.value">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4565,7 +4463,7 @@
    <typeInfo baseType="System.String" namespace="QICore" name="UnitsOfTime" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Element" namespace="QICore" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="code" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
-      <element name="value" target="System.Concept:FHIRHelpers.ToConcept(%value);System.Quantity:FHIRHelpers.ToQuantity(%value);;QICore.Reference:null">
+      <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -4603,7 +4501,7 @@
    <typeInfo baseType="QICore.Reference" namespace="QICore" name="locationPerformed" identifier="http://hl7.org/fhir/StructureDefinition/diagnosticReport-locationPerformed" label="locationPerformed" retrievable="false" xsi:type="ClassInfo"/>
    <typeInfo baseType="QICore.Extension" namespace="QICore" name="nationality" identifier="http://hl7.org/fhir/StructureDefinition/patient-nationality" label="nationality" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%parent.extension[url='code'].value)"/>
-      <element name="period" target="%parent.extension[url='period']">
+      <element name="period" target="FHIRHelpers.ToInterval(%parent.extension[url='period'].value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
             <pointTypeSpecifier namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
          </elementTypeSpecifier>
@@ -4620,7 +4518,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4632,7 +4530,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4679,7 +4577,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4691,7 +4589,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4738,7 +4636,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4750,7 +4648,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4797,7 +4695,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4809,7 +4707,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4856,7 +4754,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4868,7 +4766,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4917,7 +4815,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4929,7 +4827,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -4976,7 +4874,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -4988,7 +4886,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -5035,7 +4933,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5047,7 +4945,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -5094,7 +4992,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5106,7 +5004,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">
@@ -5153,7 +5051,7 @@
       <element name="partOf">
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
-      <element name="status" elementType="QICore.Status"/>
+      <element name="status" elementType="QICore.Status" target="%value.value"/>
       <element name="category" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -5167,7 +5065,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="encounter" elementType="QICore.Reference"/>
-      <element name="effective" target="System.DateTime:%value.value;">
+      <element name="effective" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="DateTime" xsi:type="NamedTypeSpecifier"/>
             <choice xsi:type="IntervalTypeSpecifier">

@@ -511,7 +511,7 @@ public class SemanticTests {
     @Test
     public void TestVSCastFunction14() throws IOException {
         CqlTranslatorOptions options = new CqlTranslatorOptions()
-                .withOptions(CqlTranslator.Options.DisableListDemotion, CqlTranslator.Options.DisableListPromotion, CqlTranslator.Options.DisableMethodInvocation)
+                .withOptions(CqlTranslator.Options.EnableAnnotations, CqlTranslator.Options.DisableListDemotion, CqlTranslator.Options.DisableListPromotion, CqlTranslator.Options.DisableMethodInvocation)
                 .withCompatibilityLevel("1.4");
         CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
         ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
