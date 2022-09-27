@@ -36,10 +36,104 @@ public class BaseTest {
             }
         }
 
-        ExpressionDef def = defs.get("TestAdverseEvent");
+        ExpressionDef def = null;
+        Retrieve retrieve = null;
+        Union union = null;
+        Query query = null;
+
+        def = defs.get("TestAdverseEvent");
         assertThat(def.getExpression(), instanceOf(Retrieve.class));
-        Retrieve retrieve = (Retrieve)def.getExpression();
+        retrieve = (Retrieve)def.getExpression();
         assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-adverseevent"));
+
+        def = defs.get("TestSpecificCommunicationNotDone");
+        assertThat(def.getExpression(), instanceOf(Union.class));
+        union = (Union)def.getExpression();
+        assertThat(union.getOperand().size(), is(2));
+        assertThat(union.getOperand().get(0), instanceOf(Retrieve.class));
+        retrieve = (Retrieve)union.getOperand().get(0);
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone"));
+        assertThat(retrieve.getCodeComparator(), is("~"));
+        assertThat(union.getOperand().get(1), instanceOf(Retrieve.class));
+        retrieve = (Retrieve)union.getOperand().get(1);
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone"));
+        assertThat(retrieve.getCodeComparator(), is("contains"));
+
+        def = defs.get("TestSpecificCommunicationNotDoneExplicit");
+        assertThat(def.getExpression(), instanceOf(Query.class));
+        query = (Query)def.getExpression();
+        assertThat(query.getSource().size(), is(1));
+        assertThat(query.getSource().get(0).getExpression(), instanceOf(Retrieve.class));
+        retrieve = (Retrieve)query.getSource().get(0).getExpression();
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone"));
+        Expression whereClause = query.getWhere();
+        assertThat(whereClause, instanceOf(Or.class));
+        Expression left = ((Or)whereClause).getOperand().get(0);
+        Expression right = ((Or)whereClause).getOperand().get(1);
+        assertThat(left, instanceOf(Equivalent.class));
+        assertThat(right, instanceOf(InValueSet.class));
+
+        def = defs.get("TestGeneralCommunicationNotDone");
+        assertThat(def.getExpression(), instanceOf(Union.class));
+        union = (Union)def.getExpression();
+        assertThat(union.getOperand().size(), is(2));
+        assertThat(union.getOperand().get(0), instanceOf(Retrieve.class));
+        retrieve = (Retrieve)union.getOperand().get(0);
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone"));
+        assertThat(retrieve.getCodeComparator(), is("in"));
+        assertThat(union.getOperand().get(1), instanceOf(Retrieve.class));
+        retrieve = (Retrieve)union.getOperand().get(1);
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-communicationnotdone"));
+        assertThat(retrieve.getCodeComparator(), is("~"));
+        assertThat(retrieve.getCodes(), instanceOf(ValueSetRef.class));
+
+        def = defs.get("TestGeneralDeviceNotRequested");
+        assertThat(def.getExpression(), instanceOf(Union.class));
+        union = (Union)def.getExpression();
+        assertThat(union.getOperand().size(), is(2));
+        assertThat(union.getOperand().get(0), instanceOf(Retrieve.class));
+        retrieve = (Retrieve)union.getOperand().get(0);
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested"));
+        assertThat(retrieve.getCodeComparator(), is("in"));
+        assertThat(union.getOperand().get(1), instanceOf(Retrieve.class));
+        retrieve = (Retrieve)union.getOperand().get(1);
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested"));
+        assertThat(retrieve.getCodeComparator(), is("~"));
+        assertThat(retrieve.getCodes(), instanceOf(ValueSetRef.class));
+
+        def = defs.get("TestGeneralDeviceNotRequestedCode");
+        assertThat(def.getExpression(),instanceOf(Retrieve.class));
+        retrieve = (Retrieve)def.getExpression();
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested"));
+        assertThat(retrieve.getCodeComparator(), is("in"));
+        assertThat(retrieve.getCodes(), instanceOf(ValueSetRef.class));
+
+        def = defs.get("TestGeneralDeviceNotRequestedValueSet");
+        assertThat(def.getExpression(),instanceOf(Retrieve.class));
+        retrieve = (Retrieve)def.getExpression();
+        assertThat(retrieve.getTemplateId(), is("http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-devicenotrequested"));
+        assertThat(retrieve.getCodeComparator(), is("~"));
+        assertThat(retrieve.getCodes(), instanceOf(ValueSetRef.class));
+
+        def = defs.get("TestGeneralDeviceNotRequestedCodeExplicit");
+        assertThat(def.getExpression(), instanceOf(Query.class));
+        query = (Query)def.getExpression();
+        assertThat(query.getWhere(), instanceOf(InValueSet.class));
+        InValueSet inValueSet = (InValueSet)query.getWhere();
+        assertThat(inValueSet.getCode(), instanceOf(FunctionRef.class));
+        FunctionRef fr = (FunctionRef)inValueSet.getCode();
+        assertThat(fr.getLibraryName(), is("FHIRHelpers"));
+        assertThat(fr.getName(), is("ToConcept"));
+
+        def = defs.get("TestGeneralDeviceNotRequestedValueSetExplicit");
+        assertThat(def.getExpression(), instanceOf(Query.class));
+        query = (Query)def.getExpression();
+        assertThat(query.getWhere(), instanceOf(Equivalent.class));
+        Equivalent eq = (Equivalent)query.getWhere();
+        assertThat(eq.getOperand().get(0), instanceOf(FunctionRef.class));
+        fr = (FunctionRef)eq.getOperand().get(0);
+        assertThat(fr.getLibraryName(), is("FHIRHelpers"));
+        assertThat(fr.getName(), is("ToValueSet"));
     }
 
     @Test
