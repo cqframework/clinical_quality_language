@@ -9,7 +9,7 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'jacoco'
 
     sourceCompatibility = JavaVersion.VERSION_11
@@ -28,15 +28,7 @@ subprojects {
         testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
         testImplementation group: 'uk.co.datumedge', name: 'hamcrest-json', version: '0.2'
         testImplementation group: 'junit', name: 'junit', version: '4.12'
-        testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-    }
-
-    // The xpp3.xpp3 dependency includes the javax.xml packagename, which is invalid in
-    // Java 9+. The FHIR ucum service and the HAPI validation framework both depend on this
-    // so the codelibs.xpp3 package is substituted instead. It's a fork of xpp3, but excludes
-    // the javax.xml packagename
-    configurations.implementation {
-        exclude group: 'xpp3', module: 'xpp3'
+        testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
     }
 
     jar {
@@ -122,11 +114,36 @@ subprojects {
 }
 
 /*
+FHIR dependencies
+*/
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'elm-fhir', 'cqf-fhir-npm']}) {
+    dependencies {
+        // fhir core dependencies
+        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.6.36'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.convertors', version: '5.6.36'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.utilities', version: '5.6.36'
+
+        // HAPI base
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-base', version: '6.0.1'
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-converter', version: '6.0.1'
+
+        // FHIR STU3
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-dstu3', version: '6.0.1'
+
+        // FHIR r4
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r4', version: '6.0.1'
+
+        // FHIR r5
+        implementation group: 'ca.uhn.hapi.fhir', name: 'hapi-fhir-structures-r5', version: '6.0.1'
+    }
+}
+
+/*
 JAXB dependencies:
 https://mkyong.com/java/jaxbexception-implementation-of-jaxb-api-has-not-been-found-on-module-path-or-classpath/
  */
 
-configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-fhir', 'elm-jaxb', 'quick', 'qdm', 'cql-to-elm', 'cql-to-elm-cli']}) {
+configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm' ]}) {
     configurations {
         xjc
     }
@@ -141,9 +158,10 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'model-jaxb
         xjc group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
         xjc group: 'org.glassfish.jaxb', name: 'jaxb-xjc', version: '2.4.0-b180830.0438'
         xjc group: 'org.eclipse.persistence', name: 'org.eclipse.persistence.moxy', version: '2.7.7'
-        xjc group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
-        implementation group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '0.13.1'
-        implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
+        xjc group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.36'
+
+        api group: 'org.jvnet.jaxb2_commons', name: 'jaxb2-basics-runtime', version: '0.13.1'
+        api group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '2.3.3'
     }
 
     ext.xjc = [

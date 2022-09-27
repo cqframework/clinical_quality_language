@@ -1,6 +1,6 @@
 // Most build configuration comes from the cql-all parent build!
 
 dependencies {
-    implementation project(':elm')
+    api project(':elm')
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
 }
