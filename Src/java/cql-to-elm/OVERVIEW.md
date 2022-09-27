@@ -22,17 +22,17 @@ The `cql`, `model`, `elm`, and `cql-to-elm` packages are required to use the tra
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>model</artifactId>
-      <version>1.5.7</version>
+      <version>1.5.12</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>elm</artifactId>
-      <version>1.5.7</version>
+      <version>1.5.12</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>cql-to-elm</artifactId>
-      <version>1.5.7</version>
+      <version>1.5.12</version>
     </dependency>
 
 In addition, to use the translator with QDM, FHIR, and QUICK, the model info packages must be included:
@@ -40,12 +40,12 @@ In addition, to use the translator with QDM, FHIR, and QUICK, the model info pac
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>quick</artifactId>
-      <version>1.5.7</version>
+      <version>1.5.12</version>
     </dependency>
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>qdm</artifactId>
-      <version>1.5.7</version>
+      <version>1.5.12</version>
     </dependency>
 
 To use the DataRequirementsProcessor, a component that performs data requirements analysis on ELM, as well as converts those data requirements to FHIR [DataRequirement](https://hl7.org/fhir/metadatatypes.html#DataRequirement) instances and renders the metadata for a CQL Library as a [FHIR ModuleDefinition Library](https://build.fhir.org/ig/HL7/cqf-measures/StructureDefinition-module-definition-library-cqfm.html), the elm-fhir package must be included:
@@ -53,7 +53,7 @@ To use the DataRequirementsProcessor, a component that performs data requirement
     <dependency>
       <groupId>info.cqframework</groupId>
       <artifactId>elm-fhir</artifact>
-      <version>1.5.7</version>
+      <version>1.5.12</version>
     </dependency>
 
 Note that this elm-fhir package includes a dependency on the HAPI FHIR Structures libraries (client-side dependencies) in order to provide FHIR object representation support. This is the only package from the translator that includes a specific dependency on FHIR.
