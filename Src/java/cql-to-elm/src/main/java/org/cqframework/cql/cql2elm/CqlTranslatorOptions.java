@@ -22,7 +22,8 @@ public class CqlTranslatorOptions {
         EnableIntervalPromotion,
         DisableMethodInvocation,
         RequireFromKeyword,
-        DisableDefaultModelInfoLoad
+        DisableDefaultModelInfoLoad,
+        EnableElmAnalyzers
     }
 
     private List<CqlTranslator.Format> formats = new ArrayList<>();
@@ -106,6 +107,8 @@ public class CqlTranslatorOptions {
      * @param enableIntervalDemotion boolean
      * @param enableIntervalPromotion boolean
      * @param disableMethodInvocation boolean
+     * @param disableDefaultModelInfoLoad boolean
+     * @param enableElmAnalyzers boolean
      * @param requireFromKeyword boolean
      * @param validateUnits boolean
      * @param signatureLevel LibraryBuilder.SignatureLevel
@@ -117,7 +120,7 @@ public class CqlTranslatorOptions {
                                 boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
                                 boolean enableIntervalDemotion, boolean enableIntervalPromotion,
                                 boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
-                                boolean disableDefaultModelInfoLoad,
+                                boolean disableDefaultModelInfoLoad, boolean enableElmAnalyzers,
                                 LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel) {
         formats.add(format);
         this.verifyOnly = verifyOnly;
@@ -164,6 +167,9 @@ public class CqlTranslatorOptions {
         }
         if (disableDefaultModelInfoLoad) {
             options.add(Options.DisableDefaultModelInfoLoad);
+        }
+        if (enableElmAnalyzers) {
+            options.add(Options.EnableElmAnalyzers);
         }
     }
 
