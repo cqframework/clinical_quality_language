@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <modelInfo xmlns="urn:hl7-org:elm-modelinfo:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="USCore" version="3.1.0" url="http://hl7.org/fhir/us/core" targetUrl="http://hl7.org/fhir" targetQualifier="uscore" patientClassName="PatientProfile" patientBirthDatePropertyName="birthDate">
    <requiredModelInfo name="System" version="1.0.0"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Address" identifier="http://hl7.org/fhir/StructureDefinition/Address" label="Address" retrievable="false">
       <element name="use" elementType="USCore.AddressUse" target="%value.value"/>
       <element name="type" elementType="USCore.AddressType" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
@@ -19,10 +19,10 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="AddressType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="AddressUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="AdministrativeGender" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="AllergyIntolerance" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-allergyintolerance" label="US  Core AllergyIntolerance Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="AddressType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="AddressUse" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="AdministrativeGender" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="AllergyIntolerance" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-allergyintolerance" label="US  Core AllergyIntolerance Profile" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -63,7 +63,7 @@
       <contextRelationship context="Patient" relatedKeyElement="recorder"/>
       <contextRelationship context="Patient" relatedKeyElement="asserter"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="AllergyIntolerance.Reaction" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="AllergyIntolerance.Reaction" retrievable="false">
       <element name="substance" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="manifestation" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
@@ -76,11 +76,11 @@
          <elementTypeSpecifier elementType="USCore.Annotation" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="AllergyIntoleranceCategory" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="AllergyIntoleranceCriticality" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="AllergyIntoleranceSeverity" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="AllergyIntoleranceType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Annotation" identifier="http://hl7.org/fhir/StructureDefinition/Annotation" label="Annotation" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="AllergyIntoleranceCategory" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="AllergyIntoleranceCriticality" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="AllergyIntoleranceSeverity" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="AllergyIntoleranceType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Annotation" identifier="http://hl7.org/fhir/StructureDefinition/Annotation" label="Annotation" retrievable="false">
       <element name="author" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="USCore" name="Reference" xsi:type="NamedTypeSpecifier"/>
@@ -90,7 +90,7 @@
       <element name="time" elementType="System.DateTime" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Attachment" identifier="http://hl7.org/fhir/StructureDefinition/Attachment" label="Attachment" retrievable="false">
       <element name="contentType" elementType="USCore.MimeType" target="%value.value"/>
       <element name="language" elementType="System.String" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
@@ -100,16 +100,16 @@
       <element name="title" elementType="System.String" target="%value.value"/>
       <element name="creation" elementType="System.DateTime" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="BackboneElement" identifier="http://hl7.org/fhir/StructureDefinition/BackboneElement" label="BackboneElement" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="BackboneElement" identifier="http://hl7.org/fhir/StructureDefinition/BackboneElement" label="BackboneElement" retrievable="false">
       <element name="modifierExtension">
          <elementTypeSpecifier elementType="USCore.Extension" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="BirthSexExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex" label="US Core Birth Sex Extension" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="BodyLengthUnits" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="BodyTempUnits" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="BodyWeightUnits" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="CarePlan.Activity" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="BirthSexExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex" label="US Core Birth Sex Extension" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="BodyLengthUnits" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="BodyTempUnits" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="BodyWeightUnits" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="CarePlan.Activity" retrievable="false">
       <element name="outcomeCodeableConcept" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -122,7 +122,7 @@
       <element name="reference" elementType="USCore.Reference"/>
       <element name="detail" elementType="USCore.CarePlan.Activity.Detail"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="CarePlan.Activity.Detail" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="CarePlan.Activity.Detail" retrievable="false">
       <element name="kind" elementType="USCore.CarePlanActivityKind" target="%value.value"/>
       <element name="instantiatesCanonical" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
@@ -166,9 +166,9 @@
       <element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="description" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="CarePlanActivityKind" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="CarePlanActivityStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="CarePlanProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan" label="US Core CarePlan Profile" target="CarePlan" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="CarePlanActivityKind" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="CarePlanActivityStatus" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="CarePlanProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careplan" label="US Core CarePlan Profile" target="CarePlan" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -226,7 +226,7 @@
          <elementTypeSpecifier elementType="USCore.Annotation" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="CareTeam" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careteam" label="US Core CareTeam Profile" retrievable="true" primaryCodePath="category" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="CareTeam" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-careteam" label="US Core CareTeam Profile" retrievable="true" primaryCodePath="category">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -263,7 +263,7 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
       <contextRelationship context="Patient" relatedKeyElement="member"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="CareTeam.Participant" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="CareTeam.Participant" retrievable="false">
       <element name="role" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="member" elementType="USCore.Reference"/>
       <element name="onBehalfOf" elementType="USCore.Reference"/>
@@ -273,7 +273,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="Condition" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition" label="US Core Condition Profile" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="Condition" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-condition" label="US Core Condition Profile" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -330,7 +330,7 @@
       <contextRelationship context="Patient" relatedKeyElement="patient"/>
       <contextRelationship context="Patient" relatedKeyElement="asserter"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Condition.Evidence" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Condition.Evidence" retrievable="false">
       <element name="code" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -338,20 +338,20 @@
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Condition.Stage" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Condition.Stage" retrievable="false">
       <element name="summary" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="assessment">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="ContactDetail" identifier="http://hl7.org/fhir/StructureDefinition/ContactDetail" label="ContactDetail" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="ContactDetail" identifier="http://hl7.org/fhir/StructureDefinition/ContactDetail" label="ContactDetail" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="telecom">
          <elementTypeSpecifier elementType="USCore.ContactPoint" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="ContactPoint" identifier="http://hl7.org/fhir/StructureDefinition/ContactPoint" label="ContactPoint" retrievable="false">
       <element name="system" elementType="USCore.ContactPointSystem" target="%value.value"/>
       <element name="value" elementType="System.String" target="%value.value"/>
       <element name="use" elementType="USCore.ContactPointUse" target="%value.value"/>
@@ -362,17 +362,17 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="ContactPointSystem" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="ContactPointUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="ContactPointSystem" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="ContactPointUse" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Contributor" identifier="http://hl7.org/fhir/StructureDefinition/Contributor" label="Contributor" retrievable="false">
       <element name="type" elementType="USCore.ContributorType" target="%value.value"/>
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="contact">
          <elementTypeSpecifier elementType="USCore.ContactDetail" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="ContributorType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="ContributorType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="DataRequirement" identifier="http://hl7.org/fhir/StructureDefinition/DataRequirement" label="DataRequirement" retrievable="false">
       <element name="type" elementType="USCore.FHIRAllTypes" target="%value.value"/>
       <element name="profile" target="%value.value">
          <elementTypeSpecifier elementType="System.String" xsi:type="ListTypeSpecifier"/>
@@ -397,7 +397,7 @@
          <elementTypeSpecifier elementType="USCore.DataRequirement.Sort" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="DataRequirement.CodeFilter" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="DataRequirement.CodeFilter" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value"/>
       <element name="searchParam" elementType="System.String" target="%value.value"/>
       <element name="valueSet" elementType="System.String" target="%value.value"/>
@@ -405,7 +405,7 @@
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="DataRequirement.DateFilter" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="DataRequirement.DateFilter" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value"/>
       <element name="searchParam" elementType="System.String" target="%value.value"/>
       <element name="value" target="FHIRHelpers.ToValue(%value)">
@@ -418,17 +418,17 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="DataRequirement.Sort" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="DataRequirement.Sort" retrievable="false">
       <element name="path" elementType="System.String" target="%value.value"/>
       <element name="direction" elementType="USCore.SortDirection" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="DayOfWeek" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="DaysOfWeek" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.DeviceName" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="DayOfWeek" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="DaysOfWeek" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.DeviceName" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="type" elementType="USCore.DeviceNameType" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.Property" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.Property" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="valueQuantity" target="FHIRHelpers.ToQuantity(%value)">
          <elementTypeSpecifier elementType="System.Quantity" xsi:type="ListTypeSpecifier"/>
@@ -437,11 +437,11 @@
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.Specialization" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.Specialization" retrievable="false">
       <element name="systemType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="version" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.UdiCarrier" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.UdiCarrier" retrievable="false">
       <element name="deviceIdentifier" elementType="System.String" target="%value.value"/>
       <element name="issuer" elementType="System.String" target="%value.value"/>
       <element name="jurisdiction" elementType="System.String" target="%value.value"/>
@@ -449,17 +449,17 @@
       <element name="carrierHRF" elementType="System.String" target="%value.value"/>
       <element name="entryType" elementType="USCore.UDIEntryType" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Device.Version" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Device.Version" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="component" elementType="USCore.Identifier"/>
       <element name="value" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="DeviceNameType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="DiagnosticReport.Media" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="DeviceNameType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="DiagnosticReport.Media" retrievable="false">
       <element name="comment" elementType="System.String" target="%value.value"/>
       <element name="link" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileLaboratoryReporting" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab" label="US Core DiagnosticReport Profile for Laboratory Results Reporting" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileLaboratoryReporting" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-lab" label="US Core DiagnosticReport Profile for Laboratory Results Reporting" target="DiagnosticReport" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -509,7 +509,7 @@
          <elementTypeSpecifier elementType="USCore.Attachment" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileNoteExchange" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note" label="US Core DiagnosticReport Profile for Report and Note exchange" target="DiagnosticReport" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="DiagnosticReportProfileNoteExchange" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-diagnosticreport-note" label="US Core DiagnosticReport Profile for Report and Note exchange" target="DiagnosticReport" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -558,11 +558,11 @@
          <elementTypeSpecifier elementType="USCore.Attachment" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.Content" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.Content" retrievable="false">
       <element name="attachment" elementType="USCore.Attachment"/>
       <element name="format" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.Context" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.Context" retrievable="false">
       <element name="encounter" elementType="USCore.Reference"/>
       <element name="event" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
@@ -579,11 +579,11 @@
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.RelatesTo" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="DocumentReference.RelatesTo" retrievable="false">
       <element name="code" elementType="USCore.DocumentRelationshipType" target="%value.value"/>
       <element name="target" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="DocumentReferenceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference" label="US Core DocumentReference Profile" target="DocumentReference" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="DocumentReferenceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-documentreference" label="US Core DocumentReference Profile" target="DocumentReference" retrievable="true">
       <element name="masterIdentifier" elementType="USCore.Identifier"/>
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
@@ -611,8 +611,8 @@
       <element name="content" elementType="USCore.DocumentReference.Content"/>
       <element name="context" elementType="USCore.DocumentReference.Context"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="DocumentRelationshipType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Resource" namespace="USCore" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="DocumentRelationshipType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Resource" namespace="USCore" name="DomainResource" identifier="http://hl7.org/fhir/StructureDefinition/DomainResource" label="DomainResource" retrievable="true">
       <element name="text" elementType="USCore.Narrative"/>
       <element name="contained">
          <elementTypeSpecifier elementType="USCore.Resource" xsi:type="ListTypeSpecifier"/>
@@ -624,7 +624,7 @@
          <elementTypeSpecifier elementType="USCore.Extension" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Dosage" identifier="http://hl7.org/fhir/StructureDefinition/Dosage" label="Dosage" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Dosage" identifier="http://hl7.org/fhir/StructureDefinition/Dosage" label="Dosage" retrievable="false">
       <element name="sequence" elementType="System.Integer" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
       <element name="additionalInstruction" target="FHIRHelpers.ToConcept(%value)">
@@ -648,7 +648,7 @@
       <element name="maxDosePerAdministration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="maxDosePerLifetime" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Dosage.DoseAndRate" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Dosage.DoseAndRate" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="dose" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -668,13 +668,13 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.Any" namespace="USCore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.Any" namespace="USCore" name="Element" identifier="http://hl7.org/fhir/StructureDefinition/Element" label="Element" retrievable="false">
       <element name="id" elementType="System.String" target="%value.value"/>
       <element name="extension">
          <elementTypeSpecifier elementType="USCore.Extension" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.ClassHistory" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.ClassHistory" retrievable="false">
       <element name="class" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
       <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -682,12 +682,12 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Diagnosis" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Diagnosis" retrievable="false">
       <element name="condition" elementType="USCore.Reference"/>
       <element name="use" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="rank" elementType="System.Integer" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Hospitalization" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Hospitalization" retrievable="false">
       <element name="preAdmissionIdentifier" elementType="USCore.Identifier"/>
       <element name="origin" elementType="USCore.Reference"/>
       <element name="admitSource" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -704,7 +704,7 @@
       <element name="destination" elementType="USCore.Reference"/>
       <element name="dischargeDisposition" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Location" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Location" retrievable="false">
       <element name="location" elementType="USCore.Reference"/>
       <element name="status" elementType="USCore.EncounterLocationStatus" target="%value.value"/>
       <element name="physicalType" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -714,7 +714,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Participant" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.Participant" retrievable="false">
       <element name="type" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -725,7 +725,7 @@
       </element>
       <element name="individual" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.StatusHistory" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Encounter.StatusHistory" retrievable="false">
       <element name="status" elementType="USCore.EncounterStatus" target="%value.value"/>
       <element name="period" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -733,8 +733,8 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="EncounterLocationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="EncounterProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter" label="US Core Encounter Profile" target="Encounter" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="EncounterLocationStatus" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="EncounterProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-encounter" label="US Core Encounter Profile" target="Encounter" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -789,8 +789,8 @@
       <element name="serviceProvider" elementType="USCore.Reference"/>
       <element name="partOf" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="EncounterStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Extension" namespace="USCore" name="EthnicityExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity" label="US Core Ethnicity Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="EncounterStatus" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Extension" namespace="USCore" name="EthnicityExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity" label="US Core Ethnicity Extension" retrievable="false">
       <element name="ombCategory" elementType="System.Code" target="FHIRHelpers.ToCode(%parent.extension[url='ombCategory'].value)"/>
       <element name="detailed" target="FHIRHelpers.ToCode(%parent.extension[url='detailed'].value)">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
@@ -798,15 +798,15 @@
       <element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="EventTiming" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Expression" identifier="http://hl7.org/fhir/StructureDefinition/Expression" label="Expression" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="EventTiming" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Expression" identifier="http://hl7.org/fhir/StructureDefinition/Expression" label="Expression" retrievable="false">
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="language" elementType="System.String" target="%value.value"/>
       <element name="expression" elementType="System.String" target="%value.value"/>
       <element name="reference" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Extension" identifier="http://hl7.org/fhir/StructureDefinition/Extension" label="Extension" retrievable="false">
       <element name="url" elementType="System.String" target="%value.value"/>
       <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -867,9 +867,9 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="FHIRAllTypes" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="FHIRDeviceStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Goal.Target" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="FHIRAllTypes" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="FHIRDeviceStatus" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Goal.Target" retrievable="false">
       <element name="measure" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="detail" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -886,7 +886,7 @@
       </element>
       <element name="due" elementType="System.Date" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="GoalProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal" label="US Core Goal Profile" target="Goal" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="GoalProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-goal" label="US Core Goal Profile" target="Goal" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -923,7 +923,7 @@
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="HumanName" identifier="http://hl7.org/fhir/StructureDefinition/HumanName" label="HumanName" retrievable="false">
       <element name="use" elementType="USCore.NameUse" target="%value.value"/>
       <element name="text" elementType="System.String" target="%value.value"/>
       <element name="family" elementType="System.String" target="%value.value"/>
@@ -942,7 +942,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Identifier" identifier="http://hl7.org/fhir/StructureDefinition/Identifier" label="Identifier" retrievable="false">
       <element name="use" elementType="USCore.IdentifierUse" target="%value.value"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="system" elementType="System.String" target="%value.value"/>
@@ -954,18 +954,18 @@
       </element>
       <element name="assigner" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="IdentifierUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Education" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="IdentifierUse" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Education" retrievable="false">
       <element name="documentType" elementType="System.String" target="%value.value"/>
       <element name="reference" elementType="System.String" target="%value.value"/>
       <element name="publicationDate" elementType="System.DateTime" target="%value.value"/>
       <element name="presentationDate" elementType="System.DateTime" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.ProtocolApplied" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.ProtocolApplied" retrievable="false">
       <element name="series" elementType="System.String" target="%value.value"/>
       <element name="authority" elementType="USCore.Reference"/>
       <element name="targetDisease" target="FHIRHelpers.ToConcept(%value)">
@@ -984,12 +984,12 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Reaction" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Immunization.Reaction" retrievable="false">
       <element name="date" elementType="System.DateTime" target="%value.value"/>
       <element name="detail" elementType="USCore.Reference"/>
       <element name="reported" elementType="System.Boolean" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ImmunizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization" label="US Core Immunization Profile" target="Immunization" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="ImmunizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-immunization" label="US Core Immunization Profile" target="Immunization" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1044,7 +1044,7 @@
          <elementTypeSpecifier elementType="USCore.Immunization.ProtocolApplied" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="ImplantableDeviceProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-implantable-device" label="US Core Implantable Device Profile" target="Device" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1090,7 +1090,7 @@
       </element>
       <element name="parent" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="LaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="LaboratoryResultObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-observation-lab" label="US Core Laboratory Result Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1166,8 +1166,8 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="LinkType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="Location" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" label="US Core Location Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="LinkType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="Location" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-location" label="US Core Location Profile" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1198,7 +1198,7 @@
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Location.HoursOfOperation" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Location.HoursOfOperation" retrievable="false">
       <element name="daysOfWeek" target="%value.value">
          <elementTypeSpecifier elementType="USCore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1206,18 +1206,18 @@
       <element name="openingTime" elementType="System.Time" target="%value.value"/>
       <element name="closingTime" elementType="System.Time" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Location.Position" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Location.Position" retrievable="false">
       <element name="longitude" elementType="System.Decimal" target="%value.value"/>
       <element name="latitude" elementType="System.Decimal" target="%value.value"/>
       <element name="altitude" elementType="System.Decimal" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="LocationMode" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="LocationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Medication.Batch" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="LocationMode" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="LocationStatus" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Medication.Batch" retrievable="false">
       <element name="lotNumber" elementType="System.String" target="%value.value"/>
       <element name="expirationDate" elementType="System.DateTime" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Medication.Ingredient" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Medication.Ingredient" retrievable="false">
       <element name="item" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Concept" xsi:type="NamedTypeSpecifier"/>
@@ -1227,7 +1227,7 @@
       <element name="isActive" elementType="System.Boolean" target="%value.value"/>
       <element name="strength" elementType="System.Ratio" target="FHIRHelpers.ToRatio(%value)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="MedicationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" target="Medication" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="MedicationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medication" label="US Core Medication Profile" target="Medication" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1241,7 +1241,7 @@
       </element>
       <element name="batch" elementType="USCore.Medication.Batch"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.DispenseRequest" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.DispenseRequest" retrievable="false">
       <element name="initialFill" elementType="USCore.MedicationRequest.DispenseRequest.InitialFill"/>
       <element name="dispenseInterval" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="validityPeriod" target="FHIRHelpers.ToInterval(%value)">
@@ -1254,11 +1254,11 @@
       <element name="expectedSupplyDuration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="performer" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.DispenseRequest.InitialFill" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.DispenseRequest.InitialFill" retrievable="false">
       <element name="quantity" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="duration" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.Substitution" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="MedicationRequest.Substitution" retrievable="false">
       <element name="allowed" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Boolean" xsi:type="NamedTypeSpecifier"/>
@@ -1267,8 +1267,8 @@
       </element>
       <element name="reason" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="MedicationRequestPriority" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="MedicationRequestProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" target="MedicationRequest" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="MedicationRequestPriority" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="MedicationRequestProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-medicationrequest" label="US Core MedicationRequest Profile" target="MedicationRequest" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1338,8 +1338,8 @@
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="MedicationStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Meta" identifier="http://hl7.org/fhir/StructureDefinition/Meta" label="Meta" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="MedicationStatus" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Meta" identifier="http://hl7.org/fhir/StructureDefinition/Meta" label="Meta" retrievable="false">
       <element name="versionId" elementType="System.String" target="%value.value"/>
       <element name="lastUpdated" elementType="System.DateTime" target="%value.value"/>
       <element name="source" elementType="System.String" target="%value.value"/>
@@ -1353,14 +1353,14 @@
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="MimeType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="NameUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="MimeType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="NameUse" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Narrative" identifier="http://hl7.org/fhir/StructureDefinition/Narrative" label="Narrative" retrievable="false">
       <element name="status" elementType="USCore.NarrativeStatus" target="%value.value"/>
       <element name="div" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="NarrativeStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Observation.Component" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="NarrativeStatus" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Observation.Component" retrievable="false">
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -1391,11 +1391,11 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.Concentration" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.DiastolicBP" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.FlowRate" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.SystolicBP" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Observation.ReferenceRange" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.Concentration" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.DiastolicBP" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.FlowRate" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Observation.Component" namespace="USCore" name="Observation.Component.SystolicBP" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Observation.ReferenceRange" retrievable="false">
       <element name="low" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="high" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
@@ -1409,7 +1409,7 @@
       </element>
       <element name="text" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Organization.Contact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Organization.Contact" retrievable="false">
       <element name="purpose" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="name" elementType="USCore.HumanName"/>
       <element name="telecom">
@@ -1417,7 +1417,7 @@
       </element>
       <element name="address" elementType="USCore.Address"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="OrganizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" label="US Core Organization Profile" target="Organization" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="OrganizationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-organization" label="US Core Organization Profile" target="Organization" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1445,7 +1445,7 @@
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="ParameterDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ParameterDefinition" label="ParameterDefinition" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="ParameterDefinition" identifier="http://hl7.org/fhir/StructureDefinition/ParameterDefinition" label="ParameterDefinition" retrievable="false">
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="use" elementType="USCore.ParameterUse" target="%value.value"/>
       <element name="min" elementType="System.Integer" target="%value.value"/>
@@ -1454,12 +1454,12 @@
       <element name="type" elementType="USCore.FHIRAllTypes" target="%value.value"/>
       <element name="profile" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="ParameterUse" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Communication" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="ParameterUse" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Communication" retrievable="false">
       <element name="language" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="preferred" elementType="System.Boolean" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Contact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Contact" retrievable="false">
       <element name="relationship" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1476,11 +1476,11 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Link" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Patient.Link" retrievable="false">
       <element name="other" elementType="USCore.Reference"/>
       <element name="type" elementType="USCore.LinkType" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PatientProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" target="Patient" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PatientProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient" label="US Core Patient Profile" target="Patient" retrievable="true">
       <element name="race" elementType="USCore.RaceExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-race']"/>
       <element name="ethnicity" elementType="USCore.EthnicityExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity']"/>
       <element name="birthsex" elementType="USCore.BirthSexExtension" target="%parent.extension[url='http://hl7.org/fhir/us/core/StructureDefinition/us-core-birthsex'].value.value"/>
@@ -1529,7 +1529,7 @@
          <elementTypeSpecifier elementType="USCore.Patient.Link" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PediatricBMIforAgeObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-bmi-for-age" label="US Core Pediatric BMI for Age Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1587,7 +1587,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PediatricWeightForHeightObservationProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/pediatric-weight-for-height" label="US Core Pediatric Weight for Height Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1645,7 +1645,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Practitioner.Qualification" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Practitioner.Qualification" retrievable="false">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1657,7 +1657,7 @@
       </element>
       <element name="issuer" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PractitionerProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" label="US Core Practitioner Profile" target="Practitioner" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PractitionerProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitioner" label="US Core Practitioner Profile" target="Practitioner" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1684,7 +1684,7 @@
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="PractitionerRole.AvailableTime" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="PractitionerRole.AvailableTime" retrievable="false">
       <element name="daysOfWeek" target="%value.value">
          <elementTypeSpecifier elementType="USCore.DaysOfWeek" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1692,7 +1692,7 @@
       <element name="availableStartTime" elementType="System.Time" target="%value.value"/>
       <element name="availableEndTime" elementType="System.Time" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="PractitionerRole.NotAvailable" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="PractitionerRole.NotAvailable" retrievable="false">
       <element name="description" elementType="System.String" target="%value.value"/>
       <element name="during" target="FHIRHelpers.ToInterval(%value)">
          <elementTypeSpecifier xsi:type="IntervalTypeSpecifier">
@@ -1700,7 +1700,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PractitionerRoleProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" label="US Core PractitionerRole Profile" target="PractitionerRole" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PractitionerRoleProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-practitionerrole" label="US Core PractitionerRole Profile" target="PractitionerRole" retrievable="true">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1738,16 +1738,16 @@
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Procedure.FocalDevice" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Procedure.FocalDevice" retrievable="false">
       <element name="action" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="manipulated" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Procedure.Performer" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Procedure.Performer" retrievable="false">
       <element name="function" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="actor" elementType="USCore.Reference"/>
       <element name="onBehalfOf" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="ProcedureProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure" label="US Core Procedure Profile" target="Procedure" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="ProcedureProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-procedure" label="US Core Procedure Profile" target="Procedure" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1818,7 +1818,7 @@
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="Provenance" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-provenance" label="US Core Provenance Profile" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="Provenance" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-provenance" label="US Core Provenance Profile" retrievable="true">
       <element name="target">
          <elementTypeSpecifier elementType="USCore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1854,7 +1854,7 @@
       </element>
       <contextRelationship context="Patient" relatedKeyElement="where(resolve() is Patient)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Provenance.Agent" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Provenance.Agent" retrievable="false">
       <element name="type" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
       <element name="role" target="FHIRHelpers.ToConcept(%value)">
          <elementTypeSpecifier elementType="System.Concept" xsi:type="ListTypeSpecifier"/>
@@ -1862,9 +1862,9 @@
       <element name="who" elementType="USCore.Reference"/>
       <element name="onBehalfOf" elementType="USCore.Reference"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Provenance.Agent" namespace="USCore" name="Provenance.Agent.ProvenanceAuthor" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Provenance.Agent" namespace="USCore" name="Provenance.Agent.ProvenanceTransmitter" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Provenance.Entity" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Provenance.Agent" namespace="USCore" name="Provenance.Agent.ProvenanceAuthor" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Provenance.Agent" namespace="USCore" name="Provenance.Agent.ProvenanceTransmitter" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Provenance.Entity" retrievable="false">
       <element name="role" elementType="USCore.ProvenanceEntityRole" target="%value.value"/>
       <element name="what" elementType="USCore.Reference"/>
       <element name="agent">
@@ -1873,8 +1873,8 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="ProvenanceEntityRole" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="PulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="ProvenanceEntityRole" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="PulseOximetryProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-pulse-oximetry" label="US Core Pulse Oximetry Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1936,8 +1936,8 @@
       <element name="FlowRate" elementType="USCore.Observation.Component"/>
       <element name="Concentration" elementType="USCore.Observation.Component"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="QuantityComparator" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Extension" namespace="USCore" name="RaceExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-race" label="US Core Race Extension" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="QuantityComparator" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Extension" namespace="USCore" name="RaceExtension" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-race" label="US Core Race Extension" retrievable="false">
       <element name="ombCategory" target="FHIRHelpers.ToCode(%parent.extension[url='ombCategory'].value)">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1947,14 +1947,14 @@
       <element name="text" elementType="System.String" target="%parent.extension[url='text'].value.value"/>
       <element name="url" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Reference" identifier="http://hl7.org/fhir/StructureDefinition/Reference" label="Reference" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Reference" identifier="http://hl7.org/fhir/StructureDefinition/Reference" label="Reference" retrievable="false">
       <element name="reference" elementType="System.String" target="%value.value"/>
       <element name="type" elementType="System.String" target="%value.value"/>
       <element name="identifier" elementType="USCore.Identifier"/>
       <element name="display" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="ReferredDocumentStatus" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="ReferredDocumentStatus" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="RelatedArtifact" identifier="http://hl7.org/fhir/StructureDefinition/RelatedArtifact" label="RelatedArtifact" retrievable="false">
       <element name="type" elementType="USCore.RelatedArtifactType" target="%value.value"/>
       <element name="label" elementType="System.String" target="%value.value"/>
       <element name="display" elementType="System.String" target="%value.value"/>
@@ -1963,14 +1963,14 @@
       <element name="document" elementType="USCore.Attachment"/>
       <element name="resource" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="RelatedArtifactType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.Any" namespace="USCore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="RelatedArtifactType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.Any" namespace="USCore" name="Resource" identifier="http://hl7.org/fhir/StructureDefinition/Resource" label="Resource" retrievable="true">
       <element name="id" elementType="System.String" target="%value.value"/>
       <element name="meta" elementType="USCore.Meta"/>
       <element name="implicitRules" elementType="System.String" target="%value.value"/>
       <element name="language" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="SampledData" identifier="http://hl7.org/fhir/StructureDefinition/SampledData" label="SampledData" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="SampledData" identifier="http://hl7.org/fhir/StructureDefinition/SampledData" label="SampledData" retrievable="false">
       <element name="origin" elementType="System.Quantity" target="FHIRHelpers.ToQuantity(%value)"/>
       <element name="period" elementType="System.Decimal" target="%value.value"/>
       <element name="factor" elementType="System.Decimal" target="%value.value"/>
@@ -1979,7 +1979,7 @@
       <element name="dimensions" elementType="System.Integer" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Signature" identifier="http://hl7.org/fhir/StructureDefinition/Signature" label="Signature" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Signature" identifier="http://hl7.org/fhir/StructureDefinition/Signature" label="Signature" retrievable="false">
       <element name="type" target="FHIRHelpers.ToCode(%value)">
          <elementTypeSpecifier elementType="System.Code" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -1990,7 +1990,7 @@
       <element name="sigFormat" elementType="USCore.MimeType" target="%value.value"/>
       <element name="data" elementType="System.String" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="SmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="SmokingStatusProfile" identifier="http://hl7.org/fhir/us/core/StructureDefinition/us-core-smokingstatus" label="US Core Smoking Status Observation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2049,16 +2049,16 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="SortDirection" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="Status" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.BackboneElement" namespace="USCore" name="Timing" identifier="http://hl7.org/fhir/StructureDefinition/Timing" label="Timing" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="SortDirection" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="Status" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.BackboneElement" namespace="USCore" name="Timing" identifier="http://hl7.org/fhir/StructureDefinition/Timing" label="Timing" retrievable="false" primaryCodePath="code">
       <element name="event" target="%value.value">
          <elementTypeSpecifier elementType="System.DateTime" xsi:type="ListTypeSpecifier"/>
       </element>
       <element name="repeat" elementType="USCore.Timing.Repeat"/>
       <element name="code" elementType="System.Concept" target="FHIRHelpers.ToConcept(%value)"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="Timing.Repeat" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="Timing.Repeat" retrievable="false">
       <element name="bounds" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
             <choice namespace="System" name="Quantity" xsi:type="NamedTypeSpecifier"/>
@@ -2091,7 +2091,7 @@
       </element>
       <element name="offset" elementType="System.Integer" target="%value.value"/>
    </typeInfo>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="TriggerDefinition" identifier="http://hl7.org/fhir/StructureDefinition/TriggerDefinition" label="TriggerDefinition" retrievable="false">
       <element name="type" elementType="USCore.TriggerType" target="%value.value"/>
       <element name="name" elementType="System.String" target="%value.value"/>
       <element name="timing" target="FHIRHelpers.ToValue(%value)">
@@ -2107,10 +2107,10 @@
       </element>
       <element name="condition" elementType="USCore.Expression"/>
    </typeInfo>
-   <typeInfo baseType="System.String" namespace="USCore" name="TriggerType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="UDIEntryType" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="System.String" namespace="USCore" name="UnitsOfTime" retrievable="false" xsi:type="ClassInfo"/>
-   <typeInfo baseType="USCore.Element" namespace="USCore" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="TriggerType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="UDIEntryType" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="System.String" namespace="USCore" name="UnitsOfTime" retrievable="false"/>
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.Element" namespace="USCore" name="UsageContext" identifier="http://hl7.org/fhir/StructureDefinition/UsageContext" label="UsageContext" retrievable="false" primaryCodePath="code">
       <element name="code" elementType="System.Code" target="FHIRHelpers.ToCode(%value)"/>
       <element name="value" target="FHIRHelpers.ToValue(%value)">
          <elementTypeSpecifier xsi:type="ChoiceTypeSpecifier">
@@ -2123,7 +2123,7 @@
          </elementTypeSpecifier>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bmi" identifier="http://hl7.org/fhir/StructureDefinition/bmi" label="Observation Body Mass Index Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2182,7 +2182,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyheight" identifier="http://hl7.org/fhir/StructureDefinition/bodyheight" label="Observation Body Height Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2241,7 +2241,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bodytemp" identifier="http://hl7.org/fhir/StructureDefinition/bodytemp" label="Observation Body Temperature Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2300,7 +2300,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bodyweight" identifier="http://hl7.org/fhir/StructureDefinition/bodyweight" label="Observation Body Weight Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2359,7 +2359,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-bp" identifier="http://hl7.org/fhir/StructureDefinition/bp" label="Observation Blood Pressure Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2420,7 +2420,7 @@
       <element name="SystolicBP" elementType="USCore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8480-6']"/>
       <element name="DiastolicBP" elementType="USCore.Observation.Component" target="%parent.component[code.coding.system='http://loinc.org',code.coding.code='8462-4']"/>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-headcircum" identifier="http://hl7.org/fhir/StructureDefinition/headcircum" label="Observation Head Circumference Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2479,7 +2479,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-heartrate" identifier="http://hl7.org/fhir/StructureDefinition/heartrate" label="Observation Heart Rate Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2538,7 +2538,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-oxygensat" identifier="http://hl7.org/fhir/StructureDefinition/oxygensat" label="Observation Oxygen Saturation Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2597,7 +2597,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-resprate" identifier="http://hl7.org/fhir/StructureDefinition/resprate" label="Observation Respiratory Rate Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
@@ -2656,7 +2656,7 @@
          <elementTypeSpecifier elementType="USCore.Observation.Component" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo baseType="USCore.DomainResource" namespace="USCore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" target="Observation" retrievable="true" primaryCodePath="code" xsi:type="ClassInfo">
+   <typeInfo xsi:type="ClassInfo" baseType="USCore.DomainResource" namespace="USCore" name="observation-vitalspanel" identifier="http://hl7.org/fhir/StructureDefinition/vitalspanel" label="Observation Vital Signs Panel Profile" target="Observation" retrievable="true" primaryCodePath="code">
       <element name="identifier">
          <elementTypeSpecifier elementType="USCore.Identifier" xsi:type="ListTypeSpecifier"/>
       </element>
