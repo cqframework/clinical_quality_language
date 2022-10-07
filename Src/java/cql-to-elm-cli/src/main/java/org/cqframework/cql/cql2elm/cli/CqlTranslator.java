@@ -53,8 +53,8 @@ public class CqlTranslator {
 
     private static void writeELM(Path inPath, Path outPath, org.cqframework.cql.cql2elm.CqlTranslator.Format format, CqlTranslatorOptions options) throws IOException {
 
-        System.err.println("================================================================================");
-        System.err.printf("TRANSLATE %s%n", inPath);
+        System.out.println("================================================================================");
+        System.out.printf("TRANSLATE %s%n", inPath);
 
         ModelManager modelManager;
         if(options.getOptions().contains(CqlTranslatorOptions.Options.DisableDefaultModelInfoLoad)) {
@@ -84,10 +84,10 @@ public class CqlTranslator {
             outputExceptions(translator.getExceptions());
         } else if (!options.getVerifyOnly()) {
             if (translator.getExceptions().size() == 0) {
-                System.err.println("Translation completed successfully.");
+                System.out.println("Translation completed successfully.");
             }
             else {
-                System.err.println("Translation completed with messages:");
+                System.out.println("Translation completed with messages:");
                 outputExceptions(translator.getExceptions());
             }
             try (PrintWriter pw = new PrintWriter(outPath.toFile(), "UTF-8")) {
@@ -105,10 +105,10 @@ public class CqlTranslator {
                 }
                 pw.println();
             }
-            System.err.println(String.format("ELM output written to: %s", outPath.toString()));
+            System.out.println(String.format("ELM output written to: %s", outPath.toString()));
         }
 
-        System.err.println();
+        System.out.println();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes"})
