@@ -410,10 +410,19 @@ public class SystemFunctionResolver {
 
     private Expression getPatientBirthDateProperty() {
         Expression source = builder.resolveIdentifier("Patient", true);
-        PropertyResolution resolution = builder.resolveProperty(source.getResultType(), builder.getDefaultModel().getModelInfo().getPatientBirthDatePropertyName());
-        Expression result = builder.buildProperty(source, resolution.getName(), resolution.isSearch(), resolution.getType());
-        result = builder.applyTargetMap(result, resolution.getTargetMap());
-        return result;
+        String birthDateProperty = builder.getDefaultModel().getModelInfo().getPatientBirthDatePropertyName();
+        // If the property has a qualifier, resolve it as a path (without model mapping)
+        if (birthDateProperty.indexOf('.') >= 1) {
+            Property property = of.createProperty().withSource(source).withPath(birthDateProperty);
+            property.setResultType(builder.resolvePath(source.getResultType(), property.getPath()));
+            return property;
+        }
+        else {
+            PropertyResolution resolution = builder.resolveProperty(source.getResultType(), birthDateProperty);
+            Expression result = builder.buildProperty(source, resolution.getName(), resolution.isSearch(), resolution.getType());
+            result = builder.applyTargetMap(result, resolution.getTargetMap());
+            return result;
+        }
     }
 
     // Arithmetic Function Support
