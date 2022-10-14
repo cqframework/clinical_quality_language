@@ -102,6 +102,12 @@ define TestUSCorePulseOximetry: ["USCorePulseOximetryProfile"]
 define TestUSCorePediatricBMIForAge: ["USCorePediatricBMIforAgeObservationProfile"]
 define TestUSCorePediatricWeightForHeight: ["USCorePediatricWeightForHeightObservationProfile"]
 
+define TestAge:
+  AgeInYears()
+
+define TestAgeAt:
+  AgeInYearsAt(@2022-10-14)
+
 define TestPrimitives:
   Patient P
     where P.gender = 'male'
