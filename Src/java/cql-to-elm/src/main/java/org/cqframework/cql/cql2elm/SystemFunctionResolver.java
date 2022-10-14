@@ -2,6 +2,7 @@ package org.cqframework.cql.cql2elm;
 
 
 import org.cqframework.cql.cql2elm.model.Conversion;
+import org.cqframework.cql.cql2elm.model.PropertyResolution;
 import org.cqframework.cql.cql2elm.model.SystemModel;
 import org.cqframework.cql.cql2elm.model.invocation.*;
 import org.hl7.elm.r1.*;
@@ -407,11 +408,12 @@ public class SystemFunctionResolver {
         throw new IllegalArgumentException(String.format("Unknown precision '%s'.", name));
     }
 
-    private Property getPatientBirthDateProperty() {
+    private Expression getPatientBirthDateProperty() {
         Expression source = builder.resolveIdentifier("Patient", true);
-        Property property = of.createProperty().withSource(source).withPath(builder.getDefaultModel().getModelInfo().getPatientBirthDatePropertyName());
-        property.setResultType(builder.resolvePath(source.getResultType(), property.getPath()));
-        return property;
+        PropertyResolution resolution = builder.resolveProperty(source.getResultType(), builder.getDefaultModel().getModelInfo().getPatientBirthDatePropertyName());
+        Expression result = builder.buildProperty(source, resolution.getName(), resolution.isSearch(), resolution.getType());
+        result = builder.applyTargetMap(result, resolution.getTargetMap());
+        return result;
     }
 
     // Arithmetic Function Support
