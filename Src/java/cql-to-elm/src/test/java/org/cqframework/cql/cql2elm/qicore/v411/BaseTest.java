@@ -41,6 +41,27 @@ public class BaseTest {
         Union union = null;
         Query query = null;
 
+        def = defs.get("TestAge");
+        assertThat(def.getExpression(), instanceOf(CalculateAge.class));
+        CalculateAge age = (CalculateAge)def.getExpression();
+        assertThat(age.getOperand(), instanceOf(Property.class));
+        Property p = (Property)age.getOperand();
+        assertThat(p.getPath(), is("value"));
+        assertThat(p.getSource(), instanceOf(Property.class));
+        p = (Property)p.getSource();
+        assertThat(p.getPath(), is("birthDate"));
+
+        def = defs.get("TestAgeAt");
+        assertThat(def.getExpression(), instanceOf(CalculateAgeAt.class));
+        CalculateAgeAt ageAt = (CalculateAgeAt)def.getExpression();
+        assertThat(ageAt.getOperand().size(), is(2));
+        assertThat(ageAt.getOperand().get(0), instanceOf(Property.class));
+        p = (Property)ageAt.getOperand().get(0);
+        assertThat(p.getPath(), is("value"));
+        assertThat(p.getSource(), instanceOf(Property.class));
+        p = (Property)p.getSource();
+        assertThat(p.getPath(), is("birthDate"));
+
         def = defs.get("TestAdverseEvent");
         assertThat(def.getExpression(), instanceOf(Retrieve.class));
         retrieve = (Retrieve)def.getExpression();
