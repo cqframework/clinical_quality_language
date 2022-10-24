@@ -21,6 +21,9 @@ import java.util.List;
 public class IGContext {
 
     private IWorkerContext.ILoggingService logger;
+    public IWorkerContext.ILoggingService getLogger() {
+        return logger;
+    }
 
     protected String rootDir;
     public String getRootDir() {
