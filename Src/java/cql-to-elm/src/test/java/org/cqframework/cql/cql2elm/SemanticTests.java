@@ -630,6 +630,11 @@ public class SemanticTests {
         assertThat(vsr.isPreserve(), equalTo(true));
     }
 
+    @Test
+    public void TestQuotedForwards() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("TestQuotedForwards.cql", 0);
+    }
+
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {
         return runSemanticTest(testFileName, 0);
     }
