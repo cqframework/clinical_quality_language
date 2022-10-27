@@ -511,7 +511,7 @@ public class SemanticTests {
     @Test
     public void TestVSCastFunction14() throws IOException {
         CqlTranslatorOptions options = new CqlTranslatorOptions()
-                .withOptions(CqlTranslatorOptions.Options.DisableListDemotion, CqlTranslatorOptions.Options.DisableListPromotion, CqlTranslatorOptions.Options.DisableMethodInvocation)
+                .withOptions(CqlTranslatorOptions.Options.EnableAnnotations, CqlTranslatorOptions.Options.DisableListDemotion, CqlTranslatorOptions.Options.DisableListPromotion, CqlTranslatorOptions.Options.DisableMethodInvocation)
                 .withCompatibilityLevel("1.4");
         CqlTranslator translator = TestUtils.runSemanticTest("TestVSCastFunction.cql", 0, options);
         ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("TestConditionsViaFunction");
@@ -628,6 +628,11 @@ public class SemanticTests {
         vsr = (ValueSetRef)evs.getOperand();
         assertThat(vsr.getName(), equalTo("Narcolepsy"));
         assertThat(vsr.isPreserve(), equalTo(true));
+    }
+
+    @Test
+    public void TestQuotedForwards() throws IOException {
+        CqlTranslator translator = TestUtils.runSemanticTest("TestQuotedForwards.cql", 0);
     }
 
     private CqlTranslator runSemanticTest(String testFileName) throws IOException {

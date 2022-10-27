@@ -11,38 +11,83 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Created by Bryn on 12/29/2016.
  */
 public class ModelManager {
-    private NamespaceManager namespaceManager;
+    private final NamespaceManager namespaceManager;
     private Path path;
     private ModelInfoLoader modelInfoLoader;
     private final Map<String, Model> models = new HashMap<>();
     private final Set<String> loadingModels = new HashSet<>();
     private final Map<String, Model> modelsByUri = new HashMap<>();
+    private final Map<ModelIdentifier, Model> globalCache;
     private boolean enableDefaultModelInfoLoading = true;
 
     public ModelManager() {
-        namespaceManager = new NamespaceManager();
+        this.namespaceManager = new NamespaceManager();
+        this.globalCache = new ConcurrentHashMap<>();
+        initialize();
+    }
+
+    /**
+     * @param globalCache cache for Models by ModelIdentifier. Expected to be thread-safe.
+     */
+    public ModelManager(Map<ModelIdentifier, Model> globalCache) {
+        requireNonNull(globalCache, "globalCache can not be null.");
+
+        this.namespaceManager = new NamespaceManager();
+        this.globalCache = globalCache;
         initialize();
     }
 
     public ModelManager(Path path) {
-        namespaceManager = new NamespaceManager();
-        path = path;
+        this.namespaceManager = new NamespaceManager();
+        this.globalCache = new ConcurrentHashMap<>();
+        this.path = path;
+        initialize();
+    }
+
+    public ModelManager(Path path, Map<ModelIdentifier, Model> globalCache) {
+        requireNonNull(globalCache, "globalCache can not be null.");
+
+        this.namespaceManager = new NamespaceManager();
+        this.globalCache = globalCache;
+        this.path = path;
         initialize();
     }
 
     public ModelManager(boolean enableDefaultModelInfoLoading) {
-        namespaceManager = new NamespaceManager();
+        this.namespaceManager = new NamespaceManager();
+        this.globalCache = new ConcurrentHashMap<>();
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
+    public ModelManager(boolean enableDefaultModelInfoLoading, Map<ModelIdentifier, Model> globalCache) {
+        requireNonNull(globalCache, "globalCache can not be null.");
+        this.namespaceManager = new NamespaceManager();
+        this.globalCache = globalCache;
         this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
     }
 
     public ModelManager(boolean enableDefaultModelInfoLoading, Path path) {
-        namespaceManager = new NamespaceManager();
+        this.namespaceManager = new NamespaceManager();
+        this.globalCache = new ConcurrentHashMap<>();
+        this.path = path;
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
+    public ModelManager(boolean enableDefaultModelInfoLoading, Path path, Map<ModelIdentifier, Model> globalCache) {
+        requireNonNull(globalCache, "globalCache can not be null.");
+        this.namespaceManager = new NamespaceManager();
+        this.globalCache = globalCache;
         this.path = path;
         this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
@@ -50,23 +95,59 @@ public class ModelManager {
 
     public ModelManager(NamespaceManager namespaceManager) {
         this.namespaceManager = namespaceManager;
+        this.globalCache = new ConcurrentHashMap<>();
+        initialize();
+    }
+
+    public ModelManager(NamespaceManager namespaceManager, Map<ModelIdentifier, Model> globalCache) {
+        requireNonNull(globalCache, "globalCache can not be null.");
+        this.namespaceManager = namespaceManager;
+        this.globalCache = globalCache;
         initialize();
     }
 
     public ModelManager(NamespaceManager namespaceManager, Path path) {
         this.namespaceManager = namespaceManager;
+        this.globalCache = new ConcurrentHashMap<>();
+        this.path = path;
+        initialize();
+    }
+
+    public ModelManager(NamespaceManager namespaceManager, Path path, Map<ModelIdentifier, Model> globalCache) {
+        requireNonNull(globalCache, "globalCache can not be null.");
+        this.namespaceManager = namespaceManager;
+        this.globalCache = globalCache;
         this.path = path;
         initialize();
     }
 
     public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading) {
         this.namespaceManager = namespaceManager;
+        this.globalCache = new ConcurrentHashMap<>();
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
+    public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Map<ModelIdentifier, Model> globalCache) {
+        requireNonNull(globalCache, "globalCache can not be null.");
+        this.namespaceManager = namespaceManager;
+        this.globalCache = globalCache;
         this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
     }
 
     public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Path path) {
         this.namespaceManager = namespaceManager;
+        this.globalCache = new ConcurrentHashMap<>();
+        this.path = path;
+        this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
+        initialize();
+    }
+
+    public ModelManager(NamespaceManager namespaceManager, boolean enableDefaultModelInfoLoading, Path path, Map<ModelIdentifier, Model> globalCache) {
+        requireNonNull(globalCache, "globalCache can not be null.");
+        this.namespaceManager = namespaceManager;
+        this.globalCache = globalCache;
         this.path = path;
         this.enableDefaultModelInfoLoading = enableDefaultModelInfoLoading;
         initialize();
@@ -90,6 +171,14 @@ public class ModelManager {
 
     public boolean isDefaultModelInfoLoadingEnabled() {
         return enableDefaultModelInfoLoading;
+    }
+
+    /**
+     * The global cache is by @{org.hl7.cql.model.ModelIdentifier}, while the local cache is by name. This is because the translator expects the ModelManager to only permit loading
+     * of a single version of a given Model in a single translation context, while the global cache is for all versions of Models
+     */
+    public Map<ModelIdentifier, Model> getGlobalCache() {
+        return this.globalCache;
     }
 
     /*
@@ -161,21 +250,39 @@ public class ModelManager {
         return resolveModel(new ModelIdentifier().withId(modelName).withVersion(version));
     }
 
+    /**
+     * @param modelIdentifier the identifier of the model to resolve
+     * @return the model
+     * @throws IllegalArgumentException if an attempt to resolve multiple versions of the same model is made or if the model that resolved is not compatible with the requested version
+     */
     public Model resolveModel(ModelIdentifier modelIdentifier) {
         String modelPath = NamespaceManager.getPath(modelIdentifier.getSystem(), modelIdentifier.getId());
         Model model = models.get(modelPath);
+        if (model != null) {
+            checkModelVersion(modelIdentifier, model);
+        }
+
+        if (model == null && this.globalCache.containsKey(modelIdentifier)) {
+            model = this.globalCache.get(modelIdentifier);
+            this.models.put(modelPath, model);
+        }
+
         if (model == null) {
             model = buildModel(modelIdentifier);
+            this.globalCache.put(modelIdentifier, model);
+            checkModelVersion(modelIdentifier, model);
             models.put(modelPath, model);
             modelsByUri.put(model.getModelInfo().getUrl(), model);
         }
 
+        return model;
+    }
+
+    private void checkModelVersion(ModelIdentifier modelIdentifier, Model model) {
         if (modelIdentifier.getVersion() != null && !modelIdentifier.getVersion().equals(model.getModelInfo().getVersion())) {
             throw new IllegalArgumentException(String.format("Could not load model information for model %s, version %s because version %s is already loaded.",
                     modelIdentifier.getId(), modelIdentifier.getVersion(), model.getModelInfo().getVersion()));
         }
-
-        return model;
     }
 
     public Model resolveModelByUri(String namespaceUri) {

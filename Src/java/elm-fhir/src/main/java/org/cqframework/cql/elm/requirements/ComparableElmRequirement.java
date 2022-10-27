@@ -1,9 +1,6 @@
 package org.cqframework.cql.elm.requirements;
 
-import org.cqframework.cql.elm.evaluating.SimpleElmEvaluator;
 import org.hl7.elm.r1.*;
-import org.w3._1999.xhtml.P;
-
 import java.util.Iterator;
 
 import static org.cqframework.cql.elm.evaluating.SimpleElmEvaluator.*;

@@ -115,6 +115,14 @@ define function ToConcept(concept FHIR.CodeableConcept):
             display: concept.text.value
         }
 
+define function ToValueSet(uri String):
+    if uri is null then
+        null
+    else
+        System.ValueSet {
+            id: uri
+        }
+
 define function reference(reference String):
     if reference is null then
         null

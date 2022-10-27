@@ -402,7 +402,10 @@ public class LibraryBuilder implements ModelResolver {
                 case "System.Vocabulary":
                 case "System.CodeSystem":
                 case "System.ValueSet":
-                    if (!isCompatibleWith("1.5")) {
+                    // NOTE: This is a hack to allow the new ToValueSet operator in FHIRHelpers for backwards-compatibility
+                    // The operator still cannot be used in 1.4, but the definition will compile. This really should be being done with preprocessor directives,
+                    // but that's a whole other project in and of itself.
+                    if (!isCompatibleWith("1.5") && !isFHIRHelpers(compiledLibrary)) {
                         throw new IllegalArgumentException(String.format("The type %s was introduced in CQL 1.5 and cannot be referenced at compatibility level %s",
                                 ((NamedType)result).getName(), getCompatibilityLevel()));
                     }
@@ -410,6 +413,14 @@ public class LibraryBuilder implements ModelResolver {
         }
 
         return result;
+    }
+
+    private boolean isFHIRHelpers(CompiledLibrary library) {
+        if (library != null && library.getIdentifier() != null && library.getIdentifier().getId() != null && library.getIdentifier().getId().equals("FHIRHelpers")) {
+            return true;
+        }
+
+        return false;
     }
 
     public DataType resolveTypeSpecifier(String typeSpecifier) {
@@ -928,7 +939,7 @@ public class LibraryBuilder implements ModelResolver {
     }
 
     public Expression resolveIn(Expression left, Expression right) {
-        if (right instanceof ValueSetRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "ValueSet")))) {
+        if (right instanceof ValueSetRef || (isCompatibleWith("1.5") && right.getResultType().isCompatibleWith(resolveTypeName("System", "ValueSet")) && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInValueSet anyIn = of.createAnyInValueSet()
                         .withCodes(left)
@@ -947,7 +958,7 @@ public class LibraryBuilder implements ModelResolver {
             return in;
         }
 
-        if (right instanceof CodeSystemRef || (isCompatibleWith("1.5") && right.getResultType().isSubTypeOf(resolveTypeName("System", "CodeSystem")))) {
+        if (right instanceof CodeSystemRef || (isCompatibleWith("1.5") && right.getResultType().isCompatibleWith(resolveTypeName("System", "CodeSystem")) && !right.getResultType().equals(resolveTypeName("System", "Any")))) {
             if (left.getResultType() instanceof ListType) {
                 AnyInCodeSystem anyIn = of.createAnyInCodeSystem()
                         .withCodes(left)
@@ -968,6 +979,13 @@ public class LibraryBuilder implements ModelResolver {
         In in = of.createIn().withOperand(left, right);
         resolveBinaryCall("System", "In", in);
         return in;
+    }
+
+    public Expression resolveContains(Expression left, Expression right) {
+        // TODO: Add terminology overloads
+        Contains contains = of.createContains().withOperand(left, right);
+        resolveBinaryCall("System", "Contains", contains);
+        return contains;
     }
 
     public Expression resolveIn(Expression left, Expression right, DateTimePrecision dateTimePrecision) {
@@ -1528,7 +1546,7 @@ public class LibraryBuilder implements ModelResolver {
                 // Otherwise, the choice is narrowing and a run-time As is required (to use only the expected target types)
             }
             As castedOperand = buildAs(expression, conversion.getToType());
-            return castedOperand;
+            return collapseTypeCase(castedOperand);
         }
         else if (conversion.isCast() && conversion.getConversion() != null
                 && (conversion.getFromType().isSuperTypeOf(conversion.getConversion().getFromType())
@@ -1642,6 +1660,50 @@ public class LibraryBuilder implements ModelResolver {
                 return convertedOperand;
             }
         }
+    }
+
+    /**
+     * If the operand to an As is a "type case", meaning a case expression whose only cases have the form:
+     *  when X is T then X as T
+     * If one of the type cases is the same type as the As, the operand of the As can be set to the operand
+     * of the type case with the same type, optimizing the case as effectively a no-op
+     * @param as
+     * @return
+     */
+    private Expression collapseTypeCase(As as) {
+        if (as.getOperand() instanceof Case) {
+            Case c = (Case)as.getOperand();
+            if (isTypeCase(c)) {
+                for (CaseItem ci : c.getCaseItem()) {
+                    if (DataTypes.equal(as.getResultType(), ci.getThen().getResultType())) {
+                        return ci.getThen();
+                    }
+                }
+            }
+        }
+
+        return as;
+    }
+
+    private boolean isTypeCase(Case c) {
+        if (c.getComparand() != null) {
+            return false;
+        }
+        for (CaseItem ci : c.getCaseItem()) {
+            if (!(ci.getWhen() instanceof Is)) {
+                return false;
+            }
+            if (ci.getThen().getResultType() == null) {
+                return false;
+            }
+        }
+        if (!(c.getElse() instanceof Null)) {
+            return false;
+        }
+        if (!(c.getResultType() instanceof ChoiceType)) {
+            return false;
+        }
+        return true;
     }
 
     public void verifyType(DataType actualType, DataType expectedType) {
@@ -2319,6 +2381,10 @@ public class LibraryBuilder implements ModelResolver {
             return source;
         }
 
+        // TODO: Consider whether the mapping should remove this in the ModelInfo...this is really a FHIR-specific hack...
+        // Remove any "choice" paths...
+        targetMap = targetMap.replace("[x]", "");
+
         // TODO: This only works for simple mappings, nested mappings will require the targetMap.g4 parser
         // Supported target mapping syntax:
           // %value.<property name>
@@ -2340,12 +2406,16 @@ public class LibraryBuilder implements ModelResolver {
             Case c = of.createCase();
             for (String typeCase : typeCases) {
                 if (!typeCase.isEmpty()) {
-                    String[] caseElements = typeCase.split(":");
-                    if (caseElements.length != 2) {
+                    int splitIndex = typeCase.indexOf(':');
+                    if (splitIndex <= 0) {
                         throw new IllegalArgumentException(String.format("Malformed type case in targetMap %s", targetMap));
                     }
-                    CaseItem ci = of.createCaseItem().withWhen(of.createIs().withOperand(applyTargetMap(source, caseElements[1])).withIsType(dataTypeToQName(resolveTypeName(caseElements[0]))))
-                            .withThen(applyTargetMap(source, caseElements[1]));
+                    String typeCaseElement = typeCase.substring(0, splitIndex);
+                    DataType typeCaseType = resolveTypeName(typeCaseElement);
+                    String typeCaseMap = typeCase.substring(splitIndex + 1);
+                    CaseItem ci = of.createCaseItem().withWhen(of.createIs().withOperand(applyTargetMap(source, typeCaseMap)).withIsType(dataTypeToQName(typeCaseType)))
+                            .withThen(applyTargetMap(source, typeCaseMap));
+                    ci.getThen().setResultType(typeCaseType);
                     c.getCaseItem().add(ci);
                 }
             }
