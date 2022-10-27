@@ -1,6 +1,31 @@
 package org.cqframework.cql.elm.analyzing;
 
-public class AnalysisVisitor {
+import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
+import org.hl7.elm.r1.ExpressionRef;
+import org.hl7.elm.r1.Library;
+
+public class AnalysisVisitor  extends ElmBaseLibraryVisitor<Void, VisitorContext> {
+
+    public AnalysisVisitor() {
+        super();
+    }
+
+    @Override
+    public Void visitLibrary(Library library, VisitorContext context) {
+        context.enterLibrary(library.getIdentifier());
+
+        super.visitLibrary(library, context);
+
+        context.exitLibrary();
+
+        return null;
+    }
+
+    @Override
+    public Void visitExpressionRef(ExpressionRef elm, VisitorContext context) {
+        System.out.println("Expression ref: " + elm.getName());
+        return null;
+    }
 
     //instantiate VisitorContext
     //populateTagSet();

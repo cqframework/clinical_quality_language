@@ -8,15 +8,17 @@ public class TagInfo {
     private VersionedIdentifier library;
     private ElementType elementType;
     private String name;
+    private String expressionName;
     private String value;
     private Locator locator;
 
-    public TagInfo(VersionedIdentifier library, ElementType elementType, String name, String value, Locator locator) {
+    public TagInfo(VersionedIdentifier library, ElementType elementType, String name, String expressionName,  String value, Locator locator) {
         this.library = library;
         this.elementType = elementType;
         this.name = name;
-        this.value = value;
-        this.locator = locator;
+        if (expressionName != null) { this.expressionName = expressionName; }
+        if (value != null) { this.value = value; }
+        if (locator != null) { this.locator = locator; }
     }
 
     public VersionedIdentifier library() {
@@ -29,6 +31,10 @@ public class TagInfo {
 
     public String name() {
         return this.name;
+    }
+
+    public String expressionName() {
+        return this.expressionName;
     }
 
     public String value() {
@@ -47,6 +53,7 @@ public class TagInfo {
         result = prime * result + ((library == null) ? 0 : library.hashCode());
         result = prime * result + ((locator == null) ? 0 : locator.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((expressionName == null) ? 0 : expressionName.hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
@@ -77,6 +84,11 @@ public class TagInfo {
             if (other.name != null)
                 return false;
         } else if (!name.equals(other.name))
+            return false;
+        if (expressionName == null) {
+            if (other.expressionName != null)
+                return false;
+        } else if (!expressionName.equals(other.expressionName))
             return false;
         if (value == null) {
             if (other.value != null)

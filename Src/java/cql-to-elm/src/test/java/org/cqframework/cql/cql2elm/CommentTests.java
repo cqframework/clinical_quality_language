@@ -25,6 +25,7 @@ public class CommentTests {
         CqlTranslator translator = TestUtils.runSemanticTest("TestComments.cql", 0, CqlTranslatorOptions.Options.EnableAnnotations);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());
+        System.out.println(library.getLibrary().getAnnotation());
     }
 
     @Test

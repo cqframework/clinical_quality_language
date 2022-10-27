@@ -19,7 +19,7 @@ public class TagSet extends ForwardingSet<TagInfo> {
     }
 
     @Override
-    protected Set<TagInfo> delegate() {
+    public Set<TagInfo> delegate() {
         return this.set;
     }
 

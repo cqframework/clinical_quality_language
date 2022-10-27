@@ -4,6 +4,9 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
+import org.cqframework.cql.elm.analyzing.AnalysisVisitor;
+import org.cqframework.cql.elm.analyzing.VisitorContext;
+import org.cqframework.cql.elm.tags.TagSetVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
 import org.cqframework.cql.gen.cqlLexer;
 import org.cqframework.cql.gen.cqlParser;
@@ -252,6 +255,20 @@ public class CqlCompiler {
         library = builder.getLibrary();
         compiledLibrary = builder.getCompiledLibrary();
 
+        VisitorContext visitorContext = new VisitorContext();
+        TagSetVisitor tagSetVisitor = new TagSetVisitor();
+        tagSetVisitor.visitLibrary(library, visitorContext);
+
+
+
+        System.out.println("Tag set>>" + visitorContext.getTagSet().delegate());
+
+        visitorContext.getTagSet().delegate().forEach(item -> System.out.println(item.name()));
+
+        AnalysisVisitor analysisVisitor = new AnalysisVisitor();
+        analysisVisitor.visitLibrary(library, visitorContext);
+
+
         // Run ELM Analyzers
         // visit the ELM tree, and issue warnings or errors based on the tree structure
         // @deprecated
@@ -306,6 +323,8 @@ public class CqlCompiler {
         // }
         //}
         // }
+
+
         retrieves = visitor.getRetrieves();
         exceptions.addAll(builder.getExceptions());
         errors.addAll(builder.getErrors());
