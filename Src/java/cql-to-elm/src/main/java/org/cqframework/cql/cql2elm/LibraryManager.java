@@ -194,9 +194,11 @@ public class LibraryManager {
     private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlCompilerException> errors) {
 
         CompiledLibrary result = null;
-        result = tryCompiledLibraryElm(libraryIdentifier, options);
-        if (result != null) {
-            return result;
+        if(!options.getOptions().contains(CqlTranslatorOptions.Options.EnableCqlOnly)) {
+            result = tryCompiledLibraryElm(libraryIdentifier, options);
+            if (result != null) {
+                return result;
+            }
         }
 
         String libraryPath = NamespaceManager.getPath(libraryIdentifier.getSystem(), libraryIdentifier.getId());

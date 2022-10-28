@@ -22,7 +22,8 @@ public class CqlTranslatorOptions {
         EnableIntervalPromotion,
         DisableMethodInvocation,
         RequireFromKeyword,
-        DisableDefaultModelInfoLoad
+        DisableDefaultModelInfoLoad,
+        EnableCqlOnly
     }
 
     private List<CqlTranslator.Format> formats = new ArrayList<>();
