@@ -10,6 +10,9 @@
     "compatibilityLevel" : {
       "type" : "string"
     },
+    "enableCqlOnly" : {
+      "type" : "boolean"
+    },
     "errorLevel" : {
       "enum" : [ "Info", "Warning", "Error" ],
       "type" : "string"
@@ -31,9 +34,6 @@
     "signatureLevel" : {
       "enum" : [ "None", "Differing", "Overloads", "All" ],
       "type" : "string"
-    },
-    "tryElm" : {
-      "type" : "boolean"
     },
     "validateUnits" : {
       "type" : "boolean"

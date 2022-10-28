@@ -194,7 +194,7 @@ public class LibraryManager {
     private CompiledLibrary compileLibrary(VersionedIdentifier libraryIdentifier, CqlTranslatorOptions options, List<CqlCompilerException> errors) {
 
         CompiledLibrary result = null;
-        if(options.getTryElm()) {
+        if(!options.getEnableCqlOnly()) {
             result = tryCompiledLibraryElm(libraryIdentifier, options);
             if (result != null) {
                 return result;
