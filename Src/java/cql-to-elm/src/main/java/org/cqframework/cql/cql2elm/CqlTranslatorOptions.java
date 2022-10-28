@@ -23,13 +23,13 @@ public class CqlTranslatorOptions {
         DisableMethodInvocation,
         RequireFromKeyword,
         DisableDefaultModelInfoLoad,
-        EnableCqlOnly
     }
 
     private List<CqlTranslator.Format> formats = new ArrayList<>();
     private EnumSet<Options> options = EnumSet.noneOf(Options.class);
     private boolean validateUnits = true;
     private boolean verifyOnly = false;
+    private boolean tryElm = true;
     private String compatibilityLevel = "1.5";
     private CqlCompilerException.ErrorSeverity errorLevel = CqlCompilerException.ErrorSeverity.Info;
     private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
@@ -268,6 +268,22 @@ public class CqlTranslatorOptions {
     public CqlTranslatorOptions withVerifyOnly(boolean verifyOnly) {
         setVerifyOnly(verifyOnly);
         return this;
+    }
+
+    /**
+     * Return instance of CqlTranslatorOptions tryElm boolean
+     * @return
+     */
+    public boolean getTryElm() {
+        return this.tryElm;
+    }
+
+    /**
+     * Set new tryElm boolean
+     * @param tryElm
+     */
+    public void setTryElm(boolean tryElm) {
+        this.tryElm = tryElm;
     }
 
     /**
