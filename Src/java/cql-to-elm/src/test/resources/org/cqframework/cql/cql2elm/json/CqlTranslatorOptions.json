@@ -24,13 +24,16 @@
     "options" : {
       "type" : "array",
       "items" : {
-        "enum" : [ "EnableDateRangeOptimization", "EnableAnnotations", "EnableLocators", "EnableResultTypes", "EnableDetailedErrors", "DisableListTraversal", "DisableListDemotion", "DisableListPromotion", "EnableIntervalDemotion", "EnableIntervalPromotion", "DisableMethodInvocation", "RequireFromKeyword", "DisableDefaultModelInfoLoad", "EnableCqlOnly" ],
+        "enum" : [ "EnableDateRangeOptimization", "EnableAnnotations", "EnableLocators", "EnableResultTypes", "EnableDetailedErrors", "DisableListTraversal", "DisableListDemotion", "DisableListPromotion", "EnableIntervalDemotion", "EnableIntervalPromotion", "DisableMethodInvocation", "RequireFromKeyword", "DisableDefaultModelInfoLoad" ],
         "type" : "string"
       }
     },
     "signatureLevel" : {
       "enum" : [ "None", "Differing", "Overloads", "All" ],
       "type" : "string"
+    },
+    "tryElm" : {
+      "type" : "boolean"
     },
     "validateUnits" : {
       "type" : "boolean"
