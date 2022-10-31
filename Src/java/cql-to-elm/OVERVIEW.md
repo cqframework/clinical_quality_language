@@ -112,26 +112,37 @@ The CQL-to-ELM Translator is designed as a component that can be incorporated in
 ## CqlTranslatorOptions
 
 The class CqlTranslatorOptions provides use of cql-options files in directories with the translator.  A JSON schema file that documents the class' structure can be found
-at clinical_quality_language\Src\java\cql-to-elm\src\test\resources\org\cqframework\cql\cql2elm\json. 
+at clinical_quality_language\Src\java\cql-to-elm\src\test\resources\org\cqframework\cql\cql2elm\json.
 
 An instance of the class with default options can be accessed through defaultOptions(), and returns the following translator options:
-     - EnableAnnotations
-     - EnableLocators
-     - DisableListDemotion
-     - DisableListPromotion
-     - ErrorSeverity.Info
-     - SignatureLevel.None
-     - Format.XML
-     
-Several constructors exist allowing user control of specified options, such as:
-     - CqlTranslatorOptions(CqlTranslator.Options... options) 
-     - CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel, LibraryBuilder.SignatureLevel signatureLevel, CqlTranslator.Options... options)
-     - CqlTranslatorOptions(CqlTranslator.Format format, boolean dateRangeOptimizations,
-                                boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
-                                boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
-                                boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
-                                boolean enableIntervalDemotion, boolean enableIntervalPromotion,
-                                boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
-                                LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel)
+- EnableAnnotations
+- EnableLocators
+- DisableListDemotion
+- DisableListPromotion
+- ErrorSeverity.Info
+- SignatureLevel.None
+- Format.XML
 
-toString() has been overridden to provide an easy-to-read breakdown of existing options within an instance of this class.
+Several constructors exist allowing user control of specified options, such as:
+
+```java
+CqlTranslatorOptions(CqlTranslator.Options... options)
+```
+
+```java
+CqlTranslatorOptions(CqlTranslatorException.ErrorSeverity errorLevel,
+                     LibraryBuilder.SignatureLevel signatureLevel,
+                     CqlTranslator.Options... options)
+```
+
+```java
+CqlTranslatorOptions(CqlTranslator.Format format, boolean dateRangeOptimizations,
+                     boolean annotations, boolean locators, boolean resultTypes, boolean verifyOnly,
+                     boolean detailedErrors, CqlTranslatorException.ErrorSeverity errorLevel,
+                     boolean disableListTraversal, boolean disableListDemotion, boolean disableListPromotion,
+                     boolean enableIntervalDemotion, boolean enableIntervalPromotion,
+                     boolean disableMethodInvocation, boolean requireFromKeyword, boolean validateUnits,
+                     LibraryBuilder.SignatureLevel signatureLevel, String compatibilityLevel)
+```
+
+`toString()` has been overridden to provide an easy-to-read breakdown of existing options within an instance of this class.
