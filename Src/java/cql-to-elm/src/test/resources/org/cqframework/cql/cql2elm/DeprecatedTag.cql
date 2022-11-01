@@ -1,5 +1,5 @@
 /**
-* @testing-deprecated
+* @testingdeprecated
 */
 library DeprecatedTag version '1.0.0'
 

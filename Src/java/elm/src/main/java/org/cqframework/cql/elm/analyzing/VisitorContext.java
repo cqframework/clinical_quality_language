@@ -1,5 +1,7 @@
 package org.cqframework.cql.elm.analyzing;
 
+import org.cqframework.cql.elm.tags.ElementType;
+import org.cqframework.cql.elm.tags.TagInfo;
 import org.cqframework.cql.elm.tags.TagSet;
 import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.cql_annotations.r1.CqlToElmBase;
@@ -13,9 +15,12 @@ import java.util.Stack;
 public class VisitorContext {
     private Stack<Element> stack = new Stack<>();
 
-    private TagSet tagSet = new TagSet();
+    private TagSet tagSet ;
 
     public TagSet getTagSet() {
+        if(tagSet == null) {
+            tagSet = new TagSet();
+        }
         return tagSet;
     }
 
@@ -74,5 +79,13 @@ public class VisitorContext {
             }
         }
         return annotation;
+    }
+
+    public void populateTagSet(TagSet tagSet, Annotation annotation, ElementType elementType,
+                               String expressionName) {
+        if (annotation != null && !annotation.getT().isEmpty()) {
+            annotation.getT().forEach(t -> tagSet.add(new TagInfo(getCurrentLibraryIdentifier(), elementType,
+                    t.getName(), expressionName, t.getValue(), annotation.getLocator())));
+        }
     }
 }

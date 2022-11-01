@@ -2,8 +2,6 @@ package org.cqframework.cql.elm.tags;
 
 import java.util.List;
 
-import com.sun.jdi.VoidType;
-import com.sun.jdi.VoidValue;
 import org.cqframework.cql.elm.analyzing.VisitorContext;
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
 import org.hl7.cql_annotations.r1.Annotation;
@@ -24,17 +22,10 @@ public class TagSetVisitor extends ElmBaseLibraryVisitor<Void, VisitorContext>  
         try {
             if (library.getAnnotation() != null && !library.getAnnotation().isEmpty()) {
                 Annotation annotation = context.getAnnotation(library.getAnnotation());
-                if (annotation != null && !annotation.getT().isEmpty()) {
-                    annotation.getT().forEach(t ->
-                    {
-                        context.getTagSet().add(new TagInfo(context.getCurrentLibraryIdentifier(), ElementType.HEADER,
-                                    t.getName(), null, t.getValue(), annotation.getLocator()));
-                    });
-                }
+                context.populateTagSet(context.getTagSet(), annotation, ElementType.HEADER, null);
             }
             super.visitLibrary(library, context);
-        }
-        finally {
+        } finally {
             context.exitLibrary();
         }
         return null;
@@ -45,13 +36,7 @@ public class TagSetVisitor extends ElmBaseLibraryVisitor<Void, VisitorContext>  
         context.enterExpressionDef(elm);
         try {
             Annotation annotation = context.getAnnotation(elm.getAnnotation());
-            if (annotation != null && !annotation.getT().isEmpty()) {
-                annotation.getT().forEach(t ->
-                {
-                    context.getTagSet().add(new TagInfo(context.getCurrentLibraryIdentifier(), ElementType.EXPRESSION,
-                                t.getName(), elm.getName(), t.getValue(), annotation.getLocator()));
-                });
-            }
+            context.populateTagSet(context.getTagSet(), annotation, ElementType.EXPRESSION, elm.getName());
         } finally {
             context.exitExpressionDef(elm);
         }
