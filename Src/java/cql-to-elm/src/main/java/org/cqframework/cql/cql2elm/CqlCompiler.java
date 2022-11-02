@@ -5,6 +5,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.analyzing.AnalysisVisitor;
+import org.cqframework.cql.elm.analyzing.DeprecateAnalyzer;
 import org.cqframework.cql.elm.analyzing.VisitorContext;
 import org.cqframework.cql.elm.tags.TagSetVisitor;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -263,9 +264,10 @@ public class CqlCompiler {
 
         System.out.println("Tag set>>" + visitorContext.getTagSet().delegate());
 
-        visitorContext.getTagSet().delegate().forEach(item -> System.out.println(item.name()));
+        visitorContext.getTagSet().select(tagInfo -> tagInfo.name().equals("deprecated")).forEach(item -> System.out.println(item.name()+"|"+ item.expressionName()));
 
         AnalysisVisitor analysisVisitor = new AnalysisVisitor();
+        analysisVisitor.registerAnalyser(new DeprecateAnalyzer());
         analysisVisitor.visitLibrary(library, visitorContext);
 
 
