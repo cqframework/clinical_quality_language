@@ -5,6 +5,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.cql2elm.preprocessor.CqlPreprocessorVisitor;
 import org.cqframework.cql.elm.analyzing.AnalysisVisitor;
+import org.cqframework.cql.elm.analyzing.AnalyzerServiceLoader;
+import org.cqframework.cql.elm.analyzing.Analyzer;
 import org.cqframework.cql.elm.analyzing.DeprecateAnalyzer;
 import org.cqframework.cql.elm.analyzing.VisitorContext;
 import org.cqframework.cql.elm.tags.TagSetVisitor;
@@ -23,6 +25,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 public class CqlCompiler {
@@ -263,7 +266,12 @@ public class CqlCompiler {
             visitorContext.getTagSet().print();
 
             AnalysisVisitor analysisVisitor = new AnalysisVisitor();
-            analysisVisitor.registerAnalyser(new DeprecateAnalyzer());
+            Iterator<Analyzer> analyzerIterator =  AnalyzerServiceLoader.getAnalyzers(true);
+
+            while(analyzerIterator.hasNext()) {
+                analysisVisitor.registerAnalyser(analyzerIterator.next());
+            }
+           // analysisVisitor.registerAnalyser(new DeprecateAnalyzer());
             analysisVisitor.visitLibrary(library, visitorContext);
         }
 
