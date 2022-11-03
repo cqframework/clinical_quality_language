@@ -1,6 +1,7 @@
 package org.cqframework.cql.elm.analyzing;
 
 import org.cqframework.cql.elm.visiting.ElmBaseLibraryVisitor;
+import org.hl7.elm.r1.ExpressionDef;
 import org.hl7.elm.r1.ExpressionRef;
 import org.hl7.elm.r1.Library;
 
@@ -23,9 +24,24 @@ public class AnalysisVisitor  extends ElmBaseLibraryVisitor<Void, VisitorContext
     @Override
     public Void visitLibrary(Library library, VisitorContext context) {
         context.enterLibrary(library.getIdentifier());
-        super.visitLibrary(library, context);
-        context.exitLibrary();
+        try {
+            super.visitLibrary(library, context);
+        } finally {
+            context.exitLibrary();
+        }
 
+        return null;
+    }
+
+    @Override
+    public Void visitExpressionDef(ExpressionDef def, VisitorContext context) {
+        context.enterExpressionDef(def);
+        try {
+            super.visitExpressionDef(def, context);
+        }
+        finally {
+            context.exitExpressionDef(def);
+        }
         return null;
     }
 

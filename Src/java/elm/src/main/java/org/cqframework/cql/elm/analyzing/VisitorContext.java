@@ -42,10 +42,20 @@ public class VisitorContext {
         return libraryStack.peek();
     }
 
+    private Stack<ExpressionDef> expressionDefStack = new Stack<ExpressionDef>();
     public void enterExpressionDef(ExpressionDef expressionDef) {
+        if (expressionDef == null) {
+            throw new IllegalArgumentException("ExpressionDef must be provided");
+        }
+        expressionDefStack.push(expressionDef);
+    }
+
+    public ExpressionDef getCurrentExpressionDef() {
+        return expressionDefStack.peek();
     }
 
     public void exitExpressionDef(ExpressionDef expressionDef) {
+        expressionDefStack.pop();
     }
 
 

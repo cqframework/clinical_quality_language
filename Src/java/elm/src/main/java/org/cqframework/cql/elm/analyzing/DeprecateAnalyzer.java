@@ -1,26 +1,51 @@
 package org.cqframework.cql.elm.analyzing;
 
 import org.cqframework.cql.elm.tags.TagInfo;
-import org.hl7.cql_annotations.r1.Annotation;
 import org.hl7.elm.r1.Element;
 import org.hl7.elm.r1.ExpressionRef;
+import org.hl7.elm.r1.VersionedIdentifier;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class DeprecateAnalyzer implements Analyzer {
     @Override
     public void analyze(Element element, VisitorContext context) {
-        System.out.println("DeprecateAnalyzer: analyze");
         if (element instanceof ExpressionRef) {
-            System.out.println("Expression ref found");
             ExpressionRef expressionRef = (ExpressionRef) element;
-            System.out.println(expressionRef.getName());
+            VersionedIdentifier library = context.getCurrentLibraryIdentifier();
 
-           List<TagInfo> list =  context.getTagSet().select(
-                    tagInfo -> tagInfo.library().getId().equals(context.getCurrentLibraryIdentifier().getId())  &&
-                            tagInfo.expressionName() != null && tagInfo.expressionName().equals(expressionRef.getName()) && tagInfo.name().equalsIgnoreCase("deprecated"));
+            List<TagInfo> deprecatedTagList = context.getTagSet().select(getDeprecatedTagInfo);
+            List<TagInfo> noWarningTagList = context.getTagSet().select(getNoWarningTagInfo);
 
-           list.forEach(tagInfo -> System.out.println("Warning: found the usage of deprecated"));
+            if (!matchNoWarning(noWarningTagList, library, context.getCurrentExpressionDef().getName()) &&
+                    matchDeprecated(deprecatedTagList, library, expressionRef.getName())) {
+                System.out.println("Reveal deprecated detected");
+            }
         }
     }
+
+    private boolean matchNoWarning(List<TagInfo> list, VersionedIdentifier library, String expressionDefName) {
+        for (TagInfo tagInfo : list) {
+            if (tagInfo.expressionName().equals(expressionDefName) &&
+                    tagInfo.library().equals(library)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean matchDeprecated(List<TagInfo> list, VersionedIdentifier library, String expressionRefName) {
+        for (TagInfo tagInfo : list) {
+            if (tagInfo.expressionName().equals(expressionRefName) &&
+                    tagInfo.library().equals(library)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Predicate<TagInfo> getDeprecatedTagInfo = tagInfo -> tagInfo.name().equalsIgnoreCase("deprecated");
+
+    private Predicate<TagInfo> getNoWarningTagInfo = tagInfo -> tagInfo.name().equalsIgnoreCase("nowarning");
 }

@@ -26,4 +26,11 @@ public class TagSet extends ForwardingSet<TagInfo> {
     public List<TagInfo> select(Predicate<TagInfo> predicate) {
         return this.delegate().stream().filter(predicate).collect(Collectors.toList());
     }
+
+    public void print() {
+        this.delegate().forEach(item -> System.out.println(
+                item.name() + "|" + item.expressionName() + "|" +
+                        item.library().getId() + "-" + item.library().getSystem() + "-" + item.library().getVersion() +
+                        "|" + item.elementType() + "|" + item.locator()));
+    }
 }
