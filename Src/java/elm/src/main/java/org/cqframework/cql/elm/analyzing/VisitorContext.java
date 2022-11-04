@@ -71,11 +71,7 @@ public class VisitorContext {
             throw new IllegalArgumentException("Not in an element context");
         }
 
-        Element element = stack.pop();  // report element
-    }
-
-    public void warn(String message) {
-        System.out.println("Warning : "+ message);
+        Element element = stack.pop();
     }
 
 

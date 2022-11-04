@@ -20,7 +20,8 @@ public class DeprecateAnalyzer implements Analyzer {
 
             if (!matchNoWarning(noWarningTagList, library, context.getCurrentExpressionDef().getName()) &&
                     matchDeprecated(deprecatedTagList, library, expressionRef.getName())) {
-                System.out.println("Reveal deprecated detected");
+                System.out.println(String.format("Warning : Usage of deprecated expression definition `%s` in `%s`",
+                        expressionRef.getName(), context.getCurrentExpressionDef().getName()));
             }
         }
     }

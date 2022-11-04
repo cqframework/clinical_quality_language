@@ -24,6 +24,7 @@ public class DeprecatedTagTest {
     public void testDeprecatedTagsetVisitor() throws IOException {
         CqlTranslator translator = TestUtils.runSemanticTest("DeprecatedTag.cql", 0,
                 CqlTranslatorOptions.Options.EnableAnnotations,
+                CqlTranslatorOptions.Options.EnableLocators,
                 CqlTranslatorOptions.Options.EnableElmAnalyzers);
         CompiledLibrary library = translator.getTranslatedLibrary();
         assertThat(library.getLibrary().getAnnotation(), notNullValue());

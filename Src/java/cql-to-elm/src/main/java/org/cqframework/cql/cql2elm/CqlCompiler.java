@@ -263,7 +263,7 @@ public class CqlCompiler {
             VisitorContext visitorContext = new VisitorContext();
             TagSetVisitor tagSetVisitor = new TagSetVisitor();
             tagSetVisitor.visitLibrary(library, visitorContext);
-            visitorContext.getTagSet().print();
+            //visitorContext.getTagSet().print();
 
             AnalysisVisitor analysisVisitor = new AnalysisVisitor();
             Iterator<Analyzer> analyzerIterator =  AnalyzerServiceLoader.getAnalyzers(true);
@@ -271,7 +271,7 @@ public class CqlCompiler {
             while(analyzerIterator.hasNext()) {
                 analysisVisitor.registerAnalyser(analyzerIterator.next());
             }
-           // analysisVisitor.registerAnalyser(new DeprecateAnalyzer());
+            analysisVisitor.registerAnalyser(new DeprecateAnalyzer());
             analysisVisitor.visitLibrary(library, visitorContext);
         }
 
