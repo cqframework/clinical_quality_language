@@ -243,7 +243,8 @@ public class NpmPackageManager implements IWorkerContext.ILoggingService {
 
     @Override
     public void logMessage(String msg) {
-        System.out.println(msg);
+        // TODO: Implement logging here
+        //System.out.println(msg);
     }
 
     @Override
