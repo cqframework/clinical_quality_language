@@ -29,6 +29,7 @@ public class CqlTranslatorOptions {
     private EnumSet<Options> options = EnumSet.noneOf(Options.class);
     private boolean validateUnits = true;
     private boolean verifyOnly = false;
+    private boolean enableCqlOnly = false;
     private String compatibilityLevel = "1.5";
     private CqlCompilerException.ErrorSeverity errorLevel = CqlCompilerException.ErrorSeverity.Info;
     private LibraryBuilder.SignatureLevel signatureLevel = LibraryBuilder.SignatureLevel.None;
@@ -267,6 +268,22 @@ public class CqlTranslatorOptions {
     public CqlTranslatorOptions withVerifyOnly(boolean verifyOnly) {
         setVerifyOnly(verifyOnly);
         return this;
+    }
+
+    /**
+     * Return instance of CqlTranslatorOptions enableCqlOnly boolean
+     * @return
+     */
+    public boolean getEnableCqlOnly() {
+        return this.enableCqlOnly;
+    }
+
+    /**
+     * Set new enableCqlOnly boolean
+     * @param enableCqlOnly
+     */
+    public void setEnableCqlOnly(boolean enableCqlOnly) {
+        this.enableCqlOnly = enableCqlOnly;
     }
 
     /**
