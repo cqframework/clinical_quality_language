@@ -130,7 +130,7 @@ configure(subprojects.findAll {it.name in ['model', 'model-jackson', 'elm', 'cql
 /*
 FHIR dependencies
 */
-configure(subprojects.findAll {it.name in ['cqf-fhir', 'elm-fhir', 'cqf-fhir-npm']}) {
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'elm-fhir', 'cqf-fhir-npm', 'engine-fhir']}) {
     dependencies {
         // fhir core dependencies
         implementation group: 'ca.uhn.hapi.fhir', name: 'org.hl7.fhir.r5', version: '5.6.36'
@@ -157,7 +157,7 @@ JAXB dependencies:
 https://mkyong.com/java/jaxbexception-implementation-of-jaxb-api-has-not-been-found-on-module-path-or-classpath/
  */
 
-configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm' ]}) {
+configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm', 'engine', 'engine-fhir' ]}) {
     configurations {
         xjc
     }
@@ -225,10 +225,12 @@ configure(subprojects.findAll {it.name in ['model', 'elm', 'quick', 'qdm' ]}) {
        signing.secretKeyRingFile=/Users/me/.gnupg/secring.gpg
    - If the library version ends with '-SNAPSHOT', it will be deployed to the snapshot repository, else it will be
      deployed to the staging repository (which you then must manually release http://central.sonatype.org/pages/releasing-the-deployment.html).
-   - Repo for snapshots and releases: https://oss.sonatype.org/content/groups/public/info/cqframework/
-   - Repo for snpashots, releases, and staged releases: https://oss.sonatype.org/content/groups/staging/info/cqframework/
+   - Repo for snapshots and releases for the translator modules: https://oss.sonatype.org/content/groups/public/info/cqframework/
+   - Repo for snpashots, releases, and staged releases for the translator modules: https://oss.sonatype.org/content/groups/staging/info/cqframework/
+   - Repo for snapshots and releases for the engine modules: https://oss.sonatype.org/content/groups/public/org/opencds/cqf/cql/
+   - Repo for snapshots, releases, and staged releases for the engine modules: https://oss.sonatype.org/content/groups/staging/org/opencds/cqf/cql/
  */
-configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter']}) {
+configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'model', 'model-jackson', 'model-jaxb', 'elm', 'elm-jackson', 'elm-jaxb', 'elm-fhir', 'quick', 'cql-to-elm', 'cql-to-elm-cli', 'qdm', 'cql-formatter', 'engine', 'engine-fhir', 'engine-jaxb', 'engine-jackson']}) {
     java {
         withJavadocJar()
         withSourcesJar()

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlNullologicalOperatorsTest" reference="https://cql.hl7.org/09-b-cqlreference.html#nullological-operators-3">
+	<group name="Coalesce">
+		<test name="CoalesceANull">
+			<expression>Coalesce('a', null)</expression>
+			<output>'a'</output>
+		</test>
+		<test name="CoalesceNullA">
+			<expression>Coalesce(null, 'a')</expression>
+			<output>'a'</output>
+		</test>
+		<test name="CoalesceEmptyList">
+			<expression>Coalesce({})</expression>
+			<output>null</output>
+		</test>
+		<test name="CoalesceListFirstA">
+			<expression>Coalesce({'a', null, null})</expression>
+			<output>'a'</output>
+		</test>
+		<test name="CoalesceListLastA">
+			<expression>Coalesce({null, null, 'a'})</expression>
+			<output>'a'</output>
+		</test>
+		<test name="CoalesceFirstList">
+			<expression>Coalesce({'a'},null, null)</expression>
+			<output>{'a'}</output>
+		</test>
+		<test name="CoalesceLastList">
+			<expression>Coalesce(null, null, {'a'})</expression>
+			<output>{'a'}</output>
+		</test>
+		<test name="DateTimeCoalesce">
+			<expression>Coalesce(null, null, DateTime(2012, 5, 18))</expression>
+			<output>DateTime(2012, 5, 18)</output>
+		</test>
+		<test name="DateTimeListCoalesce">
+			<expression>Coalesce({ null, null, DateTime(2012, 5, 18) })</expression>
+			<output>DateTime(2012, 5, 18)</output>
+		</test>
+		<test name="TimeCoalesce">
+			<expression>Coalesce(null, null, @T05:15:33.556)</expression>
+			<output>@T05:15:33.556</output>
+		</test>
+		<test name="TimeListCoalesce">
+			<expression>Coalesce({ null, null, @T05:15:33.556 })</expression>
+			<output>@T05:15:33.556</output>
+		</test>
+	</group>
+	<group name="IsNull">
+		<test name="IsNullTrue">
+			<expression>IsNull(null)</expression>
+			<output>true</output>
+		</test>
+		<test name="IsNullFalseEmptyString">
+			<expression>IsNull('')</expression>
+			<output>false</output>
+		</test>
+		<test name="IsNullAlsoFalseAbcString">
+			<expression>IsNull('abc')</expression>
+			<output>false</output>
+		</test>
+		<test name="IsNullAlsoFalseNumber1">
+			<expression>IsNull(1)</expression>
+			<output>false</output>
+		</test>
+		<test name="IsNullAlsoFalseNumberZero">
+			<expression>IsNull(0)</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="IsFalse">
+		<test name="IsFalseFalse">
+			<expression>IsFalse(false)</expression>
+			<output>true</output>
+		</test>
+		<test name="IsFalseTrue">
+			<expression>IsFalse(true)</expression>
+			<output>false</output>
+		</test>
+		<test name="IsFalseNull">
+			<expression>IsFalse(null)</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="IsTrue">
+		<test name="IsTrueTrue">
+			<expression>IsTrue(true)</expression>
+			<output>true</output>
+		</test>
+		<test name="IsTrueFalse">
+			<expression>IsTrue(false)</expression>
+			<output>false</output>
+		</test>
+		<test name="IsTrueNull">
+			<expression>IsTrue(null)</expression>
+			<output>false</output>
+		</test>
+	</group>
+</tests>

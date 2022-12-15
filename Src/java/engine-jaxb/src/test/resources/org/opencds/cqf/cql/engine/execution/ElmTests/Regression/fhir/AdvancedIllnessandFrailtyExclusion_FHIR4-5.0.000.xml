@@ -1,0 +1,2032 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation libraryId="MATGlobalCommonFunctions_FHIR4" libraryVersion="5.0.000" startLine="286" startChar="19" endLine="286" endChar="53" message="Could not resolve membership operator for terminology target of the retrieve." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation libraryId="AdvancedIllnessandFrailtyExclusion_FHIR4" libraryVersion="5.0.000" startLine="78" startChar="11" endLine="78" endChar="43" message="Could not resolve code path codeCodeableConcept for the type of the retrieve FHIR.DeviceRequest." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation libraryId="AdvancedIllnessandFrailtyExclusion_FHIR4" libraryVersion="5.0.000" startLine="78" startChar="11" endLine="78" endChar="43" message="Could not resolve membership operator for terminology target of the retrieve." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation libraryId="AdvancedIllnessandFrailtyExclusion_FHIR4" libraryVersion="5.0.000" startLine="81" startChar="15" endLine="81" endChar="52" message="Could not resolve code path device.code for the type of the retrieve FHIR.DeviceUseStatement." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <annotation libraryId="AdvancedIllnessandFrailtyExclusion_FHIR4" libraryVersion="5.0.000" startLine="81" startChar="15" endLine="81" endChar="52" message="Could not resolve membership operator for terminology target of the retrieve." errorType="semantic" errorSeverity="warning" xsi:type="a:CqlToElmError"/>
+   <identifier id="AdvancedIllnessandFrailtyExclusion_FHIR4" version="5.0.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="10:1-10:26" localIdentifier="FHIR" uri="http://hl7.org/fhir" version="4.0.1"/>
+   </usings>
+   <includes>
+      <def localId="2" locator="12:1-12:54" localIdentifier="FHIRHelpers" path="FHIRHelpers" version="4.0.1"/>
+      <def localId="3" locator="13:1-13:70" localIdentifier="Global" path="MATGlobalCommonFunctions_FHIR4" version="5.0.000"/>
+   </includes>
+   <parameters>
+      <def localId="25" locator="33:1-34:66" name="Measurement Period" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <default localId="22" locator="34:11-34:66" lowClosed="true" highClosed="false" xsi:type="Interval">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <low localId="20" locator="34:20-34:41" resultTypeName="t:DateTime" xsi:type="DateTime">
+               <year valueType="t:Integer" value="2019" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </low>
+            <high localId="21" locator="34:44-34:65" resultTypeName="t:DateTime" xsi:type="DateTime">
+               <year valueType="t:Integer" value="2020" xsi:type="Literal"/>
+               <month valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <day valueType="t:Integer" value="1" xsi:type="Literal"/>
+               <hour valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <minute valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <second valueType="t:Integer" value="0" xsi:type="Literal"/>
+               <millisecond valueType="t:Integer" value="0" xsi:type="Literal"/>
+            </high>
+         </default>
+         <parameterTypeSpecifier localId="24" locator="33:32-33:49" xsi:type="IntervalTypeSpecifier">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <pointType localId="23" locator="33:41-33:48" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="4" locator="15:1-15:38" name="LOINC" id="http://loinc.org" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="5" locator="17:1-17:107" name="Acute Inpatient" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1083" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="6" locator="18:1-18:108" name="Advanced Illness" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.110.12.1082" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="7" locator="19:1-19:139" name="Care Services in Long-Term Residential Facility" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1014" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="8" locator="20:1-20:112" name="Dementia Medications" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.196.12.1510" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="9" locator="21:1-21:94" name="ED" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1085" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="10" locator="22:1-22:106" name="Frailty Device" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.118.12.1300" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="11" locator="23:1-23:109" name="Frailty Diagnosis" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.113.12.1074" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="12" locator="24:1-24:109" name="Frailty Encounter" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1088" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="13" locator="25:1-25:107" name="Frailty Symptom" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.113.12.1075" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="14" locator="26:1-26:110" name="Nonacute Inpatient" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1084" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="15" locator="27:1-27:114" name="Nursing Facility Visit" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1012" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="16" locator="28:1-28:103" name="Observation" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1086" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="17" locator="29:1-29:102" name="Outpatient" id="http://cts.nlm.nih.gov/fhir/ValueSet/2.16.840.1.113883.3.464.1003.101.12.1087" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="19" locator="31:1-31:62" resultTypeName="t:Code" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <codeSystem localId="18" locator="31:35-31:41" name="LOINC">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+   </codes>
+   <statements>
+      <def locator="36:1-36:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="36:1-36:15" dataType="fhir:Patient" templateId="http://hl7.org/fhir/StructureDefinition/Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="29" locator="38:1-39:60" name="Advanced Illness Diagnoses" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>define &quot;Advanced Illness Diagnoses&quot;:&#xd;
+    </a:s>
+               <a:s r="28">
+                  <a:s>
+                     <a:s r="27">
+                        <a:s r="26">
+                           <a:s r="26">
+                              <a:s>[Condition: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Advanced Illness&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> AdvancedIllnessDiagnosis</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="28" locator="39:5-39:60" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="27" locator="39:5-39:60" alias="AdvancedIllnessDiagnosis">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="26" locator="39:5-39:35" dataType="fhir:Condition" templateId="http://hl7.org/fhir/StructureDefinition/Condition" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="39:17-39:34" name="Advanced Illness" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+         </expression>
+      </def>
+      <def localId="58" locator="41:1-52:30" name="Outpatient Encounters with Advanced Illness" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="58">
+               <a:s>define &quot;Outpatient Encounters with Advanced Illness&quot;:&#xd;
+	</a:s>
+               <a:s r="57">
+                  <a:s>
+                     <a:s r="37">
+                        <a:s r="36">
+                           <a:s>( </a:s>
+                           <a:s r="36">
+                              <a:s r="34">
+                                 <a:s r="32">
+                                    <a:s r="30">
+                                       <a:s>[Encounter: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Outpatient&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+		union </a:s>
+                                    <a:s r="31">
+                                       <a:s>[Encounter: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Observation&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+		union </a:s>
+                                 <a:s r="33">
+                                    <a:s>[Encounter: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;ED&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+		union </a:s>
+                              <a:s r="35">
+                                 <a:s>[Encounter: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Nonacute Inpatient&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> OutpatientEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="56">
+                     <a:s>with </a:s>
+                     <a:s r="39">
+                        <a:s r="38">
+                           <a:s r="38">
+                              <a:s>[Condition: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Advanced Illness&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> AdvancedIllnessDiagnosis</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+            such that </a:s>
+                     <a:s r="55">
+                        <a:s r="48">
+                           <a:s>exists </a:s>
+                           <a:s r="47">
+                              <a:s>(&#xd;
+                </a:s>
+                              <a:s r="47">
+                                 <a:s>
+                                    <a:s r="41">
+                                       <a:s r="40">
+                                          <a:s>
+                                             <a:s>OutpatientEncounter.diagnosis.condition</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> EncounterDiagnosis</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+                    </a:s>
+                                 <a:s r="46">
+                                    <a:s>where </a:s>
+                                    <a:s r="46">
+                                       <a:s>EndsWith(</a:s>
+                                       <a:s r="43">
+                                          <a:s r="42">
+                                             <a:s>EncounterDiagnosis</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="43">
+                                             <a:s>reference</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>, </a:s>
+                                       <a:s r="45">
+                                          <a:s r="44">
+                                             <a:s>AdvancedIllnessDiagnosis</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="45">
+                                             <a:s>id</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+            )</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+            and </a:s>
+                        <a:s r="54">
+                           <a:s r="50">
+                              <a:s r="49">
+                                 <a:s>OutpatientEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="50">
+                                 <a:s>period</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="54">
+                              <a:s>starts </a:s>
+                              <a:s r="53">
+                                 <a:s>2 years</a:s>
+                              </a:s>
+                              <a:s> or less before</a:s>
+                           </a:s>
+                           <a:s>&#xd;
+			</a:s>
+                           <a:s r="52">
+                              <a:s>end of </a:s>
+                              <a:s r="51">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="57" locator="42:2-52:30" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="37" locator="42:2-45:63" alias="OutpatientEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="36" locator="42:2-45:43" xsi:type="Union">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand localId="32" locator="42:4-43:34" xsi:type="Union">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="30" locator="42:4-42:28" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes locator="42:16-42:27" name="Outpatient" xsi:type="ValueSetRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </codes>
+                     </operand>
+                     <operand localId="31" locator="43:9-43:34" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes locator="43:21-43:33" name="Observation" xsi:type="ValueSetRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </codes>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="Union">
+                     <operand localId="33" locator="44:9-44:25" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes locator="44:21-44:24" name="ED" xsi:type="ValueSetRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </codes>
+                     </operand>
+                     <operand localId="35" locator="45:9-45:41" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes locator="45:21-45:40" name="Nonacute Inpatient" xsi:type="ValueSetRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </codes>
+                     </operand>
+                  </operand>
+               </expression>
+            </source>
+            <relationship localId="56" locator="46:3-52:30" alias="AdvancedIllnessDiagnosis" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="38" locator="46:8-46:38" dataType="fhir:Condition" templateId="http://hl7.org/fhir/StructureDefinition/Condition" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="46:20-46:37" name="Advanced Illness" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+               <suchThat localId="55" locator="47:23-52:30" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="48" locator="47:23-50:13" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="47" locator="47:30-50:13" xsi:type="Query">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Reference" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="41" locator="48:17-48:74" alias="EncounterDiagnosis">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:Reference" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <expression localId="40" locator="48:17-48:55" xsi:type="Query">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:Reference" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <source alias="$this">
+                                 <expression path="diagnosis" scope="OutpatientEncounter" xsi:type="Property"/>
+                              </source>
+                              <where xsi:type="Not">
+                                 <operand xsi:type="IsNull">
+                                    <operand path="condition" xsi:type="Property">
+                                       <source name="$this" xsi:type="AliasRef"/>
+                                    </operand>
+                                 </operand>
+                              </where>
+                              <return>
+                                 <expression path="condition" xsi:type="Property">
+                                    <source name="$this" xsi:type="AliasRef"/>
+                                 </expression>
+                              </return>
+                           </expression>
+                        </source>
+                        <where localId="46" locator="49:21-49:93" resultTypeName="t:Boolean" xsi:type="EndsWith">
+                           <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                              <operand localId="43" locator="49:36-49:63" resultTypeName="fhir:string" path="reference" scope="EncounterDiagnosis" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="45" locator="49:66-49:92" resultTypeName="t:String" path="id" scope="AdvancedIllnessDiagnosis" xsi:type="Property"/>
+                        </where>
+                     </operand>
+                  </operand>
+                  <operand localId="54" locator="51:17-52:30" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand locator="51:51-51:65" xsi:type="In">
+                        <operand locator="51:44-51:49" xsi:type="Start">
+                           <operand name="ToInterval" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                              <operand localId="50" locator="51:17-51:42" resultTypeName="fhir:Period" path="period" scope="OutpatientEncounter" xsi:type="Property"/>
+                           </operand>
+                        </operand>
+                        <operand locator="51:51-51:65" lowClosed="true" highClosed="false" xsi:type="Interval">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <low locator="52:4-52:30" xsi:type="Subtract">
+                              <operand localId="52" locator="52:4-52:30" resultTypeName="t:DateTime" xsi:type="End">
+                                 <operand localId="51" locator="52:11-52:30" name="Measurement Period" xsi:type="ParameterRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                              <operand localId="53" locator="51:51-51:57" resultTypeName="t:Quantity" value="2" unit="years" xsi:type="Quantity"/>
+                           </low>
+                           <high localId="52" locator="52:4-52:30" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="51" locator="52:11-52:30" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="51:51-51:65" xsi:type="Not">
+                        <operand locator="51:51-51:65" xsi:type="IsNull">
+                           <operand localId="52" locator="52:4-52:30" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="51" locator="52:11-52:30" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="73" locator="54:1-59:33" name="Long Term Care Periods During Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="73">
+               <a:s>define &quot;Long Term Care Periods During Measurement Period&quot;:&#xd;
+	</a:s>
+               <a:s r="72">
+                  <a:s>
+                     <a:s r="62">
+                        <a:s r="61">
+                           <a:s>( </a:s>
+                           <a:s r="61">
+                              <a:s r="59">
+                                 <a:s>[Encounter: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Care Services in Long-Term Residential Facility&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                              <a:s>&#xd;
+		union </a:s>
+                              <a:s r="60">
+                                 <a:s>[Encounter: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Nursing Facility Visit&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> LongTermFacilityEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="66">
+                     <a:s>where </a:s>
+                     <a:s r="66">
+                        <a:s r="64">
+                           <a:s r="63">
+                              <a:s>LongTermFacilityEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="64">
+                              <a:s>period</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="66"> overlaps </a:s>
+                        <a:s r="65">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="71">
+                     <a:s>return </a:s>
+                     <a:s r="70">
+                        <a:s r="68">
+                           <a:s r="67">
+                              <a:s>LongTermFacilityEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="68">
+                              <a:s>period</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			intersect </a:s>
+                        <a:s r="69">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </elementType>
+         </resultTypeSpecifier>
+         <expression localId="72" locator="55:2-59:33" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </elementType>
+            </resultTypeSpecifier>
+            <source localId="62" locator="55:2-56:73" alias="LongTermFacilityEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="61" locator="55:2-56:47" xsi:type="Union">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand localId="59" locator="55:4-55:65" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" xsi:type="Retrieve">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <codes locator="55:16-55:64" name="Care Services in Long-Term Residential Facility" xsi:type="ValueSetRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </codes>
+                  </operand>
+                  <operand localId="60" locator="56:9-56:45" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" xsi:type="Retrieve">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <codes locator="56:21-56:44" name="Nursing Facility Visit" xsi:type="ValueSetRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </codes>
+                  </operand>
+               </expression>
+            </source>
+            <where localId="66" locator="57:3-57:70" resultTypeName="t:Boolean" xsi:type="Overlaps">
+               <operand name="ToInterval" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                  <operand localId="64" locator="57:9-57:40" resultTypeName="fhir:Period" path="period" scope="LongTermFacilityEncounter" xsi:type="Property"/>
+               </operand>
+               <operand localId="65" locator="57:51-57:70" name="Measurement Period" xsi:type="ParameterRef">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </where>
+            <return localId="71" locator="58:3-59:33">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="70" locator="58:10-59:33" xsi:type="Intersect">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand name="ToInterval" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                     <operand localId="68" locator="58:10-58:41" resultTypeName="fhir:Period" path="period" scope="LongTermFacilityEncounter" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="69" locator="59:14-59:33" name="Measurement Period" xsi:type="ParameterRef">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="96" locator="61:1-69:30" name="Inpatient Encounter with Advanced Illness" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="96">
+               <a:s>define &quot;Inpatient Encounter with Advanced Illness&quot;:&#xd;
+	</a:s>
+               <a:s r="95">
+                  <a:s>
+                     <a:s r="75">
+                        <a:s r="74">
+                           <a:s r="74">
+                              <a:s>[Encounter: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Acute Inpatient&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InpatientEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="94">
+                     <a:s>with </a:s>
+                     <a:s r="77">
+                        <a:s r="76">
+                           <a:s r="76">
+                              <a:s>[Condition: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Advanced Illness&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> AdvancedIllnessDiagnosis</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+            such that </a:s>
+                     <a:s r="93">
+                        <a:s r="86">
+                           <a:s>exists </a:s>
+                           <a:s r="85">
+                              <a:s>(&#xd;
+                </a:s>
+                              <a:s r="85">
+                                 <a:s>
+                                    <a:s r="79">
+                                       <a:s r="78">
+                                          <a:s>
+                                             <a:s>InpatientEncounter.diagnosis.condition</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> EncounterDiagnosis</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+                    </a:s>
+                                 <a:s r="84">
+                                    <a:s>where </a:s>
+                                    <a:s r="84">
+                                       <a:s>EndsWith(</a:s>
+                                       <a:s r="81">
+                                          <a:s r="80">
+                                             <a:s>EncounterDiagnosis</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="81">
+                                             <a:s>reference</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>, </a:s>
+                                       <a:s r="83">
+                                          <a:s r="82">
+                                             <a:s>AdvancedIllnessDiagnosis</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="83">
+                                             <a:s>id</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+            )</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			and </a:s>
+                        <a:s r="92">
+                           <a:s r="88">
+                              <a:s r="87">
+                                 <a:s>InpatientEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="88">
+                                 <a:s>period</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="92">
+                              <a:s>starts </a:s>
+                              <a:s r="91">
+                                 <a:s>2 years</a:s>
+                              </a:s>
+                              <a:s> or less before</a:s>
+                           </a:s>
+                           <a:s>&#xd;
+			</a:s>
+                           <a:s r="90">
+                              <a:s>end of </a:s>
+                              <a:s r="89">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="95" locator="62:2-69:30" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="75" locator="62:2-62:50" alias="InpatientEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="74" locator="62:2-62:31" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="62:14-62:30" name="Acute Inpatient" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="94" locator="63:3-69:30" alias="AdvancedIllnessDiagnosis" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="76" locator="63:8-63:38" dataType="fhir:Condition" templateId="http://hl7.org/fhir/StructureDefinition/Condition" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="63:20-63:37" name="Advanced Illness" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+               <suchThat localId="93" locator="64:23-69:30" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="86" locator="64:23-67:13" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="85" locator="64:30-67:13" xsi:type="Query">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Reference" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="79" locator="65:17-65:73" alias="EncounterDiagnosis">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:Reference" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <expression localId="78" locator="65:17-65:54" xsi:type="Query">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:Reference" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <source alias="$this">
+                                 <expression path="diagnosis" scope="InpatientEncounter" xsi:type="Property"/>
+                              </source>
+                              <where xsi:type="Not">
+                                 <operand xsi:type="IsNull">
+                                    <operand path="condition" xsi:type="Property">
+                                       <source name="$this" xsi:type="AliasRef"/>
+                                    </operand>
+                                 </operand>
+                              </where>
+                              <return>
+                                 <expression path="condition" xsi:type="Property">
+                                    <source name="$this" xsi:type="AliasRef"/>
+                                 </expression>
+                              </return>
+                           </expression>
+                        </source>
+                        <where localId="84" locator="66:21-66:93" resultTypeName="t:Boolean" xsi:type="EndsWith">
+                           <operand name="ToString" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                              <operand localId="81" locator="66:36-66:63" resultTypeName="fhir:string" path="reference" scope="EncounterDiagnosis" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="83" locator="66:66-66:92" resultTypeName="t:String" path="id" scope="AdvancedIllnessDiagnosis" xsi:type="Property"/>
+                        </where>
+                     </operand>
+                  </operand>
+                  <operand localId="92" locator="68:8-69:30" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand locator="68:41-68:55" xsi:type="In">
+                        <operand locator="68:34-68:39" xsi:type="Start">
+                           <operand name="ToInterval" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                              <operand localId="88" locator="68:8-68:32" resultTypeName="fhir:Period" path="period" scope="InpatientEncounter" xsi:type="Property"/>
+                           </operand>
+                        </operand>
+                        <operand locator="68:41-68:55" lowClosed="true" highClosed="false" xsi:type="Interval">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <low locator="69:4-69:30" xsi:type="Subtract">
+                              <operand localId="90" locator="69:4-69:30" resultTypeName="t:DateTime" xsi:type="End">
+                                 <operand localId="89" locator="69:11-69:30" name="Measurement Period" xsi:type="ParameterRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                              <operand localId="91" locator="68:41-68:47" resultTypeName="t:Quantity" value="2" unit="years" xsi:type="Quantity"/>
+                           </low>
+                           <high localId="90" locator="69:4-69:30" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="89" locator="69:11-69:30" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="68:41-68:55" xsi:type="Not">
+                        <operand locator="68:41-68:55" xsi:type="IsNull">
+                           <operand localId="90" locator="69:4-69:30" resultTypeName="t:DateTime" xsi:type="End">
+                              <operand localId="89" locator="69:11-69:30" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="110" locator="71:1-75:9" name="Dementia Medications In Year Before or During Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="110">
+               <a:s>define &quot;Dementia Medications In Year Before or During Measurement Period&quot;:&#xd;
+	</a:s>
+               <a:s r="109">
+                  <a:s>
+                     <a:s r="98">
+                        <a:s r="97">
+                           <a:s r="97">
+                              <a:s>[&quot;MedicationDispense&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Dementia Medications&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> DementiaMed</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="108">
+                     <a:s>where </a:s>
+                     <a:s r="108">
+                        <a:s r="100">
+                           <a:s r="99">
+                              <a:s>DementiaMed</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="100">
+                              <a:s>whenHandedOver</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="108"> during day of </a:s>
+                        <a:s r="107">
+                           <a:s>Interval[&#xd;
+            </a:s>
+                           <a:s r="104">
+                              <a:s>( </a:s>
+                              <a:s r="104">
+                                 <a:s r="102">
+                                    <a:s>start of </a:s>
+                                    <a:s r="101">
+                                       <a:s>&quot;Measurement Period&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> - </a:s>
+                                 <a:s r="103">
+                                    <a:s>1 year</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="106">
+                              <a:s>end of </a:s>
+                              <a:s r="105">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+        ]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="fhir:MedicationDispense" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="109" locator="72:2-75:9" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="fhir:MedicationDispense" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="98" locator="72:2-72:59" alias="DementiaMed">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="fhir:MedicationDispense" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="97" locator="72:2-72:47" dataType="fhir:MedicationDispense" templateId="http://hl7.org/fhir/StructureDefinition/MedicationDispense" codeProperty="medication" dateProperty="whenHandedOver" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:MedicationDispense" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="72:25-72:46" name="Dementia Medications" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+                  <dateRange localId="107" locator="73:50-75:9" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <low localId="104" locator="74:13-74:54" resultTypeName="t:DateTime" xsi:type="Subtract">
+                        <operand localId="102" locator="74:15-74:43" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="101" locator="74:24-74:43" name="Measurement Period" xsi:type="ParameterRef">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                        <operand localId="103" locator="74:47-74:52" resultTypeName="t:Quantity" value="1" unit="year" xsi:type="Quantity"/>
+                     </low>
+                     <high localId="106" locator="74:57-74:83" resultTypeName="t:DateTime" xsi:type="End">
+                        <operand localId="105" locator="74:64-74:83" name="Measurement Period" xsi:type="ParameterRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </high>
+                  </dateRange>
+               </expression>
+            </source>
+         </expression>
+      </def>
+      <def localId="160" locator="77:1-92:3" resultTypeName="t:Boolean" name="Has Criteria Indicating Frailty" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="160">
+               <a:s>define &quot;Has Criteria Indicating Frailty&quot;:&#xd;
+	</a:s>
+               <a:s r="159">
+                  <a:s r="148">
+                     <a:s r="139">
+                        <a:s r="129">
+                           <a:s r="118">
+                              <a:s>exists </a:s>
+                              <a:s r="117">
+                                 <a:s>( </a:s>
+                                 <a:s r="117">
+                                    <a:s>
+                                       <a:s r="112">
+                                          <a:s r="111">
+                                             <a:s r="111">
+                                                <a:s>[DeviceRequest: </a:s>
+                                                <a:s>
+                                                   <a:s>&quot;Frailty Device&quot;</a:s>
+                                                </a:s>
+                                                <a:s>]</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> FrailtyDeviceOrder</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+			</a:s>
+                                    <a:s r="116">
+                                       <a:s>where </a:s>
+                                       <a:s r="116">
+                                          <a:s r="114">
+                                             <a:s r="113">
+                                                <a:s>FrailtyDeviceOrder</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="114">
+                                                <a:s>authoredOn</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s r="116"> during </a:s>
+                                          <a:s r="115">
+                                             <a:s>&quot;Measurement Period&quot;</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+	)</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+		or </a:s>
+                           <a:s r="128">
+                              <a:s>exists </a:s>
+                              <a:s r="127">
+                                 <a:s>( </a:s>
+                                 <a:s r="127">
+                                    <a:s>
+                                       <a:s r="120">
+                                          <a:s r="119">
+                                             <a:s r="119">
+                                                <a:s>[DeviceUseStatement: </a:s>
+                                                <a:s>
+                                                   <a:s>&quot;Frailty Device&quot;</a:s>
+                                                </a:s>
+                                                <a:s>]</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> FrailtyDeviceUse</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+				</a:s>
+                                    <a:s r="126">
+                                       <a:s>where </a:s>
+                                       <a:s r="126">
+                                          <a:s r="124">
+                                             <a:s r="121">
+                                                <a:s>Global</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="124">
+                                                <a:s>&quot;Normalize Interval&quot;(</a:s>
+                                                <a:s r="123">
+                                                   <a:s r="122">
+                                                      <a:s>FrailtyDeviceUse</a:s>
+                                                   </a:s>
+                                                   <a:s>.</a:s>
+                                                   <a:s r="123">
+                                                      <a:s>timing</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                                <a:s>)</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s r="126"> overlaps </a:s>
+                                          <a:s r="125">
+                                             <a:s>&quot;Measurement Period&quot;</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+		)</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		or </a:s>
+                        <a:s r="138">
+                           <a:s>exists </a:s>
+                           <a:s r="137">
+                              <a:s>( </a:s>
+                              <a:s r="137">
+                                 <a:s>
+                                    <a:s r="131">
+                                       <a:s r="130">
+                                          <a:s r="130">
+                                             <a:s>[Condition: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Frailty Diagnosis&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> FrailtyDiagnosis</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+				</a:s>
+                                 <a:s r="136">
+                                    <a:s>where </a:s>
+                                    <a:s r="136">
+                                       <a:s r="134">
+                                          <a:s r="132">
+                                             <a:s>Global</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="134">
+                                             <a:s>&quot;Prevalence Period&quot;(</a:s>
+                                             <a:s r="133">
+                                                <a:s>FrailtyDiagnosis</a:s>
+                                             </a:s>
+                                             <a:s>)</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s r="136"> overlaps </a:s>
+                                       <a:s r="135">
+                                          <a:s>&quot;Measurement Period&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+		)</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+		or </a:s>
+                     <a:s r="147">
+                        <a:s>exists </a:s>
+                        <a:s r="146">
+                           <a:s>( </a:s>
+                           <a:s r="146">
+                              <a:s>
+                                 <a:s r="141">
+                                    <a:s r="140">
+                                       <a:s r="140">
+                                          <a:s>[Encounter: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Frailty Encounter&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> FrailtyEncounter</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+				</a:s>
+                              <a:s r="145">
+                                 <a:s>where </a:s>
+                                 <a:s r="145">
+                                    <a:s r="143">
+                                       <a:s r="142">
+                                          <a:s>FrailtyEncounter</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="143">
+                                          <a:s>period</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s r="145"> overlaps </a:s>
+                                    <a:s r="144">
+                                       <a:s>&quot;Measurement Period&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+		)</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		or </a:s>
+                  <a:s r="158">
+                     <a:s>exists </a:s>
+                     <a:s r="157">
+                        <a:s>( </a:s>
+                        <a:s r="157">
+                           <a:s>
+                              <a:s r="150">
+                                 <a:s r="149">
+                                    <a:s r="149">
+                                       <a:s>[Observation: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Frailty Symptom&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> FrailtySymptomObservation</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				</a:s>
+                           <a:s r="156">
+                              <a:s>where </a:s>
+                              <a:s r="156">
+                                 <a:s r="154">
+                                    <a:s r="151">
+                                       <a:s>Global</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="154">
+                                       <a:s>&quot;Normalize Interval&quot;(</a:s>
+                                       <a:s r="153">
+                                          <a:s r="152">
+                                             <a:s>FrailtySymptomObservation</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="153">
+                                             <a:s>effective</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="156"> overlaps </a:s>
+                                 <a:s r="155">
+                                    <a:s>&quot;Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="159" locator="78:2-92:3" resultTypeName="t:Boolean" xsi:type="Or">
+            <operand localId="148" locator="78:2-89:3" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="139" locator="78:2-86:3" resultTypeName="t:Boolean" xsi:type="Or">
+                  <operand localId="129" locator="78:2-83:3" resultTypeName="t:Boolean" xsi:type="Or">
+                     <operand localId="118" locator="78:2-80:2" resultTypeName="t:Boolean" xsi:type="Exists">
+                        <operand localId="117" locator="78:9-80:2" xsi:type="Query">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:DeviceRequest" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <source localId="112" locator="78:11-78:62" alias="FrailtyDeviceOrder">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:DeviceRequest" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <expression localId="111" locator="78:11-78:43" dataType="fhir:DeviceRequest" templateId="http://hl7.org/fhir/StructureDefinition/DeviceRequest" codeProperty="codeCodeableConcept" dateProperty="authoredOn" xsi:type="Retrieve">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType name="fhir:DeviceRequest" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <codes locator="78:27-78:42" name="Frailty Device" xsi:type="ValueSetRef">
+                                    <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                       <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </codes>
+                                 <dateRange localId="115" locator="79:47-79:66" name="Measurement Period" xsi:type="ParameterRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </dateRange>
+                              </expression>
+                           </source>
+                        </operand>
+                     </operand>
+                     <operand localId="128" locator="81:6-83:3" resultTypeName="t:Boolean" xsi:type="Exists">
+                        <operand localId="127" locator="81:13-83:3" xsi:type="Query">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:DeviceUseStatement" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <source localId="120" locator="81:15-81:69" alias="FrailtyDeviceUse">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:DeviceUseStatement" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <expression localId="119" locator="81:15-81:52" dataType="fhir:DeviceUseStatement" templateId="http://hl7.org/fhir/StructureDefinition/DeviceUseStatement" codeProperty="device.code" xsi:type="Retrieve">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType name="fhir:DeviceUseStatement" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <codes locator="81:36-81:51" name="Frailty Device" xsi:type="ValueSetRef">
+                                    <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                       <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </codes>
+                              </expression>
+                           </source>
+                           <where localId="126" locator="82:5-82:92" resultTypeName="t:Boolean" xsi:type="Overlaps">
+                              <operand localId="124" locator="82:11-82:62" name="Normalize Interval" libraryName="Global" xsi:type="FunctionRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <operand localId="123" locator="82:39-82:61" path="timing" scope="FrailtyDeviceUse" xsi:type="Property">
+                                    <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                                       <choice name="fhir:Timing" xsi:type="NamedTypeSpecifier"/>
+                                       <choice name="fhir:Period" xsi:type="NamedTypeSpecifier"/>
+                                       <choice name="fhir:dateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                              <operand localId="125" locator="82:73-82:92" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </where>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="138" locator="84:6-86:3" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="137" locator="84:13-86:3" xsi:type="Query">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="131" locator="84:15-84:63" alias="FrailtyDiagnosis">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <expression localId="130" locator="84:15-84:46" dataType="fhir:Condition" templateId="http://hl7.org/fhir/StructureDefinition/Condition" codeProperty="code" xsi:type="Retrieve">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:Condition" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <codes locator="84:27-84:45" name="Frailty Diagnosis" xsi:type="ValueSetRef">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </codes>
+                           </expression>
+                        </source>
+                        <where localId="136" locator="85:5-85:84" resultTypeName="t:Boolean" xsi:type="Overlaps">
+                           <operand localId="134" locator="85:11-85:54" name="Prevalence Period" libraryName="Global" xsi:type="FunctionRef">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <operand localId="133" locator="85:38-85:53" resultTypeName="fhir:Condition" name="FrailtyDiagnosis" xsi:type="AliasRef"/>
+                           </operand>
+                           <operand localId="135" locator="85:65-85:84" name="Measurement Period" xsi:type="ParameterRef">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </where>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="147" locator="87:6-89:3" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="146" locator="87:13-89:3" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="141" locator="87:15-87:63" alias="FrailtyEncounter">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="140" locator="87:15-87:46" dataType="fhir:Encounter" templateId="http://hl7.org/fhir/StructureDefinition/Encounter" codeProperty="type" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="87:27-87:45" name="Frailty Encounter" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="145" locator="88:5-88:63" resultTypeName="t:Boolean" xsi:type="Overlaps">
+                        <operand name="ToInterval" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                           <operand localId="143" locator="88:11-88:33" resultTypeName="fhir:Period" path="period" scope="FrailtyEncounter" xsi:type="Property"/>
+                        </operand>
+                        <operand localId="144" locator="88:44-88:63" name="Measurement Period" xsi:type="ParameterRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </where>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="158" locator="90:6-92:3" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="157" locator="90:13-92:3" xsi:type="Query">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <source localId="150" locator="90:15-90:72" alias="FrailtySymptomObservation">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <expression localId="149" locator="90:15-90:46" dataType="fhir:Observation" templateId="http://hl7.org/fhir/StructureDefinition/Observation" codeProperty="code" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Observation" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes locator="90:29-90:45" name="Frailty Symptom" xsi:type="ValueSetRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </codes>
+                     </expression>
+                  </source>
+                  <where localId="156" locator="91:5-91:104" resultTypeName="t:Boolean" xsi:type="Overlaps">
+                     <operand localId="154" locator="91:11-91:74" name="Normalize Interval" libraryName="Global" xsi:type="FunctionRef">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <operand localId="153" locator="91:39-91:73" path="effective" scope="FrailtySymptomObservation" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                              <choice name="fhir:dateTime" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="fhir:Period" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="fhir:Timing" xsi:type="NamedTypeSpecifier"/>
+                              <choice name="fhir:instant" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand localId="155" locator="91:85-91:104" name="Measurement Period" xsi:type="ParameterRef">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </where>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="199" locator="94:1-107:3" resultTypeName="t:Boolean" name="Advanced Illness and Frailty Exclusion Including Over Age 80" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="199">
+               <a:s>define &quot;Advanced Illness and Frailty Exclusion Including Over Age 80&quot;:&#xd;
+	//If the measure includes populations age 80 and older, then use this logic:&#xd;
+	</a:s>
+               <a:s r="198">
+                  <a:s r="185">
+                     <a:s>(&#xd;
+        </a:s>
+                     <a:s r="185">
+                        <a:s r="174">
+                           <a:s r="172">
+                              <a:s r="168">
+                                 <a:s r="161">
+                                    <a:s>Global</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="168">
+                                    <a:s>&quot;CalendarAgeInYearsAt&quot;(</a:s>
+                                    <a:s r="165">
+                                       <a:s r="162">
+                                          <a:s>FHIRHelpers</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="165">
+                                          <a:s>ToDate(</a:s>
+                                          <a:s r="164">
+                                             <a:s r="163">
+                                                <a:s>Patient</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="164">
+                                                <a:s>birthDate</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>, </a:s>
+                                    <a:s r="167">
+                                       <a:s>start of </a:s>
+                                       <a:s r="166">
+                                          <a:s>&quot;Measurement Period&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>)</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>in </a:s>
+                              <a:s r="171">
+                                 <a:s r="169">Interval[66, 80]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+            and </a:s>
+                           <a:s r="173">
+                              <a:s>&quot;Has Criteria Indicating Frailty&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+            and </a:s>
+                        <a:s r="184">
+                           <a:s>( </a:s>
+                           <a:s r="184">
+                              <a:s r="181">
+                                 <a:s r="178">
+                                    <a:s r="176">
+                                       <a:s>Count(</a:s>
+                                       <a:s r="175">
+                                          <a:s>&quot;Outpatient Encounters with Advanced Illness&quot;</a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                    <a:s r="177">>= 2</a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+                or </a:s>
+                                 <a:s r="180">
+                                    <a:s>exists </a:s>
+                                    <a:s r="179">
+                                       <a:s>( </a:s>
+                                       <a:s r="179">
+                                          <a:s>&quot;Inpatient Encounter with Advanced Illness&quot;</a:s>
+                                       </a:s>
+                                       <a:s> )</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+                or </a:s>
+                              <a:s r="183">
+                                 <a:s>exists </a:s>
+                                 <a:s r="182">
+                                    <a:s>&quot;Dementia Medications In Year Before or During Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+            )</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+	)</a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		or </a:s>
+                  <a:s r="197">
+                     <a:s>(&#xd;
+            </a:s>
+                     <a:s r="197">
+                        <a:s r="195">
+                           <a:s r="193">
+                              <a:s r="186">
+                                 <a:s>Global</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="193">
+                                 <a:s>&quot;CalendarAgeInYearsAt&quot;(</a:s>
+                                 <a:s r="190">
+                                    <a:s r="187">
+                                       <a:s>FHIRHelpers</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="190">
+                                       <a:s>ToDate(</a:s>
+                                       <a:s r="189">
+                                          <a:s r="188">
+                                             <a:s>Patient</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="189">
+                                             <a:s>birthDate</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, </a:s>
+                                 <a:s r="192">
+                                    <a:s>start of </a:s>
+                                    <a:s r="191">
+                                       <a:s>&quot;Measurement Period&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="194">>= 81</a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			    and </a:s>
+                        <a:s r="196">
+                           <a:s>&quot;Has Criteria Indicating Frailty&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+		)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="198" locator="96:2-107:3" resultTypeName="t:Boolean" xsi:type="Or">
+            <operand localId="185" locator="96:2-103:2" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="174" locator="97:9-98:49" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="172" locator="97:9-97:126" resultTypeName="t:Boolean" xsi:type="In">
+                     <operand localId="168" locator="97:9-97:107" resultTypeName="t:Integer" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                        <operand xsi:type="ToDateTime">
+                           <operand localId="165" locator="97:39-97:75" resultTypeName="t:Date" name="ToDate" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                              <operand localId="164" locator="97:58-97:74" resultTypeName="fhir:date" path="birthDate" xsi:type="Property">
+                                 <source localId="163" locator="97:58-97:64" resultTypeName="fhir:Patient" name="Patient" xsi:type="ExpressionRef"/>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="167" locator="97:78-97:106" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="166" locator="97:87-97:106" name="Measurement Period" xsi:type="ParameterRef">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="171" locator="97:111-97:126" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <low localId="169" locator="97:120-97:121" resultTypeName="t:Integer" valueType="t:Integer" value="66" xsi:type="Literal"/>
+                        <high localId="170" locator="97:124-97:125" resultTypeName="t:Integer" valueType="t:Integer" value="80" xsi:type="Literal"/>
+                     </operand>
+                  </operand>
+                  <operand localId="173" locator="98:17-98:49" resultTypeName="t:Boolean" name="Has Criteria Indicating Frailty" xsi:type="ExpressionRef"/>
+               </operand>
+               <operand localId="184" locator="99:17-102:13" resultTypeName="t:Boolean" xsi:type="Or">
+                  <operand localId="181" locator="99:19-100:73" resultTypeName="t:Boolean" xsi:type="Or">
+                     <operand localId="178" locator="99:19-99:74" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                        <operand localId="176" locator="99:19-99:70" resultTypeName="t:Integer" xsi:type="Count">
+                           <source localId="175" locator="99:25-99:69" name="Outpatient Encounters with Advanced Illness" xsi:type="ExpressionRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </source>
+                        </operand>
+                        <operand localId="177" locator="99:74" resultTypeName="t:Integer" valueType="t:Integer" value="2" xsi:type="Literal"/>
+                     </operand>
+                     <operand localId="180" locator="100:20-100:73" resultTypeName="t:Boolean" xsi:type="Exists">
+                        <operand localId="179" locator="100:27-100:73" name="Inpatient Encounter with Advanced Illness" xsi:type="ExpressionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="183" locator="101:20-101:92" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="182" locator="101:27-101:92" name="Dementia Medications In Year Before or During Measurement Period" xsi:type="ExpressionRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:MedicationDispense" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="197" locator="104:6-107:3" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="195" locator="105:13-105:116" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                  <operand localId="193" locator="105:13-105:111" resultTypeName="t:Integer" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                     <operand xsi:type="ToDateTime">
+                        <operand localId="190" locator="105:43-105:79" resultTypeName="t:Date" name="ToDate" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                           <operand localId="189" locator="105:62-105:78" resultTypeName="fhir:date" path="birthDate" xsi:type="Property">
+                              <source localId="188" locator="105:62-105:68" resultTypeName="fhir:Patient" name="Patient" xsi:type="ExpressionRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="192" locator="105:82-105:110" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="191" locator="105:91-105:110" name="Measurement Period" xsi:type="ParameterRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="194" locator="105:115-105:116" resultTypeName="t:Integer" valueType="t:Integer" value="81" xsi:type="Literal"/>
+               </operand>
+               <operand localId="196" locator="106:12-106:44" resultTypeName="t:Boolean" name="Has Criteria Indicating Frailty" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="223" locator="109:1-116:9" resultTypeName="t:Boolean" name="Advanced Illness and Frailty Exclusion Including Under Age 80" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="223">
+               <a:s>define &quot;Advanced Illness and Frailty Exclusion Including Under Age 80&quot;:&#xd;
+	//If the measure does NOT include populations age 80 and older, then use this logic:&#xd;
+	</a:s>
+               <a:s r="222">
+                  <a:s r="211">
+                     <a:s r="209">
+                        <a:s r="207">
+                           <a:s r="200">
+                              <a:s>Global</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="207">
+                              <a:s>&quot;CalendarAgeInYearsAt&quot;(</a:s>
+                              <a:s r="204">
+                                 <a:s r="201">
+                                    <a:s>FHIRHelpers</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="204">
+                                    <a:s>ToDate(</a:s>
+                                    <a:s r="203">
+                                       <a:s r="202">
+                                          <a:s>Patient</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="203">
+                                          <a:s>birthDate</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>)</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>, </a:s>
+                              <a:s r="206">
+                                 <a:s>start of </a:s>
+                                 <a:s r="205">
+                                    <a:s>&quot;Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="208">>= 65</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+        and </a:s>
+                     <a:s r="210">
+                        <a:s>&quot;Has Criteria Indicating Frailty&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+        and </a:s>
+                  <a:s r="221">
+                     <a:s>( </a:s>
+                     <a:s r="221">
+                        <a:s r="218">
+                           <a:s r="215">
+                              <a:s r="213">
+                                 <a:s>Count(</a:s>
+                                 <a:s r="212">
+                                    <a:s>&quot;Outpatient Encounters with Advanced Illness&quot;</a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                              <a:s r="214">>= 2</a:s>
+                           </a:s>
+                           <a:s>&#xd;
+            or </a:s>
+                           <a:s r="217">
+                              <a:s>exists </a:s>
+                              <a:s r="216">
+                                 <a:s>( </a:s>
+                                 <a:s r="216">
+                                    <a:s>&quot;Inpatient Encounter with Advanced Illness&quot;</a:s>
+                                 </a:s>
+                                 <a:s> )</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+            or </a:s>
+                        <a:s r="220">
+                           <a:s>exists </a:s>
+                           <a:s r="219">
+                              <a:s>&quot;Dementia Medications In Year Before or During Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+        )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="222" locator="111:2-116:9" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="211" locator="111:2-112:45" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="209" locator="111:2-111:105" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                  <operand localId="207" locator="111:2-111:100" resultTypeName="t:Integer" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                     <operand xsi:type="ToDateTime">
+                        <operand localId="204" locator="111:32-111:68" resultTypeName="t:Date" name="ToDate" libraryName="FHIRHelpers" xsi:type="FunctionRef">
+                           <operand localId="203" locator="111:51-111:67" resultTypeName="fhir:date" path="birthDate" xsi:type="Property">
+                              <source localId="202" locator="111:51-111:57" resultTypeName="fhir:Patient" name="Patient" xsi:type="ExpressionRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="206" locator="111:71-111:99" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="205" locator="111:80-111:99" name="Measurement Period" xsi:type="ParameterRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="208" locator="111:104-111:105" resultTypeName="t:Integer" valueType="t:Integer" value="65" xsi:type="Literal"/>
+               </operand>
+               <operand localId="210" locator="112:13-112:45" resultTypeName="t:Boolean" name="Has Criteria Indicating Frailty" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="221" locator="113:13-116:9" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="218" locator="113:15-114:69" resultTypeName="t:Boolean" xsi:type="Or">
+                  <operand localId="215" locator="113:15-113:70" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                     <operand localId="213" locator="113:15-113:66" resultTypeName="t:Integer" xsi:type="Count">
+                        <source localId="212" locator="113:21-113:65" name="Outpatient Encounters with Advanced Illness" xsi:type="ExpressionRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </source>
+                     </operand>
+                     <operand localId="214" locator="113:70" resultTypeName="t:Integer" valueType="t:Integer" value="2" xsi:type="Literal"/>
+                  </operand>
+                  <operand localId="217" locator="114:16-114:69" resultTypeName="t:Boolean" xsi:type="Exists">
+                     <operand localId="216" locator="114:23-114:69" name="Inpatient Encounter with Advanced Illness" xsi:type="ExpressionRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="fhir:Encounter" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="220" locator="115:16-115:88" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="219" locator="115:23-115:88" name="Dementia Medications In Year Before or During Measurement Period" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="fhir:MedicationDispense" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="236" locator="124:1-127:2" resultTypeName="t:Integer" name="CumulativeDays" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="236">
+               <a:s>define function &quot;CumulativeDays&quot;(Intervals </a:s>
+               <a:s r="227">
+                  <a:s>List&lt;</a:s>
+                  <a:s r="226">
+                     <a:s>Interval&lt;</a:s>
+                     <a:s r="225">
+                        <a:s>DateTime</a:s>
+                     </a:s>
+                     <a:s>></a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+               <a:s> ):&#xd;
+	</a:s>
+               <a:s r="235">
+                  <a:s r="235">
+                     <a:s>Sum(</a:s>
+                     <a:s r="234">
+                        <a:s>
+                           <a:s r="230">
+                              <a:s r="229">
+                                 <a:s>(</a:s>
+                                 <a:s r="229">
+                                    <a:s>collapse </a:s>
+                                    <a:s r="228">
+                                       <a:s>Intervals</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                              <a:s>CollapsedInterval</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			</a:s>
+                        <a:s r="233">
+                           <a:s>return all </a:s>
+                           <a:s r="232">
+                              <a:s>duration in days of </a:s>
+                              <a:s r="231">
+                                 <a:s>CollapsedInterval</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+	)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="235" locator="125:2-127:2" resultTypeName="t:Integer" xsi:type="Sum">
+            <source localId="234" locator="125:6-126:51" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="230" locator="125:6-125:42" alias="CollapsedInterval">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </elementType>
+                  </resultTypeSpecifier>
+                  <expression localId="229" locator="125:6-125:25" xsi:type="Collapse">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </elementType>
+                     </resultTypeSpecifier>
+                     <operand localId="228" locator="125:16-125:24" name="Intervals" xsi:type="OperandRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </elementType>
+                        </resultTypeSpecifier>
+                     </operand>
+                     <operand resultTypeName="t:Quantity" xsi:type="Null"/>
+                  </expression>
+               </source>
+               <return localId="233" locator="126:4-126:51" distinct="false">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="232" locator="126:15-126:51" resultTypeName="t:Integer" precision="Day" xsi:type="DurationBetween">
+                     <operand xsi:type="Start">
+                        <operand localId="231" locator="126:35-126:51" name="CollapsedInterval" xsi:type="AliasRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="End">
+                        <operand localId="231" locator="126:35-126:51" name="CollapsedInterval" xsi:type="AliasRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </expression>
+               </return>
+            </source>
+         </expression>
+         <operand name="Intervals">
+            <operandTypeSpecifier localId="227" locator="124:44-124:67" xsi:type="ListTypeSpecifier">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </elementType>
+               </resultTypeSpecifier>
+               <elementType localId="226" locator="124:49-124:66" xsi:type="IntervalTypeSpecifier">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <pointType localId="225" locator="124:58-124:65" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </elementType>
+            </operandTypeSpecifier>
+         </operand>
+      </def>
+      <def localId="238" locator="121:1-122:69" resultTypeName="t:Integer" name="Days Spent in Long Term Care During Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="238">
+               <a:s>define &quot;Days Spent in Long Term Care During Measurement Period&quot;:&#xd;
+	</a:s>
+               <a:s r="237">
+                  <a:s>&quot;CumulativeDays&quot;(</a:s>
+                  <a:s r="224">
+                     <a:s>&quot;Long Term Care Periods During Measurement Period&quot;</a:s>
+                  </a:s>
+                  <a:s>)</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="237" locator="122:2-122:69" resultTypeName="t:Integer" name="CumulativeDays" xsi:type="FunctionRef">
+            <operand localId="224" locator="122:19-122:68" name="Long Term Care Periods During Measurement Period" xsi:type="ExpressionRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </elementType>
+               </resultTypeSpecifier>
+            </operand>
+         </expression>
+      </def>
+      <def localId="242" locator="118:1-119:62" resultTypeName="t:Boolean" name="Has Spent More Than 90 Days in Long Term Care" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="242">
+               <a:s>define &quot;Has Spent More Than 90 Days in Long Term Care&quot;:&#xd;
+	</a:s>
+               <a:s r="241">
+                  <a:s r="239">
+                     <a:s>&quot;Days Spent in Long Term Care During Measurement Period&quot;</a:s>
+                  </a:s>
+                  <a:s r="240"> > 90</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="241" locator="119:2-119:62" resultTypeName="t:Boolean" xsi:type="Greater">
+            <operand localId="239" locator="119:2-119:57" resultTypeName="t:Integer" name="Days Spent in Long Term Care During Measurement Period" xsi:type="ExpressionRef"/>
+            <operand localId="240" locator="119:61-119:62" resultTypeName="t:Integer" valueType="t:Integer" value="90" xsi:type="Literal"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

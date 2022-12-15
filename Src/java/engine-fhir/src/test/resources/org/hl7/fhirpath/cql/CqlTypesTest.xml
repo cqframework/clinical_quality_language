@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlTypesTest" reference="https://cql.hl7.org/09-b-cqlreference.html#types-2">
+	<!-- TODO: Go through this file and flesh out or correct
+	all the bounds checking against the CQL spec. -->
+	<group name="Any">
+		<!-- REPLACED BY TestIsolatedCqlExprs : ValueLiteralsAndSelectors.xml
+		<test name="AnyInteger">
+			<expression>5</expression>
+			<output>5</output>
+		</test>
+		<test name="AnyDecimal">
+			<expression>5.0</expression>
+			<output>5.0</output>
+		</test>
+		-->
+		<test name="AnyQuantity">
+			<expression>5.0 'g'</expression>
+			<output>5.0'g'</output>
+		</test>
+		<test name="AnyDateTime">
+			<expression>DateTime(2012, 4, 4)</expression>
+			<output>@2012-04-04T</output>
+		</test>
+		<test name="AnyTime">
+			<expression>@T09:00:00.000</expression>
+			<output>@T09:00:00.000</output>
+		</test>
+		<test name="AnyInterval">
+			<expression>Interval[2, 7]</expression>
+			<output>Interval[2, 7]</output>
+		</test>
+		<test name="AnyList">
+			<expression>{1, 2, 3}</expression>
+			<output>{1, 2, 3}</output>
+		</test>
+		<test name="AnyTuple">
+			<expression>Tuple { id: 5, name: 'Chris'}</expression>
+			<output>Tuple { id: 5, name: 'Chris'}</output>
+		</test>
+		<test name="AnyString">
+			<expression>Tuple { id: 5, name: 'Chris'}.name</expression>
+			<output>'Chris'</output>
+		</test>
+	</group>
+	<group name="Boolean">
+		<!-- REPLACED BY TestIsolatedCqlExprs : ValueLiteralsAndSelectors.xml
+		<test name="BooleanTestTrue">
+			<expression>true</expression>
+			<output>true</output>
+		</test>
+		<test name="BooleanTestFalse">
+			<expression>false</expression>
+			<output>false</output>
+		</test>
+		-->
+	</group>
+	<group name="DateTime">
+		<test name="DateTimeNull">
+			<expression>DateTime(null)</expression>
+			<output>null</output>
+		</test>
+		<test name="DateTimeUpperBoundExcept">
+			<expression invalid="true">DateTime(10000, 12, 31, 23, 59, 59, 999)</expression>
+			<!-- The year: 10000 falls above the accepted bounds of 0001-9999. -->
+		</test>
+		<test name="DateTimeLowerBoundExcept">
+			<expression invalid="true">DateTime(0000, 1, 1, 0, 0, 0, 0)</expression>
+			<!-- The year: 0 falls below the accepted bounds of 0001-9999. -->
+		</test>
+		<test name="DateTimeProper">
+			<expression>DateTime(2016, 7, 7, 6, 25, 33, 910)</expression>
+			<output>@2016-07-07T06:25:33.910</output>
+		</test>
+		<test name="DateTimeIncomplete">
+			<expression>DateTime(2015, 2, 10)</expression>
+			<output>@2015-02-10T</output>
+		</test>
+		<test name="DateTimeUncertain">
+			<expression>days between DateTime(2015, 2, 10) and DateTime(2015, 3)</expression>
+			<output>Interval [ 18, 49 ]</output>
+			<!-- TODO: How to handle the fact the question is resulting in an
+			undertainty interval and that CQL/ELM seem to provide no direct way of
+			selecting the same value, conceptually an implementation internal;
+			currently Equivalent() results in null from comparing with an Interval. -->
+		</test>
+		<test name="DateTimeMin">
+			<expression>DateTime(0001, 1, 1, 0, 0, 0, 0)</expression>
+			<output>@0001-01-01T00:00:00.000</output>
+		</test>
+		<test name="DateTimeMax">
+			<expression>DateTime(9999, 12, 31, 23, 59, 59, 999)</expression>
+			<output>@9999-12-31T23:59:59.999</output>
+		</test>
+	</group>
+	<group name="Decimal">
+		<!-- REPLACED BY TestIsolatedCqlExprs : ValueLiteralsAndSelectors.xml
+		<test name="DecimalUpperBoundExcept">
+			<expression>10000000000000000000000000000000000.00000000</expression>
+			<output>10000000000000000000000000000000000.00000000</output>
+		</test>
+		<test name="DecimalLowerBoundExcept">
+			<expression>-10000000000000000000000000000000000.00000000</expression>
+			<output>-10000000000000000000000000000000000.00000000</output>
+		</test>
+		<test name="DecimalFractionalTooBig">
+			<expression>5.999999999</expression>
+			<output>5.999999999</output>
+		</test>
+		<test name="DecimalPi">
+			<expression>3.14159265</expression>
+			<output>3.14159265</output>
+		</test>
+		-->
+	</group>
+	<group name="Integer">
+		<!-- REPLACED BY TestIsolatedCqlExprs : ValueLiteralsAndSelectors.xml
+		<test name="IntegerUpperBoundExcept">
+			<expression invalid="true">2147483649</expression>
+		</test>
+		<test name="IntegerLowerBoundExcept">
+			<expression invalid="true">-2147483649</expression>
+		</test>
+		<test name="IntegerProper">
+			<expression>5000</expression>
+			<output>5000</output>
+		</test>
+		-->
+	</group>
+	<group name="Interval">
+	</group>
+	<group name="Quantity">
+		<test name="QuantityTest">
+			<expression>150.2 '[lb_av]'</expression>
+			<output>150.2 '[lb_av]'</output>
+		</test>
+		<test name="QuantityTest2">
+			<expression>2.5589 '{eskimo kisses}'</expression>
+			<output>2.5589 '{eskimo kisses}'</output>
+		</test>
+		<test name="QuantityFractionalTooBig">
+			<expression>5.999999999 'g'</expression>
+			<output>5.999999999 'g'</output>
+		</test>
+	</group>
+	<group name="String">
+		<test name="StringTestEscapeQuotes">
+			<expression>'\'I start with a single quote and end with a double quote\"'</expression>
+			<output>'\u0027I start with a single quote and end with a double quote\u0022'</output>
+		</test>
+		<test name="StringUnicodeTest">
+			<expression>'\u0048\u0069'</expression>
+			<output>'Hi'</output>
+		</test>
+	</group>
+	<group name="Time">
+		<test name="TimeUpperBoundHours">
+			<expression invalid="semantic">@T24:59:59.999</expression>
+			<!-- Translation Error: Invalid date-time input (T24:59:59.999). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm). -->
+		</test>
+		<test name="TimeUpperBoundMinutes">
+			<expression invalid="semantic">@T23:60:59.999</expression>
+			<!-- Translation Error: Invalid date-time input (T23:60:59.999). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm). -->
+		</test>
+		<test name="TimeUpperBoundSeconds">
+			<expression invalid="semantic">@T23:59:60.999</expression>
+			<!--Translation Error: Invalid date-time input (T23:59:60.999). Use ISO 8601 date time representation (yyyy-MM-ddThh:mm:ss.mmmmZhh:mm).  -->
+		</test>
+		<test name="TimeUpperBoundMillis">
+			<expression invalid="semantic">@T23:59:59.10000</expression>
+			<!-- Value 10000 for millisOfSecond must not be larger than 999 -->
+		</test>
+		<test name="TimeProper">
+			<expression>@T10:25:12.863</expression>
+			<output>@T10:25:12.863</output>
+		</test>
+		<test name="TimeAllMax">
+			<expression>@T23:59:59.999</expression>
+			<output>@T23:59:59.999</output>
+		</test>
+		<test name="TimeAllMin">
+			<expression>@T00:00:00.000</expression>
+			<output>@T00:00:00.000</output>
+		</test>
+	</group>
+</tests>

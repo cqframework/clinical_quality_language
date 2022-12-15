@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlConditionalOperatorsTest" reference="https://cql.hl7.org/03-developersguide.html#conditional-expressions">
+	<group name="if-then-else">
+		<test name="IfTrue1">
+			<expression>if 10 &gt; 5 then 5 else 10</expression>
+			<output>5</output>
+		</test>
+		<test name="IfFalse1">
+			<expression>if 10 = 5 then 10 + 5 else 10 - 5</expression>
+			<output>5</output>
+		</test>
+		<test name="IfNull1">
+			<expression>if 10 = null then 5 else 10</expression>
+			<output>10</output>
+		</test>
+	</group>
+	<group name="standard case">
+		<test name="StandardCase1">
+			<expression>
+				case
+					when 10 &gt; 5 then 5
+					when 5 &gt; 10 then 10
+					else null
+				end
+			</expression>
+			<output>5</output>
+		</test>
+		<test name="StandardCase2">
+			<expression>
+				case
+					when 5 &gt; 10 then 5 + 10
+					when 5 = 10 then 10
+					else 10 - 5
+				end
+			</expression>
+			<output>5</output>
+		</test>
+		<test name="StandardCase3">
+			<expression>
+				case
+					when null ~ 10 then null + 10
+					when null ~ 5 then 5
+					else 5 + 10
+				end
+			</expression>
+			<output>15</output>
+		</test>
+	</group>
+	<group name="selected case">
+		<test name="SelectedCase1">
+			<expression>
+				case 5
+					when 5 then 12
+					when 10 then 10 + 5
+					else 10 - 5
+				end
+			</expression>
+			<output>12</output>
+		</test>
+		<test name="SelectedCase2">
+			<expression>
+				case 10
+					when 5 then 12
+					when 10 then 10 + 5
+					else 10 - 5
+				end
+			</expression>
+			<output>15</output>
+		</test>
+		<test name="SelectedCase3">
+			<expression>
+				case 10 + 5
+					when 5 then 12
+					when 10 then 10 + 5
+					else 10 - 5
+				end
+			</expression>
+			<output>5</output>
+		</test>
+	</group>
+</tests>

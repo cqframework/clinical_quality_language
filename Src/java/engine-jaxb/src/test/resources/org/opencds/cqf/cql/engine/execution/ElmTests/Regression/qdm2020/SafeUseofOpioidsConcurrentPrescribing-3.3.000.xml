@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="43">
+         <a:s>library SafeUseofOpioidsConcurrentPrescribing version '3.3.000'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="SafeUseofOpioidsConcurrentPrescribing" version="3.3.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_5" version="5.5">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="1">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>QDM</a:s>
+               </a:s>
+               <a:s> version '5.5'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="5.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="2">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>MATGlobalCommonFunctions</a:s>
+               </a:s>
+               <a:s> version '5.0.000' called Global</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </includes>
+   <codeSystems>
+      <def localId="3" locator="7:1-7:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="3">
+               <a:s>codesystem &quot;LOINC&quot;: 'urn:oid:2.16.840.1.113883.6.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="4" locator="9:1-9:85" name="All Primary and Secondary Cancer" id="urn:oid:2.16.840.1.113762.1.4.1111.161" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="4">
+               <a:s>valueset &quot;All Primary and Secondary Cancer&quot;: 'urn:oid:2.16.840.1.113762.1.4.1111.161'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="5" locator="10:1-10:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="5">
+               <a:s>valueset &quot;Ethnicity&quot;: 'urn:oid:2.16.840.1.114222.4.11.837'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="6" locator="11:1-11:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="6">
+               <a:s>valueset &quot;ONC Administrative Sex&quot;: 'urn:oid:2.16.840.1.113762.1.4.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="7" locator="12:1-12:79" name="Palliative or Hospice Care" id="urn:oid:2.16.840.1.113883.3.600.1.1579" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="7">
+               <a:s>valueset &quot;Palliative or Hospice Care&quot;: 'urn:oid:2.16.840.1.113883.3.600.1.1579'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="8" locator="13:1-13:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="8">
+               <a:s>valueset &quot;Payer&quot;: 'urn:oid:2.16.840.1.114222.4.11.3591'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="9" locator="14:1-14:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="9">
+               <a:s>valueset &quot;Race&quot;: 'urn:oid:2.16.840.1.114222.4.11.836'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="10" locator="15:1-15:91" name="Schedule II and III Opioid Medications" id="urn:oid:2.16.840.1.113762.1.4.1111.165" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="10">
+               <a:s>valueset &quot;Schedule II and III Opioid Medications&quot;: 'urn:oid:2.16.840.1.113762.1.4.1111.165'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="11" locator="16:1-16:78" name="Schedule IV Benzodiazepines" id="urn:oid:2.16.840.1.113762.1.4.1125.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="11">
+               <a:s>valueset &quot;Schedule IV Benzodiazepines&quot;: 'urn:oid:2.16.840.1.113762.1.4.1125.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="13" locator="18:1-18:62" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="13">
+               <a:s>code &quot;Birth date&quot;: '21112-8' from </a:s>
+               <a:s r="12">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Birth date'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="12" locator="18:35-18:41" name="LOINC"/>
+      </def>
+   </codes>
+   <contexts>
+      <def locator="20:1-20:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def locator="20:1-20:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="20:1-20:15" xmlns:ns0="urn:healthit-gov:qdm:v5_5" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="29" locator="25:1-28:129" name="Inpatient Encounter with Age Greater than or Equal to 18" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>define &quot;Inpatient Encounter with Age Greater than or Equal to 18&quot;:
+  </a:s>
+               <a:s r="28">
+                  <a:s>
+                     <a:s r="15">
+                        <a:s r="14">
+                           <a:s>
+                              <a:s>Global.&quot;Inpatient Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InpatientHospitalEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="27">
+                     <a:s>with </a:s>
+                     <a:s r="17">
+                        <a:s r="16">
+                           <a:s r="16">
+                              <a:s>[&quot;Patient Characteristic Birthdate&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Birth date&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> BirthDate</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="26">
+                        <a:s r="24">
+                           <a:s r="18">
+                              <a:s>Global</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="24">
+                              <a:s>CalendarAgeInYearsAt ( </a:s>
+                              <a:s r="20">
+                                 <a:s r="19">
+                                    <a:s>BirthDate</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="20">
+                                    <a:s>birthDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>, </a:s>
+                              <a:s r="23">
+                                 <a:s>start of </a:s>
+                                 <a:s r="22">
+                                    <a:s r="21">
+                                       <a:s>InpatientHospitalEncounter</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="22">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="25"> >= 18</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="28" locator="26:3-28:129" xsi:type="Query">
+            <source localId="15" locator="26:3-26:57" alias="InpatientHospitalEncounter">
+               <expression localId="14" locator="26:3-26:30" name="Inpatient Encounter" libraryName="Global" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="27" locator="27:5-28:129" alias="BirthDate" xsi:type="With">
+               <expression localId="16" locator="27:10-27:59" xmlns:ns1="urn:healthit-gov:qdm:v5_5" dataType="ns1:PatientCharacteristicBirthdate" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="27:47-27:58" name="Birth date" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+               <suchThat localId="26" locator="28:17-28:129" xsi:type="GreaterOrEqual">
+                  <operand localId="24" locator="28:17-28:123" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                     <operand localId="20" locator="28:47-28:69" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                     <operand localId="23" locator="28:72-28:121" xsi:type="Start">
+                        <operand localId="22" locator="28:81-28:121" path="relevantPeriod" scope="InpatientHospitalEncounter" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand localId="25" locator="28:128-28:129" valueType="t:Integer" value="18" xsi:type="Literal"/>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="43" locator="74:1-79:113" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="43">
+               <a:s>define &quot;Initial Population&quot;:
+  /*Captures encounters of patients with an opioid(s), benzodiazepine, or a combination of these medications at discharge*/
+  </a:s>
+               <a:s r="42">
+                  <a:s>
+                     <a:s r="31">
+                        <a:s r="30">
+                           <a:s>
+                              <a:s>&quot;Inpatient Encounter with Age Greater than or Equal to 18&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InpatientEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="41">
+                     <a:s>with </a:s>
+                     <a:s r="35">
+                        <a:s r="34">
+                           <a:s>( </a:s>
+                           <a:s r="34">
+                              <a:s r="32">
+                                 <a:s>[&quot;Medication, Discharge&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Schedule II and III Opioid Medications&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                              <a:s>
+      union </a:s>
+                              <a:s r="33">
+                                 <a:s>[&quot;Medication, Discharge&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Schedule IV Benzodiazepines&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> OpioidOrBenzodiazepineDischargeMedication</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="40">
+                        <a:s r="37">
+                           <a:s r="36">
+                              <a:s>OpioidOrBenzodiazepineDischargeMedication</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="37">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="40"> during </a:s>
+                        <a:s r="39">
+                           <a:s r="38">
+                              <a:s>InpatientEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="39">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="42" locator="76:3-79:113" xsi:type="Query">
+            <source localId="31" locator="76:3-76:79" alias="InpatientEncounter">
+               <expression localId="30" locator="76:3-76:60" name="Inpatient Encounter with Age Greater than or Equal to 18" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="41" locator="77:5-79:113" alias="OpioidOrBenzodiazepineDischargeMedication" xsi:type="With">
+               <expression localId="34" locator="77:10-78:70" xsi:type="Union">
+                  <operand localId="32" locator="77:12-77:78" xmlns:ns2="urn:healthit-gov:qdm:v5_5" dataType="ns2:PositiveMedicationDischarge" templateId="PositiveMedicationDischarge" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="77:38-77:77" name="Schedule II and III Opioid Medications" xsi:type="ValueSetRef"/>
+                  </operand>
+                  <operand localId="33" locator="78:13-78:68" xmlns:ns3="urn:healthit-gov:qdm:v5_5" dataType="ns3:PositiveMedicationDischarge" templateId="PositiveMedicationDischarge" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="78:39-78:67" name="Schedule IV Benzodiazepines" xsi:type="ValueSetRef"/>
+                  </operand>
+               </expression>
+               <suchThat localId="40" locator="79:17-79:113" xsi:type="In">
+                  <operand localId="37" locator="79:17-79:72" path="authorDatetime" scope="OpioidOrBenzodiazepineDischargeMedication" xsi:type="Property"/>
+                  <operand localId="39" locator="79:81-79:113" path="relevantPeriod" scope="InpatientEncounter" xsi:type="Property"/>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="45" locator="22:1-23:22" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="45">
+               <a:s>define &quot;Denominator&quot;:
+  </a:s>
+               <a:s r="44">
+                  <a:s>&quot;Initial Population&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="44" locator="23:3-23:22" name="Initial Population" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="80" locator="30:1-44:5" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="80">
+               <a:s>define &quot;Numerator&quot;:
+  /*Encounters of patients prescribed two or more opioids or an opioid and benzodiazepine at discharge.
+  */
+  </a:s>
+               <a:s r="79">
+                  <a:s r="59">
+                     <a:s>( </a:s>
+                     <a:s r="59">
+                        <a:s>
+                           <a:s r="47">
+                              <a:s r="46">
+                                 <a:s>
+                                    <a:s>&quot;Inpatient Encounter with Age Greater than or Equal to 18&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> InpatientEncounter</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="58">
+                           <a:s>where </a:s>
+                           <a:s r="58">
+                              <a:s>( </a:s>
+                              <a:s r="58">
+                                 <a:s r="56">
+                                    <a:s>Count(</a:s>
+                                    <a:s r="55">
+                                       <a:s>
+                                          <a:s r="49">
+                                             <a:s r="48">
+                                                <a:s r="48">
+                                                   <a:s>[&quot;Medication, Discharge&quot;: </a:s>
+                                                   <a:s>
+                                                      <a:s>&quot;Schedule II and III Opioid Medications&quot;</a:s>
+                                                   </a:s>
+                                                   <a:s>]</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s> Opioids</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+            </a:s>
+                                       <a:s r="54">
+                                          <a:s>where </a:s>
+                                          <a:s r="54">
+                                             <a:s r="51">
+                                                <a:s r="50">
+                                                   <a:s>Opioids</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="51">
+                                                   <a:s>authorDatetime</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s r="54"> during </a:s>
+                                             <a:s r="53">
+                                                <a:s r="52">
+                                                   <a:s>InpatientEncounter</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="53">
+                                                   <a:s>relevantPeriod</a:s>
+                                                </a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+        )</a:s>
+                                 </a:s>
+                                 <a:s r="57">>= 2</a:s>
+                              </a:s>
+                              <a:s>
+      )</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+                  <a:s>
+    union </a:s>
+                  <a:s r="78">
+                     <a:s>( </a:s>
+                     <a:s r="78">
+                        <a:s>
+                           <a:s r="61">
+                              <a:s r="60">
+                                 <a:s>
+                                    <a:s>&quot;Inpatient Encounter with Age Greater than or Equal to 18&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> InpatientEncounter</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        </a:s>
+                        <a:s r="69">
+                           <a:s>with </a:s>
+                           <a:s r="63">
+                              <a:s r="62">
+                                 <a:s r="62">
+                                    <a:s>[&quot;Medication, Discharge&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Schedule II and III Opioid Medications&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> OpioidsDischarge</a:s>
+                           </a:s>
+                           <a:s>
+          such that </a:s>
+                           <a:s r="68">
+                              <a:s r="65">
+                                 <a:s r="64">
+                                    <a:s>OpioidsDischarge</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="65">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="68"> during </a:s>
+                              <a:s r="67">
+                                 <a:s r="66">
+                                    <a:s>InpatientEncounter</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="67">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        </a:s>
+                        <a:s r="77">
+                           <a:s>with </a:s>
+                           <a:s r="71">
+                              <a:s r="70">
+                                 <a:s r="70">
+                                    <a:s>[&quot;Medication, Discharge&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Schedule IV Benzodiazepines&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> BenzodiazepinesDischarge</a:s>
+                           </a:s>
+                           <a:s>
+          such that </a:s>
+                           <a:s r="76">
+                              <a:s r="73">
+                                 <a:s r="72">
+                                    <a:s>BenzodiazepinesDischarge</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="73">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="76"> during </a:s>
+                              <a:s r="75">
+                                 <a:s r="74">
+                                    <a:s>InpatientEncounter</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="75">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="79" locator="33:3-44:5" xsi:type="Union">
+            <operand localId="59" locator="33:3-38:3" xsi:type="Query">
+               <source localId="47" locator="33:5-33:81" alias="InpatientEncounter">
+                  <expression localId="46" locator="33:5-33:62" name="Inpatient Encounter with Age Greater than or Equal to 18" xsi:type="ExpressionRef"/>
+               </source>
+               <where localId="58" locator="34:7-37:7" xsi:type="GreaterOrEqual">
+                  <operand localId="56" locator="34:15-36:9" xsi:type="Count">
+                     <source localId="55" locator="34:21-35:81" xsi:type="Query">
+                        <source localId="49" locator="34:21-34:95" alias="Opioids">
+                           <expression localId="48" locator="34:21-34:87" xmlns:ns4="urn:healthit-gov:qdm:v5_5" dataType="ns4:PositiveMedicationDischarge" templateId="PositiveMedicationDischarge" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="34:47-34:86" name="Schedule II and III Opioid Medications" xsi:type="ValueSetRef"/>
+                           </expression>
+                        </source>
+                        <where localId="54" locator="35:13-35:81" xsi:type="In">
+                           <operand localId="51" locator="35:19-35:40" path="authorDatetime" scope="Opioids" xsi:type="Property"/>
+                           <operand localId="53" locator="35:49-35:81" path="relevantPeriod" scope="InpatientEncounter" xsi:type="Property"/>
+                        </where>
+                     </source>
+                  </operand>
+                  <operand localId="57" locator="36:13" valueType="t:Integer" value="2" xsi:type="Literal"/>
+               </where>
+            </operand>
+            <operand localId="78" locator="39:11-44:5" xsi:type="Query">
+               <source localId="61" locator="39:13-39:89" alias="InpatientEncounter">
+                  <expression localId="60" locator="39:13-39:70" name="Inpatient Encounter with Age Greater than or Equal to 18" xsi:type="ExpressionRef"/>
+               </source>
+               <relationship localId="69" locator="40:9-41:92" alias="OpioidsDischarge" xsi:type="With">
+                  <expression localId="62" locator="40:14-40:80" xmlns:ns5="urn:healthit-gov:qdm:v5_5" dataType="ns5:PositiveMedicationDischarge" templateId="PositiveMedicationDischarge" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="40:40-40:79" name="Schedule II and III Opioid Medications" xsi:type="ValueSetRef"/>
+                  </expression>
+                  <suchThat localId="68" locator="41:21-41:92" xsi:type="In">
+                     <operand localId="65" locator="41:21-41:51" path="authorDatetime" scope="OpioidsDischarge" xsi:type="Property"/>
+                     <operand localId="67" locator="41:60-41:92" path="relevantPeriod" scope="InpatientEncounter" xsi:type="Property"/>
+                  </suchThat>
+               </relationship>
+               <relationship localId="77" locator="42:9-43:100" alias="BenzodiazepinesDischarge" xsi:type="With">
+                  <expression localId="70" locator="42:14-42:69" xmlns:ns6="urn:healthit-gov:qdm:v5_5" dataType="ns6:PositiveMedicationDischarge" templateId="PositiveMedicationDischarge" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="42:40-42:68" name="Schedule IV Benzodiazepines" xsi:type="ValueSetRef"/>
+                  </expression>
+                  <suchThat localId="76" locator="43:21-43:100" xsi:type="In">
+                     <operand localId="73" locator="43:21-43:59" path="authorDatetime" scope="BenzodiazepinesDischarge" xsi:type="Property"/>
+                     <operand localId="75" locator="43:68-43:100" path="relevantPeriod" scope="InpatientEncounter" xsi:type="Property"/>
+                  </suchThat>
+               </relationship>
+            </operand>
+         </expression>
+      </def>
+      <def localId="82" locator="46:1-47:51" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="82">
+               <a:s>define &quot;SDE Ethnicity&quot;:
+  </a:s>
+               <a:s r="81">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="81" locator="47:3-47:51" xmlns:ns7="urn:healthit-gov:qdm:v5_5" dataType="ns7:PatientCharacteristicEthnicity" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="47:40-47:50" name="Ethnicity" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="84" locator="49:1-50:43" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="84">
+               <a:s>define &quot;SDE Payer&quot;:
+  </a:s>
+               <a:s r="83">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="83" locator="50:3-50:43" xmlns:ns8="urn:healthit-gov:qdm:v5_5" dataType="ns8:PatientCharacteristicPayer" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="50:36-50:42" name="Payer" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="86" locator="52:1-53:41" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="86">
+               <a:s>define &quot;SDE Race&quot;:
+  </a:s>
+               <a:s r="85">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="85" locator="53:3-53:41" xmlns:ns9="urn:healthit-gov:qdm:v5_5" dataType="ns9:PatientCharacteristicRace" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="53:35-53:40" name="Race" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="88" locator="55:1-56:58" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="88">
+               <a:s>define &quot;SDE Sex&quot;:
+  </a:s>
+               <a:s r="87">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="87" locator="56:3-56:58" xmlns:ns10="urn:healthit-gov:qdm:v5_5" dataType="ns10:PatientCharacteristicSex" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="56:34-56:57" name="ONC Administrative Sex" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="130" locator="58:1-72:7" name="Denominator Exclusion" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="130">
+               <a:s>define &quot;Denominator Exclusion&quot;:
+  /*Excludes patients with cancer or who are receiving palliative or hospice care at the time of the encounter*/
+  </a:s>
+               <a:s r="129">
+                  <a:s>
+                     <a:s r="90">
+                        <a:s r="89">
+                           <a:s>
+                              <a:s>&quot;Inpatient Encounter with Age Greater than or Equal to 18&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InpatientEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="128">
+                     <a:s>where </a:s>
+                     <a:s r="128">
+                        <a:s r="118">
+                           <a:s r="108">
+                              <a:s r="99">
+                                 <a:s>exists </a:s>
+                                 <a:s r="98">
+                                    <a:s>( </a:s>
+                                    <a:s r="98">
+                                       <a:s>
+                                          <a:s r="92">
+                                             <a:s r="91">
+                                                <a:s r="91">
+                                                   <a:s>[&quot;Diagnosis&quot;: </a:s>
+                                                   <a:s>
+                                                      <a:s>&quot;All Primary and Secondary Cancer&quot;</a:s>
+                                                   </a:s>
+                                                   <a:s>]</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s> Cancer</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+        </a:s>
+                                       <a:s r="97">
+                                          <a:s>where </a:s>
+                                          <a:s r="97">
+                                             <a:s r="94">
+                                                <a:s r="93">
+                                                   <a:s>Cancer</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="94">
+                                                   <a:s>prevalencePeriod</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s r="97"> overlaps </a:s>
+                                             <a:s r="96">
+                                                <a:s r="95">
+                                                   <a:s>InpatientEncounter</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="96">
+                                                   <a:s>relevantPeriod</a:s>
+                                                </a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+    )</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      or </a:s>
+                              <a:s r="107">
+                                 <a:s>exists </a:s>
+                                 <a:s r="106">
+                                    <a:s>( </a:s>
+                                    <a:s r="106">
+                                       <a:s>
+                                          <a:s r="101">
+                                             <a:s r="100">
+                                                <a:s>
+                                                   <a:s>InpatientEncounter.diagnoses</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s> Diagnosis</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+          </a:s>
+                                       <a:s r="105">
+                                          <a:s>where </a:s>
+                                          <a:s r="105">
+                                             <a:s r="103">
+                                                <a:s r="102">
+                                                   <a:s>Diagnosis</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="103">
+                                                   <a:s>code</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s> in </a:s>
+                                             <a:s r="104">
+                                                <a:s>&quot;All Primary and Secondary Cancer&quot;</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+      )</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      or </a:s>
+                           <a:s r="117">
+                              <a:s>exists </a:s>
+                              <a:s r="116">
+                                 <a:s>( </a:s>
+                                 <a:s r="116">
+                                    <a:s>
+                                       <a:s r="110">
+                                          <a:s r="109">
+                                             <a:s r="109">
+                                                <a:s>[&quot;Intervention, Order&quot;: </a:s>
+                                                <a:s>
+                                                   <a:s>&quot;Palliative or Hospice Care&quot;</a:s>
+                                                </a:s>
+                                                <a:s>]</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> PalliativeOrHospiceCareOrder</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+          </a:s>
+                                    <a:s r="115">
+                                       <a:s>where </a:s>
+                                       <a:s r="115">
+                                          <a:s r="112">
+                                             <a:s r="111">
+                                                <a:s>PalliativeOrHospiceCareOrder</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="112">
+                                                <a:s>authorDatetime</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s r="115"> during </a:s>
+                                          <a:s r="114">
+                                             <a:s r="113">
+                                                <a:s>InpatientEncounter</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="114">
+                                                <a:s>relevantPeriod</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+      )</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      or </a:s>
+                        <a:s r="127">
+                           <a:s>exists </a:s>
+                           <a:s r="126">
+                              <a:s>( </a:s>
+                              <a:s r="126">
+                                 <a:s>
+                                    <a:s r="120">
+                                       <a:s r="119">
+                                          <a:s r="119">
+                                             <a:s>[&quot;Intervention, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Palliative or Hospice Care&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> PalliativeOrHospiceCarePerformed</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+          </a:s>
+                                 <a:s r="125">
+                                    <a:s>where </a:s>
+                                    <a:s r="125">
+                                       <a:s r="122">
+                                          <a:s r="121">
+                                             <a:s>PalliativeOrHospiceCarePerformed</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="122">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s r="125"> overlaps </a:s>
+                                       <a:s r="124">
+                                          <a:s r="123">
+                                             <a:s>InpatientEncounter</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="124">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      )</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="129" locator="60:3-72:7" xsi:type="Query">
+            <source localId="90" locator="60:3-60:79" alias="InpatientEncounter">
+               <expression localId="89" locator="60:3-60:60" name="Inpatient Encounter with Age Greater than or Equal to 18" xsi:type="ExpressionRef"/>
+            </source>
+            <where localId="128" locator="61:5-72:7" xsi:type="Or">
+               <operand localId="118" locator="61:11-69:7" xsi:type="Or">
+                  <operand localId="108" locator="61:11-66:7" xsi:type="Or">
+                     <operand localId="99" locator="61:11-63:5" xsi:type="Exists">
+                        <operand localId="98" locator="61:18-63:5" xsi:type="Query">
+                           <source localId="92" locator="61:20-61:75" alias="Cancer">
+                              <expression localId="91" locator="61:20-61:68" xmlns:ns11="urn:healthit-gov:qdm:v5_5" dataType="ns11:Diagnosis" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                 <codes locator="61:34-61:67" name="All Primary and Secondary Cancer" xsi:type="ValueSetRef"/>
+                              </expression>
+                           </source>
+                           <where localId="97" locator="62:9-62:80" xsi:type="Overlaps">
+                              <operand localId="94" locator="62:15-62:37" path="prevalencePeriod" scope="Cancer" xsi:type="Property"/>
+                              <operand localId="96" locator="62:48-62:80" path="relevantPeriod" scope="InpatientEncounter" xsi:type="Property"/>
+                           </where>
+                        </operand>
+                     </operand>
+                     <operand localId="107" locator="64:10-66:7" xsi:type="Exists">
+                        <operand localId="106" locator="64:17-66:7" xsi:type="Query">
+                           <source localId="101" locator="64:19-64:56" alias="Diagnosis">
+                              <expression localId="100" locator="64:19-64:46" path="diagnoses" scope="InpatientEncounter" xsi:type="Property"/>
+                           </source>
+                           <where localId="105" locator="65:11-65:68" xsi:type="InValueSet">
+                              <code localId="103" locator="65:17-65:30" path="code" scope="Diagnosis" xsi:type="Property"/>
+                              <valueset localId="104" locator="65:35-65:68" name="All Primary and Secondary Cancer" xsi:type="ValueSetRef"/>
+                           </where>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="117" locator="67:10-69:7" xsi:type="Exists">
+                     <operand localId="116" locator="67:17-69:7" xsi:type="Query">
+                        <source localId="110" locator="67:19-67:100" alias="PalliativeOrHospiceCareOrder">
+                           <expression localId="109" locator="67:19-67:71" xmlns:ns12="urn:healthit-gov:qdm:v5_5" dataType="ns12:PositiveInterventionOrder" templateId="PositiveInterventionOrder" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="67:43-67:70" name="Palliative or Hospice Care" xsi:type="ValueSetRef"/>
+                           </expression>
+                        </source>
+                        <where localId="115" locator="68:11-68:100" xsi:type="In">
+                           <operand localId="112" locator="68:17-68:59" path="authorDatetime" scope="PalliativeOrHospiceCareOrder" xsi:type="Property"/>
+                           <operand localId="114" locator="68:68-68:100" path="relevantPeriod" scope="InpatientEncounter" xsi:type="Property"/>
+                        </where>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="127" locator="70:10-72:7" xsi:type="Exists">
+                  <operand localId="126" locator="70:17-72:7" xsi:type="Query">
+                     <source localId="120" locator="70:19-70:108" alias="PalliativeOrHospiceCarePerformed">
+                        <expression localId="119" locator="70:19-70:75" xmlns:ns13="urn:healthit-gov:qdm:v5_5" dataType="ns13:PositiveInterventionPerformed" templateId="PositiveInterventionPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                           <codes locator="70:47-70:74" name="Palliative or Hospice Care" xsi:type="ValueSetRef"/>
+                        </expression>
+                     </source>
+                     <where localId="125" locator="71:11-71:106" xsi:type="Overlaps">
+                        <operand localId="122" locator="71:17-71:63" path="relevantPeriod" scope="PalliativeOrHospiceCarePerformed" xsi:type="Property"/>
+                        <operand localId="124" locator="71:74-71:106" path="relevantPeriod" scope="InpatientEncounter" xsi:type="Property"/>
+                     </where>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+
