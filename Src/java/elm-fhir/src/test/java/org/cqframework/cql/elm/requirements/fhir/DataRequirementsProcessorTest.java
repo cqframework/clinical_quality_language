@@ -894,6 +894,33 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
+    public void TestDataRequirementsAnalysisCase2g() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase2g.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
+
+        /*
+        2g - Equal to a compile-time literal function
+        DataRequirement
+        type: Condition
+        dateFilter: { path: onset, value: Today() }
+
+        define DateTimeEqualToFunction:
+          [Condition] C
+            where C.onset as dateTime = Today()
+        */
+
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("DateTimeEqualToFunction");
+        assertTrue(ed.getExpression() instanceof Query);
+        Query q = (Query)ed.getExpression();
+        assertTrue(q.getSource() != null && q.getSource().size() == 1);
+        AliasedQuerySource source = q.getSource().get(0);
+        assertTrue(source.getExpression() instanceof Retrieve);
+        Retrieve r = (Retrieve)source.getExpression();
+        assertTrue(r.getDateProperty() != null && r.getDateProperty().equals("onset"));
+    }
+
+    @Test
     public void TestDataRequirementsAnalysisCase2b() throws IOException {
         CqlTranslatorOptions translatorOptions = getTranslatorOptions();
         CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase2b.cql", translatorOptions);

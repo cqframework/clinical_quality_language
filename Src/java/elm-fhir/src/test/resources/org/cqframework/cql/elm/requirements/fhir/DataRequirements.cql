@@ -131,18 +131,20 @@ define "HospiceEncounterClaimsBUnboundDate":
       where exists CEncounter.item IEncounter
         where date from IEncounter.serviced."start" in day of "Measurement Period"
 
-  /*
-  2b - Bound Measurement Period
-  Interval[@2019-01-01, @2020-01-01 )
-  DataRequirement
-  type: Claim
-  dateFilter: { path:  item.serviced.start, valuePeriod: "@2019-01-01-@2020-01-01" },
-  */
+/*
+2b - Bound Measurement Period
+Interval[@2019-01-01, @2020-01-01 )
+DataRequirement
+type: Claim
+dateFilter: { path:  item.serviced.start, valuePeriod: "@2019-01-01-@2020-01-01" },
+*/
 
-/* define "HospiceEncounterClaimsBBoundDate":
+/*
+define "HospiceEncounterClaimsBBoundDate":
     [Claim] CEncounter
       where exists CEncounter.item IEncounter
-        where IEncounter.serviced."start" in "Measurement Period" */
+        where IEncounter.serviced."start" in "Measurement Period"
+*/
 
 /*
 2c - Bound Measurement Period
@@ -152,10 +154,12 @@ type: Claim
 dateFilter: { path:  item.serviced.start, valuePeriod: "@2019-01-01T00:00:00.0-@2020-01-01T00:00:00.0" },
 */
 
-/* define "HospiceEncounterClaimsBBoundDateFrom":
+/*
+define "HospiceEncounterClaimsBBoundDateFrom":
     [Claim] CEncounter
       where exists CEncounter.item IEncounter
-        where date from IEncounter.serviced."start" in "Measurement Period" */
+        where date from IEncounter.serviced."start" in "Measurement Period"
+*/
 
 
 /*
@@ -170,7 +174,74 @@ type: Claim
       where exists CEncounter.item IEncounter
         where (date from IEncounter.serviced."start") + 1 day in "Measurement Period" */
 
+/*
+2e -
+*/
 
+/*
+define “Date Filter Expression”:
+  [Condition] C
+    where onset as Period starts 90 days or less before Today()
+
+Emits as:
+define "Date Filter Expression":
+  [Condition] C
+    where start of (onset as Period) in Interval[Today() - 90 days, Today()]
+*/
+
+/*
+2f -
+*/
+
+/*
+define DateTimeEqualToFunction:
+  [Condition] C
+    where FHIRCommon.ToInterval(C.onset) starts 90 days or less before Today()
+*/
+
+/*
+2g - Equal to a compile-time literal function
+DataRequirement
+type: Condition
+dateFilter: { path: onset, value: Today() }
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as dateTime = Today()
+*/
+
+/*
+2h
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as dateTime = Now()
+*/
+
+/*
+2i
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as dateTime in Interval[@2022-12-31 - 90 days, @2022-12-31]
+*/
+
+/*
+2j
+*/
+
+/*
+define "Date Filter Expression":
+  [Condition] C
+    where C.onset as dateTime >= @2022-12-31 - 90 days
+      and C.onset as dateTime <= @2022-12-31
+*/
 
 /*
 2.

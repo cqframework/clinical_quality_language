@@ -2,6 +2,8 @@ package org.cqframework.cql.elm.requirements.fhir;
 
 import org.cqframework.cql.cql2elm.CqlTranslatorOptions;
 import org.cqframework.cql.cql2elm.LibraryManager;
+import org.cqframework.cql.elm.evaluation.ElmEvaluationContext;
+import org.cqframework.cql.elm.evaluation.ElmEvaluationVisitor;
 import org.hl7.cql.model.NamespaceManager;
 import org.cqframework.cql.cql2elm.model.CompiledLibrary;
 import org.cqframework.cql.elm.tracking.TrackBack;
@@ -724,64 +726,8 @@ public class DataRequirementsProcessor {
             return null;
         }
 
-        if (value instanceof Interval) {
-            // TODO: Handle lowclosed/highclosed
-            return new Period().setStartElement(toFhirDateTimeValue(context, ((Interval)value).getLow()))
-                    .setEndElement(toFhirDateTimeValue(context, ((Interval)value).getHigh()));
-        }
-        else if (value instanceof Literal) {
-            if (context.getTypeResolver().isDateTimeType(value.getResultType())) {
-                return new DateTimeType(((Literal)value).getValue());
-            }
-            else if (context.getTypeResolver().isDateType(value.getResultType())) {
-                return new DateType(((Literal)value).getValue());
-            }
-            else if (context.getTypeResolver().isIntegerType(value.getResultType())) {
-                return new IntegerType(((Literal)value).getValue());
-            }
-            else if (context.getTypeResolver().isDecimalType(value.getResultType())) {
-                return new DecimalType(((Literal)value).getValue());
-            }
-            else if (context.getTypeResolver().isStringType(value.getResultType())) {
-                return new StringType(((Literal)value).getValue());
-            }
-        }
-        else if (value instanceof DateTime) {
-            DateTime dateTime = (DateTime)value;
-            return new DateTimeType(toDateTimeString(
-                    toFhirValue(context, dateTime.getYear()),
-                    toFhirValue(context, dateTime.getMonth()),
-                    toFhirValue(context, dateTime.getDay()),
-                    toFhirValue(context, dateTime.getHour()),
-                    toFhirValue(context, dateTime.getMinute()),
-                    toFhirValue(context, dateTime.getSecond()),
-                    toFhirValue(context, dateTime.getMillisecond()),
-                    toFhirValue(context, dateTime.getTimezoneOffset())));
-        }
-        else if (value instanceof org.hl7.elm.r1.Date) {
-            org.hl7.elm.r1.Date date = (org.hl7.elm.r1.Date)value;
-            return new DateType(toDateString(
-                    toFhirValue(context, date.getYear()),
-                    toFhirValue(context, date.getMonth()),
-                    toFhirValue(context, date.getDay())
-            ));
-        }
-        else if (value instanceof Start) {
-            DataType operand = toFhirValue(context, ((Start)value).getOperand());
-            if (operand != null) {
-                Period period = (Period)operand;
-                return period.getStartElement();
-            }
-        }
-        else if (value instanceof End) {
-            DataType operand = toFhirValue(context, ((End)value).getOperand());
-            if (operand != null) {
-                Period period = (Period)operand;
-                return period.getEndElement();
-            }
-
-        }
-        else if (value instanceof ParameterRef) {
+        // In the special case that the value is directly a parameter ref, use the parameter extension mechanism
+        if (value instanceof ParameterRef) {
             if (context.getTypeResolver().isIntervalType(value.getResultType())) {
                 Extension e = toExpression(context, (ParameterRef)value);
                 org.hl7.cql.model.DataType pointType = ((IntervalType)value.getResultType()).getPointType();
@@ -850,6 +796,78 @@ public class DataRequirementsProcessor {
                 throw new IllegalArgumentException(String.format("toFhirValue not implemented for parameter of type %s", value.getResultType().toString()));
             }
         }
+
+        // Otherwise, attempt to use an evaluation visitor to evaluate the value (must be compiile-time literal or this will produce a runtime error)
+
+        ElmEvaluationContext evaluationContext = new ElmEvaluationContext();
+        ElmEvaluationVisitor evaluationVisitor = new ElmEvaluationVisitor();
+        Object result = evaluationVisitor.visitExpression(value, evaluationContext);
+
+        if (result instanceof DataType) {
+            return (DataType)result;
+        }
+
+        // Attempt to convert the CQL value to a FHIR value:
+        // TODO: CQL Runtime values
+
+        if (value instanceof Interval) {
+            // TODO: Handle lowclosed/highclosed
+            return new Period().setStartElement(toFhirDateTimeValue(context, ((Interval)value).getLow()))
+                    .setEndElement(toFhirDateTimeValue(context, ((Interval)value).getHigh()));
+        }
+        else if (value instanceof Literal) {
+            if (context.getTypeResolver().isDateTimeType(value.getResultType())) {
+                return new DateTimeType(((Literal)value).getValue());
+            }
+            else if (context.getTypeResolver().isDateType(value.getResultType())) {
+                return new DateType(((Literal)value).getValue());
+            }
+            else if (context.getTypeResolver().isIntegerType(value.getResultType())) {
+                return new IntegerType(((Literal)value).getValue());
+            }
+            else if (context.getTypeResolver().isDecimalType(value.getResultType())) {
+                return new DecimalType(((Literal)value).getValue());
+            }
+            else if (context.getTypeResolver().isStringType(value.getResultType())) {
+                return new StringType(((Literal)value).getValue());
+            }
+        }
+        else if (value instanceof DateTime) {
+            DateTime dateTime = (DateTime)value;
+            return new DateTimeType(toDateTimeString(
+                    toFhirValue(context, dateTime.getYear()),
+                    toFhirValue(context, dateTime.getMonth()),
+                    toFhirValue(context, dateTime.getDay()),
+                    toFhirValue(context, dateTime.getHour()),
+                    toFhirValue(context, dateTime.getMinute()),
+                    toFhirValue(context, dateTime.getSecond()),
+                    toFhirValue(context, dateTime.getMillisecond()),
+                    toFhirValue(context, dateTime.getTimezoneOffset())));
+        }
+        else if (value instanceof org.hl7.elm.r1.Date) {
+            org.hl7.elm.r1.Date date = (org.hl7.elm.r1.Date)value;
+            return new DateType(toDateString(
+                    toFhirValue(context, date.getYear()),
+                    toFhirValue(context, date.getMonth()),
+                    toFhirValue(context, date.getDay())
+            ));
+        }
+        else if (value instanceof Start) {
+            DataType operand = toFhirValue(context, ((Start)value).getOperand());
+            if (operand != null) {
+                Period period = (Period)operand;
+                return period.getStartElement();
+            }
+        }
+        else if (value instanceof End) {
+            DataType operand = toFhirValue(context, ((End)value).getOperand());
+            if (operand != null) {
+                Period period = (Period)operand;
+                return period.getEndElement();
+            }
+
+        }
+
         throw new IllegalArgumentException(String.format("toFhirValue not implemented for %s", value.getClass().getSimpleName()));
     }
 
