@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library
+    xmlns="urn:hl7-org:elm:r1"
+    xmlns:t="urn:hl7-org:elm-types:r1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <parameters>
+        <def localId="25" locator="25:1-26:66" name="Measurement Period" accessLevel="Public">
+            <parameterTypeSpecifier localId="24" locator="25:32-25:49" xsi:type="IntervalTypeSpecifier">
+                <pointType localId="23" locator="25:41-25:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </parameterTypeSpecifier>
+        </def>
+    </parameters>
+</library>

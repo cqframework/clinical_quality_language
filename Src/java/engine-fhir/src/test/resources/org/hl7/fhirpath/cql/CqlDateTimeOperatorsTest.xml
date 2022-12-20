@@ -1,0 +1,1251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+	name="CqlDateTimeOperatorsTest" reference="https://cql.hl7.org/09-b-cqlreference.html#datetime-operators-2">
+	<group name="Add">
+		<test name="DateTimeAdd5Years">
+			<expression>DateTime(2005, 10, 10) + 5 years</expression>
+			<output>@2010-10-10T</output>
+		</test>
+		<test name="DateTimeAddInvalidYears">
+			<expression invalid="true">DateTime(2005, 10, 10) + 8000 years</expression>
+			<!-- EXPECT: The date time addition results in a year greater than the accepted range. -->
+		</test>
+		<test name="DateTimeAdd5Months">
+			<expression>DateTime(2005, 5, 10) + 5 months</expression>
+			<output>@2005-10-10T</output>
+		</test>
+		<test name="DateTimeAddMonthsOverflow">
+			<expression>DateTime(2005, 5, 10) + 10 months</expression>
+			<output>@2006-03-10T</output>
+		</test>
+		<test name="DateTimeAdd5Days">
+			<expression>DateTime(2005, 5, 10) + 5 days</expression>
+			<output>@2005-05-15T</output>
+		</test>
+		<test name="DateTimeAddDaysOverflow">
+			<expression>DateTime(2016, 6, 10) + 21 days</expression>
+			<output>@2016-07-01T</output>
+		</test>
+		<test name="DateTimeAdd5Hours">
+			<expression>DateTime(2005, 5, 10, 5) + 5 hours</expression>
+			<output>@2005-05-10T10</output>
+		</test>
+		<test name="DateTimeAddHoursOverflow">
+			<expression>DateTime(2016, 6, 10, 5) + 19 hours</expression>
+			<output>@2016-06-11T00</output>
+		</test>
+		<test name="DateTimeAdd5Minutes">
+			<expression>DateTime(2005, 5, 10, 5, 5) + 5 minutes</expression>
+			<output>@2005-05-10T05:10</output>
+		</test>
+		<test name="DateTimeAddMinutesOverflow">
+			<expression>DateTime(2016, 6, 10, 5, 5) + 55 minutes</expression>
+			<output>@2016-06-10T06:00</output>
+		</test>
+		<test name="DateTimeAdd5Seconds">
+			<expression>DateTime(2005, 5, 10, 5, 5, 5) + 5 seconds</expression>
+			<output>@2005-05-10T05:05:10</output>
+		</test>
+		<test name="DateTimeAddSecondsOverflow">
+			<expression>DateTime(2016, 6, 10, 5, 5, 5) + 55 seconds</expression>
+			<output>@2016-06-10T05:06:00</output>
+		</test>
+		<test name="DateTimeAdd5Milliseconds">
+			<expression>DateTime(2005, 5, 10, 5, 5, 5, 5) + 5 milliseconds</expression>
+			<output>@2005-05-10T05:05:05.010</output>
+		</test>
+		<test name="DateTimeAddMillisecondsOverflow">
+			<expression>DateTime(2016, 6, 10, 5, 5, 5, 5) + 995 milliseconds</expression>
+			<output>@2016-06-10T05:05:06.000</output>
+		</test>
+		<test name="DateTimeAddLeapYear">
+			<expression>DateTime(2012, 2, 29) + 1 year</expression>
+			<output>@2013-02-28T</output>
+		</test>
+		<test name="DateTimeAdd2YearsByMonths">
+			<expression>DateTime(2014) + 24 months</expression>
+			<output>@2016T</output>
+		</test>
+		<test name="DateTimeAdd2YearsByDays">
+			<expression>DateTime(2014) + 730 days</expression>
+			<output>@2016T</output>
+		</test>
+		<test name="DateTimeAdd2YearsByDaysRem5Days">
+			<expression>DateTime(2014) + 735 days</expression>
+			<output>@2016T</output>
+		</test>
+		<test name="TimeAdd5Hours">
+			<expression>@T15:59:59.999 + 5 hours</expression>
+			<output>@T20:59:59.999</output>
+		</test>
+		<test name="TimeAdd1Minute">
+			<expression>@T15:59:59.999 + 1 minute</expression>
+			<output>@T16:00:59.999</output>
+		</test>
+		<test name="TimeAdd1Second">
+			<expression>@T15:59:59.999 + 1 seconds</expression>
+			<output>@T16:00:00.999</output>
+		</test>
+		<test name="TimeAdd1Millisecond">
+			<expression>@T15:59:59.999 + 1 milliseconds</expression>
+			<output>@T16:00:00.000</output>
+		</test>
+		<test name="TimeAdd5Hours1Minute">
+			<expression>@T15:59:59.999 + 5 hours + 1 minutes</expression>
+			<output>@T21:00:59.999</output>
+		</test>
+		<test name="TimeAdd5hoursByMinute">
+			<expression>@T15:59:59.999 + 300 minutes</expression>
+			<output>@T20:59:59.999</output>
+		</test>
+	</group>
+	<group name="After">
+		<test name="DateTimeAfterYearTrue">
+			<expression>DateTime(2005, 10, 10) after year of DateTime(2004, 10, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterYearFalse">
+			<expression>DateTime(2004, 11, 10) after year of DateTime(2004, 10, 10)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAfterMonthTrue">
+			<expression>DateTime(2004, 12, 10) after month of DateTime(2004, 11, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterMonthFalse">
+			<expression>DateTime(2004, 9, 10) after month of DateTime(2004, 10, 10)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAfterDayTrue">
+			<expression>DateTime(2004, 12, 11) after day of DateTime(2004, 10, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterDayTrue2">
+			<expression>DateTime(2004, 12, 09) after day of DateTime(2003, 10, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterDayFalse">
+			<expression>DateTime(2004, 10, 9) after day of DateTime(2004, 10, 10)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAfterHourTrue">
+			<expression>DateTime(2004, 10, 10, 10) after hour of DateTime(2004, 10, 10, 5)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterHourFalse">
+			<expression>DateTime(2004, 10, 10, 20) after hour of DateTime(2004, 10, 10, 21)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAfterMinuteTrue">
+			<expression>DateTime(2004, 10, 10, 20, 30) after minute of DateTime(2004, 10, 10, 20, 29)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterMinuteFalse">
+			<expression>DateTime(2004, 10, 10, 20, 30) after minute of DateTime(2004, 10, 10, 20, 31)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAfterSecondTrue">
+			<expression>DateTime(2004, 10, 10, 20, 30, 15) after second of DateTime(2004, 10, 10, 20, 30, 14)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterSecondFalse">
+			<expression>DateTime(2004, 10, 10, 20, 30, 15) after second of DateTime(2004, 10, 10, 20, 30, 16)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAfterMillisecondTrue">
+			<expression>DateTime(2004, 10, 10, 20, 30, 15, 512) after millisecond of DateTime(2004, 10, 10, 20, 30, 15, 510)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeAfterMillisecondFalse">
+			<expression>DateTime(2004, 10, 10, 20, 30, 15, 512) after millisecond of DateTime(2004, 10, 10, 20, 30, 15, 513)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAfterUncertain">
+			<expression>DateTime(2005, 10, 10) after day of DateTime(2005, 9)</expression>
+			<output>true</output>
+		</test>
+		<test name="AfterTimezoneTrue">
+			<expression>@2012-03-10T10:20:00.999+07:00 after hour of @2012-03-10T08:20:00.999+06:00</expression>
+			<output>true</output>
+		</test>
+		<test name="AfterTimezoneFalse">
+			<expression>@2012-03-10T10:20:00.999+07:00 after hour of @2012-03-10T10:20:00.999+06:00</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeAfterHourTrue">
+			<expression>@T15:59:59.999 after hour of @T14:59:59.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeAfterHourFalse">
+			<expression>@T15:59:59.999 after hour of @T16:59:59.999</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeAfterMinuteTrue">
+			<expression>@T15:59:59.999 after minute of @T15:58:59.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeAfterMinuteFalse">
+			<expression>@T15:58:59.999 after minute of @T15:59:59.999</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeAfterSecondTrue">
+			<expression>@T15:59:59.999 after second of @T15:59:58.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeAfterSecondFalse">
+			<expression>@T15:59:58.999 after second of @T15:59:59.999</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeAfterMillisecondTrue">
+			<expression>@T15:59:59.999 after millisecond of @T15:59:59.998</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeAfterMillisecondFalse">
+			<expression>@T15:59:59.998 after millisecond of @T15:59:59.999</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeAfterTimeCstor">
+			<expression>Time(12, 30) after hour of Time(11, 55)</expression>
+			<output>true</output>
+		</test>
+		<!-- TODO: do uncertainty tests for Time once the Time(x,x,x,x,x) format has been implemented -->
+	</group>
+	<group name="Before">
+		<test name="DateTimeBeforeYearTrue">
+			<expression>DateTime(2003) before year of DateTime(2004, 10, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeYearFalse">
+			<expression>DateTime(2004, 11, 10) before year of DateTime(2003, 10, 10)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeBeforeMonthTrue">
+			<expression>DateTime(2004, 10, 10) before month of DateTime(2004, 11, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeMonthFalse">
+			<expression>DateTime(2004, 11, 10) before month of DateTime(2004, 10, 10)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeBeforeDayTrue">
+			<expression>DateTime(2004, 10, 1) before day of DateTime(2004, 10, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeDayTrue2">
+			<expression>DateTime(2003, 10, 11) before day of DateTime(2004, 10, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeDayFalse">
+			<expression>DateTime(2004, 10, 11) before day of DateTime(2004, 10, 10)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeBeforeHourTrue">
+			<expression>DateTime(2004, 10, 10, 1) before hour of DateTime(2004, 10, 10, 5)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeHourFalse">
+			<expression>DateTime(2004, 10, 10, 23) before hour of DateTime(2004, 10, 10, 21)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeBeforeMinuteTrue">
+			<expression>DateTime(2004, 10, 10, 20, 28) before minute of DateTime(2004, 10, 10, 20, 29)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeMinuteFalse">
+			<expression>DateTime(2004, 10, 10, 20, 35) before minute of DateTime(2004, 10, 10, 20, 31)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeBeforeSecondTrue">
+			<expression>DateTime(2004, 10, 10, 20, 30, 12) before second of DateTime(2004, 10, 10, 20, 30, 14)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeSecondFalse">
+			<expression>DateTime(2004, 10, 10, 20, 30, 55) before second of DateTime(2004, 10, 10, 20, 30, 16)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeBeforeMillisecondTrue">
+			<expression>DateTime(2004, 10, 10, 20, 30, 15, 508) before millisecond of DateTime(2004, 10, 10, 20, 30, 15, 510)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeBeforeMillisecondFalse">
+			<expression>DateTime(2004, 10, 10, 20, 30, 15, 599) before millisecond of DateTime(2004, 10, 10, 20, 30, 15, 513)</expression>
+			<output>false</output>
+		</test>
+		<test name="BeforeTimezoneTrue">
+			<expression>@2012-03-10T10:20:00.999+07:00 before hour of @2012-03-10T10:20:00.999+06:00</expression>
+			<output>true</output>
+		</test>
+		<test name="BeforeTimezoneFalse">
+			<expression>@2012-03-10T10:20:00.999+07:00 before hour of @2012-03-10T09:20:00.999+06:00</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeBeforeHourTrue">
+			<expression>@T13:59:59.999 before hour of @T14:59:59.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeBeforeHourFalse">
+			<expression>@T16:59:59.999 before hour of @T15:59:59.999</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeBeforeMinuteTrue">
+			<expression>@T15:57:59.999 before minute of @T15:58:59.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeBeforeMinuteFalse">
+			<expression>@T15:59:59.999 before minute of @T15:59:59.999</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeBeforeSecondTrue">
+			<expression>@T15:59:57.999 before second of @T15:59:58.999</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeBeforeSecondFalse">
+			<expression>@T15:59:56.999 before second of @T15:59:55.999</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeBeforeMillisecondTrue">
+			<expression>@T15:59:59.997 before millisecond of @T15:59:59.998</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeBeforeMillisecondFalse">
+			<expression>@T15:59:59.998 before millisecond of @T15:59:59.997</expression>
+			<output>false</output>
+		</test>
+		<!-- TODO: do uncertainty tests for Time once the Time(x,x,x,x,x) format has been implemented -->
+	</group>
+	<group name="DateTime">
+		<test name="DateTimeYear">
+			<expression>DateTime(2003)</expression>
+			<output>@2003T</output>
+		</test>
+		<test name="DateTimeMonth">
+			<expression>DateTime(2003, 10)</expression>
+			<output>@2003-10T</output>
+		</test>
+		<test name="DateTimeDay">
+			<expression>DateTime(2003, 10, 29)</expression>
+			<output>@2003-10-29T</output>
+		</test>
+		<test name="DateTimeHour">
+			<expression>DateTime(2003, 10, 29, 20)</expression>
+			<output>@2003-10-29T20</output>
+		</test>
+		<test name="DateTimeMinute">
+			<expression>DateTime(2003, 10, 29, 20, 50)</expression>
+			<output>@2003-10-29T20:50</output>
+		</test>
+		<test name="DateTimeSecond">
+			<expression>DateTime(2003, 10, 29, 20, 50, 33)</expression>
+			<output>@2003-10-29T20:50:33</output>
+		</test>
+		<test name="DateTimeMillisecond">
+			<expression>DateTime(2003, 10, 29, 20, 50, 33, 955)</expression>
+			<output>@2003-10-29T20:50:33.955</output>
+		</test>
+	</group>
+	<group name="DateTimeComponentFrom">
+		<test name="DateTimeComponentFromYear">
+			<expression>year from DateTime(2003, 10, 29, 20, 50, 33, 955)</expression>
+			<output>2003</output>
+		</test>
+		<test name="DateTimeComponentFromMonth">
+			<expression>month from DateTime(2003, 10, 29, 20, 50, 33, 955)</expression>
+			<output>10</output>
+		</test>
+		<test name="DateTimeComponentFromMonthMinBoundary">
+			<expression>month from DateTime(2003, 01, 29, 20, 50, 33, 955)</expression>
+			<output>1</output>
+		</test>
+		<test name="DateTimeComponentFromDay">
+			<expression>day from DateTime(2003, 10, 29, 20, 50, 33, 955)</expression>
+			<output>29</output>
+		</test>
+		<test name="DateTimeComponentFromHour">
+			<expression>hour from DateTime(2003, 10, 29, 20, 50, 33, 955)</expression>
+			<output>20</output>
+		</test>
+		<test name="DateTimeComponentFromMinute">
+			<expression>minute from DateTime(2003, 10, 29, 20, 50, 33, 955)</expression>
+			<output>50</output>
+		</test>
+		<test name="DateTimeComponentFromSecond">
+			<expression>second from DateTime(2003, 10, 29, 20, 50, 33, 955)</expression>
+			<output>33</output>
+		</test>
+		<test name="DateTimeComponentFromMillisecond">
+			<expression>millisecond from DateTime(2003, 10, 29, 20, 50, 33, 955)</expression>
+			<output>955</output>
+		</test>
+		<test name="DateTimeComponentFromTimezone">
+			<expression>timezone from DateTime(2003, 10, 29, 20, 50, 33, 955, 1)</expression>
+			<output>1.00</output>
+			<!-- Translation Error: Timezone keyword is only valid in 1.3 or lower -->
+		</test>
+		<test name="DateTimeComponentFromDate">
+			<expression>date from DateTime(2003, 10, 29, 20, 50, 33, 955, 1)</expression>
+			<output>@2003-10-29</output>
+		</test>
+		<test name="TimeComponentFromHour">
+			<expression>hour from @T23:20:15.555</expression>
+			<output>23</output>
+		</test>
+		<test name="TimeComponentFromMinute">
+			<expression>minute from @T23:20:15.555</expression>
+			<output>20</output>
+		</test>
+		<test name="TimeComponentFromSecond">
+			<expression>second from @T23:20:15.555</expression>
+			<output>15</output>
+		</test>
+		<test name="TimeComponentFromMilli">
+			<expression>millisecond from @T23:20:15.555</expression>
+			<output>555</output>
+		</test>
+	</group>
+	<group name="Difference">
+		<test name="DateTimeDifferenceYear">
+			<expression>difference in years between DateTime(2000) and DateTime(2005, 12)</expression>
+			<output>5</output>
+		</test>
+		<test name="DateTimeDifferenceMonth">
+			<expression>difference in months between DateTime(2000, 2) and DateTime(2000, 10)</expression>
+			<output>8</output>
+		</test>
+		<test name="DateTimeDifferenceDay">
+			<expression>difference in days between DateTime(2000, 10, 15, 10, 30) and DateTime(2000, 10, 25, 10, 0)</expression>
+			<output>10</output>
+		</test>
+		<test name="DateTimeDifferenceHour">
+			<expression>difference in hours between DateTime(2000, 4, 1, 12) and DateTime(2000, 4, 1, 20)</expression>
+			<output>8</output>
+		</test>
+		<test name="DateTimeDifferenceMinute">
+			<expression>difference in minutes between DateTime(2005, 12, 10, 5, 16) and DateTime(2005, 12, 10, 5, 25)</expression>
+			<output>9</output>
+		</test>
+		<test name="DateTimeDifferenceSecond">
+			<expression>difference in seconds between DateTime(2000, 10, 10, 10, 5, 45) and DateTime(2000, 10, 10, 10, 5, 50)</expression>
+			<output>5</output>
+		</test>
+		<test name="DateTimeDifferenceMillisecond">
+			<expression>difference in milliseconds between DateTime(2000, 10, 10, 10, 5, 45, 500, -6.0) and DateTime(2000, 10, 10, 10, 5, 45, 900, -7.0)</expression>
+			<output>3600400</output>
+		</test>
+		<test name="DateTimeDifferenceWeeks">
+			<expression>difference in weeks between DateTime(2000, 10, 15) and DateTime(2000, 10, 28)</expression>
+			<output>1</output>
+		</test>
+		<test name="DateTimeDifferenceWeeks2">
+			<expression>difference in weeks between DateTime(2000, 10, 15) and DateTime(2000, 10, 29)</expression>
+			<output>2</output>
+		</test>
+		<test name="DateTimeDifferenceWeeks3">
+			<expression>difference in weeks between @2012-03-10T22:05:09 and @2012-03-24T07:19:33</expression>
+			<output>2</output>
+		</test>
+		<test name="DateTimeDifferenceNegative">
+			<expression>difference in years between DateTime(2016) and DateTime(1998)</expression>
+			<output>-18</output>
+		</test>
+		<test name="DateTimeDifferenceUncertain">
+			<expression>difference in months between DateTime(2005) and DateTime(2006, 7) &gt; 5</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeDifferenceHour">
+			<expression>difference in hours between @T20 and @T23:25:15.555</expression>
+			<output>3</output>
+		</test>
+		<test name="TimeDifferenceMinute">
+			<expression>difference in minutes between @T20:20:15.555 and @T20:25:15.555</expression>
+			<output>5</output>
+		</test>
+		<test name="TimeDifferenceSecond">
+			<expression>difference in seconds between @T20:20:15.555 and @T20:20:20.555</expression>
+			<output>5</output>
+		</test>
+		<test name="TimeDifferenceMillis">
+			<expression>difference in milliseconds between @T20:20:15.555 and @T20:20:15.550</expression>
+			<output>-5</output>
+		</test>
+	</group>
+	<group name="From Github issue #29">
+		<test name="DateTimeA">
+			<expression>@2017-03-12T01:00:00-07:00</expression>
+			<output>@2017-03-12T01:00:00-07:00</output>
+		</test>
+		<test name="DateTimeAA">
+			<expression>DateTime(2017, 3, 12, 1, 0, 0, 0, -7.0)</expression>
+			<output>@2017-03-12T01:00:00.000-07:00</output>
+		</test>
+		<test name="DateTimeB">
+			<expression>@2017-03-12T03:00:00-06:00</expression>
+			<output>@2017-03-12T03:00:00-06:00</output>
+		</test>
+		<test name="DateTimeBB">
+			<expression>DateTime(2017, 3, 12, 3, 0, 0, 0, -6.0)</expression>
+			<output>@2017-03-12T03:00:00.000-06:00</output>
+		</test>
+		<test name="DateTimeC">
+			<expression>@2017-11-05T01:30:00-06:00</expression>
+			<output>@2017-11-05T01:30:00-06:00</output>
+		</test>
+		<test name="DateTimeCC">
+			<expression>DateTime(2017, 11, 5, 1, 30, 0, 0, -6.0)</expression>
+			<output>@2017-11-05T01:30:00.000-06:00</output>
+		</test>
+		<test name="DateTimeD">
+			<expression>@2017-11-05T01:15:00-07:00</expression>
+			<output>@2017-11-05T01:15:00-07:00</output>
+		</test>
+		<test name="DateTimeDD">
+			<expression>DateTime(2017, 11, 5, 1, 15, 0, 0, -7.0)</expression>
+			<output>@2017-11-05T01:15:00.000-07:00</output>
+		</test>
+		<test name="DateTimeE">
+			<expression>@2017-03-12T00:00:00-07:00</expression>
+			<output>@2017-03-12T00:00:00-07:00</output>
+		</test>
+		<test name="DateTimeEE">
+			<expression>DateTime(2017, 3, 12, 0, 0, 0, 0, -7.0)</expression>
+			<output>@2017-03-12T00:00:00.000-07:00</output>
+		</test>
+		<test name="DateTimeF">
+			<expression>@2017-03-13T00:00:00-06:00</expression>
+			<output>@2017-03-13T00:00:00-06:00</output>
+		</test>
+		<test name="DateTimeFF">
+			<expression>DateTime(2017, 3, 13, 0, 0, 0, 0, -6.0)</expression>
+			<output>@2017-03-13T00:00:00.000-06:00</output>
+		</test>
+		<test name="DifferenceInHoursA">
+			<expression>difference in hours between @2017-03-12T01:00:00-07:00 and @2017-03-12T03:00:00-06:00</expression>
+			<output>1</output>
+		</test>
+		<test name="DifferenceInMinutesA">
+			<expression>difference in minutes between @2017-11-05T01:30:00-06:00 and @2017-11-05T01:15:00-07:00</expression>
+			<output>45</output>
+		</test>
+		<test name="DifferenceInDaysA">
+			<expression>difference in days between @2017-03-12T00:00:00-07:00 and @2017-03-13T00:00:00-06:00</expression>
+			<output>1</output>
+		</test>
+		<test name="DifferenceInHoursAA">
+			<expression>difference in hours between DateTime(2017, 3, 12, 1, 0, 0, 0, -7.0) and DateTime(2017, 3, 12, 3, 0, 0, 0, -6.0)</expression>
+			<output>1</output>
+		</test>
+		<test name="DifferenceInMinutesAA">
+			<expression>difference in minutes between DateTime(2017, 11, 5, 1, 30, 0, 0, -6.0) and DateTime(2017, 11, 5, 1, 15, 0, 0, -7.0)</expression>
+			<output>45</output>
+		</test>
+		<test name="DifferenceInDaysAA">
+			<expression>difference in days between DateTime(2017, 3, 12, 0, 0, 0, 0, -7.0) and DateTime(2017, 3, 13, 0, 0, 0, 0, -6.0)</expression>
+			<output>1</output>
+		</test>
+		<!-- TODO: Time uncertainty tests -->
+	</group>
+	<group name="Duration">
+		<test name="DateTimeDurationBetweenYear">
+			<expression>years between DateTime(2005) and DateTime(2010)</expression>
+			<output>Interval[ 4, 5 ]</output>
+			<!-- TODO: How to handle the fact the question is resulting in an
+			undertainty interval and that CQL/ELM seem to provide no direct way of
+			selecting the same value, conceptually an implementation internal;
+			currently Equivalent() results in null from comparing with an Interval. -->
+		</test>
+		<test name="DateTimeDurationBetweenYearOffset">
+			<expression>years between DateTime(2005, 5) and DateTime(2010, 4)</expression>
+			<output>4</output>
+		</test>
+		<test name="DateTimeDurationBetweenMonth">
+			<expression>months between @2014-01-31 and @2014-02-01</expression>
+			<output>0</output>
+		</test>
+		<test name="DateTimeDurationBetweenDaysDiffYears">
+			<expression>days between DateTime(2010, 10, 12, 12, 5) and DateTime(2008, 8, 15, 8, 8)</expression>
+			<output>-788</output>
+		</test>
+	</group>
+	<group name="Uncertainty tests">
+		<test name="DateTimeDurationBetweenUncertainInterval">
+			<expression>days between DateTime(2014, 1, 15) and DateTime(2014, 2)</expression>
+			<output>Interval[ 16, 44 ]</output>
+			<!-- TODO: How to handle the fact the question is resulting in an
+			undertainty interval and that CQL/ELM seem to provide no direct way of
+			selecting the same value, conceptually an implementation internal;
+			currently Equivalent() results in null from comparing with an Interval. -->
+		</test>
+		<test name="DateTimeDurationBetweenUncertainInterval2">
+			<expression>months between DateTime(2005) and DateTime(2006, 5)</expression>
+			<output>Interval[ 4, 16 ]</output>
+			<!-- TODO: How to handle the fact the question is resulting in an
+			undertainty interval and that CQL/ELM seem to provide no direct way of
+			selecting the same value, conceptually an implementation internal;
+			currently Equivalent() results in null from comparing with an Interval. -->
+		</test>
+		<test name="DateTimeDurationBetweenUncertainAdd">
+			<expression>(days between DateTime(2014, 1, 15) and DateTime(2014, 2))
+				+ (days between DateTime(2014, 1, 15) and DateTime(2014, 2))</expression>
+			<output>Interval[ 32, 88 ]</output>
+			<!-- TODO: How to handle the fact the question is resulting in an
+			undertainty interval and that CQL/ELM seem to provide no direct way of
+			selecting the same value, conceptually an implementation internal;
+			currently Equivalent() results in null from comparing with an Interval. -->
+		</test>
+		<test name="DateTimeDurationBetweenUncertainSubtract">
+			<expression>(days between DateTime(2014, 1, 15) and DateTime(2014, 2))
+				- (months between DateTime(2005) and DateTime(2006, 5))</expression>
+			<output>Interval[ 0, 40 ]</output>
+			<!-- TODO: How to handle the fact the question is resulting in an
+			undertainty interval and that CQL/ELM seem to provide no direct way of
+			selecting the same value, conceptually an implementation internal;
+			currently Equivalent() results in null from comparing with an Interval. -->
+		</test>
+		<test name="DateTimeDurationBetweenUncertainMultiply">
+			<expression>(days between DateTime(2014, 1, 15) and DateTime(2014, 2))
+				* (days between DateTime(2014, 1, 15) and DateTime(2014, 2))</expression>
+			<output>Interval[ 256, 1936 ]</output>
+			<!-- TODO: How to handle the fact the question is resulting in an
+			undertainty interval and that CQL/ELM seem to provide no direct way of
+			selecting the same value, conceptually an implementation internal;
+			currently Equivalent() results in null from comparing with an Interval. -->
+		</test>
+		<test name="DateTimeDurationBetweenUncertainDiv">
+			<expression invalid="true">(days between DateTime(2014, 1, 15) and DateTime(2014, 2))
+				div (months between DateTime(2005) and DateTime(2006, 5))</expression>
+		</test>
+		<test name="DateTimeDurationBetweenMonthUncertain">
+			<expression>months between DateTime(2005) and DateTime(2006, 7) &gt; 5</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeDurationBetweenMonthUncertain2">
+			<expression>months between DateTime(2005) and DateTime(2006, 2) &gt; 5</expression>
+			<output>null</output>
+		</test>
+		<test name="DateTimeDurationBetweenMonthUncertain3">
+			<expression>months between DateTime(2005) and DateTime(2006, 7) &gt; 25</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeDurationBetweenMonthUncertain4">
+			<expression>months between DateTime(2005) and DateTime(2006, 7) &lt; 24</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeDurationBetweenMonthUncertain5">
+			<expression>months between DateTime(2005) and DateTime(2006, 7) = 24</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeDurationBetweenMonthUncertain6">
+			<expression>months between DateTime(2005) and DateTime(2006, 7) &gt;= 5</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeDurationBetweenMonthUncertain7">
+			<expression>months between DateTime(2005) and DateTime(2006, 7) &lt;= 24</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTime1">
+			<expression>@2012-03-10T10:20:00</expression>
+			<output>@2012-03-10T10:20:00</output>
+		</test>
+		<test name="DateTime2">
+			<expression>@2013-03-10T09:20:00</expression>
+			<output>@2013-03-10T09:20:00</output>
+		</test>
+		<test name="DurationInYears">
+			<expression>years between (date from @2012-03-10T10:20:00) and (date from @2013-03-10T09:20:00)</expression>
+			<output>1</output>
+		</test>
+		<test name="DurationInWeeks">
+			<expression>weeks between @2012-03-10T22:05:09 and @2012-03-20T07:19:33</expression>
+			<output>1</output>
+		</test>
+		<test name="DurationInWeeks2">
+			<expression>weeks between @2012-03-10T22:05:09 and @2012-03-24T07:19:33</expression>
+			<output>1</output>
+		</test>
+		<test name="DurationInWeeks3">
+			<expression>weeks between @2012-03-10T06:05:09 and @2012-03-24T07:19:33</expression>
+			<output>2</output>
+		</test>
+		<test name="TimeDurationBetweenHour">
+			<expression>hours between @T20:26:15.555 and @T23:25:15.555</expression>
+			<output>2</output>
+		</test>
+		<test name="TimeDurationBetweenHourDiffPrecision">
+			<expression>hours between @T06Z and @T07:00:00Z</expression>
+			<output>1</output>
+			<!-- Translation Error: Syntax error at Z -->
+		</test>
+		<test name="TimeDurationBetweenMinute">
+			<expression>minutes between @T23:20:16.555 and @T23:25:15.555</expression>
+			<output>4</output>
+		</test>
+		<test name="TimeDurationBetweenSecond">
+			<expression>seconds between @T23:25:10.556 and @T23:25:15.555</expression>
+			<output>4</output>
+		</test>
+		<test name="TimeDurationBetweenMillis">
+			<expression>milliseconds between @T23:25:25.555 and @T23:25:25.560</expression>
+			<output>5</output>
+		</test>
+		<!-- TODO: Time uncertainty tests -->
+		<test name="DurationInHoursA">
+			<expression>hours between @2017-03-12T01:00:00-07:00 and @2017-03-12T03:00:00-06:00</expression>
+			<output>1</output>
+		</test>
+		<test name="DurationInMinutesA">
+			<expression>minutes between @2017-11-05T01:30:00-06:00 and @2017-11-05T01:15:00-07:00</expression>
+			<output>45</output>
+		</test>
+		<test name="DurationInDaysA">
+			<expression>days between @2017-03-12T00:00:00-07:00 and @2017-03-13T00:00:00-06:00</expression>
+			<output>0</output>
+		</test>
+		<test name="DurationInHoursAA">
+			<expression>hours between DateTime(2017, 3, 12, 1, 0, 0, 0, -7.0) and DateTime(2017, 3, 12, 3, 0, 0, 0, -6.0)</expression>
+			<output>1</output>
+		</test>
+		<test name="DurationInMinutesAA">
+			<expression>minutes between DateTime(2017, 11, 5, 1, 30, 0, 0, -6.0) and DateTime(2017, 11, 5, 1, 15, 0, 0, -7.0)</expression>
+			<output>45</output>
+		</test>
+		<test name="DurationInDaysAA">
+			<expression>days between DateTime(2017, 3, 12, 0, 0, 0, 0, -7.0) and DateTime(2017, 3, 13, 0, 0, 0, 0, -6.0)</expression>
+			<output>0</output>
+		</test>
+	</group>
+	<group name="Now">
+		<test name="DateTimeNow">
+			<expression>Now() = Now()</expression>
+			<output>true</output>
+		</test>
+		<!-- <test name="Issue34A">
+			<expression>Now()</expression>
+			<output>Now()</output>
+		</test> TODO: Replace this with Java-native test as with original. -->
+	</group>
+	<group name="SameAs">
+		<test name="DateTimeSameAsYearTrue">
+			<expression>DateTime(2014) same year as DateTime(2014)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameAsYearFalse">
+			<expression>DateTime(2013) same year as DateTime(2014)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameAsMonthTrue">
+			<expression>DateTime(2014, 12) same month as DateTime(2014, 12)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameAsMonthFalse">
+			<expression>DateTime(2014, 12) same month as DateTime(2014, 10)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameAsDayTrue">
+			<expression>DateTime(2014, 12, 10) same day as DateTime(2014, 12, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameAsDayFalse">
+			<expression>DateTime(2014, 10, 10) same day as DateTime(2014, 10, 11)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameAsHourTrue">
+			<expression>DateTime(2014, 12, 10, 20) same hour as DateTime(2014, 12, 10, 20)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameAsHourFalse">
+			<expression>DateTime(2014, 10, 10, 20) same hour as DateTime(2014, 10, 10, 21)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameAsMinuteTrue">
+			<expression>DateTime(2014, 12, 10, 20, 55) same minute as DateTime(2014, 12, 10, 20, 55)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameAsMinuteFalse">
+			<expression>DateTime(2014, 10, 10, 20, 55) same minute as DateTime(2014, 10, 10, 21, 56)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameAsSecondTrue">
+			<expression>DateTime(2014, 12, 10, 20, 55, 45) same second as DateTime(2014, 12, 10, 20, 55, 45)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameAsSecondFalse">
+			<expression>DateTime(2014, 10, 10, 20, 55, 45) same second as DateTime(2014, 10, 10, 21, 55, 44)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameAsMillisecondTrue">
+			<expression>DateTime(2014, 12, 10, 20, 55, 45, 500) same millisecond as DateTime(2014, 12, 10, 20, 55, 45, 500)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameAsMillisecondFalse">
+			<expression>DateTime(2014, 10, 10, 20, 55, 45, 500) same millisecond as DateTime(2014, 10, 10, 21, 55, 45, 501)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameAsNull">
+			<expression>DateTime(2014, 10) same day as DateTime(2014, 10, 12)</expression>
+			<output>null</output>
+		</test>
+		<test name="SameAsTimezoneTrue">
+			<expression>@2012-03-10T10:20:00.999+07:00 same hour as @2012-03-10T09:20:00.999+06:00</expression>
+			<output>true</output>
+		</test>
+		<test name="SameAsTimezoneFalse">
+			<expression>@2012-03-10T10:20:00.999+07:00 same hour as @2012-03-10T10:20:00.999+06:00</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameAsHourTrue">
+			<expression>@T23:25:25.555 same hour as @T23:55:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameAsHourFalse">
+			<expression>@T22:25:25.555 same hour as @T23:25:25.555</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameAsMinuteTrue">
+			<expression>@T23:55:22.555 same minute as @T23:55:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameAsMinuteFalse">
+			<expression>@T23:26:25.555 same minute as @T23:25:25.555</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameAsSecondTrue">
+			<expression>@T23:55:25.555 same second as @T23:55:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameAsSecondFalse">
+			<expression>@T23:25:35.555 same second as @T23:25:25.555</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameAsMillisTrue">
+			<expression>@T23:55:25.555 same millisecond as @T23:55:25.555</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameAsMillisFalse">
+			<expression>@T23:25:25.555 same millisecond as @T23:25:25.554</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="SameOrAfter">
+		<test name="DateTimeSameOrAfterYearTrue1">
+			<expression>DateTime(2014) same year or after DateTime(2014)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterYearTrue2">
+			<expression>DateTime(2016) same year or after DateTime(2014)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterYearFalse">
+			<expression>DateTime(2013) same year or after DateTime(2014)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrAfterMonthTrue1">
+			<expression>DateTime(2014, 12) same month or after DateTime(2014, 12)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterMonthTrue2">
+			<expression>DateTime(2014, 10) same month or after DateTime(2014, 9)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterMonthFalse">
+			<expression>DateTime(2014, 10) same month or after DateTime(2014, 11)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrAfterDayTrue1">
+			<expression>DateTime(2014, 12, 20) same day or after DateTime(2014, 12, 20)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterDayTrue2">
+			<expression>DateTime(2014, 10, 25) same day or after DateTime(2014, 10, 20)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterDayFalse">
+			<expression>DateTime(2014, 10, 20) same day or after DateTime(2014, 10, 25)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrAfterHourTrue1">
+			<expression>DateTime(2014, 12, 20, 12) same hour or after DateTime(2014, 12, 20, 12)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterHourTrue2">
+			<expression>DateTime(2014, 10, 25, 12) same hour or after DateTime(2014, 10, 25, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterHourFalse">
+			<expression>DateTime(2014, 10, 25, 12) same hour or after DateTime(2014, 10, 25, 15)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrAfterMinuteTrue1">
+			<expression>DateTime(2014, 12, 20, 12, 30) same minute or after DateTime(2014, 12, 20, 12, 30)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterMinuteTrue2">
+			<expression>DateTime(2014, 10, 25, 10, 30) same minute or after DateTime(2014, 10, 25, 10, 25)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterMinuteFalse">
+			<expression>DateTime(2014, 10, 25, 15, 30) same minute or after DateTime(2014, 10, 25, 15, 45)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrAfterSecondTrue1">
+			<expression>DateTime(2014, 12, 20, 12, 30, 15) same second or after DateTime(2014, 12, 20, 12, 30, 15)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterSecondTrue2">
+			<expression>DateTime(2014, 10, 25, 10, 25, 25) same second or after DateTime(2014, 10, 25, 10, 25, 20)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterSecondFalse">
+			<expression>DateTime(2014, 10, 25, 15, 45, 20) same second or after DateTime(2014, 10, 25, 15, 45, 21)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrAfterMillisecondTrue1">
+			<expression>DateTime(2014, 12, 20, 12, 30, 15, 250) same millisecond or after DateTime(2014, 12, 20, 12, 30, 15, 250)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterMillisecondTrue2">
+			<expression>DateTime(2014, 10, 25, 10, 25, 20, 500) same millisecond or after DateTime(2014, 10, 25, 10, 25, 20, 499)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrAfterMillisecondFalse">
+			<expression>DateTime(2014, 10, 25, 15, 45, 20, 500) same millisecond or after DateTime(2014, 10, 25, 15, 45, 20, 501)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrAfterNull1">
+			<expression>DateTime(2014, 12, 20) same day or after DateTime(2014, 12)</expression>
+			<output>null</output>
+		</test>
+		<test name="SameOrAfterTimezoneTrue">
+			<expression>@2012-03-10T10:20:00.999+07:00 same hour or after @2012-03-10T09:20:00.999+06:00</expression>
+			<output>true</output>
+		</test>
+		<test name="SameOrAfterTimezoneFalse">
+			<expression>@2012-03-10T10:20:00.999+07:00 same hour or after @2012-03-10T10:20:00.999+06:00</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrAfterHourTrue1">
+			<expression>@T23:25:25.555 same hour or after @T23:55:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrAfterHourTrue2">
+			<expression>@T23:25:25.555 same hour or after @T22:55:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrAfterHourFalse">
+			<expression>@T22:25:25.555 same hour or after @T23:55:25.900</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrAfterMinuteTrue1">
+			<expression>@T23:25:25.555 same minute or after @T23:25:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrAfterMinuteTrue2">
+			<expression>@T23:25:25.555 same minute or after @T22:15:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrAfterMinuteFalse">
+			<expression>@T23:25:25.555 same minute or after @T23:55:25.900</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrAfterSecondTrue1">
+			<expression>@T23:25:25.555 same second or after @T23:25:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrAfterSecondTrue2">
+			<expression>@T23:25:35.555 same second or after @T22:25:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrAfterSecondFalse">
+			<expression>@T23:55:25.555 same second or after @T23:55:35.900</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrAfterMillisTrue1">
+			<expression>@T23:25:25.555 same millisecond or after @T23:25:25.555</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrAfterMillisTrue2">
+			<expression>@T23:25:25.555 same millisecond or after @T22:25:25.550</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrAfterMillisFalse">
+			<expression>@T23:55:25.555 same millisecond or after @T23:55:25.900</expression>
+			<output>false</output>
+		</test>
+		<test name="OnOrAfterTrue">
+			<expression>@2017-12-20T11:00:00.000 on or after @2017-12-20T11:00:00.000</expression>
+			<output>true</output>
+		</test>
+		<test name="Issue32DateTime">
+			<expression>@2017-12-21T02:00:00.0 same or after @2017-12-20T11:00:00.0</expression>
+			<output>true</output>
+		</test>
+	</group>
+	<group name="SameOrBefore">
+		<test name="DateTimeSameOrBeforeYearTrue1">
+			<expression>DateTime(2014) same year or before DateTime(2014)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeYearTrue2">
+			<expression>DateTime(2013) same year or before DateTime(2014)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeYearFalse">
+			<expression>DateTime(2015) same year or before DateTime(2014)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMonthTrue1">
+			<expression>DateTime(2014, 12) same month or before DateTime(2014, 12)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMonthTrue2">
+			<expression>DateTime(2014, 8) same month or before DateTime(2014, 9)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMonthFalse">
+			<expression>DateTime(2014, 12) same month or before DateTime(2014, 11)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrBeforeDayTrue1">
+			<expression>DateTime(2014, 12, 20) same day or before DateTime(2014, 12, 20)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeDayTrue2">
+			<expression>DateTime(2014, 10, 15) same day or before DateTime(2014, 10, 20)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeDayFalse">
+			<expression>DateTime(2014, 10, 30) same day or before DateTime(2014, 10, 25)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrBeforeHourTrue1">
+			<expression>DateTime(2014, 12, 20, 12) same hour or before DateTime(2014, 12, 20, 12)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeHourTrue2">
+			<expression>DateTime(2014, 10, 25, 5) same hour or before DateTime(2014, 10, 25, 10)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeHourFalse">
+			<expression>DateTime(2014, 10, 25, 20) same hour or before DateTime(2014, 10, 25, 15)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMinuteTrue1">
+			<expression>DateTime(2014, 12, 20, 12, 30) same minute or before DateTime(2014, 12, 20, 12, 30)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMinuteTrue2">
+			<expression>DateTime(2014, 10, 25, 10, 20) same minute or before DateTime(2014, 10, 25, 10, 25)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMinuteFalse">
+			<expression>DateTime(2014, 10, 25, 15, 55) same minute or before DateTime(2014, 10, 25, 15, 45)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrBeforeSecondTrue1">
+			<expression>DateTime(2014, 12, 20, 12, 30, 15) same second or before DateTime(2014, 12, 20, 12, 30, 15)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeSecondTrue2">
+			<expression>DateTime(2014, 10, 25, 10, 25, 15) same second or before DateTime(2014, 10, 25, 10, 25, 20)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeSecondFalse">
+			<expression>DateTime(2014, 10, 25, 15, 45, 25) same second or before DateTime(2014, 10, 25, 15, 45, 21)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMillisecondTrue1">
+			<expression>DateTime(2014, 12, 20, 12, 30, 15, 250) same millisecond or before DateTime(2014, 12, 20, 12, 30, 15, 250)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMillisecondTrue2">
+			<expression>DateTime(2014, 10, 25, 10, 25, 20, 450) same millisecond or before DateTime(2014, 10, 25, 10, 25, 20, 499)</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeMillisecondFalse">
+			<expression>DateTime(2014, 10, 25, 15, 45, 20, 505) same millisecond or before DateTime(2014, 10, 25, 15, 45, 20, 501)</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeSameOrBeforeNull1">
+			<expression>DateTime(2014, 12, 20) same minute or before DateTime(2014, 12, 20, 15)</expression>
+			<output>null</output>
+		</test>
+		<test name="SameOrBeforeTimezoneTrue">
+			<expression>@2012-03-10T09:20:00.999+07:00 same hour or before @2012-03-10T10:20:00.999+06:00</expression>
+			<output>true</output>
+		</test>
+		<test name="SameOrBeforeTimezoneFalse">
+			<expression>@2012-03-10T10:20:00.999+06:00 same hour or before @2012-03-10T10:20:00.999+07:00</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrBeforeHourTrue1">
+			<expression>@T23:25:25.555 same hour or before @T23:55:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrBeforeHourTrue2">
+			<expression>@T21:25:25.555 same hour or before @T22:55:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrBeforeHourFalse">
+			<expression>@T22:25:25.555 same hour or before @T21:55:25.900</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrBeforeMinuteTrue1">
+			<expression>@T23:25:25.555 same minute or before @T23:25:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrBeforeMinuteFalse0">
+			<expression>@T23:10:25.555 same minute or before @T22:15:25.900</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrBeforeMinuteFalse">
+			<expression>@T23:56:25.555 same minute or before @T23:55:25.900</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrBeforeSecondTrue1">
+			<expression>@T23:25:25.555 same second or before @T23:25:25.900</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrBeforeSecondFalse0">
+			<expression>@T23:25:35.555 same second or before @T22:25:45.900</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrBeforeSecondFalse">
+			<expression>@T23:55:45.555 same second or before @T23:55:35.900</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrBeforeMillisTrue1">
+			<expression>@T23:25:25.555 same millisecond or before @T23:25:25.555</expression>
+			<output>true</output>
+		</test>
+		<test name="TimeSameOrBeforeMillisFalse0">
+			<expression>@T23:25:25.200 same millisecond or before @T22:25:25.550</expression>
+			<output>false</output>
+		</test>
+		<test name="TimeSameOrBeforeMillisFalse">
+			<expression>@T23:55:25.966 same millisecond or before @T23:55:25.900</expression>
+			<output>false</output>
+		</test>
+	</group>
+	<group name="Subtract">
+		<test name="DateTimeSubtract5Years">
+			<expression>DateTime(2005, 10, 10) - 5 years</expression>
+			<output>@2000-10-10T</output>
+		</test>
+		<test name="DateTimeSubtractInvalidYears">
+			<expression invalid="true">DateTime(2005, 10, 10) - 2005 years</expression>
+			<!-- EXPECT: The date time addition results in a year less than the accepted range. -->
+		</test>
+		<test name="DateTimeSubtract5Months">
+			<expression>DateTime(2005, 6, 10) - 5 months</expression>
+			<output>@2005-01-10T</output>
+		</test>
+		<test name="DateTimeSubtractMonthsUnderflow">
+			<expression>DateTime(2005, 5, 10) - 6 months</expression>
+			<output>@2004-11-10T</output>
+		</test>
+		<test name="DateTimeSubtract5Days">
+			<expression>DateTime(2005, 5, 10) - 5 days</expression>
+			<output>@2005-05-05T</output>
+		</test>
+		<test name="DateTimeSubtractDaysUnderflow">
+			<expression>DateTime(2016, 6, 10) - 11 days</expression>
+			<output>@2016-05-30T</output>
+		</test>
+		<test name="DateTimeSubtract5Hours">
+			<expression>DateTime(2005, 5, 10, 10) - 5 hours</expression>
+			<output>@2005-05-10T05</output>
+		</test>
+		<test name="DateTimeSubtractHoursUnderflow">
+			<expression>DateTime(2016, 6, 10, 5) - 6 hours</expression>
+			<output>@2016-06-09T23</output>
+		</test>
+		<test name="DateTimeSubtract5Minutes">
+			<expression>DateTime(2005, 5, 10, 5, 10) - 5 minutes</expression>
+			<output>@2005-05-10T05:05</output>
+		</test>
+		<test name="DateTimeSubtractMinutesUnderflow">
+			<expression>DateTime(2016, 6, 10, 5, 5) - 6 minutes</expression>
+			<output>@2016-06-10T04:59</output>
+		</test>
+		<test name="DateTimeSubtract5Seconds">
+			<expression>DateTime(2005, 5, 10, 5, 5, 10) - 5 seconds</expression>
+			<output>@2005-05-10T05:05:05</output>
+		</test>
+		<test name="DateTimeSubtractSecondsUnderflow">
+			<expression>DateTime(2016, 6, 10, 5, 5, 5) - 6 seconds</expression>
+			<output>@2016-06-10T05:04:59</output>
+		</test>
+		<test name="DateTimeSubtract5Milliseconds">
+			<expression>DateTime(2005, 5, 10, 5, 5, 5, 10) - 5 milliseconds</expression>
+			<output>@2005-05-10T05:05:05.005</output>
+		</test>
+		<test name="DateTimeSubtractMillisecondsUnderflow">
+			<expression>DateTime(2016, 6, 10, 5, 5, 5, 5) - 6 milliseconds</expression>
+			<output>@2016-06-10T05:05:04.999</output>
+		</test>
+		<test name="DateTimeSubtract2YearsAsMonths">
+			<expression>DateTime(2014) - 24 months</expression>
+			<output>@2012T</output>
+		</test>
+		<test name="DateTimeSubtract2YearsAsMonthsRem1">
+			<expression>DateTime(2014) - 25 months</expression>
+			<output>@2012T</output>
+		</test>
+		<test name="TimeSubtract5Hours">
+			<expression>@T15:59:59.999 - 5 hours</expression>
+			<output>@T10:59:59.999</output>
+		</test>
+		<test name="TimeSubtract1Minute">
+			<expression>@T15:59:59.999 - 1 minutes</expression>
+			<output>@T15:58:59.999</output>
+		</test>
+		<test name="TimeSubtract1Second">
+			<expression>@T15:59:59.999 - 1 seconds</expression>
+			<output>@T15:59:58.999</output>
+		</test>
+		<test name="TimeSubtract1Millisecond">
+			<expression>@T15:59:59.0 - 1 milliseconds</expression>
+			<output>@T15:59:58.999</output>
+		</test>
+		<test name="TimeSubtract5Hours1Minute">
+			<expression>@T15:59:59.999 - 5 hours - 1 minutes</expression>
+			<output>@T10:58:59.999</output>
+		</test>
+		<test name="TimeSubtract5hoursByMinute">
+			<expression>@T15:59:59.999 - 300 minutes</expression>
+			<output>@T10:59:59.999</output>
+		</test>
+	</group>
+	<group name="Time">
+		<test name="TimeTest2">
+			<expression>@T23:59:59.999</expression>
+			<output>@T23:59:59.999</output>
+		</test>
+	</group>
+	<group name="TimeOfDay">
+		<test name="TimeOfDayTest">
+			<expression>TimeOfDay()</expression>
+			<output>TimeOfDay()</output>
+		</test>
+	</group>
+	<group name="Today">
+		<test name="DateTimeSameOrBeforeTodayTrue1">
+			<expression>Today() same day or before Today()</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeTodayTrue2">
+			<expression>Today() same day or before Today() + 1 days</expression>
+			<output>true</output>
+		</test>
+		<test name="DateTimeSameOrBeforeTodayFalse">
+			<expression>Today() + 1 years same day or before Today()</expression>
+			<output>false</output>
+		</test>
+		<test name="DateTimeAddTodayTrue">
+			<expression>Today() + 1 days &gt; Today()</expression>
+			<output>true</output>
+		</test>
+		<test name="Issue34B">
+			<expression>Today()</expression>
+			<output>Today()</output>
+		</test>
+	</group>
+</tests>

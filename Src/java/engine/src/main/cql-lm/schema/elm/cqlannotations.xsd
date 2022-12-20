@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:cql-annotations:r1" xmlns:sch="http://purl.oclc.org/dsdl/schematron" targetNamespace="urn:hl7-org:cql-annotations:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="CqlToElmBase" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The CqlToElmBase type defines the abstract base type for all annotation elements in the CQL Translator.</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:complexType name="Annotation">
+		<xs:complexContent>
+			<xs:extension base="CqlToElmBase">
+				<xs:sequence>
+					<xs:element name="t" type="Tag" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="s" type="Narrative" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="locator" type="Locator" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Tag">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="value" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Locator">
+		<xs:complexContent>
+			<xs:extension base="CqlToElmBase">
+				<xs:attribute name="librarySystem" type="xs:string" use="optional"/>
+				<xs:attribute name="libraryId" type="xs:string" use="optional"/>
+				<xs:attribute name="libraryVersion" type="xs:string" use="optional"/>
+				<xs:attribute name="startLine" type="xs:int" use="optional"/>
+				<xs:attribute name="startChar" type="xs:int" use="optional"/>
+				<xs:attribute name="endLine" type="xs:int" use="optional"/>
+				<xs:attribute name="endChar" type="xs:int" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Narrative" mixed="true">
+		<xs:complexContent>
+			<xs:restriction base="xs:anyType">
+				<xs:sequence>
+					<xs:element name="s" type="Narrative" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="r" type="xs:string" use="optional"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="ErrorSeverity">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="info">
+				<xs:annotation>
+					<xs:documentation>The message is informational and does not impact the translator output.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="warning">
+				<xs:annotation>
+					<xs:documentation>The message is a warning that some unexpected behavior may occur, but is not critical enough to prevent translation.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="error">
+				<xs:annotation>
+					<xs:documentation>The message is an error that is preventing the translation from completing successfully.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ErrorType">
+		<xs:annotation>
+			<xs:documentation>Represents the type of CQL to ELM conversion error.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="environment">
+				<xs:annotation>
+					<xs:documentation>An error with the environment in which the translator is running.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="syntax">
+				<xs:annotation>
+					<xs:documentation>Any kind of syntax error with the CQL. These errors can be addressed by correcting the error in the input CQL.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="include">
+				<xs:annotation>
+					<xs:documentation>An included CQL library could not be loaded. These errors can be addressed by correcting the error condition for the referenced library.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="semantic">
+				<xs:annotation>
+					<xs:documentation>Any kind of semantic error with the CQL. These errors can be addressed by correcting the error in the input CQL.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="internal">
+				<xs:annotation>
+					<xs:documentation>An unexpected error in the translator. These errors should be reported as issues to the translator tooling support team.</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CqlToElmError">
+		<xs:annotation>
+			<xs:documentation>Represents CQL to ELM conversion errors</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Locator">
+				<xs:attribute name="message" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>A human-readable description of the error</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="errorType" type="ErrorType" use="required">
+					<xs:annotation>
+						<xs:documentation>The type of error: syntax, semantic, environment, include, or internal.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="errorSeverity" type="ErrorSeverity" use="optional">
+					<xs:annotation>
+						<xs:documentation>The severity of the error: informational, warning, or an error that prevented translation of the content.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="targetIncludeLibrarySystem" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The namespace uri of the included library</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="targetIncludeLibraryId" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The identifier of the included library</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="targetIncludeLibraryVersionId" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The version of the included library</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+  <xs:complexType name="CqlToElmInfo">
+	<xs:complexContent>
+		<xs:extension base="CqlToElmBase">
+		    <xs:attribute name="translatorVersion" type="xs:string"/>
+		    <xs:attribute name="translatorOptions" type="xs:string"/>
+		</xs:extension>
+	</xs:complexContent>
+  </xs:complexType>
+</xs:schema>

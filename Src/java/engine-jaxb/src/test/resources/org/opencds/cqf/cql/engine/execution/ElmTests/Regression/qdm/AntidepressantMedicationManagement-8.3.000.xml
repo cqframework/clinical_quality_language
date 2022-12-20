@@ -1,0 +1,1843 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <identifier id="AntidepressantMedicationManagement" version="8.3.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_4" version="5.4"/>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="4.0.000"/>
+      <def localId="3" locator="6:1-6:48" localIdentifier="Hospice" path="Hospice" version="2.0.000"/>
+   </includes>
+   <parameters>
+      <def localId="25" locator="29:1-29:49" name="Measurement Period" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <parameterTypeSpecifier localId="24" locator="29:32-29:49" xsi:type="IntervalTypeSpecifier">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <pointType localId="23" locator="29:41-29:48" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="4" locator="8:1-8:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="5" locator="10:1-10:74" name="Annual Wellness Visit" id="urn:oid:2.16.840.1.113883.3.526.3.1240" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="6" locator="11:1-11:88" name="Antidepressant Medication" id="urn:oid:2.16.840.1.113883.3.464.1003.196.12.1213" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="7" locator="12:1-12:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="8" locator="13:1-13:87" name="Home Healthcare Services" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1016" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="9" locator="14:1-14:79" name="Major Depression" id="urn:oid:2.16.840.1.113883.3.464.1003.105.12.1007" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="10" locator="15:1-15:85" name="Nursing Facility Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1012" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="11" locator="16:1-16:75" name="Office Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="12" locator="17:1-17:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="13" locator="18:1-18:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="14" locator="19:1-19:125" name="Preventive Care Services - Established Office Visit, 18 and Up" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1025" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="15" locator="20:1-20:119" name="Preventive Care Services-Initial Office Visit, 18 and Up" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1023" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="16" locator="21:1-21:88" name="Psych Visit - Diagnostic Evaluation" id="urn:oid:2.16.840.1.113883.3.526.3.1492" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="17" locator="22:1-22:80" name="Psych Visit - Psychotherapy" id="urn:oid:2.16.840.1.113883.3.526.3.1496" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="18" locator="23:1-23:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="19" locator="24:1-24:83" name="Telephone Evaluation" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1082" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="20" locator="25:1-25:83" name="Telephone Management" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1053" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="22" locator="27:1-27:62" resultTypeName="t:Code" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <codeSystem localId="21" locator="27:35-27:41" name="LOINC">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+   </codes>
+   <statements>
+      <def locator="31:1-31:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="31:1-31:15" xmlns:ns0="urn:healthit-gov:qdm:v5_4" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="27" locator="33:1-34:50" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="27">
+               <a:s>define &quot;SDE Ethnicity&quot;:&#xd;
+	</a:s>
+               <a:s r="26">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns1="urn:healthit-gov:qdm:v5_4" name="ns1:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="26" locator="34:2-34:50" xmlns:ns2="urn:healthit-gov:qdm:v5_4" dataType="ns2:PatientCharacteristicEthnicity" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns3="urn:healthit-gov:qdm:v5_4" name="ns3:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="34:39-34:49" name="Ethnicity" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="29" locator="36:1-37:42" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>define &quot;SDE Payer&quot;:&#xd;
+	</a:s>
+               <a:s r="28">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns4="urn:healthit-gov:qdm:v5_4" name="ns4:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="28" locator="37:2-37:42" xmlns:ns5="urn:healthit-gov:qdm:v5_4" dataType="ns5:PatientCharacteristicPayer" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns6="urn:healthit-gov:qdm:v5_4" name="ns6:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="37:35-37:41" name="Payer" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="31" locator="39:1-40:40" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>define &quot;SDE Race&quot;:&#xd;
+	</a:s>
+               <a:s r="30">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns7="urn:healthit-gov:qdm:v5_4" name="ns7:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="30" locator="40:2-40:40" xmlns:ns8="urn:healthit-gov:qdm:v5_4" dataType="ns8:PatientCharacteristicRace" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns9="urn:healthit-gov:qdm:v5_4" name="ns9:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="40:34-40:39" name="Race" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="33" locator="42:1-43:57" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="33">
+               <a:s>define &quot;SDE Sex&quot;:&#xd;
+	</a:s>
+               <a:s r="32">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns10="urn:healthit-gov:qdm:v5_4" name="ns10:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="32" locator="43:2-43:57" xmlns:ns11="urn:healthit-gov:qdm:v5_4" dataType="ns11:PatientCharacteristicSex" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns12="urn:healthit-gov:qdm:v5_4" name="ns12:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="43:33-43:56" name="ONC Administrative Sex" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="56" locator="48:1-53:2" xmlns:ns13="urn:healthit-gov:qdm:v5_4" resultTypeName="ns13:PositiveMedicationDispensed" name="Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="56">
+               <a:s>define &quot;Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period&quot;:&#xd;
+	</a:s>
+               <a:s r="55">
+                  <a:s>First(</a:s>
+                  <a:s r="54">
+                     <a:s>
+                        <a:s r="37">
+                           <a:s r="36">
+                              <a:s r="36">
+                                 <a:s>[&quot;Medication, Dispensed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Antidepressant Medication&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> Antidepressant</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			</a:s>
+                     <a:s r="50">
+                        <a:s>where </a:s>
+                        <a:s r="50">
+                           <a:s r="43">
+                              <a:s r="39">
+                                 <a:s r="38">
+                                    <a:s>Antidepressant</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="39">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="43">
+                                 <a:s r="42">
+                                    <a:s>245 days</a:s>
+                                 </a:s>
+                                 <a:s> or less before</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="41">
+                                 <a:s>start of </a:s>
+                                 <a:s r="40">
+                                    <a:s>&quot;Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				or </a:s>
+                           <a:s r="49">
+                              <a:s r="45">
+                                 <a:s r="44">
+                                    <a:s>Antidepressant</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="45">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="49">
+                                 <a:s r="48">
+                                    <a:s>120 days</a:s>
+                                 </a:s>
+                                 <a:s> or less on or after</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="47">
+                                 <a:s>start of </a:s>
+                                 <a:s r="46">
+                                    <a:s>&quot;Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			</a:s>
+                     <a:s r="53">
+                        <a:s>sort by </a:s>
+                        <a:s r="52">
+                           <a:s r="51">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+	)</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="55" locator="49:2-53:2" xmlns:ns14="urn:healthit-gov:qdm:v5_4" resultTypeName="ns14:PositiveMedicationDispensed" xsi:type="First">
+            <source localId="54" locator="49:8-52:25" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns15="urn:healthit-gov:qdm:v5_4" name="ns15:PositiveMedicationDispensed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="37" locator="49:8-49:76" alias="Antidepressant">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns16="urn:healthit-gov:qdm:v5_4" name="ns16:PositiveMedicationDispensed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="36" locator="49:8-49:61" xmlns:ns17="urn:healthit-gov:qdm:v5_4" dataType="ns17:PositiveMedicationDispensed" templateId="PositiveMedicationDispensed" codeProperty="code" xsi:type="Retrieve">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns18="urn:healthit-gov:qdm:v5_4" name="ns18:PositiveMedicationDispensed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <codes locator="49:34-49:60" name="Antidepressant Medication" xsi:type="ValueSetRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </codes>
+                  </expression>
+               </source>
+               <where localId="50" locator="50:4-51:95" resultTypeName="t:Boolean" xsi:type="Or">
+                  <operand localId="43" locator="50:10-50:92" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand locator="50:40-50:55" xsi:type="In">
+                        <operand localId="39" locator="50:10-50:38" resultTypeName="t:DateTime" path="authorDatetime" scope="Antidepressant" xsi:type="Property"/>
+                        <operand locator="50:40-50:55" lowClosed="true" highClosed="false" xsi:type="Interval">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <low locator="50:64-50:92" xsi:type="Subtract">
+                              <operand localId="41" locator="50:64-50:92" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="40" locator="50:73-50:92" name="Measurement Period" xsi:type="ParameterRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                              <operand localId="42" locator="50:40-50:47" resultTypeName="t:Quantity" value="245" unit="days" xsi:type="Quantity"/>
+                           </low>
+                           <high localId="41" locator="50:64-50:92" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="40" locator="50:73-50:92" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="50:40-50:55" xsi:type="Not">
+                        <operand locator="50:40-50:55" xsi:type="IsNull">
+                           <operand localId="41" locator="50:64-50:92" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="40" locator="50:73-50:92" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="49" locator="51:8-51:95" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand locator="51:38-51:53" xsi:type="In">
+                        <operand localId="45" locator="51:8-51:36" resultTypeName="t:DateTime" path="authorDatetime" scope="Antidepressant" xsi:type="Property"/>
+                        <operand locator="51:38-51:53" lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <low localId="47" locator="51:67-51:95" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="46" locator="51:76-51:95" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </low>
+                           <high locator="51:67-51:95" xsi:type="Add">
+                              <operand localId="47" locator="51:67-51:95" resultTypeName="t:DateTime" xsi:type="Start">
+                                 <operand localId="46" locator="51:76-51:95" name="Measurement Period" xsi:type="ParameterRef">
+                                    <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                       <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </operand>
+                              </operand>
+                              <operand localId="48" locator="51:38-51:45" resultTypeName="t:Quantity" value="120" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="51:38-51:53" xsi:type="Not">
+                        <operand locator="51:38-51:53" xsi:type="IsNull">
+                           <operand localId="47" locator="51:67-51:95" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="46" locator="51:76-51:95" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+               </where>
+               <sort localId="53" locator="52:4-52:25">
+                  <by localId="52" locator="52:12-52:25" resultTypeName="t:DateTime" direction="asc" path="authorDatetime" xsi:type="ByColumn"/>
+               </sort>
+            </source>
+         </expression>
+      </def>
+      <def localId="77" locator="108:1-113:112" name="Antidepressant Taken In 114 Days After Initial Dispense" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="77">
+               <a:s>define &quot;Antidepressant Taken In 114 Days After Initial Dispense&quot;:&#xd;
+	</a:s>
+               <a:s r="76">
+                  <a:s>
+                     <a:s r="35">
+                        <a:s r="34">
+                           <a:s r="34">
+                              <a:s>[&quot;Medication, Active&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Antidepressant Medication&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ActiveAntidepressant</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s>
+                     <a:s>let </a:s>
+                     <a:s r="58">
+                        <a:s>AntidepressantDispensed: </a:s>
+                        <a:s r="57">
+                           <a:s>&quot;Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="64">
+                     <a:s>where </a:s>
+                     <a:s r="64">
+                        <a:s r="60">
+                           <a:s r="59">
+                              <a:s>ActiveAntidepressant</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="60">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="64">
+                           <a:s>starts </a:s>
+                           <a:s r="63">
+                              <a:s>114 days</a:s>
+                           </a:s>
+                           <a:s> or less on or after day of</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="62">
+                           <a:s r="61">
+                              <a:s>AntidepressantDispensed</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="62">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="75">
+                     <a:s>return </a:s>
+                     <a:s r="74">
+                        <a:s r="66">
+                           <a:s r="65">
+                              <a:s>ActiveAntidepressant</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="66">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			intersect </a:s>
+                        <a:s r="73">
+                           <a:s>Interval[</a:s>
+                           <a:s r="68">
+                              <a:s r="67">
+                                 <a:s>AntidepressantDispensed</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="68">
+                                 <a:s>authorDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="72">
+                              <a:s r="70">
+                                 <a:s r="69">
+                                    <a:s>AntidepressantDispensed</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="70">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> + </a:s>
+                              <a:s r="71">
+                                 <a:s>114 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </elementType>
+         </resultTypeSpecifier>
+         <expression localId="76" locator="109:2-113:112" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </elementType>
+            </resultTypeSpecifier>
+            <source localId="35" locator="109:2-109:73" alias="ActiveAntidepressant">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns19="urn:healthit-gov:qdm:v5_4" name="ns19:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="34" locator="109:2-109:52" xmlns:ns20="urn:healthit-gov:qdm:v5_4" dataType="ns20:MedicationActive" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns21="urn:healthit-gov:qdm:v5_4" name="ns21:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="109:25-109:51" name="Antidepressant Medication" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <let localId="58" locator="110:7-110:119" xmlns:ns22="urn:healthit-gov:qdm:v5_4" resultTypeName="ns22:PositiveMedicationDispensed" identifier="AntidepressantDispensed">
+               <expression localId="57" locator="110:32-110:119" xmlns:ns23="urn:healthit-gov:qdm:v5_4" resultTypeName="ns23:PositiveMedicationDispensed" name="Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period" xsi:type="ExpressionRef"/>
+            </let>
+            <where localId="64" locator="111:3-111:125" resultTypeName="t:Boolean" xsi:type="And">
+               <operand locator="111:52-111:67" precision="Day" xsi:type="In">
+                  <operand locator="111:45-111:50" xsi:type="Start">
+                     <operand localId="60" locator="111:9-111:43" path="relevantPeriod" scope="ActiveAntidepressant" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand locator="111:52-111:67" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <low localId="62" locator="111:88-111:125" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                        <source localId="61" locator="111:88-111:110" xmlns:ns24="urn:healthit-gov:qdm:v5_4" resultTypeName="ns24:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                     </low>
+                     <high locator="111:112-111:125" xsi:type="Add">
+                        <operand localId="62" locator="111:88-111:125" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                           <source localId="61" locator="111:88-111:110" xmlns:ns25="urn:healthit-gov:qdm:v5_4" resultTypeName="ns25:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                        </operand>
+                        <operand localId="63" locator="111:52-111:59" resultTypeName="t:Quantity" value="114" unit="days" xsi:type="Quantity"/>
+                     </high>
+                  </operand>
+               </operand>
+               <operand locator="111:52-111:67" xsi:type="Not">
+                  <operand locator="111:52-111:67" xsi:type="IsNull">
+                     <operand localId="62" locator="111:88-111:125" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                        <source localId="61" locator="111:88-111:110" xmlns:ns26="urn:healthit-gov:qdm:v5_4" resultTypeName="ns26:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                     </operand>
+                  </operand>
+               </operand>
+            </where>
+            <return localId="75" locator="112:3-113:112">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="74" locator="112:10-113:112" xsi:type="Intersect">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand localId="66" locator="112:10-112:44" path="relevantPeriod" scope="ActiveAntidepressant" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+                  <operand localId="73" locator="113:14-113:112" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <low localId="68" locator="113:23-113:60" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                        <source localId="67" locator="113:23-113:45" xmlns:ns27="urn:healthit-gov:qdm:v5_4" resultTypeName="ns27:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                     </low>
+                     <high localId="72" locator="113:63-113:111" resultTypeName="t:DateTime" xsi:type="Add">
+                        <operand localId="70" locator="113:63-113:100" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                           <source localId="69" locator="113:63-113:85" xmlns:ns28="urn:healthit-gov:qdm:v5_4" resultTypeName="ns28:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                        </operand>
+                        <operand localId="71" locator="113:104-113:111" resultTypeName="t:Quantity" value="114" unit="days" xsi:type="Quantity"/>
+                     </high>
+                  </operand>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="90" locator="115:1-118:2" resultTypeName="t:Integer" name="Cumulative Medication Duration" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="90">
+               <a:s>define function &quot;Cumulative Medication Duration&quot;(Medication </a:s>
+               <a:s r="81">
+                  <a:s>List&lt;</a:s>
+                  <a:s r="80">
+                     <a:s>Interval&lt;</a:s>
+                     <a:s r="79">
+                        <a:s>DateTime</a:s>
+                     </a:s>
+                     <a:s>></a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+               <a:s>):&#xd;
+	</a:s>
+               <a:s r="89">
+                  <a:s r="89">
+                     <a:s>Sum(</a:s>
+                     <a:s r="88">
+                        <a:s>
+                           <a:s r="84">
+                              <a:s r="83">
+                                 <a:s>(</a:s>
+                                 <a:s r="83">
+                                    <a:s>collapse</a:s>
+                                    <a:s r="82">
+                                       <a:s>(</a:s>
+                                       <a:s r="82">
+                                          <a:s>Medication</a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                              <a:s>CumulativeAntidepressant</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			</a:s>
+                        <a:s r="87">
+                           <a:s>return all </a:s>
+                           <a:s r="86">
+                              <a:s>duration in days of </a:s>
+                              <a:s r="85">
+                                 <a:s>CumulativeAntidepressant</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+	)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="89" locator="116:2-118:2" resultTypeName="t:Integer" xsi:type="Sum">
+            <source localId="88" locator="116:6-117:58" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="84" locator="116:6-116:51" alias="CumulativeAntidepressant">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </elementType>
+                  </resultTypeSpecifier>
+                  <expression localId="83" locator="116:6-116:27" xsi:type="Collapse">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </elementType>
+                     </resultTypeSpecifier>
+                     <operand localId="82" locator="116:15-116:26" name="Medication" xsi:type="OperandRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </elementType>
+                        </resultTypeSpecifier>
+                     </operand>
+                     <operand resultTypeName="t:Quantity" xsi:type="Null"/>
+                  </expression>
+               </source>
+               <return localId="87" locator="117:4-117:58" distinct="false">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="86" locator="117:15-117:58" resultTypeName="t:Integer" precision="Day" xsi:type="DurationBetween">
+                     <operand xsi:type="Start">
+                        <operand localId="85" locator="117:35-117:58" name="CumulativeAntidepressant" xsi:type="AliasRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="End">
+                        <operand localId="85" locator="117:35-117:58" name="CumulativeAntidepressant" xsi:type="AliasRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                  </expression>
+               </return>
+            </source>
+         </expression>
+         <operand name="Medication">
+            <operandTypeSpecifier localId="81" locator="115:61-115:84" xsi:type="ListTypeSpecifier">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </elementType>
+               </resultTypeSpecifier>
+               <elementType localId="80" locator="115:66-115:83" xsi:type="IntervalTypeSpecifier">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <pointType localId="79" locator="115:75-115:82" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </elementType>
+            </operandTypeSpecifier>
+         </operand>
+      </def>
+      <def localId="94" locator="105:1-106:97" resultTypeName="t:Boolean" name="Cumulative Medication Duration Greater Than or Equal to 84 Days" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="94">
+               <a:s>define &quot;Cumulative Medication Duration Greater Than or Equal to 84 Days&quot;:&#xd;
+	</a:s>
+               <a:s r="93">
+                  <a:s r="91">
+                     <a:s>&quot;Cumulative Medication Duration&quot;(</a:s>
+                     <a:s r="78">
+                        <a:s>&quot;Antidepressant Taken In 114 Days After Initial Dispense&quot;</a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+                  <a:s r="92">>= 84</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="93" locator="106:2-106:97" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+            <operand localId="91" locator="106:2-106:92" resultTypeName="t:Integer" name="Cumulative Medication Duration" xsi:type="FunctionRef">
+               <operand localId="78" locator="106:35-106:91" name="Antidepressant Taken In 114 Days After Initial Dispense" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </elementType>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+            <operand localId="92" locator="106:96-106:97" resultTypeName="t:Integer" valueType="t:Integer" value="84" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="96" locator="45:1-46:66" resultTypeName="t:Boolean" name="Numerator One" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="96">
+               <a:s>define &quot;Numerator One&quot;:&#xd;
+	</a:s>
+               <a:s r="95">
+                  <a:s>&quot;Cumulative Medication Duration Greater Than or Equal to 84 Days&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="95" locator="46:2-46:66" resultTypeName="t:Boolean" name="Cumulative Medication Duration Greater Than or Equal to 84 Days" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="122" locator="75:1-79:2" resultTypeName="t:Boolean" name="Has Initial Major Depression Diagnosis" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="122">
+               <a:s>define &quot;Has Initial Major Depression Diagnosis&quot;:&#xd;
+	</a:s>
+               <a:s r="121">
+                  <a:s>exists </a:s>
+                  <a:s r="120">
+                     <a:s>( </a:s>
+                     <a:s r="120">
+                        <a:s>
+                           <a:s r="110">
+                              <a:s r="109">
+                                 <a:s r="109">
+                                    <a:s>[&quot;Diagnosis&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Major Depression&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> MajorDepression</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			</a:s>
+                        <a:s>
+                           <a:s>let </a:s>
+                           <a:s r="112">
+                              <a:s>AntidepressantDispensed: </a:s>
+                              <a:s r="111">
+                                 <a:s>&quot;Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			</a:s>
+                        <a:s r="119">
+                           <a:s>where </a:s>
+                           <a:s r="119">
+                              <a:s r="115">
+                                 <a:s>start of </a:s>
+                                 <a:s r="114">
+                                    <a:s r="113">
+                                       <a:s>MajorDepression</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="114">
+                                       <a:s>prevalencePeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="119">
+                                 <a:s>within </a:s>
+                                 <a:s r="118">
+                                    <a:s>60 days</a:s>
+                                 </a:s>
+                                 <a:s> of</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="117">
+                                 <a:s r="116">
+                                    <a:s>AntidepressantDispensed</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="117">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+	)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="121" locator="76:2-79:2" resultTypeName="t:Boolean" xsi:type="Exists">
+            <operand localId="120" locator="76:9-79:2" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns29="urn:healthit-gov:qdm:v5_4" name="ns29:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="110" locator="76:11-76:59" alias="MajorDepression">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns30="urn:healthit-gov:qdm:v5_4" name="ns30:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="109" locator="76:11-76:43" xmlns:ns31="urn:healthit-gov:qdm:v5_4" dataType="ns31:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns32="urn:healthit-gov:qdm:v5_4" name="ns32:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <codes locator="76:25-76:42" name="Major Depression" xsi:type="ValueSetRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </codes>
+                  </expression>
+               </source>
+               <let localId="112" locator="77:8-77:120" xmlns:ns33="urn:healthit-gov:qdm:v5_4" resultTypeName="ns33:PositiveMedicationDispensed" identifier="AntidepressantDispensed">
+                  <expression localId="111" locator="77:33-77:120" xmlns:ns34="urn:healthit-gov:qdm:v5_4" resultTypeName="ns34:PositiveMedicationDispensed" name="Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period" xsi:type="ExpressionRef"/>
+               </let>
+               <where localId="119" locator="78:4-78:107" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand localId="115" locator="78:10-78:50" resultTypeName="t:DateTime" xsi:type="Start">
+                     <operand localId="114" locator="78:19-78:50" path="prevalencePeriod" scope="MajorDepression" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand locator="78:59-78:65" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <low locator="78:59-78:65" xsi:type="Subtract">
+                        <operand localId="117" locator="78:70-78:107" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                           <source localId="116" locator="78:70-78:92" xmlns:ns35="urn:healthit-gov:qdm:v5_4" resultTypeName="ns35:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                        </operand>
+                        <operand localId="118" locator="78:59-78:65" resultTypeName="t:Quantity" value="60" unit="days" xsi:type="Quantity"/>
+                     </low>
+                     <high locator="78:59-78:65" xsi:type="Add">
+                        <operand localId="117" locator="78:70-78:107" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                           <source localId="116" locator="78:70-78:92" xmlns:ns36="urn:healthit-gov:qdm:v5_4" resultTypeName="ns36:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                        </operand>
+                        <operand localId="118" locator="78:59-78:65" resultTypeName="t:Quantity" value="60" unit="days" xsi:type="Quantity"/>
+                     </high>
+                  </operand>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="155" locator="61:1-73:103" name="Qualifying Encounters" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="155">
+               <a:s>define &quot;Qualifying Encounters&quot;:&#xd;
+	</a:s>
+               <a:s r="154">
+                  <a:s>
+                     <a:s r="144">
+                        <a:s r="143">
+                           <a:s>( </a:s>
+                           <a:s r="143">
+                              <a:s r="141">
+                                 <a:s r="139">
+                                    <a:s r="137">
+                                       <a:s r="135">
+                                          <a:s r="133">
+                                             <a:s r="131">
+                                                <a:s r="129">
+                                                   <a:s r="127">
+                                                      <a:s r="125">
+                                                         <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                         <a:s>
+                                                            <a:s>&quot;Office Visit&quot;</a:s>
+                                                         </a:s>
+                                                         <a:s>]</a:s>
+                                                      </a:s>
+                                                      <a:s>&#xd;
+		union </a:s>
+                                                      <a:s r="126">
+                                                         <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                         <a:s>
+                                                            <a:s>&quot;Preventive Care Services - Established Office Visit, 18 and Up&quot;</a:s>
+                                                         </a:s>
+                                                         <a:s>]</a:s>
+                                                      </a:s>
+                                                   </a:s>
+                                                   <a:s>&#xd;
+		union </a:s>
+                                                   <a:s r="128">
+                                                      <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                      <a:s>
+                                                         <a:s>&quot;Preventive Care Services-Initial Office Visit, 18 and Up&quot;</a:s>
+                                                      </a:s>
+                                                      <a:s>]</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                                <a:s>&#xd;
+		union </a:s>
+                                                <a:s r="130">
+                                                   <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                   <a:s>
+                                                      <a:s>&quot;Home Healthcare Services&quot;</a:s>
+                                                   </a:s>
+                                                   <a:s>]</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>&#xd;
+		union </a:s>
+                                             <a:s r="132">
+                                                <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                <a:s>
+                                                   <a:s>&quot;Telephone Management&quot;</a:s>
+                                                </a:s>
+                                                <a:s>]</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>&#xd;
+		union </a:s>
+                                          <a:s r="134">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Telephone Evaluation&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>&#xd;
+		union </a:s>
+                                       <a:s r="136">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Annual Wellness Visit&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+		union </a:s>
+                                    <a:s r="138">
+                                       <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Nursing Facility Visit&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+		union </a:s>
+                                 <a:s r="140">
+                                    <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Psych Visit - Diagnostic Evaluation&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+		union </a:s>
+                              <a:s r="142">
+                                 <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Psych Visit - Psychotherapy&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> ValidEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s>
+                     <a:s>let </a:s>
+                     <a:s r="146">
+                        <a:s>AntidepressantDispensed: </a:s>
+                        <a:s r="145">
+                           <a:s>&quot;Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="153">
+                     <a:s>where </a:s>
+                     <a:s r="153">
+                        <a:s r="149">
+                           <a:s>start of </a:s>
+                           <a:s r="148">
+                              <a:s r="147">
+                                 <a:s>ValidEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="148">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="153">
+                           <a:s>within </a:s>
+                           <a:s r="152">
+                              <a:s>60 days</a:s>
+                           </a:s>
+                           <a:s> of</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="151">
+                           <a:s r="150">
+                              <a:s>AntidepressantDispensed</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="151">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns37="urn:healthit-gov:qdm:v5_4" name="ns37:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="154" locator="62:2-73:103" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns38="urn:healthit-gov:qdm:v5_4" name="ns38:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="144" locator="62:2-71:80" alias="ValidEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns39="urn:healthit-gov:qdm:v5_4" name="ns39:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="143" locator="62:2-71:65" xsi:type="Union">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns40="urn:healthit-gov:qdm:v5_4" name="ns40:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand localId="139" locator="62:4-69:58" xsi:type="Union">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns41="urn:healthit-gov:qdm:v5_4" name="ns41:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="135" locator="62:4-67:56" xsi:type="Union">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns42="urn:healthit-gov:qdm:v5_4" name="ns42:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <operand localId="131" locator="62:4-65:60" xsi:type="Union">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns43="urn:healthit-gov:qdm:v5_4" name="ns43:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <operand localId="127" locator="62:4-63:98" xsi:type="Union">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType xmlns:ns44="urn:healthit-gov:qdm:v5_4" name="ns44:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <operand localId="125" locator="62:4-62:43" xmlns:ns45="urn:healthit-gov:qdm:v5_4" dataType="ns45:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType xmlns:ns46="urn:healthit-gov:qdm:v5_4" name="ns46:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <codes locator="62:29-62:42" name="Office Visit" xsi:type="ValueSetRef">
+                                    <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                       <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </codes>
+                              </operand>
+                              <operand localId="126" locator="63:9-63:98" xmlns:ns47="urn:healthit-gov:qdm:v5_4" dataType="ns47:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType xmlns:ns48="urn:healthit-gov:qdm:v5_4" name="ns48:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <codes locator="63:34-63:97" name="Preventive Care Services - Established Office Visit, 18 and Up" xsi:type="ValueSetRef">
+                                    <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                       <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </codes>
+                              </operand>
+                           </operand>
+                           <operand xsi:type="Union">
+                              <operand localId="128" locator="64:9-64:92" xmlns:ns49="urn:healthit-gov:qdm:v5_4" dataType="ns49:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType xmlns:ns50="urn:healthit-gov:qdm:v5_4" name="ns50:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <codes locator="64:34-64:91" name="Preventive Care Services-Initial Office Visit, 18 and Up" xsi:type="ValueSetRef">
+                                    <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                       <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </codes>
+                              </operand>
+                              <operand localId="130" locator="65:9-65:60" xmlns:ns51="urn:healthit-gov:qdm:v5_4" dataType="ns51:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType xmlns:ns52="urn:healthit-gov:qdm:v5_4" name="ns52:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <codes locator="65:34-65:59" name="Home Healthcare Services" xsi:type="ValueSetRef">
+                                    <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                       <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                    </resultTypeSpecifier>
+                                 </codes>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand xsi:type="Union">
+                           <operand localId="132" locator="66:9-66:56" xmlns:ns53="urn:healthit-gov:qdm:v5_4" dataType="ns53:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType xmlns:ns54="urn:healthit-gov:qdm:v5_4" name="ns54:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <codes locator="66:34-66:55" name="Telephone Management" xsi:type="ValueSetRef">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </codes>
+                           </operand>
+                           <operand localId="134" locator="67:9-67:56" xmlns:ns55="urn:healthit-gov:qdm:v5_4" dataType="ns55:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType xmlns:ns56="urn:healthit-gov:qdm:v5_4" name="ns56:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <codes locator="67:34-67:55" name="Telephone Evaluation" xsi:type="ValueSetRef">
+                                 <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                    <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </codes>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="Union">
+                        <operand localId="136" locator="68:9-68:57" xmlns:ns57="urn:healthit-gov:qdm:v5_4" dataType="ns57:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns58="urn:healthit-gov:qdm:v5_4" name="ns58:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="68:34-68:56" name="Annual Wellness Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                        <operand localId="138" locator="69:9-69:58" xmlns:ns59="urn:healthit-gov:qdm:v5_4" dataType="ns59:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns60="urn:healthit-gov:qdm:v5_4" name="ns60:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="69:34-69:57" name="Nursing Facility Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand xsi:type="Union">
+                     <operand localId="140" locator="70:9-70:71" xmlns:ns61="urn:healthit-gov:qdm:v5_4" dataType="ns61:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns62="urn:healthit-gov:qdm:v5_4" name="ns62:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes locator="70:34-70:70" name="Psych Visit - Diagnostic Evaluation" xsi:type="ValueSetRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </codes>
+                     </operand>
+                     <operand localId="142" locator="71:9-71:63" xmlns:ns63="urn:healthit-gov:qdm:v5_4" dataType="ns63:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns64="urn:healthit-gov:qdm:v5_4" name="ns64:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes locator="71:34-71:62" name="Psych Visit - Psychotherapy" xsi:type="ValueSetRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </codes>
+                     </operand>
+                  </operand>
+               </expression>
+            </source>
+            <let localId="146" locator="72:7-72:119" xmlns:ns65="urn:healthit-gov:qdm:v5_4" resultTypeName="ns65:PositiveMedicationDispensed" identifier="AntidepressantDispensed">
+               <expression localId="145" locator="72:32-72:119" xmlns:ns66="urn:healthit-gov:qdm:v5_4" resultTypeName="ns66:PositiveMedicationDispensed" name="Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period" xsi:type="ExpressionRef"/>
+            </let>
+            <where localId="153" locator="73:3-73:103" resultTypeName="t:Boolean" xsi:type="In">
+               <operand localId="149" locator="73:9-73:46" resultTypeName="t:DateTime" xsi:type="Start">
+                  <operand localId="148" locator="73:18-73:46" path="relevantPeriod" scope="ValidEncounter" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+               <operand locator="73:55-73:61" lowClosed="true" highClosed="true" xsi:type="Interval">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <low locator="73:55-73:61" xsi:type="Subtract">
+                     <operand localId="151" locator="73:66-73:103" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                        <source localId="150" locator="73:66-73:88" xmlns:ns67="urn:healthit-gov:qdm:v5_4" resultTypeName="ns67:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                     </operand>
+                     <operand localId="152" locator="73:55-73:61" resultTypeName="t:Quantity" value="60" unit="days" xsi:type="Quantity"/>
+                  </low>
+                  <high locator="73:55-73:61" xsi:type="Add">
+                     <operand localId="151" locator="73:66-73:103" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                        <source localId="150" locator="73:66-73:88" xmlns:ns68="urn:healthit-gov:qdm:v5_4" resultTypeName="ns68:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                     </operand>
+                     <operand localId="152" locator="73:55-73:61" resultTypeName="t:Quantity" value="60" unit="days" xsi:type="Quantity"/>
+                  </high>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="159" locator="81:1-86:36" resultTypeName="t:Boolean" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="159">
+               <a:s>define &quot;Initial Population&quot;:&#xd;
+	</a:s>
+               <a:s r="158">
+                  <a:s r="124">
+                     <a:s r="108">
+                        <a:s>exists </a:s>
+                        <a:s r="107">
+                           <a:s>( </a:s>
+                           <a:s r="107">
+                              <a:s>
+                                 <a:s r="98">
+                                    <a:s r="97">
+                                       <a:s r="97">
+                                          <a:s>[&quot;Patient Characteristic Birthdate&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Birth date&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> BirthDate</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+			</a:s>
+                              <a:s r="106">
+                                 <a:s>where </a:s>
+                                 <a:s r="106">
+                                    <a:s r="104">
+                                       <a:s r="99">
+                                          <a:s>Global</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="104">
+                                          <a:s>&quot;CalendarAgeInYearsAt&quot;(</a:s>
+                                          <a:s r="101">
+                                             <a:s r="100">
+                                                <a:s>BirthDate</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="101">
+                                                <a:s>birthDatetime</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>, </a:s>
+                                          <a:s r="103">
+                                             <a:s>start of </a:s>
+                                             <a:s r="102">
+                                                <a:s>&quot;Measurement Period&quot;</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>)</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s r="105">>= 18</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+	)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+		and </a:s>
+                     <a:s r="123">
+                        <a:s>&quot;Has Initial Major Depression Diagnosis&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		and </a:s>
+                  <a:s r="157">
+                     <a:s>exists </a:s>
+                     <a:s r="156">
+                        <a:s>&quot;Qualifying Encounters&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="158" locator="82:2-86:36" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="124" locator="82:2-85:46" resultTypeName="t:Boolean" xsi:type="And">
+               <operand localId="108" locator="82:2-84:2" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="107" locator="82:9-84:2" xsi:type="Query">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns69="urn:healthit-gov:qdm:v5_4" name="ns69:PatientCharacteristicBirthdate" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="98" locator="82:11-82:70" alias="BirthDate">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns70="urn:healthit-gov:qdm:v5_4" name="ns70:PatientCharacteristicBirthdate" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <expression localId="97" locator="82:11-82:60" xmlns:ns71="urn:healthit-gov:qdm:v5_4" dataType="ns71:PatientCharacteristicBirthdate" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns72="urn:healthit-gov:qdm:v5_4" name="ns72:PatientCharacteristicBirthdate" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes xsi:type="ToList">
+                              <operand locator="82:48-82:59" resultTypeName="t:Code" name="Birth date" xsi:type="CodeRef"/>
+                           </codes>
+                        </expression>
+                     </source>
+                     <where localId="106" locator="83:4-83:99" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                        <operand localId="104" locator="83:10-83:94" resultTypeName="t:Integer" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                           <operand localId="101" locator="83:40-83:62" resultTypeName="t:DateTime" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                           <operand localId="103" locator="83:65-83:93" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="102" locator="83:74-83:93" name="Measurement Period" xsi:type="ParameterRef">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand localId="105" locator="83:98-83:99" resultTypeName="t:Integer" valueType="t:Integer" value="18" xsi:type="Literal"/>
+                     </where>
+                  </operand>
+               </operand>
+               <operand localId="123" locator="85:7-85:46" resultTypeName="t:Boolean" name="Has Initial Major Depression Diagnosis" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="157" locator="86:7-86:36" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="156" locator="86:14-86:36" name="Qualifying Encounters" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns73="urn:healthit-gov:qdm:v5_4" name="ns73:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="161" locator="55:1-56:21" resultTypeName="t:Boolean" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="161">
+               <a:s>define &quot;Denominator&quot;:&#xd;
+	</a:s>
+               <a:s r="160">
+                  <a:s>&quot;Initial Population&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="160" locator="56:2-56:21" resultTypeName="t:Boolean" name="Initial Population" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="184" locator="95:1-100:126" name="Antidepressant Taken In 231 Days After Initial Dispense" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="184">
+               <a:s>define &quot;Antidepressant Taken In 231 Days After Initial Dispense&quot;:&#xd;
+	</a:s>
+               <a:s r="183">
+                  <a:s>
+                     <a:s r="163">
+                        <a:s r="162">
+                           <a:s r="162">
+                              <a:s>[&quot;Medication, Active&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Antidepressant Medication&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ActiveAntidepressant</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s>
+                     <a:s>let </a:s>
+                     <a:s r="165">
+                        <a:s>InitialAntidepressantDispensed: </a:s>
+                        <a:s r="164">
+                           <a:s>&quot;Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="171">
+                     <a:s>where </a:s>
+                     <a:s r="171">
+                        <a:s r="167">
+                           <a:s r="166">
+                              <a:s>ActiveAntidepressant</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="167">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="171">
+                           <a:s>starts </a:s>
+                           <a:s r="170">
+                              <a:s>231 days</a:s>
+                           </a:s>
+                           <a:s> or less on or after day of</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="169">
+                           <a:s r="168">
+                              <a:s>InitialAntidepressantDispensed</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="169">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="182">
+                     <a:s>return </a:s>
+                     <a:s r="181">
+                        <a:s r="173">
+                           <a:s r="172">
+                              <a:s>ActiveAntidepressant</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="173">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			intersect </a:s>
+                        <a:s r="180">
+                           <a:s>Interval[</a:s>
+                           <a:s r="175">
+                              <a:s r="174">
+                                 <a:s>InitialAntidepressantDispensed</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="175">
+                                 <a:s>authorDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="179">
+                              <a:s r="177">
+                                 <a:s r="176">
+                                    <a:s>InitialAntidepressantDispensed</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="177">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> + </a:s>
+                              <a:s r="178">
+                                 <a:s>231 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </elementType>
+         </resultTypeSpecifier>
+         <expression localId="183" locator="96:2-100:126" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </elementType>
+            </resultTypeSpecifier>
+            <source localId="163" locator="96:2-96:73" alias="ActiveAntidepressant">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns74="urn:healthit-gov:qdm:v5_4" name="ns74:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="162" locator="96:2-96:52" xmlns:ns75="urn:healthit-gov:qdm:v5_4" dataType="ns75:MedicationActive" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns76="urn:healthit-gov:qdm:v5_4" name="ns76:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="96:25-96:51" name="Antidepressant Medication" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <let localId="165" locator="97:7-97:126" xmlns:ns77="urn:healthit-gov:qdm:v5_4" resultTypeName="ns77:PositiveMedicationDispensed" identifier="InitialAntidepressantDispensed">
+               <expression localId="164" locator="97:39-97:126" xmlns:ns78="urn:healthit-gov:qdm:v5_4" resultTypeName="ns78:PositiveMedicationDispensed" name="Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period" xsi:type="ExpressionRef"/>
+            </let>
+            <where localId="171" locator="98:3-98:132" resultTypeName="t:Boolean" xsi:type="And">
+               <operand locator="98:52-98:67" precision="Day" xsi:type="In">
+                  <operand locator="98:45-98:50" xsi:type="Start">
+                     <operand localId="167" locator="98:9-98:43" path="relevantPeriod" scope="ActiveAntidepressant" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand locator="98:52-98:67" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <low localId="169" locator="98:88-98:132" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                        <source localId="168" locator="98:88-98:117" xmlns:ns79="urn:healthit-gov:qdm:v5_4" resultTypeName="ns79:PositiveMedicationDispensed" name="InitialAntidepressantDispensed" xsi:type="QueryLetRef"/>
+                     </low>
+                     <high locator="98:119-98:132" xsi:type="Add">
+                        <operand localId="169" locator="98:88-98:132" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                           <source localId="168" locator="98:88-98:117" xmlns:ns80="urn:healthit-gov:qdm:v5_4" resultTypeName="ns80:PositiveMedicationDispensed" name="InitialAntidepressantDispensed" xsi:type="QueryLetRef"/>
+                        </operand>
+                        <operand localId="170" locator="98:52-98:59" resultTypeName="t:Quantity" value="231" unit="days" xsi:type="Quantity"/>
+                     </high>
+                  </operand>
+               </operand>
+               <operand locator="98:52-98:67" xsi:type="Not">
+                  <operand locator="98:52-98:67" xsi:type="IsNull">
+                     <operand localId="169" locator="98:88-98:132" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                        <source localId="168" locator="98:88-98:117" xmlns:ns81="urn:healthit-gov:qdm:v5_4" resultTypeName="ns81:PositiveMedicationDispensed" name="InitialAntidepressantDispensed" xsi:type="QueryLetRef"/>
+                     </operand>
+                  </operand>
+               </operand>
+            </where>
+            <return localId="182" locator="99:3-100:126">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="181" locator="99:10-100:126" xsi:type="Intersect">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand localId="173" locator="99:10-99:44" path="relevantPeriod" scope="ActiveAntidepressant" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+                  <operand localId="180" locator="100:14-100:126" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <low localId="175" locator="100:23-100:67" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                        <source localId="174" locator="100:23-100:52" xmlns:ns82="urn:healthit-gov:qdm:v5_4" resultTypeName="ns82:PositiveMedicationDispensed" name="InitialAntidepressantDispensed" xsi:type="QueryLetRef"/>
+                     </low>
+                     <high localId="179" locator="100:70-100:125" resultTypeName="t:DateTime" xsi:type="Add">
+                        <operand localId="177" locator="100:70-100:114" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                           <source localId="176" locator="100:70-100:99" xmlns:ns83="urn:healthit-gov:qdm:v5_4" resultTypeName="ns83:PositiveMedicationDispensed" name="InitialAntidepressantDispensed" xsi:type="QueryLetRef"/>
+                        </operand>
+                        <operand localId="178" locator="100:118-100:125" resultTypeName="t:Quantity" value="231" unit="days" xsi:type="Quantity"/>
+                     </high>
+                  </operand>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="189" locator="102:1-103:98" resultTypeName="t:Boolean" name="Cumulative Medication Duration Greater Than or Equal to 180 Days" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="189">
+               <a:s>define &quot;Cumulative Medication Duration Greater Than or Equal to 180 Days&quot;:&#xd;
+	</a:s>
+               <a:s r="188">
+                  <a:s r="186">
+                     <a:s>&quot;Cumulative Medication Duration&quot;(</a:s>
+                     <a:s r="185">
+                        <a:s>&quot;Antidepressant Taken In 231 Days After Initial Dispense&quot;</a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+                  <a:s r="187">>= 180</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="188" locator="103:2-103:98" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+            <operand localId="186" locator="103:2-103:92" resultTypeName="t:Integer" name="Cumulative Medication Duration" xsi:type="FunctionRef">
+               <operand localId="185" locator="103:35-103:91" name="Antidepressant Taken In 231 Days After Initial Dispense" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </elementType>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+            <operand localId="187" locator="103:96-103:98" resultTypeName="t:Integer" valueType="t:Integer" value="180" xsi:type="Literal"/>
+         </expression>
+      </def>
+      <def localId="191" locator="58:1-59:67" resultTypeName="t:Boolean" name="Numerator Two" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="191">
+               <a:s>define &quot;Numerator Two&quot;:&#xd;
+	</a:s>
+               <a:s r="190">
+                  <a:s>&quot;Cumulative Medication Duration Greater Than or Equal to 180 Days&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="190" locator="59:2-59:67" resultTypeName="t:Boolean" name="Cumulative Medication Duration Greater Than or Equal to 180 Days" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="211" locator="88:1-93:3" resultTypeName="t:Boolean" name="Denominator Exclusions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="211">
+               <a:s>define &quot;Denominator Exclusions&quot;:&#xd;
+	</a:s>
+               <a:s r="210">
+                  <a:s r="193">
+                     <a:s r="192">
+                        <a:s>Hospice</a:s>
+                     </a:s>
+                     <a:s>.</a:s>
+                     <a:s r="193">
+                        <a:s>&quot;Has Hospice&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		or </a:s>
+                  <a:s r="209">
+                     <a:s>exists </a:s>
+                     <a:s r="208">
+                        <a:s>( </a:s>
+                        <a:s r="208">
+                           <a:s>
+                              <a:s r="195">
+                                 <a:s r="194">
+                                    <a:s r="194">
+                                       <a:s>[&quot;Medication, Active&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Antidepressant Medication&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> OnAntiDepressant</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				</a:s>
+                           <a:s>
+                              <a:s>let </a:s>
+                              <a:s r="197">
+                                 <a:s>AntidepressantDispensed: </a:s>
+                                 <a:s r="196">
+                                    <a:s>&quot;Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				</a:s>
+                           <a:s r="207">
+                              <a:s>where </a:s>
+                              <a:s r="207">
+                                 <a:s r="199">
+                                    <a:s r="198">
+                                       <a:s>OnAntiDepressant</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="199">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="207"> overlaps </a:s>
+                                 <a:s r="206">
+                                    <a:s>Interval[</a:s>
+                                    <a:s r="203">
+                                       <a:s r="201">
+                                          <a:s r="200">
+                                             <a:s>AntidepressantDispensed</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="201">
+                                             <a:s>authorDatetime</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> - </a:s>
+                                       <a:s r="202">
+                                          <a:s>105 days</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>, </a:s>
+                                    <a:s r="205">
+                                       <a:s r="204">
+                                          <a:s>AntidepressantDispensed</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="205">
+                                          <a:s>authorDatetime</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> )</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="210" locator="89:2-93:3" resultTypeName="t:Boolean" xsi:type="Or">
+            <operand localId="193" locator="89:2-89:22" resultTypeName="t:Boolean" name="Has Hospice" libraryName="Hospice" xsi:type="ExpressionRef"/>
+            <operand localId="209" locator="90:6-93:3" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="208" locator="90:13-93:3" xsi:type="Query">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns84="urn:healthit-gov:qdm:v5_4" name="ns84:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <source localId="195" locator="90:15-90:82" alias="OnAntiDepressant">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns85="urn:healthit-gov:qdm:v5_4" name="ns85:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <expression localId="194" locator="90:15-90:65" xmlns:ns86="urn:healthit-gov:qdm:v5_4" dataType="ns86:MedicationActive" codeProperty="code" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns87="urn:healthit-gov:qdm:v5_4" name="ns87:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes locator="90:38-90:64" name="Antidepressant Medication" xsi:type="ValueSetRef">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </codes>
+                     </expression>
+                  </source>
+                  <let localId="197" locator="91:9-91:121" xmlns:ns88="urn:healthit-gov:qdm:v5_4" resultTypeName="ns88:PositiveMedicationDispensed" identifier="AntidepressantDispensed">
+                     <expression localId="196" locator="91:34-91:121" xmlns:ns89="urn:healthit-gov:qdm:v5_4" resultTypeName="ns89:PositiveMedicationDispensed" name="Antidepressant Dispensed 245 Days Before or 120 Days After Start of Measurement Period" xsi:type="ExpressionRef"/>
+                  </let>
+                  <where localId="207" locator="92:5-92:151" resultTypeName="t:Boolean" xsi:type="Overlaps">
+                     <operand localId="199" locator="92:11-92:41" path="relevantPeriod" scope="OnAntiDepressant" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                     <operand localId="206" locator="92:52-92:151" lowClosed="true" highClosed="false" xsi:type="Interval">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <low localId="203" locator="92:61-92:109" resultTypeName="t:DateTime" xsi:type="Subtract">
+                           <operand localId="201" locator="92:61-92:98" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                              <source localId="200" locator="92:61-92:83" xmlns:ns90="urn:healthit-gov:qdm:v5_4" resultTypeName="ns90:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                           </operand>
+                           <operand localId="202" locator="92:102-92:109" resultTypeName="t:Quantity" value="105" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high localId="205" locator="92:112-92:149" resultTypeName="t:DateTime" path="authorDatetime" xsi:type="Property">
+                           <source localId="204" locator="92:112-92:134" xmlns:ns91="urn:healthit-gov:qdm:v5_4" resultTypeName="ns91:PositiveMedicationDispensed" name="AntidepressantDispensed" xsi:type="QueryLetRef"/>
+                        </high>
+                     </operand>
+                  </where>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

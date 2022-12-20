@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="49">
+         <a:s>library VTEICU version '4.0.000'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="VTEICU" version="4.0.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_5" version="5.5">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="1">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>QDM</a:s>
+               </a:s>
+               <a:s> version '5.5'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="5.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="2">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>MATGlobalCommonFunctions</a:s>
+               </a:s>
+               <a:s> version '5.0.000' called Global</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </includes>
+   <parameters>
+      <def localId="5" locator="7:1-7:49" name="Measurement Period" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="5">
+               <a:s>parameter &quot;Measurement Period&quot; </a:s>
+               <a:s r="4">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="3">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <parameterTypeSpecifier localId="4" locator="7:32-7:49" xsi:type="IntervalTypeSpecifier">
+            <pointType localId="3" locator="7:41-7:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <contexts>
+      <def locator="9:1-9:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def locator="9:1-9:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="9:1-9:15" xmlns:ns0="urn:healthit-gov:qdm:v5_5" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="21" locator="11:1-12:149" name="FromDayOfStartOfHospitalizationToDayAfterAdmission" context="Patient" accessLevel="Public" fluent="false" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="21">
+               <a:s>define function &quot;FromDayOfStartOfHospitalizationToDayAfterAdmission&quot;(Encounter </a:s>
+               <a:s r="6">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+  </a:s>
+               <a:s r="20">
+                  <a:s r="20">
+                     <a:s>Interval[</a:s>
+                     <a:s r="12">
+                        <a:s r="7">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="12">
+                           <a:s>&quot;ToDate&quot;(</a:s>
+                           <a:s r="11">
+                              <a:s>start of </a:s>
+                              <a:s r="10">
+                                 <a:s r="8">
+                                    <a:s>Global</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="10">
+                                    <a:s>&quot;HospitalizationWithObservation&quot;(</a:s>
+                                    <a:s r="9">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>)</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="19">
+                        <a:s r="13">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="19">
+                           <a:s>&quot;ToDate&quot;(</a:s>
+                           <a:s r="18">
+                              <a:s r="16">
+                                 <a:s>start of </a:s>
+                                 <a:s r="15">
+                                    <a:s r="14">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="15">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> + </a:s>
+                              <a:s r="17">
+                                 <a:s>2 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="20" locator="12:3-12:149" lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low localId="12" locator="12:12-12:87" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="11" locator="12:28-12:86" xsi:type="Start">
+                  <operand localId="10" locator="12:37-12:86" name="HospitalizationWithObservation" libraryName="Global" xsi:type="FunctionRef">
+                     <operand localId="9" locator="12:77-12:85" name="Encounter" xsi:type="OperandRef"/>
+                  </operand>
+               </operand>
+            </low>
+            <high localId="19" locator="12:90-12:148" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="18" locator="12:106-12:147" xsi:type="Add">
+                  <operand localId="16" locator="12:106-12:138" xsi:type="Start">
+                     <operand localId="15" locator="12:115-12:138" path="relevantPeriod" xsi:type="Property">
+                        <source localId="14" locator="12:115-12:123" name="Encounter" xsi:type="OperandRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="17" locator="12:142-12:147" value="2" unit="days" xsi:type="Quantity"/>
+               </operand>
+            </high>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="6" locator="11:80-11:101" xmlns:ns1="urn:healthit-gov:qdm:v5_5" name="ns1:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="29" locator="20:1-21:71" name="FirstICULocationPeriod" context="Patient" accessLevel="Public" fluent="false" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>define function &quot;FirstICULocationPeriod&quot;(Encounter </a:s>
+               <a:s r="24">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+  </a:s>
+               <a:s r="28">
+                  <a:s r="28">
+                     <a:s r="27">
+                        <a:s r="25">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="27">
+                           <a:s>&quot;FirstInpatientIntensiveCareUnit&quot; ( </a:s>
+                           <a:s r="26">
+                              <a:s>Encounter</a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>.</a:s>
+                     <a:s r="28">
+                        <a:s>locationPeriod</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="28" locator="21:3-21:71" path="locationPeriod" xsi:type="Property">
+            <source localId="27" locator="21:3-21:56" name="FirstInpatientIntensiveCareUnit" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="26" locator="21:46-21:54" name="Encounter" xsi:type="OperandRef"/>
+            </source>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="24" locator="20:52-20:73" xmlns:ns2="urn:healthit-gov:qdm:v5_5" name="ns2:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="32" locator="14:1-15:46" name="StartOfFirstICU" context="Patient" accessLevel="Public" fluent="false" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="32">
+               <a:s>define function &quot;StartOfFirstICU&quot;(Encounter </a:s>
+               <a:s r="22">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+  </a:s>
+               <a:s r="31">
+                  <a:s r="31">
+                     <a:s>start of </a:s>
+                     <a:s r="30">
+                        <a:s>&quot;FirstICULocationPeriod&quot;(</a:s>
+                        <a:s r="23">
+                           <a:s>Encounter</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="31" locator="15:3-15:46" xsi:type="Start">
+            <operand localId="30" locator="15:12-15:46" name="FirstICULocationPeriod" xsi:type="FunctionRef">
+               <operand localId="23" locator="15:37-15:45" name="Encounter" xsi:type="OperandRef"/>
+            </operand>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="22" locator="14:45-14:66" xmlns:ns3="urn:healthit-gov:qdm:v5_5" name="ns3:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="47" locator="17:1-18:141" name="FromDayOfStartOfHospitalizationToDayAfterFirstICU" context="Patient" accessLevel="Public" fluent="false" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="47">
+               <a:s>define function &quot;FromDayOfStartOfHospitalizationToDayAfterFirstICU&quot;(Encounter </a:s>
+               <a:s r="33">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+  </a:s>
+               <a:s r="46">
+                  <a:s r="46">
+                     <a:s>Interval[</a:s>
+                     <a:s r="39">
+                        <a:s r="34">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="39">
+                           <a:s>&quot;ToDate&quot;(</a:s>
+                           <a:s r="38">
+                              <a:s>start of </a:s>
+                              <a:s r="37">
+                                 <a:s r="35">
+                                    <a:s>Global</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="37">
+                                    <a:s>&quot;HospitalizationWithObservation&quot;(</a:s>
+                                    <a:s r="36">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>)</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="45">
+                        <a:s r="40">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="45">
+                           <a:s>&quot;ToDate&quot;(</a:s>
+                           <a:s r="44">
+                              <a:s r="42">
+                                 <a:s>StartOfFirstICU(</a:s>
+                                 <a:s r="41">
+                                    <a:s>Encounter</a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                              <a:s>+ </a:s>
+                              <a:s r="43">
+                                 <a:s>2 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="46" locator="18:3-18:141" lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low localId="39" locator="18:12-18:87" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="38" locator="18:28-18:86" xsi:type="Start">
+                  <operand localId="37" locator="18:37-18:86" name="HospitalizationWithObservation" libraryName="Global" xsi:type="FunctionRef">
+                     <operand localId="36" locator="18:77-18:85" name="Encounter" xsi:type="OperandRef"/>
+                  </operand>
+               </operand>
+            </low>
+            <high localId="45" locator="18:90-18:140" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="44" locator="18:106-18:139" xsi:type="Add">
+                  <operand localId="42" locator="18:106-18:131" name="StartOfFirstICU" xsi:type="FunctionRef">
+                     <operand localId="41" locator="18:122-18:130" name="Encounter" xsi:type="OperandRef"/>
+                  </operand>
+                  <operand localId="43" locator="18:134-18:139" value="2" unit="days" xsi:type="Quantity"/>
+               </operand>
+            </high>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="33" locator="17:79-17:100" xmlns:ns4="urn:healthit-gov:qdm:v5_5" name="ns4:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+   </statements>
+</library>
+
+

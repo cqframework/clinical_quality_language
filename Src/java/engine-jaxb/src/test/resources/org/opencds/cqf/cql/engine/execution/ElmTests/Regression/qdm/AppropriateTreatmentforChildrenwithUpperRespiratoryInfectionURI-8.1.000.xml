@@ -1,0 +1,1491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <identifier id="AppropriateTreatmentforChildrenwithUpperRespiratoryInfectionURI" version="8.1.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_4" version="5.4"/>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="4.0.000"/>
+      <def localId="3" locator="6:1-6:48" localIdentifier="Hospice" path="Hospice" version="2.0.000"/>
+   </includes>
+   <parameters>
+      <def localId="21" locator="25:1-25:49" name="Measurement Period" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <parameterTypeSpecifier localId="20" locator="25:32-25:49" xsi:type="IntervalTypeSpecifier">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <pointType localId="19" locator="25:41-25:48" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="4" locator="8:1-8:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="5" locator="10:1-10:101" name="Antibiotic Medications for Pharyngitis" id="urn:oid:2.16.840.1.113883.3.464.1003.196.12.1001" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="6" locator="11:1-11:110" name="Competing Conditions for Respiratory Conditions" id="urn:oid:2.16.840.1.113883.3.464.1003.102.12.1017" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="7" locator="12:1-12:89" name="Emergency Department Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1010" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="8" locator="13:1-13:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="9" locator="14:1-14:98" name="Hospital Observation Care - Initial" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1002" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="10" locator="15:1-15:75" name="Office Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="11" locator="16:1-16:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="12" locator="17:1-17:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="13" locator="18:1-18:118" name="Preventive Care Services, Initial Office Visit, 0 to 17" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1022" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="14" locator="19:1-19:113" name="Preventive Care, Established Office Visit, 0 to 17" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1024" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="15" locator="20:1-20:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="16" locator="21:1-21:90" name="Upper Respiratory Infection" id="urn:oid:2.16.840.1.113883.3.464.1003.102.12.1022" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="18" locator="23:1-23:62" resultTypeName="t:Code" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <codeSystem localId="17" locator="23:35-23:41" name="LOINC">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+   </codes>
+   <statements>
+      <def locator="27:1-27:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="27:1-27:15" xmlns:ns0="urn:healthit-gov:qdm:v5_4" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="23" locator="29:1-30:50" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="23">
+               <a:s>define &quot;SDE Ethnicity&quot;:&#xd;
+	</a:s>
+               <a:s r="22">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns1="urn:healthit-gov:qdm:v5_4" name="ns1:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="22" locator="30:2-30:50" xmlns:ns2="urn:healthit-gov:qdm:v5_4" dataType="ns2:PatientCharacteristicEthnicity" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns3="urn:healthit-gov:qdm:v5_4" name="ns3:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="30:39-30:49" name="Ethnicity" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="25" locator="32:1-33:42" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="25">
+               <a:s>define &quot;SDE Payer&quot;:&#xd;
+	</a:s>
+               <a:s r="24">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns4="urn:healthit-gov:qdm:v5_4" name="ns4:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="24" locator="33:2-33:42" xmlns:ns5="urn:healthit-gov:qdm:v5_4" dataType="ns5:PatientCharacteristicPayer" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns6="urn:healthit-gov:qdm:v5_4" name="ns6:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="33:35-33:41" name="Payer" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="27" locator="35:1-36:40" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="27">
+               <a:s>define &quot;SDE Race&quot;:&#xd;
+	</a:s>
+               <a:s r="26">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns7="urn:healthit-gov:qdm:v5_4" name="ns7:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="26" locator="36:2-36:40" xmlns:ns8="urn:healthit-gov:qdm:v5_4" dataType="ns8:PatientCharacteristicRace" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns9="urn:healthit-gov:qdm:v5_4" name="ns9:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="36:34-36:39" name="Race" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="29" locator="38:1-39:57" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>define &quot;SDE Sex&quot;:&#xd;
+	</a:s>
+               <a:s r="28">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns10="urn:healthit-gov:qdm:v5_4" name="ns10:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="28" locator="39:2-39:57" xmlns:ns11="urn:healthit-gov:qdm:v5_4" dataType="ns11:PatientCharacteristicSex" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns12="urn:healthit-gov:qdm:v5_4" name="ns12:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="39:33-39:56" name="ONC Administrative Sex" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="45" locator="44:1-50:65" name="Qualifying Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="45">
+               <a:s>define &quot;Qualifying Encounter&quot;:&#xd;
+	</a:s>
+               <a:s r="44">
+                  <a:s>
+                     <a:s r="39">
+                        <a:s r="38">
+                           <a:s>( </a:s>
+                           <a:s r="38">
+                              <a:s r="36">
+                                 <a:s r="34">
+                                    <a:s r="32">
+                                       <a:s r="30">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Office Visit&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                       <a:s>&#xd;
+		union </a:s>
+                                       <a:s r="31">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Emergency Department Visit&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+		union </a:s>
+                                    <a:s r="33">
+                                       <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Preventive Care Services, Initial Office Visit, 0 to 17&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+		union </a:s>
+                                 <a:s r="35">
+                                    <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Preventive Care, Established Office Visit, 0 to 17&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+		union </a:s>
+                              <a:s r="37">
+                                 <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Hospital Observation Care - Initial&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> ValidEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="43">
+                     <a:s>where </a:s>
+                     <a:s r="43">
+                        <a:s r="41">
+                           <a:s r="40">
+                              <a:s>ValidEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="41">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="43"> during </a:s>
+                        <a:s r="42">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns13="urn:healthit-gov:qdm:v5_4" name="ns13:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="44" locator="45:2-50:65" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns14="urn:healthit-gov:qdm:v5_4" name="ns14:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="39" locator="45:2-49:88" alias="ValidEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns15="urn:healthit-gov:qdm:v5_4" name="ns15:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="38" locator="45:2-49:73" xsi:type="Union">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns16="urn:healthit-gov:qdm:v5_4" name="ns16:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand localId="36" locator="45:4-48:86" xsi:type="Union">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns17="urn:healthit-gov:qdm:v5_4" name="ns17:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="32" locator="45:4-46:62" xsi:type="Union">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns18="urn:healthit-gov:qdm:v5_4" name="ns18:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <operand localId="30" locator="45:4-45:43" xmlns:ns19="urn:healthit-gov:qdm:v5_4" dataType="ns19:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns20="urn:healthit-gov:qdm:v5_4" name="ns20:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="45:29-45:42" name="Office Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                        <operand localId="31" locator="46:9-46:62" xmlns:ns21="urn:healthit-gov:qdm:v5_4" dataType="ns21:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns22="urn:healthit-gov:qdm:v5_4" name="ns22:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="46:34-46:61" name="Emergency Department Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="Union">
+                        <operand localId="33" locator="47:9-47:91" xmlns:ns23="urn:healthit-gov:qdm:v5_4" dataType="ns23:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns24="urn:healthit-gov:qdm:v5_4" name="ns24:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="47:34-47:90" name="Preventive Care Services, Initial Office Visit, 0 to 17" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                        <operand localId="35" locator="48:9-48:86" xmlns:ns25="urn:healthit-gov:qdm:v5_4" dataType="ns25:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns26="urn:healthit-gov:qdm:v5_4" name="ns26:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="48:34-48:85" name="Preventive Care, Established Office Visit, 0 to 17" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="37" locator="49:9-49:71" xmlns:ns27="urn:healthit-gov:qdm:v5_4" dataType="ns27:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns28="urn:healthit-gov:qdm:v5_4" name="ns28:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <codes locator="49:34-49:70" name="Hospital Observation Care - Initial" xsi:type="ValueSetRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </codes>
+                  </operand>
+               </expression>
+            </source>
+            <where localId="43" locator="50:3-50:65" resultTypeName="t:Boolean" xsi:type="IncludedIn">
+               <operand localId="41" locator="50:9-50:37" path="relevantPeriod" scope="ValidEncounter" xsi:type="Property">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+               <operand localId="42" locator="50:46-50:65" name="Measurement Period" xsi:type="ParameterRef">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="62" locator="56:1-61:77" name="Encounter with Upper Respiratory Infection" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="62">
+               <a:s>define &quot;Encounter with Upper Respiratory Infection&quot;:&#xd;
+	</a:s>
+               <a:s r="61">
+                  <a:s>
+                     <a:s>from&#xd;
+		</a:s>
+                     <a:s r="47">
+                        <a:s r="46">
+                           <a:s>
+                              <a:s>&quot;Qualifying Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> QualifyingEncounter</a:s>
+                     </a:s>
+                     <a:s>,&#xd;
+		</a:s>
+                     <a:s r="49">
+                        <a:s r="48">
+                           <a:s r="48">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Upper Respiratory Infection&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> URI</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="60">
+                     <a:s>where </a:s>
+                     <a:s r="60">
+                        <a:s r="54">
+                           <a:s r="51">
+                              <a:s r="50">
+                                 <a:s>URI</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="51">
+                                 <a:s>prevalencePeriod</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="54"> starts during </a:s>
+                           <a:s r="53">
+                              <a:s r="52">
+                                 <a:s>QualifyingEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="53">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			or </a:s>
+                        <a:s r="59">
+                           <a:s r="56">
+                              <a:s r="55">
+                                 <a:s>URI</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="56">
+                                 <a:s>prevalencePeriod</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="59"> overlaps before </a:s>
+                           <a:s r="58">
+                              <a:s r="57">
+                                 <a:s>QualifyingEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="58">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xsi:type="TupleTypeSpecifier">
+               <element name="QualifyingEncounter">
+                  <type xmlns:ns29="urn:healthit-gov:qdm:v5_4" name="ns29:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </element>
+               <element name="URI">
+                  <type xmlns:ns30="urn:healthit-gov:qdm:v5_4" name="ns30:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </element>
+            </elementType>
+         </resultTypeSpecifier>
+         <expression localId="61" locator="57:2-61:77" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xsi:type="TupleTypeSpecifier">
+                  <element name="QualifyingEncounter">
+                     <type xmlns:ns31="urn:healthit-gov:qdm:v5_4" name="ns31:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+                  <element name="URI">
+                     <type xmlns:ns32="urn:healthit-gov:qdm:v5_4" name="ns32:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </element>
+               </elementType>
+            </resultTypeSpecifier>
+            <source localId="47" locator="58:3-58:44" alias="QualifyingEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns33="urn:healthit-gov:qdm:v5_4" name="ns33:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="46" locator="58:3-58:24" name="Qualifying Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns34="urn:healthit-gov:qdm:v5_4" name="ns34:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <source localId="49" locator="59:3-59:50" alias="URI">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns35="urn:healthit-gov:qdm:v5_4" name="ns35:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="48" locator="59:3-59:46" xmlns:ns36="urn:healthit-gov:qdm:v5_4" dataType="ns36:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns37="urn:healthit-gov:qdm:v5_4" name="ns37:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="59:17-59:45" name="Upper Respiratory Infection" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="60" locator="60:3-61:77" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="54" locator="60:9-60:77" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand locator="60:30-60:35" xsi:type="Start">
+                     <operand localId="51" locator="60:9-60:28" path="prevalencePeriod" scope="URI" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand localId="53" locator="60:44-60:77" path="relevantPeriod" scope="QualifyingEncounter" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+               <operand localId="59" locator="61:7-61:77" resultTypeName="t:Boolean" xsi:type="OverlapsBefore">
+                  <operand localId="56" locator="61:7-61:26" path="prevalencePeriod" scope="URI" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+                  <operand localId="58" locator="61:44-61:77" path="relevantPeriod" scope="QualifyingEncounter" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </where>
+            <return distinct="true">
+               <expression xsi:type="Tuple">
+                  <element name="QualifyingEncounter">
+                     <value name="QualifyingEncounter" xsi:type="AliasRef"/>
+                  </element>
+                  <element name="URI">
+                     <value name="URI" xsi:type="AliasRef"/>
+                  </element>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="89" locator="87:1-92:45" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="89">
+               <a:s>define &quot;Initial Population&quot;:&#xd;
+	</a:s>
+               <a:s r="88">
+                  <a:s>
+                     <a:s r="64">
+                        <a:s r="63">
+                           <a:s>
+                              <a:s>&quot;Encounter with Upper Respiratory Infection&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterWithURI</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="84">
+                     <a:s>with </a:s>
+                     <a:s r="66">
+                        <a:s r="65">
+                           <a:s r="65">
+                              <a:s>[&quot;Patient Characteristic Birthdate&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Birth date&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> BirthDate</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="83">
+                        <a:s r="74">
+                           <a:s r="72">
+                              <a:s r="67">
+                                 <a:s>Global</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="72">
+                                 <a:s>&quot;CalendarAgeInMonthsAt&quot;(</a:s>
+                                 <a:s r="69">
+                                    <a:s r="68">
+                                       <a:s>BirthDate</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="69">
+                                       <a:s>birthDatetime</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, </a:s>
+                                 <a:s r="71">
+                                    <a:s>start of </a:s>
+                                    <a:s r="70">
+                                       <a:s>&quot;Measurement Period&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="73">>= 3</a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				and </a:s>
+                        <a:s r="82">
+                           <a:s r="80">
+                              <a:s r="75">
+                                 <a:s>Global</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="80">
+                                 <a:s>&quot;CalendarAgeInYearsAt&quot;(</a:s>
+                                 <a:s r="77">
+                                    <a:s r="76">
+                                       <a:s>BirthDate</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="77">
+                                       <a:s>birthDatetime</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, </a:s>
+                                 <a:s r="79">
+                                    <a:s>start of </a:s>
+                                    <a:s r="78">
+                                       <a:s>&quot;Measurement Period&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="81">&lt; 18</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="87">
+                     <a:s>return </a:s>
+                     <a:s r="86">
+                        <a:s r="85">
+                           <a:s>EncounterWithURI</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="86">
+                           <a:s>QualifyingEncounter</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns38="urn:healthit-gov:qdm:v5_4" name="ns38:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="88" locator="88:2-92:45" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns39="urn:healthit-gov:qdm:v5_4" name="ns39:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="64" locator="88:2-88:62" alias="EncounterWithURI">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="QualifyingEncounter">
+                        <type xmlns:ns40="urn:healthit-gov:qdm:v5_4" name="ns40:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="URI">
+                        <type xmlns:ns41="urn:healthit-gov:qdm:v5_4" name="ns41:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="63" locator="88:2-88:45" name="Encounter with Upper Respiratory Infection" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="TupleTypeSpecifier">
+                        <element name="QualifyingEncounter">
+                           <type xmlns:ns42="urn:healthit-gov:qdm:v5_4" name="ns42:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                        <element name="URI">
+                           <type xmlns:ns43="urn:healthit-gov:qdm:v5_4" name="ns43:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                     </elementType>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="84" locator="89:3-91:97" alias="BirthDate" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns44="urn:healthit-gov:qdm:v5_4" name="ns44:PatientCharacteristicBirthdate" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="65" locator="89:8-89:57" xmlns:ns45="urn:healthit-gov:qdm:v5_4" dataType="ns45:PatientCharacteristicBirthdate" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns46="urn:healthit-gov:qdm:v5_4" name="ns46:PatientCharacteristicBirthdate" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes xsi:type="ToList">
+                     <operand locator="89:45-89:56" resultTypeName="t:Code" name="Birth date" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+               <suchThat localId="83" locator="90:14-91:97" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="74" locator="90:14-90:103" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                     <operand localId="72" locator="90:14-90:99" resultTypeName="t:Integer" name="CalendarAgeInMonthsAt" libraryName="Global" xsi:type="FunctionRef">
+                        <operand localId="69" locator="90:45-90:67" resultTypeName="t:DateTime" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                        <operand localId="71" locator="90:70-90:98" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="70" locator="90:79-90:98" name="Measurement Period" xsi:type="ParameterRef">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="73" locator="90:103" resultTypeName="t:Integer" valueType="t:Integer" value="3" xsi:type="Literal"/>
+                  </operand>
+                  <operand localId="82" locator="91:9-91:97" resultTypeName="t:Boolean" xsi:type="Less">
+                     <operand localId="80" locator="91:9-91:93" resultTypeName="t:Integer" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                        <operand localId="77" locator="91:39-91:61" resultTypeName="t:DateTime" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                        <operand localId="79" locator="91:64-91:92" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="78" locator="91:73-91:92" name="Measurement Period" xsi:type="ParameterRef">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="81" locator="91:96-91:97" resultTypeName="t:Integer" valueType="t:Integer" value="18" xsi:type="Literal"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <return localId="87" locator="92:3-92:45">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns47="urn:healthit-gov:qdm:v5_4" name="ns47:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="86" locator="92:10-92:45" xmlns:ns48="urn:healthit-gov:qdm:v5_4" resultTypeName="ns48:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+            </return>
+         </expression>
+      </def>
+      <def localId="91" locator="41:1-42:21" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="91">
+               <a:s>define &quot;Denominator&quot;:&#xd;
+	</a:s>
+               <a:s r="90">
+                  <a:s>&quot;Initial Population&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns49="urn:healthit-gov:qdm:v5_4" name="ns49:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="90" locator="42:2-42:21" name="Initial Population" xsi:type="ExpressionRef">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns50="urn:healthit-gov:qdm:v5_4" name="ns50:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </expression>
+      </def>
+      <def localId="97" locator="52:1-54:29" name="In Hospice" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="97">
+               <a:s>define &quot;In Hospice&quot;:&#xd;
+	</a:s>
+               <a:s r="96">
+                  <a:s>
+                     <a:s r="93">
+                        <a:s r="92">
+                           <a:s>
+                              <a:s>&quot;Initial Population&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InitialPopulation</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="95">
+                     <a:s>where </a:s>
+                     <a:s r="95">
+                        <a:s r="94">
+                           <a:s>Hospice</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="95">
+                           <a:s>&quot;Has Hospice&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns51="urn:healthit-gov:qdm:v5_4" name="ns51:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="96" locator="53:2-54:29" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns52="urn:healthit-gov:qdm:v5_4" name="ns52:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="93" locator="53:2-53:39" alias="InitialPopulation">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns53="urn:healthit-gov:qdm:v5_4" name="ns53:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="92" locator="53:2-53:21" name="Initial Population" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns54="urn:healthit-gov:qdm:v5_4" name="ns54:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <where localId="95" locator="54:3-54:29" resultTypeName="t:Boolean" name="Has Hospice" libraryName="Hospice" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="115" locator="63:1-68:2" name="Encounter with Competing Diagnosis for Upper Respiratory Infection" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="115">
+               <a:s>define &quot;Encounter with Competing Diagnosis for Upper Respiratory Infection&quot;:&#xd;
+	</a:s>
+               <a:s r="114">
+                  <a:s>( </a:s>
+                  <a:s r="114">
+                     <a:s>
+                        <a:s r="99">
+                           <a:s r="98">
+                              <a:s>
+                                 <a:s>&quot;Encounter with Upper Respiratory Infection&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> EncounterWithURI</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			</a:s>
+                     <a:s r="110">
+                        <a:s>with </a:s>
+                        <a:s r="101">
+                           <a:s r="100">
+                              <a:s r="100">
+                                 <a:s>[&quot;Diagnosis&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Competing Conditions for Respiratory Conditions&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> CompetingCondition</a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				such that </a:s>
+                        <a:s r="109">
+                           <a:s r="103">
+                              <a:s r="102">
+                                 <a:s>CompetingCondition</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="103">
+                                 <a:s>prevalencePeriod</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="109">
+                              <a:s>starts </a:s>
+                              <a:s r="108">
+                                 <a:s>3 days</a:s>
+                              </a:s>
+                              <a:s> or less after day of</a:s>
+                           </a:s>
+                           <a:s> </a:s>
+                           <a:s r="107">
+                              <a:s>start of </a:s>
+                              <a:s r="106">
+                                 <a:s r="105">
+                                    <a:s r="104">
+                                       <a:s>EncounterWithURI</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="105">
+                                       <a:s>QualifyingEncounter</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="106">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			</a:s>
+                     <a:s r="113">
+                        <a:s>return </a:s>
+                        <a:s r="112">
+                           <a:s r="111">
+                              <a:s>EncounterWithURI</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="112">
+                              <a:s>QualifyingEncounter</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+	)</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns55="urn:healthit-gov:qdm:v5_4" name="ns55:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="114" locator="64:2-68:2" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns56="urn:healthit-gov:qdm:v5_4" name="ns56:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="99" locator="64:4-64:64" alias="EncounterWithURI">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="QualifyingEncounter">
+                        <type xmlns:ns57="urn:healthit-gov:qdm:v5_4" name="ns57:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="URI">
+                        <type xmlns:ns58="urn:healthit-gov:qdm:v5_4" name="ns58:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="98" locator="64:4-64:47" name="Encounter with Upper Respiratory Infection" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="TupleTypeSpecifier">
+                        <element name="QualifyingEncounter">
+                           <type xmlns:ns59="urn:healthit-gov:qdm:v5_4" name="ns59:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                        <element name="URI">
+                           <type xmlns:ns60="urn:healthit-gov:qdm:v5_4" name="ns60:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                     </elementType>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="110" locator="65:4-66:145" alias="CompetingCondition" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns61="urn:healthit-gov:qdm:v5_4" name="ns61:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="100" locator="65:9-65:72" xmlns:ns62="urn:healthit-gov:qdm:v5_4" dataType="ns62:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns63="urn:healthit-gov:qdm:v5_4" name="ns63:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="65:23-65:71" name="Competing Conditions for Respiratory Conditions" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+               <suchThat localId="109" locator="66:15-66:145" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand locator="66:58-66:71" precision="Day" xsi:type="In">
+                     <operand locator="66:51-66:56" xsi:type="Start">
+                        <operand localId="103" locator="66:15-66:49" path="prevalencePeriod" scope="CompetingCondition" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </operand>
+                     <operand locator="66:58-66:71" lowClosed="false" highClosed="true" xsi:type="Interval">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <low localId="107" locator="66:86-66:145" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="106" locator="66:95-66:145" path="relevantPeriod" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <source localId="105" locator="66:95-66:130" xmlns:ns64="urn:healthit-gov:qdm:v5_4" resultTypeName="ns64:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+                           </operand>
+                        </low>
+                        <high locator="66:86-66:145" xsi:type="Add">
+                           <operand localId="107" locator="66:86-66:145" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="106" locator="66:95-66:145" path="relevantPeriod" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <source localId="105" locator="66:95-66:130" xmlns:ns65="urn:healthit-gov:qdm:v5_4" resultTypeName="ns65:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+                              </operand>
+                           </operand>
+                           <operand localId="108" locator="66:58-66:63" resultTypeName="t:Quantity" value="3" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+                  <operand locator="66:58-66:71" xsi:type="Not">
+                     <operand locator="66:58-66:71" xsi:type="IsNull">
+                        <operand localId="107" locator="66:86-66:145" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="106" locator="66:95-66:145" path="relevantPeriod" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <source localId="105" locator="66:95-66:130" xmlns:ns66="urn:healthit-gov:qdm:v5_4" resultTypeName="ns66:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <return localId="113" locator="67:4-67:46">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns67="urn:healthit-gov:qdm:v5_4" name="ns67:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="112" locator="67:11-67:46" xmlns:ns68="urn:healthit-gov:qdm:v5_4" resultTypeName="ns68:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+            </return>
+         </expression>
+      </def>
+      <def localId="133" locator="70:1-74:45" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="133">
+               <a:s>define &quot;Numerator&quot;:&#xd;
+	</a:s>
+               <a:s r="132">
+                  <a:s>
+                     <a:s r="117">
+                        <a:s r="116">
+                           <a:s>
+                              <a:s>&quot;Encounter with Upper Respiratory Infection&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterWithURI</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="128">
+                     <a:s>without </a:s>
+                     <a:s r="119">
+                        <a:s r="118">
+                           <a:s r="118">
+                              <a:s>[&quot;Medication, Order&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Antibiotic Medications for Pharyngitis&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> OrderedAntibiotic</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="127">
+                        <a:s r="121">
+                           <a:s r="120">
+                              <a:s>OrderedAntibiotic</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="121">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="127">
+                           <a:s r="126">
+                              <a:s>3 days</a:s>
+                           </a:s>
+                           <a:s> or less on or after</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="125">
+                           <a:s>start of </a:s>
+                           <a:s r="124">
+                              <a:s r="123">
+                                 <a:s r="122">
+                                    <a:s>EncounterWithURI</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="123">
+                                    <a:s>QualifyingEncounter</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="124">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="131">
+                     <a:s>return </a:s>
+                     <a:s r="130">
+                        <a:s r="129">
+                           <a:s>EncounterWithURI</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="130">
+                           <a:s>QualifyingEncounter</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns69="urn:healthit-gov:qdm:v5_4" name="ns69:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="132" locator="71:2-74:45" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns70="urn:healthit-gov:qdm:v5_4" name="ns70:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="117" locator="71:2-71:62" alias="EncounterWithURI">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="QualifyingEncounter">
+                        <type xmlns:ns71="urn:healthit-gov:qdm:v5_4" name="ns71:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="URI">
+                        <type xmlns:ns72="urn:healthit-gov:qdm:v5_4" name="ns72:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="116" locator="71:2-71:45" name="Encounter with Upper Respiratory Infection" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="TupleTypeSpecifier">
+                        <element name="QualifyingEncounter">
+                           <type xmlns:ns73="urn:healthit-gov:qdm:v5_4" name="ns73:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                        <element name="URI">
+                           <type xmlns:ns74="urn:healthit-gov:qdm:v5_4" name="ns74:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                     </elementType>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="128" locator="72:3-73:133" alias="OrderedAntibiotic" xsi:type="Without">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns75="urn:healthit-gov:qdm:v5_4" name="ns75:PositiveMedicationOrder" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="118" locator="72:11-72:73" xmlns:ns76="urn:healthit-gov:qdm:v5_4" dataType="ns76:PositiveMedicationOrder" templateId="PositiveMedicationOrder" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns77="urn:healthit-gov:qdm:v5_4" name="ns77:PositiveMedicationOrder" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="72:33-72:72" name="Antibiotic Medications for Pharyngitis" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+               <suchThat localId="127" locator="73:14-73:133" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand locator="73:47-73:60" xsi:type="In">
+                     <operand localId="121" locator="73:14-73:45" resultTypeName="t:DateTime" path="authorDatetime" scope="OrderedAntibiotic" xsi:type="Property"/>
+                     <operand locator="73:47-73:60" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <low localId="125" locator="73:74-73:133" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="124" locator="73:83-73:133" path="relevantPeriod" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <source localId="123" locator="73:83-73:118" xmlns:ns78="urn:healthit-gov:qdm:v5_4" resultTypeName="ns78:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+                           </operand>
+                        </low>
+                        <high locator="73:74-73:133" xsi:type="Add">
+                           <operand localId="125" locator="73:74-73:133" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="124" locator="73:83-73:133" path="relevantPeriod" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <source localId="123" locator="73:83-73:118" xmlns:ns79="urn:healthit-gov:qdm:v5_4" resultTypeName="ns79:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+                              </operand>
+                           </operand>
+                           <operand localId="126" locator="73:47-73:52" resultTypeName="t:Quantity" value="3" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </operand>
+                  <operand locator="73:47-73:60" xsi:type="Not">
+                     <operand locator="73:47-73:60" xsi:type="IsNull">
+                        <operand localId="125" locator="73:74-73:133" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="124" locator="73:83-73:133" path="relevantPeriod" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                              <source localId="123" locator="73:83-73:118" xmlns:ns80="urn:healthit-gov:qdm:v5_4" resultTypeName="ns80:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <return localId="131" locator="74:3-74:45">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns81="urn:healthit-gov:qdm:v5_4" name="ns81:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="130" locator="74:10-74:45" xmlns:ns82="urn:healthit-gov:qdm:v5_4" resultTypeName="ns82:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+            </return>
+         </expression>
+      </def>
+      <def localId="160" locator="81:1-85:45" name="Encounter with Upper Respiratory Infection and Antibiotics Active 30 Days Prior" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="160">
+               <a:s>define &quot;Encounter with Upper Respiratory Infection and Antibiotics Active 30 Days Prior&quot;:&#xd;
+	</a:s>
+               <a:s r="159">
+                  <a:s>
+                     <a:s r="136">
+                        <a:s r="135">
+                           <a:s>
+                              <a:s>&quot;Encounter with Upper Respiratory Infection&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterWithURI</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="155">
+                     <a:s>with </a:s>
+                     <a:s r="138">
+                        <a:s r="137">
+                           <a:s r="137">
+                              <a:s>[&quot;Medication, Active&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Antibiotic Medications for Pharyngitis&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ActiveAntibiotic</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="154">
+                        <a:s r="140">
+                           <a:s r="139">
+                              <a:s>ActiveAntibiotic</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="140">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="154"> overlaps </a:s>
+                        <a:s r="153">
+                           <a:s>Interval[</a:s>
+                           <a:s r="148">
+                              <a:s r="141">
+                                 <a:s>Global</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="148">
+                                 <a:s>&quot;ToDate&quot;(</a:s>
+                                 <a:s r="147">
+                                    <a:s r="145">
+                                       <a:s>(</a:s>
+                                       <a:s r="145">
+                                          <a:s>start of </a:s>
+                                          <a:s r="144">
+                                             <a:s r="143">
+                                                <a:s r="142">
+                                                   <a:s>EncounterWithURI</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="143">
+                                                   <a:s>URI</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="144">
+                                                <a:s>prevalencePeriod</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                    <a:s>- </a:s>
+                                    <a:s r="146">
+                                       <a:s>30 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="152">
+                              <a:s>start of </a:s>
+                              <a:s r="151">
+                                 <a:s r="150">
+                                    <a:s r="149">
+                                       <a:s>EncounterWithURI</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="150">
+                                       <a:s>URI</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="151">
+                                    <a:s>prevalencePeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>]</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="158">
+                     <a:s>return </a:s>
+                     <a:s r="157">
+                        <a:s r="156">
+                           <a:s>EncounterWithURI</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="157">
+                           <a:s>QualifyingEncounter</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns83="urn:healthit-gov:qdm:v5_4" name="ns83:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="159" locator="82:2-85:45" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns84="urn:healthit-gov:qdm:v5_4" name="ns84:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="136" locator="82:2-82:62" alias="EncounterWithURI">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xsi:type="TupleTypeSpecifier">
+                     <element name="QualifyingEncounter">
+                        <type xmlns:ns85="urn:healthit-gov:qdm:v5_4" name="ns85:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                     <element name="URI">
+                        <type xmlns:ns86="urn:healthit-gov:qdm:v5_4" name="ns86:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                     </element>
+                  </elementType>
+               </resultTypeSpecifier>
+               <expression localId="135" locator="82:2-82:45" name="Encounter with Upper Respiratory Infection" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xsi:type="TupleTypeSpecifier">
+                        <element name="QualifyingEncounter">
+                           <type xmlns:ns87="urn:healthit-gov:qdm:v5_4" name="ns87:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                        <element name="URI">
+                           <type xmlns:ns88="urn:healthit-gov:qdm:v5_4" name="ns88:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                        </element>
+                     </elementType>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="155" locator="83:3-84:186" alias="ActiveAntibiotic" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns89="urn:healthit-gov:qdm:v5_4" name="ns89:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="137" locator="83:8-83:71" xmlns:ns90="urn:healthit-gov:qdm:v5_4" dataType="ns90:MedicationActive" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns91="urn:healthit-gov:qdm:v5_4" name="ns91:MedicationActive" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="83:31-83:70" name="Antibiotic Medications for Pharyngitis" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+               <suchThat localId="154" locator="84:14-84:186" resultTypeName="t:Boolean" xsi:type="Overlaps">
+                  <operand localId="140" locator="84:14-84:44" path="relevantPeriod" scope="ActiveAntibiotic" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+                  <operand localId="153" locator="84:55-84:186" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <low localId="148" locator="84:64-84:137" resultTypeName="t:DateTime" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+                        <operand localId="147" locator="84:80-84:136" resultTypeName="t:DateTime" xsi:type="Subtract">
+                           <operand localId="145" locator="84:80-84:127" resultTypeName="t:DateTime" xsi:type="Start">
+                              <operand localId="144" locator="84:90-84:126" path="prevalencePeriod" xsi:type="Property">
+                                 <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                    <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                                 </resultTypeSpecifier>
+                                 <source localId="143" locator="84:90-84:109" xmlns:ns92="urn:healthit-gov:qdm:v5_4" resultTypeName="ns92:Diagnosis" path="URI" scope="EncounterWithURI" xsi:type="Property"/>
+                              </operand>
+                           </operand>
+                           <operand localId="146" locator="84:130-84:136" resultTypeName="t:Quantity" value="30" unit="days" xsi:type="Quantity"/>
+                        </operand>
+                     </low>
+                     <high localId="152" locator="84:140-84:185" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="151" locator="84:149-84:185" path="prevalencePeriod" xsi:type="Property">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <source localId="150" locator="84:149-84:168" xmlns:ns93="urn:healthit-gov:qdm:v5_4" resultTypeName="ns93:Diagnosis" path="URI" scope="EncounterWithURI" xsi:type="Property"/>
+                        </operand>
+                     </high>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <return localId="158" locator="85:3-85:45">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns94="urn:healthit-gov:qdm:v5_4" name="ns94:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="157" locator="85:10-85:45" xmlns:ns95="urn:healthit-gov:qdm:v5_4" resultTypeName="ns95:PositiveEncounterPerformed" path="QualifyingEncounter" scope="EncounterWithURI" xsi:type="Property"/>
+            </return>
+         </expression>
+      </def>
+      <def localId="165" locator="76:1-79:76" name="Denominator Exclusions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="165">
+               <a:s>define &quot;Denominator Exclusions&quot;:&#xd;
+	</a:s>
+               <a:s r="164">
+                  <a:s r="162">
+                     <a:s r="134">
+                        <a:s>&quot;In Hospice&quot;</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+		union </a:s>
+                     <a:s r="161">
+                        <a:s>&quot;Encounter with Upper Respiratory Infection and Antibiotics Active 30 Days Prior&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		union </a:s>
+                  <a:s r="163">
+                     <a:s>&quot;Encounter with Competing Diagnosis for Upper Respiratory Infection&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns96="urn:healthit-gov:qdm:v5_4" name="ns96:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="164" locator="77:2-79:76" xsi:type="Union">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns97="urn:healthit-gov:qdm:v5_4" name="ns97:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <operand localId="162" locator="77:2-78:89" xsi:type="Union">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns98="urn:healthit-gov:qdm:v5_4" name="ns98:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <operand localId="134" locator="77:2-77:13" name="In Hospice" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns99="urn:healthit-gov:qdm:v5_4" name="ns99:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+               <operand localId="161" locator="78:9-78:89" name="Encounter with Upper Respiratory Infection and Antibiotics Active 30 Days Prior" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns100="urn:healthit-gov:qdm:v5_4" name="ns100:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+            <operand localId="163" locator="79:9-79:76" name="Encounter with Competing Diagnosis for Upper Respiratory Infection" xsi:type="ExpressionRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns101="urn:healthit-gov:qdm:v5_4" name="ns101:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

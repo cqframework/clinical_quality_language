@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:hl7-org:elm-modelinfo:r1" targetNamespace="urn:hl7-org:elm-modelinfo:r1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="modelInfo" type="ModelInfo">
+		<xs:annotation>
+			<xs:documentation>The modelInfo element defines metadata associated with a particular model to allow it to be used by CQL.</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="ContextInfo">
+		<xs:annotation>
+			<xs:documentation>Defines an available context type for the model.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="contextType" type="NamedTypeSpecifier" minOccurs="1" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Specifies the type for the context.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the name of the context. This is the name that will be referenced by context statements within CQL.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="keyElement" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Specifies the key elements, in order and semi-colon delimited, of the context type that form the reference key for the context. The elements taken together must form a unique identifier for instances of the context.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="birthDateElement" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Specifies the name of the birthDateElement of the context type.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="RelationshipInfo">
+		<xs:annotation>
+			<xs:documentation>Defines the relationship of a class to the context.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="context" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the target context of the relationship.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="relatedKeyElement" type="xs:string">
+			<xs:annotation>
+				<xs:documentation>Specifies the related key elements, in order and semi-colon delimited, of the type that contain the reference to the context. There must be the same number of elements, and in the same order, as the target context.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="SearchInfo">
+		<xs:annotation>
+			<xs:documentation>Defines a possible search path for a ClassInfo within the model.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>Specifies the type of the search parameter as a type specifier</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Defines the name of the search info</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="path" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Defines the formal path to search values within the ClassInfo. In the simplest case, this is the same as the name.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="type" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the type of the search parameter</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="label" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides an optional, user-friendly label for the search path that can be used to reference the search path from CQL.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a short description of the search path</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="definition" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides a complete, detailed, markdown-capable definition of the search path</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="comment" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides markdown-capable additional comments on the use of the search path</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ModelInfo">
+		<xs:annotation>
+			<xs:documentation>The ModelInfo type defines the metadata associated with a particular model to enable it to be used by the CQL translator. Note that none of the information specified here is required, it just enables some convenient shorthands within the language.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="requiredModelInfo" type="ModelSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="typeInfo" type="TypeInfo" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="conversionInfo" type="ConversionInfo" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="contextInfo" type="ContextInfo" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name attribute specifies the name of the data model. This value is the same as the model identifier used in using definitions and type specifiers within CQL.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="version" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The version attribute specifies the version of the data model. If specified, this value is the same as the version used in using definitions within CQL.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="url" type="xs:anyURI" use="required">
+			<xs:annotation>
+				<xs:documentation>The url attribute specifies the xml namespace associated with the model, and is used by the CQL translator to establish the url used to reference types from the model schema within an ELM document.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="targetUrl" type="xs:anyURI" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a target url that identifies the xml namespace associated with the target model in the underlying representation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="targetVersion" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a target version that identifies the version of the xml namespace associated with the target model in the underlying representation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="schemaLocation" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The schemaLocation attribute is used by the CQL translator to output the schemaLocation of the xsd for the data model in the resulting ELM document.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="targetQualifier" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The targetQualifier attribute is used to specify the namespace qualifier that should be used when referencing types of the model within the ELM document.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="patientClassName" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>DEPRECATED: The patientClassName attribute specifies the name of the Patient class within the model.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="patientClassIdentifier" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>DEPRECATED: The patientClassIdentifier attribute specifies a unique name for the Patient class that may be independent of the name. In FHIR, this corresponds to the Patient profile identifier.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="patientBirthDatePropertyName" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>DEPRECATED: The patientBirthDatePropertyName attribute specifies the name of the birthdate property on the Patient model.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="caseSensitive" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>The isCaseSensitive attribute indicates whether the identifiers used by this model should be resolved case-sensitively. If the attribute is true, references to identifiers in this model must match by case.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="strictRetrieveTyping" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>The strictRetrieveTyping attribute indicates whether or not retrieve expressions against the model should be semantically validated. If this attribute is not present or false, code and date range filters within the retrieve are not type validated, allowing the data access layer to perform late binding of content within the retrieve. If the attribute is true, code and date range filters within the retrieve are type validated.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="defaultContext" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the default context to be used by CQL expressions for this model.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:simpleType name="BindingStrength">
+		<xs:annotation>
+			<xs:documentation>The BindingStrength type describes possible strengths of a binding specification, Required, Extensible, Preferred, and Example.</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Required"/>
+			<xs:enumeration value="Extensible"/>
+			<xs:enumeration value="Preferred"/>
+			<xs:enumeration value="Example"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="BindingInfo">
+		<xs:annotation>
+			<xs:documentation>Specifies binding information for an element</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a formal name for the binding, suitable for use as a class name in generated targets</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a user-friendly description of the the binding, suitable for use as a display description for possible values of the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="strength" type="BindingStrength" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the strength of the binding, required, extensible, preferred, or example</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="valueSet" type="xs:anyURI" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the target value set for the binding (i.e. the value set that specifies thes et of possible values for the element)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ClassInfoElement">
+		<xs:sequence>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>This element is deprecated. New implementations should use the new elementTypeSpecifier element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="binding" type="BindingInfo" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="constraint" type="ConstraintInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>A constraint that applies to this class element. The evaluation context for the constraint is an instance of the class</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>This attribute is deprecated. New implementations should use the new elementType attribute</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="elementType" type="xs:string" use="optional"/>
+		<xs:attribute name="prohibited" type="xs:boolean" use="optional"/>
+		<xs:attribute name="oneBased" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="target" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a path that can be used instead of the name of the element to access the value for this element in the underlying representation.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="label" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a user-friendly label for the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies a short description of the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="definition" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides a complete, detailed, markdown-capable definition of the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="comment" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Provides markdown-capable additional comments on the use of the element</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="min" type="xs:int" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the minimum cardinality of the element. For non-list-valued elements, this is 0 or 1, indicating whether a value is required (1). For list-valued elements, this is an integer defining the minimum cardinality of the list value.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="max" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the maximum cardinality of the element. For non-list-valued elements, this is 0 or 1, indicating where a value is prohibited (0). For list-valued elements, this is an integer definined the maximum cardinality of the list, or a '*' indicating the list has no maximum number of elements. If this value is an integer, it must be greater than or equal to the value of the min attribute.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="mustSupport" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies whether this element is relevant for the use case the class in which it appears is supporting</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ExpressionInfo">
+		<xs:annotation>
+			<xs:documentation>The ExpressionInfo type models an expression in some language.</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="language" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>Specifies the language of the expression as a media type (e.g. text/cql-expression)</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="expression" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The expression in the language specified by the language attribute</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ConstraintInfo">
+		<xs:annotation>
+			<xs:documentation>The ConstraintInfo type models the definition of a constraint which can then be associated with a class info, class info element, or other model element.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="expression" type="ExpressionInfo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>The formal expression of the constraint in some formal language. Multiple expressions are considered equivalent formulations in alternate languages (i.e. there can be only one expression of a given language for the constraint).</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name of the constraint, unique within the context of use for the constraint.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="severity" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The severity of the constraint, one of Info, Warning, or Error.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="description" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>A description of the constraint.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="message" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The message that is returned as a result of this constraint being violated. The message may be templatized through the use of double-braces ({{ }}).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ClassInfo">
+		<xs:annotation>
+			<xs:documentation>The ClassInfo type models information associated with a single class in the data model.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeInfo">
+				<xs:sequence>
+					<xs:element name="parameter" type="TypeParameterInfo" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>The generic parameters defined by a generic class. In generic class
+                              SomeClass&lt;S extends Type1, T&gt;, 'S extends Type1' and 'T' are both generic
+                              parameters.
+                          </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="element" type="ClassInfoElement" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="contextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="targetContextRelationship" type="RelationshipInfo" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="search" type="SearchInfo" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="inferenceExpression" type="ExpressionInfo" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>An expression that describes values of this class if they can be inferred from other data elements. If multiple expressions are provided, they must be isopragmatic (i.e. only one expression of each language is allowed)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="constraint" type="ConstraintInfo" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>A constraint that applies to the class. The evaluation context for the constraint is an instance of the class.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="namespace" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Namespace is the namespace of the class. This is typically just the name of the model, but can contain additional qualifiers.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="name" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name attribute specifies the name of the type within the data model. This corresponds to the name of the class within the class model, or the name of the type in the case of an xsd. In FHIR, this corresponds to the name of the resource.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="identifier" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The identifier attribute specifies a unique name for the class that may be independent of the name. In FHIR, this corresponds to the profile identifier.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="label" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The label attribute specifies the name of the class as it is referenced from CQL. This is a user-friendly identifier for the class that can be used within CQL as an alternative way to reference the class.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="description" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Specifies a short description of the class</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="definition" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Provides a complete, detailed, markdown-capable definition of the class</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="comment" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Provides markdown-capable additional comments on the use of the class</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="target" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Specifies the name of the type in the underlying representation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="retrievable" type="xs:boolean" use="optional" default="false">
+					<xs:annotation>
+						<xs:documentation>The retrievable attribute specifies whether the class can be used within a retrieve statement. This flag is intended to allow the implementation to control whether or not the class can be used as a data access point for the data model.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="primaryCodePath" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The primaryCodePath attribute specifies the path relative to the class that should be used to perform code filtering when a retrieve does not specify a code path.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="primaryValueSetPath" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>The primaryValueSetPath attribute specifies the path relative to the class that should be used to perform alternative value set matching when source data does not have a code defined.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TypeInfo" abstract="true">
+		<xs:sequence>
+			<xs:element name="baseTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="baseType" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="SimpleTypeInfo">
+		<xs:complexContent>
+			<xs:extension base="TypeInfo">
+				<xs:attribute name="namespace" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Namespace is the namespace of the type. This is typically just the name of the model, but can contain additional qualifiers.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="name" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>Name is the unqualified name of the type within this model.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="target" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>Specifies the name of the type in the underlying representation.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntervalTypeInfo">
+		<xs:complexContent>
+			<xs:extension base="TypeInfo">
+				<xs:sequence>
+					<xs:element name="pointTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="pointType" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ListTypeInfo">
+		<xs:complexContent>
+			<xs:extension base="TypeInfo">
+				<xs:sequence>
+					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="elementType" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TupleTypeInfoElement">
+		<xs:sequence>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>This element is deprecated. New implementations should use the new elementTypeSpecifier element.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="type" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>This attribute is deprecated. New implementations should use the new elementType attribute.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="elementType" type="xs:string" use="optional"/>
+		<xs:attribute name="prohibited" type="xs:boolean" use="optional"/>
+		<xs:attribute name="oneBased" type="xs:boolean" use="optional">
+			<xs:annotation>
+				<xs:documentation>Indicates that the starting index for a list-valued element is one. By default, lists are zero-based.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TupleTypeInfo">
+		<xs:complexContent>
+			<xs:extension base="TypeInfo">
+				<xs:sequence>
+					<xs:element name="element" type="TupleTypeInfoElement" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ProfileInfo">
+		<xs:complexContent>
+			<xs:extension base="ClassInfo"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ConversionInfo">
+		<xs:sequence>
+			<xs:element name="fromTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="toTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="functionName" type="xs:string" use="required"/>
+		<xs:attribute name="fromType" type="xs:string" use="optional"/>
+		<xs:attribute name="toType" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ChoiceTypeInfo">
+		<xs:complexContent>
+			<xs:extension base="TypeInfo">
+				<xs:sequence>
+					<xs:element name="type" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded">
+						<xs:annotation>
+							<xs:documentation>This element is deprecated. New implementations should use the new choice element.</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ModelSpecifier">
+		<xs:attribute name="url" type="xs:anyURI" use="optional">
+			<xs:annotation>
+				<xs:documentation>Specifies the globally unique url for the model, this is equivalent to the url element of the referenced model info.</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="version" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<!-- NOTE: TypeSpecifier purposely does not support tuple types, tuple types must be named in order to be referenced -->
+	<xs:complexType name="TypeSpecifier" abstract="true"/>
+	<xs:complexType name="NamedTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:attribute name="modelName" type="xs:string" use="optional">
+					<xs:annotation>
+						<xs:documentation>This attribute is deprecated. New implementations should use the new namespace attribute.</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="namespace" type="xs:string" use="optional"/>
+				<xs:attribute name="name" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ListTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="elementType" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntervalTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="pointTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="pointType" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ChoiceTypeSpecifier">
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="choice" type="TypeSpecifier" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ParameterTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>A type which is generic class parameter such as T in MyGeneric&lt;T extends
+            SomeType&gt;.
+        </xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:attribute name="parameterName" type="xs:string" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BoundParameterTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>A type which is replacing a class parameter such as T in MyClass extends MyGeneric&lt;AValidType&gt;.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="elementTypeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="parameterName" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The name of the parameter that is bound to a valid type based on the parameter
+                        definition, such as 'T'.
+                    </xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+				<xs:attribute name="boundType" type="xs:string" use="required">
+					<xs:annotation>
+						<xs:documentation>The type bound to the parameter (e.g., 'T').</xs:documentation>
+					</xs:annotation>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TypeParameterInfo">
+		<xs:annotation>
+			<xs:documentation>A generic class parameter such as T in MyGeneric&lt;T extends SomeType&gt;.
+        </xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="typeSpecifier" type="TypeSpecifier" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>The name of the parameter such as T,K, etc...</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="constraint" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>One of NONE, CLASS, VALUE, TUPLE, INTERVAL, CHOICE, TYPE</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="constraintType" type="xs:string" use="optional">
+			<xs:annotation>
+				<xs:documentation>The type this parameter should be assignable from (i.e., extend).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="TupleTypeSpecifierElement">
+		<xs:annotation>
+			<xs:documentation>TupleTypeSpecifierElement defines the name and type of a single element within a TupleTypeSpecifier.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="elementType" type="TypeSpecifier" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="TupleTypeSpecifier">
+		<xs:annotation>
+			<xs:documentation>TupleTypeSpecifier defines the possible elements of a tuple.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="TypeSpecifier">
+				<xs:sequence>
+					<xs:element name="element" type="TupleTypeSpecifierElement" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

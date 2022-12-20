@@ -1,0 +1,5 @@
+library IncludedConceptRefTest
+
+include IncludedConceptRefTestCommon called Common
+
+define testIncludedConceptRef: Common.testConcept

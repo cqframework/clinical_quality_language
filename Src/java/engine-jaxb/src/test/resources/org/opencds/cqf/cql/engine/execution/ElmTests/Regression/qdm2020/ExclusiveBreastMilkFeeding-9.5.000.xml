@@ -1,0 +1,1273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="60">
+         <a:s>library ExclusiveBreastMilkFeeding version '9.5.000'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="ExclusiveBreastMilkFeeding" version="9.5.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_5" version="5.5">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="1">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>QDM</a:s>
+               </a:s>
+               <a:s> version '5.5'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="5.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="2">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>MATGlobalCommonFunctions</a:s>
+               </a:s>
+               <a:s> version '5.0.000' called Global</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </includes>
+   <parameters>
+      <def localId="23" locator="27:1-27:49" name="Measurement Period" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="23">
+               <a:s>parameter &quot;Measurement Period&quot; </a:s>
+               <a:s r="22">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="21">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <parameterTypeSpecifier localId="22" locator="27:32-27:49" xsi:type="IntervalTypeSpecifier">
+            <pointType localId="21" locator="27:41-27:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="3" locator="7:1-7:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="3">
+               <a:s>codesystem &quot;LOINC&quot;: 'urn:oid:2.16.840.1.113883.6.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="4" locator="9:1-9:65" name="Birth Weight" id="urn:oid:2.16.840.1.113762.1.4.1029.194" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="4">
+               <a:s>valueset &quot;Birth Weight&quot;: 'urn:oid:2.16.840.1.113762.1.4.1029.194'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="5" locator="10:1-10:66" name="Breast Milk" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.30" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="5">
+               <a:s>valueset &quot;Breast Milk&quot;: 'urn:oid:2.16.840.1.113883.3.117.1.7.1.30'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="6" locator="11:1-11:92" name="Dietary Intake Other than Breast Milk" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.27" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="6">
+               <a:s>valueset &quot;Dietary Intake Other than Breast Milk&quot;: 'urn:oid:2.16.840.1.113883.3.117.1.7.1.27'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="7" locator="12:1-12:87" name="Discharge To Acute Care Facility" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.87" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="7">
+               <a:s>valueset &quot;Discharge To Acute Care Facility&quot;: 'urn:oid:2.16.840.1.113883.3.117.1.7.1.87'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="8" locator="13:1-13:71" name="Encounter Inpatient" id="urn:oid:2.16.840.1.113883.3.666.5.307" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="8">
+               <a:s>valueset &quot;Encounter Inpatient&quot;: 'urn:oid:2.16.840.1.113883.3.666.5.307'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="9" locator="14:1-14:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="9">
+               <a:s>valueset &quot;Ethnicity&quot;: 'urn:oid:2.16.840.1.114222.4.11.837'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="10" locator="15:1-15:67" name="Galactosemia" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.35" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="10">
+               <a:s>valueset &quot;Galactosemia&quot;: 'urn:oid:2.16.840.1.113883.3.117.1.7.1.35'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="11" locator="16:1-16:88" name="Neonatal Intensive Care Unit (NICU)" id="urn:oid:2.16.840.1.113762.1.4.1029.205" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="11">
+               <a:s>valueset &quot;Neonatal Intensive Care Unit (NICU)&quot;: 'urn:oid:2.16.840.1.113762.1.4.1029.205'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="12" locator="17:1-17:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="12">
+               <a:s>valueset &quot;ONC Administrative Sex&quot;: 'urn:oid:2.16.840.1.113762.1.4.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="13" locator="18:1-18:78" name="Other Health Care Facility" id="urn:oid:2.16.840.1.113762.1.4.1029.67" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="13">
+               <a:s>valueset &quot;Other Health Care Facility&quot;: 'urn:oid:2.16.840.1.113762.1.4.1029.67'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="14" locator="19:1-19:75" name="Parenteral Nutrition" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.38" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="14">
+               <a:s>valueset &quot;Parenteral Nutrition&quot;: 'urn:oid:2.16.840.1.113883.3.117.1.7.1.38'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="15" locator="20:1-20:71" name="Patient Expired" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.309" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="15">
+               <a:s>valueset &quot;Patient Expired&quot;: 'urn:oid:2.16.840.1.113883.3.117.1.7.1.309'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="16" locator="21:1-21:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="16">
+               <a:s>valueset &quot;Payer&quot;: 'urn:oid:2.16.840.1.114222.4.11.3591'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="17" locator="22:1-22:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="17">
+               <a:s>valueset &quot;Race&quot;: 'urn:oid:2.16.840.1.114222.4.11.836'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="18" locator="23:1-23:96" name="Single Live Born Newborn Born in Hospital" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.26" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="18">
+               <a:s>valueset &quot;Single Live Born Newborn Born in Hospital&quot;: 'urn:oid:2.16.840.1.113883.3.117.1.7.1.26'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="20" locator="25:1-25:92" name="Gestational age--at birth" id="76516-4" display="Gestational age--at birth" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="20">
+               <a:s>code &quot;Gestational age--at birth&quot;: '76516-4' from </a:s>
+               <a:s r="19">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Gestational age--at birth'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="19" locator="25:50-25:56" name="LOINC"/>
+      </def>
+   </codes>
+   <contexts>
+      <def locator="29:1-29:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def locator="29:1-29:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="29:1-29:15" xmlns:ns0="urn:healthit-gov:qdm:v5_5" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="25" locator="31:1-32:51" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="25">
+               <a:s>define &quot;SDE Ethnicity&quot;:
+  </a:s>
+               <a:s r="24">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="24" locator="32:3-32:51" xmlns:ns1="urn:healthit-gov:qdm:v5_5" dataType="ns1:PatientCharacteristicEthnicity" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="32:40-32:50" name="Ethnicity" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="27" locator="34:1-35:43" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="27">
+               <a:s>define &quot;SDE Payer&quot;:
+  </a:s>
+               <a:s r="26">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="26" locator="35:3-35:43" xmlns:ns2="urn:healthit-gov:qdm:v5_5" dataType="ns2:PatientCharacteristicPayer" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="35:36-35:42" name="Payer" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="29" locator="37:1-38:41" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>define &quot;SDE Race&quot;:
+  </a:s>
+               <a:s r="28">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="28" locator="38:3-38:41" xmlns:ns3="urn:healthit-gov:qdm:v5_5" dataType="ns3:PatientCharacteristicRace" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="38:35-38:40" name="Race" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="31" locator="40:1-41:58" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>define &quot;SDE Sex&quot;:
+  </a:s>
+               <a:s r="30">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="30" locator="41:3-41:58" xmlns:ns4="urn:healthit-gov:qdm:v5_5" dataType="ns4:PatientCharacteristicSex" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="41:34-41:57" name="ONC Administrative Sex" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="43" locator="54:1-58:5" name="Single Live Birth Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="43">
+               <a:s>define &quot;Single Live Birth Encounter&quot;:
+  </a:s>
+               <a:s r="42">
+                  <a:s>
+                     <a:s r="33">
+                        <a:s r="32">
+                           <a:s r="32">
+                              <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Encounter Inpatient&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> InpatientEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="41">
+                     <a:s>where </a:s>
+                     <a:s r="41">
+                        <a:s>exists </a:s>
+                        <a:s r="40">
+                           <a:s>( </a:s>
+                           <a:s r="40">
+                              <a:s>
+                                 <a:s r="35">
+                                    <a:s r="34">
+                                       <a:s>
+                                          <a:s>InpatientEncounter.diagnoses</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> EncounterDiagnoses</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+        </a:s>
+                              <a:s r="39">
+                                 <a:s>where </a:s>
+                                 <a:s r="39">
+                                    <a:s r="37">
+                                       <a:s r="36">
+                                          <a:s>EncounterDiagnoses</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="37">
+                                          <a:s>code</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> in </a:s>
+                                    <a:s r="38">
+                                       <a:s>&quot;Single Live Born Newborn Born in Hospital&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+    )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="42" locator="55:3-58:5" xsi:type="Query">
+            <source localId="33" locator="55:3-55:68" alias="InpatientEncounter">
+               <expression localId="32" locator="55:3-55:49" xmlns:ns5="urn:healthit-gov:qdm:v5_5" dataType="ns5:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="55:28-55:48" name="Encounter Inpatient" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="41" locator="56:5-58:5" xsi:type="Exists">
+               <operand localId="40" locator="56:18-58:5" xsi:type="Query">
+                  <source localId="35" locator="56:20-56:66" alias="EncounterDiagnoses">
+                     <expression localId="34" locator="56:20-56:47" path="diagnoses" scope="InpatientEncounter" xsi:type="Property"/>
+                  </source>
+                  <where localId="39" locator="57:9-57:84" xsi:type="InValueSet">
+                     <code localId="37" locator="57:15-57:37" path="code" scope="EncounterDiagnoses" xsi:type="Property"/>
+                     <valueset localId="38" locator="57:42-57:84" name="Single Live Born Newborn Born in Hospital" xsi:type="ValueSetRef"/>
+                  </where>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="60" locator="108:1-112:90" name="Single Live Birth Encounter With Gestational Age 37 Weeks or More" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="60">
+               <a:s>define &quot;Single Live Birth Encounter With Gestational Age 37 Weeks or More&quot;:
+  </a:s>
+               <a:s r="59">
+                  <a:s>
+                     <a:s r="45">
+                        <a:s r="44">
+                           <a:s>
+                              <a:s>&quot;Single Live Birth Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> SingleLiveBirthEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="58">
+                     <a:s>with </a:s>
+                     <a:s r="47">
+                        <a:s r="46">
+                           <a:s r="46">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Gestational age--at birth&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> GestationalAge</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="57">
+                        <a:s r="51">
+                           <a:s r="49">
+                              <a:s r="48">
+                                 <a:s>GestationalAge</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="49">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> >= </a:s>
+                           <a:s r="50">
+                              <a:s>37 'wk'</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        and </a:s>
+                        <a:s r="56">
+                           <a:s r="53">
+                              <a:s r="52">
+                                 <a:s>GestationalAge</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="53">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="56"> during </a:s>
+                           <a:s r="55">
+                              <a:s r="54">
+                                 <a:s>SingleLiveBirthEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="55">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="59" locator="109:3-112:90" xsi:type="Query">
+            <source localId="45" locator="109:3-109:56" alias="SingleLiveBirthEncounter">
+               <expression localId="44" locator="109:3-109:31" name="Single Live Birth Encounter" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="58" locator="110:5-112:90" alias="GestationalAge" xsi:type="With">
+               <expression localId="46" locator="110:10-110:63" xmlns:ns6="urn:healthit-gov:qdm:v5_5" dataType="ns6:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="110:36-110:62" name="Gestational age--at birth" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+               <suchThat localId="57" locator="111:17-112:90" xsi:type="And">
+                  <operand localId="51" locator="111:17-111:48" xsi:type="GreaterOrEqual">
+                     <operand asType="t:Quantity" xsi:type="As">
+                        <operand localId="49" locator="111:17-111:37" path="result" scope="GestationalAge" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="50" locator="111:42-111:48" value="37" unit="wk" xsi:type="Quantity"/>
+                  </operand>
+                  <operand localId="56" locator="112:13-112:90" xsi:type="In">
+                     <operand localId="53" locator="112:13-112:43" path="relevantDatetime" scope="GestationalAge" xsi:type="Property"/>
+                     <operand localId="55" locator="112:52-112:90" path="relevantPeriod" scope="SingleLiveBirthEncounter" xsi:type="Property"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="90" locator="99:1-106:42" name="Single Live Birth Encounter With Birth Weight 3000 grams or More Without Gestational Age" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="90">
+               <a:s>define &quot;Single Live Birth Encounter With Birth Weight 3000 grams or More Without Gestational Age&quot;:
+  </a:s>
+               <a:s r="89">
+                  <a:s>
+                     <a:s r="63">
+                        <a:s r="62">
+                           <a:s>
+                              <a:s>&quot;Single Live Birth Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> SingleLiveBirthEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="75">
+                     <a:s>without </a:s>
+                     <a:s r="65">
+                        <a:s r="64">
+                           <a:s r="64">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Gestational age--at birth&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> GestationalAge</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="74">
+                        <a:s r="70">
+                           <a:s r="67">
+                              <a:s r="66">
+                                 <a:s>GestationalAge</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="67">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="70"> during </a:s>
+                           <a:s r="69">
+                              <a:s r="68">
+                                 <a:s>SingleLiveBirthEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="69">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        and </a:s>
+                        <a:s r="73">
+                           <a:s r="72">
+                              <a:s r="71">
+                                 <a:s>GestationalAge</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="72">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="88">
+                     <a:s>with </a:s>
+                     <a:s r="77">
+                        <a:s r="76">
+                           <a:s r="76">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Birth Weight&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> BirthWeight</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="87">
+                        <a:s r="82">
+                           <a:s r="79">
+                              <a:s r="78">
+                                 <a:s>BirthWeight</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="79">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="82"> during </a:s>
+                           <a:s r="81">
+                              <a:s r="80">
+                                 <a:s>SingleLiveBirthEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="81">
+                                 <a:s>relevantPeriod</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        and </a:s>
+                        <a:s r="86">
+                           <a:s r="84">
+                              <a:s r="83">
+                                 <a:s>BirthWeight</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="84">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> >= </a:s>
+                           <a:s r="85">
+                              <a:s>3000 'g'</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="89" locator="100:3-106:42" xsi:type="Query">
+            <source localId="63" locator="100:3-100:56" alias="SingleLiveBirthEncounter">
+               <expression localId="62" locator="100:3-100:31" name="Single Live Birth Encounter" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="75" locator="101:5-103:45" alias="GestationalAge" xsi:type="Without">
+               <expression localId="64" locator="101:13-101:66" xmlns:ns7="urn:healthit-gov:qdm:v5_5" dataType="ns7:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="101:39-101:65" name="Gestational age--at birth" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+               <suchThat localId="74" locator="102:17-103:45" xsi:type="And">
+                  <operand localId="70" locator="102:17-102:94" xsi:type="In">
+                     <operand localId="67" locator="102:17-102:47" path="relevantDatetime" scope="GestationalAge" xsi:type="Property"/>
+                     <operand localId="69" locator="102:56-102:94" path="relevantPeriod" scope="SingleLiveBirthEncounter" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="73" locator="103:13-103:45" xsi:type="Not">
+                     <operand locator="103:13-103:45" xsi:type="IsNull">
+                        <operand localId="72" locator="103:13-103:33" path="result" scope="GestationalAge" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <relationship localId="88" locator="104:5-106:42" alias="BirthWeight" xsi:type="With">
+               <expression localId="76" locator="104:10-104:50" xmlns:ns8="urn:healthit-gov:qdm:v5_5" dataType="ns8:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="104:36-104:49" name="Birth Weight" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat localId="87" locator="105:17-106:42" xsi:type="And">
+                  <operand localId="82" locator="105:17-105:91" xsi:type="In">
+                     <operand localId="79" locator="105:17-105:44" path="relevantDatetime" scope="BirthWeight" xsi:type="Property"/>
+                     <operand localId="81" locator="105:53-105:91" path="relevantPeriod" scope="SingleLiveBirthEncounter" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="86" locator="106:13-106:42" xsi:type="GreaterOrEqual">
+                     <operand asType="t:Quantity" xsi:type="As">
+                        <operand localId="84" locator="106:13-106:30" path="result" scope="BirthWeight" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="85" locator="106:35-106:42" value="3000" unit="g" xsi:type="Quantity"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="99" locator="94:1-97:81" name="Single Live Term Newborn Encounter During Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="99">
+               <a:s>define &quot;Single Live Term Newborn Encounter During Measurement Period&quot;:
+  </a:s>
+               <a:s r="98">
+                  <a:s>
+                     <a:s r="93">
+                        <a:s r="92">
+                           <a:s>( </a:s>
+                           <a:s r="92">
+                              <a:s r="61">
+                                 <a:s>&quot;Single Live Birth Encounter With Gestational Age 37 Weeks or More&quot;</a:s>
+                              </a:s>
+                              <a:s>
+    union </a:s>
+                              <a:s r="91">
+                                 <a:s>&quot;Single Live Birth Encounter With Birth Weight 3000 grams or More Without Gestational Age&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> SingleLiveTermEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="97">
+                     <a:s>where </a:s>
+                     <a:s r="97">
+                        <a:s r="95">
+                           <a:s r="94">
+                              <a:s>SingleLiveTermEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="95">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="97"> ends during </a:s>
+                        <a:s r="96">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="98" locator="95:3-97:81" xsi:type="Query">
+            <source localId="93" locator="95:3-96:126" alias="SingleLiveTermEncounter">
+               <expression localId="92" locator="95:3-96:102" xsi:type="Union">
+                  <operand localId="61" locator="95:5-95:71" name="Single Live Birth Encounter With Gestational Age 37 Weeks or More" xsi:type="ExpressionRef"/>
+                  <operand localId="91" locator="96:11-96:100" name="Single Live Birth Encounter With Birth Weight 3000 grams or More Without Gestational Age" xsi:type="ExpressionRef"/>
+               </expression>
+            </source>
+            <where localId="97" locator="97:5-97:81" xsi:type="In">
+               <operand locator="97:50-97:53" xsi:type="End">
+                  <operand localId="95" locator="97:11-97:48" path="relevantPeriod" scope="SingleLiveTermEncounter" xsi:type="Property"/>
+               </operand>
+               <operand localId="96" locator="97:62-97:81" name="Measurement Period" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="101" locator="60:1-61:64" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="101">
+               <a:s>define &quot;Initial Population&quot;:
+  </a:s>
+               <a:s r="100">
+                  <a:s>&quot;Single Live Term Newborn Encounter During Measurement Period&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="100" locator="61:3-61:64" name="Single Live Term Newborn Encounter During Measurement Period" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="103" locator="43:1-44:22" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="103">
+               <a:s>define &quot;Denominator&quot;:
+  </a:s>
+               <a:s r="102">
+                  <a:s>&quot;Initial Population&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="102" locator="44:3-44:22" name="Initial Population" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="123" locator="78:1-83:92" name="Single Live Term Newborn Encounter With Newborn Fed Breast Milk Only Since Birth" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="123">
+               <a:s>define &quot;Single Live Term Newborn Encounter With Newborn Fed Breast Milk Only Since Birth&quot;:
+  </a:s>
+               <a:s r="122">
+                  <a:s>
+                     <a:s r="105">
+                        <a:s r="104">
+                           <a:s>
+                              <a:s>&quot;Single Live Term Newborn Encounter During Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> QualifyingEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="113">
+                     <a:s>with </a:s>
+                     <a:s r="107">
+                        <a:s r="106">
+                           <a:s r="106">
+                              <a:s>[&quot;Substance, Administered&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Breast Milk&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> BreastMilkFeeding</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="112">
+                        <a:s r="109">
+                           <a:s r="108">
+                              <a:s>BreastMilkFeeding</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="109">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="112"> starts during </a:s>
+                        <a:s r="111">
+                           <a:s r="110">
+                              <a:s>QualifyingEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="111">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="121">
+                     <a:s>without </a:s>
+                     <a:s r="115">
+                        <a:s r="114">
+                           <a:s r="114">
+                              <a:s>[&quot;Substance, Administered&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Dietary Intake Other than Breast Milk&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> OtherFeeding</a:s>
+                     </a:s>
+                     <a:s>
+      such that </a:s>
+                     <a:s r="120">
+                        <a:s r="117">
+                           <a:s r="116">
+                              <a:s>OtherFeeding</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="117">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="120"> starts during </a:s>
+                        <a:s r="119">
+                           <a:s r="118">
+                              <a:s>QualifyingEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="119">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="122" locator="79:3-83:92" xsi:type="Query">
+            <source localId="105" locator="79:3-79:84" alias="QualifyingEncounter">
+               <expression localId="104" locator="79:3-79:64" name="Single Live Term Newborn Encounter During Measurement Period" xsi:type="ExpressionRef"/>
+            </source>
+            <relationship localId="113" locator="80:5-81:97" alias="BreastMilkFeeding" xsi:type="With">
+               <expression localId="106" locator="80:10-80:51" xmlns:ns9="urn:healthit-gov:qdm:v5_5" dataType="ns9:PositiveSubstanceAdministered" templateId="PositiveSubstanceAdministered" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="80:38-80:50" name="Breast Milk" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat localId="112" locator="81:17-81:97" xsi:type="In">
+                  <operand locator="81:50-81:55" xsi:type="Start">
+                     <operand localId="109" locator="81:17-81:48" path="relevantPeriod" scope="BreastMilkFeeding" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="111" locator="81:64-81:97" path="relevantPeriod" scope="QualifyingEncounter" xsi:type="Property"/>
+               </suchThat>
+            </relationship>
+            <relationship localId="121" locator="82:5-83:92" alias="OtherFeeding" xsi:type="Without">
+               <expression localId="114" locator="82:13-82:80" xmlns:ns10="urn:healthit-gov:qdm:v5_5" dataType="ns10:PositiveSubstanceAdministered" templateId="PositiveSubstanceAdministered" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="82:41-82:79" name="Dietary Intake Other than Breast Milk" xsi:type="ValueSetRef"/>
+               </expression>
+               <suchThat localId="120" locator="83:17-83:92" xsi:type="In">
+                  <operand locator="83:45-83:50" xsi:type="Start">
+                     <operand localId="117" locator="83:17-83:43" path="relevantPeriod" scope="OtherFeeding" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="119" locator="83:59-83:92" path="relevantPeriod" scope="QualifyingEncounter" xsi:type="Property"/>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="125" locator="46:1-47:84" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="125">
+               <a:s>define &quot;Numerator&quot;:
+  </a:s>
+               <a:s r="124">
+                  <a:s>&quot;Single Live Term Newborn Encounter With Newborn Fed Breast Milk Only Since Birth&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="124" locator="47:3-47:84" name="Single Live Term Newborn Encounter With Newborn Fed Breast Milk Only Since Birth" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="152" locator="85:1-92:81" name="Single Live Term Newborn Encounter With Newborn to NICU or Discharge to Acute Care or Other Health Care Facility or Expired" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="152">
+               <a:s>define &quot;Single Live Term Newborn Encounter With Newborn to NICU or Discharge to Acute Care or Other Health Care Facility or Expired&quot;:
+  </a:s>
+               <a:s r="151">
+                  <a:s>
+                     <a:s r="127">
+                        <a:s r="126">
+                           <a:s>
+                              <a:s>&quot;Single Live Term Newborn Encounter During Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> QualifyingEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="150">
+                     <a:s>where </a:s>
+                     <a:s r="150">
+                        <a:s r="145">
+                           <a:s r="140">
+                              <a:s r="135">
+                                 <a:s>exists </a:s>
+                                 <a:s r="134">
+                                    <a:s>( </a:s>
+                                    <a:s r="134">
+                                       <a:s>
+                                          <a:s r="129">
+                                             <a:s r="128">
+                                                <a:s>
+                                                   <a:s>QualifyingEncounter.facilityLocations</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s> NICU</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+        </a:s>
+                                       <a:s r="133">
+                                          <a:s>where </a:s>
+                                          <a:s r="133">
+                                             <a:s r="131">
+                                                <a:s r="130">
+                                                   <a:s>NICU</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="131">
+                                                   <a:s>code</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s> in </a:s>
+                                             <a:s r="132">
+                                                <a:s>&quot;Neonatal Intensive Care Unit (NICU)&quot;</a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+    )</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      or </a:s>
+                              <a:s r="139">
+                                 <a:s r="137">
+                                    <a:s r="136">
+                                       <a:s>QualifyingEncounter</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="137">
+                                       <a:s>dischargeDisposition</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> in </a:s>
+                                 <a:s r="138">
+                                    <a:s>&quot;Patient Expired&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      or </a:s>
+                           <a:s r="144">
+                              <a:s r="142">
+                                 <a:s r="141">
+                                    <a:s>QualifyingEncounter</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="142">
+                                    <a:s>dischargeDisposition</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="143">
+                                 <a:s>&quot;Discharge To Acute Care Facility&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      or </a:s>
+                        <a:s r="149">
+                           <a:s r="147">
+                              <a:s r="146">
+                                 <a:s>QualifyingEncounter</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="147">
+                                 <a:s>dischargeDisposition</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> in </a:s>
+                           <a:s r="148">
+                              <a:s>&quot;Other Health Care Facility&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="151" locator="86:3-92:81" xsi:type="Query">
+            <source localId="127" locator="86:3-86:84" alias="QualifyingEncounter">
+               <expression localId="126" locator="86:3-86:64" name="Single Live Term Newborn Encounter During Measurement Period" xsi:type="ExpressionRef"/>
+            </source>
+            <where localId="150" locator="87:5-92:81" xsi:type="Or">
+               <operand localId="145" locator="87:11-91:87" xsi:type="Or">
+                  <operand localId="140" locator="87:11-90:70" xsi:type="Or">
+                     <operand localId="135" locator="87:11-89:5" xsi:type="Exists">
+                        <operand localId="134" locator="87:18-89:5" xsi:type="Query">
+                           <source localId="129" locator="87:20-87:61" alias="NICU">
+                              <expression localId="128" locator="87:20-87:56" path="facilityLocations" scope="QualifyingEncounter" xsi:type="Property"/>
+                           </source>
+                           <where localId="133" locator="88:9-88:64" xsi:type="InValueSet">
+                              <code localId="131" locator="88:15-88:23" path="code" scope="NICU" xsi:type="Property"/>
+                              <valueset localId="132" locator="88:28-88:64" name="Neonatal Intensive Care Unit (NICU)" xsi:type="ValueSetRef"/>
+                           </where>
+                        </operand>
+                     </operand>
+                     <operand localId="139" locator="90:10-90:70" xsi:type="InValueSet">
+                        <code localId="137" locator="90:10-90:49" path="dischargeDisposition" scope="QualifyingEncounter" xsi:type="Property"/>
+                        <valueset localId="138" locator="90:54-90:70" name="Patient Expired" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="144" locator="91:10-91:87" xsi:type="InValueSet">
+                     <code localId="142" locator="91:10-91:49" path="dischargeDisposition" scope="QualifyingEncounter" xsi:type="Property"/>
+                     <valueset localId="143" locator="91:54-91:87" name="Discharge To Acute Care Facility" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+               <operand localId="149" locator="92:10-92:81" xsi:type="InValueSet">
+                  <code localId="147" locator="92:10-92:49" path="dischargeDisposition" scope="QualifyingEncounter" xsi:type="Property"/>
+                  <valueset localId="148" locator="92:54-92:81" name="Other Health Care Facility" xsi:type="ValueSetRef"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="163" locator="74:1-76:76" name="Single Live Term Newborn Encounter With Length of Stay More Than 120 days" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="163">
+               <a:s>define &quot;Single Live Term Newborn Encounter With Length of Stay More Than 120 days&quot;:
+  </a:s>
+               <a:s r="162">
+                  <a:s>
+                     <a:s r="155">
+                        <a:s r="154">
+                           <a:s>
+                              <a:s>&quot;Single Live Term Newborn Encounter During Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> QualifyingEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="161">
+                     <a:s>where </a:s>
+                     <a:s r="161">
+                        <a:s r="159">
+                           <a:s r="156">
+                              <a:s>Global</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="159">
+                              <a:s>&quot;LengthInDays&quot; ( </a:s>
+                              <a:s r="158">
+                                 <a:s r="157">
+                                    <a:s>QualifyingEncounter</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="158">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="160"> > 120</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="162" locator="75:3-76:76" xsi:type="Query">
+            <source localId="155" locator="75:3-75:84" alias="QualifyingEncounter">
+               <expression localId="154" locator="75:3-75:64" name="Single Live Term Newborn Encounter During Measurement Period" xsi:type="ExpressionRef"/>
+            </source>
+            <where localId="161" locator="76:5-76:76" xsi:type="Greater">
+               <operand localId="159" locator="76:11-76:70" name="LengthInDays" libraryName="Global" xsi:type="FunctionRef">
+                  <operand localId="158" locator="76:35-76:68" path="relevantPeriod" scope="QualifyingEncounter" xsi:type="Property"/>
+               </operand>
+               <operand localId="160" locator="76:74-76:76" valueType="t:Integer" value="120" xsi:type="Literal"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="189" locator="63:1-72:5" name="Single Live Term Newborn Encounter With Galactosemia or Parenteral Nutrition" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="189">
+               <a:s>define &quot;Single Live Term Newborn Encounter With Galactosemia or Parenteral Nutrition&quot;:
+  </a:s>
+               <a:s r="188">
+                  <a:s r="176">
+                     <a:s>( </a:s>
+                     <a:s r="176">
+                        <a:s>
+                           <a:s r="167">
+                              <a:s r="166">
+                                 <a:s>
+                                    <a:s>&quot;Single Live Term Newborn Encounter During Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> QualifyingEncounter</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="175">
+                           <a:s>with </a:s>
+                           <a:s r="169">
+                              <a:s r="168">
+                                 <a:s r="168">
+                                    <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Parenteral Nutrition&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> ParenteralNutrition</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="174">
+                              <a:s r="171">
+                                 <a:s r="170">
+                                    <a:s>ParenteralNutrition</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="171">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="174"> starts during </a:s>
+                              <a:s r="173">
+                                 <a:s r="172">
+                                    <a:s>QualifyingEncounter</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="173">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+                  <a:s>
+    union </a:s>
+                  <a:s r="187">
+                     <a:s>( </a:s>
+                     <a:s r="187">
+                        <a:s>
+                           <a:s r="178">
+                              <a:s r="177">
+                                 <a:s>
+                                    <a:s>&quot;Single Live Term Newborn Encounter During Measurement Period&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> QualifyingEncounter</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        </a:s>
+                        <a:s r="186">
+                           <a:s>where </a:s>
+                           <a:s r="186">
+                              <a:s>exists </a:s>
+                              <a:s r="185">
+                                 <a:s>( </a:s>
+                                 <a:s r="185">
+                                    <a:s>
+                                       <a:s r="180">
+                                          <a:s r="179">
+                                             <a:s>
+                                                <a:s>QualifyingEncounter.diagnoses</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> BirthEncounterDiagnoses</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+            </a:s>
+                                    <a:s r="184">
+                                       <a:s>where </a:s>
+                                       <a:s r="184">
+                                          <a:s r="182">
+                                             <a:s r="181">
+                                                <a:s>BirthEncounterDiagnoses</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="182">
+                                                <a:s>code</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> in </a:s>
+                                          <a:s r="183">
+                                             <a:s>&quot;Galactosemia&quot;</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+        )</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="188" locator="64:3-72:5" xsi:type="Union">
+            <operand localId="176" locator="64:3-67:3" xsi:type="Query">
+               <source localId="167" locator="64:5-64:86" alias="QualifyingEncounter">
+                  <expression localId="166" locator="64:5-64:66" name="Single Live Term Newborn Encounter During Measurement Period" xsi:type="ExpressionRef"/>
+               </source>
+               <relationship localId="175" locator="65:7-66:101" alias="ParenteralNutrition" xsi:type="With">
+                  <expression localId="168" locator="65:12-65:59" xmlns:ns11="urn:healthit-gov:qdm:v5_5" dataType="ns11:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="65:37-65:58" name="Parenteral Nutrition" xsi:type="ValueSetRef"/>
+                  </expression>
+                  <suchThat localId="174" locator="66:19-66:101" xsi:type="In">
+                     <operand locator="66:54-66:59" xsi:type="Start">
+                        <operand localId="171" locator="66:19-66:52" path="relevantPeriod" scope="ParenteralNutrition" xsi:type="Property"/>
+                     </operand>
+                     <operand localId="173" locator="66:68-66:101" path="relevantPeriod" scope="QualifyingEncounter" xsi:type="Property"/>
+                  </suchThat>
+               </relationship>
+            </operand>
+            <operand localId="187" locator="68:11-72:5" xsi:type="Query">
+               <source localId="178" locator="68:13-68:94" alias="QualifyingEncounter">
+                  <expression localId="177" locator="68:13-68:74" name="Single Live Term Newborn Encounter During Measurement Period" xsi:type="ExpressionRef"/>
+               </source>
+               <where localId="186" locator="69:9-71:9" xsi:type="Exists">
+                  <operand localId="185" locator="69:22-71:9" xsi:type="Query">
+                     <source localId="180" locator="69:24-69:76" alias="BirthEncounterDiagnoses">
+                        <expression localId="179" locator="69:24-69:52" path="diagnoses" scope="QualifyingEncounter" xsi:type="Property"/>
+                     </source>
+                     <where localId="184" locator="70:13-70:64" xsi:type="InValueSet">
+                        <code localId="182" locator="70:19-70:46" path="code" scope="BirthEncounterDiagnoses" xsi:type="Property"/>
+                        <valueset localId="183" locator="70:51-70:64" name="Galactosemia" xsi:type="ValueSetRef"/>
+                     </where>
+                  </operand>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="192" locator="49:1-52:88" name="Denominator Exclusions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="192">
+               <a:s>define &quot;Denominator Exclusions&quot;:
+  </a:s>
+               <a:s r="191">
+                  <a:s r="165">
+                     <a:s r="153">
+                        <a:s>&quot;Single Live Term Newborn Encounter With Newborn to NICU or Discharge to Acute Care or Other Health Care Facility or Expired&quot;</a:s>
+                     </a:s>
+                     <a:s>
+    union </a:s>
+                     <a:s r="164">
+                        <a:s>&quot;Single Live Term Newborn Encounter With Length of Stay More Than 120 days&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    union </a:s>
+                  <a:s r="190">
+                     <a:s>&quot;Single Live Term Newborn Encounter With Galactosemia or Parenteral Nutrition&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="191" locator="50:3-52:88" xsi:type="Union">
+            <operand localId="165" locator="50:3-51:85" xsi:type="Union">
+               <operand localId="153" locator="50:3-50:127" name="Single Live Term Newborn Encounter With Newborn to NICU or Discharge to Acute Care or Other Health Care Facility or Expired" xsi:type="ExpressionRef"/>
+               <operand localId="164" locator="51:11-51:85" name="Single Live Term Newborn Encounter With Length of Stay More Than 120 days" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="190" locator="52:11-52:88" name="Single Live Term Newborn Encounter With Galactosemia or Parenteral Nutrition" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

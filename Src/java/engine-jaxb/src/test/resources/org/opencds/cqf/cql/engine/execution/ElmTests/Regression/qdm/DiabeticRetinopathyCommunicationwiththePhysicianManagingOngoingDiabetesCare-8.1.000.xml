@@ -1,0 +1,2276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <identifier id="DiabeticRetinopathyCommunicationwiththePhysicianManagingOngoingDiabetesCare" version="8.1.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_4" version="5.4"/>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="4.0.000"/>
+   </includes>
+   <parameters>
+      <def localId="36" locator="34:1-34:49" name="Measurement Period" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <parameterTypeSpecifier localId="35" locator="34:32-34:49" xsi:type="IntervalTypeSpecifier">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <pointType localId="34" locator="34:41-34:48" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="3" locator="7:1-7:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="4" locator="8:1-8:55" name="SNOMEDCT" id="urn:oid:2.16.840.1.113883.6.96" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="5" locator="10:1-10:110" name="Care Services in Long-Term Residential Facility" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1014" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="6" locator="11:1-11:72" name="Diabetic Retinopathy" id="urn:oid:2.16.840.1.113883.3.526.3.327" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="7" locator="12:1-12:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="8" locator="13:1-13:94" name="Level of Severity of Retinopathy Findings" id="urn:oid:2.16.840.1.113883.3.526.3.1283" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="9" locator="14:1-14:83" name="Macular Edema Findings Present" id="urn:oid:2.16.840.1.113883.3.526.3.1320" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="10" locator="15:1-15:65" name="Macular Exam" id="urn:oid:2.16.840.1.113883.3.526.3.1251" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="11" locator="16:1-16:67" name="Medical Reason" id="urn:oid:2.16.840.1.113883.3.526.3.1007" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="12" locator="17:1-17:85" name="Nursing Facility Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1012" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="13" locator="18:1-18:75" name="Office Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="14" locator="19:1-19:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="15" locator="20:1-20:78" name="Ophthalmological Services" id="urn:oid:2.16.840.1.113883.3.526.3.1285" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="16" locator="21:1-21:86" name="Outpatient Consultation" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1008" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="17" locator="22:1-22:67" name="Patient Reason" id="urn:oid:2.16.840.1.113883.3.526.3.1008" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="18" locator="23:1-23:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="19" locator="24:1-24:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="21" locator="26:1-26:62" resultTypeName="t:Code" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <codeSystem localId="20" locator="26:35-26:41" name="LOINC">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="23" locator="27:1-27:119" resultTypeName="t:Code" name="Healthcare professional (occupation)" id="223366009" display="Healthcare professional (occupation)" accessLevel="Public">
+         <codeSystem localId="22" locator="27:63-27:72" name="SNOMEDCT">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="25" locator="28:1-28:117" resultTypeName="t:Code" name="Macular edema absent (situation)" id="428341000124108" display="Macular edema absent (situation)" accessLevel="Public">
+         <codeSystem localId="24" locator="28:65-28:74" name="SNOMEDCT">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="27" locator="29:1-29:113" resultTypeName="t:Code" name="Medical practitioner (occupation)" id="158965000" display="Medical practitioner (occupation)" accessLevel="Public">
+         <codeSystem localId="26" locator="29:60-29:69" name="SNOMEDCT">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="29" locator="30:1-30:103" resultTypeName="t:Code" name="Ophthalmologist (occupation)" id="422234006" display="Ophthalmologist (occupation)" accessLevel="Public">
+         <codeSystem localId="28" locator="30:55-30:64" name="SNOMEDCT">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="31" locator="31:1-31:94" resultTypeName="t:Code" name="Optometrist (occupation)" id="28229004" display="Optometrist (occupation)" accessLevel="Public">
+         <codeSystem localId="30" locator="31:50-31:59" name="SNOMEDCT">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+      <def localId="33" locator="32:1-32:91" resultTypeName="t:Code" name="Physician (occupation)" id="309343006" display="Physician (occupation)" accessLevel="Public">
+         <codeSystem localId="32" locator="32:49-32:58" name="SNOMEDCT">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </codeSystem>
+      </def>
+   </codes>
+   <statements>
+      <def locator="36:1-36:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="36:1-36:15" xmlns:ns0="urn:healthit-gov:qdm:v5_4" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="38" locator="38:1-39:50" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="38">
+               <a:s>define &quot;SDE Ethnicity&quot;:&#xd;
+	</a:s>
+               <a:s r="37">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns1="urn:healthit-gov:qdm:v5_4" name="ns1:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="37" locator="39:2-39:50" xmlns:ns2="urn:healthit-gov:qdm:v5_4" dataType="ns2:PatientCharacteristicEthnicity" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns3="urn:healthit-gov:qdm:v5_4" name="ns3:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="39:39-39:49" name="Ethnicity" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="40" locator="41:1-42:42" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="40">
+               <a:s>define &quot;SDE Payer&quot;:&#xd;
+	</a:s>
+               <a:s r="39">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns4="urn:healthit-gov:qdm:v5_4" name="ns4:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="39" locator="42:2-42:42" xmlns:ns5="urn:healthit-gov:qdm:v5_4" dataType="ns5:PatientCharacteristicPayer" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns6="urn:healthit-gov:qdm:v5_4" name="ns6:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="42:35-42:41" name="Payer" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="42" locator="44:1-45:40" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="42">
+               <a:s>define &quot;SDE Race&quot;:&#xd;
+	</a:s>
+               <a:s r="41">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns7="urn:healthit-gov:qdm:v5_4" name="ns7:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="41" locator="45:2-45:40" xmlns:ns8="urn:healthit-gov:qdm:v5_4" dataType="ns8:PatientCharacteristicRace" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns9="urn:healthit-gov:qdm:v5_4" name="ns9:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="45:34-45:39" name="Race" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="44" locator="47:1-48:57" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="44">
+               <a:s>define &quot;SDE Sex&quot;:&#xd;
+	</a:s>
+               <a:s r="43">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns10="urn:healthit-gov:qdm:v5_4" name="ns10:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="43" locator="48:2-48:57" xmlns:ns11="urn:healthit-gov:qdm:v5_4" dataType="ns11:PatientCharacteristicSex" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns12="urn:healthit-gov:qdm:v5_4" name="ns12:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="48:33-48:56" name="ONC Administrative Sex" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="62" locator="57:1-63:70" name="Face to Face Encounter During Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="62">
+               <a:s>define &quot;Face to Face Encounter During Measurement Period&quot;:&#xd;
+	</a:s>
+               <a:s r="61">
+                  <a:s>
+                     <a:s r="56">
+                        <a:s r="55">
+                           <a:s>( </a:s>
+                           <a:s r="55">
+                              <a:s r="53">
+                                 <a:s r="51">
+                                    <a:s r="49">
+                                       <a:s r="47">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Office Visit&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                       <a:s>&#xd;
+		union </a:s>
+                                       <a:s r="48">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Ophthalmological Services&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+		union </a:s>
+                                    <a:s r="50">
+                                       <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Outpatient Consultation&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+		union </a:s>
+                                 <a:s r="52">
+                                    <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Care Services in Long-Term Residential Facility&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+		union </a:s>
+                              <a:s r="54">
+                                 <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Nursing Facility Visit&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> FaceToFaceEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="60">
+                     <a:s>where </a:s>
+                     <a:s r="60">
+                        <a:s r="58">
+                           <a:s r="57">
+                              <a:s>FaceToFaceEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="58">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="60"> during </a:s>
+                        <a:s r="59">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns13="urn:healthit-gov:qdm:v5_4" name="ns13:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="61" locator="58:2-63:70" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns14="urn:healthit-gov:qdm:v5_4" name="ns14:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="56" locator="58:2-62:80" alias="FaceToFaceEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns15="urn:healthit-gov:qdm:v5_4" name="ns15:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="55" locator="58:2-62:60" xsi:type="Union">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns16="urn:healthit-gov:qdm:v5_4" name="ns16:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <operand localId="53" locator="58:4-61:83" xsi:type="Union">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns17="urn:healthit-gov:qdm:v5_4" name="ns17:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="49" locator="58:4-59:61" xsi:type="Union">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns18="urn:healthit-gov:qdm:v5_4" name="ns18:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <operand localId="47" locator="58:4-58:43" xmlns:ns19="urn:healthit-gov:qdm:v5_4" dataType="ns19:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns20="urn:healthit-gov:qdm:v5_4" name="ns20:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="58:29-58:42" name="Office Visit" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                        <operand localId="48" locator="59:9-59:61" xmlns:ns21="urn:healthit-gov:qdm:v5_4" dataType="ns21:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns22="urn:healthit-gov:qdm:v5_4" name="ns22:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="59:34-59:60" name="Ophthalmological Services" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="Union">
+                        <operand localId="50" locator="60:9-60:59" xmlns:ns23="urn:healthit-gov:qdm:v5_4" dataType="ns23:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns24="urn:healthit-gov:qdm:v5_4" name="ns24:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="60:34-60:58" name="Outpatient Consultation" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                        <operand localId="52" locator="61:9-61:83" xmlns:ns25="urn:healthit-gov:qdm:v5_4" dataType="ns25:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                           <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                              <elementType xmlns:ns26="urn:healthit-gov:qdm:v5_4" name="ns26:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                           <codes locator="61:34-61:82" name="Care Services in Long-Term Residential Facility" xsi:type="ValueSetRef">
+                              <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                                 <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </codes>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="54" locator="62:9-62:58" xmlns:ns27="urn:healthit-gov:qdm:v5_4" dataType="ns27:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" xsi:type="Retrieve">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns28="urn:healthit-gov:qdm:v5_4" name="ns28:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <codes locator="62:34-62:57" name="Nursing Facility Visit" xsi:type="ValueSetRef">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </codes>
+                  </operand>
+               </expression>
+            </source>
+            <where localId="60" locator="63:3-63:70" resultTypeName="t:Boolean" xsi:type="IncludedIn">
+               <operand localId="58" locator="63:9-63:42" path="relevantPeriod" scope="FaceToFaceEncounter" xsi:type="Property">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+               <operand localId="59" locator="63:51-63:70" name="Measurement Period" xsi:type="ParameterRef">
+                  <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                     <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="74" locator="65:1-68:98" name="Diabetic Retinopathy Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="74">
+               <a:s>define &quot;Diabetic Retinopathy Encounter&quot;:&#xd;
+	</a:s>
+               <a:s r="73">
+                  <a:s>
+                     <a:s r="64">
+                        <a:s r="63">
+                           <a:s>
+                              <a:s>&quot;Face to Face Encounter During Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> ValidFaceToFaceEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="72">
+                     <a:s>with </a:s>
+                     <a:s r="66">
+                        <a:s r="65">
+                           <a:s r="65">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Diabetic Retinopathy&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> DiabeticRetinopathy</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="71">
+                        <a:s r="68">
+                           <a:s r="67">
+                              <a:s>DiabeticRetinopathy</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="68">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="71"> overlaps </a:s>
+                        <a:s r="70">
+                           <a:s r="69">
+                              <a:s>ValidFaceToFaceEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="70">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns29="urn:healthit-gov:qdm:v5_4" name="ns29:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="73" locator="66:2-68:98" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns30="urn:healthit-gov:qdm:v5_4" name="ns30:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="64" locator="66:2-66:76" alias="ValidFaceToFaceEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns31="urn:healthit-gov:qdm:v5_4" name="ns31:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="63" locator="66:2-66:51" name="Face to Face Encounter During Measurement Period" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns32="urn:healthit-gov:qdm:v5_4" name="ns32:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="72" locator="67:3-68:98" alias="DiabeticRetinopathy" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns33="urn:healthit-gov:qdm:v5_4" name="ns33:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="65" locator="67:8-67:44" xmlns:ns34="urn:healthit-gov:qdm:v5_4" dataType="ns34:Diagnosis" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns35="urn:healthit-gov:qdm:v5_4" name="ns35:Diagnosis" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="67:22-67:43" name="Diabetic Retinopathy" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+               <suchThat localId="71" locator="68:14-68:98" resultTypeName="t:Boolean" xsi:type="Overlaps">
+                  <operand localId="68" locator="68:14-68:49" path="prevalencePeriod" scope="DiabeticRetinopathy" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+                  <operand localId="70" locator="68:60-68:98" path="relevantPeriod" scope="ValidFaceToFaceEncounter" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="115" locator="111:1-122:5" name="Level of Severity of Retinopathy Findings Communicated" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="115">
+               <a:s>define &quot;Level of Severity of Retinopathy Findings Communicated&quot;:&#xd;
+	</a:s>
+               <a:s r="114">
+                  <a:s>
+                     <a:s r="46">
+                        <a:s r="45">
+                           <a:s r="45">
+                              <a:s>[&quot;Communication, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Level of Severity of Retinopathy Findings&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> LevelOfSeverityCommunicated</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="113">
+                     <a:s>with </a:s>
+                     <a:s r="76">
+                        <a:s r="75">
+                           <a:s>
+                              <a:s>&quot;Diabetic Retinopathy Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterDiabeticRetinopathy</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="112">
+                        <a:s r="97">
+                           <a:s r="82">
+                              <a:s r="78">
+                                 <a:s r="77">
+                                    <a:s>LevelOfSeverityCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="78">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="82"> after </a:s>
+                              <a:s r="81">
+                                 <a:s>start of </a:s>
+                                 <a:s r="80">
+                                    <a:s r="79">
+                                       <a:s>EncounterDiabeticRetinopathy</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="80">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				and </a:s>
+                           <a:s r="96">
+                              <a:s>( </a:s>
+                              <a:s r="96">
+                                 <a:s r="91">
+                                    <a:s r="86">
+                                       <a:s r="84">
+                                          <a:s r="83">
+                                             <a:s>LevelOfSeverityCommunicated</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="84">
+                                             <a:s>sender</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> ~ </a:s>
+                                       <a:s r="85">
+                                          <a:s>&quot;Healthcare professional (occupation)&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+						or </a:s>
+                                    <a:s r="90">
+                                       <a:s r="88">
+                                          <a:s r="87">
+                                             <a:s>LevelOfSeverityCommunicated</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="88">
+                                             <a:s>sender</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> ~ </a:s>
+                                       <a:s r="89">
+                                          <a:s>&quot;Ophthalmologist (occupation)&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+						or </a:s>
+                                 <a:s r="95">
+                                    <a:s r="93">
+                                       <a:s r="92">
+                                          <a:s>LevelOfSeverityCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="93">
+                                          <a:s>sender</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="94">
+                                       <a:s>&quot;Optometrist (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+				)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				and </a:s>
+                        <a:s r="111">
+                           <a:s>( </a:s>
+                           <a:s r="111">
+                              <a:s r="106">
+                                 <a:s r="101">
+                                    <a:s r="99">
+                                       <a:s r="98">
+                                          <a:s>LevelOfSeverityCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="99">
+                                          <a:s>recipient</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="100">
+                                       <a:s>&quot;Physician (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+						or </a:s>
+                                 <a:s r="105">
+                                    <a:s r="103">
+                                       <a:s r="102">
+                                          <a:s>LevelOfSeverityCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="103">
+                                          <a:s>recipient</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="104">
+                                       <a:s>&quot;Healthcare professional (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+						or </a:s>
+                              <a:s r="110">
+                                 <a:s r="108">
+                                    <a:s r="107">
+                                       <a:s>LevelOfSeverityCommunicated</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="108">
+                                       <a:s>recipient</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> ~ </a:s>
+                                 <a:s r="109">
+                                    <a:s>&quot;Medical practitioner (occupation)&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				)</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns36="urn:healthit-gov:qdm:v5_4" name="ns36:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="114" locator="112:2-122:5" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns37="urn:healthit-gov:qdm:v5_4" name="ns37:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="46" locator="112:2-112:102" alias="LevelOfSeverityCommunicated">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns38="urn:healthit-gov:qdm:v5_4" name="ns38:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="45" locator="112:2-112:74" xmlns:ns39="urn:healthit-gov:qdm:v5_4" dataType="ns39:PositiveCommunicationPerformed" templateId="PositiveCommunicationPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns40="urn:healthit-gov:qdm:v5_4" name="ns40:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="112:31-112:73" name="Level of Severity of Retinopathy Findings" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="113" locator="113:3-122:5" alias="EncounterDiabeticRetinopathy" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns41="urn:healthit-gov:qdm:v5_4" name="ns41:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="75" locator="113:8-113:39" name="Diabetic Retinopathy Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns42="urn:healthit-gov:qdm:v5_4" name="ns42:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="112" locator="114:14-122:5" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="97" locator="114:14-118:5" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand localId="82" locator="114:14-114:114" resultTypeName="t:Boolean" xsi:type="After">
+                        <operand localId="78" locator="114:14-114:55" resultTypeName="t:DateTime" path="authorDatetime" scope="LevelOfSeverityCommunicated" xsi:type="Property"/>
+                        <operand localId="81" locator="114:63-114:114" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="80" locator="114:72-114:114" path="relevantPeriod" scope="EncounterDiabeticRetinopathy" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="96" locator="115:9-118:5" resultTypeName="t:Boolean" xsi:type="Or">
+                        <operand localId="91" locator="115:11-116:76" resultTypeName="t:Boolean" xsi:type="Or">
+                           <operand localId="86" locator="115:11-115:85" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                              <operand localId="84" locator="115:11-115:44" resultTypeName="t:Code" path="sender" scope="LevelOfSeverityCommunicated" xsi:type="Property"/>
+                              <operand localId="85" locator="115:48-115:85" resultTypeName="t:Code" name="Healthcare professional (occupation)" xsi:type="CodeRef"/>
+                           </operand>
+                           <operand localId="90" locator="116:10-116:76" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                              <operand localId="88" locator="116:10-116:43" resultTypeName="t:Code" path="sender" scope="LevelOfSeverityCommunicated" xsi:type="Property"/>
+                              <operand localId="89" locator="116:47-116:76" resultTypeName="t:Code" name="Ophthalmologist (occupation)" xsi:type="CodeRef"/>
+                           </operand>
+                        </operand>
+                        <operand localId="95" locator="117:10-117:72" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="93" locator="117:10-117:43" resultTypeName="t:Code" path="sender" scope="LevelOfSeverityCommunicated" xsi:type="Property"/>
+                           <operand localId="94" locator="117:47-117:72" resultTypeName="t:Code" name="Optometrist (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="111" locator="119:9-122:5" resultTypeName="t:Boolean" xsi:type="Or">
+                     <operand localId="106" locator="119:11-120:87" resultTypeName="t:Boolean" xsi:type="Or">
+                        <operand localId="101" locator="119:11-119:74" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="99" locator="119:11-119:47" resultTypeName="t:Code" path="recipient" scope="LevelOfSeverityCommunicated" xsi:type="Property"/>
+                           <operand localId="100" locator="119:51-119:74" resultTypeName="t:Code" name="Physician (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                        <operand localId="105" locator="120:10-120:87" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="103" locator="120:10-120:46" resultTypeName="t:Code" path="recipient" scope="LevelOfSeverityCommunicated" xsi:type="Property"/>
+                           <operand localId="104" locator="120:50-120:87" resultTypeName="t:Code" name="Healthcare professional (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="110" locator="121:10-121:84" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                        <operand localId="108" locator="121:10-121:46" resultTypeName="t:Code" path="recipient" scope="LevelOfSeverityCommunicated" xsi:type="Property"/>
+                        <operand localId="109" locator="121:50-121:84" resultTypeName="t:Code" name="Medical practitioner (occupation)" xsi:type="CodeRef"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="160" locator="124:1-135:5" name="Macular Edema Absence Communicated" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="160">
+               <a:s>define &quot;Macular Edema Absence Communicated&quot;:&#xd;
+	</a:s>
+               <a:s r="159">
+                  <a:s>
+                     <a:s r="119">
+                        <a:s r="118">
+                           <a:s r="118">
+                              <a:s>[&quot;Communication, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Macular edema absent (situation)&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> MacularEdemaAbsentCommunicated</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="158">
+                     <a:s>with </a:s>
+                     <a:s r="121">
+                        <a:s r="120">
+                           <a:s>
+                              <a:s>&quot;Diabetic Retinopathy Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterDiabeticRetinopathy</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="157">
+                        <a:s r="142">
+                           <a:s r="127">
+                              <a:s r="123">
+                                 <a:s r="122">
+                                    <a:s>MacularEdemaAbsentCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="123">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="127"> after </a:s>
+                              <a:s r="126">
+                                 <a:s>start of </a:s>
+                                 <a:s r="125">
+                                    <a:s r="124">
+                                       <a:s>EncounterDiabeticRetinopathy</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="125">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				and </a:s>
+                           <a:s r="141">
+                              <a:s>( </a:s>
+                              <a:s r="141">
+                                 <a:s r="136">
+                                    <a:s r="131">
+                                       <a:s r="129">
+                                          <a:s r="128">
+                                             <a:s>MacularEdemaAbsentCommunicated</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="129">
+                                             <a:s>sender</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> ~ </a:s>
+                                       <a:s r="130">
+                                          <a:s>&quot;Healthcare professional (occupation)&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+						or </a:s>
+                                    <a:s r="135">
+                                       <a:s r="133">
+                                          <a:s r="132">
+                                             <a:s>MacularEdemaAbsentCommunicated</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="133">
+                                             <a:s>sender</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> ~ </a:s>
+                                       <a:s r="134">
+                                          <a:s>&quot;Ophthalmologist (occupation)&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+						or </a:s>
+                                 <a:s r="140">
+                                    <a:s r="138">
+                                       <a:s r="137">
+                                          <a:s>MacularEdemaAbsentCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="138">
+                                          <a:s>sender</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="139">
+                                       <a:s>&quot;Optometrist (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+				)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				and </a:s>
+                        <a:s r="156">
+                           <a:s>( </a:s>
+                           <a:s r="156">
+                              <a:s r="151">
+                                 <a:s r="146">
+                                    <a:s r="144">
+                                       <a:s r="143">
+                                          <a:s>MacularEdemaAbsentCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="144">
+                                          <a:s>recipient</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="145">
+                                       <a:s>&quot;Physician (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+						or </a:s>
+                                 <a:s r="150">
+                                    <a:s r="148">
+                                       <a:s r="147">
+                                          <a:s>MacularEdemaAbsentCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="148">
+                                          <a:s>recipient</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="149">
+                                       <a:s>&quot;Healthcare professional (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+						or </a:s>
+                              <a:s r="155">
+                                 <a:s r="153">
+                                    <a:s r="152">
+                                       <a:s>MacularEdemaAbsentCommunicated</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="153">
+                                       <a:s>recipient</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> ~ </a:s>
+                                 <a:s r="154">
+                                    <a:s>&quot;Medical practitioner (occupation)&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				)</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns43="urn:healthit-gov:qdm:v5_4" name="ns43:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="159" locator="125:2-135:5" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns44="urn:healthit-gov:qdm:v5_4" name="ns44:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="119" locator="125:2-125:96" alias="MacularEdemaAbsentCommunicated">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns45="urn:healthit-gov:qdm:v5_4" name="ns45:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="118" locator="125:2-125:65" xmlns:ns46="urn:healthit-gov:qdm:v5_4" dataType="ns46:PositiveCommunicationPerformed" templateId="PositiveCommunicationPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns47="urn:healthit-gov:qdm:v5_4" name="ns47:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes xsi:type="ToList">
+                     <operand locator="125:31-125:64" resultTypeName="t:Code" name="Macular edema absent (situation)" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="158" locator="126:3-135:5" alias="EncounterDiabeticRetinopathy" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns48="urn:healthit-gov:qdm:v5_4" name="ns48:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="120" locator="126:8-126:39" name="Diabetic Retinopathy Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns49="urn:healthit-gov:qdm:v5_4" name="ns49:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="157" locator="127:14-135:5" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="142" locator="127:14-131:5" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand localId="127" locator="127:14-127:117" resultTypeName="t:Boolean" xsi:type="After">
+                        <operand localId="123" locator="127:14-127:58" resultTypeName="t:DateTime" path="authorDatetime" scope="MacularEdemaAbsentCommunicated" xsi:type="Property"/>
+                        <operand localId="126" locator="127:66-127:117" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="125" locator="127:75-127:117" path="relevantPeriod" scope="EncounterDiabeticRetinopathy" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="141" locator="128:9-131:5" resultTypeName="t:Boolean" xsi:type="Or">
+                        <operand localId="136" locator="128:11-129:79" resultTypeName="t:Boolean" xsi:type="Or">
+                           <operand localId="131" locator="128:11-128:88" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                              <operand localId="129" locator="128:11-128:47" resultTypeName="t:Code" path="sender" scope="MacularEdemaAbsentCommunicated" xsi:type="Property"/>
+                              <operand localId="130" locator="128:51-128:88" resultTypeName="t:Code" name="Healthcare professional (occupation)" xsi:type="CodeRef"/>
+                           </operand>
+                           <operand localId="135" locator="129:10-129:79" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                              <operand localId="133" locator="129:10-129:46" resultTypeName="t:Code" path="sender" scope="MacularEdemaAbsentCommunicated" xsi:type="Property"/>
+                              <operand localId="134" locator="129:50-129:79" resultTypeName="t:Code" name="Ophthalmologist (occupation)" xsi:type="CodeRef"/>
+                           </operand>
+                        </operand>
+                        <operand localId="140" locator="130:10-130:75" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="138" locator="130:10-130:46" resultTypeName="t:Code" path="sender" scope="MacularEdemaAbsentCommunicated" xsi:type="Property"/>
+                           <operand localId="139" locator="130:50-130:75" resultTypeName="t:Code" name="Optometrist (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="156" locator="132:9-135:5" resultTypeName="t:Boolean" xsi:type="Or">
+                     <operand localId="151" locator="132:11-133:90" resultTypeName="t:Boolean" xsi:type="Or">
+                        <operand localId="146" locator="132:11-132:77" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="144" locator="132:11-132:50" resultTypeName="t:Code" path="recipient" scope="MacularEdemaAbsentCommunicated" xsi:type="Property"/>
+                           <operand localId="145" locator="132:54-132:77" resultTypeName="t:Code" name="Physician (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                        <operand localId="150" locator="133:10-133:90" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="148" locator="133:10-133:49" resultTypeName="t:Code" path="recipient" scope="MacularEdemaAbsentCommunicated" xsi:type="Property"/>
+                           <operand localId="149" locator="133:53-133:90" resultTypeName="t:Code" name="Healthcare professional (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="155" locator="134:10-134:87" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                        <operand localId="153" locator="134:10-134:49" resultTypeName="t:Code" path="recipient" scope="MacularEdemaAbsentCommunicated" xsi:type="Property"/>
+                        <operand localId="154" locator="134:53-134:87" resultTypeName="t:Code" name="Medical practitioner (occupation)" xsi:type="CodeRef"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="205" locator="137:1-148:5" name="Macular Edema Presence Communicated" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="205">
+               <a:s>define &quot;Macular Edema Presence Communicated&quot;:&#xd;
+	</a:s>
+               <a:s r="204">
+                  <a:s>
+                     <a:s r="164">
+                        <a:s r="163">
+                           <a:s r="163">
+                              <a:s>[&quot;Communication, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Macular Edema Findings Present&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> MacularEdemaPresentCommunicated</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="203">
+                     <a:s>with </a:s>
+                     <a:s r="166">
+                        <a:s r="165">
+                           <a:s>
+                              <a:s>&quot;Diabetic Retinopathy Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterDiabeticRetinopathy</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="202">
+                        <a:s r="187">
+                           <a:s r="172">
+                              <a:s r="168">
+                                 <a:s r="167">
+                                    <a:s>MacularEdemaPresentCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="168">
+                                    <a:s>authorDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="172"> after </a:s>
+                              <a:s r="171">
+                                 <a:s>start of </a:s>
+                                 <a:s r="170">
+                                    <a:s r="169">
+                                       <a:s>EncounterDiabeticRetinopathy</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="170">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				and </a:s>
+                           <a:s r="186">
+                              <a:s>( </a:s>
+                              <a:s r="186">
+                                 <a:s r="181">
+                                    <a:s r="176">
+                                       <a:s r="174">
+                                          <a:s r="173">
+                                             <a:s>MacularEdemaPresentCommunicated</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="174">
+                                             <a:s>sender</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> ~ </a:s>
+                                       <a:s r="175">
+                                          <a:s>&quot;Healthcare professional (occupation)&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>&#xd;
+						or </a:s>
+                                    <a:s r="180">
+                                       <a:s r="178">
+                                          <a:s r="177">
+                                             <a:s>MacularEdemaPresentCommunicated</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="178">
+                                             <a:s>sender</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> ~ </a:s>
+                                       <a:s r="179">
+                                          <a:s>&quot;Ophthalmologist (occupation)&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+						or </a:s>
+                                 <a:s r="185">
+                                    <a:s r="183">
+                                       <a:s r="182">
+                                          <a:s>MacularEdemaPresentCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="183">
+                                          <a:s>sender</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="184">
+                                       <a:s>&quot;Optometrist (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+				)</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				and </a:s>
+                        <a:s r="201">
+                           <a:s>( </a:s>
+                           <a:s r="201">
+                              <a:s r="196">
+                                 <a:s r="191">
+                                    <a:s r="189">
+                                       <a:s r="188">
+                                          <a:s>MacularEdemaPresentCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="189">
+                                          <a:s>recipient</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="190">
+                                       <a:s>&quot;Physician (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>&#xd;
+						or </a:s>
+                                 <a:s r="195">
+                                    <a:s r="193">
+                                       <a:s r="192">
+                                          <a:s>MacularEdemaPresentCommunicated</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="193">
+                                          <a:s>recipient</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> ~ </a:s>
+                                    <a:s r="194">
+                                       <a:s>&quot;Healthcare professional (occupation)&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>&#xd;
+						or </a:s>
+                              <a:s r="200">
+                                 <a:s r="198">
+                                    <a:s r="197">
+                                       <a:s>MacularEdemaPresentCommunicated</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="198">
+                                       <a:s>recipient</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> ~ </a:s>
+                                 <a:s r="199">
+                                    <a:s>&quot;Medical practitioner (occupation)&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				)</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns50="urn:healthit-gov:qdm:v5_4" name="ns50:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="204" locator="138:2-148:5" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns51="urn:healthit-gov:qdm:v5_4" name="ns51:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="164" locator="138:2-138:95" alias="MacularEdemaPresentCommunicated">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns52="urn:healthit-gov:qdm:v5_4" name="ns52:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="163" locator="138:2-138:63" xmlns:ns53="urn:healthit-gov:qdm:v5_4" dataType="ns53:PositiveCommunicationPerformed" templateId="PositiveCommunicationPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns54="urn:healthit-gov:qdm:v5_4" name="ns54:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="138:31-138:62" name="Macular Edema Findings Present" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="203" locator="139:3-148:5" alias="EncounterDiabeticRetinopathy" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns55="urn:healthit-gov:qdm:v5_4" name="ns55:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="165" locator="139:8-139:39" name="Diabetic Retinopathy Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns56="urn:healthit-gov:qdm:v5_4" name="ns56:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="202" locator="140:14-148:5" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="187" locator="140:14-144:5" resultTypeName="t:Boolean" xsi:type="And">
+                     <operand localId="172" locator="140:14-140:118" resultTypeName="t:Boolean" xsi:type="After">
+                        <operand localId="168" locator="140:14-140:59" resultTypeName="t:DateTime" path="authorDatetime" scope="MacularEdemaPresentCommunicated" xsi:type="Property"/>
+                        <operand localId="171" locator="140:67-140:118" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="170" locator="140:76-140:118" path="relevantPeriod" scope="EncounterDiabeticRetinopathy" xsi:type="Property">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="186" locator="141:9-144:5" resultTypeName="t:Boolean" xsi:type="Or">
+                        <operand localId="181" locator="141:11-142:80" resultTypeName="t:Boolean" xsi:type="Or">
+                           <operand localId="176" locator="141:11-141:89" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                              <operand localId="174" locator="141:11-141:48" resultTypeName="t:Code" path="sender" scope="MacularEdemaPresentCommunicated" xsi:type="Property"/>
+                              <operand localId="175" locator="141:52-141:89" resultTypeName="t:Code" name="Healthcare professional (occupation)" xsi:type="CodeRef"/>
+                           </operand>
+                           <operand localId="180" locator="142:10-142:80" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                              <operand localId="178" locator="142:10-142:47" resultTypeName="t:Code" path="sender" scope="MacularEdemaPresentCommunicated" xsi:type="Property"/>
+                              <operand localId="179" locator="142:51-142:80" resultTypeName="t:Code" name="Ophthalmologist (occupation)" xsi:type="CodeRef"/>
+                           </operand>
+                        </operand>
+                        <operand localId="185" locator="143:10-143:76" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="183" locator="143:10-143:47" resultTypeName="t:Code" path="sender" scope="MacularEdemaPresentCommunicated" xsi:type="Property"/>
+                           <operand localId="184" locator="143:51-143:76" resultTypeName="t:Code" name="Optometrist (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="201" locator="145:9-148:5" resultTypeName="t:Boolean" xsi:type="Or">
+                     <operand localId="196" locator="145:11-146:91" resultTypeName="t:Boolean" xsi:type="Or">
+                        <operand localId="191" locator="145:11-145:78" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="189" locator="145:11-145:51" resultTypeName="t:Code" path="recipient" scope="MacularEdemaPresentCommunicated" xsi:type="Property"/>
+                           <operand localId="190" locator="145:55-145:78" resultTypeName="t:Code" name="Physician (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                        <operand localId="195" locator="146:10-146:91" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                           <operand localId="193" locator="146:10-146:50" resultTypeName="t:Code" path="recipient" scope="MacularEdemaPresentCommunicated" xsi:type="Property"/>
+                           <operand localId="194" locator="146:54-146:91" resultTypeName="t:Code" name="Healthcare professional (occupation)" xsi:type="CodeRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="200" locator="147:10-147:88" resultTypeName="t:Boolean" xsi:type="Equivalent">
+                        <operand localId="198" locator="147:10-147:50" resultTypeName="t:Code" path="recipient" scope="MacularEdemaPresentCommunicated" xsi:type="Property"/>
+                        <operand localId="199" locator="147:54-147:88" resultTypeName="t:Code" name="Medical practitioner (occupation)" xsi:type="CodeRef"/>
+                     </operand>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="210" locator="100:1-104:3" resultTypeName="t:Boolean" name="Results of Dilated Macular or Fundus Exam Communicated" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="210">
+               <a:s>define &quot;Results of Dilated Macular or Fundus Exam Communicated&quot;:&#xd;
+	</a:s>
+               <a:s r="209">
+                  <a:s r="117">
+                     <a:s>exists </a:s>
+                     <a:s r="116">
+                        <a:s>&quot;Level of Severity of Retinopathy Findings Communicated&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		and </a:s>
+                  <a:s r="208">
+                     <a:s>( </a:s>
+                     <a:s r="208">
+                        <a:s r="162">
+                           <a:s>exists </a:s>
+                           <a:s r="161">
+                              <a:s>&quot;Macular Edema Absence Communicated&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+				or </a:s>
+                        <a:s r="207">
+                           <a:s>exists </a:s>
+                           <a:s r="206">
+                              <a:s>&quot;Macular Edema Presence Communicated&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+		)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="209" locator="101:2-104:3" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="117" locator="101:2-101:64" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="116" locator="101:9-101:64" name="Level of Severity of Retinopathy Findings Communicated" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns57="urn:healthit-gov:qdm:v5_4" name="ns57:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+            <operand localId="208" locator="102:7-104:3" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="162" locator="102:9-102:51" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="161" locator="102:16-102:51" name="Macular Edema Absence Communicated" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns58="urn:healthit-gov:qdm:v5_4" name="ns58:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+               <operand localId="207" locator="103:8-103:51" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="206" locator="103:15-103:51" name="Macular Edema Presence Communicated" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns59="urn:healthit-gov:qdm:v5_4" name="ns59:PositiveCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="212" locator="50:1-51:57" resultTypeName="t:Boolean" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="212">
+               <a:s>define &quot;Numerator&quot;:&#xd;
+	</a:s>
+               <a:s r="211">
+                  <a:s>&quot;Results of Dilated Macular or Fundus Exam Communicated&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="211" locator="51:2-51:57" resultTypeName="t:Boolean" name="Results of Dilated Macular or Fundus Exam Communicated" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="228" locator="150:1-154:45" resultTypeName="t:Boolean" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="228">
+               <a:s>define &quot;Initial Population&quot;:&#xd;
+	</a:s>
+               <a:s r="227">
+                  <a:s r="224">
+                     <a:s>exists </a:s>
+                     <a:s r="223">
+                        <a:s>( </a:s>
+                        <a:s r="223">
+                           <a:s>
+                              <a:s r="214">
+                                 <a:s r="213">
+                                    <a:s r="213">
+                                       <a:s>[&quot;Patient Characteristic Birthdate&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Birth date&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> BirthDate</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+			</a:s>
+                           <a:s r="222">
+                              <a:s>where </a:s>
+                              <a:s r="222">
+                                 <a:s r="220">
+                                    <a:s r="215">
+                                       <a:s>Global</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="220">
+                                       <a:s>&quot;CalendarAgeInYearsAt&quot;(</a:s>
+                                       <a:s r="217">
+                                          <a:s r="216">
+                                             <a:s>BirthDate</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="217">
+                                             <a:s>birthDatetime</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>, </a:s>
+                                       <a:s r="219">
+                                          <a:s>start of </a:s>
+                                          <a:s r="218">
+                                             <a:s>&quot;Measurement Period&quot;</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>)</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="221">>= 18</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+	)</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		and </a:s>
+                  <a:s r="226">
+                     <a:s>exists </a:s>
+                     <a:s r="225">
+                        <a:s>&quot;Diabetic Retinopathy Encounter&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="227" locator="151:2-154:45" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="224" locator="151:2-153:2" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="223" locator="151:9-153:2" xsi:type="Query">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns60="urn:healthit-gov:qdm:v5_4" name="ns60:PatientCharacteristicBirthdate" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <source localId="214" locator="151:11-151:70" alias="BirthDate">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns61="urn:healthit-gov:qdm:v5_4" name="ns61:PatientCharacteristicBirthdate" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <expression localId="213" locator="151:11-151:60" xmlns:ns62="urn:healthit-gov:qdm:v5_4" dataType="ns62:PatientCharacteristicBirthdate" codeProperty="code" xsi:type="Retrieve">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType xmlns:ns63="urn:healthit-gov:qdm:v5_4" name="ns63:PatientCharacteristicBirthdate" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <codes xsi:type="ToList">
+                           <operand locator="151:48-151:59" resultTypeName="t:Code" name="Birth date" xsi:type="CodeRef"/>
+                        </codes>
+                     </expression>
+                  </source>
+                  <where localId="222" locator="152:4-152:99" resultTypeName="t:Boolean" xsi:type="GreaterOrEqual">
+                     <operand localId="220" locator="152:10-152:94" resultTypeName="t:Integer" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                        <operand localId="217" locator="152:40-152:62" resultTypeName="t:DateTime" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                        <operand localId="219" locator="152:65-152:93" resultTypeName="t:DateTime" xsi:type="Start">
+                           <operand localId="218" locator="152:74-152:93" name="Measurement Period" xsi:type="ParameterRef">
+                              <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                                 <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                              </resultTypeSpecifier>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="221" locator="152:98-152:99" resultTypeName="t:Integer" valueType="t:Integer" value="18" xsi:type="Literal"/>
+                  </where>
+               </operand>
+            </operand>
+            <operand localId="226" locator="154:7-154:45" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="225" locator="154:14-154:45" name="Diabetic Retinopathy Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns64="urn:healthit-gov:qdm:v5_4" name="ns64:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="244" locator="70:1-74:38" name="Macular Exam Performed" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="244">
+               <a:s>define &quot;Macular Exam Performed&quot;:&#xd;
+	</a:s>
+               <a:s r="243">
+                  <a:s>
+                     <a:s r="231">
+                        <a:s r="230">
+                           <a:s r="230">
+                              <a:s>[&quot;Diagnostic Study, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Macular Exam&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> MacularExam</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="239">
+                     <a:s>with </a:s>
+                     <a:s r="233">
+                        <a:s r="232">
+                           <a:s>
+                              <a:s>&quot;Diabetic Retinopathy Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterDiabeticRetinopathy</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="238">
+                        <a:s r="235">
+                           <a:s r="234">
+                              <a:s>MacularExam</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="235">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="238"> during </a:s>
+                        <a:s r="237">
+                           <a:s r="236">
+                              <a:s>EncounterDiabeticRetinopathy</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="237">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="242">
+                     <a:s>where </a:s>
+                     <a:s r="242">
+                        <a:s r="241">
+                           <a:s r="240">
+                              <a:s>MacularExam</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="241">
+                              <a:s>result</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> is not null</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns65="urn:healthit-gov:qdm:v5_4" name="ns65:PositiveDiagnosticStudyPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="243" locator="71:2-74:38" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns66="urn:healthit-gov:qdm:v5_4" name="ns66:PositiveDiagnosticStudyPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="231" locator="71:2-71:60" alias="MacularExam">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns67="urn:healthit-gov:qdm:v5_4" name="ns67:PositiveDiagnosticStudyPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="230" locator="71:2-71:48" xmlns:ns68="urn:healthit-gov:qdm:v5_4" dataType="ns68:PositiveDiagnosticStudyPerformed" templateId="PositiveDiagnosticStudyPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns69="urn:healthit-gov:qdm:v5_4" name="ns69:PositiveDiagnosticStudyPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="71:34-71:47" name="Macular Exam" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="239" locator="72:3-73:90" alias="EncounterDiabeticRetinopathy" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns70="urn:healthit-gov:qdm:v5_4" name="ns70:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="232" locator="72:8-72:39" name="Diabetic Retinopathy Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns71="urn:healthit-gov:qdm:v5_4" name="ns71:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="238" locator="73:14-73:90" resultTypeName="t:Boolean" xsi:type="IncludedIn">
+                  <operand localId="235" locator="73:14-73:39" path="relevantPeriod" scope="MacularExam" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+                  <operand localId="237" locator="73:48-73:90" path="relevantPeriod" scope="EncounterDiabeticRetinopathy" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <where localId="242" locator="74:3-74:38" resultTypeName="t:Boolean" xsi:type="Not">
+               <operand locator="74:9-74:38" resultTypeName="t:Boolean" xsi:type="IsNull">
+                  <operand localId="241" locator="74:9-74:26" path="result" scope="MacularExam" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="ChoiceTypeSpecifier">
+                        <choice name="t:Integer" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Decimal" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Quantity" xsi:type="NamedTypeSpecifier"/>
+                        <choice name="t:Ratio" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="248" locator="53:1-55:37" resultTypeName="t:Boolean" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="248">
+               <a:s>define &quot;Denominator&quot;:&#xd;
+	</a:s>
+               <a:s r="247">
+                  <a:s r="229">
+                     <a:s>&quot;Initial Population&quot;</a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		and </a:s>
+                  <a:s r="246">
+                     <a:s>exists </a:s>
+                     <a:s r="245">
+                        <a:s>&quot;Macular Exam Performed&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="247" locator="54:2-55:37" resultTypeName="t:Boolean" xsi:type="And">
+            <operand localId="229" locator="54:2-54:21" resultTypeName="t:Boolean" name="Initial Population" xsi:type="ExpressionRef"/>
+            <operand localId="246" locator="55:7-55:37" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="245" locator="55:14-55:37" name="Macular Exam Performed" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns72="urn:healthit-gov:qdm:v5_4" name="ns72:PositiveDiagnosticStudyPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="269" locator="76:1-82:3" name="Medical or Patient Reason for Not Communicating Absence of Macular Edema" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="269">
+               <a:s>define &quot;Medical or Patient Reason for Not Communicating Absence of Macular Edema&quot;:&#xd;
+	</a:s>
+               <a:s r="268">
+                  <a:s>
+                     <a:s r="250">
+                        <a:s r="249">
+                           <a:s r="249">
+                              <a:s>[&quot;Communication, Not Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Macular edema absent (situation)&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> MacularEdemaAbsentNotCommunicated</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="258">
+                     <a:s>with </a:s>
+                     <a:s r="252">
+                        <a:s r="251">
+                           <a:s>
+                              <a:s>&quot;Diabetic Retinopathy Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterDiabeticRetinopathy</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="257">
+                        <a:s r="254">
+                           <a:s r="253">
+                              <a:s>MacularEdemaAbsentNotCommunicated</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="254">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="257"> during </a:s>
+                        <a:s r="256">
+                           <a:s r="255">
+                              <a:s>EncounterDiabeticRetinopathy</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="256">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="267">
+                     <a:s>where </a:s>
+                     <a:s r="267">
+                        <a:s>( </a:s>
+                        <a:s r="267">
+                           <a:s r="262">
+                              <a:s r="260">
+                                 <a:s r="259">
+                                    <a:s>MacularEdemaAbsentNotCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="260">
+                                    <a:s>negationRationale</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="261">
+                                 <a:s>&quot;Medical Reason&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				or </a:s>
+                           <a:s r="266">
+                              <a:s r="264">
+                                 <a:s r="263">
+                                    <a:s>MacularEdemaAbsentNotCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="264">
+                                    <a:s>negationRationale</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="265">
+                                 <a:s>&quot;Patient Reason&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns73="urn:healthit-gov:qdm:v5_4" name="ns73:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="268" locator="77:2-82:3" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns74="urn:healthit-gov:qdm:v5_4" name="ns74:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="250" locator="77:2-77:103" alias="MacularEdemaAbsentNotCommunicated">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns75="urn:healthit-gov:qdm:v5_4" name="ns75:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="249" locator="77:2-77:69" xmlns:ns76="urn:healthit-gov:qdm:v5_4" dataType="ns76:NegativeCommunicationPerformed" templateId="NegativeCommunicationPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns77="urn:healthit-gov:qdm:v5_4" name="ns77:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes xsi:type="ToList">
+                     <operand locator="77:35-77:68" resultTypeName="t:Code" name="Macular edema absent (situation)" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="258" locator="78:3-79:112" alias="EncounterDiabeticRetinopathy" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns78="urn:healthit-gov:qdm:v5_4" name="ns78:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="251" locator="78:8-78:39" name="Diabetic Retinopathy Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns79="urn:healthit-gov:qdm:v5_4" name="ns79:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="257" locator="79:14-79:112" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand localId="254" locator="79:14-79:61" resultTypeName="t:DateTime" path="authorDatetime" scope="MacularEdemaAbsentNotCommunicated" xsi:type="Property"/>
+                  <operand localId="256" locator="79:70-79:112" path="relevantPeriod" scope="EncounterDiabeticRetinopathy" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <where localId="267" locator="80:3-82:3" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="262" locator="80:11-80:81" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                  <code localId="260" locator="80:11-80:61" resultTypeName="t:Code" path="negationRationale" scope="MacularEdemaAbsentNotCommunicated" xsi:type="Property"/>
+                  <valueset localId="261" locator="80:66-80:81" name="Medical Reason">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </valueset>
+               </operand>
+               <operand localId="266" locator="81:8-81:78" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                  <code localId="264" locator="81:8-81:58" resultTypeName="t:Code" path="negationRationale" scope="MacularEdemaAbsentNotCommunicated" xsi:type="Property"/>
+                  <valueset localId="265" locator="81:63-81:78" name="Patient Reason">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </valueset>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="290" locator="84:1-90:3" name="Medical or Patient Reason for Not Communicating Level of Severity of Retinopathy" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="290">
+               <a:s>define &quot;Medical or Patient Reason for Not Communicating Level of Severity of Retinopathy&quot;:&#xd;
+	</a:s>
+               <a:s r="289">
+                  <a:s>
+                     <a:s r="271">
+                        <a:s r="270">
+                           <a:s r="270">
+                              <a:s>[&quot;Communication, Not Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Level of Severity of Retinopathy Findings&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> LevelOfSeverityNotCommunicated</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="279">
+                     <a:s>with </a:s>
+                     <a:s r="273">
+                        <a:s r="272">
+                           <a:s>
+                              <a:s>&quot;Diabetic Retinopathy Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterDiabeticRetinopathy</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="278">
+                        <a:s r="275">
+                           <a:s r="274">
+                              <a:s>LevelOfSeverityNotCommunicated</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="275">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="278"> during </a:s>
+                        <a:s r="277">
+                           <a:s r="276">
+                              <a:s>EncounterDiabeticRetinopathy</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="277">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="288">
+                     <a:s>where </a:s>
+                     <a:s r="288">
+                        <a:s>( </a:s>
+                        <a:s r="288">
+                           <a:s r="283">
+                              <a:s r="281">
+                                 <a:s r="280">
+                                    <a:s>LevelOfSeverityNotCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="281">
+                                    <a:s>negationRationale</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="282">
+                                 <a:s>&quot;Medical Reason&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				or </a:s>
+                           <a:s r="287">
+                              <a:s r="285">
+                                 <a:s r="284">
+                                    <a:s>LevelOfSeverityNotCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="285">
+                                    <a:s>negationRationale</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="286">
+                                 <a:s>&quot;Patient Reason&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns80="urn:healthit-gov:qdm:v5_4" name="ns80:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="289" locator="85:2-90:3" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns81="urn:healthit-gov:qdm:v5_4" name="ns81:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="271" locator="85:2-85:109" alias="LevelOfSeverityNotCommunicated">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns82="urn:healthit-gov:qdm:v5_4" name="ns82:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="270" locator="85:2-85:78" xmlns:ns83="urn:healthit-gov:qdm:v5_4" dataType="ns83:NegativeCommunicationPerformed" templateId="NegativeCommunicationPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns84="urn:healthit-gov:qdm:v5_4" name="ns84:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="85:35-85:77" name="Level of Severity of Retinopathy Findings" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="279" locator="86:3-87:109" alias="EncounterDiabeticRetinopathy" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns85="urn:healthit-gov:qdm:v5_4" name="ns85:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="272" locator="86:8-86:39" name="Diabetic Retinopathy Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns86="urn:healthit-gov:qdm:v5_4" name="ns86:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="278" locator="87:14-87:109" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand localId="275" locator="87:14-87:58" resultTypeName="t:DateTime" path="authorDatetime" scope="LevelOfSeverityNotCommunicated" xsi:type="Property"/>
+                  <operand localId="277" locator="87:67-87:109" path="relevantPeriod" scope="EncounterDiabeticRetinopathy" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <where localId="288" locator="88:3-90:3" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="283" locator="88:11-88:78" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                  <code localId="281" locator="88:11-88:58" resultTypeName="t:Code" path="negationRationale" scope="LevelOfSeverityNotCommunicated" xsi:type="Property"/>
+                  <valueset localId="282" locator="88:63-88:78" name="Medical Reason">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </valueset>
+               </operand>
+               <operand localId="287" locator="89:8-89:75" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                  <code localId="285" locator="89:8-89:55" resultTypeName="t:Code" path="negationRationale" scope="LevelOfSeverityNotCommunicated" xsi:type="Property"/>
+                  <valueset localId="286" locator="89:60-89:75" name="Patient Reason">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </valueset>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="311" locator="92:1-98:3" name="Medical or Patient Reason for Not Communicating Presence of Macular Edema" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="311">
+               <a:s>define &quot;Medical or Patient Reason for Not Communicating Presence of Macular Edema&quot;:&#xd;
+	</a:s>
+               <a:s r="310">
+                  <a:s>
+                     <a:s r="292">
+                        <a:s r="291">
+                           <a:s r="291">
+                              <a:s>[&quot;Communication, Not Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Macular Edema Findings Present&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> MacularEdemaPresentNotCommunicated</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="300">
+                     <a:s>with </a:s>
+                     <a:s r="294">
+                        <a:s r="293">
+                           <a:s>
+                              <a:s>&quot;Diabetic Retinopathy Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EncounterDiabeticRetinopathy</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="299">
+                        <a:s r="296">
+                           <a:s r="295">
+                              <a:s>MacularEdemaPresentNotCommunicated</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="296">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="299"> during </a:s>
+                        <a:s r="298">
+                           <a:s r="297">
+                              <a:s>EncounterDiabeticRetinopathy</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="298">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="309">
+                     <a:s>where </a:s>
+                     <a:s r="309">
+                        <a:s>( </a:s>
+                        <a:s r="309">
+                           <a:s r="304">
+                              <a:s r="302">
+                                 <a:s r="301">
+                                    <a:s>MacularEdemaPresentNotCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="302">
+                                    <a:s>negationRationale</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="303">
+                                 <a:s>&quot;Medical Reason&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>&#xd;
+				or </a:s>
+                           <a:s r="308">
+                              <a:s r="306">
+                                 <a:s r="305">
+                                    <a:s>MacularEdemaPresentNotCommunicated</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="306">
+                                    <a:s>negationRationale</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="307">
+                                 <a:s>&quot;Patient Reason&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+		)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns87="urn:healthit-gov:qdm:v5_4" name="ns87:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="310" locator="93:2-98:3" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns88="urn:healthit-gov:qdm:v5_4" name="ns88:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="292" locator="93:2-93:102" alias="MacularEdemaPresentNotCommunicated">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns89="urn:healthit-gov:qdm:v5_4" name="ns89:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="291" locator="93:2-93:67" xmlns:ns90="urn:healthit-gov:qdm:v5_4" dataType="ns90:NegativeCommunicationPerformed" templateId="NegativeCommunicationPerformed" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns91="urn:healthit-gov:qdm:v5_4" name="ns91:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="93:35-93:66" name="Macular Edema Findings Present" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <relationship localId="300" locator="94:3-95:113" alias="EncounterDiabeticRetinopathy" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns92="urn:healthit-gov:qdm:v5_4" name="ns92:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="293" locator="94:8-94:39" name="Diabetic Retinopathy Encounter" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns93="urn:healthit-gov:qdm:v5_4" name="ns93:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="299" locator="95:14-95:113" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand localId="296" locator="95:14-95:62" resultTypeName="t:DateTime" path="authorDatetime" scope="MacularEdemaPresentNotCommunicated" xsi:type="Property"/>
+                  <operand localId="298" locator="95:71-95:113" path="relevantPeriod" scope="EncounterDiabeticRetinopathy" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </suchThat>
+            </relationship>
+            <where localId="309" locator="96:3-98:3" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="304" locator="96:11-96:82" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                  <code localId="302" locator="96:11-96:62" resultTypeName="t:Code" path="negationRationale" scope="MacularEdemaPresentNotCommunicated" xsi:type="Property"/>
+                  <valueset localId="303" locator="96:67-96:82" name="Medical Reason">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </valueset>
+               </operand>
+               <operand localId="308" locator="97:8-97:79" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                  <code localId="306" locator="97:8-97:59" resultTypeName="t:Code" path="negationRationale" scope="MacularEdemaPresentNotCommunicated" xsi:type="Property"/>
+                  <valueset localId="307" locator="97:64-97:79" name="Patient Reason">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </valueset>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="320" locator="106:1-109:87" resultTypeName="t:Boolean" name="Denominator Exceptions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="320">
+               <a:s>define &quot;Denominator Exceptions&quot;:&#xd;
+	</a:s>
+               <a:s r="319">
+                  <a:s r="316">
+                     <a:s r="313">
+                        <a:s>exists </a:s>
+                        <a:s r="312">
+                           <a:s>&quot;Medical or Patient Reason for Not Communicating Level of Severity of Retinopathy&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>&#xd;
+		or </a:s>
+                     <a:s r="315">
+                        <a:s>exists </a:s>
+                        <a:s r="314">
+                           <a:s>&quot;Medical or Patient Reason for Not Communicating Absence of Macular Edema&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		or </a:s>
+                  <a:s r="318">
+                     <a:s>exists </a:s>
+                     <a:s r="317">
+                        <a:s>&quot;Medical or Patient Reason for Not Communicating Presence of Macular Edema&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="319" locator="107:2-109:87" resultTypeName="t:Boolean" xsi:type="Or">
+            <operand localId="316" locator="107:2-108:86" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="313" locator="107:2-107:90" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="312" locator="107:9-107:90" name="Medical or Patient Reason for Not Communicating Level of Severity of Retinopathy" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns94="urn:healthit-gov:qdm:v5_4" name="ns94:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+               <operand localId="315" locator="108:6-108:86" resultTypeName="t:Boolean" xsi:type="Exists">
+                  <operand localId="314" locator="108:13-108:86" name="Medical or Patient Reason for Not Communicating Absence of Macular Edema" xsi:type="ExpressionRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns95="urn:healthit-gov:qdm:v5_4" name="ns95:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </operand>
+            </operand>
+            <operand localId="318" locator="109:6-109:87" resultTypeName="t:Boolean" xsi:type="Exists">
+               <operand localId="317" locator="109:13-109:87" name="Medical or Patient Reason for Not Communicating Presence of Macular Edema" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns96="urn:healthit-gov:qdm:v5_4" name="ns96:NegativeCommunicationPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+
