@@ -1,0 +1,2239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="173">
+         <a:s>library PreventiveCareandScreeningInfluenzaImmunization version '10.2.000'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="PreventiveCareandScreeningInfluenzaImmunization" version="10.2.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_5" version="5.5">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="1">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>QDM</a:s>
+               </a:s>
+               <a:s> version '5.5'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="5.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="2">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>MATGlobalCommonFunctions</a:s>
+               </a:s>
+               <a:s> version '5.0.000' called Global</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </includes>
+   <parameters>
+      <def localId="41" locator="45:1-45:49" name="Measurement Period" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="41">
+               <a:s>parameter &quot;Measurement Period&quot; </a:s>
+               <a:s r="40">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="39">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <parameterTypeSpecifier localId="40" locator="45:32-45:49" xsi:type="IntervalTypeSpecifier">
+            <pointType localId="39" locator="45:41-45:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="3" locator="7:1-7:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="3">
+               <a:s>codesystem &quot;LOINC&quot;: 'urn:oid:2.16.840.1.113883.6.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="4" locator="9:1-9:68" name="Allergy to Eggs" id="urn:oid:2.16.840.1.113883.3.526.3.1253" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="4">
+               <a:s>valueset &quot;Allergy to Eggs&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1253'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="5" locator="10:1-10:81" name="Allergy to Influenza Vaccine" id="urn:oid:2.16.840.1.113883.3.526.3.1256" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="5">
+               <a:s>valueset &quot;Allergy to Influenza Vaccine&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1256'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="6" locator="11:1-11:74" name="Annual Wellness Visit" id="urn:oid:2.16.840.1.113883.3.526.3.1240" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="6">
+               <a:s>valueset &quot;Annual Wellness Visit&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1240'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="7" locator="12:1-12:110" name="Care Services in Long-Term Residential Facility" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1014" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="7">
+               <a:s>valueset &quot;Care Services in Long-Term Residential Facility&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1014'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="8" locator="13:1-13:100" name="Discharge Services - Nursing Facility" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1013" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="8">
+               <a:s>valueset &quot;Discharge Services - Nursing Facility&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1013'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="9" locator="14:1-14:66" name="Egg Substance" id="urn:oid:2.16.840.1.113883.3.526.3.1537" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="9">
+               <a:s>valueset &quot;Egg Substance&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1537'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="10" locator="15:1-15:72" name="Encounter-Influenza" id="urn:oid:2.16.840.1.113883.3.526.3.1252" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="10">
+               <a:s>valueset &quot;Encounter-Influenza&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1252'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="11" locator="16:1-16:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="11">
+               <a:s>valueset &quot;Ethnicity&quot;: 'urn:oid:2.16.840.1.114222.4.11.837'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="12" locator="17:1-17:65" name="Hemodialysis" id="urn:oid:2.16.840.1.113883.3.526.3.1083" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="12">
+               <a:s>valueset &quot;Hemodialysis&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1083'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="13" locator="18:1-18:87" name="Home Healthcare Services" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1016" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="13">
+               <a:s>valueset &quot;Home Healthcare Services&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1016'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="14" locator="19:1-19:73" name="Influenza Vaccination" id="urn:oid:2.16.840.1.113883.3.526.3.402" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="14">
+               <a:s>valueset &quot;Influenza Vaccination&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.402'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="15" locator="20:1-20:83" name="Influenza Vaccination Declined" id="urn:oid:2.16.840.1.113883.3.526.3.1255" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="15">
+               <a:s>valueset &quot;Influenza Vaccination Declined&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1255'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="16" locator="21:1-21:70" name="Influenza Vaccine" id="urn:oid:2.16.840.1.113883.3.526.3.1254" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="16">
+               <a:s>valueset &quot;Influenza Vaccine&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1254'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="17" locator="22:1-22:85" name="Intolerance to Influenza Vaccine" id="urn:oid:2.16.840.1.113883.3.526.3.1257" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="17">
+               <a:s>valueset &quot;Intolerance to Influenza Vaccine&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1257'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="18" locator="23:1-23:67" name="Medical Reason" id="urn:oid:2.16.840.1.113883.3.526.3.1007" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="18">
+               <a:s>valueset &quot;Medical Reason&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1007'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="19" locator="24:1-24:85" name="Nursing Facility Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1012" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="19">
+               <a:s>valueset &quot;Nursing Facility Visit&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1012'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="20" locator="25:1-25:75" name="Office Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="20">
+               <a:s>valueset &quot;Office Visit&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="21" locator="26:1-26:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="21">
+               <a:s>valueset &quot;ONC Administrative Sex&quot;: 'urn:oid:2.16.840.1.113762.1.4.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="22" locator="27:1-27:86" name="Outpatient Consultation" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1008" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="22">
+               <a:s>valueset &quot;Outpatient Consultation&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1008'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="23" locator="28:1-28:81" name="Patient Provider Interaction" id="urn:oid:2.16.840.1.113883.3.526.3.1012" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="23">
+               <a:s>valueset &quot;Patient Provider Interaction&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1012'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="24" locator="29:1-29:67" name="Patient Reason" id="urn:oid:2.16.840.1.113883.3.526.3.1008" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="24">
+               <a:s>valueset &quot;Patient Reason&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1008'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="25" locator="30:1-30:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="25">
+               <a:s>valueset &quot;Payer&quot;: 'urn:oid:2.16.840.1.114222.4.11.3591'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="26" locator="31:1-31:72" name="Peritoneal Dialysis" id="urn:oid:2.16.840.1.113883.3.526.3.1084" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="26">
+               <a:s>valueset &quot;Peritoneal Dialysis&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1084'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="27" locator="32:1-32:125" name="Preventive Care Services - Established Office Visit, 18 and Up" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1025" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="27">
+               <a:s>valueset &quot;Preventive Care Services - Established Office Visit, 18 and Up&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1025'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="28" locator="33:1-33:106" name="Preventive Care Services - Group Counseling" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1027" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="28">
+               <a:s>valueset &quot;Preventive Care Services - Group Counseling&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1027'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="29" locator="34:1-34:95" name="Preventive Care Services - Other" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1030" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>valueset &quot;Preventive Care Services - Other&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1030'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="30" locator="35:1-35:118" name="Preventive Care Services, Initial Office Visit, 0 to 17" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1022" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="30">
+               <a:s>valueset &quot;Preventive Care Services, Initial Office Visit, 0 to 17&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1022'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="31" locator="36:1-36:109" name="Preventive Care Services-Individual Counseling" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1026" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>valueset &quot;Preventive Care Services-Individual Counseling&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1026'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="32" locator="37:1-37:119" name="Preventive Care Services-Initial Office Visit, 18 and Up" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1023" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="32">
+               <a:s>valueset &quot;Preventive Care Services-Initial Office Visit, 18 and Up&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1023'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="33" locator="38:1-38:113" name="Preventive Care, Established Office Visit, 0 to 17" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1024" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="33">
+               <a:s>valueset &quot;Preventive Care, Established Office Visit, 0 to 17&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1024'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="34" locator="39:1-39:90" name="Previous Receipt of Influenza Vaccine" id="urn:oid:2.16.840.1.113883.3.526.3.1185" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="34">
+               <a:s>valueset &quot;Previous Receipt of Influenza Vaccine&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1185'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="35" locator="40:1-40:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="35">
+               <a:s>valueset &quot;Race&quot;: 'urn:oid:2.16.840.1.114222.4.11.836'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="36" locator="41:1-41:66" name="System Reason" id="urn:oid:2.16.840.1.113883.3.526.3.1009" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="36">
+               <a:s>valueset &quot;System Reason&quot;: 'urn:oid:2.16.840.1.113883.3.526.3.1009'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="38" locator="43:1-43:62" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="38">
+               <a:s>code &quot;Birth date&quot;: '21112-8' from </a:s>
+               <a:s r="37">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Birth date'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="37" locator="43:35-43:41" name="LOINC"/>
+      </def>
+   </codes>
+   <contexts>
+      <def locator="47:1-47:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def locator="47:1-47:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="47:1-47:15" xmlns:ns0="urn:healthit-gov:qdm:v5_5" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="43" locator="49:1-50:51" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="43">
+               <a:s>define &quot;SDE Ethnicity&quot;:
+  </a:s>
+               <a:s r="42">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="42" locator="50:3-50:51" xmlns:ns1="urn:healthit-gov:qdm:v5_5" dataType="ns1:PatientCharacteristicEthnicity" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="50:40-50:50" name="Ethnicity" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="45" locator="52:1-53:43" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="45">
+               <a:s>define &quot;SDE Payer&quot;:
+  </a:s>
+               <a:s r="44">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="44" locator="53:3-53:43" xmlns:ns2="urn:healthit-gov:qdm:v5_5" dataType="ns2:PatientCharacteristicPayer" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="53:36-53:42" name="Payer" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="47" locator="55:1-56:41" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="47">
+               <a:s>define &quot;SDE Race&quot;:
+  </a:s>
+               <a:s r="46">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="46" locator="56:3-56:41" xmlns:ns3="urn:healthit-gov:qdm:v5_5" dataType="ns3:PatientCharacteristicRace" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="56:35-56:40" name="Race" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="49" locator="58:1-59:58" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="49">
+               <a:s>define &quot;SDE Sex&quot;:
+  </a:s>
+               <a:s r="48">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="48" locator="59:3-59:58" xmlns:ns4="urn:healthit-gov:qdm:v5_5" dataType="ns4:PatientCharacteristicSex" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="59:34-59:57" name="ONC Administrative Sex" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="63" locator="115:1-116:95" name="Influenza Season" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="63">
+               <a:s>define &quot;Influenza Season&quot;:
+  </a:s>
+               <a:s r="62">
+                  <a:s>Interval[</a:s>
+                  <a:s r="57">
+                     <a:s r="55">
+                        <a:s>start of </a:s>
+                        <a:s r="54">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s> - </a:s>
+                     <a:s r="56">
+                        <a:s>3 months</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>, </a:s>
+                  <a:s r="61">
+                     <a:s r="59">
+                        <a:s>start of </a:s>
+                        <a:s r="58">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s> + </a:s>
+                     <a:s r="60">
+                        <a:s>3 months</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s> )</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="62" locator="116:3-116:95" lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low localId="57" locator="116:12-116:51" xsi:type="Subtract">
+               <operand localId="55" locator="116:12-116:40" xsi:type="Start">
+                  <operand localId="54" locator="116:21-116:40" name="Measurement Period" xsi:type="ParameterRef"/>
+               </operand>
+               <operand localId="56" locator="116:44-116:51" value="3" unit="months" xsi:type="Quantity"/>
+            </low>
+            <high localId="61" locator="116:54-116:93" xsi:type="Add">
+               <operand localId="59" locator="116:54-116:82" xsi:type="Start">
+                  <operand localId="58" locator="116:63-116:82" name="Measurement Period" xsi:type="ParameterRef"/>
+               </operand>
+               <operand localId="60" locator="116:86-116:93" value="3" unit="months" xsi:type="Quantity"/>
+            </high>
+         </expression>
+      </def>
+      <def localId="67" locator="61:1-63:80" name="Egg Substance Allergy" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="67">
+               <a:s>define &quot;Egg Substance Allergy&quot;:
+  </a:s>
+               <a:s r="66">
+                  <a:s>
+                     <a:s r="51">
+                        <a:s r="50">
+                           <a:s r="50">
+                              <a:s>[&quot;Allergy/Intolerance&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Egg Substance&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> AllergyEggSubstance</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="65">
+                     <a:s>where </a:s>
+                     <a:s r="65">
+                        <a:s r="53">
+                           <a:s r="52">
+                              <a:s>AllergyEggSubstance</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="53">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="65"> overlaps after </a:s>
+                        <a:s r="64">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="66" locator="62:3-63:80" xsi:type="Query">
+            <source localId="51" locator="62:3-62:62" alias="AllergyEggSubstance">
+               <expression localId="50" locator="62:3-62:42" xmlns:ns5="urn:healthit-gov:qdm:v5_5" dataType="ns5:AllergyIntolerance" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="62:27-62:41" name="Egg Substance" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="65" locator="63:5-63:80" xsi:type="OverlapsAfter">
+               <operand localId="53" locator="63:11-63:46" path="prevalencePeriod" scope="AllergyEggSubstance" xsi:type="Property"/>
+               <operand localId="64" locator="63:63-63:80" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="75" locator="65:1-67:86" name="Intolerance of Influenza Vaccination Procedure" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="75">
+               <a:s>define &quot;Intolerance of Influenza Vaccination Procedure&quot;:
+  </a:s>
+               <a:s r="74">
+                  <a:s>
+                     <a:s r="69">
+                        <a:s r="68">
+                           <a:s r="68">
+                              <a:s>[&quot;Allergy/Intolerance&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Influenza Vaccination&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FluVaccinationIntolerance</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="73">
+                     <a:s>where </a:s>
+                     <a:s r="73">
+                        <a:s r="71">
+                           <a:s r="70">
+                              <a:s>FluVaccinationIntolerance</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="71">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="73"> overlaps after </a:s>
+                        <a:s r="72">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="74" locator="66:3-67:86" xsi:type="Query">
+            <source localId="69" locator="66:3-66:76" alias="FluVaccinationIntolerance">
+               <expression localId="68" locator="66:3-66:50" xmlns:ns6="urn:healthit-gov:qdm:v5_5" dataType="ns6:AllergyIntolerance" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="66:27-66:49" name="Influenza Vaccination" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="73" locator="67:5-67:86" xsi:type="OverlapsAfter">
+               <operand localId="71" locator="67:11-67:52" path="prevalencePeriod" scope="FluVaccinationIntolerance" xsi:type="Property"/>
+               <operand localId="72" locator="67:69-67:86" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="83" locator="69:1-71:70" name="Encounter During Influenza Season" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="83">
+               <a:s>define &quot;Encounter During Influenza Season&quot;:
+  </a:s>
+               <a:s r="82">
+                  <a:s>
+                     <a:s r="77">
+                        <a:s r="76">
+                           <a:s r="76">
+                              <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Encounter-Influenza&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FluEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="81">
+                     <a:s>where </a:s>
+                     <a:s r="81">
+                        <a:s r="79">
+                           <a:s r="78">
+                              <a:s>FluEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="79">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="81"> starts during </a:s>
+                        <a:s r="80">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="82" locator="70:3-71:70" xsi:type="Query">
+            <source localId="77" locator="70:3-70:62" alias="FluEncounter">
+               <expression localId="76" locator="70:3-70:49" xmlns:ns7="urn:healthit-gov:qdm:v5_5" dataType="ns7:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="70:28-70:48" name="Encounter-Influenza" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="81" locator="71:5-71:70" xsi:type="In">
+               <operand locator="71:39-71:44" xsi:type="Start">
+                  <operand localId="79" locator="71:11-71:37" path="relevantPeriod" scope="FluEncounter" xsi:type="Property"/>
+               </operand>
+               <operand localId="80" locator="71:53-71:70" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="91" locator="73:1-75:91" name="Diagnosis of Intolerance to Influenza Vaccine" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="91">
+               <a:s>define &quot;Diagnosis of Intolerance to Influenza Vaccine&quot;:
+  </a:s>
+               <a:s r="90">
+                  <a:s>
+                     <a:s r="85">
+                        <a:s r="84">
+                           <a:s r="84">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Intolerance to Influenza Vaccine&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FluVaccineIntoleranceDiagnosis</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="89">
+                     <a:s>where </a:s>
+                     <a:s r="89">
+                        <a:s r="87">
+                           <a:s r="86">
+                              <a:s>FluVaccineIntoleranceDiagnosis</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="87">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="89"> overlaps after </a:s>
+                        <a:s r="88">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="90" locator="74:3-75:91" xsi:type="Query">
+            <source localId="85" locator="74:3-74:82" alias="FluVaccineIntoleranceDiagnosis">
+               <expression localId="84" locator="74:3-74:51" xmlns:ns8="urn:healthit-gov:qdm:v5_5" dataType="ns8:Diagnosis" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="74:17-74:50" name="Intolerance to Influenza Vaccine" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="89" locator="75:5-75:91" xsi:type="OverlapsAfter">
+               <operand localId="87" locator="75:11-75:57" path="prevalencePeriod" scope="FluVaccineIntoleranceDiagnosis" xsi:type="Property"/>
+               <operand localId="88" locator="75:74-75:91" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="99" locator="77:1-79:89" name="Allergy or Intolerance to Influenza Vaccine" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="99">
+               <a:s>define &quot;Allergy or Intolerance to Influenza Vaccine&quot;:
+  </a:s>
+               <a:s r="98">
+                  <a:s>
+                     <a:s r="93">
+                        <a:s r="92">
+                           <a:s r="92">
+                              <a:s>[&quot;Allergy/Intolerance&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Influenza Vaccine&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FluVaccineAllergyIntolerance</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="97">
+                     <a:s>where </a:s>
+                     <a:s r="97">
+                        <a:s r="95">
+                           <a:s r="94">
+                              <a:s>FluVaccineAllergyIntolerance</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="95">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="97"> overlaps after </a:s>
+                        <a:s r="96">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="98" locator="78:3-79:89" xsi:type="Query">
+            <source localId="93" locator="78:3-78:75" alias="FluVaccineAllergyIntolerance">
+               <expression localId="92" locator="78:3-78:46" xmlns:ns9="urn:healthit-gov:qdm:v5_5" dataType="ns9:AllergyIntolerance" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="78:27-78:45" name="Influenza Vaccine" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="97" locator="79:5-79:89" xsi:type="OverlapsAfter">
+               <operand localId="95" locator="79:11-79:55" path="prevalencePeriod" scope="FluVaccineAllergyIntolerance" xsi:type="Property"/>
+               <operand localId="96" locator="79:72-79:89" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="147" locator="163:1-179:72" name="Qualifying Encounter During Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="147">
+               <a:s>define &quot;Qualifying Encounter During Measurement Period&quot;:
+  </a:s>
+               <a:s r="146">
+                  <a:s>
+                     <a:s r="141">
+                        <a:s r="140">
+                           <a:s>( </a:s>
+                           <a:s r="140">
+                              <a:s r="138">
+                                 <a:s r="136">
+                                    <a:s r="134">
+                                       <a:s r="132">
+                                          <a:s r="130">
+                                             <a:s r="128">
+                                                <a:s r="126">
+                                                   <a:s r="124">
+                                                      <a:s r="122">
+                                                         <a:s r="120">
+                                                            <a:s r="118">
+                                                               <a:s r="116">
+                                                                  <a:s r="114">
+                                                                     <a:s r="112">
+                                                                        <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                                        <a:s>
+                                                                           <a:s>&quot;Office Visit&quot;</a:s>
+                                                                        </a:s>
+                                                                        <a:s>]</a:s>
+                                                                     </a:s>
+                                                                     <a:s>
+    union </a:s>
+                                                                     <a:s r="113">
+                                                                        <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                                        <a:s>
+                                                                           <a:s>&quot;Outpatient Consultation&quot;</a:s>
+                                                                        </a:s>
+                                                                        <a:s>]</a:s>
+                                                                     </a:s>
+                                                                  </a:s>
+                                                                  <a:s>
+    union </a:s>
+                                                                  <a:s r="115">
+                                                                     <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                                     <a:s>
+                                                                        <a:s>&quot;Care Services in Long-Term Residential Facility&quot;</a:s>
+                                                                     </a:s>
+                                                                     <a:s>]</a:s>
+                                                                  </a:s>
+                                                               </a:s>
+                                                               <a:s>
+    union </a:s>
+                                                               <a:s r="117">
+                                                                  <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                                  <a:s>
+                                                                     <a:s>&quot;Home Healthcare Services&quot;</a:s>
+                                                                  </a:s>
+                                                                  <a:s>]</a:s>
+                                                               </a:s>
+                                                            </a:s>
+                                                            <a:s>
+    union </a:s>
+                                                            <a:s r="119">
+                                                               <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                               <a:s>
+                                                                  <a:s>&quot;Patient Provider Interaction&quot;</a:s>
+                                                               </a:s>
+                                                               <a:s>]</a:s>
+                                                            </a:s>
+                                                         </a:s>
+                                                         <a:s>
+    union </a:s>
+                                                         <a:s r="121">
+                                                            <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                            <a:s>
+                                                               <a:s>&quot;Preventive Care Services, Initial Office Visit, 0 to 17&quot;</a:s>
+                                                            </a:s>
+                                                            <a:s>]</a:s>
+                                                         </a:s>
+                                                      </a:s>
+                                                      <a:s>
+    union </a:s>
+                                                      <a:s r="123">
+                                                         <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                         <a:s>
+                                                            <a:s>&quot;Preventive Care Services-Initial Office Visit, 18 and Up&quot;</a:s>
+                                                         </a:s>
+                                                         <a:s>]</a:s>
+                                                      </a:s>
+                                                   </a:s>
+                                                   <a:s>
+    union </a:s>
+                                                   <a:s r="125">
+                                                      <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                      <a:s>
+                                                         <a:s>&quot;Preventive Care Services-Individual Counseling&quot;</a:s>
+                                                      </a:s>
+                                                      <a:s>]</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                                <a:s>
+    union </a:s>
+                                                <a:s r="127">
+                                                   <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                   <a:s>
+                                                      <a:s>&quot;Preventive Care Services - Group Counseling&quot;</a:s>
+                                                   </a:s>
+                                                   <a:s>]</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>
+    union </a:s>
+                                             <a:s r="129">
+                                                <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                                <a:s>
+                                                   <a:s>&quot;Preventive Care Services - Other&quot;</a:s>
+                                                </a:s>
+                                                <a:s>]</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>
+    union </a:s>
+                                          <a:s r="131">
+                                             <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                             <a:s>
+                                                <a:s>&quot;Discharge Services - Nursing Facility&quot;</a:s>
+                                             </a:s>
+                                             <a:s>]</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+    union </a:s>
+                                       <a:s r="133">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Nursing Facility Visit&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+    union </a:s>
+                                    <a:s r="135">
+                                       <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Annual Wellness Visit&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+    union </a:s>
+                                 <a:s r="137">
+                                    <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Preventive Care, Established Office Visit, 0 to 17&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+    union </a:s>
+                              <a:s r="139">
+                                 <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Preventive Care Services - Established Office Visit, 18 and Up&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                        <a:s> QualifyingEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="145">
+                     <a:s>where </a:s>
+                     <a:s r="145">
+                        <a:s r="143">
+                           <a:s r="142">
+                              <a:s>QualifyingEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="143">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="145"> during </a:s>
+                        <a:s r="144">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="146" locator="164:3-179:72" xsi:type="Query">
+            <source localId="141" locator="164:3-178:122" alias="QualifyingEncounter">
+               <expression localId="140" locator="164:3-178:102" xsi:type="Union">
+                  <operand localId="138" locator="164:5-177:88" xsi:type="Union">
+                     <operand localId="134" locator="164:5-175:60" xsi:type="Union">
+                        <operand localId="130" locator="164:5-173:70" xsi:type="Union">
+                           <operand localId="126" locator="164:5-171:84" xsi:type="Union">
+                              <operand localId="122" locator="164:5-169:93" xsi:type="Union">
+                                 <operand localId="118" locator="164:5-167:62" xsi:type="Union">
+                                    <operand localId="114" locator="164:5-165:61" xsi:type="Union">
+                                       <operand localId="112" locator="164:5-164:44" xmlns:ns10="urn:healthit-gov:qdm:v5_5" dataType="ns10:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                          <codes locator="164:30-164:43" name="Office Visit" xsi:type="ValueSetRef"/>
+                                       </operand>
+                                       <operand localId="113" locator="165:11-165:61" xmlns:ns11="urn:healthit-gov:qdm:v5_5" dataType="ns11:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                          <codes locator="165:36-165:60" name="Outpatient Consultation" xsi:type="ValueSetRef"/>
+                                       </operand>
+                                    </operand>
+                                    <operand xsi:type="Union">
+                                       <operand localId="115" locator="166:11-166:85" xmlns:ns12="urn:healthit-gov:qdm:v5_5" dataType="ns12:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                          <codes locator="166:36-166:84" name="Care Services in Long-Term Residential Facility" xsi:type="ValueSetRef"/>
+                                       </operand>
+                                       <operand localId="117" locator="167:11-167:62" xmlns:ns13="urn:healthit-gov:qdm:v5_5" dataType="ns13:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                          <codes locator="167:36-167:61" name="Home Healthcare Services" xsi:type="ValueSetRef"/>
+                                       </operand>
+                                    </operand>
+                                 </operand>
+                                 <operand xsi:type="Union">
+                                    <operand localId="119" locator="168:11-168:66" xmlns:ns14="urn:healthit-gov:qdm:v5_5" dataType="ns14:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                       <codes locator="168:36-168:65" name="Patient Provider Interaction" xsi:type="ValueSetRef"/>
+                                    </operand>
+                                    <operand localId="121" locator="169:11-169:93" xmlns:ns15="urn:healthit-gov:qdm:v5_5" dataType="ns15:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                       <codes locator="169:36-169:92" name="Preventive Care Services, Initial Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
+                                    </operand>
+                                 </operand>
+                              </operand>
+                              <operand xsi:type="Union">
+                                 <operand localId="123" locator="170:11-170:94" xmlns:ns16="urn:healthit-gov:qdm:v5_5" dataType="ns16:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                    <codes locator="170:36-170:93" name="Preventive Care Services-Initial Office Visit, 18 and Up" xsi:type="ValueSetRef"/>
+                                 </operand>
+                                 <operand localId="125" locator="171:11-171:84" xmlns:ns17="urn:healthit-gov:qdm:v5_5" dataType="ns17:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                    <codes locator="171:36-171:83" name="Preventive Care Services-Individual Counseling" xsi:type="ValueSetRef"/>
+                                 </operand>
+                              </operand>
+                           </operand>
+                           <operand xsi:type="Union">
+                              <operand localId="127" locator="172:11-172:81" xmlns:ns18="urn:healthit-gov:qdm:v5_5" dataType="ns18:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                 <codes locator="172:36-172:80" name="Preventive Care Services - Group Counseling" xsi:type="ValueSetRef"/>
+                              </operand>
+                              <operand localId="129" locator="173:11-173:70" xmlns:ns19="urn:healthit-gov:qdm:v5_5" dataType="ns19:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                                 <codes locator="173:36-173:69" name="Preventive Care Services - Other" xsi:type="ValueSetRef"/>
+                              </operand>
+                           </operand>
+                        </operand>
+                        <operand xsi:type="Union">
+                           <operand localId="131" locator="174:11-174:75" xmlns:ns20="urn:healthit-gov:qdm:v5_5" dataType="ns20:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="174:36-174:74" name="Discharge Services - Nursing Facility" xsi:type="ValueSetRef"/>
+                           </operand>
+                           <operand localId="133" locator="175:11-175:60" xmlns:ns21="urn:healthit-gov:qdm:v5_5" dataType="ns21:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="175:36-175:59" name="Nursing Facility Visit" xsi:type="ValueSetRef"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand xsi:type="Union">
+                        <operand localId="135" locator="176:11-176:59" xmlns:ns22="urn:healthit-gov:qdm:v5_5" dataType="ns22:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                           <codes locator="176:36-176:58" name="Annual Wellness Visit" xsi:type="ValueSetRef"/>
+                        </operand>
+                        <operand localId="137" locator="177:11-177:88" xmlns:ns23="urn:healthit-gov:qdm:v5_5" dataType="ns23:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                           <codes locator="177:36-177:87" name="Preventive Care, Established Office Visit, 0 to 17" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                  </operand>
+                  <operand localId="139" locator="178:11-178:100" xmlns:ns24="urn:healthit-gov:qdm:v5_5" dataType="ns24:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                     <codes locator="178:36-178:99" name="Preventive Care Services - Established Office Visit, 18 and Up" xsi:type="ValueSetRef"/>
+                  </operand>
+               </expression>
+            </source>
+            <where localId="145" locator="179:5-179:72" xsi:type="IncludedIn">
+               <operand localId="143" locator="179:11-179:44" path="relevantPeriod" scope="QualifyingEncounter" xsi:type="Property"/>
+               <operand localId="144" locator="179:53-179:72" name="Measurement Period" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="157" locator="151:1-153:67" name="Hemodialysis During Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="157">
+               <a:s>define &quot;Hemodialysis During Measurement Period&quot;:
+  </a:s>
+               <a:s r="156">
+                  <a:s>
+                     <a:s r="151">
+                        <a:s r="150">
+                           <a:s r="150">
+                              <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Hemodialysis&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> Hemodialysis</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="155">
+                     <a:s>where </a:s>
+                     <a:s r="155">
+                        <a:s r="153">
+                           <a:s r="152">
+                              <a:s>Hemodialysis</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="153">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="155"> overlaps </a:s>
+                        <a:s r="154">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="156" locator="152:3-153:67" xsi:type="Query">
+            <source localId="151" locator="152:3-152:55" alias="Hemodialysis">
+               <expression localId="150" locator="152:3-152:42" xmlns:ns25="urn:healthit-gov:qdm:v5_5" dataType="ns25:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="152:28-152:41" name="Hemodialysis" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="155" locator="153:5-153:67" xsi:type="Overlaps">
+               <operand localId="153" locator="153:11-153:37" path="relevantPeriod" scope="Hemodialysis" xsi:type="Property"/>
+               <operand localId="154" locator="153:48-153:67" name="Measurement Period" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="168" locator="155:1-157:73" name="Peritoneal Dialysis During Measurement Period" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="168">
+               <a:s>define &quot;Peritoneal Dialysis During Measurement Period&quot;:
+  </a:s>
+               <a:s r="167">
+                  <a:s>
+                     <a:s r="162">
+                        <a:s r="161">
+                           <a:s r="161">
+                              <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Peritoneal Dialysis&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> PeritonealDialysis</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="166">
+                     <a:s>where </a:s>
+                     <a:s r="166">
+                        <a:s r="164">
+                           <a:s r="163">
+                              <a:s>PeritonealDialysis</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="164">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="166"> overlaps </a:s>
+                        <a:s r="165">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="167" locator="156:3-157:73" xsi:type="Query">
+            <source localId="162" locator="156:3-156:68" alias="PeritonealDialysis">
+               <expression localId="161" locator="156:3-156:49" xmlns:ns26="urn:healthit-gov:qdm:v5_5" dataType="ns26:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="156:28-156:48" name="Peritoneal Dialysis" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="166" locator="157:5-157:73" xsi:type="Overlaps">
+               <operand localId="164" locator="157:11-157:43" path="relevantPeriod" scope="PeritonealDialysis" xsi:type="Property"/>
+               <operand localId="165" locator="157:54-157:73" name="Measurement Period" xsi:type="ParameterRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="173" locator="181:1-188:5" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="173">
+               <a:s>define &quot;Initial Population&quot;:
+  </a:s>
+               <a:s r="172">
+                  <a:s r="111">
+                     <a:s>exists </a:s>
+                     <a:s r="110">
+                        <a:s>( </a:s>
+                        <a:s r="110">
+                           <a:s>
+                              <a:s r="101">
+                                 <a:s r="100">
+                                    <a:s r="100">
+                                       <a:s>[&quot;Patient Characteristic Birthdate&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Birth date&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> BirthDate</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      </a:s>
+                           <a:s r="109">
+                              <a:s>where </a:s>
+                              <a:s r="109">
+                                 <a:s r="107">
+                                    <a:s r="102">
+                                       <a:s>Global</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="107">
+                                       <a:s>&quot;CalendarAgeInMonthsAt&quot; ( </a:s>
+                                       <a:s r="104">
+                                          <a:s r="103">
+                                             <a:s>BirthDate</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="104">
+                                             <a:s>birthDatetime</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>, </a:s>
+                                       <a:s r="106">
+                                          <a:s>start of </a:s>
+                                          <a:s r="105">
+                                             <a:s>&quot;Measurement Period&quot;</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> )</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="108"> >= 6</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+  )</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    and </a:s>
+                  <a:s r="171">
+                     <a:s>( </a:s>
+                     <a:s r="171">
+                        <a:s r="160">
+                           <a:s r="149">
+                              <a:s>exists </a:s>
+                              <a:s r="148">
+                                 <a:s>&quot;Qualifying Encounter During Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+        or </a:s>
+                           <a:s r="159">
+                              <a:s>exists </a:s>
+                              <a:s r="158">
+                                 <a:s>&quot;Hemodialysis During Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        or </a:s>
+                        <a:s r="170">
+                           <a:s>exists </a:s>
+                           <a:s r="169">
+                              <a:s>&quot;Peritoneal Dialysis During Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="172" locator="182:3-188:5" xsi:type="And">
+            <operand localId="111" locator="182:3-184:3" xsi:type="Exists">
+               <operand localId="110" locator="182:10-184:3" xsi:type="Query">
+                  <source localId="101" locator="182:12-182:71" alias="BirthDate">
+                     <expression localId="100" locator="182:12-182:61" xmlns:ns27="urn:healthit-gov:qdm:v5_5" dataType="ns27:PatientCharacteristicBirthdate" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                        <codes xsi:type="ToList">
+                           <operand locator="182:49-182:60" name="Birth date" xsi:type="CodeRef"/>
+                        </codes>
+                     </expression>
+                  </source>
+                  <where localId="109" locator="183:7-183:106" xsi:type="GreaterOrEqual">
+                     <operand localId="107" locator="183:13-183:101" name="CalendarAgeInMonthsAt" libraryName="Global" xsi:type="FunctionRef">
+                        <operand localId="104" locator="183:46-183:68" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                        <operand localId="106" locator="183:71-183:99" xsi:type="Start">
+                           <operand localId="105" locator="183:80-183:99" name="Measurement Period" xsi:type="ParameterRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="108" locator="183:106" valueType="t:Integer" value="6" xsi:type="Literal"/>
+                  </where>
+               </operand>
+            </operand>
+            <operand localId="171" locator="185:9-188:5" xsi:type="Or">
+               <operand localId="160" locator="185:11-186:58" xsi:type="Or">
+                  <operand localId="149" locator="185:11-185:65" xsi:type="Exists">
+                     <operand localId="148" locator="185:18-185:65" name="Qualifying Encounter During Measurement Period" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand localId="159" locator="186:12-186:58" xsi:type="Exists">
+                     <operand localId="158" locator="186:19-186:58" name="Hemodialysis During Measurement Period" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+               <operand localId="170" locator="187:12-187:65" xsi:type="Exists">
+                  <operand localId="169" locator="187:19-187:65" name="Peritoneal Dialysis During Measurement Period" xsi:type="ExpressionRef"/>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="184" locator="147:1-149:74" name="Hemodialysis During Influenza Season" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="184">
+               <a:s>define &quot;Hemodialysis During Influenza Season&quot;:
+  </a:s>
+               <a:s r="183">
+                  <a:s>
+                     <a:s r="178">
+                        <a:s r="177">
+                           <a:s r="177">
+                              <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Hemodialysis&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FluSeasonHemodialysis</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="182">
+                     <a:s>where </a:s>
+                     <a:s r="182">
+                        <a:s r="180">
+                           <a:s r="179">
+                              <a:s>FluSeasonHemodialysis</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="180">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="182"> overlaps </a:s>
+                        <a:s r="181">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="183" locator="148:3-149:74" xsi:type="Query">
+            <source localId="178" locator="148:3-148:64" alias="FluSeasonHemodialysis">
+               <expression localId="177" locator="148:3-148:42" xmlns:ns28="urn:healthit-gov:qdm:v5_5" dataType="ns28:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="148:28-148:41" name="Hemodialysis" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="182" locator="149:5-149:74" xsi:type="Overlaps">
+               <operand localId="180" locator="149:11-149:46" path="relevantPeriod" scope="FluSeasonHemodialysis" xsi:type="Property"/>
+               <operand localId="181" locator="149:57-149:74" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="195" locator="159:1-161:80" name="Peritoneal Dialysis During Influenza Season" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="195">
+               <a:s>define &quot;Peritoneal Dialysis During Influenza Season&quot;:
+  </a:s>
+               <a:s r="194">
+                  <a:s>
+                     <a:s r="189">
+                        <a:s r="188">
+                           <a:s r="188">
+                              <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Peritoneal Dialysis&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FluSeasonPeritonealDialysis</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="193">
+                     <a:s>where </a:s>
+                     <a:s r="193">
+                        <a:s r="191">
+                           <a:s r="190">
+                              <a:s>FluSeasonPeritonealDialysis</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="191">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="193"> overlaps </a:s>
+                        <a:s r="192">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="194" locator="160:3-161:80" xsi:type="Query">
+            <source localId="189" locator="160:3-160:77" alias="FluSeasonPeritonealDialysis">
+               <expression localId="188" locator="160:3-160:49" xmlns:ns29="urn:healthit-gov:qdm:v5_5" dataType="ns29:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="160:28-160:48" name="Peritoneal Dialysis" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="193" locator="161:5-161:80" xsi:type="Overlaps">
+               <operand localId="191" locator="161:11-161:52" path="relevantPeriod" scope="FluSeasonPeritonealDialysis" xsi:type="Property"/>
+               <operand localId="192" locator="161:63-161:80" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="200" locator="81:1-86:5" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="200">
+               <a:s>define &quot;Denominator&quot;:
+  </a:s>
+               <a:s r="199">
+                  <a:s r="174">
+                     <a:s>&quot;Initial Population&quot;</a:s>
+                  </a:s>
+                  <a:s>
+    and </a:s>
+                  <a:s r="198">
+                     <a:s>( </a:s>
+                     <a:s r="198">
+                        <a:s r="187">
+                           <a:s r="176">
+                              <a:s>exists </a:s>
+                              <a:s r="175">
+                                 <a:s>&quot;Encounter During Influenza Season&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+        or </a:s>
+                           <a:s r="186">
+                              <a:s>exists </a:s>
+                              <a:s r="185">
+                                 <a:s>&quot;Hemodialysis During Influenza Season&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+        or </a:s>
+                        <a:s r="197">
+                           <a:s>exists </a:s>
+                           <a:s r="196">
+                              <a:s>&quot;Peritoneal Dialysis During Influenza Season&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="199" locator="82:3-86:5" xsi:type="And">
+            <operand localId="174" locator="82:3-82:22" name="Initial Population" xsi:type="ExpressionRef"/>
+            <operand localId="198" locator="83:9-86:5" xsi:type="Or">
+               <operand localId="187" locator="83:11-84:56" xsi:type="Or">
+                  <operand localId="176" locator="83:11-83:52" xsi:type="Exists">
+                     <operand localId="175" locator="83:18-83:52" name="Encounter During Influenza Season" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand localId="186" locator="84:12-84:56" xsi:type="Exists">
+                     <operand localId="185" locator="84:19-84:56" name="Hemodialysis During Influenza Season" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+               <operand localId="197" locator="85:12-85:63" xsi:type="Exists">
+                  <operand localId="196" locator="85:19-85:63" name="Peritoneal Dialysis During Influenza Season" xsi:type="ExpressionRef"/>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="208" locator="88:1-90:71" name="Diagnosis of Allergy to Egg" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="208">
+               <a:s>define &quot;Diagnosis of Allergy to Egg&quot;:
+  </a:s>
+               <a:s r="207">
+                  <a:s>
+                     <a:s r="202">
+                        <a:s r="201">
+                           <a:s r="201">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Allergy to Eggs&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> EggAllergy</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="206">
+                     <a:s>where </a:s>
+                     <a:s r="206">
+                        <a:s r="204">
+                           <a:s r="203">
+                              <a:s>EggAllergy</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="204">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="206"> overlaps after </a:s>
+                        <a:s r="205">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="207" locator="89:3-90:71" xsi:type="Query">
+            <source localId="202" locator="89:3-89:45" alias="EggAllergy">
+               <expression localId="201" locator="89:3-89:34" xmlns:ns30="urn:healthit-gov:qdm:v5_5" dataType="ns30:Diagnosis" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="89:17-89:33" name="Allergy to Eggs" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="206" locator="90:5-90:71" xsi:type="OverlapsAfter">
+               <operand localId="204" locator="90:11-90:37" path="prevalencePeriod" scope="EggAllergy" xsi:type="Property"/>
+               <operand localId="205" locator="90:54-90:71" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="216" locator="92:1-94:87" name="Diagnosis of Allergy to Influenza Vaccine" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="216">
+               <a:s>define &quot;Diagnosis of Allergy to Influenza Vaccine&quot;:
+  </a:s>
+               <a:s r="215">
+                  <a:s>
+                     <a:s r="210">
+                        <a:s r="209">
+                           <a:s r="209">
+                              <a:s>[&quot;Diagnosis&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Allergy to Influenza Vaccine&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FluVaccineAllergyDiagnosis</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="214">
+                     <a:s>where </a:s>
+                     <a:s r="214">
+                        <a:s r="212">
+                           <a:s r="211">
+                              <a:s>FluVaccineAllergyDiagnosis</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="212">
+                              <a:s>prevalencePeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="214"> overlaps after </a:s>
+                        <a:s r="213">
+                           <a:s>&quot;Influenza Season&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="215" locator="93:3-94:87" xsi:type="Query">
+            <source localId="210" locator="93:3-93:74" alias="FluVaccineAllergyDiagnosis">
+               <expression localId="209" locator="93:3-93:47" xmlns:ns31="urn:healthit-gov:qdm:v5_5" dataType="ns31:Diagnosis" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="93:17-93:46" name="Allergy to Influenza Vaccine" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="214" locator="94:5-94:87" xsi:type="OverlapsAfter">
+               <operand localId="212" locator="94:11-94:53" path="prevalencePeriod" scope="FluVaccineAllergyDiagnosis" xsi:type="Property"/>
+               <operand localId="213" locator="94:70-94:87" name="Influenza Season" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="230" locator="118:1-119:95" name="Influenza Season Including August and September of the Prior Year" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="230">
+               <a:s>define &quot;Influenza Season Including August and September of the Prior Year&quot;:
+  </a:s>
+               <a:s r="229">
+                  <a:s>Interval[</a:s>
+                  <a:s r="224">
+                     <a:s r="222">
+                        <a:s>start of </a:s>
+                        <a:s r="221">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s> - </a:s>
+                     <a:s r="223">
+                        <a:s>5 months</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>, </a:s>
+                  <a:s r="228">
+                     <a:s r="226">
+                        <a:s>start of </a:s>
+                        <a:s r="225">
+                           <a:s>&quot;Measurement Period&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s> + </a:s>
+                     <a:s r="227">
+                        <a:s>3 months</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s> )</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="229" locator="119:3-119:95" lowClosed="true" highClosed="false" xsi:type="Interval">
+            <low localId="224" locator="119:12-119:51" xsi:type="Subtract">
+               <operand localId="222" locator="119:12-119:40" xsi:type="Start">
+                  <operand localId="221" locator="119:21-119:40" name="Measurement Period" xsi:type="ParameterRef"/>
+               </operand>
+               <operand localId="223" locator="119:44-119:51" value="5" unit="months" xsi:type="Quantity"/>
+            </low>
+            <high localId="228" locator="119:54-119:93" xsi:type="Add">
+               <operand localId="226" locator="119:54-119:82" xsi:type="Start">
+                  <operand localId="225" locator="119:63-119:82" name="Measurement Period" xsi:type="ParameterRef"/>
+               </operand>
+               <operand localId="227" locator="119:86-119:93" value="3" unit="months" xsi:type="Quantity"/>
+            </high>
+         </expression>
+      </def>
+      <def localId="254" locator="96:1-103:7" name="Medical Patient or System Reason for Not Performing Influenza Vaccination" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="254">
+               <a:s>define &quot;Medical Patient or System Reason for Not Performing Influenza Vaccination&quot;:
+  </a:s>
+               <a:s r="253">
+                  <a:s>
+                     <a:s r="218">
+                        <a:s r="217">
+                           <a:s r="217">
+                              <a:s>[&quot;Procedure, Not Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Influenza Vaccination&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> NoFluVaccination</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="252">
+                     <a:s>where </a:s>
+                     <a:s r="252">
+                        <a:s r="232">
+                           <a:s r="220">
+                              <a:s r="219">
+                                 <a:s>NoFluVaccination</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="220">
+                                 <a:s>authorDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="232"> during </a:s>
+                           <a:s r="231">
+                              <a:s>&quot;Influenza Season Including August and September of the Prior Year&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      and </a:s>
+                        <a:s r="251">
+                           <a:s>( </a:s>
+                           <a:s r="251">
+                              <a:s r="246">
+                                 <a:s r="241">
+                                    <a:s r="236">
+                                       <a:s r="234">
+                                          <a:s r="233">
+                                             <a:s>NoFluVaccination</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="234">
+                                             <a:s>negationRationale</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> in </a:s>
+                                       <a:s r="235">
+                                          <a:s>&quot;Medical Reason&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+          or </a:s>
+                                    <a:s r="240">
+                                       <a:s r="238">
+                                          <a:s r="237">
+                                             <a:s>NoFluVaccination</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="238">
+                                             <a:s>negationRationale</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> in </a:s>
+                                       <a:s r="239">
+                                          <a:s>&quot;Patient Reason&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+          or </a:s>
+                                 <a:s r="245">
+                                    <a:s r="243">
+                                       <a:s r="242">
+                                          <a:s>NoFluVaccination</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="243">
+                                          <a:s>negationRationale</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> in </a:s>
+                                    <a:s r="244">
+                                       <a:s>&quot;System Reason&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+          or </a:s>
+                              <a:s r="250">
+                                 <a:s r="248">
+                                    <a:s r="247">
+                                       <a:s>NoFluVaccination</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="248">
+                                       <a:s>negationRationale</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> in </a:s>
+                                 <a:s r="249">
+                                    <a:s>&quot;Influenza Vaccination Declined&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="253" locator="97:3-103:7" xsi:type="Query">
+            <source localId="218" locator="97:3-97:72" alias="NoFluVaccination">
+               <expression localId="217" locator="97:3-97:55" xmlns:ns32="urn:healthit-gov:qdm:v5_5" dataType="ns32:NegativeProcedurePerformed" templateId="NegativeProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="97:32-97:54" name="Influenza Vaccination" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="252" locator="98:5-103:7" xsi:type="And">
+               <operand localId="232" locator="98:11-98:116" xsi:type="In">
+                  <operand localId="220" locator="98:11-98:41" path="authorDatetime" scope="NoFluVaccination" xsi:type="Property"/>
+                  <operand localId="231" locator="98:50-98:116" name="Influenza Season Including August and September of the Prior Year" xsi:type="ExpressionRef"/>
+               </operand>
+               <operand localId="251" locator="99:11-103:7" xsi:type="Or">
+                  <operand localId="246" locator="99:13-101:66" xsi:type="Or">
+                     <operand localId="241" locator="99:13-100:67" xsi:type="Or">
+                        <operand localId="236" locator="99:13-99:66" xsi:type="InValueSet">
+                           <code localId="234" locator="99:13-99:46" path="negationRationale" scope="NoFluVaccination" xsi:type="Property"/>
+                           <valueset localId="235" locator="99:51-99:66" name="Medical Reason" xsi:type="ValueSetRef"/>
+                        </operand>
+                        <operand localId="240" locator="100:14-100:67" xsi:type="InValueSet">
+                           <code localId="238" locator="100:14-100:47" path="negationRationale" scope="NoFluVaccination" xsi:type="Property"/>
+                           <valueset localId="239" locator="100:52-100:67" name="Patient Reason" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="245" locator="101:14-101:66" xsi:type="InValueSet">
+                        <code localId="243" locator="101:14-101:47" path="negationRationale" scope="NoFluVaccination" xsi:type="Property"/>
+                        <valueset localId="244" locator="101:52-101:66" name="System Reason" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="250" locator="102:14-102:83" xsi:type="InValueSet">
+                     <code localId="248" locator="102:14-102:47" path="negationRationale" scope="NoFluVaccination" xsi:type="Property"/>
+                     <valueset localId="249" locator="102:52-102:83" name="Influenza Vaccination Declined" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="284" locator="121:1-128:7" name="Medical Patient or System Reason for Not Administering Influenza Vaccine" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="284">
+               <a:s>define &quot;Medical Patient or System Reason for Not Administering Influenza Vaccine&quot;:
+  </a:s>
+               <a:s r="283">
+                  <a:s>
+                     <a:s r="258">
+                        <a:s r="257">
+                           <a:s r="257">
+                              <a:s>[&quot;Immunization, Not Administered&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Influenza Vaccine&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> NoFluVaccine</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="282">
+                     <a:s>where </a:s>
+                     <a:s r="282">
+                        <a:s r="262">
+                           <a:s r="260">
+                              <a:s r="259">
+                                 <a:s>NoFluVaccine</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="260">
+                                 <a:s>authorDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s r="262"> during </a:s>
+                           <a:s r="261">
+                              <a:s>&quot;Influenza Season Including August and September of the Prior Year&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      and </a:s>
+                        <a:s r="281">
+                           <a:s>( </a:s>
+                           <a:s r="281">
+                              <a:s r="276">
+                                 <a:s r="271">
+                                    <a:s r="266">
+                                       <a:s r="264">
+                                          <a:s r="263">
+                                             <a:s>NoFluVaccine</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="264">
+                                             <a:s>negationRationale</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> in </a:s>
+                                       <a:s r="265">
+                                          <a:s>&quot;Medical Reason&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+          or </a:s>
+                                    <a:s r="270">
+                                       <a:s r="268">
+                                          <a:s r="267">
+                                             <a:s>NoFluVaccine</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="268">
+                                             <a:s>negationRationale</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> in </a:s>
+                                       <a:s r="269">
+                                          <a:s>&quot;Patient Reason&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+          or </a:s>
+                                 <a:s r="275">
+                                    <a:s r="273">
+                                       <a:s r="272">
+                                          <a:s>NoFluVaccine</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="273">
+                                          <a:s>negationRationale</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> in </a:s>
+                                    <a:s r="274">
+                                       <a:s>&quot;System Reason&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+          or </a:s>
+                              <a:s r="280">
+                                 <a:s r="278">
+                                    <a:s r="277">
+                                       <a:s>NoFluVaccine</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="278">
+                                       <a:s>negationRationale</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> in </a:s>
+                                 <a:s r="279">
+                                    <a:s>&quot;Influenza Vaccination Declined&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="283" locator="122:3-128:7" xsi:type="Query">
+            <source localId="258" locator="122:3-122:70" alias="NoFluVaccine">
+               <expression localId="257" locator="122:3-122:57" xmlns:ns33="urn:healthit-gov:qdm:v5_5" dataType="ns33:NegativeImmunizationAdministered" templateId="NegativeImmunizationAdministered" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="122:38-122:56" name="Influenza Vaccine" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="282" locator="123:5-128:7" xsi:type="And">
+               <operand localId="262" locator="123:11-123:112" xsi:type="In">
+                  <operand localId="260" locator="123:11-123:37" path="authorDatetime" scope="NoFluVaccine" xsi:type="Property"/>
+                  <operand localId="261" locator="123:46-123:112" name="Influenza Season Including August and September of the Prior Year" xsi:type="ExpressionRef"/>
+               </operand>
+               <operand localId="281" locator="124:11-128:7" xsi:type="Or">
+                  <operand localId="276" locator="124:13-126:62" xsi:type="Or">
+                     <operand localId="271" locator="124:13-125:63" xsi:type="Or">
+                        <operand localId="266" locator="124:13-124:62" xsi:type="InValueSet">
+                           <code localId="264" locator="124:13-124:42" path="negationRationale" scope="NoFluVaccine" xsi:type="Property"/>
+                           <valueset localId="265" locator="124:47-124:62" name="Medical Reason" xsi:type="ValueSetRef"/>
+                        </operand>
+                        <operand localId="270" locator="125:14-125:63" xsi:type="InValueSet">
+                           <code localId="268" locator="125:14-125:43" path="negationRationale" scope="NoFluVaccine" xsi:type="Property"/>
+                           <valueset localId="269" locator="125:48-125:63" name="Patient Reason" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="275" locator="126:14-126:62" xsi:type="InValueSet">
+                        <code localId="273" locator="126:14-126:43" path="negationRationale" scope="NoFluVaccine" xsi:type="Property"/>
+                        <valueset localId="274" locator="126:48-126:62" name="System Reason" xsi:type="ValueSetRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="280" locator="127:14-127:79" xsi:type="InValueSet">
+                     <code localId="278" locator="127:14-127:43" path="negationRationale" scope="NoFluVaccine" xsi:type="Property"/>
+                     <valueset localId="279" locator="127:48-127:79" name="Influenza Vaccination Declined" xsi:type="ValueSetRef"/>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="306" locator="105:1-113:59" name="Denominator Exceptions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="306">
+               <a:s>define &quot;Denominator Exceptions&quot;:
+  </a:s>
+               <a:s r="305">
+                  <a:s r="302">
+                     <a:s r="299">
+                        <a:s r="296">
+                           <a:s r="293">
+                              <a:s r="290">
+                                 <a:s r="287">
+                                    <a:s r="256">
+                                       <a:s>exists </a:s>
+                                       <a:s r="255">
+                                          <a:s>&quot;Medical Patient or System Reason for Not Performing Influenza Vaccination&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+    or </a:s>
+                                    <a:s r="286">
+                                       <a:s>exists </a:s>
+                                       <a:s r="285">
+                                          <a:s>&quot;Medical Patient or System Reason for Not Administering Influenza Vaccine&quot;</a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+    or </a:s>
+                                 <a:s r="289">
+                                    <a:s>exists </a:s>
+                                    <a:s r="288">
+                                       <a:s>&quot;Diagnosis of Allergy to Egg&quot;</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+    or </a:s>
+                              <a:s r="292">
+                                 <a:s>exists </a:s>
+                                 <a:s r="291">
+                                    <a:s>&quot;Egg Substance Allergy&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+    or </a:s>
+                           <a:s r="295">
+                              <a:s>exists </a:s>
+                              <a:s r="294">
+                                 <a:s>&quot;Diagnosis of Allergy to Influenza Vaccine&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+    or </a:s>
+                        <a:s r="298">
+                           <a:s>exists </a:s>
+                           <a:s r="297">
+                              <a:s>&quot;Diagnosis of Intolerance to Influenza Vaccine&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    or </a:s>
+                     <a:s r="301">
+                        <a:s>exists </a:s>
+                        <a:s r="300">
+                           <a:s>&quot;Intolerance of Influenza Vaccination Procedure&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    or </a:s>
+                  <a:s r="304">
+                     <a:s>exists </a:s>
+                     <a:s r="303">
+                        <a:s>&quot;Allergy or Intolerance to Influenza Vaccine&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="305" locator="106:3-113:59" xsi:type="Or">
+            <operand localId="302" locator="106:3-112:62" xsi:type="Or">
+               <operand localId="299" locator="106:3-111:61" xsi:type="Or">
+                  <operand localId="296" locator="106:3-110:57" xsi:type="Or">
+                     <operand localId="293" locator="106:3-109:37" xsi:type="Or">
+                        <operand localId="290" locator="106:3-108:43" xsi:type="Or">
+                           <operand localId="287" locator="106:3-107:88" xsi:type="Or">
+                              <operand localId="256" locator="106:3-106:84" xsi:type="Exists">
+                                 <operand localId="255" locator="106:10-106:84" name="Medical Patient or System Reason for Not Performing Influenza Vaccination" xsi:type="ExpressionRef"/>
+                              </operand>
+                              <operand localId="286" locator="107:8-107:88" xsi:type="Exists">
+                                 <operand localId="285" locator="107:15-107:88" name="Medical Patient or System Reason for Not Administering Influenza Vaccine" xsi:type="ExpressionRef"/>
+                              </operand>
+                           </operand>
+                           <operand localId="289" locator="108:8-108:43" xsi:type="Exists">
+                              <operand localId="288" locator="108:15-108:43" name="Diagnosis of Allergy to Egg" xsi:type="ExpressionRef"/>
+                           </operand>
+                        </operand>
+                        <operand localId="292" locator="109:8-109:37" xsi:type="Exists">
+                           <operand localId="291" locator="109:15-109:37" name="Egg Substance Allergy" xsi:type="ExpressionRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="295" locator="110:8-110:57" xsi:type="Exists">
+                        <operand localId="294" locator="110:15-110:57" name="Diagnosis of Allergy to Influenza Vaccine" xsi:type="ExpressionRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="298" locator="111:8-111:61" xsi:type="Exists">
+                     <operand localId="297" locator="111:15-111:61" name="Diagnosis of Intolerance to Influenza Vaccine" xsi:type="ExpressionRef"/>
+                  </operand>
+               </operand>
+               <operand localId="301" locator="112:8-112:62" xsi:type="Exists">
+                  <operand localId="300" locator="112:15-112:62" name="Intolerance of Influenza Vaccination Procedure" xsi:type="ExpressionRef"/>
+               </operand>
+            </operand>
+            <operand localId="304" locator="113:8-113:59" xsi:type="Exists">
+               <operand localId="303" locator="113:15-113:59" name="Allergy or Intolerance to Influenza Vaccine" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+      <def localId="314" locator="143:1-145:116" name="Influenza Vaccination Procedure" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="314">
+               <a:s>define &quot;Influenza Vaccination Procedure&quot;:
+  </a:s>
+               <a:s r="313">
+                  <a:s>
+                     <a:s r="308">
+                        <a:s r="307">
+                           <a:s r="307">
+                              <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Influenza Vaccination&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> FluVaccination</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="312">
+                     <a:s>where </a:s>
+                     <a:s r="312">
+                        <a:s r="310">
+                           <a:s r="309">
+                              <a:s>FluVaccination</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="310">
+                              <a:s>relevantDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="312"> during </a:s>
+                        <a:s r="311">
+                           <a:s>&quot;Influenza Season Including August and September of the Prior Year&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="313" locator="144:3-145:116" xsi:type="Query">
+            <source localId="308" locator="144:3-144:66" alias="FluVaccination">
+               <expression localId="307" locator="144:3-144:51" xmlns:ns34="urn:healthit-gov:qdm:v5_5" dataType="ns34:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="144:28-144:50" name="Influenza Vaccination" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="312" locator="145:5-145:116" xsi:type="In">
+               <operand localId="310" locator="145:11-145:41" path="relevantDatetime" scope="FluVaccination" xsi:type="Property"/>
+               <operand localId="311" locator="145:50-145:116" name="Influenza Season Including August and September of the Prior Year" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="324" locator="135:1-137:124" name="Influenza Immunization Administered" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="324">
+               <a:s>define &quot;Influenza Immunization Administered&quot;:
+  </a:s>
+               <a:s r="323">
+                  <a:s>
+                     <a:s r="318">
+                        <a:s r="317">
+                           <a:s r="317">
+                              <a:s>[&quot;Immunization, Administered&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Influenza Vaccine&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> AdministeredFluVaccine</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="322">
+                     <a:s>where </a:s>
+                     <a:s r="322">
+                        <a:s r="320">
+                           <a:s r="319">
+                              <a:s>AdministeredFluVaccine</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="320">
+                              <a:s>relevantDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="322"> during </a:s>
+                        <a:s r="321">
+                           <a:s>&quot;Influenza Season Including August and September of the Prior Year&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="323" locator="136:3-137:124" xsi:type="Query">
+            <source localId="318" locator="136:3-136:76" alias="AdministeredFluVaccine">
+               <expression localId="317" locator="136:3-136:53" xmlns:ns35="urn:healthit-gov:qdm:v5_5" dataType="ns35:PositiveImmunizationAdministered" templateId="PositiveImmunizationAdministered" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="136:34-136:52" name="Influenza Vaccine" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="322" locator="137:5-137:124" xsi:type="In">
+               <operand localId="320" locator="137:11-137:49" path="relevantDatetime" scope="AdministeredFluVaccine" xsi:type="Property"/>
+               <operand localId="321" locator="137:58-137:124" name="Influenza Season Including August and September of the Prior Year" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="335" locator="139:1-141:127" name="Influenza Vaccine Previously Received" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="335">
+               <a:s>define &quot;Influenza Vaccine Previously Received&quot;:
+  </a:s>
+               <a:s r="334">
+                  <a:s>
+                     <a:s r="329">
+                        <a:s r="328">
+                           <a:s r="328">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Previous Receipt of Influenza Vaccine&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> PreviousReceiptFluVaccine</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="333">
+                     <a:s>where </a:s>
+                     <a:s r="333">
+                        <a:s r="331">
+                           <a:s r="330">
+                              <a:s>PreviousReceiptFluVaccine</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="331">
+                              <a:s>relevantDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="333"> during </a:s>
+                        <a:s r="332">
+                           <a:s>&quot;Influenza Season Including August and September of the Prior Year&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="334" locator="140:3-141:127" xsi:type="Query">
+            <source localId="329" locator="140:3-140:94" alias="PreviousReceiptFluVaccine">
+               <expression localId="328" locator="140:3-140:68" xmlns:ns36="urn:healthit-gov:qdm:v5_5" dataType="ns36:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="140:29-140:67" name="Previous Receipt of Influenza Vaccine" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="333" locator="141:5-141:127" xsi:type="In">
+               <operand localId="331" locator="141:11-141:52" path="relevantDatetime" scope="PreviousReceiptFluVaccine" xsi:type="Property"/>
+               <operand localId="332" locator="141:61-141:127" name="Influenza Season Including August and September of the Prior Year" xsi:type="ExpressionRef"/>
+            </where>
+         </expression>
+      </def>
+      <def localId="339" locator="130:1-133:53" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="339">
+               <a:s>define &quot;Numerator&quot;:
+  </a:s>
+               <a:s r="338">
+                  <a:s r="327">
+                     <a:s r="316">
+                        <a:s>exists </a:s>
+                        <a:s r="315">
+                           <a:s>&quot;Influenza Vaccination Procedure&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    or </a:s>
+                     <a:s r="326">
+                        <a:s>exists </a:s>
+                        <a:s r="325">
+                           <a:s>&quot;Influenza Immunization Administered&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    or </a:s>
+                  <a:s r="337">
+                     <a:s>exists </a:s>
+                     <a:s r="336">
+                        <a:s>&quot;Influenza Vaccine Previously Received&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="338" locator="131:3-133:53" xsi:type="Or">
+            <operand localId="327" locator="131:3-132:51" xsi:type="Or">
+               <operand localId="316" locator="131:3-131:42" xsi:type="Exists">
+                  <operand localId="315" locator="131:10-131:42" name="Influenza Vaccination Procedure" xsi:type="ExpressionRef"/>
+               </operand>
+               <operand localId="326" locator="132:8-132:51" xsi:type="Exists">
+                  <operand localId="325" locator="132:15-132:51" name="Influenza Immunization Administered" xsi:type="ExpressionRef"/>
+               </operand>
+            </operand>
+            <operand localId="337" locator="133:8-133:53" xsi:type="Exists">
+               <operand localId="336" locator="133:15-133:53" name="Influenza Vaccine Previously Received" xsi:type="ExpressionRef"/>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

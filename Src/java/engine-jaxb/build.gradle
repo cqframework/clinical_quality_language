@@ -1,0 +1,8 @@
+dependencies {
+    api project(':engine')
+    testImplementation 'org.eclipse.persistence:org.eclipse.persistence.moxy:2.7.7'
+    testImplementation 'org.glassfish:javax.json:1.0.4'
+    testImplementation 'info.cqframework:cql-to-elm:2.4.0'
+    testImplementation 'info.cqframework:model-jaxb:2.4.0'
+    testImplementation 'info.cqframework:elm-jaxb:2.4.0'
+}

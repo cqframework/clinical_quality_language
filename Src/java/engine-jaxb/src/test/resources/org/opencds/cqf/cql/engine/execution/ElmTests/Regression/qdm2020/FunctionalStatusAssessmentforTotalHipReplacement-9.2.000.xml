@@ -1,0 +1,2951 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableAnnotations,EnableLocators,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <annotation xsi:type="a:Annotation">
+      <a:s r="78">
+         <a:s>library FunctionalStatusAssessmentforTotalHipReplacement version '9.2.000'</a:s>
+      </a:s>
+   </annotation>
+   <identifier id="FunctionalStatusAssessmentforTotalHipReplacement" version="9.2.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_5" version="5.5">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="1">
+               <a:s>using </a:s>
+               <a:s>
+                  <a:s>QDM</a:s>
+               </a:s>
+               <a:s> version '5.5'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="5.0.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="2">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>MATGlobalCommonFunctions</a:s>
+               </a:s>
+               <a:s> version '5.0.000' called Global</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="3" locator="6:1-6:48" localIdentifier="Hospice" path="Hospice" version="2.2.000">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="3">
+               <a:s>include </a:s>
+               <a:s>
+                  <a:s>Hospice</a:s>
+               </a:s>
+               <a:s> version '2.2.000' called Hospice</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </includes>
+   <parameters>
+      <def localId="46" locator="37:1-37:49" name="Measurement Period" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="46">
+               <a:s>parameter &quot;Measurement Period&quot; </a:s>
+               <a:s r="45">
+                  <a:s>Interval&lt;</a:s>
+                  <a:s r="44">
+                     <a:s>DateTime</a:s>
+                  </a:s>
+                  <a:s>></a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <parameterTypeSpecifier localId="45" locator="37:32-37:49" xsi:type="IntervalTypeSpecifier">
+            <pointType localId="44" locator="37:41-37:48" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <codeSystems>
+      <def localId="4" locator="8:1-8:51" name="LOINC" id="urn:oid:2.16.840.1.113883.6.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="4">
+               <a:s>codesystem &quot;LOINC&quot;: 'urn:oid:2.16.840.1.113883.6.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="5" locator="9:1-9:50" name="CPT" id="urn:oid:2.16.840.1.113883.6.12" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="5">
+               <a:s>codesystem &quot;CPT&quot;: 'urn:oid:2.16.840.1.113883.6.12'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="6" locator="10:1-10:55" name="SNOMEDCT" id="urn:oid:2.16.840.1.113883.6.96" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="6">
+               <a:s>codesystem &quot;SNOMEDCT&quot;: 'urn:oid:2.16.840.1.113883.6.96'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </codeSystems>
+   <valueSets>
+      <def localId="7" locator="12:1-12:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="7">
+               <a:s>valueset &quot;Ethnicity&quot;: 'urn:oid:2.16.840.1.114222.4.11.837'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="8" locator="13:1-13:84" name="Fracture - Lower Body" id="urn:oid:2.16.840.1.113883.3.464.1003.113.12.1037" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="8">
+               <a:s>valueset &quot;Fracture - Lower Body&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.113.12.1037'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="9" locator="14:1-14:142" name="Hip Dysfunction and Osteoarthritis Outcome Score for Joint Replacement [HOOSJR]" id="urn:oid:2.16.840.1.113883.3.464.1003.118.12.1210" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="9">
+               <a:s>valueset &quot;Hip Dysfunction and Osteoarthritis Outcome Score for Joint Replacement [HOOSJR]&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.118.12.1210'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="10" locator="15:1-15:75" name="Office Visit" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="10">
+               <a:s>valueset &quot;Office Visit&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1001'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="11" locator="16:1-16:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="11">
+               <a:s>valueset &quot;ONC Administrative Sex&quot;: 'urn:oid:2.16.840.1.113762.1.4.1'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="12" locator="17:1-17:86" name="Outpatient Consultation" id="urn:oid:2.16.840.1.113883.3.464.1003.101.12.1008" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="12">
+               <a:s>valueset &quot;Outpatient Consultation&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.101.12.1008'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="13" locator="18:1-18:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="13">
+               <a:s>valueset &quot;Payer&quot;: 'urn:oid:2.16.840.1.114222.4.11.3591'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="14" locator="19:1-19:84" name="Primary THA Procedure" id="urn:oid:2.16.840.1.113883.3.464.1003.198.12.1006" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="14">
+               <a:s>valueset &quot;Primary THA Procedure&quot;: 'urn:oid:2.16.840.1.113883.3.464.1003.198.12.1006'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+      <def localId="15" locator="20:1-20:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="15">
+               <a:s>valueset &quot;Race&quot;: 'urn:oid:2.16.840.1.114222.4.11.836'</a:s>
+            </a:s>
+         </annotation>
+      </def>
+   </valueSets>
+   <codes>
+      <def localId="17" locator="22:1-22:120" name="Activities of daily living score [HOOS]" id="72095-3" display="Activities of daily living score [HOOS]" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="17">
+               <a:s>code &quot;Activities of daily living score [HOOS]&quot;: '72095-3' from </a:s>
+               <a:s r="16">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Activities of daily living score [HOOS]'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="16" locator="22:64-22:70" name="LOINC"/>
+      </def>
+      <def localId="19" locator="23:1-23:62" name="Birth date" id="21112-8" display="Birth date" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="19">
+               <a:s>code &quot;Birth date&quot;: '21112-8' from </a:s>
+               <a:s r="18">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Birth date'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="18" locator="23:35-23:41" name="LOINC"/>
+      </def>
+      <def localId="21" locator="24:1-24:76" name="Pain score [HOOS]" id="72097-9" display="Pain score [HOOS]" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="21">
+               <a:s>code &quot;Pain score [HOOS]&quot;: '72097-9' from </a:s>
+               <a:s r="20">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Pain score [HOOS]'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="20" locator="24:42-24:48" name="LOINC"/>
+      </def>
+      <def localId="23" locator="25:1-25:480" name="Postoperative follow-up visit, normally included in the surgical package, to indicate that an evaluation and management service was performed during a postoperative period for a reason(s) related to the original procedure" id="99024" display="Postoperative follow-up visit, normally included in the surgical package, to indicate that an evaluation and management service was performed during a postoperative period for a reason(s) related to the original procedure" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="23">
+               <a:s>code &quot;Postoperative follow-up visit, normally included in the surgical package, to indicate that an evaluation and management service was performed during a postoperative period for a reason(s) related to the original procedure&quot;: '99024' from </a:s>
+               <a:s r="22">
+                  <a:s>&quot;CPT&quot;</a:s>
+               </a:s>
+               <a:s> display 'Postoperative follow-up visit, normally included in the surgical package, to indicate that an evaluation and management service was performed during a postoperative period for a reason(s) related to the original procedure'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="22" locator="25:244-25:248" name="CPT"/>
+      </def>
+      <def localId="25" locator="26:1-26:142" name="PROMIS-10 Global Mental Health (GMH) score T-score" id="71969-0" display="PROMIS-10 Global Mental Health (GMH) score T-score" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="25">
+               <a:s>code &quot;PROMIS-10 Global Mental Health (GMH) score T-score&quot;: '71969-0' from </a:s>
+               <a:s r="24">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'PROMIS-10 Global Mental Health (GMH) score T-score'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="24" locator="26:75-26:81" name="LOINC"/>
+      </def>
+      <def localId="27" locator="27:1-27:146" name="PROMIS-10 Global Physical Health (GPH) score T-score" id="71971-6" display="PROMIS-10 Global Physical Health (GPH) score T-score" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="27">
+               <a:s>code &quot;PROMIS-10 Global Physical Health (GPH) score T-score&quot;: '71971-6' from </a:s>
+               <a:s r="26">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'PROMIS-10 Global Physical Health (GPH) score T-score'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="26" locator="27:77-27:83" name="LOINC"/>
+      </def>
+      <def localId="29" locator="28:1-28:98" name="Quality of life score [HOOS]" id="72093-8" display="Quality of life score [HOOS]" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="29">
+               <a:s>code &quot;Quality of life score [HOOS]&quot;: '72093-8' from </a:s>
+               <a:s r="28">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Quality of life score [HOOS]'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="28" locator="28:53-28:59" name="LOINC"/>
+      </def>
+      <def localId="31" locator="29:1-29:105" name="Severe dementia (disorder)" id="428351000124105" display="Severe dementia (disorder)" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="31">
+               <a:s>code &quot;Severe dementia (disorder)&quot;: '428351000124105' from </a:s>
+               <a:s r="30">
+                  <a:s>&quot;SNOMEDCT&quot;</a:s>
+               </a:s>
+               <a:s> display 'Severe dementia (disorder)'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="30" locator="29:59-29:68" name="SNOMEDCT"/>
+      </def>
+      <def localId="33" locator="30:1-30:100" name="Sport-recreation score [HOOS]" id="72094-6" display="Sport-recreation score [HOOS]" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="33">
+               <a:s>code &quot;Sport-recreation score [HOOS]&quot;: '72094-6' from </a:s>
+               <a:s r="32">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Sport-recreation score [HOOS]'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="32" locator="30:54-30:60" name="LOINC"/>
+      </def>
+      <def localId="35" locator="31:1-31:84" name="Symptoms score [HOOS]" id="72096-1" display="Symptoms score [HOOS]" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="35">
+               <a:s>code &quot;Symptoms score [HOOS]&quot;: '72096-1' from </a:s>
+               <a:s r="34">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'Symptoms score [HOOS]'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="34" locator="31:46-31:52" name="LOINC"/>
+      </def>
+      <def localId="37" locator="32:1-32:176" name="VR-12 Mental component summary (MCS) score - oblique method T-score" id="72026-8" display="VR-12 Mental component summary (MCS) score - oblique method T-score" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="37">
+               <a:s>code &quot;VR-12 Mental component summary (MCS) score - oblique method T-score&quot;: '72026-8' from </a:s>
+               <a:s r="36">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'VR-12 Mental component summary (MCS) score - oblique method T-score'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="36" locator="32:92-32:98" name="LOINC"/>
+      </def>
+      <def localId="39" locator="33:1-33:182" name="VR-12 Mental component summary (MCS) score - orthogonal method T-score" id="72028-4" display="VR-12 Mental component summary (MCS) score - orthogonal method T-score" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="39">
+               <a:s>code &quot;VR-12 Mental component summary (MCS) score - orthogonal method T-score&quot;: '72028-4' from </a:s>
+               <a:s r="38">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'VR-12 Mental component summary (MCS) score - orthogonal method T-score'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="38" locator="33:95-33:101" name="LOINC"/>
+      </def>
+      <def localId="41" locator="34:1-34:180" name="VR-12 Physical component summary (PCS) score - oblique method T-score" id="72025-0" display="VR-12 Physical component summary (PCS) score - oblique method T-score" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="41">
+               <a:s>code &quot;VR-12 Physical component summary (PCS) score - oblique method T-score&quot;: '72025-0' from </a:s>
+               <a:s r="40">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'VR-12 Physical component summary (PCS) score - oblique method T-score'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="40" locator="34:94-34:100" name="LOINC"/>
+      </def>
+      <def localId="43" locator="35:1-35:186" name="VR-12 Physical component summary (PCS) score - orthogonal method T-score" id="72027-6" display="VR-12 Physical component summary (PCS) score - orthogonal method T-score" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="43">
+               <a:s>code &quot;VR-12 Physical component summary (PCS) score - orthogonal method T-score&quot;: '72027-6' from </a:s>
+               <a:s r="42">
+                  <a:s>&quot;LOINC&quot;</a:s>
+               </a:s>
+               <a:s> display 'VR-12 Physical component summary (PCS) score - orthogonal method T-score'</a:s>
+            </a:s>
+         </annotation>
+         <codeSystem localId="42" locator="35:97-35:103" name="LOINC"/>
+      </def>
+   </codes>
+   <contexts>
+      <def locator="39:1-39:15" name="Patient"/>
+   </contexts>
+   <statements>
+      <def locator="39:1-39:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="39:1-39:15" xmlns:ns0="urn:healthit-gov:qdm:v5_5" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="48" locator="41:1-42:51" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="48">
+               <a:s>define &quot;SDE Ethnicity&quot;:
+  </a:s>
+               <a:s r="47">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="47" locator="42:3-42:51" xmlns:ns1="urn:healthit-gov:qdm:v5_5" dataType="ns1:PatientCharacteristicEthnicity" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="42:40-42:50" name="Ethnicity" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="50" locator="44:1-45:43" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="50">
+               <a:s>define &quot;SDE Payer&quot;:
+  </a:s>
+               <a:s r="49">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="49" locator="45:3-45:43" xmlns:ns2="urn:healthit-gov:qdm:v5_5" dataType="ns2:PatientCharacteristicPayer" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="45:36-45:42" name="Payer" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="52" locator="47:1-48:41" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="52">
+               <a:s>define &quot;SDE Race&quot;:
+  </a:s>
+               <a:s r="51">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="51" locator="48:3-48:41" xmlns:ns3="urn:healthit-gov:qdm:v5_5" dataType="ns3:PatientCharacteristicRace" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="48:35-48:40" name="Race" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="54" locator="50:1-51:58" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="54">
+               <a:s>define &quot;SDE Sex&quot;:
+  </a:s>
+               <a:s r="53">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="53" locator="51:3-51:58" xmlns:ns4="urn:healthit-gov:qdm:v5_5" dataType="ns4:PatientCharacteristicSex" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+            <codes locator="51:34-51:57" name="ONC Administrative Sex" xsi:type="ValueSetRef"/>
+         </expression>
+      </def>
+      <def localId="67" locator="66:1-71:3" name="Has Qualifying Encounter" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="67">
+               <a:s>define &quot;Has Qualifying Encounter&quot;:
+  </a:s>
+               <a:s r="66">
+                  <a:s>exists </a:s>
+                  <a:s r="65">
+                     <a:s>( </a:s>
+                     <a:s r="65">
+                        <a:s>
+                           <a:s r="60">
+                              <a:s r="59">
+                                 <a:s>( </a:s>
+                                 <a:s r="59">
+                                    <a:s r="57">
+                                       <a:s r="55">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Outpatient Consultation&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                       <a:s>
+      union </a:s>
+                                       <a:s r="56">
+                                          <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                          <a:s>
+                                             <a:s>&quot;Office Visit&quot;</a:s>
+                                          </a:s>
+                                          <a:s>]</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+      union </a:s>
+                                    <a:s r="58">
+                                       <a:s>[&quot;Encounter, Performed&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Postoperative follow-up visit, normally included in the surgical package, to indicate that an evaluation and management service was performed during a postoperative period for a reason(s) related to the original procedure&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> )</a:s>
+                              </a:s>
+                              <a:s> ValidEncounters</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="64">
+                           <a:s>where </a:s>
+                           <a:s r="64">
+                              <a:s r="62">
+                                 <a:s r="61">
+                                    <a:s>ValidEncounters</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="62">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="64"> during </a:s>
+                              <a:s r="63">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="66" locator="67:3-71:3" xsi:type="Exists">
+            <operand localId="65" locator="67:10-71:3" xsi:type="Query">
+               <source localId="60" locator="67:12-69:279" alias="ValidEncounters">
+                  <expression localId="59" locator="67:12-69:263" xsi:type="Union">
+                     <operand localId="57" locator="67:14-68:52" xsi:type="Union">
+                        <operand localId="55" locator="67:14-67:64" xmlns:ns5="urn:healthit-gov:qdm:v5_5" dataType="ns5:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                           <codes locator="67:39-67:63" name="Outpatient Consultation" xsi:type="ValueSetRef"/>
+                        </operand>
+                        <operand localId="56" locator="68:13-68:52" xmlns:ns6="urn:healthit-gov:qdm:v5_5" dataType="ns6:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                           <codes locator="68:38-68:51" name="Office Visit" xsi:type="ValueSetRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="58" locator="69:13-69:261" xmlns:ns7="urn:healthit-gov:qdm:v5_5" dataType="ns7:PositiveEncounterPerformed" templateId="PositiveEncounterPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                        <codes xsi:type="ToList">
+                           <operand locator="69:38-69:260" name="Postoperative follow-up visit, normally included in the surgical package, to indicate that an evaluation and management service was performed during a postoperative period for a reason(s) related to the original procedure" xsi:type="CodeRef"/>
+                        </codes>
+                     </operand>
+                  </expression>
+               </source>
+               <where localId="64" locator="70:7-70:70" xsi:type="IncludedIn">
+                  <operand localId="62" locator="70:13-70:42" path="relevantPeriod" scope="ValidEncounters" xsi:type="Property"/>
+                  <operand localId="63" locator="70:51-70:70" name="Measurement Period" xsi:type="ParameterRef"/>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="78" locator="194:1-196:105" name="Total Hip Arthroplasty Procedure" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="78">
+               <a:s>define &quot;Total Hip Arthroplasty Procedure&quot;:
+  </a:s>
+               <a:s r="77">
+                  <a:s>
+                     <a:s r="70">
+                        <a:s r="69">
+                           <a:s r="69">
+                              <a:s>[&quot;Procedure, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Primary THA Procedure&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> THAProcedure</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="76">
+                     <a:s>where </a:s>
+                     <a:s r="76">
+                        <a:s r="72">
+                           <a:s r="71">
+                              <a:s>THAProcedure</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="72">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="76">
+                           <a:s>starts </a:s>
+                           <a:s r="75">
+                              <a:s>12 months</a:s>
+                           </a:s>
+                           <a:s> or less on or before</a:s>
+                        </a:s>
+                        <a:s> </a:s>
+                        <a:s r="74">
+                           <a:s>start of </a:s>
+                           <a:s r="73">
+                              <a:s>&quot;Measurement Period&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="77" locator="195:3-196:105" xsi:type="Query">
+            <source localId="70" locator="195:3-195:64" alias="THAProcedure">
+               <expression localId="69" locator="195:3-195:51" xmlns:ns8="urn:healthit-gov:qdm:v5_5" dataType="ns8:PositiveProcedurePerformed" templateId="PositiveProcedurePerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="195:28-195:50" name="Primary THA Procedure" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="76" locator="196:5-196:105" xsi:type="And">
+               <operand locator="196:46-196:62" xsi:type="In">
+                  <operand locator="196:39-196:44" xsi:type="Start">
+                     <operand localId="72" locator="196:11-196:37" path="relevantPeriod" scope="THAProcedure" xsi:type="Property"/>
+                  </operand>
+                  <operand locator="196:46-196:62" lowClosed="true" highClosed="true" xsi:type="Interval">
+                     <low locator="196:77-196:105" xsi:type="Subtract">
+                        <operand localId="74" locator="196:77-196:105" xsi:type="Start">
+                           <operand localId="73" locator="196:86-196:105" name="Measurement Period" xsi:type="ParameterRef"/>
+                        </operand>
+                        <operand localId="75" locator="196:46-196:54" value="12" unit="months" xsi:type="Quantity"/>
+                     </low>
+                     <high localId="74" locator="196:77-196:105" xsi:type="Start">
+                        <operand localId="73" locator="196:86-196:105" name="Measurement Period" xsi:type="ParameterRef"/>
+                     </high>
+                  </operand>
+               </operand>
+               <operand locator="196:46-196:62" xsi:type="Not">
+                  <operand locator="196:46-196:62" xsi:type="IsNull">
+                     <operand localId="74" locator="196:77-196:105" xsi:type="Start">
+                        <operand localId="73" locator="196:86-196:105" name="Measurement Period" xsi:type="ParameterRef"/>
+                     </operand>
+                  </operand>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="95" locator="73:1-78:5" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="95">
+               <a:s>define &quot;Initial Population&quot;:
+  </a:s>
+               <a:s r="94">
+                  <a:s r="81">
+                     <a:s r="68">
+                        <a:s>&quot;Has Qualifying Encounter&quot;</a:s>
+                     </a:s>
+                     <a:s>
+    and </a:s>
+                     <a:s r="80">
+                        <a:s>exists </a:s>
+                        <a:s r="79">
+                           <a:s>( </a:s>
+                           <a:s r="79">
+                              <a:s>&quot;Total Hip Arthroplasty Procedure&quot;</a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    and </a:s>
+                  <a:s r="93">
+                     <a:s>exists </a:s>
+                     <a:s r="92">
+                        <a:s>( </a:s>
+                        <a:s r="92">
+                           <a:s>
+                              <a:s r="83">
+                                 <a:s r="82">
+                                    <a:s r="82">
+                                       <a:s>[&quot;Patient Characteristic Birthdate&quot;: </a:s>
+                                       <a:s>
+                                          <a:s>&quot;Birth date&quot;</a:s>
+                                       </a:s>
+                                       <a:s>]</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> BirthDate</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+        </a:s>
+                           <a:s r="91">
+                              <a:s>where </a:s>
+                              <a:s r="91">
+                                 <a:s r="89">
+                                    <a:s r="84">
+                                       <a:s>Global</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="89">
+                                       <a:s>&quot;CalendarAgeInYearsAt&quot; ( </a:s>
+                                       <a:s r="86">
+                                          <a:s r="85">
+                                             <a:s>BirthDate</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="86">
+                                             <a:s>birthDatetime</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>, </a:s>
+                                       <a:s r="88">
+                                          <a:s>start of </a:s>
+                                          <a:s r="87">
+                                             <a:s>&quot;Measurement Period&quot;</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s> )</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="90"> >= 19</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+    )</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="94" locator="74:3-78:5" xsi:type="And">
+            <operand localId="81" locator="74:3-75:53" xsi:type="And">
+               <operand localId="68" locator="74:3-74:28" name="Has Qualifying Encounter" xsi:type="ExpressionRef"/>
+               <operand localId="80" locator="75:9-75:53" xsi:type="Exists">
+                  <operand localId="79" locator="75:16-75:53" name="Total Hip Arthroplasty Procedure" xsi:type="ExpressionRef"/>
+               </operand>
+            </operand>
+            <operand localId="93" locator="76:9-78:5" xsi:type="Exists">
+               <operand localId="92" locator="76:16-78:5" xsi:type="Query">
+                  <source localId="83" locator="76:18-76:77" alias="BirthDate">
+                     <expression localId="82" locator="76:18-76:67" xmlns:ns9="urn:healthit-gov:qdm:v5_5" dataType="ns9:PatientCharacteristicBirthdate" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                        <codes xsi:type="ToList">
+                           <operand locator="76:55-76:66" name="Birth date" xsi:type="CodeRef"/>
+                        </codes>
+                     </expression>
+                  </source>
+                  <where localId="91" locator="77:9-77:108" xsi:type="GreaterOrEqual">
+                     <operand localId="89" locator="77:15-77:102" name="CalendarAgeInYearsAt" libraryName="Global" xsi:type="FunctionRef">
+                        <operand localId="86" locator="77:47-77:69" path="birthDatetime" scope="BirthDate" xsi:type="Property"/>
+                        <operand localId="88" locator="77:72-77:100" xsi:type="Start">
+                           <operand localId="87" locator="77:81-77:100" name="Measurement Period" xsi:type="ParameterRef"/>
+                        </operand>
+                     </operand>
+                     <operand localId="90" locator="77:107-77:108" valueType="t:Integer" value="19" xsi:type="Literal"/>
+                  </where>
+               </operand>
+            </operand>
+         </expression>
+      </def>
+      <def localId="97" locator="53:1-54:22" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="97">
+               <a:s>define &quot;Denominator&quot;:
+  </a:s>
+               <a:s r="96">
+                  <a:s>&quot;Initial Population&quot;</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="96" locator="54:3-54:22" name="Initial Population" xsi:type="ExpressionRef"/>
+      </def>
+      <def localId="106" locator="56:1-59:3" name="Has Dementia Diagnosis" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="106">
+               <a:s>define &quot;Has Dementia Diagnosis&quot;:
+  </a:s>
+               <a:s r="105">
+                  <a:s>exists </a:s>
+                  <a:s r="104">
+                     <a:s>( </a:s>
+                     <a:s r="104">
+                        <a:s>
+                           <a:s r="99">
+                              <a:s r="98">
+                                 <a:s r="98">
+                                    <a:s>[&quot;Diagnosis&quot;: </a:s>
+                                    <a:s>
+                                       <a:s>&quot;Severe dementia (disorder)&quot;</a:s>
+                                    </a:s>
+                                    <a:s>]</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> Dementia</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="103">
+                           <a:s>where </a:s>
+                           <a:s r="103">
+                              <a:s r="101">
+                                 <a:s r="100">
+                                    <a:s>Dementia</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="101">
+                                    <a:s>prevalencePeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="103"> overlaps </a:s>
+                              <a:s r="102">
+                                 <a:s>&quot;Measurement Period&quot;</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="105" locator="57:3-59:3" xsi:type="Exists">
+            <operand localId="104" locator="57:10-59:3" xsi:type="Query">
+               <source localId="99" locator="57:12-57:63" alias="Dementia">
+                  <expression localId="98" locator="57:12-57:54" xmlns:ns10="urn:healthit-gov:qdm:v5_5" dataType="ns10:Diagnosis" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                     <codes xsi:type="ToList">
+                        <operand locator="57:26-57:53" name="Severe dementia (disorder)" xsi:type="CodeRef"/>
+                     </codes>
+                  </expression>
+               </source>
+               <where localId="103" locator="58:7-58:67" xsi:type="Overlaps">
+                  <operand localId="101" locator="58:13-58:37" path="prevalencePeriod" scope="Dementia" xsi:type="Property"/>
+                  <operand localId="102" locator="58:48-58:67" name="Measurement Period" xsi:type="ParameterRef"/>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="126" locator="121:1-126:3" name="Has Total Hip Arthroplasty with 2 or More Lower Body Fractures" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="126">
+               <a:s>define &quot;Has Total Hip Arthroplasty with 2 or More Lower Body Fractures&quot;:
+  </a:s>
+               <a:s r="125">
+                  <a:s>exists </a:s>
+                  <a:s r="124">
+                     <a:s>( </a:s>
+                     <a:s r="124">
+                        <a:s>
+                           <a:s r="110">
+                              <a:s r="109">
+                                 <a:s>
+                                    <a:s>&quot;Total Hip Arthroplasty Procedure&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> THAProcedure</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="123">
+                           <a:s>where </a:s>
+                           <a:s r="123">
+                              <a:s r="121">
+                                 <a:s>Count(</a:s>
+                                 <a:s r="120">
+                                    <a:s>
+                                       <a:s r="112">
+                                          <a:s r="111">
+                                             <a:s r="111">
+                                                <a:s>[&quot;Diagnosis&quot;: </a:s>
+                                                <a:s>
+                                                   <a:s>&quot;Fracture - Lower Body&quot;</a:s>
+                                                </a:s>
+                                                <a:s>]</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> LowerBodyFracture</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+          </a:s>
+                                    <a:s r="119">
+                                       <a:s>where </a:s>
+                                       <a:s r="119">
+                                          <a:s r="114">
+                                             <a:s r="113">
+                                                <a:s>LowerBodyFracture</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="114">
+                                                <a:s>prevalencePeriod</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> </a:s>
+                                          <a:s r="119">
+                                             <a:s>starts less than </a:s>
+                                             <a:s r="118">
+                                                <a:s>1 day</a:s>
+                                             </a:s>
+                                             <a:s> on or before</a:s>
+                                          </a:s>
+                                          <a:s> </a:s>
+                                          <a:s r="117">
+                                             <a:s>start of </a:s>
+                                             <a:s r="116">
+                                                <a:s r="115">
+                                                   <a:s>THAProcedure</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="116">
+                                                   <a:s>relevantPeriod</a:s>
+                                                </a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+      )</a:s>
+                              </a:s>
+                              <a:s r="122">>= 2</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="125" locator="122:3-126:3" xsi:type="Exists">
+            <operand localId="124" locator="122:10-126:3" xsi:type="Query">
+               <source localId="110" locator="122:12-122:58" alias="THAProcedure">
+                  <expression localId="109" locator="122:12-122:45" name="Total Hip Arthroplasty Procedure" xsi:type="ExpressionRef"/>
+               </source>
+               <where localId="123" locator="123:7-125:11" xsi:type="GreaterOrEqual">
+                  <operand localId="121" locator="123:13-125:7" xsi:type="Count">
+                     <source localId="120" locator="123:19-124:123" xsi:type="Query">
+                        <source localId="112" locator="123:19-123:74" alias="LowerBodyFracture">
+                           <expression localId="111" locator="123:19-123:56" xmlns:ns11="urn:healthit-gov:qdm:v5_5" dataType="ns11:Diagnosis" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                              <codes locator="123:33-123:55" name="Fracture - Lower Body" xsi:type="ValueSetRef"/>
+                           </expression>
+                        </source>
+                        <where localId="119" locator="124:11-124:123" xsi:type="And">
+                           <operand locator="124:59-124:73" xsi:type="In">
+                              <operand locator="124:52-124:57" xsi:type="Start">
+                                 <operand localId="114" locator="124:17-124:50" path="prevalencePeriod" scope="LowerBodyFracture" xsi:type="Property"/>
+                              </operand>
+                              <operand locator="124:59-124:73" lowClosed="false" highClosed="true" xsi:type="Interval">
+                                 <low locator="124:88-124:123" xsi:type="Subtract">
+                                    <operand localId="117" locator="124:88-124:123" xsi:type="Start">
+                                       <operand localId="116" locator="124:97-124:123" path="relevantPeriod" scope="THAProcedure" xsi:type="Property"/>
+                                    </operand>
+                                    <operand localId="118" locator="124:69-124:73" value="1" unit="day" xsi:type="Quantity"/>
+                                 </low>
+                                 <high localId="117" locator="124:88-124:123" xsi:type="Start">
+                                    <operand localId="116" locator="124:97-124:123" path="relevantPeriod" scope="THAProcedure" xsi:type="Property"/>
+                                 </high>
+                              </operand>
+                           </operand>
+                           <operand locator="124:59-124:73" xsi:type="Not">
+                              <operand locator="124:59-124:73" xsi:type="IsNull">
+                                 <operand localId="117" locator="124:88-124:123" xsi:type="Start">
+                                    <operand localId="116" locator="124:97-124:123" path="relevantPeriod" scope="THAProcedure" xsi:type="Property"/>
+                                 </operand>
+                              </operand>
+                           </operand>
+                        </where>
+                     </source>
+                  </operand>
+                  <operand localId="122" locator="125:11" valueType="t:Integer" value="2" xsi:type="Literal"/>
+               </where>
+            </operand>
+         </expression>
+      </def>
+      <def localId="131" locator="61:1-64:31" name="Denominator Exclusions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="131">
+               <a:s>define &quot;Denominator Exclusions&quot;:
+  </a:s>
+               <a:s r="130">
+                  <a:s r="128">
+                     <a:s r="108">
+                        <a:s r="107">
+                           <a:s>Hospice</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="108">
+                           <a:s>&quot;Has Hospice&quot;</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    or </a:s>
+                     <a:s r="127">
+                        <a:s>&quot;Has Total Hip Arthroplasty with 2 or More Lower Body Fractures&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    or </a:s>
+                  <a:s r="129">
+                     <a:s>&quot;Has Dementia Diagnosis&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="130" locator="62:3-64:31" xsi:type="Or">
+            <operand localId="128" locator="62:3-63:71" xsi:type="Or">
+               <operand localId="108" locator="62:3-62:23" name="Has Hospice" libraryName="Hospice" xsi:type="ExpressionRef"/>
+               <operand localId="127" locator="63:8-63:71" name="Has Total Hip Arthroplasty with 2 or More Lower Body Fractures" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="129" locator="64:8-64:31" name="Has Dementia Diagnosis" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+      <def localId="199" locator="80:1-96:174" name="Time HOOS Total Assessment Completed" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="199">
+               <a:s>define &quot;Time HOOS Total Assessment Completed&quot;:
+  </a:s>
+               <a:s r="198">
+                  <a:s>
+                     <a:s>from
+    </a:s>
+                     <a:s r="133">
+                        <a:s r="132">
+                           <a:s r="132">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Quality of life score [HOOS]&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> HOOSLifeQuality</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="135">
+                        <a:s r="134">
+                           <a:s r="134">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Sport-recreation score [HOOS]&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> HOOSSport</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="137">
+                        <a:s r="136">
+                           <a:s r="136">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Activities of daily living score [HOOS]&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> HOOSActivityScore</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="139">
+                        <a:s r="138">
+                           <a:s r="138">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Symptoms score [HOOS]&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> HOOSSymptoms</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="141">
+                        <a:s r="140">
+                           <a:s r="140">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Pain score [HOOS]&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> HOOSPain</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="184">
+                     <a:s>where </a:s>
+                     <a:s r="184">
+                        <a:s r="180">
+                           <a:s r="176">
+                              <a:s r="170">
+                                 <a:s r="166">
+                                    <a:s r="160">
+                                       <a:s r="156">
+                                          <a:s r="150">
+                                             <a:s r="146">
+                                                <a:s r="143">
+                                                   <a:s r="142">
+                                                      <a:s>HOOSLifeQuality</a:s>
+                                                   </a:s>
+                                                   <a:s>.</a:s>
+                                                   <a:s r="143">
+                                                      <a:s>relevantDatetime</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                                <a:s r="146"> same day as </a:s>
+                                                <a:s r="145">
+                                                   <a:s r="144">
+                                                      <a:s>HOOSSport</a:s>
+                                                   </a:s>
+                                                   <a:s>.</a:s>
+                                                   <a:s r="145">
+                                                      <a:s>relevantDatetime</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s>
+      and </a:s>
+                                             <a:s r="149">
+                                                <a:s r="148">
+                                                   <a:s r="147">
+                                                      <a:s>HOOSSport</a:s>
+                                                   </a:s>
+                                                   <a:s>.</a:s>
+                                                   <a:s r="148">
+                                                      <a:s>result</a:s>
+                                                   </a:s>
+                                                </a:s>
+                                                <a:s> is not null</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s>
+      and </a:s>
+                                          <a:s r="155">
+                                             <a:s r="152">
+                                                <a:s r="151">
+                                                   <a:s>HOOSLifeQuality</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="152">
+                                                   <a:s>relevantDatetime</a:s>
+                                                </a:s>
+                                             </a:s>
+                                             <a:s r="155"> same day as </a:s>
+                                             <a:s r="154">
+                                                <a:s r="153">
+                                                   <a:s>HOOSActivityScore</a:s>
+                                                </a:s>
+                                                <a:s>.</a:s>
+                                                <a:s r="154">
+                                                   <a:s>relevantDatetime</a:s>
+                                                </a:s>
+                                             </a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s>
+      and </a:s>
+                                       <a:s r="159">
+                                          <a:s r="158">
+                                             <a:s r="157">
+                                                <a:s>HOOSActivityScore</a:s>
+                                             </a:s>
+                                             <a:s>.</a:s>
+                                             <a:s r="158">
+                                                <a:s>result</a:s>
+                                             </a:s>
+                                          </a:s>
+                                          <a:s> is not null</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s>
+      and </a:s>
+                                    <a:s r="165">
+                                       <a:s r="162">
+                                          <a:s r="161">
+                                             <a:s>HOOSLifeQuality</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="162">
+                                             <a:s>relevantDatetime</a:s>
+                                          </a:s>
+                                       </a:s>
+                                       <a:s r="165"> same day as </a:s>
+                                       <a:s r="164">
+                                          <a:s r="163">
+                                             <a:s>HOOSSymptoms</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="164">
+                                             <a:s>relevantDatetime</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>
+      and </a:s>
+                                 <a:s r="169">
+                                    <a:s r="168">
+                                       <a:s r="167">
+                                          <a:s>HOOSSymptoms</a:s>
+                                       </a:s>
+                                       <a:s>.</a:s>
+                                       <a:s r="168">
+                                          <a:s>result</a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> is not null</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+      and </a:s>
+                              <a:s r="175">
+                                 <a:s r="172">
+                                    <a:s r="171">
+                                       <a:s>HOOSLifeQuality</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="172">
+                                       <a:s>relevantDatetime</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="175"> same day as </a:s>
+                                 <a:s r="174">
+                                    <a:s r="173">
+                                       <a:s>HOOSPain</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="174">
+                                       <a:s>relevantDatetime</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      and </a:s>
+                           <a:s r="179">
+                              <a:s r="178">
+                                 <a:s r="177">
+                                    <a:s>HOOSPain</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="178">
+                                    <a:s>result</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> is not null</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      and </a:s>
+                        <a:s r="183">
+                           <a:s r="182">
+                              <a:s r="181">
+                                 <a:s>HOOSLifeQuality</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="182">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="197">
+                     <a:s>return </a:s>
+                     <a:s r="196">
+                        <a:s>Max(</a:s>
+                        <a:s r="195">
+                           <a:s>{ </a:s>
+                           <a:s r="186">
+                              <a:s r="185">
+                                 <a:s>HOOSLifeQuality</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="186">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="188">
+                              <a:s r="187">
+                                 <a:s>HOOSSport</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="188">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="190">
+                              <a:s r="189">
+                                 <a:s>HOOSActivityScore</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="190">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="192">
+                              <a:s r="191">
+                                 <a:s>HOOSSymptoms</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="192">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="194">
+                              <a:s r="193">
+                                 <a:s>HOOSPain</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="194">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> }</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="198" locator="81:3-96:174" xsi:type="Query">
+            <source localId="133" locator="82:5-82:77" alias="HOOSLifeQuality">
+               <expression localId="132" locator="82:5-82:61" xmlns:ns12="urn:healthit-gov:qdm:v5_5" dataType="ns12:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="82:31-82:60" name="Quality of life score [HOOS]" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <source localId="135" locator="83:5-83:72" alias="HOOSSport">
+               <expression localId="134" locator="83:5-83:62" xmlns:ns13="urn:healthit-gov:qdm:v5_5" dataType="ns13:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="83:31-83:61" name="Sport-recreation score [HOOS]" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <source localId="137" locator="84:5-84:90" alias="HOOSActivityScore">
+               <expression localId="136" locator="84:5-84:72" xmlns:ns14="urn:healthit-gov:qdm:v5_5" dataType="ns14:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="84:31-84:71" name="Activities of daily living score [HOOS]" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <source localId="139" locator="85:5-85:67" alias="HOOSSymptoms">
+               <expression localId="138" locator="85:5-85:54" xmlns:ns15="urn:healthit-gov:qdm:v5_5" dataType="ns15:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="85:31-85:53" name="Symptoms score [HOOS]" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <source localId="141" locator="86:5-86:59" alias="HOOSPain">
+               <expression localId="140" locator="86:5-86:50" xmlns:ns16="urn:healthit-gov:qdm:v5_5" dataType="ns16:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="86:31-86:49" name="Pain score [HOOS]" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="184" locator="87:5-95:44" xsi:type="And">
+               <operand localId="180" locator="87:11-94:37" xsi:type="And">
+                  <operand localId="176" locator="87:11-93:80" xsi:type="And">
+                     <operand localId="170" locator="87:11-92:41" xsi:type="And">
+                        <operand localId="166" locator="87:11-91:84" xsi:type="And">
+                           <operand localId="160" locator="87:11-90:46" xsi:type="And">
+                              <operand localId="156" locator="87:11-89:89" xsi:type="And">
+                                 <operand localId="150" locator="87:11-88:38" xsi:type="And">
+                                    <operand localId="146" locator="87:11-87:81" precision="Day" xsi:type="SameAs">
+                                       <operand localId="143" locator="87:11-87:42" path="relevantDatetime" scope="HOOSLifeQuality" xsi:type="Property"/>
+                                       <operand localId="145" locator="87:56-87:81" path="relevantDatetime" scope="HOOSSport" xsi:type="Property"/>
+                                    </operand>
+                                    <operand localId="149" locator="88:11-88:38" xsi:type="Not">
+                                       <operand locator="88:11-88:38" xsi:type="IsNull">
+                                          <operand localId="148" locator="88:11-88:26" path="result" scope="HOOSSport" xsi:type="Property"/>
+                                       </operand>
+                                    </operand>
+                                 </operand>
+                                 <operand localId="155" locator="89:11-89:89" precision="Day" xsi:type="SameAs">
+                                    <operand localId="152" locator="89:11-89:42" path="relevantDatetime" scope="HOOSLifeQuality" xsi:type="Property"/>
+                                    <operand localId="154" locator="89:56-89:89" path="relevantDatetime" scope="HOOSActivityScore" xsi:type="Property"/>
+                                 </operand>
+                              </operand>
+                              <operand localId="159" locator="90:11-90:46" xsi:type="Not">
+                                 <operand locator="90:11-90:46" xsi:type="IsNull">
+                                    <operand localId="158" locator="90:11-90:34" path="result" scope="HOOSActivityScore" xsi:type="Property"/>
+                                 </operand>
+                              </operand>
+                           </operand>
+                           <operand localId="165" locator="91:11-91:84" precision="Day" xsi:type="SameAs">
+                              <operand localId="162" locator="91:11-91:42" path="relevantDatetime" scope="HOOSLifeQuality" xsi:type="Property"/>
+                              <operand localId="164" locator="91:56-91:84" path="relevantDatetime" scope="HOOSSymptoms" xsi:type="Property"/>
+                           </operand>
+                        </operand>
+                        <operand localId="169" locator="92:11-92:41" xsi:type="Not">
+                           <operand locator="92:11-92:41" xsi:type="IsNull">
+                              <operand localId="168" locator="92:11-92:29" path="result" scope="HOOSSymptoms" xsi:type="Property"/>
+                           </operand>
+                        </operand>
+                     </operand>
+                     <operand localId="175" locator="93:11-93:80" precision="Day" xsi:type="SameAs">
+                        <operand localId="172" locator="93:11-93:42" path="relevantDatetime" scope="HOOSLifeQuality" xsi:type="Property"/>
+                        <operand localId="174" locator="93:56-93:80" path="relevantDatetime" scope="HOOSPain" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+                  <operand localId="179" locator="94:11-94:37" xsi:type="Not">
+                     <operand locator="94:11-94:37" xsi:type="IsNull">
+                        <operand localId="178" locator="94:11-94:25" path="result" scope="HOOSPain" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="183" locator="95:11-95:44" xsi:type="Not">
+                  <operand locator="95:11-95:44" xsi:type="IsNull">
+                     <operand localId="182" locator="95:11-95:32" path="result" scope="HOOSLifeQuality" xsi:type="Property"/>
+                  </operand>
+               </operand>
+            </where>
+            <return localId="197" locator="96:5-96:174">
+               <expression localId="196" locator="96:12-96:174" xsi:type="Max">
+                  <source localId="195" locator="96:16-96:173" xsi:type="List">
+                     <element localId="186" locator="96:18-96:49" path="relevantDatetime" scope="HOOSLifeQuality" xsi:type="Property"/>
+                     <element localId="188" locator="96:52-96:77" path="relevantDatetime" scope="HOOSSport" xsi:type="Property"/>
+                     <element localId="190" locator="96:80-96:113" path="relevantDatetime" scope="HOOSActivityScore" xsi:type="Property"/>
+                     <element localId="192" locator="96:116-96:144" path="relevantDatetime" scope="HOOSSymptoms" xsi:type="Property"/>
+                     <element localId="194" locator="96:147-96:171" path="relevantDatetime" scope="HOOSPain" xsi:type="Property"/>
+                  </source>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="206" locator="98:1-101:3" name="HOOSJr Total Assessment Completed" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="206">
+               <a:s>define &quot;HOOSJr Total Assessment Completed&quot;:
+  </a:s>
+               <a:s r="205">
+                  <a:s>( </a:s>
+                  <a:s r="205">
+                     <a:s>
+                        <a:s r="201">
+                           <a:s r="200">
+                              <a:s r="200">
+                                 <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                                 <a:s>
+                                    <a:s>&quot;Hip Dysfunction and Osteoarthritis Outcome Score for Joint Replacement [HOOSJR]&quot;</a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> HOOSJr</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+      </a:s>
+                     <a:s r="204">
+                        <a:s>where </a:s>
+                        <a:s r="204">
+                           <a:s r="203">
+                              <a:s r="202">
+                                 <a:s>HOOSJr</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="203">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+  )</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="205" locator="99:3-101:3" xsi:type="Query">
+            <source localId="201" locator="99:5-99:119" alias="HOOSJr">
+               <expression localId="200" locator="99:5-99:112" xmlns:ns17="urn:healthit-gov:qdm:v5_5" dataType="ns17:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="in" xsi:type="Retrieve">
+                  <codes locator="99:31-99:111" name="Hip Dysfunction and Osteoarthritis Outcome Score for Joint Replacement [HOOSJR]" xsi:type="ValueSetRef"/>
+               </expression>
+            </source>
+            <where localId="204" locator="100:7-100:37" xsi:type="Not">
+               <operand locator="100:13-100:37" xsi:type="IsNull">
+                  <operand localId="203" locator="100:13-100:25" path="result" scope="HOOSJr" xsi:type="Property"/>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="232" locator="103:1-110:98" name="Time VR12 Oblique Total Assessment Completed" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="232">
+               <a:s>define &quot;Time VR12 Oblique Total Assessment Completed&quot;:
+  </a:s>
+               <a:s r="231">
+                  <a:s>
+                     <a:s>from
+    </a:s>
+                     <a:s r="208">
+                        <a:s r="207">
+                           <a:s r="207">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;VR-12 Mental component summary (MCS) score - oblique method T-score&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> VR12MentalAssessment</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="210">
+                        <a:s r="209">
+                           <a:s r="209">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;VR-12 Physical component summary (PCS) score - oblique method T-score&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> VR12PhysicalAssessment</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="223">
+                     <a:s>where </a:s>
+                     <a:s r="223">
+                        <a:s r="219">
+                           <a:s r="215">
+                              <a:s r="212">
+                                 <a:s r="211">
+                                    <a:s>VR12MentalAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="212">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="215"> same day as </a:s>
+                              <a:s r="214">
+                                 <a:s r="213">
+                                    <a:s>VR12PhysicalAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="214">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      and </a:s>
+                           <a:s r="218">
+                              <a:s r="217">
+                                 <a:s r="216">
+                                    <a:s>VR12MentalAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="217">
+                                    <a:s>result</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> is not null</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      and </a:s>
+                        <a:s r="222">
+                           <a:s r="221">
+                              <a:s r="220">
+                                 <a:s>VR12PhysicalAssessment</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="221">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="230">
+                     <a:s>return </a:s>
+                     <a:s r="229">
+                        <a:s>Max(</a:s>
+                        <a:s r="228">
+                           <a:s>{ </a:s>
+                           <a:s r="225">
+                              <a:s r="224">
+                                 <a:s>VR12MentalAssessment</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="225">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="227">
+                              <a:s r="226">
+                                 <a:s>VR12PhysicalAssessment</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="227">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> }</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="231" locator="104:3-110:98" xsi:type="Query">
+            <source localId="208" locator="105:5-105:121" alias="VR12MentalAssessment">
+               <expression localId="207" locator="105:5-105:100" xmlns:ns18="urn:healthit-gov:qdm:v5_5" dataType="ns18:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="105:31-105:99" name="VR-12 Mental component summary (MCS) score - oblique method T-score" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <source localId="210" locator="106:5-106:125" alias="VR12PhysicalAssessment">
+               <expression localId="209" locator="106:5-106:102" xmlns:ns19="urn:healthit-gov:qdm:v5_5" dataType="ns19:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="106:31-106:101" name="VR-12 Physical component summary (PCS) score - oblique method T-score" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="223" locator="107:5-109:51" xsi:type="And">
+               <operand localId="219" locator="107:11-108:49" xsi:type="And">
+                  <operand localId="215" locator="107:11-107:99" precision="Day" xsi:type="SameAs">
+                     <operand localId="212" locator="107:11-107:47" path="relevantDatetime" scope="VR12MentalAssessment" xsi:type="Property"/>
+                     <operand localId="214" locator="107:61-107:99" path="relevantDatetime" scope="VR12PhysicalAssessment" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="218" locator="108:11-108:49" xsi:type="Not">
+                     <operand locator="108:11-108:49" xsi:type="IsNull">
+                        <operand localId="217" locator="108:11-108:37" path="result" scope="VR12MentalAssessment" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="222" locator="109:11-109:51" xsi:type="Not">
+                  <operand locator="109:11-109:51" xsi:type="IsNull">
+                     <operand localId="221" locator="109:11-109:39" path="result" scope="VR12PhysicalAssessment" xsi:type="Property"/>
+                  </operand>
+               </operand>
+            </where>
+            <return localId="230" locator="110:5-110:98">
+               <expression localId="229" locator="110:12-110:98" xsi:type="Max">
+                  <source localId="228" locator="110:16-110:97" xsi:type="List">
+                     <element localId="225" locator="110:18-110:54" path="relevantDatetime" scope="VR12MentalAssessment" xsi:type="Property"/>
+                     <element localId="227" locator="110:57-110:95" path="relevantDatetime" scope="VR12PhysicalAssessment" xsi:type="Property"/>
+                  </source>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="258" locator="112:1-119:98" name="Time VR12 Orthogonal Total Assessment Completed" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="258">
+               <a:s>define &quot;Time VR12 Orthogonal Total Assessment Completed&quot;:
+  </a:s>
+               <a:s r="257">
+                  <a:s>
+                     <a:s>from
+    </a:s>
+                     <a:s r="234">
+                        <a:s r="233">
+                           <a:s r="233">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;VR-12 Mental component summary (MCS) score - orthogonal method T-score&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> VR12MentalOrthogonal</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="236">
+                        <a:s r="235">
+                           <a:s r="235">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;VR-12 Physical component summary (PCS) score - orthogonal method T-score&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> VR12PhysicalOrthogonal</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="249">
+                     <a:s>where </a:s>
+                     <a:s r="249">
+                        <a:s r="245">
+                           <a:s r="241">
+                              <a:s r="238">
+                                 <a:s r="237">
+                                    <a:s>VR12MentalOrthogonal</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="238">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="241"> same day as </a:s>
+                              <a:s r="240">
+                                 <a:s r="239">
+                                    <a:s>VR12PhysicalOrthogonal</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="240">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      and </a:s>
+                           <a:s r="244">
+                              <a:s r="243">
+                                 <a:s r="242">
+                                    <a:s>VR12MentalOrthogonal</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="243">
+                                    <a:s>result</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> is not null</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      and </a:s>
+                        <a:s r="248">
+                           <a:s r="247">
+                              <a:s r="246">
+                                 <a:s>VR12PhysicalOrthogonal</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="247">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="256">
+                     <a:s>return </a:s>
+                     <a:s r="255">
+                        <a:s>Max(</a:s>
+                        <a:s r="254">
+                           <a:s>{ </a:s>
+                           <a:s r="251">
+                              <a:s r="250">
+                                 <a:s>VR12MentalOrthogonal</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="251">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="253">
+                              <a:s r="252">
+                                 <a:s>VR12PhysicalOrthogonal</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="253">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> }</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="257" locator="113:3-119:98" xsi:type="Query">
+            <source localId="234" locator="114:5-114:124" alias="VR12MentalOrthogonal">
+               <expression localId="233" locator="114:5-114:103" xmlns:ns20="urn:healthit-gov:qdm:v5_5" dataType="ns20:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="114:31-114:102" name="VR-12 Mental component summary (MCS) score - orthogonal method T-score" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <source localId="236" locator="115:5-115:128" alias="VR12PhysicalOrthogonal">
+               <expression localId="235" locator="115:5-115:105" xmlns:ns21="urn:healthit-gov:qdm:v5_5" dataType="ns21:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="115:31-115:104" name="VR-12 Physical component summary (PCS) score - orthogonal method T-score" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="249" locator="116:5-118:51" xsi:type="And">
+               <operand localId="245" locator="116:11-117:49" xsi:type="And">
+                  <operand localId="241" locator="116:11-116:99" precision="Day" xsi:type="SameAs">
+                     <operand localId="238" locator="116:11-116:47" path="relevantDatetime" scope="VR12MentalOrthogonal" xsi:type="Property"/>
+                     <operand localId="240" locator="116:61-116:99" path="relevantDatetime" scope="VR12PhysicalOrthogonal" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="244" locator="117:11-117:49" xsi:type="Not">
+                     <operand locator="117:11-117:49" xsi:type="IsNull">
+                        <operand localId="243" locator="117:11-117:37" path="result" scope="VR12MentalOrthogonal" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="248" locator="118:11-118:51" xsi:type="Not">
+                  <operand locator="118:11-118:51" xsi:type="IsNull">
+                     <operand localId="247" locator="118:11-118:39" path="result" scope="VR12PhysicalOrthogonal" xsi:type="Property"/>
+                  </operand>
+               </operand>
+            </where>
+            <return localId="256" locator="119:5-119:98">
+               <expression localId="255" locator="119:12-119:98" xsi:type="Max">
+                  <source localId="254" locator="119:16-119:97" xsi:type="List">
+                     <element localId="251" locator="119:18-119:54" path="relevantDatetime" scope="VR12MentalOrthogonal" xsi:type="Property"/>
+                     <element localId="253" locator="119:57-119:95" path="relevantDatetime" scope="VR12PhysicalOrthogonal" xsi:type="Property"/>
+                  </source>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="287" locator="128:1-136:3" name="Has THA with Initial and Follow Up HOOS Assessments" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="287">
+               <a:s>define &quot;Has THA with Initial and Follow Up HOOS Assessments&quot;:
+  </a:s>
+               <a:s r="286">
+                  <a:s>exists </a:s>
+                  <a:s r="285">
+                     <a:s>( </a:s>
+                     <a:s r="285">
+                        <a:s>
+                           <a:s r="260">
+                              <a:s r="259">
+                                 <a:s>
+                                    <a:s>&quot;Total Hip Arthroplasty Procedure&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> TotalHip</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="268">
+                           <a:s>with </a:s>
+                           <a:s r="262">
+                              <a:s r="261">
+                                 <a:s>
+                                    <a:s>&quot;Time HOOS Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> InitialHipAssessmentHOOS</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="267">
+                              <a:s r="264">
+                                 <a:s r="263">
+                                    <a:s>TotalHip</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="264">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="267">
+                                 <a:s>starts </a:s>
+                                 <a:s r="266">
+                                    <a:s>90 days</a:s>
+                                 </a:s>
+                                 <a:s> or less on or after</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="265">
+                                 <a:s>InitialHipAssessmentHOOS</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="284">
+                           <a:s>with </a:s>
+                           <a:s r="270">
+                              <a:s r="269">
+                                 <a:s>
+                                    <a:s>&quot;Time HOOS Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> FollowupHipAssessmentHOOS</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="283">
+                              <a:s r="271">
+                                 <a:s>FollowupHipAssessmentHOOS</a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="282">
+                                 <a:s>Interval[
+        </a:s>
+                                 <a:s r="276">
+                                    <a:s r="274">
+                                       <a:s>end of </a:s>
+                                       <a:s r="273">
+                                          <a:s r="272">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="273">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="275">
+                                       <a:s>270 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, 
+        </a:s>
+                                 <a:s r="281">
+                                    <a:s r="279">
+                                       <a:s>end of </a:s>
+                                       <a:s r="278">
+                                          <a:s r="277">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="278">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="280">
+                                       <a:s>365 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="286" locator="129:3-136:3" xsi:type="Exists">
+            <operand localId="285" locator="129:10-136:3" xsi:type="Query">
+               <source localId="260" locator="129:12-129:54" alias="TotalHip">
+                  <expression localId="259" locator="129:12-129:45" name="Total Hip Arthroplasty Procedure" xsi:type="ExpressionRef"/>
+               </source>
+               <relationship localId="268" locator="130:7-131:101" alias="InitialHipAssessmentHOOS" xsi:type="With">
+                  <expression localId="261" locator="130:12-130:49" name="Time HOOS Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="267" locator="131:19-131:101" xsi:type="And">
+                     <operand locator="131:50-131:64" xsi:type="In">
+                        <operand locator="131:43-131:48" xsi:type="Start">
+                           <operand localId="264" locator="131:19-131:41" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                        </operand>
+                        <operand locator="131:50-131:64" lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <low localId="265" locator="131:78-131:101" name="InitialHipAssessmentHOOS" xsi:type="AliasRef"/>
+                           <high locator="131:78-131:101" xsi:type="Add">
+                              <operand localId="265" locator="131:78-131:101" name="InitialHipAssessmentHOOS" xsi:type="AliasRef"/>
+                              <operand localId="266" locator="131:50-131:56" value="90" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="131:50-131:64" xsi:type="Not">
+                        <operand locator="131:50-131:64" xsi:type="IsNull">
+                           <operand localId="265" locator="131:78-131:101" name="InitialHipAssessmentHOOS" xsi:type="AliasRef"/>
+                        </operand>
+                     </operand>
+                  </suchThat>
+               </relationship>
+               <relationship localId="284" locator="132:7-135:50" alias="FollowupHipAssessmentHOOS" xsi:type="With">
+                  <expression localId="269" locator="132:12-132:49" name="Time HOOS Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="283" locator="133:19-135:50" xsi:type="In">
+                     <operand localId="271" locator="133:19-133:43" name="FollowupHipAssessmentHOOS" xsi:type="AliasRef"/>
+                     <operand localId="282" locator="133:48-135:50" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="276" locator="134:9-134:49" xsi:type="Add">
+                           <operand localId="274" locator="134:9-134:38" xsi:type="End">
+                              <operand localId="273" locator="134:16-134:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="275" locator="134:42-134:49" value="270" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high localId="281" locator="135:9-135:49" xsi:type="Add">
+                           <operand localId="279" locator="135:9-135:38" xsi:type="End">
+                              <operand localId="278" locator="135:16-135:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="280" locator="135:42-135:49" value="365" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </suchThat>
+               </relationship>
+            </operand>
+         </expression>
+      </def>
+      <def localId="318" locator="138:1-146:3" name="Has THA with Initial and Follow Up HOOSJr Assessments" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="318">
+               <a:s>define &quot;Has THA with Initial and Follow Up HOOSJr Assessments&quot;:
+  </a:s>
+               <a:s r="317">
+                  <a:s>exists </a:s>
+                  <a:s r="316">
+                     <a:s>( </a:s>
+                     <a:s r="316">
+                        <a:s>
+                           <a:s r="289">
+                              <a:s r="288">
+                                 <a:s>
+                                    <a:s>&quot;Total Hip Arthroplasty Procedure&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> TotalHip</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="298">
+                           <a:s>with </a:s>
+                           <a:s r="291">
+                              <a:s r="290">
+                                 <a:s>
+                                    <a:s>&quot;HOOSJr Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> InitialHipAssessment</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="297">
+                              <a:s r="293">
+                                 <a:s r="292">
+                                    <a:s>TotalHip</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="293">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="297">
+                                 <a:s>starts </a:s>
+                                 <a:s r="296">
+                                    <a:s>90 days</a:s>
+                                 </a:s>
+                                 <a:s> or less on or after</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="295">
+                                 <a:s r="294">
+                                    <a:s>InitialHipAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="295">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="315">
+                           <a:s>with </a:s>
+                           <a:s r="300">
+                              <a:s r="299">
+                                 <a:s>
+                                    <a:s>&quot;HOOSJr Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> FollowupHipAssessment</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="314">
+                              <a:s r="302">
+                                 <a:s r="301">
+                                    <a:s>FollowupHipAssessment</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="302">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="313">
+                                 <a:s>Interval[
+        </a:s>
+                                 <a:s r="307">
+                                    <a:s r="305">
+                                       <a:s>end of </a:s>
+                                       <a:s r="304">
+                                          <a:s r="303">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="304">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="306">
+                                       <a:s>270 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, 
+        </a:s>
+                                 <a:s r="312">
+                                    <a:s r="310">
+                                       <a:s>end of </a:s>
+                                       <a:s r="309">
+                                          <a:s r="308">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="309">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="311">
+                                       <a:s>365 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="317" locator="139:3-146:3" xsi:type="Exists">
+            <operand localId="316" locator="139:10-146:3" xsi:type="Query">
+               <source localId="289" locator="139:12-139:54" alias="TotalHip">
+                  <expression localId="288" locator="139:12-139:45" name="Total Hip Arthroplasty Procedure" xsi:type="ExpressionRef"/>
+               </source>
+               <relationship localId="298" locator="140:7-141:114" alias="InitialHipAssessment" xsi:type="With">
+                  <expression localId="290" locator="140:12-140:46" name="HOOSJr Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="297" locator="141:19-141:114" xsi:type="And">
+                     <operand locator="141:50-141:64" xsi:type="In">
+                        <operand locator="141:43-141:48" xsi:type="Start">
+                           <operand localId="293" locator="141:19-141:41" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                        </operand>
+                        <operand locator="141:50-141:64" lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <low localId="295" locator="141:78-141:114" path="relevantDatetime" scope="InitialHipAssessment" xsi:type="Property"/>
+                           <high locator="141:99-141:114" xsi:type="Add">
+                              <operand localId="295" locator="141:78-141:114" path="relevantDatetime" scope="InitialHipAssessment" xsi:type="Property"/>
+                              <operand localId="296" locator="141:50-141:56" value="90" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="141:50-141:64" xsi:type="Not">
+                        <operand locator="141:50-141:64" xsi:type="IsNull">
+                           <operand localId="295" locator="141:78-141:114" path="relevantDatetime" scope="InitialHipAssessment" xsi:type="Property"/>
+                        </operand>
+                     </operand>
+                  </suchThat>
+               </relationship>
+               <relationship localId="315" locator="142:7-145:50" alias="FollowupHipAssessment" xsi:type="With">
+                  <expression localId="299" locator="142:12-142:46" name="HOOSJr Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="314" locator="143:19-145:50" xsi:type="In">
+                     <operand localId="302" locator="143:19-143:56" path="relevantDatetime" scope="FollowupHipAssessment" xsi:type="Property"/>
+                     <operand localId="313" locator="143:61-145:50" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="307" locator="144:9-144:49" xsi:type="Add">
+                           <operand localId="305" locator="144:9-144:38" xsi:type="End">
+                              <operand localId="304" locator="144:16-144:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="306" locator="144:42-144:49" value="270" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high localId="312" locator="145:9-145:49" xsi:type="Add">
+                           <operand localId="310" locator="145:9-145:38" xsi:type="End">
+                              <operand localId="309" locator="145:16-145:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="311" locator="145:42-145:49" value="365" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </suchThat>
+               </relationship>
+            </operand>
+         </expression>
+      </def>
+      <def localId="346" locator="185:1-192:96" name="Time PROMIS10 Total Assessment Completed" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="346">
+               <a:s>define &quot;Time PROMIS10 Total Assessment Completed&quot;:
+  </a:s>
+               <a:s r="345">
+                  <a:s>
+                     <a:s>from
+    </a:s>
+                     <a:s r="322">
+                        <a:s r="321">
+                           <a:s r="321">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;PROMIS-10 Global Mental Health (GMH) score T-score&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> Promis10MentalScore</a:s>
+                     </a:s>
+                     <a:s>,
+    </a:s>
+                     <a:s r="324">
+                        <a:s r="323">
+                           <a:s r="323">
+                              <a:s>[&quot;Assessment, Performed&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;PROMIS-10 Global Physical Health (GPH) score T-score&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> Promis10PhysicalScore</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="337">
+                     <a:s>where </a:s>
+                     <a:s r="337">
+                        <a:s r="333">
+                           <a:s r="329">
+                              <a:s r="326">
+                                 <a:s r="325">
+                                    <a:s>Promis10MentalScore</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="326">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s r="329"> same day as </a:s>
+                              <a:s r="328">
+                                 <a:s r="327">
+                                    <a:s>Promis10PhysicalScore</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="328">
+                                    <a:s>relevantDatetime</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>
+      and </a:s>
+                           <a:s r="332">
+                              <a:s r="331">
+                                 <a:s r="330">
+                                    <a:s>Promis10PhysicalScore</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="331">
+                                    <a:s>result</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> is not null</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      and </a:s>
+                        <a:s r="336">
+                           <a:s r="335">
+                              <a:s r="334">
+                                 <a:s>Promis10MentalScore</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="335">
+                                 <a:s>result</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> is not null</a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    </a:s>
+                  <a:s r="344">
+                     <a:s>return </a:s>
+                     <a:s r="343">
+                        <a:s>Max(</a:s>
+                        <a:s r="342">
+                           <a:s>{ </a:s>
+                           <a:s r="339">
+                              <a:s r="338">
+                                 <a:s>Promis10MentalScore</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="339">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>, </a:s>
+                           <a:s r="341">
+                              <a:s r="340">
+                                 <a:s>Promis10PhysicalScore</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="341">
+                                 <a:s>relevantDatetime</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> }</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="345" locator="186:3-192:96" xsi:type="Query">
+            <source localId="322" locator="187:5-187:103" alias="Promis10MentalScore">
+               <expression localId="321" locator="187:5-187:83" xmlns:ns22="urn:healthit-gov:qdm:v5_5" dataType="ns22:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="187:31-187:82" name="PROMIS-10 Global Mental Health (GMH) score T-score" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <source localId="324" locator="188:5-188:107" alias="Promis10PhysicalScore">
+               <expression localId="323" locator="188:5-188:85" xmlns:ns23="urn:healthit-gov:qdm:v5_5" dataType="ns23:PositiveAssessmentPerformed" templateId="PositiveAssessmentPerformed" codeProperty="code" codeComparator="~" xsi:type="Retrieve">
+                  <codes xsi:type="ToList">
+                     <operand locator="188:31-188:84" name="PROMIS-10 Global Physical Health (GPH) score T-score" xsi:type="CodeRef"/>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="337" locator="189:5-191:48" xsi:type="And">
+               <operand localId="333" locator="189:11-190:50" xsi:type="And">
+                  <operand localId="329" locator="189:11-189:97" precision="Day" xsi:type="SameAs">
+                     <operand localId="326" locator="189:11-189:46" path="relevantDatetime" scope="Promis10MentalScore" xsi:type="Property"/>
+                     <operand localId="328" locator="189:60-189:97" path="relevantDatetime" scope="Promis10PhysicalScore" xsi:type="Property"/>
+                  </operand>
+                  <operand localId="332" locator="190:11-190:50" xsi:type="Not">
+                     <operand locator="190:11-190:50" xsi:type="IsNull">
+                        <operand localId="331" locator="190:11-190:38" path="result" scope="Promis10PhysicalScore" xsi:type="Property"/>
+                     </operand>
+                  </operand>
+               </operand>
+               <operand localId="336" locator="191:11-191:48" xsi:type="Not">
+                  <operand locator="191:11-191:48" xsi:type="IsNull">
+                     <operand localId="335" locator="191:11-191:36" path="result" scope="Promis10MentalScore" xsi:type="Property"/>
+                  </operand>
+               </operand>
+            </where>
+            <return localId="344" locator="192:5-192:96">
+               <expression localId="343" locator="192:12-192:96" xsi:type="Max">
+                  <source localId="342" locator="192:16-192:95" xsi:type="List">
+                     <element localId="339" locator="192:18-192:53" path="relevantDatetime" scope="Promis10MentalScore" xsi:type="Property"/>
+                     <element localId="341" locator="192:56-192:93" path="relevantDatetime" scope="Promis10PhysicalScore" xsi:type="Property"/>
+                  </source>
+               </expression>
+            </return>
+         </expression>
+      </def>
+      <def localId="373" locator="148:1-156:3" name="Has THA with Initial and Follow Up PROMIS10 Assessments" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="373">
+               <a:s>define &quot;Has THA with Initial and Follow Up PROMIS10 Assessments&quot;:
+  </a:s>
+               <a:s r="372">
+                  <a:s>exists </a:s>
+                  <a:s r="371">
+                     <a:s>( </a:s>
+                     <a:s r="371">
+                        <a:s>
+                           <a:s r="320">
+                              <a:s r="319">
+                                 <a:s>
+                                    <a:s>&quot;Total Hip Arthroplasty Procedure&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> TotalHip</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="354">
+                           <a:s>with </a:s>
+                           <a:s r="348">
+                              <a:s r="347">
+                                 <a:s>
+                                    <a:s>&quot;Time PROMIS10 Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> InitialHipAssessmentPROMIS10</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="353">
+                              <a:s r="350">
+                                 <a:s r="349">
+                                    <a:s>TotalHip</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="350">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="353">
+                                 <a:s>starts </a:s>
+                                 <a:s r="352">
+                                    <a:s>90 days</a:s>
+                                 </a:s>
+                                 <a:s> or less on or after</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="351">
+                                 <a:s>InitialHipAssessmentPROMIS10</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="370">
+                           <a:s>with </a:s>
+                           <a:s r="356">
+                              <a:s r="355">
+                                 <a:s>
+                                    <a:s>&quot;Time PROMIS10 Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> FollowupHipAssessmentPROMIS10</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="369">
+                              <a:s r="357">
+                                 <a:s>FollowupHipAssessmentPROMIS10</a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="368">
+                                 <a:s>Interval[
+        </a:s>
+                                 <a:s r="362">
+                                    <a:s r="360">
+                                       <a:s>end of </a:s>
+                                       <a:s r="359">
+                                          <a:s r="358">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="359">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="361">
+                                       <a:s>270 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, 
+        </a:s>
+                                 <a:s r="367">
+                                    <a:s r="365">
+                                       <a:s>end of </a:s>
+                                       <a:s r="364">
+                                          <a:s r="363">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="364">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="366">
+                                       <a:s>365 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="372" locator="149:3-156:3" xsi:type="Exists">
+            <operand localId="371" locator="149:10-156:3" xsi:type="Query">
+               <source localId="320" locator="149:12-149:54" alias="TotalHip">
+                  <expression localId="319" locator="149:12-149:45" name="Total Hip Arthroplasty Procedure" xsi:type="ExpressionRef"/>
+               </source>
+               <relationship localId="354" locator="150:7-151:105" alias="InitialHipAssessmentPROMIS10" xsi:type="With">
+                  <expression localId="347" locator="150:12-150:53" name="Time PROMIS10 Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="353" locator="151:19-151:105" xsi:type="And">
+                     <operand locator="151:50-151:64" xsi:type="In">
+                        <operand locator="151:43-151:48" xsi:type="Start">
+                           <operand localId="350" locator="151:19-151:41" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                        </operand>
+                        <operand locator="151:50-151:64" lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <low localId="351" locator="151:78-151:105" name="InitialHipAssessmentPROMIS10" xsi:type="AliasRef"/>
+                           <high locator="151:78-151:105" xsi:type="Add">
+                              <operand localId="351" locator="151:78-151:105" name="InitialHipAssessmentPROMIS10" xsi:type="AliasRef"/>
+                              <operand localId="352" locator="151:50-151:56" value="90" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="151:50-151:64" xsi:type="Not">
+                        <operand locator="151:50-151:64" xsi:type="IsNull">
+                           <operand localId="351" locator="151:78-151:105" name="InitialHipAssessmentPROMIS10" xsi:type="AliasRef"/>
+                        </operand>
+                     </operand>
+                  </suchThat>
+               </relationship>
+               <relationship localId="370" locator="152:7-155:50" alias="FollowupHipAssessmentPROMIS10" xsi:type="With">
+                  <expression localId="355" locator="152:12-152:53" name="Time PROMIS10 Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="369" locator="153:19-155:50" xsi:type="In">
+                     <operand localId="357" locator="153:19-153:47" name="FollowupHipAssessmentPROMIS10" xsi:type="AliasRef"/>
+                     <operand localId="368" locator="153:52-155:50" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="362" locator="154:9-154:49" xsi:type="Add">
+                           <operand localId="360" locator="154:9-154:38" xsi:type="End">
+                              <operand localId="359" locator="154:16-154:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="361" locator="154:42-154:49" value="270" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high localId="367" locator="155:9-155:49" xsi:type="Add">
+                           <operand localId="365" locator="155:9-155:38" xsi:type="End">
+                              <operand localId="364" locator="155:16-155:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="366" locator="155:42-155:49" value="365" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </suchThat>
+               </relationship>
+            </operand>
+         </expression>
+      </def>
+      <def localId="402" locator="158:1-166:3" name="Has THA with Initial and Follow Up VR12 Oblique Assessments" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="402">
+               <a:s>define &quot;Has THA with Initial and Follow Up VR12 Oblique Assessments&quot;:
+  </a:s>
+               <a:s r="401">
+                  <a:s>exists </a:s>
+                  <a:s r="400">
+                     <a:s>( </a:s>
+                     <a:s r="400">
+                        <a:s>
+                           <a:s r="375">
+                              <a:s r="374">
+                                 <a:s>
+                                    <a:s>&quot;Total Hip Arthroplasty Procedure&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> TotalHip</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="383">
+                           <a:s>with </a:s>
+                           <a:s r="377">
+                              <a:s r="376">
+                                 <a:s>
+                                    <a:s>&quot;Time VR12 Oblique Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> InitialHipAssessmentOblique</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="382">
+                              <a:s r="379">
+                                 <a:s r="378">
+                                    <a:s>TotalHip</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="379">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="382">
+                                 <a:s>starts </a:s>
+                                 <a:s r="381">
+                                    <a:s>90 days</a:s>
+                                 </a:s>
+                                 <a:s> or less on or after</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="380">
+                                 <a:s>InitialHipAssessmentOblique</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="399">
+                           <a:s>with </a:s>
+                           <a:s r="385">
+                              <a:s r="384">
+                                 <a:s>
+                                    <a:s>&quot;Time VR12 Oblique Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> FollowupHipAssessmentOblique</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="398">
+                              <a:s r="386">
+                                 <a:s>FollowupHipAssessmentOblique</a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="397">
+                                 <a:s>Interval[
+        </a:s>
+                                 <a:s r="391">
+                                    <a:s r="389">
+                                       <a:s>end of </a:s>
+                                       <a:s r="388">
+                                          <a:s r="387">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="388">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="390">
+                                       <a:s>270 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, 
+        </a:s>
+                                 <a:s r="396">
+                                    <a:s r="394">
+                                       <a:s>end of </a:s>
+                                       <a:s r="393">
+                                          <a:s r="392">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="393">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="395">
+                                       <a:s>365 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="401" locator="159:3-166:3" xsi:type="Exists">
+            <operand localId="400" locator="159:10-166:3" xsi:type="Query">
+               <source localId="375" locator="159:12-159:54" alias="TotalHip">
+                  <expression localId="374" locator="159:12-159:45" name="Total Hip Arthroplasty Procedure" xsi:type="ExpressionRef"/>
+               </source>
+               <relationship localId="383" locator="160:7-161:104" alias="InitialHipAssessmentOblique" xsi:type="With">
+                  <expression localId="376" locator="160:12-160:57" name="Time VR12 Oblique Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="382" locator="161:19-161:104" xsi:type="And">
+                     <operand locator="161:50-161:64" xsi:type="In">
+                        <operand locator="161:43-161:48" xsi:type="Start">
+                           <operand localId="379" locator="161:19-161:41" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                        </operand>
+                        <operand locator="161:50-161:64" lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <low localId="380" locator="161:78-161:104" name="InitialHipAssessmentOblique" xsi:type="AliasRef"/>
+                           <high locator="161:78-161:104" xsi:type="Add">
+                              <operand localId="380" locator="161:78-161:104" name="InitialHipAssessmentOblique" xsi:type="AliasRef"/>
+                              <operand localId="381" locator="161:50-161:56" value="90" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="161:50-161:64" xsi:type="Not">
+                        <operand locator="161:50-161:64" xsi:type="IsNull">
+                           <operand localId="380" locator="161:78-161:104" name="InitialHipAssessmentOblique" xsi:type="AliasRef"/>
+                        </operand>
+                     </operand>
+                  </suchThat>
+               </relationship>
+               <relationship localId="399" locator="162:7-165:50" alias="FollowupHipAssessmentOblique" xsi:type="With">
+                  <expression localId="384" locator="162:12-162:57" name="Time VR12 Oblique Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="398" locator="163:19-165:50" xsi:type="In">
+                     <operand localId="386" locator="163:19-163:46" name="FollowupHipAssessmentOblique" xsi:type="AliasRef"/>
+                     <operand localId="397" locator="163:51-165:50" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="391" locator="164:9-164:49" xsi:type="Add">
+                           <operand localId="389" locator="164:9-164:38" xsi:type="End">
+                              <operand localId="388" locator="164:16-164:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="390" locator="164:42-164:49" value="270" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high localId="396" locator="165:9-165:49" xsi:type="Add">
+                           <operand localId="394" locator="165:9-165:38" xsi:type="End">
+                              <operand localId="393" locator="165:16-165:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="395" locator="165:42-165:49" value="365" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </suchThat>
+               </relationship>
+            </operand>
+         </expression>
+      </def>
+      <def localId="431" locator="168:1-176:3" name="Has THA with Initial and Follow Up VR12 Orthogonal Assessments" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="431">
+               <a:s>define &quot;Has THA with Initial and Follow Up VR12 Orthogonal Assessments&quot;:
+  </a:s>
+               <a:s r="430">
+                  <a:s>exists </a:s>
+                  <a:s r="429">
+                     <a:s>( </a:s>
+                     <a:s r="429">
+                        <a:s>
+                           <a:s r="404">
+                              <a:s r="403">
+                                 <a:s>
+                                    <a:s>&quot;Total Hip Arthroplasty Procedure&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> TotalHip</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="412">
+                           <a:s>with </a:s>
+                           <a:s r="406">
+                              <a:s r="405">
+                                 <a:s>
+                                    <a:s>&quot;Time VR12 Orthogonal Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> InitialHipAssessmentOrthogonal</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="411">
+                              <a:s r="408">
+                                 <a:s r="407">
+                                    <a:s>TotalHip</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="408">
+                                    <a:s>relevantPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="411">
+                                 <a:s>starts </a:s>
+                                 <a:s r="410">
+                                    <a:s>90 days</a:s>
+                                 </a:s>
+                                 <a:s> or less on or after</a:s>
+                              </a:s>
+                              <a:s> </a:s>
+                              <a:s r="409">
+                                 <a:s>InitialHipAssessmentOrthogonal</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+      </a:s>
+                        <a:s r="428">
+                           <a:s>with </a:s>
+                           <a:s r="414">
+                              <a:s r="413">
+                                 <a:s>
+                                    <a:s>&quot;Time VR12 Orthogonal Total Assessment Completed&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> FollowupHipAssessmentOrthogonal</a:s>
+                           </a:s>
+                           <a:s>
+        such that </a:s>
+                           <a:s r="427">
+                              <a:s r="415">
+                                 <a:s>FollowupHipAssessmentOrthogonal</a:s>
+                              </a:s>
+                              <a:s> in </a:s>
+                              <a:s r="426">
+                                 <a:s>Interval[
+        </a:s>
+                                 <a:s r="420">
+                                    <a:s r="418">
+                                       <a:s>end of </a:s>
+                                       <a:s r="417">
+                                          <a:s r="416">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="417">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="419">
+                                       <a:s>270 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>, 
+        </a:s>
+                                 <a:s r="425">
+                                    <a:s r="423">
+                                       <a:s>end of </a:s>
+                                       <a:s r="422">
+                                          <a:s r="421">
+                                             <a:s>TotalHip</a:s>
+                                          </a:s>
+                                          <a:s>.</a:s>
+                                          <a:s r="422">
+                                             <a:s>relevantPeriod</a:s>
+                                          </a:s>
+                                       </a:s>
+                                    </a:s>
+                                    <a:s> + </a:s>
+                                    <a:s r="424">
+                                       <a:s>365 days</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>]</a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+  )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="430" locator="169:3-176:3" xsi:type="Exists">
+            <operand localId="429" locator="169:10-176:3" xsi:type="Query">
+               <source localId="404" locator="169:12-169:54" alias="TotalHip">
+                  <expression localId="403" locator="169:12-169:45" name="Total Hip Arthroplasty Procedure" xsi:type="ExpressionRef"/>
+               </source>
+               <relationship localId="412" locator="170:7-171:107" alias="InitialHipAssessmentOrthogonal" xsi:type="With">
+                  <expression localId="405" locator="170:12-170:60" name="Time VR12 Orthogonal Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="411" locator="171:19-171:107" xsi:type="And">
+                     <operand locator="171:50-171:64" xsi:type="In">
+                        <operand locator="171:43-171:48" xsi:type="Start">
+                           <operand localId="408" locator="171:19-171:41" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                        </operand>
+                        <operand locator="171:50-171:64" lowClosed="true" highClosed="true" xsi:type="Interval">
+                           <low localId="409" locator="171:78-171:107" name="InitialHipAssessmentOrthogonal" xsi:type="AliasRef"/>
+                           <high locator="171:78-171:107" xsi:type="Add">
+                              <operand localId="409" locator="171:78-171:107" name="InitialHipAssessmentOrthogonal" xsi:type="AliasRef"/>
+                              <operand localId="410" locator="171:50-171:56" value="90" unit="days" xsi:type="Quantity"/>
+                           </high>
+                        </operand>
+                     </operand>
+                     <operand locator="171:50-171:64" xsi:type="Not">
+                        <operand locator="171:50-171:64" xsi:type="IsNull">
+                           <operand localId="409" locator="171:78-171:107" name="InitialHipAssessmentOrthogonal" xsi:type="AliasRef"/>
+                        </operand>
+                     </operand>
+                  </suchThat>
+               </relationship>
+               <relationship localId="428" locator="172:7-175:50" alias="FollowupHipAssessmentOrthogonal" xsi:type="With">
+                  <expression localId="413" locator="172:12-172:60" name="Time VR12 Orthogonal Total Assessment Completed" xsi:type="ExpressionRef"/>
+                  <suchThat localId="427" locator="173:19-175:50" xsi:type="In">
+                     <operand localId="415" locator="173:19-173:49" name="FollowupHipAssessmentOrthogonal" xsi:type="AliasRef"/>
+                     <operand localId="426" locator="173:54-175:50" lowClosed="true" highClosed="true" xsi:type="Interval">
+                        <low localId="420" locator="174:9-174:49" xsi:type="Add">
+                           <operand localId="418" locator="174:9-174:38" xsi:type="End">
+                              <operand localId="417" locator="174:16-174:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="419" locator="174:42-174:49" value="270" unit="days" xsi:type="Quantity"/>
+                        </low>
+                        <high localId="425" locator="175:9-175:49" xsi:type="Add">
+                           <operand localId="423" locator="175:9-175:38" xsi:type="End">
+                              <operand localId="422" locator="175:16-175:38" path="relevantPeriod" scope="TotalHip" xsi:type="Property"/>
+                           </operand>
+                           <operand localId="424" locator="175:42-175:49" value="365" unit="days" xsi:type="Quantity"/>
+                        </high>
+                     </operand>
+                  </suchThat>
+               </relationship>
+            </operand>
+         </expression>
+      </def>
+      <def localId="441" locator="178:1-183:75" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="441">
+               <a:s>define &quot;Numerator&quot;:
+  </a:s>
+               <a:s r="440">
+                  <a:s r="438">
+                     <a:s r="436">
+                        <a:s r="434">
+                           <a:s r="432">
+                              <a:s>( </a:s>
+                              <a:s r="432">
+                                 <a:s>&quot;Has THA with Initial and Follow Up HOOS Assessments&quot;</a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                           <a:s>
+    or </a:s>
+                           <a:s r="433">
+                              <a:s>( </a:s>
+                              <a:s r="433">
+                                 <a:s>&quot;Has THA with Initial and Follow Up HOOSJr Assessments&quot;</a:s>
+                              </a:s>
+                              <a:s> )</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+    or </a:s>
+                        <a:s r="435">
+                           <a:s>( </a:s>
+                           <a:s r="435">
+                              <a:s>&quot;Has THA with Initial and Follow Up PROMIS10 Assessments&quot;</a:s>
+                           </a:s>
+                           <a:s> )</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+    or </a:s>
+                     <a:s r="437">
+                        <a:s>( </a:s>
+                        <a:s r="437">
+                           <a:s>&quot;Has THA with Initial and Follow Up VR12 Oblique Assessments&quot;</a:s>
+                        </a:s>
+                        <a:s> )</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>
+    or </a:s>
+                  <a:s r="439">
+                     <a:s>( </a:s>
+                     <a:s r="439">
+                        <a:s>&quot;Has THA with Initial and Follow Up VR12 Orthogonal Assessments&quot;</a:s>
+                     </a:s>
+                     <a:s> )</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="440" locator="179:3-183:75" xsi:type="Or">
+            <operand localId="438" locator="179:3-182:72" xsi:type="Or">
+               <operand localId="436" locator="179:3-181:68" xsi:type="Or">
+                  <operand localId="434" locator="179:3-180:66" xsi:type="Or">
+                     <operand localId="432" locator="179:3-179:59" name="Has THA with Initial and Follow Up HOOS Assessments" xsi:type="ExpressionRef"/>
+                     <operand localId="433" locator="180:8-180:66" name="Has THA with Initial and Follow Up HOOSJr Assessments" xsi:type="ExpressionRef"/>
+                  </operand>
+                  <operand localId="435" locator="181:8-181:68" name="Has THA with Initial and Follow Up PROMIS10 Assessments" xsi:type="ExpressionRef"/>
+               </operand>
+               <operand localId="437" locator="182:8-182:72" name="Has THA with Initial and Follow Up VR12 Oblique Assessments" xsi:type="ExpressionRef"/>
+            </operand>
+            <operand localId="439" locator="183:8-183:75" name="Has THA with Initial and Follow Up VR12 Orthogonal Assessments" xsi:type="ExpressionRef"/>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

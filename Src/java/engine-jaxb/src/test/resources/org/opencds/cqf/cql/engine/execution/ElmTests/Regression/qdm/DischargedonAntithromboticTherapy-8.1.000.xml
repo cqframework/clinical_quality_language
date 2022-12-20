@@ -1,0 +1,734 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <identifier id="DischargedonAntithromboticTherapy" version="8.1.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_4" version="5.4"/>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="4.0.000"/>
+      <def localId="3" locator="6:1-6:48" localIdentifier="TJC" path="TJC_Overall" version="3.6.000"/>
+   </includes>
+   <valueSets>
+      <def localId="4" locator="8:1-8:78" name="Antithrombotic Therapy" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.201" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="5" locator="9:1-9:58" name="Ethnicity" id="urn:oid:2.16.840.1.114222.4.11.837" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="6" locator="10:1-10:70" name="Medical Reason" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.473" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="7" locator="11:1-11:68" name="ONC Administrative Sex" id="urn:oid:2.16.840.1.113762.1.4.1" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="8" locator="12:1-12:70" name="Patient Refusal" id="urn:oid:2.16.840.1.113883.3.117.1.7.1.93" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="9" locator="13:1-13:55" name="Payer" id="urn:oid:2.16.840.1.114222.4.11.3591" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+      <def localId="10" locator="14:1-14:53" name="Race" id="urn:oid:2.16.840.1.114222.4.11.836" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <statements>
+      <def locator="16:1-16:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="16:1-16:15" xmlns:ns0="urn:healthit-gov:qdm:v5_4" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="12" locator="18:1-19:50" name="SDE Ethnicity" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="12">
+               <a:s>define &quot;SDE Ethnicity&quot;:&#xd;
+	</a:s>
+               <a:s r="11">
+                  <a:s>[&quot;Patient Characteristic Ethnicity&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Ethnicity&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns1="urn:healthit-gov:qdm:v5_4" name="ns1:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="11" locator="19:2-19:50" xmlns:ns2="urn:healthit-gov:qdm:v5_4" dataType="ns2:PatientCharacteristicEthnicity" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns3="urn:healthit-gov:qdm:v5_4" name="ns3:PatientCharacteristicEthnicity" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="19:39-19:49" name="Ethnicity" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="14" locator="21:1-22:42" name="SDE Payer" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="14">
+               <a:s>define &quot;SDE Payer&quot;:&#xd;
+	</a:s>
+               <a:s r="13">
+                  <a:s>[&quot;Patient Characteristic Payer&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Payer&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns4="urn:healthit-gov:qdm:v5_4" name="ns4:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="13" locator="22:2-22:42" xmlns:ns5="urn:healthit-gov:qdm:v5_4" dataType="ns5:PatientCharacteristicPayer" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns6="urn:healthit-gov:qdm:v5_4" name="ns6:PatientCharacteristicPayer" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="22:35-22:41" name="Payer" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="16" locator="24:1-25:40" name="SDE Race" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="16">
+               <a:s>define &quot;SDE Race&quot;:&#xd;
+	</a:s>
+               <a:s r="15">
+                  <a:s>[&quot;Patient Characteristic Race&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Race&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns7="urn:healthit-gov:qdm:v5_4" name="ns7:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="15" locator="25:2-25:40" xmlns:ns8="urn:healthit-gov:qdm:v5_4" dataType="ns8:PatientCharacteristicRace" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns9="urn:healthit-gov:qdm:v5_4" name="ns9:PatientCharacteristicRace" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="25:34-25:39" name="Race" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="18" locator="27:1-28:57" name="SDE Sex" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="18">
+               <a:s>define &quot;SDE Sex&quot;:&#xd;
+	</a:s>
+               <a:s r="17">
+                  <a:s>[&quot;Patient Characteristic Sex&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;ONC Administrative Sex&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns10="urn:healthit-gov:qdm:v5_4" name="ns10:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="17" locator="28:2-28:57" xmlns:ns11="urn:healthit-gov:qdm:v5_4" dataType="ns11:PatientCharacteristicSex" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns12="urn:healthit-gov:qdm:v5_4" name="ns12:PatientCharacteristicSex" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="28:33-28:56" name="ONC Administrative Sex" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="20" locator="30:1-31:52" name="Antithrombotic Therapy at Discharge" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="20">
+               <a:s>define &quot;Antithrombotic Therapy at Discharge&quot;:&#xd;
+	</a:s>
+               <a:s r="19">
+                  <a:s>[&quot;Medication, Discharge&quot;: </a:s>
+                  <a:s>
+                     <a:s>&quot;Antithrombotic Therapy&quot;</a:s>
+                  </a:s>
+                  <a:s>]</a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns13="urn:healthit-gov:qdm:v5_4" name="ns13:PositiveMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="19" locator="31:2-31:52" xmlns:ns14="urn:healthit-gov:qdm:v5_4" dataType="ns14:PositiveMedicationDischarge" templateId="PositiveMedicationDischarge" codeProperty="code" xsi:type="Retrieve">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns15="urn:healthit-gov:qdm:v5_4" name="ns15:PositiveMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <codes locator="31:28-31:51" name="Antithrombotic Therapy" xsi:type="ValueSetRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </codes>
+         </expression>
+      </def>
+      <def localId="23" locator="33:1-34:32" name="Denominator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="23">
+               <a:s>define &quot;Denominator&quot;:&#xd;
+	</a:s>
+               <a:s r="22">
+                  <a:s r="21">
+                     <a:s>TJC</a:s>
+                  </a:s>
+                  <a:s>.</a:s>
+                  <a:s r="22">
+                     <a:s>&quot;Ischemic Stroke Encounter&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns16="urn:healthit-gov:qdm:v5_4" name="ns16:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="22" locator="34:2-34:32" name="Ischemic Stroke Encounter" libraryName="TJC" xsi:type="ExpressionRef">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns17="urn:healthit-gov:qdm:v5_4" name="ns17:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </expression>
+      </def>
+      <def localId="35" locator="36:1-39:97" name="Numerator" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="35">
+               <a:s>define &quot;Numerator&quot;:&#xd;
+	</a:s>
+               <a:s r="34">
+                  <a:s>
+                     <a:s r="25">
+                        <a:s r="24">
+                           <a:s>
+                              <a:s>TJC.&quot;Ischemic Stroke Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> IschemicStrokeEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="33">
+                     <a:s>with </a:s>
+                     <a:s r="27">
+                        <a:s r="26">
+                           <a:s>
+                              <a:s>&quot;Antithrombotic Therapy at Discharge&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> DischargeAntithrombotic</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="32">
+                        <a:s r="29">
+                           <a:s r="28">
+                              <a:s>DischargeAntithrombotic</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="29">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="32"> during </a:s>
+                        <a:s r="31">
+                           <a:s r="30">
+                              <a:s>IschemicStrokeEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="31">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns18="urn:healthit-gov:qdm:v5_4" name="ns18:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="34" locator="37:2-39:97" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns19="urn:healthit-gov:qdm:v5_4" name="ns19:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="25" locator="37:2-37:56" alias="IschemicStrokeEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns20="urn:healthit-gov:qdm:v5_4" name="ns20:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="24" locator="37:2-37:32" name="Ischemic Stroke Encounter" libraryName="TJC" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns21="urn:healthit-gov:qdm:v5_4" name="ns21:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="33" locator="38:3-39:97" alias="DischargeAntithrombotic" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns22="urn:healthit-gov:qdm:v5_4" name="ns22:PositiveMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="26" locator="38:8-38:44" name="Antithrombotic Therapy at Discharge" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns23="urn:healthit-gov:qdm:v5_4" name="ns23:PositiveMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="32" locator="39:14-39:97" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand localId="29" locator="39:14-39:51" resultTypeName="t:DateTime" path="authorDatetime" scope="DischargeAntithrombotic" xsi:type="Property"/>
+                  <operand localId="31" locator="39:60-39:97" path="relevantPeriod" scope="IschemicStrokeEncounter" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="48" locator="41:1-44:70" name="Antithrombotic Not Given at Discharge" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="48">
+               <a:s>define &quot;Antithrombotic Not Given at Discharge&quot;:&#xd;
+	</a:s>
+               <a:s r="47">
+                  <a:s>
+                     <a:s r="37">
+                        <a:s r="36">
+                           <a:s r="36">
+                              <a:s>[&quot;Medication, Not Discharged&quot;: </a:s>
+                              <a:s>
+                                 <a:s>&quot;Antithrombotic Therapy&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> NoAntithromboticDischarge</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="46">
+                     <a:s>where </a:s>
+                     <a:s r="46">
+                        <a:s r="41">
+                           <a:s r="39">
+                              <a:s r="38">
+                                 <a:s>NoAntithromboticDischarge</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="39">
+                                 <a:s>negationRationale</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> in </a:s>
+                           <a:s r="40">
+                              <a:s>&quot;Medical Reason&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>&#xd;
+			or </a:s>
+                        <a:s r="45">
+                           <a:s r="43">
+                              <a:s r="42">
+                                 <a:s>NoAntithromboticDischarge</a:s>
+                              </a:s>
+                              <a:s>.</a:s>
+                              <a:s r="43">
+                                 <a:s>negationRationale</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s> in </a:s>
+                           <a:s r="44">
+                              <a:s>&quot;Patient Refusal&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns24="urn:healthit-gov:qdm:v5_4" name="ns24:NegativeMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="47" locator="42:2-44:70" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns25="urn:healthit-gov:qdm:v5_4" name="ns25:NegativeMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="37" locator="42:2-42:83" alias="NoAntithromboticDischarge">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns26="urn:healthit-gov:qdm:v5_4" name="ns26:NegativeMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="36" locator="42:2-42:57" xmlns:ns27="urn:healthit-gov:qdm:v5_4" dataType="ns27:NegativeMedicationDischarge" templateId="NegativeMedicationDischarge" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns28="urn:healthit-gov:qdm:v5_4" name="ns28:NegativeMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="42:33-42:56" name="Antithrombotic Therapy" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+            </source>
+            <where localId="46" locator="43:3-44:70" resultTypeName="t:Boolean" xsi:type="Or">
+               <operand localId="41" locator="43:9-43:71" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                  <code localId="39" locator="43:9-43:51" resultTypeName="t:Code" path="negationRationale" scope="NoAntithromboticDischarge" xsi:type="Property"/>
+                  <valueset localId="40" locator="43:56-43:71" name="Medical Reason">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </valueset>
+               </operand>
+               <operand localId="45" locator="44:7-44:70" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                  <code localId="43" locator="44:7-44:49" resultTypeName="t:Code" path="negationRationale" scope="NoAntithromboticDischarge" xsi:type="Property"/>
+                  <valueset localId="44" locator="44:54-44:70" name="Patient Refusal">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </valueset>
+               </operand>
+            </where>
+         </expression>
+      </def>
+      <def localId="51" locator="46:1-47:49" name="Initial Population" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="51">
+               <a:s>define &quot;Initial Population&quot;:&#xd;
+	</a:s>
+               <a:s r="50">
+                  <a:s r="49">
+                     <a:s>TJC</a:s>
+                  </a:s>
+                  <a:s>.</a:s>
+                  <a:s r="50">
+                     <a:s>&quot;Encounter with Principal Diagnosis and Age&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns29="urn:healthit-gov:qdm:v5_4" name="ns29:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="50" locator="47:2-47:49" name="Encounter with Principal Diagnosis and Age" libraryName="TJC" xsi:type="ExpressionRef">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns30="urn:healthit-gov:qdm:v5_4" name="ns30:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+         </expression>
+      </def>
+      <def localId="57" locator="49:1-51:53" name="Denominator Exclusions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="57">
+               <a:s>define &quot;Denominator Exclusions&quot;:&#xd;
+	</a:s>
+               <a:s r="56">
+                  <a:s r="53">
+                     <a:s r="52">
+                        <a:s>TJC</a:s>
+                     </a:s>
+                     <a:s>.</a:s>
+                     <a:s r="53">
+                        <a:s>&quot;Ischemic Stroke Encounters with Discharge Disposition&quot;</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		union </a:s>
+                  <a:s r="55">
+                     <a:s r="54">
+                        <a:s>TJC</a:s>
+                     </a:s>
+                     <a:s>.</a:s>
+                     <a:s r="55">
+                        <a:s>&quot;Comfort Measures during Hospitalization&quot;</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns31="urn:healthit-gov:qdm:v5_4" name="ns31:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="56" locator="50:2-51:53" xsi:type="Union">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns32="urn:healthit-gov:qdm:v5_4" name="ns32:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <operand localId="53" locator="50:2-50:60" name="Ischemic Stroke Encounters with Discharge Disposition" libraryName="TJC" xsi:type="ExpressionRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns33="urn:healthit-gov:qdm:v5_4" name="ns33:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </operand>
+            <operand localId="55" locator="51:9-51:53" name="Comfort Measures during Hospitalization" libraryName="TJC" xsi:type="ExpressionRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns34="urn:healthit-gov:qdm:v5_4" name="ns34:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </operand>
+         </expression>
+      </def>
+      <def localId="69" locator="53:1-56:99" name="Encounter With No Antithrombotic At Discharge" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="69">
+               <a:s>define &quot;Encounter With No Antithrombotic At Discharge&quot;:&#xd;
+	</a:s>
+               <a:s r="68">
+                  <a:s>
+                     <a:s r="59">
+                        <a:s r="58">
+                           <a:s>
+                              <a:s>TJC.&quot;Ischemic Stroke Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> IschemicStrokeEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="67">
+                     <a:s>with </a:s>
+                     <a:s r="61">
+                        <a:s r="60">
+                           <a:s>
+                              <a:s>&quot;Antithrombotic Not Given at Discharge&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> NoDischargeAntithrombotic</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="66">
+                        <a:s r="63">
+                           <a:s r="62">
+                              <a:s>NoDischargeAntithrombotic</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="63">
+                              <a:s>authorDatetime</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="66"> during </a:s>
+                        <a:s r="65">
+                           <a:s r="64">
+                              <a:s>IschemicStrokeEncounter</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="65">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns35="urn:healthit-gov:qdm:v5_4" name="ns35:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="68" locator="54:2-56:99" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns36="urn:healthit-gov:qdm:v5_4" name="ns36:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="59" locator="54:2-54:56" alias="IschemicStrokeEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns37="urn:healthit-gov:qdm:v5_4" name="ns37:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="58" locator="54:2-54:32" name="Ischemic Stroke Encounter" libraryName="TJC" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns38="urn:healthit-gov:qdm:v5_4" name="ns38:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="67" locator="55:3-56:99" alias="NoDischargeAntithrombotic" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns39="urn:healthit-gov:qdm:v5_4" name="ns39:NegativeMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="60" locator="55:8-55:46" name="Antithrombotic Not Given at Discharge" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns40="urn:healthit-gov:qdm:v5_4" name="ns40:NegativeMedicationDischarge" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+               <suchThat localId="66" locator="56:14-56:99" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand localId="63" locator="56:14-56:53" resultTypeName="t:DateTime" path="authorDatetime" scope="NoDischargeAntithrombotic" xsi:type="Property"/>
+                  <operand localId="65" locator="56:62-56:99" path="relevantPeriod" scope="IschemicStrokeEncounter" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="82" locator="58:1-61:117" name="Encounter With Ticagrelor During Hospitalization" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="82">
+               <a:s>define &quot;Encounter With Ticagrelor During Hospitalization&quot;:&#xd;
+	</a:s>
+               <a:s r="81">
+                  <a:s>
+                     <a:s r="71">
+                        <a:s r="70">
+                           <a:s>
+                              <a:s>TJC.&quot;Ischemic Stroke Encounter&quot;</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> IschemicStrokeEncounter</a:s>
+                     </a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		</a:s>
+                  <a:s r="80">
+                     <a:s>with </a:s>
+                     <a:s r="73">
+                        <a:s r="72">
+                           <a:s r="72">
+                              <a:s>[&quot;Medication, Administered&quot;: </a:s>
+                              <a:s>
+                                 <a:s>TJC.&quot;Ticagrelor Therapy&quot;</a:s>
+                              </a:s>
+                              <a:s>]</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s> Ticagrelor</a:s>
+                     </a:s>
+                     <a:s>&#xd;
+			such that </a:s>
+                     <a:s r="79">
+                        <a:s r="75">
+                           <a:s r="74">
+                              <a:s>Ticagrelor</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="75">
+                              <a:s>relevantPeriod</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s r="79"> starts during </a:s>
+                        <a:s r="78">
+                           <a:s r="76">
+                              <a:s>Global</a:s>
+                           </a:s>
+                           <a:s>.</a:s>
+                           <a:s r="78">
+                              <a:s>&quot;HospitalizationWithObservation&quot;(</a:s>
+                              <a:s r="77">
+                                 <a:s>IschemicStrokeEncounter</a:s>
+                              </a:s>
+                              <a:s>)</a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns41="urn:healthit-gov:qdm:v5_4" name="ns41:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="81" locator="59:2-61:117" xsi:type="Query">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns42="urn:healthit-gov:qdm:v5_4" name="ns42:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="71" locator="59:2-59:56" alias="IschemicStrokeEncounter">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns43="urn:healthit-gov:qdm:v5_4" name="ns43:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="70" locator="59:2-59:32" name="Ischemic Stroke Encounter" libraryName="TJC" xsi:type="ExpressionRef">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns44="urn:healthit-gov:qdm:v5_4" name="ns44:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+               </expression>
+            </source>
+            <relationship localId="80" locator="60:3-61:117" alias="Ticagrelor" xsi:type="With">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns45="urn:healthit-gov:qdm:v5_4" name="ns45:PositiveMedicationAdministered" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <expression localId="72" locator="60:8-60:61" xmlns:ns46="urn:healthit-gov:qdm:v5_4" dataType="ns46:PositiveMedicationAdministered" templateId="PositiveMedicationAdministered" codeProperty="code" xsi:type="Retrieve">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns47="urn:healthit-gov:qdm:v5_4" name="ns47:PositiveMedicationAdministered" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <codes locator="60:37-60:60" name="Ticagrelor Therapy" libraryName="TJC" xsi:type="ValueSetRef">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                  </codes>
+               </expression>
+               <suchThat localId="79" locator="61:14-61:117" resultTypeName="t:Boolean" xsi:type="In">
+                  <operand locator="61:40-61:45" xsi:type="Start">
+                     <operand localId="75" locator="61:14-61:38" path="relevantPeriod" scope="Ticagrelor" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                  </operand>
+                  <operand localId="78" locator="61:54-61:117" name="HospitalizationWithObservation" libraryName="Global" xsi:type="FunctionRef">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="77" locator="61:94-61:116" xmlns:ns48="urn:healthit-gov:qdm:v5_4" resultTypeName="ns48:PositiveEncounterPerformed" name="IschemicStrokeEncounter" xsi:type="AliasRef"/>
+                  </operand>
+               </suchThat>
+            </relationship>
+         </expression>
+      </def>
+      <def localId="86" locator="63:1-65:58" name="Denominator Exceptions" context="Patient" accessLevel="Public">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="86">
+               <a:s>define &quot;Denominator Exceptions&quot;:&#xd;
+	</a:s>
+               <a:s r="85">
+                  <a:s r="83">
+                     <a:s>&quot;Encounter With No Antithrombotic At Discharge&quot;</a:s>
+                  </a:s>
+                  <a:s>&#xd;
+		union </a:s>
+                  <a:s r="84">
+                     <a:s>&quot;Encounter With Ticagrelor During Hospitalization&quot;</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType xmlns:ns49="urn:healthit-gov:qdm:v5_4" name="ns49:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="85" locator="64:2-65:58" xsi:type="Union">
+            <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+               <elementType xmlns:ns50="urn:healthit-gov:qdm:v5_4" name="ns50:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <operand localId="83" locator="64:2-64:48" name="Encounter With No Antithrombotic At Discharge" xsi:type="ExpressionRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns51="urn:healthit-gov:qdm:v5_4" name="ns51:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </operand>
+            <operand localId="84" locator="65:9-65:58" name="Encounter With Ticagrelor During Hospitalization" xsi:type="ExpressionRef">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns52="urn:healthit-gov:qdm:v5_4" name="ns52:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+            </operand>
+         </expression>
+      </def>
+   </statements>
+</library>
+
+

@@ -1,0 +1,2789 @@
+{
+  "library" : {
+    "type" : "Library",
+    "identifier" : {
+      "type" : "VersionedIdentifier",
+      "id" : "DischargedonAntithromboticTherapy",
+      "version" : "8.1.000"
+    },
+    "schemaIdentifier" : {
+      "type" : "VersionedIdentifier",
+      "id" : "urn:hl7-org:elm",
+      "version" : "r1"
+    },
+    "usings" : {
+      "type" : "Library$Usings",
+      "def" : [ {
+        "type" : "UsingDef",
+        "localIdentifier" : "System",
+        "uri" : "urn:hl7-org:elm-types:r1"
+      }, {
+        "type" : "UsingDef",
+        "localId" : "1",
+        "locator" : "3:1-3:23",
+        "localIdentifier" : "QDM",
+        "uri" : "urn:healthit-gov:qdm:v5_4",
+        "version" : "5.4"
+      } ]
+    },
+    "includes" : {
+      "type" : "Library$Includes",
+      "def" : [ {
+        "type" : "IncludeDef",
+        "localId" : "2",
+        "locator" : "5:1-5:64",
+        "localIdentifier" : "Global",
+        "path" : "MATGlobalCommonFunctions",
+        "version" : "4.0.000"
+      }, {
+        "type" : "IncludeDef",
+        "localId" : "3",
+        "locator" : "6:1-6:48",
+        "localIdentifier" : "TJC",
+        "path" : "TJC_Overall",
+        "version" : "3.6.000"
+      } ]
+    },
+    "valueSets" : {
+      "type" : "Library$ValueSets",
+      "def" : [ {
+        "type" : "ValueSetDef",
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Code"
+          }
+        },
+        "localId" : "4",
+        "locator" : "8:1-8:78",
+        "name" : "Antithrombotic Therapy",
+        "id" : "urn:oid:2.16.840.1.113883.3.117.1.7.1.201",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Code"
+          }
+        },
+        "localId" : "5",
+        "locator" : "9:1-9:58",
+        "name" : "Ethnicity",
+        "id" : "urn:oid:2.16.840.1.114222.4.11.837",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Code"
+          }
+        },
+        "localId" : "6",
+        "locator" : "10:1-10:70",
+        "name" : "Medical Reason",
+        "id" : "urn:oid:2.16.840.1.113883.3.117.1.7.1.473",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Code"
+          }
+        },
+        "localId" : "7",
+        "locator" : "11:1-11:68",
+        "name" : "ONC Administrative Sex",
+        "id" : "urn:oid:2.16.840.1.113762.1.4.1",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Code"
+          }
+        },
+        "localId" : "8",
+        "locator" : "12:1-12:70",
+        "name" : "Patient Refusal",
+        "id" : "urn:oid:2.16.840.1.113883.3.117.1.7.1.93",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Code"
+          }
+        },
+        "localId" : "9",
+        "locator" : "13:1-13:55",
+        "name" : "Payer",
+        "id" : "urn:oid:2.16.840.1.114222.4.11.3591",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ValueSetDef",
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:hl7-org:elm-types:r1}Code"
+          }
+        },
+        "localId" : "10",
+        "locator" : "14:1-14:53",
+        "name" : "Race",
+        "id" : "urn:oid:2.16.840.1.114222.4.11.836",
+        "accessLevel" : "Public"
+      } ]
+    },
+    "statements" : {
+      "type" : "Library$Statements",
+      "def" : [ {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "SingletonFrom",
+          "operand" : {
+            "type" : "Retrieve",
+            "locator" : "16:1-16:15",
+            "dataType" : "{urn:healthit-gov:qdm:v5_4}Patient",
+            "templateId" : "Patient"
+          }
+        },
+        "locator" : "16:1-16:15",
+        "name" : "Patient",
+        "context" : "Patient"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Retrieve",
+          "codes" : {
+            "type" : "ValueSetRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Code"
+              }
+            },
+            "locator" : "19:39-19:49",
+            "name" : "Ethnicity"
+          },
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicEthnicity"
+            }
+          },
+          "localId" : "11",
+          "locator" : "19:2-19:50",
+          "dataType" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicEthnicity",
+          "codeProperty" : "code"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"SDE Ethnicity\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "[", "\"Patient Characteristic Ethnicity\"", ": " ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"Ethnicity\"" ]
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "]" ]
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "11"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "12"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicEthnicity"
+          }
+        },
+        "localId" : "12",
+        "locator" : "18:1-19:50",
+        "name" : "SDE Ethnicity",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Retrieve",
+          "codes" : {
+            "type" : "ValueSetRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Code"
+              }
+            },
+            "locator" : "22:35-22:41",
+            "name" : "Payer"
+          },
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicPayer"
+            }
+          },
+          "localId" : "13",
+          "locator" : "22:2-22:42",
+          "dataType" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicPayer",
+          "codeProperty" : "code"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"SDE Payer\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "[", "\"Patient Characteristic Payer\"", ": " ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"Payer\"" ]
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "]" ]
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "13"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "14"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicPayer"
+          }
+        },
+        "localId" : "14",
+        "locator" : "21:1-22:42",
+        "name" : "SDE Payer",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Retrieve",
+          "codes" : {
+            "type" : "ValueSetRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Code"
+              }
+            },
+            "locator" : "25:34-25:39",
+            "name" : "Race"
+          },
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicRace"
+            }
+          },
+          "localId" : "15",
+          "locator" : "25:2-25:40",
+          "dataType" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicRace",
+          "codeProperty" : "code"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"SDE Race\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "[", "\"Patient Characteristic Race\"", ": " ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"Race\"" ]
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "]" ]
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "15"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "16"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicRace"
+          }
+        },
+        "localId" : "16",
+        "locator" : "24:1-25:40",
+        "name" : "SDE Race",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Retrieve",
+          "codes" : {
+            "type" : "ValueSetRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Code"
+              }
+            },
+            "locator" : "28:33-28:56",
+            "name" : "ONC Administrative Sex"
+          },
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicSex"
+            }
+          },
+          "localId" : "17",
+          "locator" : "28:2-28:57",
+          "dataType" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicSex",
+          "codeProperty" : "code"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"SDE Sex\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "[", "\"Patient Characteristic Sex\"", ": " ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"ONC Administrative Sex\"" ]
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "]" ]
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "17"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "18"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PatientCharacteristicSex"
+          }
+        },
+        "localId" : "18",
+        "locator" : "27:1-28:57",
+        "name" : "SDE Sex",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Retrieve",
+          "codes" : {
+            "type" : "ValueSetRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:hl7-org:elm-types:r1}Code"
+              }
+            },
+            "locator" : "31:28-31:51",
+            "name" : "Antithrombotic Therapy"
+          },
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PositiveMedicationDischarge"
+            }
+          },
+          "localId" : "19",
+          "locator" : "31:2-31:52",
+          "dataType" : "{urn:healthit-gov:qdm:v5_4}PositiveMedicationDischarge",
+          "templateId" : "PositiveMedicationDischarge",
+          "codeProperty" : "code"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Antithrombotic Therapy at Discharge\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "[", "\"Medication, Discharge\"", ": " ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"Antithrombotic Therapy\"" ]
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "]" ]
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "19"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "20"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PositiveMedicationDischarge"
+          }
+        },
+        "localId" : "20",
+        "locator" : "30:1-31:52",
+        "name" : "Antithrombotic Therapy at Discharge",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "ExpressionRef",
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+            }
+          },
+          "localId" : "22",
+          "locator" : "34:2-34:32",
+          "name" : "Ischemic Stroke Encounter",
+          "libraryName" : "TJC"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Denominator\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "TJC" ]
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "21"
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "." ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"Ischemic Stroke Encounter\"" ]
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "22"
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "22"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "23"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+          }
+        },
+        "localId" : "23",
+        "locator" : "33:1-34:32",
+        "name" : "Denominator",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Query",
+          "source" : [ {
+            "type" : "AliasedQuerySource",
+            "expression" : {
+              "type" : "ExpressionRef",
+              "resultTypeSpecifier" : {
+                "type" : "ListTypeSpecifier",
+                "elementType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+                }
+              },
+              "localId" : "24",
+              "locator" : "37:2-37:32",
+              "name" : "Ischemic Stroke Encounter",
+              "libraryName" : "TJC"
+            },
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+              }
+            },
+            "localId" : "25",
+            "locator" : "37:2-37:56",
+            "alias" : "IschemicStrokeEncounter"
+          } ],
+          "relationship" : [ {
+            "type" : "With",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveMedicationDischarge"
+              }
+            },
+            "expression" : {
+              "type" : "ExpressionRef",
+              "resultTypeSpecifier" : {
+                "type" : "ListTypeSpecifier",
+                "elementType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:healthit-gov:qdm:v5_4}PositiveMedicationDischarge"
+                }
+              },
+              "localId" : "26",
+              "locator" : "38:8-38:44",
+              "name" : "Antithrombotic Therapy at Discharge"
+            },
+            "suchThat" : {
+              "type" : "In",
+              "operand" : [ {
+                "type" : "Property",
+                "localId" : "29",
+                "locator" : "39:14-39:51",
+                "resultTypeName" : "{urn:hl7-org:elm-types:r1}DateTime",
+                "path" : "authorDatetime",
+                "scope" : "DischargeAntithrombotic"
+              }, {
+                "type" : "Property",
+                "resultTypeSpecifier" : {
+                  "type" : "IntervalTypeSpecifier",
+                  "pointType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                  }
+                },
+                "localId" : "31",
+                "locator" : "39:60-39:97",
+                "path" : "relevantPeriod",
+                "scope" : "IschemicStrokeEncounter"
+              } ],
+              "localId" : "32",
+              "locator" : "39:14-39:97",
+              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean"
+            },
+            "localId" : "33",
+            "locator" : "38:3-39:97",
+            "alias" : "DischargeAntithrombotic"
+          } ],
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+            }
+          },
+          "localId" : "34",
+          "locator" : "37:2-39:97"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Numerator\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "TJC", ".", "\"Ischemic Stroke Encounter\"" ]
+                                  },
+                                  "globalScope" : true
+                                } ]
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "24"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "IschemicStrokeEncounter" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "25"
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "\r\n\t\t" ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "with " ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "\"Antithrombotic Therapy at Discharge\"" ]
+                                  },
+                                  "globalScope" : true
+                                } ]
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "26"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "DischargeAntithrombotic" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "27"
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\r\n\t\t\tsuch that " ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "DischargeAntithrombotic" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "28"
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ "." ]
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "authorDatetime" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "29"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "29"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "during", " " ],
+                            "r" : "32"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "IschemicStrokeEncounter" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "30"
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ "." ]
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "relevantPeriod" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "31"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "31"
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "32"
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "33"
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "34"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "35"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+          }
+        },
+        "localId" : "35",
+        "locator" : "36:1-39:97",
+        "name" : "Numerator",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Query",
+          "source" : [ {
+            "type" : "AliasedQuerySource",
+            "expression" : {
+              "type" : "Retrieve",
+              "codes" : {
+                "type" : "ValueSetRef",
+                "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Code"
+                  }
+                },
+                "locator" : "42:33-42:56",
+                "name" : "Antithrombotic Therapy"
+              },
+              "resultTypeSpecifier" : {
+                "type" : "ListTypeSpecifier",
+                "elementType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:healthit-gov:qdm:v5_4}NegativeMedicationDischarge"
+                }
+              },
+              "localId" : "36",
+              "locator" : "42:2-42:57",
+              "dataType" : "{urn:healthit-gov:qdm:v5_4}NegativeMedicationDischarge",
+              "templateId" : "NegativeMedicationDischarge",
+              "codeProperty" : "code"
+            },
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}NegativeMedicationDischarge"
+              }
+            },
+            "localId" : "37",
+            "locator" : "42:2-42:83",
+            "alias" : "NoAntithromboticDischarge"
+          } ],
+          "where" : {
+            "type" : "Or",
+            "operand" : [ {
+              "type" : "InValueSet",
+              "code" : {
+                "type" : "Property",
+                "localId" : "39",
+                "locator" : "43:9-43:51",
+                "resultTypeName" : "{urn:hl7-org:elm-types:r1}Code",
+                "path" : "negationRationale",
+                "scope" : "NoAntithromboticDischarge"
+              },
+              "valueset" : {
+                "type" : "ValueSetRef",
+                "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Code"
+                  }
+                },
+                "localId" : "40",
+                "locator" : "43:56-43:71",
+                "name" : "Medical Reason"
+              },
+              "localId" : "41",
+              "locator" : "43:9-43:71",
+              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean"
+            }, {
+              "type" : "InValueSet",
+              "code" : {
+                "type" : "Property",
+                "localId" : "43",
+                "locator" : "44:7-44:49",
+                "resultTypeName" : "{urn:hl7-org:elm-types:r1}Code",
+                "path" : "negationRationale",
+                "scope" : "NoAntithromboticDischarge"
+              },
+              "valueset" : {
+                "type" : "ValueSetRef",
+                "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Code"
+                  }
+                },
+                "localId" : "44",
+                "locator" : "44:54-44:70",
+                "name" : "Patient Refusal"
+              },
+              "localId" : "45",
+              "locator" : "44:7-44:70",
+              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean"
+            } ],
+            "localId" : "46",
+            "locator" : "43:3-44:70",
+            "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean"
+          },
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}NegativeMedicationDischarge"
+            }
+          },
+          "localId" : "47",
+          "locator" : "42:2-44:70"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Antithrombotic Not Given at Discharge\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "[", "\"Medication, Not Discharged\"", ": " ]
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ {
+                                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                      "value" : {
+                                        "s" : [ "\"Antithrombotic Therapy\"" ]
+                                      },
+                                      "globalScope" : true
+                                    } ]
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "]" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "36"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "36"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "NoAntithromboticDischarge" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "37"
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "\r\n\t\t" ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "where " ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ {
+                                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                      "value" : {
+                                        "s" : [ "NoAntithromboticDischarge" ]
+                                      },
+                                      "globalScope" : true
+                                    } ],
+                                    "r" : "38"
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "." ]
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ {
+                                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                      "value" : {
+                                        "s" : [ "negationRationale" ]
+                                      },
+                                      "globalScope" : true
+                                    } ],
+                                    "r" : "39"
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "39"
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ " in " ]
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "\"Medical Reason\"" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "40"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "41"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ "\r\n\t\t\tor " ]
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ {
+                                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                      "value" : {
+                                        "s" : [ "NoAntithromboticDischarge" ]
+                                      },
+                                      "globalScope" : true
+                                    } ],
+                                    "r" : "42"
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "." ]
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ {
+                                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                      "value" : {
+                                        "s" : [ "negationRationale" ]
+                                      },
+                                      "globalScope" : true
+                                    } ],
+                                    "r" : "43"
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "43"
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ " in " ]
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "\"Patient Refusal\"" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "44"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "45"
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "46"
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "46"
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "47"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "48"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}NegativeMedicationDischarge"
+          }
+        },
+        "localId" : "48",
+        "locator" : "41:1-44:70",
+        "name" : "Antithrombotic Not Given at Discharge",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "ExpressionRef",
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+            }
+          },
+          "localId" : "50",
+          "locator" : "47:2-47:49",
+          "name" : "Encounter with Principal Diagnosis and Age",
+          "libraryName" : "TJC"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Initial Population\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "TJC" ]
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "49"
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "." ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"Encounter with Principal Diagnosis and Age\"" ]
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "50"
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "50"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "51"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+          }
+        },
+        "localId" : "51",
+        "locator" : "46:1-47:49",
+        "name" : "Initial Population",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Union",
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+            }
+          },
+          "operand" : [ {
+            "type" : "ExpressionRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+              }
+            },
+            "localId" : "53",
+            "locator" : "50:2-50:60",
+            "name" : "Ischemic Stroke Encounters with Discharge Disposition",
+            "libraryName" : "TJC"
+          }, {
+            "type" : "ExpressionRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+              }
+            },
+            "localId" : "55",
+            "locator" : "51:9-51:53",
+            "name" : "Comfort Measures during Hospitalization",
+            "libraryName" : "TJC"
+          } ],
+          "localId" : "56",
+          "locator" : "50:2-51:53"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Denominator Exclusions\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ "TJC" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "52"
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "." ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ "\"Ischemic Stroke Encounters with Discharge Disposition\"" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "53"
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "53"
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "\r\n\t\tunion " ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ "TJC" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "54"
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "." ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ "\"Comfort Measures during Hospitalization\"" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "55"
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "55"
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "56"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "57"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+          }
+        },
+        "localId" : "57",
+        "locator" : "49:1-51:53",
+        "name" : "Denominator Exclusions",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Query",
+          "source" : [ {
+            "type" : "AliasedQuerySource",
+            "expression" : {
+              "type" : "ExpressionRef",
+              "resultTypeSpecifier" : {
+                "type" : "ListTypeSpecifier",
+                "elementType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+                }
+              },
+              "localId" : "58",
+              "locator" : "54:2-54:32",
+              "name" : "Ischemic Stroke Encounter",
+              "libraryName" : "TJC"
+            },
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+              }
+            },
+            "localId" : "59",
+            "locator" : "54:2-54:56",
+            "alias" : "IschemicStrokeEncounter"
+          } ],
+          "relationship" : [ {
+            "type" : "With",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}NegativeMedicationDischarge"
+              }
+            },
+            "expression" : {
+              "type" : "ExpressionRef",
+              "resultTypeSpecifier" : {
+                "type" : "ListTypeSpecifier",
+                "elementType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:healthit-gov:qdm:v5_4}NegativeMedicationDischarge"
+                }
+              },
+              "localId" : "60",
+              "locator" : "55:8-55:46",
+              "name" : "Antithrombotic Not Given at Discharge"
+            },
+            "suchThat" : {
+              "type" : "In",
+              "operand" : [ {
+                "type" : "Property",
+                "localId" : "63",
+                "locator" : "56:14-56:53",
+                "resultTypeName" : "{urn:hl7-org:elm-types:r1}DateTime",
+                "path" : "authorDatetime",
+                "scope" : "NoDischargeAntithrombotic"
+              }, {
+                "type" : "Property",
+                "resultTypeSpecifier" : {
+                  "type" : "IntervalTypeSpecifier",
+                  "pointType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                  }
+                },
+                "localId" : "65",
+                "locator" : "56:62-56:99",
+                "path" : "relevantPeriod",
+                "scope" : "IschemicStrokeEncounter"
+              } ],
+              "localId" : "66",
+              "locator" : "56:14-56:99",
+              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean"
+            },
+            "localId" : "67",
+            "locator" : "55:3-56:99",
+            "alias" : "NoDischargeAntithrombotic"
+          } ],
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+            }
+          },
+          "localId" : "68",
+          "locator" : "54:2-56:99"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Encounter With No Antithrombotic At Discharge\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "TJC", ".", "\"Ischemic Stroke Encounter\"" ]
+                                  },
+                                  "globalScope" : true
+                                } ]
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "58"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "IschemicStrokeEncounter" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "59"
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "\r\n\t\t" ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "with " ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "\"Antithrombotic Not Given at Discharge\"" ]
+                                  },
+                                  "globalScope" : true
+                                } ]
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "60"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "NoDischargeAntithrombotic" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "61"
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\r\n\t\t\tsuch that " ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "NoDischargeAntithrombotic" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "62"
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ "." ]
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "authorDatetime" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "63"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "63"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "during", " " ],
+                            "r" : "66"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "IschemicStrokeEncounter" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "64"
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ "." ]
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "relevantPeriod" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "65"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "65"
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "66"
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "67"
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "68"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "69"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+          }
+        },
+        "localId" : "69",
+        "locator" : "53:1-56:99",
+        "name" : "Encounter With No Antithrombotic At Discharge",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Query",
+          "source" : [ {
+            "type" : "AliasedQuerySource",
+            "expression" : {
+              "type" : "ExpressionRef",
+              "resultTypeSpecifier" : {
+                "type" : "ListTypeSpecifier",
+                "elementType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+                }
+              },
+              "localId" : "70",
+              "locator" : "59:2-59:32",
+              "name" : "Ischemic Stroke Encounter",
+              "libraryName" : "TJC"
+            },
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+              }
+            },
+            "localId" : "71",
+            "locator" : "59:2-59:56",
+            "alias" : "IschemicStrokeEncounter"
+          } ],
+          "relationship" : [ {
+            "type" : "With",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveMedicationAdministered"
+              }
+            },
+            "expression" : {
+              "type" : "Retrieve",
+              "codes" : {
+                "type" : "ValueSetRef",
+                "resultTypeSpecifier" : {
+                  "type" : "ListTypeSpecifier",
+                  "elementType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}Code"
+                  }
+                },
+                "locator" : "60:37-60:60",
+                "name" : "Ticagrelor Therapy",
+                "libraryName" : "TJC"
+              },
+              "resultTypeSpecifier" : {
+                "type" : "ListTypeSpecifier",
+                "elementType" : {
+                  "type" : "NamedTypeSpecifier",
+                  "name" : "{urn:healthit-gov:qdm:v5_4}PositiveMedicationAdministered"
+                }
+              },
+              "localId" : "72",
+              "locator" : "60:8-60:61",
+              "dataType" : "{urn:healthit-gov:qdm:v5_4}PositiveMedicationAdministered",
+              "templateId" : "PositiveMedicationAdministered",
+              "codeProperty" : "code"
+            },
+            "suchThat" : {
+              "type" : "In",
+              "operand" : [ {
+                "type" : "Start",
+                "operand" : {
+                  "type" : "Property",
+                  "resultTypeSpecifier" : {
+                    "type" : "IntervalTypeSpecifier",
+                    "pointType" : {
+                      "type" : "NamedTypeSpecifier",
+                      "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                    }
+                  },
+                  "localId" : "75",
+                  "locator" : "61:14-61:38",
+                  "path" : "relevantPeriod",
+                  "scope" : "Ticagrelor"
+                },
+                "locator" : "61:40-61:45"
+              }, {
+                "type" : "FunctionRef",
+                "operand" : [ {
+                  "type" : "AliasRef",
+                  "localId" : "77",
+                  "locator" : "61:94-61:116",
+                  "resultTypeName" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed",
+                  "name" : "IschemicStrokeEncounter"
+                } ],
+                "resultTypeSpecifier" : {
+                  "type" : "IntervalTypeSpecifier",
+                  "pointType" : {
+                    "type" : "NamedTypeSpecifier",
+                    "name" : "{urn:hl7-org:elm-types:r1}DateTime"
+                  }
+                },
+                "localId" : "78",
+                "locator" : "61:54-61:117",
+                "name" : "HospitalizationWithObservation",
+                "libraryName" : "Global"
+              } ],
+              "localId" : "79",
+              "locator" : "61:14-61:117",
+              "resultTypeName" : "{urn:hl7-org:elm-types:r1}Boolean"
+            },
+            "localId" : "80",
+            "locator" : "60:3-61:117",
+            "alias" : "Ticagrelor"
+          } ],
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+            }
+          },
+          "localId" : "81",
+          "locator" : "59:2-61:117"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Encounter With Ticagrelor During Hospitalization\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "TJC", ".", "\"Ischemic Stroke Encounter\"" ]
+                                  },
+                                  "globalScope" : true
+                                } ]
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "70"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "IschemicStrokeEncounter" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "71"
+                      },
+                      "globalScope" : true
+                    } ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "\r\n\t\t" ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "with " ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "[", "\"Medication, Administered\"", ": " ]
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ {
+                                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                      "value" : {
+                                        "s" : [ "TJC", ".", "\"Ticagrelor Therapy\"" ]
+                                      },
+                                      "globalScope" : true
+                                    } ]
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "]" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "72"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "72"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "Ticagrelor" ]
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "73"
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\r\n\t\t\tsuch that " ]
+                      },
+                      "globalScope" : true
+                    }, {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "Ticagrelor" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "74"
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ "." ]
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "relevantPeriod" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "75"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "75"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ " ", "starts during", " " ],
+                            "r" : "79"
+                          },
+                          "globalScope" : true
+                        }, {
+                          "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                          "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                          "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                          "value" : {
+                            "s" : [ {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "Global" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "76"
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ "." ]
+                              },
+                              "globalScope" : true
+                            }, {
+                              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                              "value" : {
+                                "s" : [ {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ "\"HospitalizationWithObservation\"", "(" ]
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ {
+                                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                      "value" : {
+                                        "s" : [ "IschemicStrokeEncounter" ]
+                                      },
+                                      "globalScope" : true
+                                    } ],
+                                    "r" : "77"
+                                  },
+                                  "globalScope" : true
+                                }, {
+                                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                                  "value" : {
+                                    "s" : [ ")" ]
+                                  },
+                                  "globalScope" : true
+                                } ],
+                                "r" : "78"
+                              },
+                              "globalScope" : true
+                            } ],
+                            "r" : "78"
+                          },
+                          "globalScope" : true
+                        } ],
+                        "r" : "79"
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "80"
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "81"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "82"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+          }
+        },
+        "localId" : "82",
+        "locator" : "58:1-61:117",
+        "name" : "Encounter With Ticagrelor During Hospitalization",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      }, {
+        "type" : "ExpressionDef",
+        "expression" : {
+          "type" : "Union",
+          "resultTypeSpecifier" : {
+            "type" : "ListTypeSpecifier",
+            "elementType" : {
+              "type" : "NamedTypeSpecifier",
+              "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+            }
+          },
+          "operand" : [ {
+            "type" : "ExpressionRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+              }
+            },
+            "localId" : "83",
+            "locator" : "64:2-64:48",
+            "name" : "Encounter With No Antithrombotic At Discharge"
+          }, {
+            "type" : "ExpressionRef",
+            "resultTypeSpecifier" : {
+              "type" : "ListTypeSpecifier",
+              "elementType" : {
+                "type" : "NamedTypeSpecifier",
+                "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+              }
+            },
+            "localId" : "84",
+            "locator" : "65:9-65:58",
+            "name" : "Encounter With Ticagrelor During Hospitalization"
+          } ],
+          "localId" : "85",
+          "locator" : "64:2-65:58"
+        },
+        "annotation" : [ {
+          "type" : "Annotation",
+          "s" : {
+            "s" : [ {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ "define ", "\"Denominator Exceptions\"", ":\r\n\t" ]
+              },
+              "globalScope" : true
+            }, {
+              "name" : "{urn:hl7-org:cql-annotations:r1}s",
+              "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+              "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+              "value" : {
+                "s" : [ {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"Encounter With No Antithrombotic At Discharge\"" ]
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "83"
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ "\r\n\t\tunion " ]
+                  },
+                  "globalScope" : true
+                }, {
+                  "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                  "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                  "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                  "value" : {
+                    "s" : [ {
+                      "name" : "{urn:hl7-org:cql-annotations:r1}s",
+                      "declaredType" : "org.hl7.cql_annotations.r1.Narrative",
+                      "scope" : "javax.xml.bind.JAXBElement$GlobalScope",
+                      "value" : {
+                        "s" : [ "\"Encounter With Ticagrelor During Hospitalization\"" ]
+                      },
+                      "globalScope" : true
+                    } ],
+                    "r" : "84"
+                  },
+                  "globalScope" : true
+                } ],
+                "r" : "85"
+              },
+              "globalScope" : true
+            } ],
+            "r" : "86"
+          }
+        } ],
+        "resultTypeSpecifier" : {
+          "type" : "ListTypeSpecifier",
+          "elementType" : {
+            "type" : "NamedTypeSpecifier",
+            "name" : "{urn:healthit-gov:qdm:v5_4}PositiveEncounterPerformed"
+          }
+        },
+        "localId" : "86",
+        "locator" : "63:1-65:58",
+        "name" : "Denominator Exceptions",
+        "context" : "Patient",
+        "accessLevel" : "Public"
+      } ]
+    },
+    "annotation" : [ {
+      "translatorOptions" : "EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation",
+      "type" : "CqlToElmInfo"
+    } ]
+  }
+}
+

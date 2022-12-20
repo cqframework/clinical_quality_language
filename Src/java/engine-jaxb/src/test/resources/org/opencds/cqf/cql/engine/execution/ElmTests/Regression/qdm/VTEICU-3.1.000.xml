@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library xmlns="urn:hl7-org:elm:r1" xmlns:t="urn:hl7-org:elm-types:r1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:fhir="http://hl7.org/fhir" xmlns:qdm43="urn:healthit-gov:qdm:v4_3" xmlns:qdm53="urn:healthit-gov:qdm:v5_3" xmlns:a="urn:hl7-org:cql-annotations:r1">
+   <annotation translatorOptions="EnableDateRangeOptimization,EnableAnnotations,EnableLocators,EnableResultTypes,DisableListDemotion,DisableListPromotion,DisableMethodInvocation" xsi:type="a:CqlToElmInfo"/>
+   <identifier id="VTEICU" version="3.1.000"/>
+   <schemaIdentifier id="urn:hl7-org:elm" version="r1"/>
+   <usings>
+      <def localIdentifier="System" uri="urn:hl7-org:elm-types:r1"/>
+      <def localId="1" locator="3:1-3:23" localIdentifier="QDM" uri="urn:healthit-gov:qdm:v5_4" version="5.4"/>
+   </usings>
+   <includes>
+      <def localId="2" locator="5:1-5:64" localIdentifier="Global" path="MATGlobalCommonFunctions" version="4.0.000"/>
+   </includes>
+   <parameters>
+      <def localId="6" locator="9:1-9:49" name="Measurement Period" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <parameterTypeSpecifier localId="5" locator="9:32-9:49" xsi:type="IntervalTypeSpecifier">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <pointType localId="4" locator="9:41-9:48" resultTypeName="t:DateTime" name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </parameterTypeSpecifier>
+      </def>
+   </parameters>
+   <valueSets>
+      <def localId="3" locator="7:1-7:72" name="Intensive Care Unit" id="urn:oid:2.16.840.1.113762.1.4.1029.206" accessLevel="Public">
+         <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+            <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+      </def>
+   </valueSets>
+   <statements>
+      <def locator="11:1-11:15" name="Patient" context="Patient">
+         <expression xsi:type="SingletonFrom">
+            <operand locator="11:1-11:15" xmlns:ns0="urn:healthit-gov:qdm:v5_4" dataType="ns0:Patient" templateId="Patient" xsi:type="Retrieve"/>
+         </expression>
+      </def>
+      <def localId="22" locator="13:1-14:148" name="FromDayOfStartOfHospitalizationToDayAfterAdmission" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="22">
+               <a:s>define function &quot;FromDayOfStartOfHospitalizationToDayAfterAdmission&quot;(Encounter </a:s>
+               <a:s r="7">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="21">
+                  <a:s r="21">
+                     <a:s>Interval[</a:s>
+                     <a:s r="13">
+                        <a:s r="8">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="13">
+                           <a:s>&quot;ToDate&quot;(</a:s>
+                           <a:s r="12">
+                              <a:s>start of </a:s>
+                              <a:s r="11">
+                                 <a:s r="9">
+                                    <a:s>Global</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="11">
+                                    <a:s>&quot;HospitalizationWithObservation&quot;(</a:s>
+                                    <a:s r="10">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>)</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="20">
+                        <a:s r="14">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="20">
+                           <a:s>&quot;ToDate&quot;(</a:s>
+                           <a:s r="19">
+                              <a:s r="17">
+                                 <a:s>start of </a:s>
+                                 <a:s r="16">
+                                    <a:s r="15">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="16">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s> + </a:s>
+                              <a:s r="18">
+                                 <a:s>2 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="21" locator="14:2-14:148" lowClosed="true" highClosed="false" xsi:type="Interval">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <low localId="13" locator="14:11-14:86" resultTypeName="t:DateTime" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="12" locator="14:27-14:85" resultTypeName="t:DateTime" xsi:type="Start">
+                  <operand localId="11" locator="14:36-14:85" name="HospitalizationWithObservation" libraryName="Global" xsi:type="FunctionRef">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="10" locator="14:76-14:84" xmlns:ns1="urn:healthit-gov:qdm:v5_4" resultTypeName="ns1:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                  </operand>
+               </operand>
+            </low>
+            <high localId="20" locator="14:89-14:147" resultTypeName="t:DateTime" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="19" locator="14:105-14:146" resultTypeName="t:DateTime" xsi:type="Add">
+                  <operand localId="17" locator="14:105-14:137" resultTypeName="t:DateTime" xsi:type="Start">
+                     <operand localId="16" locator="14:114-14:137" path="relevantPeriod" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="15" locator="14:114-14:122" xmlns:ns2="urn:healthit-gov:qdm:v5_4" resultTypeName="ns2:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                     </operand>
+                  </operand>
+                  <operand localId="18" locator="14:141-14:146" resultTypeName="t:Quantity" value="2" unit="days" xsi:type="Quantity"/>
+               </operand>
+            </high>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="7" locator="13:80-13:101" xmlns:ns3="urn:healthit-gov:qdm:v5_4" resultTypeName="ns3:PositiveEncounterPerformed" xmlns:ns4="urn:healthit-gov:qdm:v5_4" name="ns4:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="47" locator="25:1-30:2" xmlns:ns5="urn:healthit-gov:qdm:v5_4" resultTypeName="ns5:FacilityLocation" name="FirstInpatientIntensiveCareUnit" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="47">
+               <a:s>define function &quot;FirstInpatientIntensiveCareUnit&quot;(Encounter </a:s>
+               <a:s r="27">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="46">
+                  <a:s r="46">
+                     <a:s>First(</a:s>
+                     <a:s r="45">
+                        <a:s>
+                           <a:s r="30">
+                              <a:s r="29">
+                                 <a:s>(</a:s>
+                                 <a:s r="29">
+                                    <a:s r="28">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="29">
+                                       <a:s>facilityLocations</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                              <a:s>HospitalLocation</a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+			</a:s>
+                        <a:s r="40">
+                           <a:s>where </a:s>
+                           <a:s r="40">
+                              <a:s r="34">
+                                 <a:s r="32">
+                                    <a:s r="31">
+                                       <a:s>HospitalLocation</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="32">
+                                       <a:s>code</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s> in </a:s>
+                                 <a:s r="33">
+                                    <a:s>&quot;Intensive Care Unit&quot;</a:s>
+                                 </a:s>
+                              </a:s>
+                              <a:s>
+				and </a:s>
+                              <a:s r="39">
+                                 <a:s r="36">
+                                    <a:s r="35">
+                                       <a:s>HospitalLocation</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="36">
+                                       <a:s>locationPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                                 <a:s r="39"> during </a:s>
+                                 <a:s r="38">
+                                    <a:s r="37">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>.</a:s>
+                                    <a:s r="38">
+                                       <a:s>relevantPeriod</a:s>
+                                    </a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                        <a:s>
+			</a:s>
+                        <a:s r="44">
+                           <a:s>sort by </a:s>
+                           <a:s r="43">
+                              <a:s r="42">
+                                 <a:s>start of </a:s>
+                                 <a:s r="41">
+                                    <a:s>locationPeriod</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>
+	)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="46" locator="26:2-30:2" xmlns:ns6="urn:healthit-gov:qdm:v5_4" resultTypeName="ns6:FacilityLocation" xsi:type="First">
+            <source localId="45" locator="26:8-29:34" xsi:type="Query">
+               <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                  <elementType xmlns:ns7="urn:healthit-gov:qdm:v5_4" name="ns7:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <source localId="30" locator="26:8-26:52" alias="HospitalLocation">
+                  <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                     <elementType xmlns:ns8="urn:healthit-gov:qdm:v5_4" name="ns8:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                  </resultTypeSpecifier>
+                  <expression localId="29" locator="26:8-26:36" path="facilityLocations" xsi:type="Property">
+                     <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                        <elementType xmlns:ns9="urn:healthit-gov:qdm:v5_4" name="ns9:FacilityLocation" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <source localId="28" locator="26:9-26:17" xmlns:ns10="urn:healthit-gov:qdm:v5_4" resultTypeName="ns10:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                  </expression>
+               </source>
+               <where localId="40" locator="27:4-28:71" resultTypeName="t:Boolean" xsi:type="And">
+                  <operand localId="34" locator="27:10-27:55" resultTypeName="t:Boolean" xsi:type="InValueSet">
+                     <code localId="32" locator="27:10-27:30" resultTypeName="t:Code" path="code" scope="HospitalLocation" xsi:type="Property"/>
+                     <valueset localId="33" locator="27:35-27:55" name="Intensive Care Unit">
+                        <resultTypeSpecifier xsi:type="ListTypeSpecifier">
+                           <elementType name="t:Code" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </valueset>
+                  </operand>
+                  <operand localId="39" locator="28:9-28:71" resultTypeName="t:Boolean" xsi:type="IncludedIn">
+                     <operand localId="36" locator="28:9-28:39" path="locationPeriod" scope="HospitalLocation" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                     </operand>
+                     <operand localId="38" locator="28:48-28:71" path="relevantPeriod" xsi:type="Property">
+                        <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                           <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                        </resultTypeSpecifier>
+                        <source localId="37" locator="28:48-28:56" xmlns:ns11="urn:healthit-gov:qdm:v5_4" resultTypeName="ns11:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                     </operand>
+                  </operand>
+               </where>
+               <sort localId="44" locator="29:4-29:34">
+                  <by localId="43" locator="29:12-29:34" resultTypeName="t:DateTime" direction="asc" xsi:type="ByExpression">
+                     <expression localId="42" locator="29:12-29:34" resultTypeName="t:DateTime" xsi:type="Start">
+                        <operand localId="41" locator="29:21-29:34" name="locationPeriod" xsi:type="IdentifierRef">
+                           <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                              <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                           </resultTypeSpecifier>
+                        </operand>
+                     </expression>
+                  </by>
+               </sort>
+            </source>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="27" locator="25:61-25:82" xmlns:ns12="urn:healthit-gov:qdm:v5_4" resultTypeName="ns12:PositiveEncounterPerformed" xmlns:ns13="urn:healthit-gov:qdm:v5_4" name="ns13:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="50" locator="22:1-23:60" name="FirstICULocationPeriod" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="50">
+               <a:s>define function &quot;FirstICULocationPeriod&quot;(Encounter </a:s>
+               <a:s r="25">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="49">
+                  <a:s r="49">
+                     <a:s r="48">
+                        <a:s>&quot;FirstInpatientIntensiveCareUnit&quot;(</a:s>
+                        <a:s r="26">
+                           <a:s>Encounter</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                     <a:s>.</a:s>
+                     <a:s r="49">
+                        <a:s>locationPeriod</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="49" locator="23:2-23:60" path="locationPeriod" xsi:type="Property">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <source localId="48" locator="23:2-23:45" xmlns:ns14="urn:healthit-gov:qdm:v5_4" resultTypeName="ns14:FacilityLocation" name="FirstInpatientIntensiveCareUnit" xsi:type="FunctionRef">
+               <operand localId="26" locator="23:36-23:44" xmlns:ns15="urn:healthit-gov:qdm:v5_4" resultTypeName="ns15:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </source>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="25" locator="22:52-22:73" xmlns:ns16="urn:healthit-gov:qdm:v5_4" resultTypeName="ns16:PositiveEncounterPerformed" xmlns:ns17="urn:healthit-gov:qdm:v5_4" name="ns17:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="53" locator="16:1-17:45" resultTypeName="t:DateTime" name="StartOfFirstICU" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="53">
+               <a:s>define function &quot;StartOfFirstICU&quot;(Encounter </a:s>
+               <a:s r="23">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="52">
+                  <a:s r="52">
+                     <a:s>start of </a:s>
+                     <a:s r="51">
+                        <a:s>&quot;FirstICULocationPeriod&quot;(</a:s>
+                        <a:s r="24">
+                           <a:s>Encounter</a:s>
+                        </a:s>
+                        <a:s>)</a:s>
+                     </a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <expression localId="52" locator="17:2-17:45" resultTypeName="t:DateTime" xsi:type="Start">
+            <operand localId="51" locator="17:11-17:45" name="FirstICULocationPeriod" xsi:type="FunctionRef">
+               <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                  <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+               </resultTypeSpecifier>
+               <operand localId="24" locator="17:36-17:44" xmlns:ns18="urn:healthit-gov:qdm:v5_4" resultTypeName="ns18:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+            </operand>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="23" locator="16:45-16:66" xmlns:ns19="urn:healthit-gov:qdm:v5_4" resultTypeName="ns19:PositiveEncounterPerformed" xmlns:ns20="urn:healthit-gov:qdm:v5_4" name="ns20:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+      <def localId="68" locator="19:1-20:140" name="FromDayOfStartOfHospitalizationToDayAfterFirstICU" context="Patient" accessLevel="Public" xsi:type="FunctionDef">
+         <annotation xsi:type="a:Annotation">
+            <a:s r="68">
+               <a:s>define function &quot;FromDayOfStartOfHospitalizationToDayAfterFirstICU&quot;(Encounter </a:s>
+               <a:s r="54">
+                  <a:s>&quot;Encounter, Performed&quot;</a:s>
+               </a:s>
+               <a:s> ):
+	</a:s>
+               <a:s r="67">
+                  <a:s r="67">
+                     <a:s>Interval[</a:s>
+                     <a:s r="60">
+                        <a:s r="55">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="60">
+                           <a:s>&quot;ToDate&quot;(</a:s>
+                           <a:s r="59">
+                              <a:s>start of </a:s>
+                              <a:s r="58">
+                                 <a:s r="56">
+                                    <a:s>Global</a:s>
+                                 </a:s>
+                                 <a:s>.</a:s>
+                                 <a:s r="58">
+                                    <a:s>&quot;HospitalizationWithObservation&quot;(</a:s>
+                                    <a:s r="57">
+                                       <a:s>Encounter</a:s>
+                                    </a:s>
+                                    <a:s>)</a:s>
+                                 </a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>, </a:s>
+                     <a:s r="66">
+                        <a:s r="61">
+                           <a:s>Global</a:s>
+                        </a:s>
+                        <a:s>.</a:s>
+                        <a:s r="66">
+                           <a:s>&quot;ToDate&quot;(</a:s>
+                           <a:s r="65">
+                              <a:s r="63">
+                                 <a:s>StartOfFirstICU(</a:s>
+                                 <a:s r="62">
+                                    <a:s>Encounter</a:s>
+                                 </a:s>
+                                 <a:s>)</a:s>
+                              </a:s>
+                              <a:s>+ </a:s>
+                              <a:s r="64">
+                                 <a:s>2 days</a:s>
+                              </a:s>
+                           </a:s>
+                           <a:s>)</a:s>
+                        </a:s>
+                     </a:s>
+                     <a:s>)</a:s>
+                  </a:s>
+               </a:s>
+            </a:s>
+         </annotation>
+         <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+            <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+         </resultTypeSpecifier>
+         <expression localId="67" locator="20:2-20:140" lowClosed="true" highClosed="false" xsi:type="Interval">
+            <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+               <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+            </resultTypeSpecifier>
+            <low localId="60" locator="20:11-20:86" resultTypeName="t:DateTime" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="59" locator="20:27-20:85" resultTypeName="t:DateTime" xsi:type="Start">
+                  <operand localId="58" locator="20:36-20:85" name="HospitalizationWithObservation" libraryName="Global" xsi:type="FunctionRef">
+                     <resultTypeSpecifier xsi:type="IntervalTypeSpecifier">
+                        <pointType name="t:DateTime" xsi:type="NamedTypeSpecifier"/>
+                     </resultTypeSpecifier>
+                     <operand localId="57" locator="20:76-20:84" xmlns:ns21="urn:healthit-gov:qdm:v5_4" resultTypeName="ns21:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                  </operand>
+               </operand>
+            </low>
+            <high localId="66" locator="20:89-20:139" resultTypeName="t:DateTime" name="ToDate" libraryName="Global" xsi:type="FunctionRef">
+               <operand localId="65" locator="20:105-20:138" resultTypeName="t:DateTime" xsi:type="Add">
+                  <operand localId="63" locator="20:105-20:130" resultTypeName="t:DateTime" name="StartOfFirstICU" xsi:type="FunctionRef">
+                     <operand localId="62" locator="20:121-20:129" xmlns:ns22="urn:healthit-gov:qdm:v5_4" resultTypeName="ns22:PositiveEncounterPerformed" name="Encounter" xsi:type="OperandRef"/>
+                  </operand>
+                  <operand localId="64" locator="20:133-20:138" resultTypeName="t:Quantity" value="2" unit="days" xsi:type="Quantity"/>
+               </operand>
+            </high>
+         </expression>
+         <operand name="Encounter">
+            <operandTypeSpecifier localId="54" locator="19:79-19:100" xmlns:ns23="urn:healthit-gov:qdm:v5_4" resultTypeName="ns23:PositiveEncounterPerformed" xmlns:ns24="urn:healthit-gov:qdm:v5_4" name="ns24:PositiveEncounterPerformed" xsi:type="NamedTypeSpecifier"/>
+         </operand>
+      </def>
+   </statements>
+</library>
+
+

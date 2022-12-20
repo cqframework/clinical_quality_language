@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tests xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://hl7.org/fhirpath/tests" xsi:schemaLocation="http://hl7.org/fhirpath/tests ../../testSchema/testSchema.xsd"
+  name="CqlAggregateTest" reference="http://build.fhir.org/ig/HL7/cql/03-developersguide.html#aggregate-queries">
+	<group name="AggregateTests">
+		<test name="FactorialOfFive">
+			<expression>({ 1, 2, 3, 4, 5 }) Num aggregate Result starting 1: Result * Num</expression>
+			<output>120</output>
+		</test>
+    <test name="RolledOutIntervals">
+      <expression>MedicationRequestIntervals M
+    aggregate R starting (null as List&lt;Interval&lt;DateTime>>): R union ({
+      M X
+        let S: Max({ end of Last(R) + 1 day, start of X }),
+          E: S + duration in days of X
+        return Interval[S, E]
+    })</expression>
+      <output>TODO</output>
+      <!-- Translation Error: Could not resolve identifier MedicationRequestIntervals in the current library. -->
+    </test>
+  </group>
+</tests>
