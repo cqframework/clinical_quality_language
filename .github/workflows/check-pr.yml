@@ -1,4 +1,4 @@
-name: Run Tests on PRs
+name: Run Checks on PRs
 on: pull_request
 jobs:
   gradle:
@@ -10,8 +10,8 @@ jobs:
         distribution: temurin
         java-version: 11
 
-    - name: Setup and execute Gradle 'test' task
+    - name: Setup and execute Gradle 'check' task
       uses: gradle/gradle-build-action@v2
       with:
-        arguments: test
+        arguments: check
         build-root-directory: Src/java
