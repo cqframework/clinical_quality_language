@@ -131,6 +131,30 @@ public interface FhirTypeConverter {
     public ICompositeType toFhirQuantity(Quantity value);
 
     /**
+     * Determines whether the given string is a CQL calendar unit
+     * @param unit
+     * @return true if the given unit is a CQL calendar unit
+     */
+    public boolean isCqlCalendarUnit(String unit);
+
+    /**
+     * Converts the given CQL unit to a UCUM definite-time duration unit according to the table
+     * and process defined in the CQL specification: https://cql.hl7.org/02-authorsguide.html#quantities
+     * @param unit
+     * @return An equivalent UCUM unit for the given CQL calendar duration unit, if the input is a
+     * CQL calendar duration unit, otherwise returns the input unit.
+     */
+    public String toUcumUnit(String unit);
+
+    /**
+     * Converts a Ucum unit to the equivalent CQL unit according to the table defined in the
+     * CQL specification: https://cql.hl7.org/02-authorsguide.html#quantities
+     * @param unit
+     * @return A CQL calendar unit if the input unit is a Ucum definite-duration unit, otherwise, the input unit
+     */
+    public String toCqlCalendarUnit(String unit);
+
+    /**
      * Converts a CQL Ratio to a FHIR Ratio
      *
      * @param value the value to convert

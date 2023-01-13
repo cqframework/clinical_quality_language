@@ -99,8 +99,12 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
+        String unit = value.getUnit();
+        String system = isCqlCalendarUnit(unit) ? "http://hl7.org/fhirpath/CodeSystem/calendar-units" : "http://unitsofmeasure.org";
+        String ucumUnit = toUcumUnit(unit);
+
         return new org.hl7.fhir.dstu3.model.Quantity()
-                .setSystem("http://unitsofmeasure.org").setCode(value.getUnit()).setValue(value.getValue());
+                .setSystem(system).setCode(ucumUnit).setValue(value.getValue()).setUnit(unit);
     }
 
     @Override
@@ -230,7 +234,10 @@ class Dstu3FhirTypeConverter extends BaseFhirTypeConverter {
         }
 
         org.hl7.fhir.dstu3.model.Quantity quantity = (org.hl7.fhir.dstu3.model.Quantity) value;
-        return new Quantity().withUnit(quantity.getUnit()).withValue(quantity.getValue());
+        if (quantity.hasComparator()) {
+            throw new IllegalArgumentException("Cannot convert a FHIR Quantity with a comparator to a CQL quantity");
+        }
+        return new Quantity().withUnit(toCqlCalendarUnit(quantity.getUnit())).withValue(quantity.getValue());
     }
 
     @Override

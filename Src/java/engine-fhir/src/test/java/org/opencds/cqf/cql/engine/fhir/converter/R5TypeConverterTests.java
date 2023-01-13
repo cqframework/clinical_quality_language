@@ -257,7 +257,7 @@ public class R5TypeConverterTests {
     @Test
     public void TestQuantityToFhirQuantity() {
         org.hl7.fhir.r5.model.Quantity expected = new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml")
-                .setSystem("http://unitsofmeasure.org");
+                .setSystem("http://unitsofmeasure.org").setUnit("ml");
         org.hl7.fhir.r5.model.Quantity actual = (org.hl7.fhir.r5.model.Quantity) this.typeConverter
                 .toFhirQuantity(new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"));
         assertTrue(expected.equalsDeep(actual));
@@ -266,9 +266,9 @@ public class R5TypeConverterTests {
     @Test
     public void TestRatioToFhirRatio() {
         org.hl7.fhir.r5.model.Quantity expectedNumerator = new org.hl7.fhir.r5.model.Quantity(1.0).setCode("ml")
-                .setSystem("http://unitsofmeasure.org");
+                .setSystem("http://unitsofmeasure.org").setUnit("ml");
         org.hl7.fhir.r5.model.Quantity expectedDenominator = new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml")
-                .setSystem("http://unitsofmeasure.org");
+                .setSystem("http://unitsofmeasure.org").setUnit("ml");
 
         org.hl7.fhir.r5.model.Ratio expected = new org.hl7.fhir.r5.model.Ratio().setNumerator(expectedNumerator)
                 .setDenominator(expectedDenominator);
@@ -343,8 +343,8 @@ public class R5TypeConverterTests {
     @Test
     public void TestIntervalToFhirRange() {
         Range expected = new Range()
-                .setLow(new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml").setSystem("http://unitsofmeasure.org"))
-                .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0).setCode("ml").setSystem("http://unitsofmeasure.org"));
+                .setLow(new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml").setSystem("http://unitsofmeasure.org").setUnit("ml"))
+                .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0).setCode("ml").setSystem("http://unitsofmeasure.org").setUnit("ml"));
         Range actual = (Range) this.typeConverter
                 .toFhirRange(new Interval(new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"), true,
                         new Quantity().withValue(new BigDecimal("5.0")).withUnit("ml"), true));
@@ -368,8 +368,8 @@ public class R5TypeConverterTests {
         assertTrue(expectedPeriod.equalsDeep(actualPeriod));
 
         Range expectedRange = new Range()
-                .setLow(new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml").setSystem("http://unitsofmeasure.org"))
-                .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0).setCode("ml").setSystem("http://unitsofmeasure.org"));
+                .setLow(new org.hl7.fhir.r5.model.Quantity(2.0).setCode("ml").setSystem("http://unitsofmeasure.org").setUnit("ml"))
+                .setHigh(new org.hl7.fhir.r5.model.Quantity(5.0).setCode("ml").setSystem("http://unitsofmeasure.org").setUnit("ml"));
         Range actualRange = (Range) this.typeConverter
                 .toFhirInterval(new Interval(new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"), true,
                         new Quantity().withValue(new BigDecimal("5.0")).withUnit("ml"), true));
