@@ -484,7 +484,7 @@ define MinTime: minimum Time
 define test_MinInteger: TestMessage(MinInteger = -2147483648, 'MinInteger', toString(-2147483648), toString(MinInteger))
 define test_MinDecimal: TestMessage(MinDecimal = -9999999999999999999999999999.99999999, 'MinDecimal', toString(-9999999999999999999999999999.99999999), toString(MinDecimal))
 define test_MinDate: TestMessage(MinDate = @0001-01-01, 'MinDate', toString(@0001-01-01), toString(MinDate))
-define test_MinDateTime: TestMessage(MinDateTime = @0001-01-01T00:00:00.000, 'MinDateTime', toString(@0001-01-01T00:00:00.000), toString(MinDateTime))
+define test_MinDateTime: TestMessage(MinDateTime = @0001-01-01T00:00:00.000Z, 'MinDateTime', toString(@0001-01-01T00:00:00.000Z), toString(MinDateTime))
 define test_MinTime: TestMessage(MinTime = @T00:00:00.000, 'MinTime', toString(@T00:00:00.000), toString(MinTime))
 
 // MaxValue
@@ -497,7 +497,7 @@ define MaxTime: maximum Time
 define test_MaxInteger: TestMessage(MaxInteger = 2147483647, 'MaxInteger', toString(2147483647), toString(MaxInteger))
 define test_MaxDecimal: TestMessage(MaxDecimal = 9999999999999999999999999999.99999999, 'MaxDecimal', toString(9999999999999999999999999999.99999999), toString(MaxDecimal))
 define test_MaxDate: TestMessage(MaxDate = @9999-12-31, 'MaxDate', toString(@9999-12-31), toString(MaxDate))
-define test_MaxDateTime: TestMessage(MaxDateTime = @9999-12-31T23:59:59.999, 'MaxDateTime', toString(@9999-12-31T23:59:59.999), toString(MaxDateTime))
+define test_MaxDateTime: TestMessage(MaxDateTime = @9999-12-31T23:59:59.999Z, 'MaxDateTime', toString(@9999-12-31T23:59:59.999Z), toString(MaxDateTime))
 define test_MaxTime: TestMessage(MaxTime = @T23:59:59.999, 'MaxTime', toString(@T23:59:59.999), toString(MaxTime))
 
 // TruncatedDivide
@@ -3811,7 +3811,7 @@ define DateTimeNullEndCollapseNoOverlapExpected: { DateTime1_2Interval, DateTime
 define DateTimeNullStartCollapseNoOverlapExpected: { DateTimeNull_5Interval, DateTime9_10Interval }
 define DateTimeNullEndCollapseExpected: { Interval[DateTime(2012, 1, 1, 0, 0, 0, 0), null] }
 // TODO: should be { Interval[(null as DateTime), (null as DateTime)] } but that currently evaluates to null in the engine
-define DateTimeNullStartEndCollapseExpected: { Interval[null, DateTime(9999, 12, 31, 23, 59, 59, 999)] }
+define DateTimeNullStartEndCollapseExpected: { Interval[null, DateTime(9999, 12, 31, 23, 59, 59, 999, 0.0)] }
 define QuantityMeterNullLowIntervalList: { Interval[null, ToQuantity('1.995 \'m\'')], Interval[ToQuantity('2 \'m\''), ToQuantity('3 \'m\'')] }
 define CollapseQuantityNullLowUnitsWithinPerExpected : { Interval[null, ToQuantity('3 \'m\'')] }
 define QuantityMeterNullHighIntervalList: { Interval[ToQuantity('1 \'m\''),ToQuantity('1.995 \'m\'')], Interval[ToQuantity('2 \'m\''), null] }

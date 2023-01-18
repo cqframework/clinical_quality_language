@@ -476,7 +476,10 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitInterval(Interval elm, ElmRequirementsContext context) {
-        return super.visitInterval(elm, context);
+        ElmRequirement result = super.visitInterval(elm, context);
+        ElmOperatorRequirement finalResult = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        finalResult.combine(result);
+        return finalResult;
     }
 
     @Override

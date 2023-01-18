@@ -6,6 +6,7 @@ import org.opencds.cqf.cql.engine.exception.InvalidOperatorArgument;
 import org.opencds.cqf.cql.engine.execution.Context;
 import org.opencds.cqf.cql.engine.runtime.Date;
 import org.opencds.cqf.cql.engine.runtime.DateTime;
+import org.opencds.cqf.cql.engine.runtime.TemporalHelper;
 
 /*
 
@@ -60,7 +61,11 @@ public class ToDateTimeEvaluator extends org.cqframework.cql.elm.execution.ToDat
         }
 
         if (operand instanceof Date) {
-            return new DateTime(null, ((Date) operand).getDate().getYear(), ((Date) operand).getDate().getMonthValue(), ((Date) operand).getDate().getDayOfMonth(), 0, 0, 0, 0);
+            return new DateTime(TemporalHelper.zoneToOffset(context.getEvaluationOffsetDateTime().getOffset()),
+                    ((Date) operand).getDate().getYear(),
+                    ((Date) operand).getDate().getMonthValue(),
+                    ((Date) operand).getDate().getDayOfMonth(),
+                    0, 0, 0, 0);
         }
 
         throw new InvalidOperatorArgument(

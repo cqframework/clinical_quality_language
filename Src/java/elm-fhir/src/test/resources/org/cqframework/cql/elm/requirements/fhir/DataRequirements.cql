@@ -169,24 +169,36 @@ DataRequirement
 type: Claim
 */
 
-/* define "HospiceEncounterClaimsBBoundDateFromPlus1Day":
-    [Claim] CEncounter
-      where exists CEncounter.item IEncounter
-        where (date from IEncounter.serviced."start") + 1 day in "Measurement Period" */
-
 /*
-2e -
+define "HospiceEncounterClaimsBBoundDateFromPlus1Day":
+  [Claim] CEncounter
+    where exists CEncounter.item IEncounter
+      where (date from IEncounter.serviced."start") + 1 day in "Measurement Period"
 */
 
 /*
-define “Date Filter Expression”:
+define “cxInjury”:
+  (CommonEl.“Get Active Confirmed Conditions”([Condition])) C
+    where C.code in CommonCx.“rc_cervicalSpineInjury”
+      and FHIRCommon.ToInterval(C.onset) starts 30 days or less before Today()
+*/
+
+/*
+2e - Timing phrase 90 days or less before
+DataRequirement
+type: Condition
+dateFilter: { path: onset, value: Interval[@2022-12-31T - 90 days, @2022-12-31T] }
+*/
+
+/*
+define "Date Filter Expression":
   [Condition] C
-    where onset as Period starts 90 days or less before Today()
+    where C.onset as Period starts 90 days or less before Today()
 
 Emits as:
 define "Date Filter Expression":
   [Condition] C
-    where start of (onset as Period) in Interval[Today() - 90 days, Today()]
+    where start of (C.onset as Period) in Interval[Today() - 90 days, Today()]
 */
 
 /*
@@ -223,24 +235,30 @@ define "Date Filter Expression":
 */
 
 /*
-2i
+2i - In a compile-time literal interval
+DataRequirement
+type: Condition
+dateFilter: { path: onset, value: Interval[@2022-12-31 - 90 days, @2022-12-31] }
 */
 
 /*
 define "Date Filter Expression":
   [Condition] C
-    where C.onset as dateTime in Interval[@2022-12-31 - 90 days, @2022-12-31]
+    where C.onset as dateTime in Interval[@2022-12-31T - 90 days, @2022-12-31T]
 */
 
 /*
-2j
+2j - Before and after
+DataRequirement
+type: Condition
+dateFilter: { path: onset, value: Interval[@2022-12-31T - 90 days, @2022-12-31T] }
 */
 
 /*
 define "Date Filter Expression":
   [Condition] C
-    where C.onset as dateTime >= @2022-12-31 - 90 days
-      and C.onset as dateTime <= @2022-12-31
+    where C.onset as dateTime >= @2022-12-31T - 90 days
+      and C.onset as dateTime <= @2022-12-31T
 */
 
 /*

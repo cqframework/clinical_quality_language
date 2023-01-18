@@ -16,7 +16,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Date;
 import java.util.List;
@@ -572,6 +575,13 @@ public class DataRequirementsProcessorTest {
         return moduleDefinitionLibrary;
     }
 
+    private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(CqlTranslator translator, CqlTranslatorOptions cqlTranslatorOptions, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
+        DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, parameters, evaluationDateTime, false,false);
+        assertTrue(moduleDefinitionLibrary.getType().getCode("http://terminology.hl7.org/CodeSystem/library-type").equalsIgnoreCase("module-definition"));
+        return moduleDefinitionLibrary;
+    }
+
     private org.hl7.fhir.r5.model.Library getModuleDefinitionLibrary(CqlTranslator translator, CqlTranslatorOptions cqlTranslatorOptions) {
         DataRequirementsProcessor dqReqTrans = new DataRequirementsProcessor();
         org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = dqReqTrans.gatherDataRequirements(libraryManager, translator.getTranslatedLibrary(), cqlTranslatorOptions, null, false);
@@ -613,7 +623,7 @@ public class DataRequirementsProcessorTest {
             // [Condition]
         Iterable<DataRequirement> expectedDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.CONDITION);
         assertTrue(expectedDataRequirements.iterator().hasNext());
-        outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -635,7 +645,7 @@ public class DataRequirementsProcessorTest {
             }
         }
         assertTrue(actualDrcf != null);
-        outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -662,7 +672,7 @@ public class DataRequirementsProcessorTest {
         Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.CONDITION);
         assertTrue(conditionDataRequirements.iterator().hasNext());
 
-        outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -692,7 +702,7 @@ public class DataRequirementsProcessorTest {
         Iterable<DataRequirement> conditionDataRequirements = getDataRequirementsForType(moduleDefinitionLibrary.getDataRequirement(), Enumerations.FHIRAllTypes.CONDITION);
         assertTrue(conditionDataRequirements.iterator().hasNext());
 
-        outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -842,7 +852,7 @@ public class DataRequirementsProcessorTest {
         }
         assertTrue(expectedDataRequirement != null);
 
-        outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+        //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
     }
 
     @Test
@@ -901,53 +911,6 @@ public class DataRequirementsProcessorTest {
     }
 
     @Test
-    public void TestDataRequirementsAnalysisCase2g() throws IOException {
-        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
-        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase2g.cql", translatorOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>());
-
-        /*
-        2g - Equal to a compile-time literal function
-        DataRequirement
-        type: Condition
-        dateFilter: { path: onset, value: Today() }
-
-        define DateTimeEqualToFunction:
-          [Condition] C
-            where C.onset as dateTime = Today()
-        */
-
-        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("DateTimeEqualToFunction");
-        assertTrue(ed.getExpression() instanceof Query);
-        Query q = (Query)ed.getExpression();
-        assertTrue(q.getSource() != null && q.getSource().size() == 1);
-        AliasedQuerySource source = q.getSource().get(0);
-        assertTrue(source.getExpression() instanceof Retrieve);
-        Retrieve r = (Retrieve)source.getExpression();
-        assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
-        DateFilterElement dfe = r.getDateFilter().get(0);
-        assertEquals(dfe.getProperty(), "onset");
-        assertTrue(dfe.getValue() instanceof Interval);
-
-        DataRequirement expectedDataRequirement = null;
-        for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
-            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
-                if (dr.getDateFilter().size() == 1) {
-                    DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
-                    if ("onset".equals(dfc.getPath())) {
-                        if (dfc.getValue() instanceof Period) {
-                            if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).hasEnd()) {
-                                expectedDataRequirement = dr;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        assertTrue(expectedDataRequirement != null);
-    }
-
-    @Test
     public void TestDataRequirementsAnalysisCase2b() throws IOException {
         CqlTranslatorOptions translatorOptions = getTranslatorOptions();
         CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase2b.cql", translatorOptions);
@@ -1003,6 +966,241 @@ public class DataRequirementsProcessorTest {
         assertTrue(expectedDataRequirement != null);
 
         //outputModuleDefinitionLibrary(moduleDefinitionLibrary);
+    }
+
+    @Test
+    public void TestDataRequirementsAnalysisCase2e() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase2e.cql", translatorOptions);
+        // Evaluate this test as of 12/31/2022
+        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault());
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>(), evaluationDateTime);
+
+        /*
+        2e - Timing phrase 90 days or less before
+        DataRequirement
+        type: Condition
+        dateFilter: { path: onset, value: Interval[Today() - 90 days, Today()] }
+
+        define "Date Filter Expression":
+          [Condition] C
+            where onset as Period starts 90 days or less before Today()
+        */
+
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("Date Filter Expression");
+        assertTrue(ed.getExpression() instanceof Query);
+        Query q = (Query)ed.getExpression();
+        assertTrue(q.getSource() != null && q.getSource().size() == 1);
+        AliasedQuerySource source = q.getSource().get(0);
+        assertTrue(source.getExpression() instanceof Retrieve);
+        Retrieve r = (Retrieve)source.getExpression();
+        assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
+        DateFilterElement dfe = r.getDateFilter().get(0);
+        assertEquals(dfe.getProperty(), "onset");
+        assertTrue(dfe.getValue() instanceof Interval);
+
+        OffsetDateTime expectedPeriodStart = evaluationDateTime.toOffsetDateTime().minusDays(90);
+        OffsetDateTime expectedPeriodEnd = evaluationDateTime.toOffsetDateTime().minusNanos(1000000);
+        DataRequirement expectedDataRequirement = null;
+        boolean hasFilter = false;
+        for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
+                if (dr.getDateFilter().size() == 1) {
+                    for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
+                        if ("onset".equals(dfc.getPath())) {
+                            if (dfc.getValue() instanceof Period) {
+                                String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); //"2022-10-02T00:00:00-07:00"
+                                String expectedPeriodEndString = expectedPeriodEnd.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); //"2022-12-30T23:59:59.999-07:00"
+                                if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStartString)
+                                        && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEndString)) {
+                                    hasFilter = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if (hasFilter) {
+                        expectedDataRequirement = dr;
+                    }
+                }
+            }
+        }
+        assertTrue(expectedDataRequirement != null);
+    }
+
+    @Test
+    public void TestDataRequirementsAnalysisCase2g() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase2g.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>());
+
+        /*
+        2g - Equal to a compile-time literal function
+        DataRequirement
+        type: Condition
+        dateFilter: { path: onset, value: Today() }
+
+        define DateTimeEqualToFunction:
+          [Condition] C
+            where C.onset as dateTime = Today()
+        */
+
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("DateTimeEqualToFunction");
+        assertTrue(ed.getExpression() instanceof Query);
+        Query q = (Query)ed.getExpression();
+        assertTrue(q.getSource() != null && q.getSource().size() == 1);
+        AliasedQuerySource source = q.getSource().get(0);
+        assertTrue(source.getExpression() instanceof Retrieve);
+        Retrieve r = (Retrieve)source.getExpression();
+        assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
+        DateFilterElement dfe = r.getDateFilter().get(0);
+        assertEquals(dfe.getProperty(), "onset");
+        assertTrue(dfe.getValue() instanceof Interval);
+
+        DataRequirement expectedDataRequirement = null;
+        for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
+                if (dr.getDateFilter().size() == 1) {
+                    DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
+                    if ("onset".equals(dfc.getPath())) {
+                        if (dfc.getValue() instanceof Period) {
+                            if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).hasEnd()) {
+                                expectedDataRequirement = dr;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(expectedDataRequirement != null);
+    }
+
+    @Test
+    public void TestDataRequirementsAnalysisCase2i() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase2i.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>());
+
+        /*
+        2i - In a compile-time literal interval
+        DataRequirement
+        type: Condition
+        dateFilter: { path: onset, value: Interval[@2022-12-31 - 90 days, @2022-12-31] }
+
+        define "Date Filter Expression":
+          [Condition] C
+            where C.onset as dateTime in Interval[@2022-12-31 - 90 days, @2022-12-31]
+        */
+
+        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault());
+        OffsetDateTime expectedPeriodStart = evaluationDateTime.toOffsetDateTime().minusDays(90);
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("Date Filter Expression");
+        assertTrue(ed.getExpression() instanceof Query);
+        Query q = (Query)ed.getExpression();
+        assertTrue(q.getSource() != null && q.getSource().size() == 1);
+        AliasedQuerySource source = q.getSource().get(0);
+        assertTrue(source.getExpression() instanceof Retrieve);
+        Retrieve r = (Retrieve)source.getExpression();
+        assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 1);
+        DateFilterElement dfe = r.getDateFilter().get(0);
+        assertEquals(dfe.getProperty(), "onset");
+        assertTrue(dfe.getValue() instanceof Interval);
+
+        DataRequirement expectedDataRequirement = null;
+        for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
+                if (dr.getDateFilter().size() == 1) {
+                    DataRequirement.DataRequirementDateFilterComponent dfc = dr.getDateFilterFirstRep();
+                    if ("onset".equals(dfc.getPath())) {
+                        if (dfc.getValue() instanceof Period) {
+                            String expectedPeriodStartString = expectedPeriodStart.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-10-02T00:00:00-07:00"
+                            if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStartString)) {
+                                expectedDataRequirement = dr;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(expectedDataRequirement != null);
+    }
+
+    @Test
+    public void TestDataRequirementsAnalysisCase2j() throws IOException {
+        CqlTranslatorOptions translatorOptions = getTranslatorOptions();
+        CqlTranslator translator = setupDataRequirementsAnalysis("TestCases/TestCase2j.cql", translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>());
+
+        /*
+        2j - Before and after
+        DataRequirement
+        type: Condition
+        dateFilter: { path: onset, value: Interval[@2022-12-31T - 90 days, @2022-12-31T] }
+
+        define "Date Filter Expression":
+            [Condition] C
+                where C.onset as dateTime >= @2022-12-31T - 90 days
+                    and C.onset as dateTime <= @2022-12-31T
+        */
+
+        ZonedDateTime evaluationDateTime = ZonedDateTime.of(2022, 12, 31, 0, 0, 0, 0, ZoneId.systemDefault());
+        OffsetDateTime expectedPeriodStart1 = evaluationDateTime.toOffsetDateTime().minusDays(90);
+        OffsetDateTime expectedPeriodEnd1 = ZonedDateTime.of(9999, 12, 31, 23, 59, 59, 999000000, ZoneId.of("UTC")).toOffsetDateTime();
+        OffsetDateTime expectedPeriodStart2 = ZonedDateTime.of(1, 1, 1, 0, 0, 0, 0, ZoneId.of("UTC")).toOffsetDateTime();
+        OffsetDateTime expectedPeriodEnd2 = evaluationDateTime.toOffsetDateTime();
+        ExpressionDef ed = translator.getTranslatedLibrary().resolveExpressionRef("Date Filter Expression");
+        assertTrue(ed.getExpression() instanceof Query);
+        Query q = (Query)ed.getExpression();
+        assertTrue(q.getSource() != null && q.getSource().size() == 1);
+        AliasedQuerySource source = q.getSource().get(0);
+        assertTrue(source.getExpression() instanceof Retrieve);
+        Retrieve r = (Retrieve)source.getExpression();
+        assertTrue(r.getDateFilter() != null && r.getDateFilter().size() == 2);
+        DateFilterElement dfe = r.getDateFilter().get(0);
+        assertEquals(dfe.getProperty(), "onset");
+        assertTrue(dfe.getValue() instanceof Interval);
+        dfe = r.getDateFilter().get(1);
+        assertEquals(dfe.getProperty(), "onset");
+        assertTrue(dfe.getValue() instanceof Interval);
+
+        DataRequirement expectedDataRequirement = null;
+        boolean hasFilter1 = false;
+        boolean hasFilter2 = false;
+        for (DataRequirement dr : moduleDefinitionLibrary.getDataRequirement()) {
+            if (dr.getType() == Enumerations.FHIRAllTypes.CONDITION) {
+                if (dr.getDateFilter().size() == 2) {
+                    for (DataRequirement.DataRequirementDateFilterComponent dfc : dr.getDateFilter()) {
+                        if ("onset".equals(dfc.getPath())) {
+                            if (dfc.getValue() instanceof Period) {
+                                String expectedPeriodStart1String = expectedPeriodStart1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-10-02T00:00:00-07:00"
+                                String expectedPeriodEnd1String = expectedPeriodEnd1.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "9999-12-31T23:59:59.999Z"
+                                String expectedPeriodStart2String = expectedPeriodStart2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "0001-01-01T00:00:00Z"
+                                String expectedPeriodEnd2String = expectedPeriodEnd2.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME); // "2022-12-31T00:00:00-07:00"
+                                if (((Period)dfc.getValue()).hasStart() && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStart1String)
+                                        && ((Period)dfc.getValue()).hasEnd() && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEnd1String)) {
+                                    hasFilter1 = true;
+                                }
+                                else if (((Period)dfc.getValue()).hasEnd()
+                                        && ((Period)dfc.getValue()).hasStart()) {
+                                    String actualPeriodStart2String = ((Period)dfc.getValue()).getStartElement().asStringValue();
+                                    String actualPeriodEnd2String = ((Period)dfc.getValue()).getEndElement().asStringValue();
+                                    if (actualPeriodStart2String.equals(expectedPeriodStart2String) && actualPeriodEnd2String.equals(expectedPeriodEnd2String)) {
+                                        // && ((Period)dfc.getValue()).getEndElement().asStringValue().equals(expectedPeriodEnd2String)
+                                        // && ((Period)dfc.getValue()).getStartElement().asStringValue().equals(expectedPeriodStart2String)
+                                        hasFilter2 = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (hasFilter1 && hasFilter2) {
+                        expectedDataRequirement = dr;
+                    }
+                }
+            }
+        }
+        assertTrue(expectedDataRequirement != null);
     }
 
     @Test
@@ -1485,7 +1683,7 @@ public class DataRequirementsProcessorTest {
         CqlTranslatorOptions translatorOptions = getTranslatorOptions();
         translatorOptions.setAnalyzeDataRequirements(false);
         CqlTranslator translator = setupDataRequirementsAnalysis("WithDependencies/BSElements.cql", translatorOptions);
-        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions);
+        org.hl7.fhir.r5.model.Library moduleDefinitionLibrary = getModuleDefinitionLibrary(translator, translatorOptions, new HashMap<String, Object>(), ZonedDateTime.of(2023, 1, 16, 0, 0, 0, 0, ZoneId.of("UTC")));
         assertNotNull(moduleDefinitionLibrary);
         assertEqualToExpectedModuleDefinitionLibrary(moduleDefinitionLibrary, "WithDependencies/Library-BSElements-data-requirements.json");
 
