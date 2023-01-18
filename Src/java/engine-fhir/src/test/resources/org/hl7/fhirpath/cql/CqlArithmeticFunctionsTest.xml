@@ -321,7 +321,7 @@
 		<!-- OBSOLETE: define QuantityMinValue: minimum Quantity -->
 		<test name="DateTimeMinValue">
 			<expression>minimum DateTime</expression>
-			<output>@0001-01-01T00:00:00.000</output>
+			<output>@0001-01-01T00:00:00.000Z</output>
 		</test>
 		<test name="DateMinValue">
 			<expression>minimum Date</expression>
@@ -348,7 +348,7 @@
 		<!-- OBSOLETE: define QuantityMaxValue: maximum Quantity -->
 		<test name="DateTimeMaxValue">
 			<expression>maximum DateTime</expression>
-			<output>@9999-12-31T23:59:59.999</output>
+			<output>@9999-12-31T23:59:59.999Z</output>
 		</test>
 		<test name="DateMaxValue">
 			<expression>maximum Date</expression>

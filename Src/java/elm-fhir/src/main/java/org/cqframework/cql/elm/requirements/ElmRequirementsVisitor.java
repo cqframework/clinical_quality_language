@@ -412,7 +412,7 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
             case "ProperIncludedIn":
             default: {
                 super.visitChildren(elm, context);
-                return new ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm);
+                return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
             }
         }
     }
@@ -425,13 +425,13 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
     @Override
     public ElmRequirement visitTernaryExpression(TernaryExpression elm, ElmRequirementsContext context) {
         super.visitTernaryExpression(elm, context);
-        return new ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm);
+        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
     }
 
     @Override
     public ElmRequirement visitNaryExpression(NaryExpression elm, ElmRequirementsContext context) {
         super.visitNaryExpression(elm, context);
-        return new ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm);
+        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
     }
 
     @Override
@@ -476,7 +476,10 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitInterval(Interval elm, ElmRequirementsContext context) {
-        return super.visitInterval(elm, context);
+        ElmRequirement result = super.visitInterval(elm, context);
+        ElmOperatorRequirement finalResult = new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
+        finalResult.combine(result);
+        return finalResult;
     }
 
     @Override
@@ -840,17 +843,17 @@ public class ElmRequirementsVisitor extends ElmBaseLibraryVisitor <ElmRequiremen
 
     @Override
     public ElmRequirement visitTimeOfDay(TimeOfDay elm, ElmRequirementsContext context) {
-        return new ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm);
+        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
     }
 
     @Override
     public ElmRequirement visitToday(Today elm, ElmRequirementsContext context) {
-        return new ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm);
+        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
     }
 
     @Override
     public ElmRequirement visitNow(Now elm, ElmRequirementsContext context) {
-        return new ElmExpressionRequirement(context.getCurrentLibraryIdentifier(), elm);
+        return new ElmOperatorRequirement(context.getCurrentLibraryIdentifier(), elm);
     }
 
     @Override

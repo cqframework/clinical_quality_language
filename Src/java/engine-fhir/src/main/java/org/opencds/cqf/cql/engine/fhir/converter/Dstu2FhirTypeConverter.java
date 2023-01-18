@@ -72,9 +72,7 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
-        DateTimeFormatter dtf = DateTimeFormatter.ISO_DATE_TIME;
-        java.util.Date date = java.util.Date.from(Instant.from(dtf.parse(value.getDateTime().toString())));
-        return new DateTimeType(date);
+        return new DateTimeType(value.getDateTime().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     }
 
     @Override
@@ -101,8 +99,12 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
             return null;
         }
 
+        String unit = value.getUnit();
+        String system = isCqlCalendarUnit(unit) ? "http://hl7.org/fhirpath/CodeSystem/calendar-units" : "http://unitsofmeasure.org";
+        String ucumUnit = toUcumUnit(unit);
+
         return new org.hl7.fhir.dstu2.model.Quantity()
-                .setSystem("http://unitsofmeasure.org").setCode(value.getUnit()).setValue(value.getValue());
+                .setSystem(system).setCode(ucumUnit).setValue(value.getValue()).setUnit(unit);
     }
 
     @Override
@@ -165,15 +167,17 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
         Period period = new Period();
         if (getSimpleName(value.getPointType().getTypeName()).equals("DateTime")) {
             if (value.getStart() != null) {
-                period.setStart(toFhirDateTime((DateTime) value.getStart()).getValue());
+                period.setStartElement((DateTimeType)toFhirDateTime((DateTime)value.getStart()));
             }
 
             if (value.getEnd() != null) {
-                period.setEnd(toFhirDateTime((DateTime) value.getEnd()).getValue());
+                period.setEndElement((DateTimeType)toFhirDateTime((DateTime)value.getEnd()));
             }
 
             return period;
         } else if (getSimpleName(value.getPointType().getTypeName()).equals("Date")) {
+            // TODO: This will construct DateTimeType values in FHIR with the system timezone id, not the
+            // timezoneoffset of the evaluation request..... this is a bug waiting to happen
             if (value.getStart() != null) {
                 period.setStart(toFhirDate((Date) value.getStart()).getValue());
             }
@@ -232,7 +236,10 @@ class Dstu2FhirTypeConverter extends BaseFhirTypeConverter {
         }
 
         org.hl7.fhir.dstu2.model.Quantity quantity = (org.hl7.fhir.dstu2.model.Quantity) value;
-        return new Quantity().withUnit(quantity.getUnit()).withValue(quantity.getValue());
+        if (quantity.hasComparator()) {
+            throw new IllegalArgumentException("Cannot convert a FHIR Quantity with a comparator to a CQL quantity");
+        }
+        return new Quantity().withUnit(toCqlCalendarUnit(quantity.getUnit())).withValue(quantity.getValue());
     }
 
     @Override

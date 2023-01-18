@@ -258,7 +258,7 @@ public class Dstu2TypeConverterTests {
     @Test
     public void TestQuantityToFhirQuantity() {
         org.hl7.fhir.dstu2.model.Quantity expected = new org.hl7.fhir.dstu2.model.Quantity().setValue(new BigDecimal("2.0")).setCode("ml")
-                .setSystem("http://unitsofmeasure.org");
+                .setSystem("http://unitsofmeasure.org").setUnit("ml");
         org.hl7.fhir.dstu2.model.Quantity actual = (org.hl7.fhir.dstu2.model.Quantity) this.typeConverter
                 .toFhirQuantity(new Quantity().withValue(new BigDecimal("2.0")).withUnit("ml"));
         assertTrue(expected.equalsDeep(actual));
@@ -267,9 +267,9 @@ public class Dstu2TypeConverterTests {
     @Test
     public void TestRatioToFhirRatio() {
         org.hl7.fhir.dstu2.model.Quantity expectedNumerator = new org.hl7.fhir.dstu2.model.Quantity().setValue(new BigDecimal("1.0")).setCode("ml")
-                .setSystem("http://unitsofmeasure.org");
+                .setSystem("http://unitsofmeasure.org").setUnit("ml");
         org.hl7.fhir.dstu2.model.Quantity expectedDenominator = new org.hl7.fhir.dstu2.model.Quantity().setValue(new BigDecimal("2.0")).setCode("ml")
-                .setSystem("http://unitsofmeasure.org");
+                .setSystem("http://unitsofmeasure.org").setUnit("ml");
 
         org.hl7.fhir.dstu2.model.Ratio expected = new org.hl7.fhir.dstu2.model.Ratio().setNumerator(expectedNumerator)
                 .setDenominator(expectedDenominator);

@@ -17,7 +17,7 @@ public class ElmConjunctiveRequirement extends ElmExpressionRequirement {
     }
 
     @Override
-    public ElmExpressionRequirement combine(ElmExpressionRequirement requirement) {
+    public ElmExpressionRequirement combine(ElmRequirement requirement) {
         if (requirement instanceof ElmConjunctiveRequirement) {
             for (ElmExpressionRequirement argument : ((ElmConjunctiveRequirement)requirement).getArguments()) {
                 arguments.add(argument);
@@ -27,8 +27,13 @@ public class ElmConjunctiveRequirement extends ElmExpressionRequirement {
             // Conjunction of disjunctions, too complex for analysis (i.e. not in DNF)
             return new ElmExpressionRequirement(this.libraryIdentifier, this.getExpression());
         }
-        else {
-            arguments.add(requirement);
+        else if (requirement instanceof ElmExpressionRequirement) {
+            arguments.add((ElmExpressionRequirement)requirement);
+        }
+        else if (requirement instanceof ElmRequirements) {
+            for (ElmRequirement r : ((ElmRequirements)requirement).getRequirements()) {
+                combine(r);
+            }
         }
         return this;
     }

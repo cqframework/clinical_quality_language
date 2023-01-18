@@ -10,6 +10,8 @@ import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Time;
 import org.opencds.cqf.cql.engine.runtime.Value;
 
+import java.math.BigDecimal;
+
 /*
 maximum<T>() T
 
@@ -43,7 +45,7 @@ public class MaxValueEvaluator extends org.cqframework.cql.elm.execution.MaxValu
             return new Date(9999, 12, 31);
         }
         if (type.endsWith("DateTime")) {
-            return new DateTime(null, 9999, 12, 31, 23, 59, 59, 999);
+            return new DateTime(BigDecimal.ZERO, 9999, 12, 31, 23, 59, 59, 999);
         }
         if (type.endsWith("Time")) {
             return new Time(23, 59, 59, 999);

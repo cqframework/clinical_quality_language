@@ -104,6 +104,94 @@ abstract class BaseFhirTypeConverter implements FhirTypeConverter {
         }
     }
 
+    /**
+     * Determines whether the given string is a CQL calendar unit
+     * @param unit
+     * @return true if the given unit is a CQL calendar unit
+     */
+    public boolean isCqlCalendarUnit(String unit) {
+        if (unit == null) {
+            return false;
+        }
+
+        switch (unit) {
+            case "milliseconds":
+            case "millisecond":
+            case "seconds":
+            case "second":
+            case "minutes":
+            case "minute":
+            case "hours":
+            case "hour":
+            case "days":
+            case "day":
+            case "weeks":
+            case "week":
+            case "months":
+            case "month":
+            case "years":
+            case "year": return true;
+            default: return false;
+        }
+    }
+
+    /**
+     * Converts the given CQL unit to a UCUM definite-time duration unit according to the table
+     * and process defined in the CQL specification: https://cql.hl7.org/02-authorsguide.html#quantities
+     * @param unit
+     * @return An equivalent UCUM unit for the given CQL calendar duration unit, if the input is a
+     * CQL calendar duration unit, otherwise returns the input unit.
+     */
+    public String toUcumUnit(String unit) {
+        if (unit == null) {
+            return null;
+        }
+
+        switch (unit) {
+            case "milliseconds":
+            case "millisecond": return "ms";
+            case "seconds":
+            case "second": return "s";
+            case "minutes":
+            case "minute": return "min";
+            case "hours":
+            case "hour": return "h";
+            case "days":
+            case "day": return "d";
+            case "weeks":
+            case "week": return "wk";
+            case "months":
+            case "month": return "mo";
+            case "years":
+            case "year": return "a";
+            default: return unit;
+        }
+    }
+
+    /**
+     * Converts a Ucum unit to the equivalent CQL unit according to the table defined in the
+     * CQL specification: https://cql.hl7.org/02-authorsguide.html#quantities
+     * @param unit
+     * @return A CQL calendar unit if the input unit is a Ucum definite-duration unit, otherwise, the input unit
+     */
+    public String toCqlCalendarUnit(String unit) {
+        if (unit == null) {
+            return null;
+        }
+
+        switch (unit) {
+            case "ms": return "millisecond";
+            case "s": return "second";
+            case "min": return "minute";
+            case "h": return "hour";
+            case "d": return "day";
+            case "wk": return "week";
+            case "mo": return "month";
+            case "a": return "year";
+            default: return unit;
+        }
+    }
+
     @Override
     public ICompositeType toFhirInterval(Interval value) {
         if (value == null) {

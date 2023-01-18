@@ -10,6 +10,8 @@ import org.opencds.cqf.cql.engine.runtime.Quantity;
 import org.opencds.cqf.cql.engine.runtime.Time;
 import org.opencds.cqf.cql.engine.runtime.Value;
 
+import java.math.BigDecimal;
+
 /*
 minimum<T>() T
 
@@ -43,7 +45,7 @@ public class MinValueEvaluator extends org.cqframework.cql.elm.execution.MinValu
             return new Date(1, 1, 1);
         }
         if (type.endsWith("DateTime")) {
-            return new DateTime(null,1, 1, 1, 0, 0, 0, 0);
+            return new DateTime(BigDecimal.ZERO,1, 1, 1, 0, 0, 0, 0);
         }
         if (type.endsWith("Time")) {
             return new Time(0, 0, 0, 0);

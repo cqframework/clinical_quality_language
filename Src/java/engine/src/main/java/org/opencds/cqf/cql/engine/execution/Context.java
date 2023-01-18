@@ -644,6 +644,14 @@ public class Context {
         }
     }
 
+    public void setParameters(Library library, Map<String, Object> parameters) {
+        if (parameters != null) {
+            for (Map.Entry<String, Object> parameterValue : parameters.entrySet()) {
+                setParameter(null, parameterValue.getKey(), parameterValue.getValue());
+            }
+        }
+    }
+
     public Object resolveParameterRef(String libraryName, String name) {
         boolean enteredLibrary = enterLibrary(libraryName);
         try {

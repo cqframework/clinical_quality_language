@@ -17,17 +17,22 @@ public class ElmDisjunctiveRequirement extends ElmExpressionRequirement {
     }
 
     @Override
-    public ElmExpressionRequirement combine(ElmExpressionRequirement requirement) {
+    public ElmExpressionRequirement combine(ElmRequirement requirement) {
         if (requirement instanceof ElmDisjunctiveRequirement) {
             for (ElmExpressionRequirement argument : ((ElmDisjunctiveRequirement)requirement).getArguments()) {
                 arguments.add(argument);
             }
         }
         else if (requirement instanceof ElmConjunctiveRequirement) {
-            arguments.add(requirement);
+            arguments.add((ElmExpressionRequirement)requirement);
         }
-        else {
-            arguments.add(requirement);
+        else if (requirement instanceof ElmExpressionRequirement) {
+            arguments.add((ElmExpressionRequirement)requirement);
+        }
+        else if (requirement instanceof ElmRequirements) {
+            for (ElmRequirement r : ((ElmRequirements)requirement).getRequirements()) {
+                combine(r);
+            }
         }
         return this;
     }

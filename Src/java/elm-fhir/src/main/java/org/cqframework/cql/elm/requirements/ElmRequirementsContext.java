@@ -8,12 +8,13 @@ import org.hl7.cql.model.NamespaceManager;
 import org.hl7.elm.r1.*;
 
 import javax.xml.namespace.QName;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.List;
 
 public class ElmRequirementsContext {
 
-    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor) {
+    public ElmRequirementsContext(LibraryManager libraryManager, CqlTranslatorOptions options, ElmRequirementsVisitor visitor, Map<String, Object> parameters, ZonedDateTime evaluationDateTime) {
         if (libraryManager == null) {
             throw new IllegalArgumentException("Library Manager required");
         }
@@ -27,6 +28,8 @@ public class ElmRequirementsContext {
         }
         this.visitor = visitor;
         this.requirements = new ElmRequirements(new VersionedIdentifier().withId("result"), new Null());
+        this.parameters = parameters;
+        this.evaluationDateTime = evaluationDateTime;
     }
 
     private CqlTranslatorOptions options;
@@ -40,6 +43,16 @@ public class ElmRequirementsContext {
     private LibraryManager libraryManager;
     public LibraryManager getLibraryManager() {
         return libraryManager;
+    }
+
+    private Map<String, Object> parameters;
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
+    private ZonedDateTime evaluationDateTime;
+    public ZonedDateTime getEvaluationDateTime() {
+        return evaluationDateTime;
     }
 
     private TypeResolver typeResolver;

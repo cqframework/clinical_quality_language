@@ -204,20 +204,7 @@ public class CqlEngine {
             context.setContextValue(contextParameter.getLeft(), contextParameter.getRight());
         }
 
-        if (parameters != null) {
-            for (Map.Entry<String, Object> parameterValue : parameters.entrySet()) {
-               context.setParameter(library.getLocalId(), parameterValue.getKey(), parameterValue.getValue());
-            }
-
-            if (library.getIncludes() != null && library.getIncludes().getDef() != null) {
-                for (IncludeDef def : library.getIncludes().getDef()) {
-                    String name = def.getLocalIdentifier();
-                    for (Map.Entry<String, Object> parameterValue : parameters.entrySet()) {
-                        context.setParameter(name, parameterValue.getKey(), parameterValue.getValue());
-                    }
-                }
-            }
-        }
+        context.setParameters(library, parameters);
     }
 
     private Context initializeContext(Map<VersionedIdentifier, Library> libraryCache, Library library, DebugMap debugMap, ZonedDateTime evaluationDateTime) {
