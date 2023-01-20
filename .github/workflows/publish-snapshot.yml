@@ -2,7 +2,7 @@ name: Publish Snapshot
 on:
   push:
     branches:
-      - "${{ github.event.repository.default_branch }}"
+      - ${{ github.event.repository.default_branch }}
 
 jobs:
   gradle:
@@ -20,5 +20,5 @@ jobs:
         arguments: publish
         build-root-directory: Src/java
       env:
-        OSSRH_USERNAME: "${{ vars.OSSRH_USERNAME }}"
-        OSSRH_TOKEN: "${{ secrets.OSSRH_TOKEN }}"
+        OSSRH_USERNAME: ${{ vars.OSSRH_USERNAME }}
+        OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
