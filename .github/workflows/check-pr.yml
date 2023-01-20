@@ -1,4 +1,4 @@
-name: Run Checks on PRs
+name: Check PR
 on: pull_request
 jobs:
   gradle:

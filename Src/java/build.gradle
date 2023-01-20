@@ -283,8 +283,8 @@ configure(subprojects.findAll {it.name in ['cqf-fhir', 'cqf-fhir-npm', 'cql', 'm
         repositories {
             maven {
                 credentials {
-                    username project.hasProperty("ossrhUsername") ? ossrhUsername : ""
-                    password project.hasProperty("ossrhPassword") ? ossrhPassword : ""
+                    username project.hasProperty("ossrhUsername") ? ossrhUsername : System.getenv("OSSRH_USERNAME") != null ? System.getenv("OSSRH_USERNAME") : ""
+                    password project.hasProperty("ossrhPassword") ? ossrhPassword : System.getenv("OSSRH_TOKEN") != null ? System.getenv("OSSRH_TOKEN") : ""
                 }
 
                 /* Use these to test locally (but don't forget to comment out others!)
