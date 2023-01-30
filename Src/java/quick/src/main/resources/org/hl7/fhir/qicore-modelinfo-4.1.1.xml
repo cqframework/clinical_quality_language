@@ -4491,7 +4491,7 @@
          <elementTypeSpecifier elementType="QICore.Reference" xsi:type="ListTypeSpecifier"/>
       </element>
    </typeInfo>
-   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" label="ServiceRequest" retrievable="true" primaryCodePath="type">
+   <typeInfo xsi:type="ClassInfo" baseType="QICore.DomainResource" namespace="QICore" name="ServiceRequest" identifier="http://hl7.org/fhir/us/qicore/StructureDefinition/qicore-servicerequest" label="ServiceRequest" retrievable="true" primaryCodePath="code">
       <element name="statusReason" elementType="QICore.statusReason" target="FHIRHelpers.ToConcept(%parent.extension[url='http://hl7.org/fhir/StructureDefinition/request-statusReason'].value)" description="Reason for current status" definition="Captures the reason for the current state of the resource." comment="This is generally only used for &quot;exception&quot; statuses such as &quot;suspended&quot; or &quot;cancelled&quot;.  The reason for performing the request at all is captured in reasonCode, not here.  (Distinct reason codes for different statuses can be enforced using invariants if they are universal bindings)." mustSupport="false"/>
       <element name="approachBodyStructure" target="%parent.extension[url='http://hl7.org/fhir/StructureDefinition/procedure-approachBodyStructure']" description="The access point or points used for this procedure" definition="The approach body site used for this procedure.  Multiple locations are allowed." mustSupport="false">
          <elementTypeSpecifier elementType="QICore.approachBodyStructure" xsi:type="ListTypeSpecifier"/>
